@@ -21,6 +21,6 @@ export const homeRedirectGuard: CanActivateFn = () => {
     return false;
   }
 
-  router.navigate(['/dashboard']);
+  router.navigate(['/auth/configuration']);
   return false;
 };
