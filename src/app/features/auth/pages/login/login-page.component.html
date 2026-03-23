@@ -1,0 +1,101 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-surface-50 to-surface-100 dark:from-surface-950 dark:to-surface-900 p-6 md:p-12"
+>
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <div
+        class="mb-6 inline-block bg-surface-0 dark:bg-surface-800 rounded-2xl p-4 shadow-xl border border-surface-200 dark:border-surface-700"
+      >
+        @if (logoSrc()) {
+          <img [ngSrc]="logoSrc()" alt="Logo Parsun" width="148" height="48" priority class="h-12 object-contain" />
+        } @else {
+          <h2 class="text-3xl font-bold text-primary-600 dark:text-primary-400">
+            Parsun
+          </h2>
+        }
+      </div>
+      <h1
+        class="text-3xl md:text-4xl font-bold mb-2 text-surface-900 dark:text-surface-50"
+      >
+        Bienvenido de nuevo
+      </h1>
+      <p class="text-surface-600 dark:text-surface-400">
+        Ingresa tus credenciales para acceder
+      </p>
+    </div>
+    <div
+      class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-2xl border-2 border-surface-200 dark:border-surface-700 p-8 md:p-10 backdrop-blur-sm"
+    >
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label
+              for="email"
+              class="font-semibold text-surface-700 dark:text-surface-300"
+              >Email</label
+            >
+            <input
+              pInputText
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+              class="w-full"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  form.controls.email.invalid && form.controls.email.touched,
+              }"
+            />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <small class="text-red-500 dark:text-red-400">{{
+                getEmailError()
+              }}</small>
+            }
+          </div>
+          <div class="flex flex-col gap-2">
+            <label
+              for="password"
+              class="font-semibold text-surface-700 dark:text-surface-300"
+              >Contraseña</label
+            >
+            <p-password
+              formControlName="password"
+              placeholder="••••••••"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (
+              form.controls.password.invalid && form.controls.password.touched
+            ) {
+              <small class="text-red-500 dark:text-red-400"
+                >La contraseña es requerida</small
+              >
+            }
+          </div>
+          <div class="pt-2">
+            <p-button
+              type="submit"
+              label="Iniciar Sesión"
+              icon="pi pi-sign-in"
+              [loading]="authService.loading()"
+              [disabled]="form.invalid"
+              styleClass="w-full shadow-lg"
+              size="large"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="mt-6 text-center">
+      <div
+        class="inline-block bg-surface-0 dark:bg-surface-800 rounded-full px-6 py-3 shadow-lg border border-surface-200 dark:border-surface-700"
+      >
+        <p class="text-sm text-surface-600 dark:text-surface-400 font-medium">
+          Sistema de gestión empresarial
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

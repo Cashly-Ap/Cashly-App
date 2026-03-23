@@ -1,0 +1,92 @@
+<div class="flex gap-2 justify-center">
+  @if (showView()) {
+    <p-button
+      icon="pi pi-eye"
+      [text]="true"
+      [rounded]="true"
+      severity="contrast"
+      size="small"
+      pTooltip="Ver"
+      tooltipPosition="top"
+      (onClick)="view.emit()"
+    />
+  }
+
+  @if (showPrint()) {
+    <p-button
+      icon="pi pi-print"
+      [text]="true"
+      [rounded]="true"
+      severity="secondary"
+      size="small"
+      pTooltip="Imprimir"
+      tooltipPosition="top"
+      (onClick)="print.emit()"
+    />
+  }
+
+  @if (showDeliver()) {
+    <p-button
+      icon="pi pi-truck"
+      [text]="true"
+      [rounded]="true"
+      severity="info"
+      size="small"
+      pTooltip="Entregar"
+      tooltipPosition="top"
+      (onClick)="deliver.emit()"
+    />
+  }
+
+  @if (showPayment()) {
+    <p-button
+      icon="pi pi-dollar"
+      [text]="true"
+      [rounded]="true"
+      severity="success"
+      size="small"
+      pTooltip="Registrar Pago"
+      tooltipPosition="top"
+      (onClick)="payment.emit()"
+    />
+  }
+
+  @if (showEdit()) {
+    <p-button
+      icon="pi pi-pencil"
+      [text]="true"
+      [rounded]="true"
+      severity="info"
+      size="small"
+      pTooltip="Editar"
+      tooltipPosition="top"
+      (onClick)="edit.emit()"
+    />
+  }
+
+  @if (showCancel()) {
+    <p-button
+      icon="pi pi-ban"
+      [text]="true"
+      [rounded]="true"
+      severity="warn"
+      size="small"
+      pTooltip="Cancelar"
+      tooltipPosition="top"
+      (onClick)="cancel.emit()"
+    />
+  }
+
+  @if (showDelete()) {
+    <p-button
+      icon="pi pi-trash"
+      [text]="true"
+      [rounded]="true"
+      severity="danger"
+      size="small"
+      pTooltip="Eliminar"
+      tooltipPosition="top"
+      (onClick)="delete.emit()"
+    />
+  }
+</div>

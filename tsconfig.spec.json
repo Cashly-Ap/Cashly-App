@@ -1,0 +1,21 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/spec",
+    "types": ["jasmine"],
+    "baseUrl": "./",
+    "paths": {
+      "@env/*": ["src/environments/*"],
+      "@environments/*": ["src/environments/*"],
+      "@app/*": ["src/app/*"],
+      "@shared/*": ["src/app/shared/*"],
+      "@shared": ["src/app/shared"],
+      "@theme/*": ["src/app/theme/*"],
+      "@theme": ["src/app/theme"],
+      "@core/*": ["src/app/core/*"],
+      "@core": ["src/app/core"],
+      "@features/*": ["src/app/features/*"]
+    }
+  },
+  "include": ["src/**/*.ts"]
+}

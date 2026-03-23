@@ -1,0 +1,128 @@
+<p-dialog
+  [visible]="dialogVisible()"
+  [header]="title()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [maximizable]="true"
+  [styleClass]="'image-viewer-dialog'"
+  [contentStyleClass]="'p-0'"
+  [style]="{ width: '90vw', maxWidth: '1400px', height: 'auto', maxHeight: '90vh' }"
+  (onHide)="onHide()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-between w-full">
+      <span class="text-xl font-semibold">{{ title() }}</span>
+      
+      @if (imageUrl() && isImageLoaded()) {
+        <div class="flex items-center gap-2">
+          <p-button
+            icon="pi pi-search-minus"
+            [outlined]="true"
+            [rounded]="true"
+            size="small"
+            severity="secondary"
+            (onClick)="zoomOut()"
+            [disabled]="zoomLevel() <= 0.5"
+            pTooltip="Alejar"
+            tooltipPosition="bottom"
+          />
+          <span class="text-sm font-mono text-gray-600 dark:text-gray-400 min-w-[4rem] text-center">
+            {{ (zoomLevel() * 100).toFixed(0) }}%
+          </span>
+          <p-button
+            icon="pi pi-search-plus"
+            [outlined]="true"
+            [rounded]="true"
+            size="small"
+            severity="secondary"
+            (onClick)="zoomIn()"
+            [disabled]="zoomLevel() >= 3"
+            pTooltip="Acercar"
+            tooltipPosition="bottom"
+          />
+          <p-button
+            icon="pi pi-replay"
+            [outlined]="true"
+            [rounded]="true"
+            size="small"
+            severity="secondary"
+            (onClick)="resetZoom()"
+            pTooltip="Restablecer zoom"
+            tooltipPosition="bottom"
+          />
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <div class="relative bg-gray-50 dark:bg-gray-900 overflow-auto" style="min-height: 400px; max-height: calc(90vh - 180px);">
+    <div class="flex items-center justify-center min-h-[400px] p-4">
+      @if (imageUrl()) {
+        @if (!isImageLoaded() && !isImageError()) {
+          <div class="flex flex-col items-center justify-center py-12">
+            <i class="pi pi-spin pi-spinner text-5xl text-primary-500 mb-4"></i>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">Cargando imagen...</p>
+          </div>
+        }
+        
+        @if (isImageError()) {
+          <div class="flex flex-col items-center justify-center py-12">
+            <div class="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
+              <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
+            </div>
+            <p class="text-gray-900 dark:text-gray-100 text-lg font-semibold mb-2">Error al cargar la imagen</p>
+            <p class="text-gray-600 dark:text-gray-400">La imagen no pudo ser cargada. Verifique la URL o intente nuevamente.</p>
+          </div>
+        }
+
+        <div 
+          class="inline-block"
+          [class.hidden]="!isImageLoaded() || isImageError()"
+        >
+          <img
+            [src]="imageUrl()!"
+            [alt]="title()"
+            [ngStyle]="zoomStyle"
+            (load)="onImageLoad()"
+            (error)="onImageError()"
+            class="max-w-full h-auto rounded-lg shadow-2xl cursor-zoom-in"
+            style="display: block; margin: 0 auto;"
+          />
+        </div>
+      } @else {
+        <div class="flex flex-col items-center justify-center py-12">
+          <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center mb-6">
+            <i class="pi pi-image text-5xl text-gray-400 dark:text-gray-500"></i>
+          </div>
+          <p class="text-gray-900 dark:text-gray-100 text-xl font-semibold mb-2">No hay imagen disponible</p>
+          <p class="text-gray-600 dark:text-gray-400">No se ha proporcionado una imagen para visualizar</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-between items-center w-full gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+      <div class="flex gap-2">
+        @if (downloadable() && imageUrl() && isImageLoaded()) {
+          <p-button
+            label="Descargar Imagen"
+            icon="pi pi-download"
+            [outlined]="true"
+            severity="success"
+            (onClick)="onDownload()"
+          />
+        }
+      </div>
+      
+      <p-button 
+        label="Cerrar" 
+        icon="pi pi-times" 
+        severity="secondary" 
+        (onClick)="onHide()" 
+      />
+    </div>
+  </ng-template>
+</p-dialog>

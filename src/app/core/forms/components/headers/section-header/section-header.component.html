@@ -1,0 +1,30 @@
+<div class="flex items-center justify-between gap-2 mb-3 w-full">
+  <h3 class="text-base font-medium text-surface-800 dark:text-surface-200 flex items-center gap-2 flex-shrink-0">
+    @if (icon()) {
+      <i [class]="'pi ' + icon() + ' text-surface-500'"></i>
+    }
+    {{ title() }}
+  </h3>
+  @if (buttonLabel()) {
+    <div class="flex-shrink-0 ml-auto">
+      <p-button
+        [label]="buttonLabel()"
+        [icon]="buttonIcon()"
+        [disabled]="buttonDisabled()"
+        severity="secondary"
+        size="small"
+        (onClick)="buttonClick.emit()"
+        styleClass="hidden sm:inline-flex"
+      />
+      <p-button
+        [icon]="buttonIcon()"
+        [disabled]="buttonDisabled()"
+        severity="secondary"
+        size="small"
+        [rounded]="true"
+        (onClick)="buttonClick.emit()"
+        styleClass="sm:hidden"
+      />
+    </div>
+  }
+</div>

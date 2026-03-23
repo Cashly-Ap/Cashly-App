@@ -1,0 +1,220 @@
+<div class="min-h-screen bg-surface-50 dark:bg-surface-900">
+  <p-toast position="top-right"></p-toast>
+
+  <div
+    class="fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 shadow-md"
+  >
+    <div class="flex items-center justify-between px-4 h-16">
+      <!-- Mobile/Tablet: Hamburger button -->
+      <div class="lg:hidden">
+        <p-button
+          icon="pi pi-bars"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          (onClick)="toggleMobileMenu()"
+          ariaLabel="Menú"
+        />
+      </div>
+
+      <!-- Desktop: Logo -->
+      <div class="hidden lg:flex items-center">
+        @if (logoSrc()) {
+          <img
+            [ngSrc]="logoSrc()"
+            alt="Logo Parsun"
+            width="123"
+            height="40"
+            priority
+            class="h-10 object-contain cursor-pointer"
+            [routerLink]="['/dashboard']"
+          />
+        } @else {
+          <span
+            class="inline-flex items-center gap-2 cursor-pointer"
+            [routerLink]="['/dashboard']"
+          >
+            <span
+              class="font-bold text-2xl text-primary-600 dark:text-primary-400"
+              >Parsun</span
+            >
+          </span>
+        }
+      </div>
+
+      <!-- Mobile/Tablet: Centered Logo -->
+      <div class="lg:hidden flex-1 flex justify-center">
+        @if (logoSrc()) {
+          <img
+            [ngSrc]="logoSrc()"
+            alt="Logo Parsun"
+            width="99"
+            height="32"
+            priority
+            class="h-8 object-contain cursor-pointer"
+            [routerLink]="['/dashboard']"
+          />
+        } @else {
+          <span
+            class="inline-flex items-center gap-2 cursor-pointer"
+            [routerLink]="['/dashboard']"
+          >
+            <span
+              class="font-bold text-xl text-primary-600 dark:text-primary-400"
+              >Parsun</span
+            >
+          </span>
+        }
+      </div>
+
+      <!-- Desktop: Menu -->
+      <div class="hidden lg:flex flex-1 px-8">
+        <p-menubar
+          [model]="primeMenuItems()"
+          styleClass="border-0 bg-transparent"
+        ></p-menubar>
+      </div>
+
+      <!-- Right side: Actions -->
+      <div class="flex items-center gap-1 lg:gap-4">
+        <app-pending-tabs-dropdown />
+        <!-- Desktop only: User menu button -->
+        <button
+          #userButton
+          (click)="toggleUserMenu($event)"
+          class="hidden lg:flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
+        >
+          <p-avatar
+            [label]="currentUser()?.displayName?.charAt(0)?.toUpperCase() || 'U'"
+            shape="circle"
+            size="normal"
+          />
+          <span class="font-bold text-surface-900 dark:text-surface-100">
+            {{ currentUser()?.displayName || 'Usuario' }}
+          </span>
+          <i class="pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
+        </button>
+        <!-- Desktop only: Theme toggle -->
+        <div class="hidden lg:block">
+          <app-theme-toggle></app-theme-toggle>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile/Tablet Drawer Menu -->
+  <p-drawer
+    #mobileDrawer
+    [visible]="mobileMenuVisible()"
+    (visibleChange)="mobileMenuVisible.set($event)"
+    [modal]="true"
+    [showCloseIcon]="false"
+    position="left"
+    styleClass="w-80"
+  >
+    <ng-template pTemplate="header">
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-3">
+          @if (logoSrc()) {
+            <img [ngSrc]="logoSrc()" alt="Logo Parsun" width="99" height="32" class="h-8 object-contain" />
+          } @else {
+            <span class="font-bold text-xl text-primary-600 dark:text-primary-400">Parsun</span>
+          }
+        </div>
+        <p-button
+          icon="pi pi-times"
+          [text]="true"
+          [rounded]="true"
+          severity="secondary"
+          (onClick)="closeMobileMenu()"
+          ariaLabel="Cerrar menú"
+        />
+      </div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+      <div class="flex flex-col h-full">
+        <!-- User Info -->
+        <div class="p-4 border-b border-surface-200 dark:border-surface-700">
+          <div class="flex items-center gap-3">
+            <p-avatar
+              [label]="currentUser()?.displayName?.charAt(0)?.toUpperCase() || 'U'"
+              shape="circle"
+              size="large"
+            />
+            <div>
+              <p class="font-bold text-surface-900 dark:text-surface-100">
+                {{ currentUser()?.displayName || 'Usuario' }}
+              </p>
+              <p class="text-sm text-surface-500 dark:text-surface-400">
+                {{ currentUser()?.email || '' }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <div class="flex-1 overflow-y-auto py-2">
+          <p-panelMenu [model]="mobileMenuItems()" styleClass="border-0 bg-transparent mobile-panel-menu" />
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="border-t border-surface-200 dark:border-surface-700 p-4 space-y-1">
+          <!-- Theme Toggle -->
+          <div class="flex items-center justify-between p-3 rounded-lg">
+            <div class="flex items-center gap-3">
+              <i class="pi pi-palette text-surface-600 dark:text-surface-400"></i>
+              <span class="font-medium text-surface-700 dark:text-surface-200">Modo Oscuro</span>
+            </div>
+            <app-theme-toggle></app-theme-toggle>
+          </div>
+          <button
+            (click)="goToConfiguration(); closeMobileMenu()"
+            pRipple
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
+          >
+            <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
+            <span class="font-medium">Configuración</span>
+          </button>
+          <button
+            (click)="logout()"
+            pRipple
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
+          >
+            <i class="pi pi-sign-out"></i>
+            <span class="font-medium">Cerrar Sesión</span>
+          </button>
+        </div>
+      </div>
+    </ng-template>
+  </p-drawer>
+
+  <p-popover #userMenu [appendTo]="'body'">
+    <div class="flex flex-col gap-2 p-2 min-w-[200px]">
+      <button
+        (click)="goToConfiguration()"
+        pRipple
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
+      >
+        <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
+        <span class="font-medium">Configuración</span>
+      </button>
+      <button
+        (click)="logout()"
+        pRipple
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
+      >
+        <i class="pi pi-sign-out"></i>
+        <span class="font-medium">Cerrar Sesión</span>
+      </button>
+    </div>
+  </p-popover>
+
+  <main
+    class="pt-16 min-h-screen bg-gradient-to-br from-app-bg-primary via-app-bg-primary-via to-app-bg-primary-to"
+   >
+    <ng-content />
+  </main>
+</div>
+
+

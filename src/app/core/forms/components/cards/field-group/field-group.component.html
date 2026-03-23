@@ -1,0 +1,16 @@
+<div [class]="wrapperClass()">
+  @if (label()) {
+    <label [class]="labelClass()">
+      @if (icon()) {
+        <i [class]="'pi mr-1 ' + icon() + ' ' + iconClass()"></i>
+      }
+      {{ label() }}
+    </label>
+  }
+
+  <ng-content />
+
+  @if (helpText()) {
+    <p [class]="helpClass()">{{ helpText() }}</p>
+  }
+</div>

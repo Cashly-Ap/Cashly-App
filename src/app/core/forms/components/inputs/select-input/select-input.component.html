@@ -1,0 +1,27 @@
+<div
+  class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
+  [class.lg:col-span-2]="colSpan() === 2"
+>
+  <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+    @if (icon()) {
+      <i class="pi {{ icon() }} mr-1.5 text-primary-500 dark:text-primary-400"></i>
+    }
+    {{ label() }}
+  </label>
+  <p-select
+    [formControl]="internalControl()"
+    [options]="options()"
+    [optionLabel]="optionLabel()"
+    [optionValue]="optionValue()"
+    [placeholder]="placeholder()"
+    styleClass="w-full"
+  />
+  <div class="min-h-[20px] mt-1.5">
+    @if (internalControl().invalid && internalControl().touched && errorMessage()) {
+      <small class="flex items-center gap-1 text-red-500 text-xs">
+        <i class="pi pi-exclamation-circle text-xs"></i>
+        {{ errorMessage() }}
+      </small>
+    }
+  </div>
+</div>

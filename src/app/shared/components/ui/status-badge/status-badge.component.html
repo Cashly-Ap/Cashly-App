@@ -1,0 +1,13 @@
+@if (active()) {
+  <span
+    class="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-900 dark:bg-surface-0 text-surface-0 dark:text-surface-900 w-fit"
+  >
+    {{ activeLabel() }}
+  </span>
+} @else {
+  <span
+    class="text-xs font-medium px-3 py-1.5 rounded-lg bg-surface-200 dark:bg-surface-700 text-surface-600 dark:text-surface-400 w-fit"
+  >
+    {{ inactiveLabel() }}
+  </span>
+}

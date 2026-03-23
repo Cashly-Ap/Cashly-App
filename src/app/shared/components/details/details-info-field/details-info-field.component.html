@@ -1,0 +1,28 @@
+<div
+  class="flex flex-col gap-2 p-4 rounded-xl bg-surface-50/50 dark:bg-surface-800/50 border border-surface-200 dark:border-surface-700"
+>
+  <span
+    class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase"
+    >{{ label() }}</span
+  >
+
+  @if (type() === "code") {
+    <span
+      class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0"
+      >{{ value() }}</span
+    >
+  } @else if (type() === "currency") {
+    <span
+      class="text-base font-semibold text-surface-900 dark:text-surface-0"
+      >{{ value() }}</span
+    >
+  } @else if (type() === "badge") {
+    <ng-content></ng-content>
+  } @else if (value() !== undefined && value() !== null && value() !== '') {
+    <span class="text-base text-surface-900 dark:text-surface-0">{{
+      value()
+    }}</span>
+  } @else {
+    <ng-content></ng-content>
+  }
+</div>

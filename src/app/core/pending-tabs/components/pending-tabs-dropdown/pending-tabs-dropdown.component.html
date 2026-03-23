@@ -1,0 +1,103 @@
+<button
+  #tabsButton
+  (click)="toggleTabsMenu($event)"
+  class="relative flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
+  [pTooltip]="'Pestañas pendientes'"
+  tooltipPosition="bottom"
+>
+  <i class="pi pi-file-edit text-xl text-surface-700 dark:text-surface-300"></i>
+  @if (pendingTabsCount() > 0) {
+    <span
+      class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full"
+    >
+      {{ pendingTabsCount() }}
+    </span>
+  }
+</button>
+
+<p-popover #tabsMenu [style]="{ width: '400px' }" [appendTo]="'body'">
+  <div class="flex flex-col">
+    <div
+      class="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700"
+    >
+      <h3
+        class="text-lg font-semibold text-surface-900 dark:text-surface-100 m-0"
+      >
+        Pestañas Pendientes
+      </h3>
+      @if (tabs().length > 0) {
+        <button
+          (click)="clearAllTabs()"
+          pButton
+          label="Borrar Todas"
+          icon="pi pi-trash"
+          severity="danger"
+          [text]="true"
+          size="small"
+        ></button>
+      }
+    </div>
+
+    @if (tabs().length === 0) {
+      <div class="flex flex-col items-center justify-center p-8 text-center">
+        <i
+          class="pi pi-inbox text-6xl text-surface-300 dark:text-surface-600 mb-4"
+        ></i>
+        <p class="text-surface-600 dark:text-surface-400 m-0">
+          No hay pestañas pendientes
+        </p>
+      </div>
+    } @else {
+      <div class="flex flex-col max-h-96 overflow-y-auto">
+        @for (tab of tabsWithTime(); track tab.id) {
+          <div
+            class="flex items-center gap-3 p-4 border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+          >
+            <div
+              (click)="goToTab(tab)"
+              class="flex-1 min-w-0 cursor-pointer"
+              [pTooltip]="'Ir a pestaña'"
+              tooltipPosition="left"
+            >
+              <div class="flex items-center gap-2 mb-1">
+                <span
+                  [class]="
+                    'px-2 py-1 text-xs font-medium rounded ' +
+                    getTypeClass(tab.type)
+                  "
+                >
+                  {{ getTypeLabel(tab.type) }}
+                </span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">
+                  {{ getModuleLabel(tab.module) }}
+                </span>
+              </div>
+              <p
+                class="text-sm font-medium text-surface-900 dark:text-surface-100 m-0 truncate"
+              >
+                {{ tab.title }}
+              </p>
+              <p
+                class="text-xs text-surface-500 dark:text-surface-400 m-0 mt-1"
+              >
+                {{ tab.timeLabel }}
+              </p>
+            </div>
+            <div class="flex gap-1">
+              <button
+                (click)="removeTab(tab.id)"
+                pButton
+                icon="pi pi-times"
+                [text]="true"
+                [rounded]="true"
+                size="small"
+                severity="danger"
+                pTooltip="Eliminar"
+              ></button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</p-popover>

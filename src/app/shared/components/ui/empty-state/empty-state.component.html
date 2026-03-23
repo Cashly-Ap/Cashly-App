@@ -1,0 +1,23 @@
+<div class="flex flex-col items-center justify-center py-16 px-4">
+  <div class="p-6 rounded-full bg-surface-100 dark:bg-surface-800 mb-6">
+    <i class="pi {{ icon() }} text-6xl text-surface-400 dark:text-surface-500"></i>
+  </div>
+  <div class="text-center max-w-md">
+    @if (title()) {
+      <h3 class="text-2xl font-semibold mb-3 text-surface-900 dark:text-surface-0">
+        {{ title() }}
+      </h3>
+    }
+    <p class="text-surface-600 dark:text-surface-400 text-base mb-6">{{ message() }}</p>
+    @if (buttonLabel()) {
+      <p-button
+        [label]="buttonLabel()!"
+        [icon]="buttonIcon()"
+        (onClick)="buttonClick.emit()"
+        severity="contrast"
+        size="large"
+        styleClass="font-medium"
+      />
+    }
+  </div>
+</div>

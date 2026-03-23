@@ -1,0 +1,17 @@
+node_modules
+npm-debug.log
+dist
+.git
+.gitignore
+.editorconfig
+.angular
+.vscode
+*.md
+.env
+.env.example
+Dockerfile*
+docker-compose*.yml
+.gitlab-ci.yml
+coverage
+.nyc_output
+*.log
