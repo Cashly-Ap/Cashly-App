@@ -11,13 +11,8 @@ export const adminGuard: CanActivateFn = () => {
     return false;
   }
 
-  if (authService.isMerchant()) {
-    router.navigate(['/orders']);
-    return false;
-  }
-
-  if (authService.isDispatcher()) {
-    router.navigate(['/invoices']);
+  if (!authService.isAdmin()) {
+    router.navigate(['/']);
     return false;
   }
 

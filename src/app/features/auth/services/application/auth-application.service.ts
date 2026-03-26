@@ -233,8 +233,7 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const userType = this.currentUser()?.type;
-    return userType === 'ADMIN' || userType === 'USER';
+    return this.currentUser()?.type === 'ADMIN';
   }
 
   getUserType(): string | null {
