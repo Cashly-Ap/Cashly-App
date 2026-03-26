@@ -221,15 +221,15 @@ export class AuthService {
   }
 
   isCustomers(): boolean {
-    return this.currentUser()?.type === 'CUSTOMERS';
+    return this.currentUser()?.role === 'CUSTOMERS';
   }
 
   isOperators(): boolean {
-    return this.currentUser()?.type === 'OPERATORS';
+    return this.currentUser()?.role === 'OPERATORS';
   }
 
   isAdministration(): boolean {
-    return this.currentUser()?.type === 'ADMINISTRATION';
+    return this.currentUser()?.role === 'ADMINISTRATION';
   }
 
   isSuperAdmin(): boolean {
