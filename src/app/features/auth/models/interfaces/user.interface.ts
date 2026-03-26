@@ -15,6 +15,7 @@ export interface UserResponse {
   email: string;
   displayName: string;
   type: UserType;
+  role: UserType;
   active: boolean;
   createdAt: string;
   merchantId?: string;
