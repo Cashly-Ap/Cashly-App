@@ -114,7 +114,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   private buildMenuItems(userType: UserType): MenuItem[] {
-    return this.filterMenuByRole(buildMenuItems(), userType);
+    const user = this.authService.currentUser();
+    const role = (user?.role || user?.type) as UserType;
+    return this.filterMenuByRole(buildMenuItems(), role);
   }
 
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {

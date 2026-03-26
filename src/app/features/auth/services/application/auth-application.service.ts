@@ -233,8 +233,7 @@ export class AuthService {
   }
 
   isSuperAdmin(): boolean {
-    const user = this.currentUser();
-    return user?.role === 'SUPER_ADMIN' || user?.type === 'SUPER_ADMIN';
+    return this.currentUser()?.role === 'SUPER_ADMIN';
   }
 
   getUserType(): string | null {
