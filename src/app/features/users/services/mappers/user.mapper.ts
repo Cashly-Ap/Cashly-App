@@ -10,8 +10,13 @@ export class UserMapper {
       userName: user.userName,
       role: user.role,
       active: user.active,
+      emailVerified: user.emailVerified,
       createdAt: user.createdAt,
     };
+  }
+
+  toListArray(users: UserDetails[]): UserList[] {
+    return users.map((user) => this.toList(user));
   }
 
   toEdit(user: UserDetails): UserEdit {

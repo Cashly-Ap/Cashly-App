@@ -6,5 +6,6 @@ export interface UserList {
   userName: string;
   role: UserType;
   active: boolean;
+  emailVerified: boolean;
   createdAt: string;
 }

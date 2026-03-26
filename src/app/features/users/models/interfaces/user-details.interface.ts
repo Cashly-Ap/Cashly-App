@@ -6,8 +6,7 @@ export interface UserDetails {
   userName: string;
   role: UserType;
   active: boolean;
+  emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
-  merchantId?: string;
-  commissionDeductionPercentage: number;
 }
