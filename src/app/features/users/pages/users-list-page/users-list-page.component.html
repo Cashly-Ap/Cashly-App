@@ -110,7 +110,7 @@
                     <tr class="transition-colors duration-150">
                       <td>
                         <div class="font-medium">
-                          {{ user.displayName }}
+                          {{ user.userName }}
                         </div>
                       </td>
                       <td class="hidden lg:table-cell">
@@ -123,16 +123,16 @@
                           class="text-xs font-medium px-2 py-1 rounded"
                           [ngClass]="{
                             'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300':
-                              user.type === 'SUPER_ADMIN',
+                              user.role === 'SUPER_ADMIN',
                             'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
-                              user.type === 'ADMINISTRATION',
+                              user.role === 'ADMINISTRATION',
                             'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
-                              user.type === 'OPERATORS',
+                              user.role === 'OPERATORS',
                             'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
-                              user.type === 'CUSTOMERS'
+                              user.role === 'CUSTOMERS'
                           }"
                         >
-                          {{ getTypeLabel(user.type) }}
+                          {{ getTypeLabel(user.role) }}
                         </span>
                       </td>
                       <td>
@@ -221,7 +221,7 @@
                   <div class="flex justify-between items-start mb-3">
                     <div class="flex-1">
                       <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
-                        {{ user.displayName }}
+                        {{ user.userName }}
                       </h3>
                       <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
                         {{ user.email }}
@@ -231,16 +231,16 @@
                           class="text-xs font-medium px-2 py-1 rounded"
                           [ngClass]="{
                             'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300':
-                              user.type === 'SUPER_ADMIN',
+                              user.role === 'SUPER_ADMIN',
                             'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
-                              user.type === 'ADMINISTRATION',
+                              user.role === 'ADMINISTRATION',
                             'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
-                              user.type === 'OPERATORS',
+                              user.role === 'OPERATORS',
                             'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
-                              user.type === 'CUSTOMERS'
+                              user.role === 'CUSTOMERS'
                           }"
                         >
-                          {{ getTypeLabel(user.type) }}
+                          {{ getTypeLabel(user.role) }}
                         </span>
                         <span
                           class="text-xs font-medium px-2 py-1 rounded"

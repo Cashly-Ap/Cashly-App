@@ -65,7 +65,7 @@ export class UsersListPageComponent implements OnInit {
 
     return allUsers.filter(
       (user) =>
-        user.displayName.toLowerCase().includes(term) ||
+        user.userName.toLowerCase().includes(term) ||
         user.email.toLowerCase().includes(term),
     );
   });
@@ -116,7 +116,7 @@ export class UsersListPageComponent implements OnInit {
 
   onDelete(user: UserList): void {
     this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el usuario "${user.displayName}"?`,
+      message: `¿Está seguro de que desea eliminar el usuario "${user.userName}"?`,
       header: 'Confirmar Eliminación',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí, eliminar',

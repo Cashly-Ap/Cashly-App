@@ -7,8 +7,8 @@ export class UserMapper {
     return {
       id: user.id,
       email: user.email,
-      displayName: user.displayName,
-      type: user.type,
+      userName: user.userName,
+      role: user.role,
       active: user.active,
       createdAt: user.createdAt,
     };
@@ -18,8 +18,8 @@ export class UserMapper {
     return {
       id: user.id,
       email: user.email,
-      displayName: user.displayName,
-      type: user.type,
+      userName: user.userName,
+      role: user.role,
       active: user.active,
     };
   }

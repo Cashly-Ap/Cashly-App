@@ -53,8 +53,8 @@ export class UsersFormPageComponent implements OnInit {
   form: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', this.isEditMode() ? [] : [Validators.required, UserValidators.passwordStrength()]],
-    displayName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    type: ['', Validators.required],
+    userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+    role: ['', Validators.required],
     active: [true],
   });
 
@@ -72,8 +72,8 @@ export class UsersFormPageComponent implements OnInit {
       next: (user) => {
         this.form.patchValue({
           email: user.email,
-          displayName: user.displayName,
-          type: user.type,
+          userName: user.userName,
+          role: user.role,
           active: user.active,
         });
         this.form.get('password')?.setValidators([]);
@@ -99,8 +99,8 @@ export class UsersFormPageComponent implements OnInit {
         const editData = {
           id: this.userId()!,
           email: formValue.email,
-          displayName: formValue.displayName,
-          type: formValue.type,
+          userName: formValue.userName,
+          role: formValue.role,
           active: formValue.active,
         };
 
@@ -127,8 +127,8 @@ export class UsersFormPageComponent implements OnInit {
         const createData = {
           email: formValue.email,
           password: formValue.password,
-          displayName: formValue.displayName,
-          type: formValue.type,
+          userName: formValue.userName,
+          role: formValue.role,
           active: formValue.active,
         };
 
@@ -142,11 +142,11 @@ export class UsersFormPageComponent implements OnInit {
             });
             this.router.navigate(['/users']);
           },
-          error: () => {
+          error: (err) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Error al crear el usuario. Por favor, intente nuevamente.',
+              detail: err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
               life: 5000,
             });
           },
@@ -180,9 +180,9 @@ export class UsersFormPageComponent implements OnInit {
     return UserValidators.getPasswordErrorMessage(errors);
   }
 
-  getDisplayNameError(): string {
-    const errors = this.form.get('displayName')?.errors;
-    if (errors?.['required']) return 'El nombre es requerido';
+  getUserNameError(): string {
+    const errors = this.form.get('userName')?.errors;
+    if (errors?.['required']) return 'El nombre de usuario es requerido';
     if (errors?.['minlength']) return 'El nombre debe tener al menos 3 caracteres';
     if (errors?.['maxlength']) return 'El nombre debe tener como máximo 100 caracteres';
     return '';

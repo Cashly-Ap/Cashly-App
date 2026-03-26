@@ -80,7 +80,7 @@ export class UsersDetailsPageComponent implements OnInit {
     if (!userToDelete) return;
 
     this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el usuario "${userToDelete.displayName}"?`,
+      message: `¿Está seguro de que desea eliminar el usuario "${userToDelete.userName}"?`,
       header: 'Confirmar Eliminación',
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí, eliminar',
@@ -119,7 +119,7 @@ export class UsersDetailsPageComponent implements OnInit {
   }
 
   getInitials(): string {
-    const displayName = this.user()?.displayName || '';
-    return displayName.charAt(0).toUpperCase();
+    const userName = this.user()?.userName || '';
+    return userName.charAt(0).toUpperCase();
   }
 }
