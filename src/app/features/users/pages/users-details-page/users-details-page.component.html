@@ -1,101 +1,70 @@
 <app-main-layout>
-  <div class="flex justify-center px-4 py-8">
-    <div class="w-full max-w-3xl">
-      @if (user()) {
-        <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-2">
-            Detalles del Usuario
-          </h1>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (user(); as currentUser) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles del Usuario"
+            subtitle="Información completa del usuario"
+          />
+          <app-details-card>
+            <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
+              <div actions class="flex gap-3">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  severity="contrast"
+                  (onClick)="onEdit()"
+                  styleClass="w-full sm:w-auto"
+                />
+              </div>
+            </app-details-card-header>
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Email"
+                  [value]="currentUser.email"
+                />
+                <app-details-info-field
+                  label="Usuario"
+                  [value]="currentUser.userName"
+                />
+                <app-details-info-field
+                  label="Estado"
+                  [value]="currentUser.active ? 'Activo' : 'Inactivo'"
+                  [type]="currentUser.active ? 'badge' : 'text'"
+                />
+                <app-details-info-field
+                  label="Rol"
+                  [value]="getTypeLabel(currentUser.role)"
+                />
+                <app-details-info-field
+                  label="Email Verificado"
+                  [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
+                  [type]="currentUser.emailVerified ? 'badge' : 'text'"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(currentUser.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+                <app-details-info-field
+                  label="Última Actualización"
+                  [value]="(currentUser.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
         </div>
-
-        <p-card styleClass="border border-surface-200 dark:border-surface-700">
-          <div class="flex flex-col items-center mb-6">
-            <p-avatar
-              [label]="getInitials()"
-              size="xlarge"
-              [style]="{
-                'background-color': '#2196F3',
-                color: '#ffffff',
-                'font-size': '2rem',
-              }"
-              styleClass="mb-4"
-            />
-            <h2 class="text-2xl font-semibold text-surface-900 dark:text-surface-0 mb-1">
-              {{ user()!.userName }}
-            </h2>
-            <p class="text-surface-600 dark:text-surface-400 mb-1">
-              {{ user()!.email }}
-            </p>
-            <p class="text-surface-500 dark:text-surface-400 text-sm mb-4">
-              Miembro desde {{ user()!.createdAt | date: "mediumDate" }}
-            </p>
-            <div class="flex gap-2">
-              <span
-                class="px-3 py-1 rounded-full text-sm font-semibold"
-                [ngClass]="{
-                  'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
-                    user()!.active,
-                  'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300':
-                    !user()!.active
-                }"
-              >
-                {{ user()!.active ? 'Activo' : 'Inactivo' }}
-              </span>
-              <span
-                class="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-              >
-                {{ getTypeLabel(user()!.role) }}
-              </span>
-            </div>
-          </div>
-
-          <p-divider />
-
-          <div class="flex flex-col gap-4 mt-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 rounded-lg bg-surface-50 dark:bg-surface-800">
-                <p class="text-sm text-surface-500 dark:text-surface-400 mb-1">
-                  Fecha de Creación
-                </p>
-                <p class="font-medium text-surface-900 dark:text-surface-0">
-                  {{ user()!.createdAt | date: "medium" }}
-                </p>
-              </div>
-              <div class="p-4 rounded-lg bg-surface-50 dark:bg-surface-800">
-                <p class="text-sm text-surface-500 dark:text-surface-400 mb-1">
-                  Última Actualización
-                </p>
-                <p class="font-medium text-surface-900 dark:text-surface-0">
-                  {{ user()!.updatedAt | date: "medium" }}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <p-divider />
-
-          <div class="flex gap-3 mt-4">
-            <p-button
-              label="Editar"
-              icon="pi pi-pencil"
-              (onClick)="onEdit()"
-            />
-            <p-button
-              label="Eliminar"
-              icon="pi pi-trash"
-              severity="danger"
-              [outlined]="true"
-              (onClick)="onDelete()"
-            />
-            <p-button
-              label="Volver"
-              icon="pi pi-arrow-left"
-              severity="secondary"
-              [outlined]="true"
-              (onClick)="onBack()"
-            />
-          </div>
-        </p-card>
       }
     </div>
   </div>

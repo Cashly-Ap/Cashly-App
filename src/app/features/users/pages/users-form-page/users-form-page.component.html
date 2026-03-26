@@ -1,139 +1,118 @@
 <app-main-layout>
-  <div class="flex justify-center px-4 py-8">
-    <div class="w-full max-w-2xl">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-2">
-          {{ isEditMode() ? 'Editar Usuario' : 'Nuevo Usuario' }}
-        </h1>
-        <p class="text-surface-600 dark:text-surface-400">
-          {{ isEditMode() ? 'Actualice la información del usuario' : 'Complete la información del nuevo usuario' }}
-        </p>
-      </div>
-
-      <p-card styleClass="border border-surface-200 dark:border-surface-700">
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-          <div class="flex flex-col gap-6">
-            <div class="flex flex-col gap-2">
-              <label for="email" class="font-semibold text-surface-700 dark:text-surface-300">
-                Correo Electrónico
-              </label>
-              <input
-                pInputText
-                type="email"
-                id="email"
-                formControlName="email"
-                placeholder="usuario@correo.com"
-                class="w-full"
-                [ngClass]="{
-                  'ng-invalid ng-dirty':
-                    form.controls['email'].invalid && form.controls['email'].touched,
-                }"
-              />
-              @if (form.controls['email'].invalid && form.controls['email'].touched) {
-                <small class="text-red-500 dark:text-red-400">
-                  {{ getEmailError() }}
-                </small>
-              }
-            </div>
-
-            @if (!isEditMode()) {
-              <div class="flex flex-col gap-2">
-                <label for="password" class="font-semibold text-surface-700 dark:text-surface-300">
-                  Contraseña
-                </label>
-                <p-password
-                  formControlName="password"
-                  placeholder="••••••••"
-                  [toggleMask]="true"
-                  styleClass="w-full"
-                  inputStyleClass="w-full"
-                  [ngClass]="{
-                    'ng-invalid ng-dirty':
-                      form.controls['password'].invalid && form.controls['password'].touched,
-                  }"
-                />
-                @if (form.controls['password'].invalid && form.controls['password'].touched) {
-                  <small class="text-red-500 dark:text-red-400">
-                    {{ getPasswordError() }}
-                  </small>
-                }
-              </div>
+  <app-form-container>
+    <app-form-header [title]="title()" [subtitle]="subtitle()" />
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-card>
+        <div class="p-4 md:p-6 flex flex-col gap-6">
+          <div class="flex flex-col gap-2">
+            <label for="email" class="font-semibold text-surface-700 dark:text-surface-300">
+              Correo Electrónico
+            </label>
+            <input
+              pInputText
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="usuario@correo.com"
+              class="w-full"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  form.controls['email'].invalid && form.controls['email'].touched,
+              }"
+            />
+            @if (form.controls['email'].invalid && form.controls['email'].touched) {
+              <small class="text-red-500 dark:text-red-400">
+                {{ getEmailError() }}
+              </small>
             }
+          </div>
 
+          @if (!isEditMode()) {
             <div class="flex flex-col gap-2">
-              <label for="userName" class="font-semibold text-surface-700 dark:text-surface-300">
-                Nombre de Usuario
+              <label for="password" class="font-semibold text-surface-700 dark:text-surface-300">
+                Contraseña
               </label>
-              <input
-                pInputText
-                type="text"
-                id="userName"
-                formControlName="userName"
-                placeholder="Nombre completo"
-                class="w-full"
+              <p-password
+                formControlName="password"
+                placeholder="••••••••"
+                [toggleMask]="true"
+                styleClass="w-full"
+                inputStyleClass="w-full"
                 [ngClass]="{
                   'ng-invalid ng-dirty':
-                    form.controls['userName'].invalid && form.controls['userName'].touched,
+                    form.controls['password'].invalid && form.controls['password'].touched,
                 }"
               />
-              @if (form.controls['userName'].invalid && form.controls['userName'].touched) {
+              @if (form.controls['password'].invalid && form.controls['password'].touched) {
                 <small class="text-red-500 dark:text-red-400">
-                  {{ getUserNameError() }}
+                  {{ getPasswordError() }}
                 </small>
               }
             </div>
+          }
 
-            <div class="flex flex-col gap-2">
-              <label for="role" class="font-semibold text-surface-700 dark:text-surface-300">
-                Rol de Usuario
-              </label>
-              <p-select
-                formControlName="role"
-                [options]="userTypes"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccione un rol"
-                class="w-full"
-              />
-              @if (form.controls['role'].invalid && form.controls['role'].touched) {
-                <small class="text-red-500 dark:text-red-400">
-                  El rol de usuario es requerido
-                </small>
-              }
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-semibold text-surface-700 dark:text-surface-300">
-                Estado
-              </label>
-              <p-selectButton
-                formControlName="active"
-                [options]="activeOptions"
-                optionLabel="label"
-                optionValue="value"
-              />
-            </div>
-
-            <div class="flex gap-3 pt-4">
-              <p-button
-                type="submit"
-                [label]="isEditMode() ? 'Actualizar' : 'Crear'"
-                icon="pi pi-check"
-                [loading]="loading()"
-                [disabled]="form.invalid"
-              />
-              <p-button
-                type="button"
-                label="Cancelar"
-                icon="pi pi-times"
-                severity="secondary"
-                [outlined]="true"
-                (onClick)="onCancel()"
-              />
-            </div>
+          <div class="flex flex-col gap-2">
+            <label for="userName" class="font-semibold text-surface-700 dark:text-surface-300">
+              Nombre de Usuario
+            </label>
+            <input
+              pInputText
+              type="text"
+              id="userName"
+              formControlName="userName"
+              placeholder="Nombre completo"
+              class="w-full"
+              [ngClass]="{
+                'ng-invalid ng-dirty':
+                  form.controls['userName'].invalid && form.controls['userName'].touched,
+              }"
+            />
+            @if (form.controls['userName'].invalid && form.controls['userName'].touched) {
+              <small class="text-red-500 dark:text-red-400">
+                {{ getUserNameError() }}
+              </small>
+            }
           </div>
-        </form>
-      </p-card>
-    </div>
-  </div>
+
+          <div class="flex flex-col gap-2">
+            <label for="role" class="font-semibold text-surface-700 dark:text-surface-300">
+              Rol de Usuario
+            </label>
+            <p-select
+              formControlName="role"
+              [options]="userTypes"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Seleccione un rol"
+              class="w-full"
+            />
+            @if (form.controls['role'].invalid && form.controls['role'].touched) {
+              <small class="text-red-500 dark:text-red-400">
+                El rol de usuario es requerido
+              </small>
+            }
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-semibold text-surface-700 dark:text-surface-300">
+              Estado
+            </label>
+            <p-selectButton
+              formControlName="active"
+              [options]="activeOptions"
+              optionLabel="label"
+              optionValue="value"
+            />
+          </div>
+        </div>
+        <app-form-actions
+          [submitLabel]="submitLabel()"
+          cancelLabel="Cancelar"
+          [loading]="loading()"
+          [disabled]="form.invalid"
+          (cancel)="onCancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
 </app-main-layout>

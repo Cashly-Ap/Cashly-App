@@ -2,13 +2,15 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { AvatarModule } from 'primeng/avatar';
-import { DetailsCardComponent } from '@shared/components/details';
-import { DetailsInfoFieldComponent } from '@shared/components/details';
-import { DetailsInfoGridComponent } from '@shared/components/details';
+import {
+  DetailsCardComponent,
+  DetailsCardHeaderComponent,
+  DetailsInfoFieldComponent,
+  DetailsInfoGridComponent,
+} from '@shared/components/details';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserDetails } from '@features/users/models/interfaces';
 import { getUserTypeLabel, UserType } from '@features/users/models/enums';
@@ -20,13 +22,13 @@ import { ConfirmationService, MessageService } from 'primeng/api';
   imports: [
     CommonModule,
     MainLayoutComponent,
-    CardModule,
     ButtonModule,
-    DividerModule,
-    AvatarModule,
     DetailsCardComponent,
+    DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,
+    LoadingSpinnerComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './users-details-page.component.html',
   providers: [ConfirmationService, MessageService],

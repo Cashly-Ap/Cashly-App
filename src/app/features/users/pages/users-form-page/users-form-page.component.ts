@@ -1,15 +1,19 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
-import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
+import {
+  FormContainerComponent,
+  FormHeaderComponent,
+  FormCardComponent,
+  FormActionsComponent,
+} from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserMapper } from '@features/users/services/mappers';
 import { UserType, USER_TYPES } from '@features/users/models/enums';
@@ -22,12 +26,14 @@ import { UserValidators } from '@features/users/validators';
     CommonModule,
     ReactiveFormsModule,
     MainLayoutComponent,
-    CardModule,
     InputTextModule,
     PasswordModule,
     SelectModule,
     SelectButtonModule,
-    ButtonModule,
+    FormContainerComponent,
+    FormHeaderComponent,
+    FormCardComponent,
+    FormActionsComponent,
   ],
   templateUrl: './users-form-page.component.html',
 })
@@ -42,6 +48,14 @@ export class UsersFormPageComponent implements OnInit {
   loading = this.service.loading;
   isEditMode = signal(false);
   userId = signal<string | null>(null);
+
+  title = computed(() => (this.isEditMode() ? 'Editar Usuario' : 'Nuevo Usuario'));
+  subtitle = computed(() =>
+    this.isEditMode()
+      ? 'Actualice la información del usuario'
+      : 'Complete la información del nuevo usuario',
+  );
+  submitLabel = computed(() => (this.isEditMode() ? 'Actualizar' : 'Crear'));
 
   userTypes = [...USER_TYPES];
 
