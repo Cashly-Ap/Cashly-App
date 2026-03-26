@@ -1,141 +1,307 @@
 <app-main-layout>
-  <div class="flex justify-center px-4 py-8">
-    <div class="w-full max-w-6xl">
-      <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0">
-          Usuarios
-        </h1>
-      </div>
-      <p-card styleClass="border border-surface-200 dark:border-surface-700">
-        <div class="flex flex-col gap-4">
-          <div class="flex justify-end">
-            <p-button
-              label="Nuevo Usuario"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-            />
-          </div>
-
-          <div class="flex gap-4 items-center">
-            <span class="p-input-icon-left flex-1">
-              <i class="pi pi-search"></i>
-              <input
-                pInputText
-                type="text"
-                placeholder="Buscar usuarios..."
-                class="w-full"
-                (input)="onSearch($event)"
-              />
-            </span>
-          </div>
-
-          <p-table
-          [value]="filteredUsers()"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 25, 50]"
-          [loading]="loading()"
-          [sortField]="'displayName'"
-          [sortOrder]="1"
-          styleClass="p-datatable-sm"
-          [tableStyle]="{ 'min-width': '50rem' }"
+  <div class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div class="text-center mb-6">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg"
         >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="displayName" style="width: 30%">
-                Nombre <p-sortIcon field="displayName" />
-              </th>
-              <th pSortableColumn="email" style="width: 30%">
-                Correo <p-sortIcon field="email" />
-              </th>
-              <th pSortableColumn="type" style="width: 20%">
-                Tipo <p-sortIcon field="type" />
-              </th>
-              <th pSortableColumn="active" style="width: 10%">
-                Estado <p-sortIcon field="active" />
-              </th>
-              <th style="width: 10%">Acciones</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-user>
-            <tr>
-              <td>{{ user.displayName }}</td>
-              <td>{{ user.email }}</td>
-              <td>
-                <span
-                  class="px-2 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="{
-                    'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300':
-                      user.type === 'SUPER_ADMIN',
-                    'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
-                      user.type === 'ADMINISTRATION',
-                    'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
-                      user.type === 'OPERATORS',
-                    'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
-                      user.type === 'CUSTOMERS'
-                  }"
-                >
-                  {{ getTypeLabel(user.type) }}
-                </span>
-              </td>
-              <td>
-                <span
-                  class="px-2 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="{
-                    'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
-                      user.active,
-                    'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300':
-                      !user.active
-                  }"
-                >
-                  {{ user.active ? 'Activo' : 'Inactivo' }}
-                </span>
-              </td>
-              <td>
-                <div class="flex gap-2">
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(user)"
-                    pTooltip="Ver"
-                  />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onEdit(user)"
-                    pTooltip="Editar"
-                  />
-                  <p-button
-                    icon="pi pi-trash"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    (onClick)="onDelete(user)"
-                    pTooltip="Eliminar"
-                  />
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="5" class="text-center py-8">
-                <div class="flex flex-col items-center gap-2">
-                  <i class="pi pi-users text-4xl text-surface-400"></i>
-                  <p class="text-surface-600 dark:text-surface-400">
-                    No se encontraron usuarios
-                  </p>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+          <i class="pi pi-users text-surface-0 dark:text-surface-900 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Usuarios</h1>
+        <p class="text-sm sm:text-base">Gestiona los usuarios del sistema</p>
       </div>
-    </p-card>
+
+      @if (showInitialLoading()) {
+        <app-content-card>
+          <app-loading-spinner message="Cargando usuarios..." />
+        </app-content-card>
+      } @else if (isEmptyDatabase()) {
+        <app-content-card>
+          <app-empty-state
+            icon="pi-users"
+            title="No hay usuarios registrados"
+            message="Comienza a gestionar usuarios agregando el primero."
+            buttonLabel="Crear mi Primer Usuario"
+            (buttonClick)="onCreate()"
+          />
+        </app-content-card>
+      } @else {
+        <app-list-container>
+          <div class="px-4 sm:px-6 py-4">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
+              <div class="flex gap-2 items-center w-full sm:w-auto">
+                <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
+                  <p-inputIcon styleClass="pi pi-search" />
+                  <input
+                    #searchInput
+                    pInputText
+                    type="text"
+                    [value]="searchTerm()"
+                    (input)="onSearch(searchInput.value)"
+                    placeholder="Buscar usuarios..."
+                    class="w-full"
+                  />
+                </p-iconField>
+              </div>
+              <p-button
+                label="Nuevo Usuario"
+                icon="pi pi-plus"
+                (onClick)="onCreate()"
+                severity="contrast"
+                styleClass="font-medium w-full sm:w-auto"
+              />
+            </div>
+          </div>
+        </app-list-container>
+
+        <app-list-container class="mt-4 hidden md:block">
+          <div class="relative">
+            @if (loading()) {
+              <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl">
+                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+              </div>
+            }
+            @if (hasFilteredResults()) {
+              <app-empty-state
+                icon="pi-search"
+                title="No se encontraron resultados"
+                message="No hay usuarios que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo usuario."
+                buttonLabel="Crear Nuevo Usuario"
+                (buttonClick)="onCreate()"
+              />
+            } @else {
+              <div class="overflow-x-auto rounded-t-2xl">
+                <p-table
+                  #dt
+                  [value]="paginatedUsers()"
+                  [globalFilterFields]="['displayName', 'email', 'type']"
+                  [customSort]="true"
+                  styleClass="p-datatable-striped"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="displayName" class="w-auto">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Nombre
+                          <p-sortIcon field="displayName" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="email" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Correo
+                          <p-sortIcon field="email" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="type" class="w-32">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Tipo
+                          <p-sortIcon field="type" />
+                        </div>
+                      </th>
+                      <th class="w-24">
+                        <div class="font-semibold">Estado</div>
+                      </th>
+                      <th class="w-40">
+                        <div class="font-semibold text-center">Acciones</div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-user>
+                    <tr class="transition-colors duration-150">
+                      <td>
+                        <div class="font-medium">
+                          {{ user.displayName }}
+                        </div>
+                      </td>
+                      <td class="hidden lg:table-cell">
+                        <div class="text-sm">
+                          {{ user.email }}
+                        </div>
+                      </td>
+                      <td>
+                        <span
+                          class="text-xs font-medium px-2 py-1 rounded"
+                          [ngClass]="{
+                            'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300':
+                              user.type === 'SUPER_ADMIN',
+                            'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
+                              user.type === 'ADMINISTRATION',
+                            'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
+                              user.type === 'OPERATORS',
+                            'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
+                              user.type === 'CUSTOMERS'
+                          }"
+                        >
+                          {{ getTypeLabel(user.type) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          class="text-xs font-medium px-2 py-1 rounded"
+                          [ngClass]="{
+                            'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
+                              user.active,
+                            'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300':
+                              !user.active
+                          }"
+                        >
+                          {{ user.active ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="flex gap-1 justify-center">
+                          <p-button
+                            icon="pi pi-eye"
+                            [text]="true"
+                            [rounded]="true"
+                            severity="secondary"
+                            (onClick)="onView(user)"
+                            pTooltip="Ver"
+                          />
+                          <p-button
+                            icon="pi pi-pencil"
+                            [text]="true"
+                            [rounded]="true"
+                            severity="secondary"
+                            (onClick)="onEdit(user)"
+                            pTooltip="Editar"
+                          />
+                          <p-button
+                            icon="pi pi-trash"
+                            [text]="true"
+                            [rounded]="true"
+                            severity="danger"
+                            (onClick)="onDelete(user)"
+                            pTooltip="Eliminar"
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="px-4 sm:px-6 py-3">
+                <p-paginator
+                  [first]="first()"
+                  [rows]="rows()"
+                  [totalRecords]="totalRecords()"
+                  [rowsPerPageOptions]="[10, 25, 50, 100]"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+                  (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+                />
+              </div>
+            }
+          </div>
+        </app-list-container>
+
+        <!-- Mobile View -->
+        <div class="md:hidden mt-6 relative">
+          @if (loading()) {
+            <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]">
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-content-card>
+              <app-empty-state
+                icon="pi-search"
+                title="No se encontraron resultados"
+                message="No hay usuarios que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo usuario."
+                buttonLabel="Crear Nuevo Usuario"
+                (buttonClick)="onCreate()"
+              />
+            </app-content-card>
+          } @else {
+            <div class="flex flex-col gap-4">
+              @for (user of paginatedUsers(); track user.id) {
+                <div
+                  class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 shadow-md border border-surface-200 dark:border-surface-700"
+                >
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="flex-1">
+                      <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                        {{ user.displayName }}
+                      </h3>
+                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
+                        {{ user.email }}
+                      </p>
+                      <div class="flex gap-2 mt-2">
+                        <span
+                          class="text-xs font-medium px-2 py-1 rounded"
+                          [ngClass]="{
+                            'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300':
+                              user.type === 'SUPER_ADMIN',
+                            'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
+                              user.type === 'ADMINISTRATION',
+                            'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
+                              user.type === 'OPERATORS',
+                            'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
+                              user.type === 'CUSTOMERS'
+                          }"
+                        >
+                          {{ getTypeLabel(user.type) }}
+                        </span>
+                        <span
+                          class="text-xs font-medium px-2 py-1 rounded"
+                          [ngClass]="{
+                            'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
+                              user.active,
+                            'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300':
+                              !user.active
+                          }"
+                        >
+                          {{ user.active ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
+                    <p-button
+                      icon="pi pi-eye"
+                      [text]="true"
+                      [rounded]="true"
+                      severity="secondary"
+                      (onClick)="onView(user)"
+                    />
+                    <p-button
+                      icon="pi pi-pencil"
+                      [text]="true"
+                      [rounded]="true"
+                      severity="secondary"
+                      (onClick)="onEdit(user)"
+                    />
+                    <p-button
+                      icon="pi pi-trash"
+                      [text]="true"
+                      [rounded]="true"
+                      severity="danger"
+                      (onClick)="onDelete(user)"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="px-4 py-3 mt-2">
+              <p-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalRecords()"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
+                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      }
+    </div>
   </div>
-</div>
+  <p-confirmDialog
+    styleClass="max-w-md"
+    [style]="{
+      'border-radius': '1rem',
+    }"
+  />
 </app-main-layout>

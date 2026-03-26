@@ -7,6 +7,14 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { CardModule } from 'primeng/card';
 import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorModule } from 'primeng/paginator';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserList } from '@features/users/models/interfaces';
 import { getUserTypeLabel, UserType } from '@features/users/models/enums';
@@ -23,6 +31,14 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     InputTextModule,
     CardModule,
     TooltipModule,
+    PaginatorModule,
+    IconFieldModule,
+    InputIconModule,
+    ConfirmDialogModule,
+    ContentCardComponent,
+    LoadingSpinnerComponent,
+    EmptyStateComponent,
+    ListContainerComponent,
   ],
   templateUrl: './users-list-page.component.html',
   providers: [ConfirmationService, MessageService],
@@ -37,6 +53,9 @@ export class UsersListPageComponent implements OnInit {
   loading = this.service.loading;
 
   searchTerm = signal('');
+  first = signal(0);
+  rows = signal(10);
+  totalRecords = computed(() => this.filteredUsers().length);
 
   filteredUsers = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -51,13 +70,36 @@ export class UsersListPageComponent implements OnInit {
     );
   });
 
+  paginatedUsers = computed(() => {
+    const start = this.first();
+    const end = start + this.rows();
+    return this.filteredUsers().slice(start, end);
+  });
+
+  hasFilteredResults = computed(() => {
+    return this.users().length > 0 && this.filteredUsers().length === 0;
+  });
+
+  showInitialLoading = computed(() => {
+    return this.loading() && this.users().length === 0;
+  });
+
+  isEmptyDatabase = computed(() => {
+    return !this.loading() && this.users().length === 0;
+  });
+
   ngOnInit(): void {
     this.service.loadUsers().subscribe();
   }
 
-  onSearch(event: Event): void {
-    const target = event.target as HTMLInputElement;
-    this.searchTerm.set(target.value);
+  onSearch(value: string): void {
+    this.searchTerm.set(value);
+    this.first.set(0);
+  }
+
+  onPageChange(event: { first: number; rows: number }): void {
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? 10);
   }
 
   onCreate(): void {
