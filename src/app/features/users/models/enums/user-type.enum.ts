@@ -1,8 +1,8 @@
 export enum UserType {
-  USER = 'USER',
-  MERCHANT = 'MERCHANT',
-  ADMIN = 'ADMIN',
-  DISPATCHER = 'DISPATCHER',
+  CUSTOMERS = 'CUSTOMERS',
+  OPERATORS = 'OPERATORS',
+  ADMINISTRATION = 'ADMINISTRATION',
+  SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
 export interface UserTypeOption {
@@ -11,17 +11,17 @@ export interface UserTypeOption {
 }
 
 export const USER_TYPES: readonly UserTypeOption[] = [
-  { label: 'Usuario', value: UserType.USER },
-  { label: 'Vendedor', value: UserType.MERCHANT },
-  { label: 'Administrador', value: UserType.ADMIN },
-  { label: 'Despachador', value: UserType.DISPATCHER },
+  { label: 'Clientes', value: UserType.CUSTOMERS },
+  { label: 'Operadores', value: UserType.OPERATORS },
+  { label: 'Administración', value: UserType.ADMINISTRATION },
+  { label: 'Super Admin', value: UserType.SUPER_ADMIN },
 ] as const;
 
 export const USER_TYPE_LABELS: Record<UserType, string> = {
-  [UserType.USER]: 'Usuario',
-  [UserType.MERCHANT]: 'Vendedor',
-  [UserType.ADMIN]: 'Administrador',
-  [UserType.DISPATCHER]: 'Despachador',
+  [UserType.CUSTOMERS]: 'Clientes',
+  [UserType.OPERATORS]: 'Operadores',
+  [UserType.ADMINISTRATION]: 'Administración',
+  [UserType.SUPER_ADMIN]: 'Super Admin',
 };
 
 export function getUserTypeLabel(type: UserType): string {

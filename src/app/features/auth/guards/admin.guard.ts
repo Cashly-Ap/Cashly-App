@@ -11,7 +11,7 @@ export const adminGuard: CanActivateFn = () => {
     return false;
   }
 
-  if (!authService.isAdmin()) {
+  if (!authService.isSuperAdmin()) {
     router.navigate(['/']);
     return false;
   }

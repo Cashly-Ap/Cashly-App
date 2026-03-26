@@ -11,12 +11,12 @@ export const homeRedirectGuard: CanActivateFn = () => {
     return false;
   }
 
-  if (authService.isMerchant()) {
+  if (authService.isCustomers()) {
     router.navigate(['/orders']);
     return false;
   }
 
-  if (authService.isDispatcher()) {
+  if (authService.isOperators()) {
     router.navigate(['/invoices']);
     return false;
   }

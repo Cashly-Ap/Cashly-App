@@ -220,20 +220,20 @@ export class AuthService {
     return this.accessToken() !== null;
   }
 
-  isMerchant(): boolean {
-    return this.currentUser()?.type === 'MERCHANT';
+  isCustomers(): boolean {
+    return this.currentUser()?.type === 'CUSTOMERS';
   }
 
-  isDispatcher(): boolean {
-    return this.currentUser()?.type === 'DISPATCHER';
+  isOperators(): boolean {
+    return this.currentUser()?.type === 'OPERATORS';
   }
 
-  isUser(): boolean {
-    return this.currentUser()?.type === 'USER';
+  isAdministration(): boolean {
+    return this.currentUser()?.type === 'ADMINISTRATION';
   }
 
-  isAdmin(): boolean {
-    return this.currentUser()?.type === 'ADMIN';
+  isSuperAdmin(): boolean {
+    return this.currentUser()?.type === 'SUPER_ADMIN';
   }
 
   getUserType(): string | null {
@@ -241,10 +241,6 @@ export class AuthService {
   }
 
   getMerchantId(): string | null {
-    const user = this.currentUser();
-    if (user?.type === 'MERCHANT' && user.merchantId) {
-      return user.merchantId;
-    }
     return null;
   }
 

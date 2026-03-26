@@ -6,7 +6,7 @@ export function buildMenuItems(): MenuItem[] {
       label: 'Usuarios',
       icon: 'pi pi-users',
       routerLink: '/users',
-      allowedRoles: ['ADMIN'],
+      allowedRoles: ['SUPER_ADMIN'],
     },
   ];
 }

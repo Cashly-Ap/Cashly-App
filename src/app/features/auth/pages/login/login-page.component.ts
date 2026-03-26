@@ -72,10 +72,10 @@ export class LoginPageComponent {
   }
 
   private getRedirectPath(): string {
-    if (this.authService.isMerchant()) {
+    if (this.authService.isCustomers()) {
       return '/orders';
     }
-    if (this.authService.isDispatcher()) {
+    if (this.authService.isOperators()) {
       return '/invoices';
     }
     return '/auth/configuration';
