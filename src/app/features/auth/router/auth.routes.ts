@@ -26,12 +26,6 @@ export const AUTH_ROUTES: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'change-commission-deduction',
-    loadComponent: () =>
-      import('@features/auth/pages').then((m) => m.ChangeCommissionDeductionPageComponent),
-    canActivate: [authGuard],
-  },
-  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',

@@ -1,6 +1,6 @@
 const PROXY_CONFIG = {
   "/api": {
-    target: "http://lexand-api-app:8080",
+    target: "http://parsun-api-app:8080",
     secure: false,
     changeOrigin: true,
     configure: (proxy, options) => {

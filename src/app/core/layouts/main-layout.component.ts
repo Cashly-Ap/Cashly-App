@@ -68,7 +68,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   currentUser = this.authService.currentUser;
 
-  logoSrc = computed(() => (this.themeService.isDarkMode() ? '/Parsun_Black.png' : '/Parsun_White.png'));
+  logoSrc = computed(() => '/Parsun.png');
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;

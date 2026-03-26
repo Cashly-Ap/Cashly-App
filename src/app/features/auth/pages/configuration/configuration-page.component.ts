@@ -1,5 +1,5 @@
-import { Component, inject, computed } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
@@ -21,20 +21,12 @@ import { UserType } from '@features/auth/models';
     AvatarModule,
   ],
   templateUrl: './configuration-page.component.html',
-  providers: [DecimalPipe],
 })
 export class ConfigurationPageComponent {
   private router = inject(Router);
   private authService = inject(AuthService);
-  private decimalPipe = inject(DecimalPipe);
 
   currentUser = this.authService.currentUser;
-
-  commissionDeductionLabel = computed(() => {
-    const value = this.currentUser()?.commissionDeductionPercentage ?? 0;
-    const formatted = this.decimalPipe.transform(value, '1.2-2');
-    return `Cambiar Deducible Mensual de Retraso (${formatted}%)`;
-  });
 
   getInitials(): string {
     const displayName = this.currentUser()?.displayName || '';
@@ -57,10 +49,6 @@ export class ConfigurationPageComponent {
 
   onChangePassword(): void {
     this.router.navigate(['/auth/change-password']);
-  }
-
-  onChangeCommissionDeduction(): void {
-    this.router.navigate(['/auth/change-commission-deduction']);
   }
 }
 
