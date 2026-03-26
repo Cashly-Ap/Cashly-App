@@ -1,0 +1,137 @@
+<app-main-layout>
+  <div class="flex flex-col gap-4 p-4">
+    <div class="flex justify-between items-center">
+      <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+        Usuarios
+      </h1>
+      <p-button
+        label="Nuevo Usuario"
+        icon="pi pi-plus"
+        (onClick)="onCreate()"
+      />
+    </div>
+
+    <p-card styleClass="border border-surface-200 dark:border-surface-700">
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-4 items-center">
+          <span class="p-input-icon-left flex-1">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              placeholder="Buscar usuarios..."
+              class="w-full"
+              (input)="onSearch($event)"
+            />
+          </span>
+        </div>
+
+        <p-table
+          [value]="filteredUsers()"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [loading]="loading()"
+          [sortField]="'displayName'"
+          [sortOrder]="1"
+          styleClass="p-datatable-sm"
+          [tableStyle]="{ 'min-width': '50rem' }"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="displayName" style="width: 30%">
+                Nombre <p-sortIcon field="displayName" />
+              </th>
+              <th pSortableColumn="email" style="width: 30%">
+                Correo <p-sortIcon field="email" />
+              </th>
+              <th pSortableColumn="type" style="width: 20%">
+                Tipo <p-sortIcon field="type" />
+              </th>
+              <th pSortableColumn="active" style="width: 10%">
+                Estado <p-sortIcon field="active" />
+              </th>
+              <th style="width: 10%">Acciones</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-user>
+            <tr>
+              <td>{{ user.displayName }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300':
+                      user.type === 'ADMIN',
+                    'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
+                      user.type === 'MERCHANT',
+                    'bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300':
+                      user.type === 'DISPATCHER',
+                    'bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-300':
+                      user.type === 'USER'
+                  }"
+                >
+                  {{ getTypeLabel(user.type) }}
+                </span>
+              </td>
+              <td>
+                <span
+                  class="px-2 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
+                      user.active,
+                    'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300':
+                      !user.active
+                  }"
+                >
+                  {{ user.active ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="flex gap-2">
+                  <p-button
+                    icon="pi pi-eye"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="secondary"
+                    (onClick)="onView(user)"
+                    pTooltip="Ver"
+                  />
+                  <p-button
+                    icon="pi pi-pencil"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="secondary"
+                    (onClick)="onEdit(user)"
+                    pTooltip="Editar"
+                  />
+                  <p-button
+                    icon="pi pi-trash"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="danger"
+                    (onClick)="onDelete(user)"
+                    pTooltip="Eliminar"
+                  />
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5" class="text-center py-8">
+                <div class="flex flex-col items-center gap-2">
+                  <i class="pi pi-users text-4xl text-surface-400"></i>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    No se encontraron usuarios
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+</app-main-layout>
