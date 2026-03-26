@@ -35,8 +35,8 @@ export class ConfigurationPageComponent {
 
   getUserTypeLabel(type: UserType): string {
     const labels: Record<UserType, string> = {
-      CUSTOMERS: 'Clientes',
-      OPERATORS: 'Operadores',
+      CUSTOMER: 'Clientes',
+      OPERATOR: 'Operadores',
       ADMINISTRATION: 'Administración',
       SUPER_ADMIN: 'Super Admin',
     };

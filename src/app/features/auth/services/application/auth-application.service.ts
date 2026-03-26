@@ -221,11 +221,11 @@ export class AuthService {
   }
 
   isCustomers(): boolean {
-    return this.currentUser()?.role === 'CUSTOMERS';
+    return this.currentUser()?.role === 'CUSTOMER';
   }
 
   isOperators(): boolean {
-    return this.currentUser()?.role === 'OPERATORS';
+    return this.currentUser()?.role === 'OPERATOR';
   }
 
   isAdministration(): boolean {
