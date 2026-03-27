@@ -74,16 +74,16 @@
                 <p-table
                   #dt
                   [value]="paginatedUsers()"
-                  [globalFilterFields]="['displayName', 'email', 'type']"
+                  [globalFilterFields]="['userName', 'email', 'role']"
                   [customSort]="true"
                   styleClass="p-datatable-striped"
                 >
                   <ng-template pTemplate="header">
                     <tr>
-                      <th pSortableColumn="displayName" class="w-auto">
+                      <th pSortableColumn="userName" class="w-auto">
                         <div class="flex items-center gap-2 font-semibold">
                           Nombre
-                          <p-sortIcon field="displayName" />
+                          <p-sortIcon field="userName" />
                         </div>
                       </th>
                       <th pSortableColumn="email" class="w-auto hidden lg:table-cell">
@@ -120,15 +120,15 @@
                       </td>
                       <td>
                         <span
-                          class="text-xs font-medium px-2 py-1 rounded"
+                          class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
-                            'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900':
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
                               user.role === 'SUPER_ADMIN',
-                            'bg-surface-700 dark:bg-surface-300 text-surface-0 dark:text-surface-900':
+                            'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
                               user.role === 'ADMINISTRATION',
-                            'bg-surface-500 dark:bg-surface-500 text-surface-0 dark:text-surface-0':
+                            'bg-gray-500 text-white':
                               user.role === 'OPERATOR',
-                            'bg-surface-300 dark:bg-surface-600 text-surface-900 dark:text-surface-100':
+                            'bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100':
                               user.role === 'CUSTOMER'
                           }"
                         >
@@ -137,11 +137,11 @@
                       </td>
                       <td>
                         <span
-                          class="text-xs font-medium px-2 py-1 rounded"
+                          class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
-                            'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900':
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
                               user.active,
-                            'bg-surface-200 dark:bg-surface-700 text-surface-600 dark:text-surface-400':
+                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400':
                               !user.active
                           }"
                         >
@@ -162,7 +162,7 @@
                             icon="pi pi-pencil"
                             [text]="true"
                             [rounded]="true"
-                            severity="secondary"
+                            severity="info"
                             (onClick)="onEdit(user)"
                             pTooltip="Editar"
                           />
@@ -228,26 +228,26 @@
                       </p>
                       <div class="flex gap-2 mt-2">
                         <span
-                          class="text-xs font-medium px-2 py-1 rounded"
+                          class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
-                            'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900':
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
                               user.role === 'SUPER_ADMIN',
-                            'bg-surface-700 dark:bg-surface-300 text-surface-0 dark:text-surface-900':
+                            'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
                               user.role === 'ADMINISTRATION',
-                            'bg-surface-500 dark:bg-surface-500 text-surface-0 dark:text-surface-0':
+                            'bg-gray-500 text-white':
                               user.role === 'OPERATOR',
-                            'bg-surface-300 dark:bg-surface-600 text-surface-900 dark:text-surface-100':
+                            'bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100':
                               user.role === 'CUSTOMER'
                           }"
                         >
                           {{ getTypeLabel(user.role) }}
                         </span>
                         <span
-                          class="text-xs font-medium px-2 py-1 rounded"
+                          class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
-                            'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900':
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
                               user.active,
-                            'bg-surface-200 dark:bg-surface-700 text-surface-600 dark:text-surface-400':
+                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400':
                               !user.active
                           }"
                         >
@@ -268,7 +268,7 @@
                       icon="pi pi-pencil"
                       [text]="true"
                       [rounded]="true"
-                      severity="secondary"
+                      severity="info"
                       (onClick)="onEdit(user)"
                     />
                     <p-button

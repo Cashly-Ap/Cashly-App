@@ -29,8 +29,8 @@ export class ConfigurationPageComponent {
   currentUser = this.authService.currentUser;
 
   getInitials(): string {
-    const displayName = this.currentUser()?.displayName || '';
-    return displayName.charAt(0).toUpperCase();
+    const userName = this.currentUser()?.userName || '';
+    return userName.charAt(0).toUpperCase();
   }
 
   getUserTypeLabel(type: UserType): string {

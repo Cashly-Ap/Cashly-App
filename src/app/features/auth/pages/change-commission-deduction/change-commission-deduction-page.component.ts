@@ -43,7 +43,7 @@ export class ChangeCommissionDeductionPageComponent implements OnInit {
     const currentUser = this.authService.currentUser();
     if (currentUser) {
       this.form.patchValue({
-        commissionDeductionPercentage: currentUser.commissionDeductionPercentage,
+        commissionDeductionPercentage: 0,
       });
     }
   }

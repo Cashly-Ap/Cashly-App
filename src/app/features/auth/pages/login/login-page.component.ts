@@ -78,6 +78,6 @@ export class LoginPageComponent {
     if (this.authService.isOperators()) {
       return '/invoices';
     }
-    return '/auth/configuration';
+    return '/dashboard';
   }
 }

@@ -8,7 +8,7 @@ import { FormHeaderComponent, FormActionsComponent } from '@core/forms/component
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { AuthService } from '@features/auth/services/application';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
-import { createDisplayNameForm } from './change-username-page.config';
+import { createUserNameForm } from './change-username-page.config';
 
 @Component({
   selector: 'app-change-username-page',
@@ -29,7 +29,7 @@ export class ChangeUsernamePageComponent implements OnInit {
   protected authService = inject(AuthService);
   private messageService = inject(MessageService);
 
-  form: FormGroup = createDisplayNameForm();
+  form: FormGroup = createUserNameForm();
 
   protected control(field: string): AbstractControl | null {
     return this.form.get(field);
@@ -42,7 +42,7 @@ export class ChangeUsernamePageComponent implements OnInit {
   ngOnInit(): void {
     const currentUser = this.authService.currentUser();
     if (currentUser) {
-      this.form.patchValue({ displayName: currentUser.displayName });
+      this.form.patchValue({ userName: currentUser.userName });
     }
   }
 
@@ -52,7 +52,7 @@ export class ChangeUsernamePageComponent implements OnInit {
       return;
     }
 
-    const username = this.form.value.displayName!;
+    const username = this.form.value.userName!;
 
     this.authService.changeUsername({ username }).subscribe({
       next: () => {
@@ -67,8 +67,8 @@ export class ChangeUsernamePageComponent implements OnInit {
     this.router.navigate(['/auth/configuration']);
   }
 
-  getDisplayNameError(): string {
-    const control = this.form.controls['displayName'];
+  getUserNameError(): string {
+    const control = this.form.controls['userName'];
     if (control.hasError('required')) {
       return 'El nombre es requerido';
     }

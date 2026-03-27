@@ -21,8 +21,8 @@ describe("LoginPageComponent", () => {
     login: ReturnType<typeof vi.fn>;
     loading: ReturnType<typeof signal<boolean>>;
     error: ReturnType<typeof signal<string | null>>;
-    isMerchant: ReturnType<typeof vi.fn>;
-    isDispatcher: ReturnType<typeof vi.fn>;
+    isCustomers: ReturnType<typeof vi.fn>;
+    isOperators: ReturnType<typeof vi.fn>;
   };
   let routerMock: { navigate: ReturnType<typeof vi.fn> };
   let messageServiceMock: { add: ReturnType<typeof vi.fn> };
@@ -31,8 +31,9 @@ describe("LoginPageComponent", () => {
   const mockUser: UserResponse = {
     id: "1",
     email: "test@example.com",
-    displayName: "testuser",
-    type: "USER",
+    userName: "testuser",
+    type: "CUSTOMER",
+    role: "CUSTOMER",
     active: true,
     createdAt: new Date().toISOString(),
   };
@@ -50,8 +51,8 @@ describe("LoginPageComponent", () => {
       login: vi.fn(),
       loading: signal(false),
       error: signal<string | null>(null),
-      isMerchant: vi.fn().mockReturnValue(false),
-      isDispatcher: vi.fn().mockReturnValue(false),
+      isCustomers: vi.fn().mockReturnValue(false),
+      isOperators: vi.fn().mockReturnValue(false),
     };
     routerMock = {
       navigate: vi.fn(),
@@ -191,7 +192,7 @@ describe("LoginPageComponent", () => {
 
     it("should navigate to dashboard on successful login for non-merchant", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isMerchant.mockReturnValue(false);
+      authServiceMock.isCustomers.mockReturnValue(false);
 
       component.form.controls.email.setValue("test@example.com");
       component.form.controls.password.setValue("Password123!");
@@ -204,7 +205,7 @@ describe("LoginPageComponent", () => {
 
     it("should navigate to orders on successful login for merchant", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isMerchant.mockReturnValue(true);
+      authServiceMock.isCustomers.mockReturnValue(true);
 
       component.form.controls.email.setValue("test@example.com");
       component.form.controls.password.setValue("Password123!");
@@ -217,8 +218,8 @@ describe("LoginPageComponent", () => {
 
     it("should navigate to invoices on successful login for dispatcher", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isMerchant.mockReturnValue(false);
-      authServiceMock.isDispatcher.mockReturnValue(true);
+      authServiceMock.isCustomers.mockReturnValue(false);
+      authServiceMock.isOperators.mockReturnValue(true);
 
       component.form.controls.email.setValue("test@example.com");
       component.form.controls.password.setValue("Password123!");
@@ -267,7 +268,7 @@ describe("LoginPageComponent", () => {
   describe("form integration", () => {
     it("should pass correct data through complete flow", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isMerchant.mockReturnValue(false);
+      authServiceMock.isCustomers.mockReturnValue(false);
 
       const credentials = {
         email: "integration@test.com",

@@ -85,12 +85,12 @@
           class="hidden lg:flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
         >
           <p-avatar
-            [label]="currentUser()?.displayName?.charAt(0)?.toUpperCase() || 'U'"
+            [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
             shape="circle"
             size="normal"
           />
           <span class="font-bold text-surface-900 dark:text-surface-100">
-            {{ currentUser()?.displayName || 'Usuario' }}
+            {{ currentUser()?.userName || 'Usuario' }}
           </span>
           <i class="pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
         </button>
@@ -138,13 +138,13 @@
         <div class="p-4 border-b border-surface-200 dark:border-surface-700">
           <div class="flex items-center gap-3">
             <p-avatar
-              [label]="currentUser()?.displayName?.charAt(0)?.toUpperCase() || 'U'"
+              [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
               shape="circle"
               size="large"
             />
             <div>
               <p class="font-bold text-surface-900 dark:text-surface-100">
-                {{ currentUser()?.displayName || 'Usuario' }}
+                {{ currentUser()?.userName || 'Usuario' }}
               </p>
               <p class="text-sm text-surface-500 dark:text-surface-400">
                 {{ currentUser()?.email || '' }}

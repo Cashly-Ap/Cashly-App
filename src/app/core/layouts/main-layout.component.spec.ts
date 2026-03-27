@@ -34,13 +34,14 @@ describe('MainLayoutComponent', () => {
       currentUser: signal({
         id: '1',
         email: 'test@test.com',
-        displayName: 'Test User',
-        type: 'USER',
+        userName: 'Test User',
+        type: 'CUSTOMER',
+        role: 'CUSTOMER',
         active: true,
         createdAt: new Date().toISOString(),
       }),
       clearAuthState: vi.fn(),
-      getUserType: vi.fn().mockReturnValue('USER'),
+      getUserType: vi.fn().mockReturnValue('CUSTOMER'),
     };
 
     themeServiceMock = {
@@ -95,7 +96,7 @@ describe('MainLayoutComponent', () => {
     });
 
     it('should expose currentUser from AuthService', () => {
-      expect(component.currentUser()?.displayName).toBe('Test User');
+      expect(component.currentUser()?.userName).toBe('Test User');
       expect(component.currentUser()?.email).toBe('test@test.com');
     });
 

@@ -42,7 +42,6 @@
                 <app-details-info-field
                   label="Estado"
                   [value]="currentUser.active ? 'Activo' : 'Inactivo'"
-                  [type]="currentUser.active ? 'badge' : 'text'"
                 />
                 <app-details-info-field
                   label="Rol"
@@ -51,7 +50,6 @@
                 <app-details-info-field
                   label="Email Verificado"
                   [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
-                  [type]="currentUser.emailVerified ? 'badge' : 'text'"
                 />
                 <app-details-info-field
                   label="Fecha de Creación"

@@ -13,12 +13,10 @@ export interface User {
 export interface UserResponse {
   id: string;
   email: string;
-  displayName: string;
+  userName: string;
   type: UserType;
   role: UserType;
   active: boolean;
   createdAt: string;
-  merchantId?: string;
-  commissionDeductionPercentage: number;
 }
 

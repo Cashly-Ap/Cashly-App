@@ -28,8 +28,9 @@ describe('AuthService', () => {
   const mockUserResponse: UserResponse = {
     id: '123e4567-e89b-12d3-a456-426614174000',
     email: 'test@example.com',
-    displayName: 'testuser',
-    type: 'USER',
+    userName: 'testuser',
+    type: 'CUSTOMER',
+    role: 'CUSTOMER',
     active: true,
     createdAt: '2025-01-15T10:30:00Z',
   };
@@ -299,7 +300,7 @@ describe('AuthService', () => {
     it('should change username successfully', () => {
       const updatedUser: UserResponse = {
         ...mockUserResponse,
-        displayName: 'newusername',
+        userName: 'newusername',
       };
       mockApiService.changeUsername.mockReturnValue(of(updatedUser));
 
@@ -309,7 +310,7 @@ describe('AuthService', () => {
 
       service.changeUsername(request).subscribe((response) => {
         expect(response).toEqual(updatedUser);
-        expect(service.currentUser()?.displayName).toBe('newusername');
+        expect(service.currentUser()?.userName).toBe('newusername');
         expect(service.loading()).toBe(false);
       });
     });
@@ -317,7 +318,7 @@ describe('AuthService', () => {
     it('should update localStorage after username change', () => {
       const updatedUser: UserResponse = {
         ...mockUserResponse,
-        displayName: 'newusername',
+        userName: 'newusername',
       };
       mockApiService.changeUsername.mockReturnValue(of(updatedUser));
 
@@ -327,7 +328,7 @@ describe('AuthService', () => {
 
       service.changeUsername(request).subscribe(() => {
         const storedUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-        expect(storedUser.displayName).toBe('newusername');
+        expect(storedUser.userName).toBe('newusername');
       });
     });
 
@@ -443,7 +444,7 @@ describe('AuthService', () => {
       const loadedUser = newService.currentUser();
       expect(loadedUser?.id).toBe(mockUserResponse.id);
       expect(loadedUser?.email).toBe(mockUserResponse.email);
-      expect(loadedUser?.displayName).toBe(mockUserResponse.displayName);
+      expect(loadedUser?.userName).toBe(mockUserResponse.userName);
       expect(loadedUser?.active).toBe(mockUserResponse.active);
     });
   });

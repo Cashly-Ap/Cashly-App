@@ -43,7 +43,7 @@ export class AuthService {
           const current = this.currentUser();
           const updated: UserResponse = {
             ...(current ?? ({} as UserResponse)),
-            commissionDeductionPercentage: apiResponse.commissionDeductionPercentage,
+            userName: apiResponse.userName,
           };
           this.currentUser.set(updated);
           this.saveCurrentUserToStorage(updated);
@@ -65,106 +65,6 @@ export class AuthService {
       tap({
         next: (response) => {
           this.setAuthState(response);
-          this.saveAuthToStorage(response);
-          this.scheduleTokenRefresh(response.expiresIn);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set(this.getErrorMessage(err));
-          this.loading.set(false);
-        },
-      }),
-    );
-  }
-
-  refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {
-    return this.apiService.refresh(request).pipe(
-      tap({
-        next: (response) => {
-          this.setAuthState(response);
-          this.saveAuthToStorage(response);
-          this.scheduleTokenRefresh(response.expiresIn);
-          this.refreshTokenSubject.next(response.accessToken);
-        },
-        error: (err) => {
-          this.error.set(this.getErrorMessage(err));
-          this.clearAuthState();
-        },
-      }),
-    );
-  }
-
-  refreshTokenSilently(): Observable<AuthenticationResponse> {
-    const currentRefreshToken = this.refreshToken();
-
-    if (!currentRefreshToken) {
-      return throwError(() => new Error('No refresh token available'));
-    }
-
-    if (this.isRefreshingToken) {
-      return this.refreshTokenSubject.pipe(
-        filter((token) => token !== null),
-        take(1),
-        switchMap(() => {
-          const response: AuthenticationResponse = {
-            accessToken: this.accessToken()!,
-            refreshToken: this.refreshToken()!,
-            tokenType: 'Bearer',
-            expiresIn: 900000,
-            entity: this.currentUser()!,
-          };
-          return [response];
-        }),
-      );
-    }
-
-    this.isRefreshingToken = true;
-    this.refreshTokenSubject.next(null);
-
-    return this.refresh({ refreshToken: currentRefreshToken }).pipe(
-      tap(() => {
-        this.isRefreshingToken = false;
-      }),
-      catchError((err) => {
-        this.isRefreshingToken = false;
-        this.clearAuthState();
-        return throwError(() => err);
-      }),
-    );
-  }
-
-  logout(request: LogoutRequest): Observable<void> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.apiService.logout(request).pipe(
-      tap({
-        next: () => {
-          this.clearAuthState();
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set(this.getErrorMessage(err));
-          this.loading.set(false);
-        },
-      }),
-    );
-  }
-
-  changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.apiService.changeUsername(request).pipe(
-      tap({
-        next: (apiResponse) => {
-          const current = this.currentUser();
-          const updated: UserResponse = {
-            ...(current ?? ({} as UserResponse)),
-            displayName: apiResponse.displayName,
-          };
-          this.currentUser.set(updated);
-          this.saveCurrentUserToStorage(updated);
           this.loading.set(false);
         },
         error: (err) => {
@@ -192,6 +92,30 @@ export class AuthService {
     );
   }
 
+  changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.apiService.changeUsername(request).pipe(
+      tap({
+        next: (apiResponse) => {
+          const current = this.currentUser();
+          const updated: UserResponse = {
+            ...(current ?? ({} as UserResponse)),
+            userName: apiResponse.userName,
+          };
+          this.currentUser.set(updated);
+          this.saveCurrentUserToStorage(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(this.getErrorMessage(err));
+          this.loading.set(false);
+        },
+      }),
+    );
+  }
+
   changeCommissionDeduction(request: ChangeCommissionDeductionRequest): Observable<UserResponse> {
     this.loading.set(true);
     this.error.set(null);
@@ -202,7 +126,7 @@ export class AuthService {
           const current = this.currentUser();
           const updated: UserResponse = {
             ...(current ?? ({} as UserResponse)),
-            commissionDeductionPercentage: apiResponse.commissionDeductionPercentage,
+            userName: apiResponse.userName,
           };
           this.currentUser.set(updated);
           this.saveCurrentUserToStorage(updated);
@@ -233,7 +157,45 @@ export class AuthService {
   }
 
   isSuperAdmin(): boolean {
-    return this.currentUser()?.role === 'SUPER_ADMIN';
+    const role = this.currentUser()?.role;
+    return role === 'SUPER_ADMIN';
+  }
+
+  refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {
+    return this.apiService.refresh(request).pipe(
+      tap({
+        next: (response) => {
+          this.setAuthState(response);
+        },
+      }),
+    );
+  }
+
+  logout(request: LogoutRequest): Observable<void> {
+    return this.apiService.logout(request).pipe(
+      tap({
+        next: () => {
+          this.clearAuthState();
+        },
+      }),
+    );
+  }
+
+  refreshTokenSilently(): Observable<AuthenticationResponse> {
+    const currentRefreshToken = this.refreshToken();
+    if (!currentRefreshToken) {
+      return new Observable((subscriber) => {
+        subscriber.error(new Error('No refresh token available'));
+      });
+    }
+
+    return this.apiService.refresh({ refreshToken: currentRefreshToken }).pipe(
+      tap({
+        next: (response) => {
+          this.setAuthState(response);
+        },
+      }),
+    );
   }
 
   getUserType(): string | null {
