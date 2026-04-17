@@ -1,0 +1,66 @@
+import { Component, input, OnInit } from '@angular/core';
+import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import {
+  TabContentComponent,
+  TextInputComponent,
+  SelectInputComponent,
+  NumberInputComponent,
+  CheckboxInputComponent,
+} from '@core/forms/components';
+import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/models/enums';
+
+@Component({
+  selector: 'app-customer-general-section',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    TabContentComponent,
+    TextInputComponent,
+    SelectInputComponent,
+    NumberInputComponent,
+    CheckboxInputComponent,
+  ],
+  templateUrl: './customer-general-section.component.html',
+})
+export class CustomerGeneralSectionComponent implements OnInit {
+  form = input.required<FormGroup>();
+  isEditMode = input<boolean>(false);
+
+  customerTypes = [...CUSTOMER_TYPES];
+  paymentTypes = [...PAYMENT_TYPES];
+
+  ngOnInit(): void {
+    this.onPaymentTypeChange(this.paymentTypeControl().value);
+
+    this.paymentTypeControl().valueChanges.subscribe((value: PaymentType) => {
+      this.onPaymentTypeChange(value);
+    });
+  }
+
+  control(name: string): FormControl {
+    return this.form().get(name) as FormControl;
+  }
+
+  paymentTypeControl(): FormControl {
+    return this.form().get('paymentType') as FormControl;
+  }
+
+  isCreditPayment(): boolean {
+    return this.paymentTypeControl().value === PaymentType.CREDIT;
+  }
+
+  private onPaymentTypeChange(value: PaymentType): void {
+    const creditDays = this.form().get('creditDays');
+    const creditLimit = this.form().get('creditLimit');
+
+    if (value === PaymentType.CASH) {
+      creditDays?.setValue(null);
+      creditLimit?.setValue(null);
+      creditDays?.disable();
+      creditLimit?.disable();
+    } else {
+      creditDays?.enable();
+      creditLimit?.enable();
+    }
+  }
+}

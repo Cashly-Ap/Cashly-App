@@ -1,0 +1,245 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div class="text-center mb-6">
+        <div
+          class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg"
+        >
+          <i class="pi pi-building text-surface-0 dark:text-surface-900 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Clientes</h1>
+        <p class="text-sm sm:text-base">Gestiona los clientes del sistema</p>
+      </div>
+
+      @if (showInitialLoading()) {
+        <app-content-card>
+          <app-loading-spinner message="Cargando clientes..." />
+        </app-content-card>
+      } @else if (isEmptyDatabase()) {
+        <app-content-card>
+          <app-empty-state
+            icon="pi-building"
+            title="No hay clientes registrados"
+            message="Comienza a gestionar clientes agregando el primero."
+            buttonLabel="Crear mi Primer Cliente"
+            (buttonClick)="onCreate()"
+          />
+        </app-content-card>
+      } @else {
+        <app-list-container>
+          <div class="px-4 sm:px-6 py-4">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
+              <div class="flex gap-2 items-center w-full sm:w-auto">
+                <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
+                  <p-inputIcon styleClass="pi pi-search" />
+                  <input
+                    #searchInput
+                    pInputText
+                    type="text"
+                    [value]="searchTerm()"
+                    (input)="onSearch(searchInput.value)"
+                    placeholder="Buscar por nombre, alias o RIF..."
+                    class="w-full"
+                  />
+                </p-iconField>
+              </div>
+              <p-button
+                label="Nuevo Cliente"
+                icon="pi pi-plus"
+                (onClick)="onCreate()"
+                severity="contrast"
+                styleClass="font-medium w-full sm:w-auto"
+              />
+            </div>
+          </div>
+        </app-list-container>
+
+        <app-list-container class="mt-4 hidden md:block">
+          <div class="relative">
+            @if (loading()) {
+              <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl">
+                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+              </div>
+            }
+            @if (hasFilteredResults()) {
+              <app-empty-state
+                icon="pi-search"
+                title="No se encontraron resultados"
+                message="No hay clientes que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo cliente."
+                buttonLabel="Crear Nuevo Cliente"
+                (buttonClick)="onCreate()"
+              />
+            } @else {
+              <div class="overflow-x-auto rounded-t-2xl">
+                <p-table
+                  [value]="paginatedCustomers()"
+                  [customSort]="true"
+                  styleClass="p-datatable-striped"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="code" class="w-20">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Código
+                          <p-sortIcon field="code" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="legalName" class="w-auto">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Razón Social
+                          <p-sortIcon field="legalName" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="alias" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Alias
+                          <p-sortIcon field="alias" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="rif" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          RIF
+                          <p-sortIcon field="rif" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="type" class="w-32">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Tipo
+                          <p-sortIcon field="type" />
+                        </div>
+                      </th>
+                      <th class="w-24">
+                        <div class="font-semibold">Estado</div>
+                      </th>
+                      <th class="w-40">
+                        <div class="font-semibold text-center">Acciones</div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-customer>
+                    <tr class="transition-colors duration-150">
+                      <td>
+                        <span class="text-sm font-mono text-surface-500">#{{ customer.code }}</span>
+                      </td>
+                      <td>
+                        <div class="font-medium">{{ customer.legalName }}</div>
+                      </td>
+                      <td class="hidden lg:table-cell">
+                        <div class="text-sm text-surface-600 dark:text-surface-400">{{ customer.alias }}</div>
+                      </td>
+                      <td class="hidden lg:table-cell">
+                        <div class="text-sm font-mono">{{ customer.rif }}</div>
+                      </td>
+                      <td>
+                        <span class="px-2 py-1 text-xs font-semibold rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                          {{ getTypeLabel(customer.type) }}
+                        </span>
+                      </td>
+                      <td>
+                        <span
+                          class="px-2 py-1 text-xs font-semibold rounded"
+                          [ngClass]="{
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': customer.active,
+                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !customer.active
+                          }"
+                        >
+                          {{ customer.active ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="flex gap-1 justify-center">
+                          <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(customer)" pTooltip="Ver" />
+                          <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(customer)" pTooltip="Editar" />
+                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(customer)" pTooltip="Eliminar" />
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="px-4 sm:px-6 py-3">
+                <p-paginator
+                  [first]="first()"
+                  [rows]="rows()"
+                  [totalRecords]="totalRecords()"
+                  [rowsPerPageOptions]="[10, 25, 50, 100]"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+                  (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+                />
+              </div>
+            }
+          </div>
+        </app-list-container>
+
+        <!-- Mobile View -->
+        <div class="md:hidden mt-6 relative">
+          @if (loading()) {
+            <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]">
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-content-card>
+              <app-empty-state
+                icon="pi-search"
+                title="No se encontraron resultados"
+                message="No hay clientes que coincidan con tu búsqueda."
+                buttonLabel="Crear Nuevo Cliente"
+                (buttonClick)="onCreate()"
+              />
+            </app-content-card>
+          } @else {
+            <div class="flex flex-col gap-4">
+              @for (customer of paginatedCustomers(); track customer.id) {
+                <div class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 shadow-md border border-surface-200 dark:border-surface-700">
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class="text-xs font-mono text-surface-400">#{{ customer.code }}</span>
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                          {{ getTypeLabel(customer.type) }}
+                        </span>
+                      </div>
+                      <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">{{ customer.legalName }}</h3>
+                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">{{ customer.alias }}</p>
+                      <p class="text-xs font-mono text-surface-500">{{ customer.rif }}</p>
+                      <div class="mt-2">
+                        <span
+                          class="px-2 py-1 text-xs font-semibold rounded"
+                          [ngClass]="{
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': customer.active,
+                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !customer.active
+                          }"
+                        >
+                          {{ customer.active ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
+                    <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(customer)" />
+                    <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(customer)" />
+                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(customer)" />
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="px-4 py-3 mt-2">
+              <p-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalRecords()"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
+</app-main-layout>

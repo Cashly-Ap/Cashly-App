@@ -17,6 +17,10 @@ export const routes: Routes = [
     loadChildren: () => import('@features/users/router').then((m) => m.USER_ROUTES),
   },
   {
+    path: 'customers',
+    loadChildren: () => import('@features/customers/router').then((m) => m.CUSTOMER_ROUTES),
+  },
+  {
     path: '**',
     canActivate: [homeRedirectGuard],
     loadComponent: () => import('@features/auth/pages/login/login-page.component').then((m) => m.LoginPageComponent),

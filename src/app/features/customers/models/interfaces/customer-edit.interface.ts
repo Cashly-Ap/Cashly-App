@@ -1,0 +1,50 @@
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+
+export interface CustomerEditEmail {
+  id?: string;
+  customerId?: string;
+  email: string;
+}
+
+export interface CustomerEditPhone {
+  id?: string;
+  customerId?: string;
+  phone: string;
+}
+
+export interface CustomerEditAddress {
+  id?: string;
+  customerId?: string;
+  address: string;
+  billing: boolean;
+  active: boolean;
+}
+
+export interface CustomerEdit {
+  id: string;
+  legalName: string;
+  type: CustomerType;
+  rif: string;
+  alias: string;
+  creditDays: number;
+  creditLimit: number;
+  active: boolean;
+  emails: CustomerEditEmail[];
+  phones: CustomerEditPhone[];
+  addresses: CustomerEditAddress[];
+}
+
+export interface CustomerFormData {
+  id?: string;
+  code?: number;
+  legalName: string;
+  type: CustomerType;
+  rif: string;
+  alias: string;
+  creditDays: number;
+  creditLimit: number;
+  active?: boolean;
+  emails?: CustomerEditEmail[];
+  phones?: CustomerEditPhone[];
+  addresses?: CustomerEditAddress[];
+}

@@ -1,0 +1,130 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (customer(); as currentCustomer) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles del Cliente"
+            subtitle="Información completa del cliente"
+          />
+          <app-details-card>
+            <app-details-card-header [title]="currentCustomer.legalName" [subtitle]="currentCustomer.alias">
+              <div actions class="flex gap-3">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  severity="contrast"
+                  (onClick)="onEdit()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Eliminar"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  (onClick)="onDelete()"
+                  styleClass="w-full sm:w-auto"
+                />
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6 flex flex-col gap-6">
+              <app-details-info-grid>
+                <app-details-info-field label="Código" [value]="'#' + currentCustomer.code" />
+                <app-details-info-field label="Razón Social" [value]="currentCustomer.legalName" />
+                <app-details-info-field label="Alias" [value]="currentCustomer.alias" />
+                <app-details-info-field label="RIF" [value]="currentCustomer.rif" />
+                <app-details-info-field label="Tipo" [value]="getTypeLabel(currentCustomer.type)" />
+                <app-details-info-field label="Estado" [value]="currentCustomer.active ? 'Activo' : 'Inactivo'" />
+                <app-details-info-field label="Días de Crédito" [value]="currentCustomer.creditDays + ' días'" />
+                <app-details-info-field label="Límite de Crédito" [value]="(currentCustomer.creditLimit | number: '1.2-2') ?? ''" />
+                <app-details-info-field label="Fecha de Registro" [value]="(currentCustomer.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
+              </app-details-info-grid>
+
+              @if (currentCustomer.emails.length > 0) {
+                <div>
+                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
+                    <i class="pi pi-envelope text-surface-500"></i>
+                    Correos Electrónicos
+                  </h3>
+                  <div class="flex flex-col gap-2">
+                    @for (email of currentCustomer.emails; track email.id) {
+                      <div class="flex items-center gap-2 p-2 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                        <i class="pi pi-envelope text-surface-400 text-sm"></i>
+                        <span class="text-sm">{{ email.email }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (currentCustomer.phones.length > 0) {
+                <div>
+                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
+                    <i class="pi pi-phone text-surface-500"></i>
+                    Teléfonos
+                  </h3>
+                  <div class="flex flex-col gap-2">
+                    @for (phone of currentCustomer.phones; track phone.id) {
+                      <div class="flex items-center gap-2 p-2 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                        <i class="pi pi-phone text-surface-400 text-sm"></i>
+                        <span class="text-sm">{{ phone.phone }}</span>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
+              @if (currentCustomer.addresses.length > 0) {
+                <div>
+                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
+                    <i class="pi pi-map-marker text-surface-500"></i>
+                    Direcciones
+                  </h3>
+                  <div class="flex flex-col gap-2">
+                    @for (address of currentCustomer.addresses; track address.id) {
+                      <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                        <div class="flex items-start gap-2">
+                          <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
+                          <div class="flex-1">
+                            <p class="text-sm">{{ address.address }}</p>
+                            <div class="flex gap-2 mt-1">
+                              @if (address.billing) {
+                                <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
+                                  Facturación
+                                </span>
+                              }
+                              <span
+                                class="px-2 py-0.5 text-xs font-semibold rounded"
+                                [ngClass]="{
+                                  'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active,
+                                  'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active
+                                }"
+                              >
+                                {{ address.active ? 'Activa' : 'Inactiva' }}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </app-details-card>
+        </div>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
+</app-main-layout>
