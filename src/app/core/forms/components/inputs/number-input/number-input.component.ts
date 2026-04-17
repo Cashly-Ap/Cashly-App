@@ -17,7 +17,7 @@ export class NumberInputComponent {
   mode = input<'decimal' | 'currency'>();
   prefix = input<string>();
   suffix = input<string>();
-  placeholder = input<string>('0');
+  placeholder = input<string>('');
   showButtons = input<boolean>(false);
   minFractionDigits = input<number>();
   maxFractionDigits = input<number>();
