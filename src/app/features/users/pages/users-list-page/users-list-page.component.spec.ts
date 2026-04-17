@@ -91,6 +91,6 @@ describe('UsersListPageComponent', () => {
 
   it('should return correct type label', () => {
     const label = component.getTypeLabel(UserType.OPERATOR);
-    expect(label).toBe('Operadores');
+    expect(label).toBe('Operador');
   });
 });

@@ -107,7 +107,7 @@ describe('UsersDetailsPageComponent', () => {
 
   it('should return correct type label for OPERATOR', () => {
     const label = component.getTypeLabel(UserType.OPERATOR);
-    expect(label).toBe('Operadores');
+    expect(label).toBe('Operador');
   });
 
   it('should return correct type label for SUPER_ADMIN', () => {

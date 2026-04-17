@@ -164,7 +164,7 @@ describe('UserApiService', () => {
         id: '1',
         email: 'updated@parsun.com',
         userName: 'Updated User',
-        role: UserType.ADMINISTRATION,
+        role: UserType.ADMIN,
         active: false,
       };
 

@@ -181,7 +181,7 @@ describe('UserApplicationService', () => {
       const updatedDetails: UserDetails = {
         ...mockUserDetails,
         userName: 'Updated User',
-        role: UserType.ADMINISTRATION,
+        role: UserType.ADMIN,
       };
       mockApiService.update.mockReturnValue(of(updatedDetails));
 
@@ -189,7 +189,7 @@ describe('UserApplicationService', () => {
         id: '1',
         email: 'test@parsun.com',
         userName: 'Updated User',
-        role: UserType.ADMINISTRATION,
+        role: UserType.ADMIN,
         active: true,
       };
 
