@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
@@ -18,6 +19,7 @@ import { UserApplicationService } from '@features/users/services/application';
 import { UserMapper } from '@features/users/services/mappers';
 import { UserType, USER_TYPES } from '@features/users/models/enums';
 import { UserValidators } from '@features/users/validators';
+import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
 
 @Component({
   selector: 'app-users-form-page',
@@ -30,10 +32,13 @@ import { UserValidators } from '@features/users/validators';
     PasswordModule,
     SelectModule,
     SelectButtonModule,
+    ButtonModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
+    ChangePasswordDialogComponent,
+    ChangeEmailDialogComponent,
   ],
   templateUrl: './users-form-page.component.html',
 })
@@ -48,6 +53,9 @@ export class UsersFormPageComponent implements OnInit {
   loading = this.service.loading;
   isEditMode = signal(false);
   userId = signal<string | null>(null);
+
+  showChangePasswordDialog = signal(false);
+  showChangeEmailDialog = signal(false);
 
   title = computed(() => (this.isEditMode() ? 'Editar Usuario' : 'Nuevo Usuario'));
   subtitle = computed(() =>
@@ -179,6 +187,10 @@ export class UsersFormPageComponent implements OnInit {
 
   onCancel(): void {
     this.router.navigate(['/users']);
+  }
+
+  onEmailChanged(newEmail: string): void {
+    this.form.patchValue({ email: newEmail });
   }
 
   getEmailError(): string {

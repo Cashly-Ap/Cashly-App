@@ -15,6 +15,7 @@ import { UserApplicationService } from '@features/users/services/application';
 import { UserDetails } from '@features/users/models/interfaces';
 import { getUserTypeLabel, UserType } from '@features/users/models/enums';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
 
 @Component({
   selector: 'app-users-details-page',
@@ -29,6 +30,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
+    ChangePasswordDialogComponent,
+    ChangeEmailDialogComponent,
   ],
   templateUrl: './users-details-page.component.html',
   providers: [ConfirmationService, MessageService],
@@ -42,6 +45,8 @@ export class UsersDetailsPageComponent implements OnInit {
 
   user = signal<UserDetails | null>(null);
   loading = signal(false);
+  showChangePasswordDialog = signal(false);
+  showChangeEmailDialog = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -114,6 +119,10 @@ export class UsersDetailsPageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate(['/users']);
+  }
+
+  onEmailChanged(newEmail: string): void {
+    this.user.update((u) => (u ? { ...u, email: newEmail } : null));
   }
 
   getTypeLabel(type: UserType): string {

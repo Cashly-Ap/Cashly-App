@@ -91,4 +91,34 @@ export class UserApplicationService {
       finalize(() => this.loading.set(false)),
     );
   }
+
+  changePassword(id: string, password: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.changePassword(id, password).pipe(
+      tap({ error: (err) => this.error.set(err.message) }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  changeEmail(id: string, email: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.changeEmail(id, email).pipe(
+      tap({
+        next: () => {
+          this.users.update((current) =>
+            current.map((u) => (u.id === id ? { ...u, email } : u)),
+          );
+          if (this.currentUser()?.id === id) {
+            this.currentUser.update((u) => (u ? { ...u, email } : null));
+          }
+        },
+        error: (err) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
 }

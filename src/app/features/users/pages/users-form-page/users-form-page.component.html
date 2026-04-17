@@ -3,8 +3,7 @@
     <app-form-header [title]="title()" [subtitle]="subtitle()" />
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <app-form-card>
-        <div class="p-4 md:p-6 flex flex-col gap-6">
-          <div class="flex flex-col gap-2">
+        <div class="p-4 md:p-6 flex flex-col gap-6">          <div class="flex flex-col gap-2">
             <label for="email" class="font-semibold text-surface-700 dark:text-surface-300">
               Correo Electrónico
             </label>
@@ -104,6 +103,25 @@
               optionValue="value"
             />
           </div>
+
+          @if (isEditMode()) {
+            <div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-surface-200 dark:border-surface-700">
+              <p-button
+                label="Cambiar Contraseña"
+                icon="pi pi-lock"
+                [outlined]="true"
+                styleClass="w-full sm:w-auto"
+                (onClick)="showChangePasswordDialog.set(true)"
+              />
+              <p-button
+                label="Cambiar Correo"
+                icon="pi pi-envelope"
+                [outlined]="true"
+                styleClass="w-full sm:w-auto"
+                (onClick)="showChangeEmailDialog.set(true)"
+              />
+            </div>
+          }
         </div>
         <app-form-actions
           [submitLabel]="submitLabel()"
@@ -116,3 +134,17 @@
     </form>
   </app-form-container>
 </app-main-layout>
+
+@if (isEditMode() && userId()) {
+  <app-change-password-dialog
+    [userId]="userId()!"
+    [visible]="showChangePasswordDialog()"
+    (visibleChange)="showChangePasswordDialog.set($event)"
+  />
+  <app-change-email-dialog
+    [userId]="userId()!"
+    [visible]="showChangeEmailDialog()"
+    (visibleChange)="showChangeEmailDialog.set($event)"
+    (changed)="onEmailChanged($event)"
+  />
+}

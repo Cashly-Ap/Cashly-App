@@ -12,12 +12,26 @@
           />
           <app-details-card>
             <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
-              <div actions class="flex gap-3">
+              <div actions class="flex flex-wrap gap-3">
                 <p-button
                   label="Volver"
                   icon="pi pi-arrow-left"
                   [outlined]="true"
                   (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Cambiar Contraseña"
+                  icon="pi pi-lock"
+                  [outlined]="true"
+                  (onClick)="showChangePasswordDialog.set(true)"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Cambiar Correo"
+                  icon="pi pi-envelope"
+                  [outlined]="true"
+                  (onClick)="showChangeEmailDialog.set(true)"
                   styleClass="w-full sm:w-auto"
                 />
                 <p-button
@@ -67,3 +81,17 @@
     </div>
   </div>
 </app-main-layout>
+
+@if (user(); as currentUser) {
+  <app-change-password-dialog
+    [userId]="currentUser.id"
+    [visible]="showChangePasswordDialog()"
+    (visibleChange)="showChangePasswordDialog.set($event)"
+  />
+  <app-change-email-dialog
+    [userId]="currentUser.id"
+    [visible]="showChangeEmailDialog()"
+    (visibleChange)="showChangeEmailDialog.set($event)"
+    (changed)="onEmailChanged($event)"
+  />
+}

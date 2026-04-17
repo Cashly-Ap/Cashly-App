@@ -27,4 +27,12 @@ export class UserApiService {
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  changePassword(id: string, password: string): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/password`, { password });
+  }
+
+  changeEmail(id: string, email: string): Observable<void> {
+    return this.http.patch<void>(`${this.baseUrl}/${id}/email`, { email });
+  }
 }
