@@ -121,21 +121,19 @@
                       <td>
                         <span
                           class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                              user.role === 'SUPER_ADMIN',
-                            'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
-                              user.role === 'ADMINISTRATION',
-                            'bg-gray-500 text-white':
-                              user.role === 'OPERATOR',
-                            'bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100':
-                              user.role === 'CUSTOMER'
-                          }"
-                        >
-                          {{ getTypeLabel(user.role) }}
-                        </span>
-                      </td>
-                      <td>
+                           [ngClass]="{
+                             'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
+                               user.role === 'SUPER_ADMIN',
+                             'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
+                               user.role === 'ADMINISTRATION',
+                             'bg-gray-500 text-white':
+                               user.role === 'OPERATOR',
+                           }"
+                         >
+                           {{ getTypeLabel(user.role) }}
+                         </span>
+                       </td>
+                       <td>
                         <span
                           class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
@@ -227,21 +225,19 @@
                         {{ user.email }}
                       </p>
                       <div class="flex gap-2 mt-2">
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                              user.role === 'SUPER_ADMIN',
-                            'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
-                              user.role === 'ADMINISTRATION',
-                            'bg-gray-500 text-white':
-                              user.role === 'OPERATOR',
-                            'bg-gray-300 text-gray-800 dark:bg-gray-600 dark:text-gray-100':
-                              user.role === 'CUSTOMER'
-                          }"
-                        >
-                          {{ getTypeLabel(user.role) }}
-                        </span>
+                         <span
+                           class="px-2 py-1 text-xs font-semibold rounded"
+                           [ngClass]="{
+                             'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
+                               user.role === 'SUPER_ADMIN',
+                             'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
+                               user.role === 'ADMINISTRATION',
+                             'bg-gray-500 text-white':
+                               user.role === 'OPERATOR',
+                           }"
+                         >
+                           {{ getTypeLabel(user.role) }}
+                         </span>
                         <span
                           class="px-2 py-1 text-xs font-semibold rounded"
                           [ngClass]="{
