@@ -119,17 +119,7 @@
                         </div>
                       </td>
                       <td>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                           [ngClass]="{
-                             'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                               user.role === 'SUPER_ADMIN',
-                             'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
-                               user.role === 'ADMIN',
-                             'bg-gray-500 text-white':
-                               user.role === 'OPERATOR',
-                           }"
-                         >
+                        <span class="px-2 py-1 text-xs font-semibold rounded bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900">
                            {{ getTypeLabel(user.role) }}
                          </span>
                        </td>
@@ -225,17 +215,7 @@
                         {{ user.email }}
                       </p>
                       <div class="flex gap-2 mt-2">
-                         <span
-                           class="px-2 py-1 text-xs font-semibold rounded"
-                           [ngClass]="{
-                             'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                               user.role === 'SUPER_ADMIN',
-                             'bg-gray-700 text-white dark:bg-gray-400 dark:text-gray-900':
-                               user.role === 'ADMIN',
-                             'bg-gray-500 text-white':
-                               user.role === 'OPERATOR',
-                           }"
-                         >
+                         <span class="px-2 py-1 text-xs font-semibold rounded bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900">
                            {{ getTypeLabel(user.role) }}
                          </span>
                         <span
