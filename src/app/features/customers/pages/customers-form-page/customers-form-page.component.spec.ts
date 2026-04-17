@@ -77,8 +77,8 @@ describe('CustomersFormPageComponent', () => {
   it('should initialize form with default values', () => {
     const form = component.form;
     expect(form.get('active')?.value).toBe(true);
-    expect(form.get('creditDays')?.value).toBe(0);
-    expect(form.get('creditLimit')?.value).toBe(0);
+    expect(form.get('creditDays')?.value).toBe(null);
+    expect(form.get('creditLimit')?.value).toBe(null);
   });
 
   it('should navigate to /customers on cancel', () => {

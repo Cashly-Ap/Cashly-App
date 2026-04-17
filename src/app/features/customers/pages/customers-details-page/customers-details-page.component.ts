@@ -11,8 +11,7 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MessageService } from 'primeng/api';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerDetails } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
@@ -30,16 +29,14 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
-    ConfirmDialogModule,
   ],
   templateUrl: './customers-details-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [MessageService],
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
 
   customer = signal<CustomerDetails | null>(null);
@@ -77,41 +74,6 @@ export class CustomersDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/customers', id, 'edit']);
     }
-  }
-
-  onDelete(): void {
-    const customerToDelete = this.customer();
-    if (!customerToDelete) return;
-
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el cliente "${customerToDelete.legalName}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(customerToDelete.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Cliente eliminado exitosamente',
-              life: 3000,
-            });
-            this.router.navigate(['/customers']);
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el cliente. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
   }
 
   onBack(): void {

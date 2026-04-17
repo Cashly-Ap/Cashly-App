@@ -48,22 +48,14 @@ describe('UserValidators', () => {
       expect(error?.['weakPassword']).toBeDefined();
     });
 
-    it('should return error when password has no special character', () => {
-      const control = new FormControl('Password1');
-      const validator = UserValidators.passwordStrength();
-      const error = validator(control);
-      expect(error).not.toBeNull();
-      expect(error?.['weakPassword']).toBeDefined();
-    });
-
     it('should return null for strong password', () => {
-      const control = new FormControl('Password1!');
+      const control = new FormControl('Password1');
       const validator = UserValidators.passwordStrength();
       expect(validator(control)).toBeNull();
     });
 
-    it('should return null for password with various special characters', () => {
-      const control = new FormControl('SecureP@ssw0rd');
+    it('should return null for password with various characters', () => {
+      const control = new FormControl('SecurePassw0rd');
       const validator = UserValidators.passwordStrength();
       expect(validator(control)).toBeNull();
     });

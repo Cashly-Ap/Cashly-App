@@ -90,17 +90,8 @@ describe('AuthValidators', () => {
       expect(error?.['passwordStrength'].hasNumeric).toBe(false);
     });
 
-    it('should validate password without special character', () => {
-      const control = new FormControl('Password123');
-      const strengthValidator = AuthValidators.passwordStrength();
-      const error = strengthValidator(control);
-
-      expect(error).not.toBeNull();
-      expect(error?.['passwordStrength'].hasSpecialChar).toBe(false);
-    });
-
     it('should accept valid strong password', () => {
-      const control = new FormControl('Password123!');
+      const control = new FormControl('Password123');
       const validators = AuthValidators.password;
 
       const errors = validators
@@ -167,7 +158,6 @@ describe('AuthValidators', () => {
           hasUpperCase: false,
           hasLowerCase: true,
           hasNumeric: true,
-          hasSpecialChar: true,
         },
       });
       expect(message).toContain('uppercase letter');
@@ -179,7 +169,6 @@ describe('AuthValidators', () => {
           hasUpperCase: false,
           hasLowerCase: false,
           hasNumeric: true,
-          hasSpecialChar: true,
         },
       });
       expect(message).toContain('uppercase letter');

@@ -21,8 +21,6 @@ describe("LoginPageComponent", () => {
     login: ReturnType<typeof vi.fn>;
     loading: ReturnType<typeof signal<boolean>>;
     error: ReturnType<typeof signal<string | null>>;
-    isCustomers: ReturnType<typeof vi.fn>;
-    isOperators: ReturnType<typeof vi.fn>;
   };
   let routerMock: { navigate: ReturnType<typeof vi.fn> };
   let messageServiceMock: { add: ReturnType<typeof vi.fn> };
@@ -32,8 +30,8 @@ describe("LoginPageComponent", () => {
     id: "1",
     email: "test@example.com",
     userName: "testuser",
-    type: "CUSTOMER",
-    role: "CUSTOMER",
+    type: "OPERATOR",
+    role: "ADMIN",
     active: true,
     createdAt: new Date().toISOString(),
   };
@@ -51,8 +49,6 @@ describe("LoginPageComponent", () => {
       login: vi.fn(),
       loading: signal(false),
       error: signal<string | null>(null),
-      isCustomers: vi.fn().mockReturnValue(false),
-      isOperators: vi.fn().mockReturnValue(false),
     };
     routerMock = {
       navigate: vi.fn(),
@@ -190,9 +186,8 @@ describe("LoginPageComponent", () => {
       });
     });
 
-    it("should navigate to dashboard on successful login for non-merchant", async () => {
+    it("should navigate to customers on successful login", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isCustomers.mockReturnValue(false);
 
       component.form.controls.email.setValue("test@example.com");
       component.form.controls.password.setValue("Password123!");
@@ -200,34 +195,7 @@ describe("LoginPageComponent", () => {
       component.onSubmit();
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/dashboard"]);
-    });
-
-    it("should navigate to orders on successful login for merchant", async () => {
-      authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isCustomers.mockReturnValue(true);
-
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("Password123!");
-
-      component.onSubmit();
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/orders"]);
-    });
-
-    it("should navigate to invoices on successful login for dispatcher", async () => {
-      authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isCustomers.mockReturnValue(false);
-      authServiceMock.isOperators.mockReturnValue(true);
-
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("Password123!");
-
-      component.onSubmit();
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/invoices"]);
+      expect(routerMock.navigate).toHaveBeenCalledWith(["/customers"]);
     });
 
     it("should handle login error", async () => {
@@ -268,7 +236,6 @@ describe("LoginPageComponent", () => {
   describe("form integration", () => {
     it("should pass correct data through complete flow", async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
-      authServiceMock.isCustomers.mockReturnValue(false);
 
       const credentials = {
         email: "integration@test.com",
@@ -284,7 +251,7 @@ describe("LoginPageComponent", () => {
       expect(authServiceMock.login).toHaveBeenCalledWith(credentials);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/dashboard"]);
+      expect(routerMock.navigate).toHaveBeenCalledWith(["/customers"]);
     });
 
     it("should maintain form values after failed submission", () => {

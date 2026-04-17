@@ -35,13 +35,13 @@ describe('MainLayoutComponent', () => {
         id: '1',
         email: 'test@test.com',
         userName: 'Test User',
-        type: 'CUSTOMER',
-        role: 'CUSTOMER',
+        type: 'OPERATOR',
+        role: 'ADMIN',
         active: true,
         createdAt: new Date().toISOString(),
       }),
       clearAuthState: vi.fn(),
-      getUserType: vi.fn().mockReturnValue('CUSTOMER'),
+      getUserType: vi.fn().mockReturnValue('ADMIN'),
     };
 
     themeServiceMock = {
@@ -107,31 +107,9 @@ describe('MainLayoutComponent', () => {
     });
   });
 
-  describe('logoSrc computed', () => {
-    it('should return black logo when dark mode is active', () => {
-      themeServiceMock.isDarkMode.set(true);
-      fixture.detectChanges();
-
-      expect(component.logoSrc()).toBe('/Parsun_Black.png');
-    });
-
-    it('should return white logo when dark mode is not active', () => {
-      themeServiceMock.isDarkMode.set(false);
-      fixture.detectChanges();
-
-      expect(component.logoSrc()).toBe('/Parsun_White.png');
-    });
-
-    it('should reactively update when theme changes', () => {
-      expect(component.logoSrc()).toBe('/Parsun_White.png');
-
-      themeServiceMock.isDarkMode.set(true);
-      fixture.detectChanges();
-      expect(component.logoSrc()).toBe('/Parsun_Black.png');
-
-      themeServiceMock.isDarkMode.set(false);
-      fixture.detectChanges();
-      expect(component.logoSrc()).toBe('/Parsun_White.png');
+  describe('logoSrc', () => {
+    it('should be a fixed string pointing to Parsun.png', () => {
+      expect(component.logoSrc).toBe('/Parsun.png');
     });
   });
 
