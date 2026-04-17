@@ -35,12 +35,11 @@ export class ConfigurationPageComponent {
 
   getUserTypeLabel(type: UserType): string {
     const labels: Record<UserType, string> = {
-      CUSTOMER: 'Clientes',
-      OPERATOR: 'Operadores',
-      ADMINISTRATION: 'Administración',
+      OPERATOR: 'Operador',
+      ADMIN: 'Administrador',
       SUPER_ADMIN: 'Super Admin',
     };
-    return labels[type] || type;
+    return labels[type] ?? type;
   }
 
   onEditName(): void {

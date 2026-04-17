@@ -72,12 +72,6 @@ export class LoginPageComponent {
   }
 
   private getRedirectPath(): string {
-    if (this.authService.isCustomers()) {
-      return '/orders';
-    }
-    if (this.authService.isOperators()) {
-      return '/invoices';
-    }
-    return '/dashboard';
+    return '/customers';
   }
 }

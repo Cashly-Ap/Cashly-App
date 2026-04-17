@@ -3,7 +3,9 @@
     <app-form-header [title]="title()" [subtitle]="subtitle()" />
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <app-form-card>
-        <div class="p-4 md:p-6 flex flex-col gap-6">          <div class="flex flex-col gap-2">
+        <div class="p-4 md:p-6 flex flex-col gap-6">
+
+          <div class="flex flex-col gap-2">
             <label for="email" class="font-semibold text-surface-700 dark:text-surface-300">
               Correo Electrónico
             </label>
@@ -13,16 +15,13 @@
               id="email"
               formControlName="email"
               placeholder="usuario@correo.com"
-              class="w-full"
+              class="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
               [ngClass]="{
-                'ng-invalid ng-dirty':
-                  form.controls['email'].invalid && form.controls['email'].touched,
+                'ng-invalid ng-dirty': form.controls['email'].invalid && form.controls['email'].touched,
               }"
             />
             @if (form.controls['email'].invalid && form.controls['email'].touched) {
-              <small class="text-red-500 dark:text-red-400">
-                {{ getEmailError() }}
-              </small>
+              <small class="text-red-500 dark:text-red-400">{{ getEmailError() }}</small>
             }
           </div>
 
@@ -36,16 +35,13 @@
                 placeholder="••••••••"
                 [toggleMask]="true"
                 styleClass="w-full"
-                inputStyleClass="w-full"
+                inputStyleClass="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
                 [ngClass]="{
-                  'ng-invalid ng-dirty':
-                    form.controls['password'].invalid && form.controls['password'].touched,
+                  'ng-invalid ng-dirty': form.controls['password'].invalid && form.controls['password'].touched,
                 }"
               />
               @if (form.controls['password'].invalid && form.controls['password'].touched) {
-                <small class="text-red-500 dark:text-red-400">
-                  {{ getPasswordError() }}
-                </small>
+                <small class="text-red-500 dark:text-red-400">{{ getPasswordError() }}</small>
               }
             </div>
           }
@@ -60,16 +56,13 @@
               id="userName"
               formControlName="userName"
               placeholder="Nombre completo"
-              class="w-full"
+              class="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
               [ngClass]="{
-                'ng-invalid ng-dirty':
-                  form.controls['userName'].invalid && form.controls['userName'].touched,
+                'ng-invalid ng-dirty': form.controls['userName'].invalid && form.controls['userName'].touched,
               }"
             />
             @if (form.controls['userName'].invalid && form.controls['userName'].touched) {
-              <small class="text-red-500 dark:text-red-400">
-                {{ getUserNameError() }}
-              </small>
+              <small class="text-red-500 dark:text-red-400">{{ getUserNameError() }}</small>
             }
           </div>
 
@@ -83,12 +76,10 @@
               optionLabel="label"
               optionValue="value"
               placeholder="Seleccione un rol"
-              class="w-full"
+              styleClass="w-full"
             />
             @if (form.controls['role'].invalid && form.controls['role'].touched) {
-              <small class="text-red-500 dark:text-red-400">
-                El rol de usuario es requerido
-              </small>
+              <small class="text-red-500 dark:text-red-400">El rol de usuario es requerido</small>
             }
           </div>
 
@@ -105,7 +96,7 @@
           </div>
 
           @if (isEditMode()) {
-            <div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-surface-200 dark:border-surface-700">
+            <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-200 dark:border-surface-700">
               <p-button
                 label="Cambiar Contraseña"
                 icon="pi pi-lock"
@@ -122,6 +113,7 @@
               />
             </div>
           }
+
         </div>
         <app-form-actions
           [submitLabel]="submitLabel()"

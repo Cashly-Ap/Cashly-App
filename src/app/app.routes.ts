@@ -6,7 +6,8 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     canActivate: [homeRedirectGuard],
-    loadComponent: () => import('@features/auth/pages/login/login-page.component').then((m) => m.LoginPageComponent),
+    loadComponent: () =>
+      import('@features/auth/pages/login/login-page.component').then((m) => m.LoginPageComponent),
   },
   {
     path: 'auth',
@@ -22,7 +23,6 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    canActivate: [homeRedirectGuard],
-    loadComponent: () => import('@features/auth/pages/login/login-page.component').then((m) => m.LoginPageComponent),
+    redirectTo: '',
   },
 ];

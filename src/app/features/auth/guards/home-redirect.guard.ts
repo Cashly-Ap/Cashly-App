@@ -11,16 +11,6 @@ export const homeRedirectGuard: CanActivateFn = () => {
     return false;
   }
 
-  if (authService.isCustomers()) {
-    router.navigate(['/orders']);
-    return false;
-  }
-
-  if (authService.isOperators()) {
-    router.navigate(['/invoices']);
-    return false;
-  }
-
-  router.navigate(['/auth/configuration']);
+  router.navigate(['/customers']);
   return false;
 };

@@ -5,7 +5,7 @@ export function buildMenuItems(): MenuItem[] {
     {
       label: 'Gestión de Usuarios',
       icon: 'pi pi-users',
-      allowedRoles: ['SUPER_ADMIN', 'ADMINISTRATION', 'OPERATOR'],
+      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
       children: [
         {
           label: 'Clientes',

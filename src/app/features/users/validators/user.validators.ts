@@ -9,19 +9,16 @@ export class UserValidators {
       const errors: string[] = [];
 
       if (password.length < 8) {
-        errors.push('Al menos 8 caracteres');
+        errors.push('at least 8 characters');
       }
       if (!/[A-Z]/.test(password)) {
-        errors.push('Una mayúscula');
+        errors.push('one uppercase letter');
       }
       if (!/[a-z]/.test(password)) {
-        errors.push('Una minúscula');
+        errors.push('one lowercase letter');
       }
       if (!/\d/.test(password)) {
-        errors.push('Un número');
-      }
-      if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-        errors.push('Un carácter especial');
+        errors.push('one number');
       }
 
       return errors.length > 0 ? { weakPassword: errors } : null;
@@ -33,7 +30,7 @@ export class UserValidators {
       if (!control.value) return null;
 
       if (control.value.length < 3 || control.value.length > 100) {
-        return { invalidDisplayName: 'El nombre debe tener entre 3 y 100 caracteres' };
+        return { invalidDisplayName: 'Name must be between 3 and 100 characters' };
       }
 
       return null;
@@ -44,6 +41,6 @@ export class UserValidators {
     if (!errors || !('weakPassword' in errors)) return '';
 
     const errorMessages = errors['weakPassword'] as string[];
-    return `La contraseña debe tener: ${errorMessages.join(', ')}`;
+    return `Password must contain: ${errorMessages.join(', ')}`;
   }
 }

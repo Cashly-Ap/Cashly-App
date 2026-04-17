@@ -144,16 +144,12 @@ export class AuthService {
     return this.accessToken() !== null;
   }
 
-  isCustomers(): boolean {
-    return this.currentUser()?.role === 'CUSTOMER';
-  }
-
   isOperators(): boolean {
     return this.currentUser()?.role === 'OPERATOR';
   }
 
   isAdministration(): boolean {
-    return this.currentUser()?.role === 'ADMINISTRATION';
+    return this.currentUser()?.role === 'ADMIN';
   }
 
   isSuperAdmin(): boolean {

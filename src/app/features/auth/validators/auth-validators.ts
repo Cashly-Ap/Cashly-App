@@ -29,10 +29,8 @@ export class AuthValidators {
       const hasUpperCase = /[A-Z]/.test(value);
       const hasLowerCase = /[a-z]/.test(value);
       const hasNumeric = /[0-9]/.test(value);
-      const hasSpecialChar = /[@$!%*?&]/.test(value);
 
-      const passwordValid =
-        hasUpperCase && hasLowerCase && hasNumeric && hasSpecialChar;
+      const passwordValid = hasUpperCase && hasLowerCase && hasNumeric;
 
       return !passwordValid
         ? {
@@ -40,7 +38,6 @@ export class AuthValidators {
               hasUpperCase,
               hasLowerCase,
               hasNumeric,
-              hasSpecialChar,
             },
           }
         : null;
@@ -72,9 +69,6 @@ export class AuthValidators {
       }
       if (!strength.hasNumeric) {
         missing.push('number');
-      }
-      if (!strength.hasSpecialChar) {
-        missing.push('special character (@$!%*?&)');
       }
 
       return `Password must contain: ${missing.join(', ')}`;

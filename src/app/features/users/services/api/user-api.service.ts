@@ -29,10 +29,10 @@ export class UserApiService {
   }
 
   changePassword(id: string, password: string): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}/${id}/password`, { password });
+    return this.http.put<void>(`${this.baseUrl}/${id}/password`, { password });
   }
 
   changeEmail(id: string, email: string): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}/${id}/email`, { email });
+    return this.http.put<void>(`${this.baseUrl}/${id}/email`, { email });
   }
 }
