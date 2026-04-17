@@ -24,7 +24,6 @@ import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/auth/services';
 import { UserType } from '@features/auth/models';
-import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { fromEvent, Subscription, filter } from 'rxjs';
@@ -59,7 +58,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   isMobile = signal(false);
 
   private authService = inject(AuthService);
-  private themeService = inject(ThemeService);
   private router = inject(Router);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
@@ -68,10 +66,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   currentUser = this.authService.currentUser;
 
-  logoSrc = computed(() => {
-    const isDark = this.themeService.isDarkMode();
-    return isDark ? '/Parsun_Black.png' : '/Parsun_White.png';
-  });
+  logoSrc = '/Parsun.png';
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;

@@ -19,52 +19,28 @@
 
       <!-- Desktop: Logo -->
       <div class="hidden lg:flex items-center">
-        @if (logoSrc()) {
-          <img
-            [ngSrc]="logoSrc()"
-            alt="Logo Parsun"
-            width="123"
-            height="40"
-            priority
-            class="h-10 object-contain cursor-pointer"
-            [routerLink]="['/dashboard']"
-          />
-        } @else {
-          <span
-            class="inline-flex items-center gap-2 cursor-pointer"
-            [routerLink]="['/dashboard']"
-          >
-            <span
-              class="font-bold text-2xl text-primary-600 dark:text-primary-400"
-              >Parsun</span
-            >
-          </span>
-        }
+        <img
+          [ngSrc]="logoSrc"
+          alt="Logo Parsun"
+          width="123"
+          height="40"
+          priority
+          class="h-10 object-contain cursor-pointer"
+          [routerLink]="['/dashboard']"
+        />
       </div>
 
       <!-- Mobile/Tablet: Centered Logo -->
       <div class="lg:hidden flex-1 flex justify-center">
-        @if (logoSrc()) {
-          <img
-            [ngSrc]="logoSrc()"
-            alt="Logo Parsun"
-            width="99"
-            height="32"
-            priority
-            class="h-8 object-contain cursor-pointer"
-            [routerLink]="['/dashboard']"
-          />
-        } @else {
-          <span
-            class="inline-flex items-center gap-2 cursor-pointer"
-            [routerLink]="['/dashboard']"
-          >
-            <span
-              class="font-bold text-xl text-primary-600 dark:text-primary-400"
-              >Parsun</span
-            >
-          </span>
-        }
+        <img
+          [ngSrc]="logoSrc"
+          alt="Logo Parsun"
+          width="99"
+          height="32"
+          priority
+          class="h-8 object-contain cursor-pointer"
+          [routerLink]="['/dashboard']"
+        />
       </div>
 
       <!-- Desktop: Menu -->
@@ -115,11 +91,7 @@
     <ng-template pTemplate="header">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          @if (logoSrc()) {
-            <img [ngSrc]="logoSrc()" alt="Logo Parsun" width="99" height="32" class="h-8 object-contain" />
-          } @else {
-            <span class="font-bold text-xl text-primary-600 dark:text-primary-400">Parsun</span>
-          }
+          <img [ngSrc]="logoSrc" alt="Logo Parsun" width="99" height="32" class="h-8 object-contain" />
         </div>
         <p-button
           icon="pi pi-times"
