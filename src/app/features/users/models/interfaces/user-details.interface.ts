@@ -1,4 +1,5 @@
 import { UserType } from '../enums/user-type.enum';
+import { BusinessModule } from '../enums/business-module.enum';
 
 export interface UserDetails {
   id: string;
@@ -9,4 +10,5 @@ export interface UserDetails {
   emailVerified: boolean;
   createdAt: string;
   updatedAt: string;
+  modulePermissions: BusinessModule[];
 }

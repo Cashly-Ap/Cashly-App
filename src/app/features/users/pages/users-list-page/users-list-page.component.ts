@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -11,20 +11,26 @@ import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PopoverModule } from 'primeng/popover';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { UserApplicationService } from '@features/users/services/application';
+import { UserFilters } from '@features/users/services/api/user-api.service';
 import { UserList } from '@features/users/models/interfaces';
-import { getUserTypeLabel, UserType } from '@features/users/models/enums';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { getUserTypeLabel, UserType, USER_TYPES } from '@features/users/models/enums';
 
 @Component({
   selector: 'app-users-list-page',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
+    FormsModule,
     MainLayoutComponent,
     TableModule,
     ButtonModule,
@@ -35,6 +41,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     IconFieldModule,
     InputIconModule,
     ConfirmDialogModule,
+    PopoverModule,
+    SelectModule,
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
@@ -55,51 +63,73 @@ export class UsersListPageComponent implements OnInit {
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
-  totalRecords = computed(() => this.filteredUsers().length);
 
-  filteredUsers = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    const allUsers = this.users();
+  filterRole = signal<string>('');
+  filterActive = signal<string>('');
 
-    if (!term) return allUsers;
-
-    return allUsers.filter(
-      (user) =>
-        user.userName.toLowerCase().includes(term) ||
-        user.email.toLowerCase().includes(term),
-    );
+  activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterRole()) count++;
+    if (this.filterActive()) count++;
+    return count;
   });
+
+  roleOptions = [
+    { label: 'Todos los roles', value: '' },
+    ...USER_TYPES.map((t) => ({ label: t.label, value: t.value })),
+  ];
+
+  activeOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Activos', value: 'true' },
+    { label: 'Inactivos', value: 'false' },
+  ];
 
   paginatedUsers = computed(() => {
     const start = this.first();
     const end = start + this.rows();
-    return this.filteredUsers().slice(start, end);
+    return this.users().slice(start, end);
   });
 
-  hasFilteredResults = computed(() => {
-    return this.users().length > 0 && this.filteredUsers().length === 0;
-  });
+  totalRecords = computed(() => this.users().length);
 
-  showInitialLoading = computed(() => {
-    return this.loading() && this.users().length === 0;
-  });
-
-  isEmptyDatabase = computed(() => {
-    return !this.loading() && this.users().length === 0;
-  });
+  showInitialLoading = computed(() => this.loading() && this.users().length === 0);
+  isEmptyDatabase = computed(() => !this.loading() && this.users().length === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
+  hasFilteredResults = computed(() => !this.loading() && this.users().length === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
 
   ngOnInit(): void {
-    this.service.loadUsers().subscribe();
+    this.loadWithFilters();
   }
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
     this.first.set(0);
+    this.loadWithFilters();
   }
 
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+  }
+
+  applyFilters(): void {
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  clearFilters(): void {
+    this.filterRole.set('');
+    this.filterActive.set('');
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  private loadWithFilters(): void {
+    const filters: UserFilters = {};
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    if (this.filterRole()) filters.role = this.filterRole();
+    if (this.filterActive()) filters.active = this.filterActive() === 'true';
+    this.service.loadUsers(filters).subscribe();
   }
 
   onCreate(): void {

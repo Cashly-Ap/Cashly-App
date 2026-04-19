@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
 import { UserList, UserDetails, UserEdit } from '../../models/interfaces';
 
-@Injectable({ providedIn: 'root' })
 export class UserMapper {
-  toList(user: UserDetails): UserList {
+  static toList(user: UserDetails): UserList {
     return {
       id: user.id,
       email: user.email,
@@ -12,14 +10,15 @@ export class UserMapper {
       active: user.active,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
+      modulePermissions: user.modulePermissions ?? [],
     };
   }
 
-  toListArray(users: UserDetails[]): UserList[] {
-    return users.map((user) => this.toList(user));
+  static toListArray(users: UserDetails[]): UserList[] {
+    return users.map((user) => UserMapper.toList(user));
   }
 
-  toEdit(user: UserDetails): UserEdit {
+  static toEdit(user: UserDetails): UserEdit {
     return {
       id: user.id,
       email: user.email,

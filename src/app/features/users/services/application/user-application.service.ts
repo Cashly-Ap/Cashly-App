@@ -1,24 +1,24 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { UserApiService } from '../api/user-api.service';
+import { UserApiService, UserFilters } from '../api/user-api.service';
 import { UserMapper } from '../mappers/user.mapper';
 import { UserList, UserDetails, UserCreate, UserEdit } from '../../models/interfaces';
+import { BusinessModule } from '../../models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class UserApplicationService {
   private readonly api = inject(UserApiService);
-  private readonly mapper = inject(UserMapper);
 
   readonly users = signal<UserList[]>([]);
   readonly currentUser = signal<UserDetails | null>(null);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  loadUsers(): Observable<UserList[]> {
+  loadUsers(filters?: UserFilters): Observable<UserList[]> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getAll().pipe(
+    return this.api.getAll(filters).pipe(
       tap({
         next: (users) => this.users.set(users),
         error: (err) => this.error.set(err.message),
@@ -47,7 +47,7 @@ export class UserApplicationService {
     return this.api.create(data).pipe(
       tap({
         next: (user) => {
-          const listItem = this.mapper.toList(user);
+          const listItem = UserMapper.toList(user);
           this.users.update((current) => [...current, listItem]);
         },
         error: (err) => this.error.set(err.message),
@@ -63,7 +63,7 @@ export class UserApplicationService {
     return this.api.update(id, data).pipe(
       tap({
         next: (user) => {
-          const listItem = this.mapper.toList(user);
+          const listItem = UserMapper.toList(user);
           this.users.update((current) =>
             current.map((u) => (u.id === id ? listItem : u)),
           );
@@ -114,6 +114,23 @@ export class UserApplicationService {
           );
           if (this.currentUser()?.id === id) {
             this.currentUser.update((u) => (u ? { ...u, email } : null));
+          }
+        },
+        error: (err) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  updateModulePermissions(id: string, modulePermissions: BusinessModule[]): Observable<UserDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.updateModulePermissions(id, modulePermissions).pipe(
+      tap({
+        next: (user) => {
+          if (this.currentUser()?.id === id) {
+            this.currentUser.set(user);
           }
         },
         error: (err) => this.error.set(err.message),

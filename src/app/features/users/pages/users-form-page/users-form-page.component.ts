@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -16,7 +16,6 @@ import {
   FormActionsComponent,
 } from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
-import { UserMapper } from '@features/users/services/mappers';
 import { UserType, USER_TYPES } from '@features/users/models/enums';
 import { UserValidators } from '@features/users/validators';
 import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
@@ -41,13 +40,13 @@ import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@feat
     ChangeEmailDialogComponent,
   ],
   templateUrl: './users-form-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersFormPageComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private service = inject(UserApplicationService);
-  private mapper = inject(UserMapper);
   private messageService = inject(MessageService);
 
   loading = this.service.loading;

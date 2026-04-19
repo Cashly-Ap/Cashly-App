@@ -42,6 +42,58 @@
                     class="w-full"
                   />
                 </p-iconField>
+                <p-button
+                  #filterBtn
+                  icon="pi pi-filter"
+                  [outlined]="true"
+                  severity="secondary"
+                  (onClick)="filterPopover.toggle($event)"
+                  pTooltip="Filtros"
+                  [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+                  badgeSeverity="contrast"
+                />
+                <p-popover #filterPopover>
+                  <div class="flex flex-col gap-4 p-1 min-w-[260px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-semibold text-sm">Filtros</span>
+                      @if (activeFilterCount() > 0) {
+                        <p-button
+                          label="Limpiar"
+                          [text]="true"
+                          size="small"
+                          severity="secondary"
+                          (onClick)="clearFilters()"
+                        />
+                      }
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Rol</label>
+                      <p-select
+                        [options]="roleOptions"
+                        [ngModel]="filterRole()"
+                        (ngModelChange)="filterRole.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos los roles"
+                        styleClass="w-full"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Estado</label>
+                      <p-select
+                        [options]="activeOptions"
+                        [ngModel]="filterActive()"
+                        (ngModelChange)="filterActive.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos"
+                        styleClass="w-full"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                  </div>
+                </p-popover>
               </div>
               <p-button
                 label="Nuevo Usuario"
