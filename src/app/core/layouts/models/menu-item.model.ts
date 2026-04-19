@@ -1,4 +1,5 @@
 import { UserType } from '@features/auth/models';
+import { BusinessModule } from '@features/users/models/enums';
 
 export interface MenuItem {
   label: string;
@@ -12,4 +13,5 @@ export interface MenuItem {
   command?: () => void;
   isMegaMenu?: boolean;
   allowedRoles?: UserType[];
+  requiredModule?: BusinessModule;
 }

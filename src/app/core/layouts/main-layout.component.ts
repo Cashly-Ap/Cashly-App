@@ -120,10 +120,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
     return items
       .filter((item) => {
-        if (!item.allowedRoles) {
-          return true;
-        }
-        return item.allowedRoles.includes(userType);
+        if (item.allowedRoles && !item.allowedRoles.includes(userType)) return false;
+        if (item.requiredModule && !this.authService.hasModulePermission(item.requiredModule)) return false;
+        return true;
       })
       .map((item) => {
         if (item.children) {

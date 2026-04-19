@@ -8,15 +8,16 @@ export function buildMenuItems(): MenuItem[] {
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
       children: [
         {
-          label: 'Clientes',
-          icon: 'pi pi-id-card',
-          routerLink: '/customers',
-        },
-        {
           label: 'Usuarios',
           icon: 'pi pi-user',
           routerLink: '/users',
           allowedRoles: ['SUPER_ADMIN'],
+        },
+        {
+          label: 'Clientes',
+          icon: 'pi pi-id-card',
+          routerLink: '/customers',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
       ],
     },
