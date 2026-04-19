@@ -14,6 +14,7 @@ import {
   UserResponse,
   AuthenticationResponse,
 } from '@features/auth/models';
+import { BusinessModule } from '@features/users/models/enums';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -155,6 +156,11 @@ export class AuthService {
   isSuperAdmin(): boolean {
     const role = this.currentUser()?.role;
     return role === 'SUPER_ADMIN';
+  }
+
+  hasModulePermission(module: BusinessModule): boolean {
+    if (this.isSuperAdmin()) return true;
+    return this.currentUser()?.modulePermissions?.includes(module) ?? false;
   }
 
   refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {

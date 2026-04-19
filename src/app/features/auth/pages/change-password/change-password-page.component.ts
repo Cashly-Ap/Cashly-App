@@ -67,6 +67,10 @@ export class ChangePasswordPageComponent {
   }
 
   getConfirmPasswordError(): string {
+    const control = this.form.controls['confirmPassword'];
+    if (control.touched && control.hasError('required')) {
+      return 'La confirmación de contraseña es requerida';
+    }
     if (this.form.hasError('passwordMismatch')) {
       return 'Las contraseñas no coinciden';
     }

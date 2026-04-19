@@ -50,11 +50,11 @@ export class AuthValidators {
     }
 
     if (errors['required']) {
-      return 'Password is required';
+      return 'La contraseña es requerida';
     }
 
     if (errors['minlength']) {
-      return `Password must be at least ${errors['minlength'].requiredLength} characters`;
+      return `La contraseña debe tener al menos ${errors['minlength'].requiredLength} caracteres`;
     }
 
     if (errors['passwordStrength']) {
@@ -62,19 +62,19 @@ export class AuthValidators {
       const missing: string[] = [];
 
       if (!strength.hasUpperCase) {
-        missing.push('uppercase letter');
+        missing.push('letra mayúscula');
       }
       if (!strength.hasLowerCase) {
-        missing.push('lowercase letter');
+        missing.push('letra minúscula');
       }
       if (!strength.hasNumeric) {
-        missing.push('number');
+        missing.push('número');
       }
 
-      return `Password must contain: ${missing.join(', ')}`;
+      return `La contraseña debe contener: ${missing.join(', ')}`;
     }
 
-    return 'Invalid password';
+    return 'Contraseña inválida';
   }
 
   static getEmailErrorMessage(errors: ValidationErrors | null): string {
