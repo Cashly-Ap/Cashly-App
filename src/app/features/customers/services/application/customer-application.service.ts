@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CustomerApiService } from '../api/customer-api.service';
+import { CustomerApiService, CustomerFilters } from '../api/customer-api.service';
 import { CustomerMapper } from '../mappers/customer.mapper';
 import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '../../models/interfaces';
 
@@ -14,11 +14,11 @@ export class CustomerApplicationService {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
 
-  loadAll(): Observable<CustomerList[]> {
+  loadAll(filters?: CustomerFilters): Observable<CustomerList[]> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getAll().pipe(
+    return this.api.getAll(filters).pipe(
       tap({
         next: (customers) => this.customers.set(customers),
         error: (err: Error) => this.error.set(err.message),
@@ -82,6 +82,18 @@ export class CustomerApplicationService {
     return this.api.delete(id).pipe(
       tap({
         next: () => this.customers.update((current) => current.filter((c) => c.id !== id)),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  changePortalPassword(id: string, newPassword: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.changePortalPassword(id, newPassword).pipe(
+      tap({
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

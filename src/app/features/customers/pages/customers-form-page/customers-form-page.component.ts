@@ -1,10 +1,12 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { InputTextModule } from 'primeng/inputtext';
 import {
   FormContainerComponent,
   FormHeaderComponent,
@@ -27,6 +29,8 @@ import { CustomerAddressesSectionComponent } from '@features/customers/component
     ReactiveFormsModule,
     MainLayoutComponent,
     TabsModule,
+    ToggleSwitchModule,
+    InputTextModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
@@ -45,6 +49,7 @@ export class CustomersFormPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
   private mapper = inject(CustomerMapper);
   private messageService = inject(MessageService);
+  private cdr = inject(ChangeDetectorRef);
 
   loading = this.service.loading;
   isEditMode = signal(false);
@@ -69,6 +74,8 @@ export class CustomersFormPageComponent implements OnInit {
     creditDays: [{ value: null, disabled: true }, [Validators.required, Validators.min(0), Validators.max(365)]],
     creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
     active: [true],
+    portalAccess: [false],
+    portalEmail: [''],
     emails: this.fb.array([this.createEmailControl()]),
     phones: this.fb.array([this.createPhoneControl()]),
     addresses: this.fb.array([this.createAddressGroup()]),
@@ -94,6 +101,9 @@ export class CustomersFormPageComponent implements OnInit {
   private createAddressGroup() {
     return this.fb.group({
       address: ['', [Validators.required, CustomerValidators.address()]],
+      state: [''],
+      municipality: [''],
+      postalCode: [''],
       billing: [false],
       active: [true],
     });
@@ -122,6 +132,9 @@ export class CustomersFormPageComponent implements OnInit {
           addressesArray.push(
             this.fb.group({
               address: [a.address, [Validators.required, CustomerValidators.address()]],
+              state: [a.state ?? ''],
+              municipality: [a.municipality ?? ''],
+              postalCode: [a.postalCode ?? ''],
               billing: [a.billing],
               active: [a.active],
             }),
@@ -137,7 +150,11 @@ export class CustomersFormPageComponent implements OnInit {
           creditDays: formModel.creditDays,
           creditLimit: formModel.creditLimit,
           active: formModel.active,
+          portalAccess: formModel.portalAccess ?? false,
+          portalEmail: formModel.portalEmail ?? '',
         });
+
+        this.cdr.markForCheck();
       },
       error: () => {
         this.messageService.add({
@@ -161,7 +178,7 @@ export class CustomersFormPageComponent implements OnInit {
         createdAt: '',
         emails: formValue.emails.map((e: string) => ({ id: '', customerId: '', email: e })),
         phones: formValue.phones.map((p: string) => ({ id: '', customerId: '', phone: p })),
-        addresses: formValue.addresses.map((a: { address: string; billing: boolean; active: boolean }) => ({
+        addresses: formValue.addresses.map((a: { address: string; state: string; municipality: string; postalCode: string; billing: boolean; active: boolean }) => ({
           id: '',
           customerId: '',
           ...a,

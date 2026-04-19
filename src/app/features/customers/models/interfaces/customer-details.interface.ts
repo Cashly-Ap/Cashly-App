@@ -18,6 +18,9 @@ export interface CustomerAddress {
   address: string;
   billing: boolean;
   active: boolean;
+  state?: string;
+  municipality?: string;
+  postalCode?: string;
 }
 
 export interface CustomerDetails {
@@ -30,6 +33,8 @@ export interface CustomerDetails {
   creditDays: number;
   creditLimit: number;
   active: boolean;
+  portalAccess: boolean;
+  portalEmail?: string;
   createdAt: string;
   emails: CustomerEmail[];
   phones: CustomerPhone[];

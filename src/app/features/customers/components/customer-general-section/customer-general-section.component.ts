@@ -1,4 +1,4 @@
-import { Component, input, OnInit } from '@angular/core';
+import { Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import {
   TabContentComponent,
@@ -12,6 +12,7 @@ import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/
 @Component({
   selector: 'app-customer-general-section',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
     TabContentComponent,

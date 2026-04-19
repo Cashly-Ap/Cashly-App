@@ -10,28 +10,15 @@
             title="Detalles del Cliente"
             subtitle="Información completa del cliente"
           />
+
           <app-details-card>
             <app-details-card-header [title]="currentCustomer.legalName" [subtitle]="currentCustomer.alias">
               <div actions class="flex gap-3">
-                <p-button
-                  label="Volver"
-                  icon="pi pi-arrow-left"
-                  [outlined]="true"
-                  (onClick)="onBack()"
-                  styleClass="w-full sm:w-auto"
-                />
-                <p-button
-                  label="Editar"
-                  icon="pi pi-pencil"
-                  severity="contrast"
-                  (onClick)="onEdit()"
-                  styleClass="w-full sm:w-auto"
-                />
-
+                <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" styleClass="w-full sm:w-auto" />
+                <p-button label="Editar" icon="pi pi-pencil" severity="contrast" (onClick)="onEdit()" styleClass="w-full sm:w-auto" />
               </div>
             </app-details-card-header>
-
-            <div class="p-4 sm:p-6 flex flex-col gap-6">
+            <div class="p-4 sm:p-6">
               <app-details-info-grid>
                 <app-details-info-field label="Código" [value]="'#' + currentCustomer.code" />
                 <app-details-info-field label="Razón Social" [value]="currentCustomer.legalName" />
@@ -43,82 +30,138 @@
                 <app-details-info-field label="Límite de Crédito" [value]="(currentCustomer.creditLimit | number: '1.2-2') ?? ''" />
                 <app-details-info-field label="Fecha de Registro" [value]="(currentCustomer.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
               </app-details-info-grid>
+            </div>
+          </app-details-card>
 
-              @if (currentCustomer.emails.length > 0) {
-                <div>
-                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
-                    <i class="pi pi-envelope text-surface-500"></i>
-                    Correos Electrónicos
-                  </h3>
-                  <div class="flex flex-col gap-2">
-                    @for (email of currentCustomer.emails; track email.id) {
-                      <div class="flex items-center gap-2 p-2 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                        <i class="pi pi-envelope text-surface-400 text-sm"></i>
-                        <span class="text-sm">{{ email.email }}</span>
-                      </div>
-                    }
-                  </div>
+          <app-details-card>
+            <app-details-card-header title="Correos Electrónicos" />
+            <div class="p-4 sm:p-6 flex flex-col gap-3">
+              @if (currentCustomer.emails.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin correos registrados</p>
+              }
+              @for (email of currentCustomer.emails; track email.id) {
+                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                  <i class="pi pi-envelope text-surface-400 text-sm"></i>
+                  <span class="text-sm">{{ email.email }}</span>
                 </div>
               }
+            </div>
+          </app-details-card>
 
-              @if (currentCustomer.phones.length > 0) {
-                <div>
-                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
-                    <i class="pi pi-phone text-surface-500"></i>
-                    Teléfonos
-                  </h3>
-                  <div class="flex flex-col gap-2">
-                    @for (phone of currentCustomer.phones; track phone.id) {
-                      <div class="flex items-center gap-2 p-2 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                        <i class="pi pi-phone text-surface-400 text-sm"></i>
-                        <span class="text-sm">{{ phone.phone }}</span>
-                      </div>
-                    }
-                  </div>
+          <app-details-card>
+            <app-details-card-header title="Teléfonos" />
+            <div class="p-4 sm:p-6 flex flex-col gap-3">
+              @if (currentCustomer.phones.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin teléfonos registrados</p>
+              }
+              @for (phone of currentCustomer.phones; track phone.id) {
+                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                  <i class="pi pi-phone text-surface-400 text-sm"></i>
+                  <span class="text-sm">{{ phone.phone }}</span>
                 </div>
               }
+            </div>
+          </app-details-card>
 
-              @if (currentCustomer.addresses.length > 0) {
-                <div>
-                  <h3 class="text-base font-semibold text-surface-800 dark:text-surface-200 mb-3 flex items-center gap-2">
-                    <i class="pi pi-map-marker text-surface-500"></i>
-                    Direcciones
-                  </h3>
-                  <div class="flex flex-col gap-2">
-                    @for (address of currentCustomer.addresses; track address.id) {
-                      <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                        <div class="flex items-start gap-2">
-                          <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
-                          <div class="flex-1">
-                            <p class="text-sm">{{ address.address }}</p>
-                            <div class="flex gap-2 mt-1">
-                              @if (address.billing) {
-                                <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">
-                                  Facturación
-                                </span>
-                              }
-                              <span
-                                class="px-2 py-0.5 text-xs font-semibold rounded"
-                                [ngClass]="{
-                                  'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active,
-                                  'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active
-                                }"
-                              >
-                                {{ address.active ? 'Activa' : 'Inactiva' }}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+          <app-details-card>
+            <app-details-card-header title="Direcciones" />
+            <div class="p-4 sm:p-6 flex flex-col gap-3">
+              @if (currentCustomer.addresses.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin direcciones registradas</p>
+              }
+              @for (address of currentCustomer.addresses; track address.id) {
+                <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                  <div class="flex items-start gap-2">
+                    <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
+                    <div class="flex-1">
+                      <p class="text-sm">{{ address.address }}</p>
+                      @if (address.state || address.municipality || address.postalCode) {
+                        <p class="text-xs text-surface-500 mt-1">{{ [address.state, address.municipality, address.postalCode].filter(v => !!v).join(' · ') }}</p>
+                      }
+                      <div class="flex gap-2 mt-1">
+                        @if (address.billing) {
+                          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Facturación</span>
+                        }
+                        <span class="px-2 py-0.5 text-xs font-semibold rounded" [ngClass]="{ 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active, 'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active }">
+                          {{ address.active ? 'Activa' : 'Inactiva' }}
+                        </span>
                       </div>
-                    }
+                    </div>
                   </div>
                 </div>
               }
             </div>
           </app-details-card>
+
+          <app-details-card>
+            <app-details-card-header title="Portal del Cliente" />
+            <div class="p-4 sm:p-6 flex flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium">Acceso al portal</span>
+                <span class="px-2 py-1 text-xs font-semibold rounded" [ngClass]="{ 'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': currentCustomer.portalAccess, 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !currentCustomer.portalAccess }">
+                  {{ currentCustomer.portalAccess ? 'Habilitado' : 'Deshabilitado' }}
+                </span>
+              </div>
+              @if (currentCustomer.portalAccess) {
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-xs text-surface-500 mb-0.5">Email del portal</p>
+                    <p class="text-sm">{{ currentCustomer.portalEmail || '—' }}</p>
+                  </div>
+                  <p-button label="Cambiar contraseña" icon="pi pi-lock" [outlined]="true" size="small" severity="secondary" (onClick)="showPasswordDialog.set(true)" />
+                </div>
+              }
+            </div>
+          </app-details-card>
+
         </div>
       }
     </div>
   </div>
 
+  <p-dialog header="Cambiar Contraseña del Portal" [visible]="showPasswordDialog()" (visibleChange)="showPasswordDialog.set($event)" [modal]="true" [style]="{ width: '400px' }" [draggable]="false">
+    <div class="flex flex-col gap-4 py-2">
+      <p class="text-sm text-surface-600 dark:text-surface-400">Ingresa la nueva contraseña para el acceso al portal del cliente.</p>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium">Nueva contraseña</label>
+        <input
+          pInputText
+          type="password"
+          [ngModel]="newPassword()"
+          (ngModelChange)="newPassword.set($event)"
+          (blur)="passwordTouched.set(true)"
+          placeholder="Ingresa la nueva contraseña"
+          class="w-full"
+          [class.ng-invalid]="passwordTouched() && passwordError()"
+          [class.ng-dirty]="passwordTouched()"
+        />
+        @if (passwordTouched() && passwordError()) {
+          <small class="text-red-500 text-xs">{{ passwordError() }}</small>
+        }
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium">Confirmar contraseña</label>
+        <input
+          pInputText
+          type="password"
+          [ngModel]="confirmPassword()"
+          (ngModelChange)="confirmPassword.set($event)"
+          (blur)="confirmPasswordTouched.set(true)"
+          placeholder="Confirma la nueva contraseña"
+          class="w-full"
+          [class.ng-invalid]="confirmPasswordTouched() && confirmPasswordError()"
+          [class.ng-dirty]="confirmPasswordTouched()"
+        />
+        @if (confirmPasswordTouched() && confirmPasswordError()) {
+          <small class="text-red-500 text-xs">{{ confirmPasswordError() }}</small>
+        }
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="flex gap-2 justify-end">
+        <p-button label="Cancelar" [outlined]="true" severity="secondary" (onClick)="showPasswordDialog.set(false); resetPasswordDialog()" />
+        <p-button label="Guardar" severity="contrast" [loading]="changePasswordLoading()" [disabled]="!isPasswordFormValid()" (onClick)="onChangePortalPassword()" />
+      </div>
+    </ng-template>
+  </p-dialog>
 </app-main-layout>

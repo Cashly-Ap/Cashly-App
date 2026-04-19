@@ -18,6 +18,9 @@ export interface CustomerEditAddress {
   address: string;
   billing: boolean;
   active: boolean;
+  state?: string;
+  municipality?: string;
+  postalCode?: string;
 }
 
 export interface CustomerEdit {
@@ -29,6 +32,8 @@ export interface CustomerEdit {
   creditDays: number;
   creditLimit: number;
   active: boolean;
+  portalAccess?: boolean;
+  portalEmail?: string;
   emails: CustomerEditEmail[];
   phones: CustomerEditPhone[];
   addresses: CustomerEditAddress[];
@@ -44,6 +49,8 @@ export interface CustomerFormData {
   creditDays: number;
   creditLimit: number;
   active?: boolean;
+  portalAccess?: boolean;
+  portalEmail?: string;
   emails?: CustomerEditEmail[];
   phones?: CustomerEditPhone[];
   addresses?: CustomerEditAddress[];

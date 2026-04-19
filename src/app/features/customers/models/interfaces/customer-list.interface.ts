@@ -8,4 +8,5 @@ export interface CustomerList {
   rif: string;
   type: CustomerType;
   active: boolean;
+  portalAccess: boolean;
 }

@@ -12,6 +12,9 @@ export interface CustomerCreateAddress {
   address: string;
   billing: boolean;
   active: boolean;
+  state?: string;
+  municipality?: string;
+  postalCode?: string;
 }
 
 export interface CustomerCreate {
@@ -22,6 +25,8 @@ export interface CustomerCreate {
   creditDays: number;
   creditLimit: number;
   active: boolean;
+  portalAccess?: boolean;
+  portalEmail?: string;
   emails: CustomerCreateEmail[];
   phones: CustomerCreatePhone[];
   addresses: CustomerCreateAddress[];

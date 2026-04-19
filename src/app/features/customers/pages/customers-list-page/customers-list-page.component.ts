@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -11,20 +11,27 @@ import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PopoverModule } from 'primeng/popover';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerFilters } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
-import { getCustomerTypeLabel } from '@features/customers/models/enums';
+import { getCustomerTypeLabel, CUSTOMER_TYPES } from '@features/customers/models/enums';
+import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/customers/data/venezuela-geo.data';
 
 @Component({
   selector: 'app-customers-list-page',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
+    FormsModule,
     MainLayoutComponent,
     TableModule,
     ButtonModule,
@@ -35,6 +42,8 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
     IconFieldModule,
     InputIconModule,
     ConfirmDialogModule,
+    PopoverModule,
+    SelectModule,
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
@@ -56,42 +65,101 @@ export class CustomersListPageComponent implements OnInit {
   first = signal(0);
   rows = signal(10);
 
-  filteredCustomers = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    const all = this.customers();
-    if (!term) return all;
-    return all.filter(
-      (c) =>
-        c.legalName.toLowerCase().includes(term) ||
-        c.alias.toLowerCase().includes(term) ||
-        c.rif.toLowerCase().includes(term),
-    );
+  filterType = signal<string>('');
+  filterActive = signal<string>('');
+  filterPortalAccess = signal<string>('');
+  filterState = signal<string>('');
+  filterMunicipality = signal<string>('');
+
+  activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterType()) count++;
+    if (this.filterActive()) count++;
+    if (this.filterPortalAccess()) count++;
+    if (this.filterState()) count++;
+    if (this.filterMunicipality()) count++;
+    return count;
   });
+
+  municipalityOptions = computed(() => {
+    return this.filterState() ? getMunicipalitiesForState(this.filterState()) : [];
+  });
+
+  customerTypeOptions = [
+    { label: 'Todos los tipos', value: '' },
+    ...CUSTOMER_TYPES.map((t) => ({ label: t.label, value: t.value })),
+  ];
+
+  activeOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Activos', value: 'true' },
+    { label: 'Inactivos', value: 'false' },
+  ];
+
+  portalAccessOptions = [
+    { label: 'Todos', value: '' },
+    { label: 'Con acceso', value: 'true' },
+    { label: 'Sin acceso', value: 'false' },
+  ];
+
+  stateOptions = VENEZUELA_STATE_NAMES;
 
   paginatedCustomers = computed(() => {
     const start = this.first();
     const end = start + this.rows();
-    return this.filteredCustomers().slice(start, end);
+    return this.customers().slice(start, end);
   });
 
-  totalRecords = computed(() => this.filteredCustomers().length);
+  totalRecords = computed(() => this.customers().length);
 
   showInitialLoading = computed(() => this.loading() && this.customers().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.customers().length === 0);
-  hasFilteredResults = computed(() => this.customers().length > 0 && this.filteredCustomers().length === 0);
+  isEmptyDatabase = computed(() => !this.loading() && this.customers().length === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
+  hasFilteredResults = computed(() => !this.loading() && this.customers().length === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
 
   ngOnInit(): void {
-    this.service.loadAll().subscribe();
+    this.loadWithFilters();
   }
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
     this.first.set(0);
+    this.loadWithFilters();
   }
 
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+  }
+
+  applyFilters(): void {
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onStateFilterChange(): void {
+    this.filterMunicipality.set('');
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.filterType.set('');
+    this.filterActive.set('');
+    this.filterPortalAccess.set('');
+    this.filterState.set('');
+    this.filterMunicipality.set('');
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  private loadWithFilters(): void {
+    const filters: CustomerFilters = {};
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    if (this.filterType()) filters.type = this.filterType();
+    if (this.filterActive()) filters.active = this.filterActive() === 'true';
+    if (this.filterPortalAccess()) filters.portalAccess = this.filterPortalAccess() === 'true';
+    if (this.filterState()) filters.state = this.filterState();
+    if (this.filterMunicipality()) filters.municipality = this.filterMunicipality();
+    this.service.loadAll(filters).subscribe();
   }
 
   onCreate(): void {
@@ -141,3 +209,4 @@ export class CustomersListPageComponent implements OnInit {
     return getCustomerTypeLabel(type as Parameters<typeof getCustomerTypeLabel>[0]);
   }
 }
+

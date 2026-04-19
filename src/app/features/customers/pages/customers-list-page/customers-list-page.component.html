@@ -42,6 +42,98 @@
                     class="w-full"
                   />
                 </p-iconField>
+                <p-button
+                  #filterBtn
+                  icon="pi pi-filter"
+                  [outlined]="true"
+                  severity="secondary"
+                  (onClick)="filterPopover.toggle($event)"
+                  pTooltip="Filtros"
+                  [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+                  badgeSeverity="contrast"
+                />
+                <p-popover #filterPopover>
+                  <div class="flex flex-col gap-4 p-1 min-w-[260px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-semibold text-sm">Filtros</span>
+                      @if (activeFilterCount() > 0) {
+                        <p-button
+                          label="Limpiar"
+                          [text]="true"
+                          size="small"
+                          severity="secondary"
+                          (onClick)="clearFilters()"
+                        />
+                      }
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Tipo de cliente</label>
+                      <p-select
+                        [options]="customerTypeOptions"
+                        [ngModel]="filterType()"
+                        (ngModelChange)="filterType.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos los tipos"
+                        styleClass="w-full"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Estado</label>
+                      <p-select
+                        [options]="activeOptions"
+                        [ngModel]="filterActive()"
+                        (ngModelChange)="filterActive.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos"
+                        styleClass="w-full"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Portal del cliente</label>
+                      <p-select
+                        [options]="portalAccessOptions"
+                        [ngModel]="filterPortalAccess()"
+                        (ngModelChange)="filterPortalAccess.set($event)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos"
+                        styleClass="w-full"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Estado venezolano</label>
+                      <p-select
+                        [options]="stateOptions"
+                        [ngModel]="filterState()"
+                        (ngModelChange)="filterState.set($event)"
+                        placeholder="Todos los estados"
+                        styleClass="w-full"
+                        [filter]="true"
+                        filterPlaceholder="Buscar estado..."
+                        (onChange)="onStateFilterChange()"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Municipio</label>
+                      <p-select
+                        [options]="municipalityOptions()"
+                        [ngModel]="filterMunicipality()"
+                        (ngModelChange)="filterMunicipality.set($event)"
+                        placeholder="Todos los municipios"
+                        styleClass="w-full"
+                        [filter]="true"
+                        filterPlaceholder="Buscar municipio..."
+                        [disabled]="!filterState()"
+                        (onChange)="applyFilters()"
+                      />
+                    </div>
+                  </div>
+                </p-popover>
               </div>
               <p-button
                 label="Nuevo Cliente"

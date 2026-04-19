@@ -11,9 +11,20 @@ export interface CustomerFormModel {
   creditDays: number | null;
   creditLimit: number | null;
   active: boolean;
+  portalAccess: boolean;
+  portalEmail: string;
   emails: Array<{ id?: string; customerId?: string; email: string }>;
   phones: Array<{ id?: string; customerId?: string; phone: string }>;
-  addresses: Array<{ id?: string; customerId?: string; address: string; billing: boolean; active: boolean }>;
+  addresses: Array<{
+    id?: string;
+    customerId?: string;
+    address: string;
+    billing: boolean;
+    active: boolean;
+    state?: string;
+    municipality?: string;
+    postalCode?: string;
+  }>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -27,6 +38,7 @@ export class CustomerMapper {
       rif: details.rif,
       type: details.type,
       active: details.active,
+      portalAccess: details.portalAccess ?? false,
     };
   }
 
@@ -41,6 +53,8 @@ export class CustomerMapper {
       creditDays: details.creditDays,
       creditLimit: details.creditLimit,
       active: details.active,
+      portalAccess: details.portalAccess ?? false,
+      portalEmail: details.portalEmail ?? '',
       emails: details.emails.map((e) => ({ id: e.id, customerId: e.customerId, email: e.email })),
       phones: details.phones.map((p) => ({ id: p.id, customerId: p.customerId, phone: p.phone })),
       addresses: details.addresses.map((a) => ({
@@ -49,6 +63,9 @@ export class CustomerMapper {
         address: a.address,
         billing: a.billing,
         active: a.active,
+        state: a.state,
+        municipality: a.municipality,
+        postalCode: a.postalCode,
       })),
     };
   }
@@ -62,9 +79,18 @@ export class CustomerMapper {
       creditDays: form.creditDays ?? 0,
       creditLimit: form.creditLimit ?? 0,
       active: form.active ?? true,
+      portalAccess: form.portalAccess || false,
+      portalEmail: form.portalEmail || undefined,
       emails: form.emails.map((e) => ({ email: e.email })),
       phones: form.phones.map((p) => ({ phone: p.phone })),
-      addresses: form.addresses.map((a) => ({ address: a.address, billing: a.billing, active: a.active })),
+      addresses: form.addresses.map((a) => ({
+        address: a.address,
+        billing: a.billing,
+        active: a.active,
+        state: a.state,
+        municipality: a.municipality,
+        postalCode: a.postalCode,
+      })),
     };
   }
 
@@ -78,9 +104,18 @@ export class CustomerMapper {
       creditDays: form.creditDays ?? 0,
       creditLimit: form.creditLimit ?? 0,
       active: form.active ?? true,
+      portalAccess: form.portalAccess || false,
+      portalEmail: form.portalEmail || undefined,
       emails: form.emails.map((e) => ({ email: e.email })),
       phones: form.phones.map((p) => ({ phone: p.phone })),
-      addresses: form.addresses.map((a) => ({ address: a.address, billing: a.billing, active: a.active })),
+      addresses: form.addresses.map((a) => ({
+        address: a.address,
+        billing: a.billing,
+        active: a.active,
+        state: a.state,
+        municipality: a.municipality,
+        postalCode: a.postalCode,
+      })),
     };
   }
 }

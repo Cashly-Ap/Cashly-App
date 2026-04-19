@@ -1,8 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import {
   DetailsCardComponent,
   DetailsCardHeaderComponent,
@@ -21,8 +24,11 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MainLayoutComponent,
     ButtonModule,
+    DialogModule,
+    InputTextModule,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
@@ -41,6 +47,34 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   customer = signal<CustomerDetails | null>(null);
   loading = signal(false);
+  showPasswordDialog = signal(false);
+  newPassword = signal('');
+  confirmPassword = signal('');
+  changePasswordLoading = signal(false);
+
+  passwordTouched = signal(false);
+  confirmPasswordTouched = signal(false);
+
+  passwordError = computed(() => {
+    const value = this.newPassword();
+    if (!value) return 'La contraseña es requerida';
+    if (value.length < 8) return 'La contraseña debe tener al menos 8 caracteres';
+    if (!/[A-Z]/.test(value)) return 'La contraseña debe contener: letra mayúscula';
+    if (!/[a-z]/.test(value)) return 'La contraseña debe contener: letra minúscula';
+    if (!/[0-9]/.test(value)) return 'La contraseña debe contener: número';
+    return '';
+  });
+
+  confirmPasswordError = computed(() => {
+    const confirm = this.confirmPassword();
+    if (!confirm) return 'La confirmación de contraseña es requerida';
+    if (confirm !== this.newPassword()) return 'Las contraseñas no coinciden';
+    return '';
+  });
+
+  isPasswordFormValid = computed(
+    () => !this.passwordError() && !this.confirmPasswordError(),
+  );
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -78,6 +112,47 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate(['/customers']);
+  }
+
+  onChangePortalPassword(): void {
+    this.passwordTouched.set(true);
+    this.confirmPasswordTouched.set(true);
+
+    if (!this.isPasswordFormValid()) return;
+
+    const id = this.customer()?.id;
+    if (!id) return;
+
+    this.changePasswordLoading.set(true);
+    this.service.changePortalPassword(id, this.newPassword()).subscribe({
+      next: () => {
+        this.changePasswordLoading.set(false);
+        this.showPasswordDialog.set(false);
+        this.resetPasswordDialog();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Contraseña del portal actualizada exitosamente',
+          life: 3000,
+        });
+      },
+      error: () => {
+        this.changePasswordLoading.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cambiar la contraseña. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  resetPasswordDialog(): void {
+    this.newPassword.set('');
+    this.confirmPassword.set('');
+    this.passwordTouched.set(false);
+    this.confirmPasswordTouched.set(false);
   }
 
   getTypeLabel(type: string): string {
