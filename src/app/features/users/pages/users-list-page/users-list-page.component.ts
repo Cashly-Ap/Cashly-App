@@ -109,8 +109,11 @@ export class UsersListPageComponent implements OnInit {
   }
 
   onSort(event: SortEvent): void {
-    this.orderBy.set(event.field ?? 'userName');
-    this.orderDir.set(event.order === 1 ? 'asc' : 'desc');
+    const newField = event.field ?? 'userName';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -118,6 +121,20 @@ export class UsersListPageComponent implements OnInit {
   applyFilters(): void {
     this.first.set(0);
     this.loadWithFilters();
+  }
+
+  onRoleFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterRole()) return;
+    this.filterRole.set(normalized);
+    this.applyFilters();
+  }
+
+  onActiveFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterActive()) return;
+    this.filterActive.set(normalized);
+    this.applyFilters();
   }
 
   clearFilters(): void {

@@ -128,8 +128,11 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onSort(event: SortEvent): void {
-    this.orderBy.set(event.field ?? 'legalName');
-    this.orderDir.set(event.order === 1 ? 'asc' : 'desc');
+    const newField = event.field ?? 'legalName';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -139,8 +142,39 @@ export class CustomersListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
-  onStateFilterChange(): void {
+  onTypeFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterType()) return;
+    this.filterType.set(normalized);
+    this.applyFilters();
+  }
+
+  onActiveFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterActive()) return;
+    this.filterActive.set(normalized);
+    this.applyFilters();
+  }
+
+  onPortalAccessFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterPortalAccess()) return;
+    this.filterPortalAccess.set(normalized);
+    this.applyFilters();
+  }
+
+  onStateFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterState()) return;
+    this.filterState.set(normalized);
     this.filterMunicipality.set('');
+    this.applyFilters();
+  }
+
+  onMunicipalityFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterMunicipality()) return;
+    this.filterMunicipality.set(normalized);
     this.applyFilters();
   }
 

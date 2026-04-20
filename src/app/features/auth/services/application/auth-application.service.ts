@@ -212,6 +212,7 @@ export class AuthService {
     this.currentUser.set(response.entity);
     this.accessToken.set(response.accessToken);
     this.refreshToken.set(response.refreshToken);
+    this.saveAuthToStorage(response);
   }
 
   clearAuthState(): void {

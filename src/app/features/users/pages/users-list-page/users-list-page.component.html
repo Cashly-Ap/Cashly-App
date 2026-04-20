@@ -68,28 +68,26 @@
                     </div>
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-surface-500">Rol</label>
-                      <p-select
+                       <p-select
                         [options]="roleOptions"
                         [ngModel]="filterRole()"
-                        (ngModelChange)="filterRole.set($event)"
+                        (onChange)="onRoleFilterChange($event.value)"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Todos los roles"
                         styleClass="w-full"
-                        (onChange)="applyFilters()"
                       />
                     </div>
                     <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-surface-500">Estado</label>
-                      <p-select
+                       <p-select
                         [options]="activeOptions"
                         [ngModel]="filterActive()"
-                        (ngModelChange)="filterActive.set($event)"
+                        (onChange)="onActiveFilterChange($event.value)"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Todos"
                         styleClass="w-full"
-                        (onChange)="applyFilters()"
                       />
                     </div>
                   </div>
