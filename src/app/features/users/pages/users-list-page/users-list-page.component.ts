@@ -14,7 +14,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -59,10 +59,13 @@ export class UsersListPageComponent implements OnInit {
 
   users = this.service.users;
   loading = this.service.loading;
+  totalElements = this.service.totalElements;
 
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
+  orderBy = signal('userName');
+  orderDir = signal<'asc' | 'desc'>('asc');
 
   filterRole = signal<string>('');
   filterActive = signal<string>('');
@@ -85,17 +88,9 @@ export class UsersListPageComponent implements OnInit {
     { label: 'Inactivos', value: 'false' },
   ];
 
-  paginatedUsers = computed(() => {
-    const start = this.first();
-    const end = start + this.rows();
-    return this.users().slice(start, end);
-  });
-
-  totalRecords = computed(() => this.users().length);
-
-  showInitialLoading = computed(() => this.loading() && this.users().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.users().length === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.users().length === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
+  showInitialLoading = computed(() => this.loading() && (this.users()?.length ?? 0) === 0);
+  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
+  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
 
   ngOnInit(): void {
     this.loadWithFilters();
@@ -110,6 +105,14 @@ export class UsersListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
+  }
+
+  onSort(event: SortEvent): void {
+    this.orderBy.set(event.field ?? 'userName');
+    this.orderDir.set(event.order === 1 ? 'asc' : 'desc');
+    this.first.set(0);
+    this.loadWithFilters();
   }
 
   applyFilters(): void {
@@ -125,7 +128,12 @@ export class UsersListPageComponent implements OnInit {
   }
 
   private loadWithFilters(): void {
-    const filters: UserFilters = {};
+    const filters: UserFilters = {
+      page: Math.floor(this.first() / this.rows()),
+      size: this.rows(),
+      orderBy: this.orderBy(),
+      orderDir: this.orderDir(),
+    };
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterRole()) filters.role = this.filterRole();
     if (this.filterActive()) filters.active = this.filterActive() === 'true';

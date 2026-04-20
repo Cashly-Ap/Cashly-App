@@ -3,11 +3,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { UserList, UserDetails, UserCreate, UserEdit } from '../../models/interfaces';
 import { BusinessModule } from '../../models/enums';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface UserFilters {
   search?: string;
   role?: string;
   active?: boolean;
+  page?: number;
+  size?: number;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -15,12 +20,16 @@ export class UserApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/users';
 
-  getAll(filters?: UserFilters): Observable<UserList[]> {
+  getAll(filters?: UserFilters): Observable<PagedResponse<UserList>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.role) params = params.set('role', filters.role);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
-    return this.http.get<UserList[]>(this.baseUrl, { params });
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
+    return this.http.get<PagedResponse<UserList>>(this.baseUrl, { params });
   }
 
   getById(id: string): Observable<UserDetails> {

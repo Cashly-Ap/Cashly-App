@@ -3,6 +3,7 @@ import { Observable, tap, finalize } from 'rxjs';
 import { CustomerApiService, CustomerFilters } from '../api/customer-api.service';
 import { CustomerMapper } from '../mappers/customer.mapper';
 import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '../../models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
 export class CustomerApplicationService {
@@ -13,14 +14,18 @@ export class CustomerApplicationService {
   readonly currentCustomer = signal<CustomerDetails | null>(null);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly totalElements = signal(0);
 
-  loadAll(filters?: CustomerFilters): Observable<CustomerList[]> {
+  loadAll(filters?: CustomerFilters): Observable<PagedResponse<CustomerList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (customers) => this.customers.set(customers),
+        next: (res) => {
+          this.customers.set(res.content ?? []);
+          this.totalElements.set(res.totalElements ?? 0);
+        },
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

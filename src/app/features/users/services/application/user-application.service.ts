@@ -4,6 +4,7 @@ import { UserApiService, UserFilters } from '../api/user-api.service';
 import { UserMapper } from '../mappers/user.mapper';
 import { UserList, UserDetails, UserCreate, UserEdit } from '../../models/interfaces';
 import { BusinessModule } from '../../models/enums';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
 export class UserApplicationService {
@@ -13,14 +14,18 @@ export class UserApplicationService {
   readonly currentUser = signal<UserDetails | null>(null);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly totalElements = signal(0);
 
-  loadUsers(filters?: UserFilters): Observable<UserList[]> {
+  loadUsers(filters?: UserFilters): Observable<PagedResponse<UserList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (users) => this.users.set(users),
+        next: (res) => {
+          this.users.set(res.content ?? []);
+          this.totalElements.set(res.totalElements ?? 0);
+        },
         error: (err) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

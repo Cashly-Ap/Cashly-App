@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '../../models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CustomerFilters {
   search?: string;
@@ -10,6 +11,10 @@ export interface CustomerFilters {
   portalAccess?: boolean;
   state?: string;
   municipality?: string;
+  page?: number;
+  size?: number;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +22,7 @@ export class CustomerApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/customers';
 
-  getAll(filters?: CustomerFilters): Observable<CustomerList[]> {
+  getAll(filters?: CustomerFilters): Observable<PagedResponse<CustomerList>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.type) params = params.set('type', filters.type);
@@ -25,7 +30,11 @@ export class CustomerApiService {
     if (filters?.portalAccess !== undefined) params = params.set('portalAccess', String(filters.portalAccess));
     if (filters?.state) params = params.set('state', filters.state);
     if (filters?.municipality) params = params.set('municipality', filters.municipality);
-    return this.http.get<CustomerList[]>(this.baseUrl, { params });
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
+    return this.http.get<PagedResponse<CustomerList>>(this.baseUrl, { params });
   }
 
   getById(id: string): Observable<CustomerDetails> {
