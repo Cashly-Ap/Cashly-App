@@ -1,7 +1,6 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectorRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ReactiveFormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
@@ -20,6 +19,32 @@ import { CustomerValidators } from '@features/customers/validators';
 import { CustomerGeneralSectionComponent } from '@features/customers/components/customer-general-section/customer-general-section.component';
 import { CustomerContactSectionComponent } from '@features/customers/components/customer-contact-section/customer-contact-section.component';
 import { CustomerAddressesSectionComponent } from '@features/customers/components/customer-addresses-section/customer-addresses-section.component';
+import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
+
+interface CustomerAddressFormData {
+  address: string;
+  state: string;
+  municipality: string;
+  postalCode: string;
+  billing: boolean;
+  active: boolean;
+}
+
+interface CustomerFormData {
+  legalName: string;
+  type: CustomerType | string;
+  rif: string;
+  alias: string;
+  paymentType: PaymentType | string;
+  creditDays: number | null;
+  creditLimit: number | null;
+  active: boolean;
+  portalAccess: boolean;
+  portalEmail: string;
+  emails: string[];
+  phones: string[];
+  addresses: CustomerAddressFormData[];
+}
 
 @Component({
   selector: 'app-customers-form-page',
@@ -42,74 +67,80 @@ import { CustomerAddressesSectionComponent } from '@features/customers/component
   templateUrl: './customers-form-page.component.html',
   providers: [MessageService],
 })
-export class CustomersFormPageComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormData> {
   private service = inject(CustomerApplicationService);
   private mapper = inject(CustomerMapper);
   private messageService = inject(MessageService);
-  private cdr = inject(ChangeDetectorRef);
 
   loading = this.service.loading;
-  isEditMode = signal(false);
-  customerId = signal<string | null>(null);
-
-  title = computed(() => (this.isEditMode() ? 'Editar Cliente' : 'Nuevo Cliente'));
-  subtitle = computed(() =>
-    this.isEditMode()
-      ? 'Actualice la información del cliente'
-      : 'Complete la información del nuevo cliente',
-  );
-  submitLabel = computed(() => (this.isEditMode() ? 'Actualizar' : 'Crear'));
 
   customerTypes = [...CUSTOMER_TYPES];
 
-  form: FormGroup = this.fb.group({
-    legalName: ['', [Validators.required, CustomerValidators.legalName()]],
-    type: [CustomerType.BUSINESS, Validators.required],
-    rif: ['', [Validators.required, CustomerValidators.rif()]],
-    alias: ['', [Validators.required, CustomerValidators.customerAlias()]],
-    paymentType: [PaymentType.CASH, Validators.required],
-    creditDays: [{ value: null, disabled: true }, [Validators.required, Validators.min(0), Validators.max(365)]],
-    creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
-    active: [true],
-    portalAccess: [false],
-    portalEmail: [''],
-    emails: this.fb.array([this.createEmailControl()]),
-    phones: this.fb.array([this.createPhoneControl()]),
-    addresses: this.fb.array([this.createAddressGroup()]),
-  });
-
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id && id !== 'new') {
-      this.isEditMode.set(true);
-      this.customerId.set(id);
-      this.loadCustomer(id);
-    }
+  getConfig(): FormConfig {
+    return {
+      entityDisplayName: 'Cliente',
+      entityArticle: 'del',
+      module: 'customers',
+      routeBase: '/customers',
+    };
   }
 
-  private createEmailControl() {
-    return this.fb.control('', [Validators.required, CustomerValidators.email()]);
-  }
-
-  private createPhoneControl() {
-    return this.fb.control('', [Validators.required, CustomerValidators.phoneNumber()]);
-  }
-
-  private createAddressGroup() {
+  createForm(): FormGroup {
     return this.fb.group({
-      address: ['', [Validators.required, CustomerValidators.address()]],
-      state: [''],
-      municipality: [''],
-      postalCode: [''],
-      billing: [false],
+      legalName: ['', [Validators.required, CustomerValidators.legalName()]],
+      type: [CustomerType.BUSINESS, Validators.required],
+      rif: ['', [Validators.required, CustomerValidators.rif()]],
+      alias: ['', [Validators.required, CustomerValidators.customerAlias()]],
+      paymentType: [PaymentType.CASH, Validators.required],
+      creditDays: [{ value: null, disabled: true }, [Validators.required, Validators.min(0), Validators.max(365)]],
+      creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
+      portalAccess: [false],
+      portalEmail: [''],
+      emails: this.fb.array([this.createEmailControl()]),
+      phones: this.fb.array([this.createPhoneControl()]),
+      addresses: this.fb.array([this.createAddressGroup()]),
     });
   }
 
-  private loadCustomer(id: string): void {
+  protected override getPendingTabTitle(formData: CustomerFormData): string {
+    return formData.legalName?.trim() || super.getPendingTabTitle(formData);
+  }
+
+  protected override restoreFormData(data: CustomerFormData): void {
+    const emailsArray = this.form.get('emails') as FormArray;
+    emailsArray.clear();
+    (data.emails ?? []).forEach((email) => {
+      emailsArray.push(this.fb.control(email, [Validators.required, CustomerValidators.email()]));
+    });
+
+    const phonesArray = this.form.get('phones') as FormArray;
+    phonesArray.clear();
+    (data.phones ?? []).forEach((phone) => {
+      phonesArray.push(this.fb.control(phone, [Validators.required, CustomerValidators.phoneNumber()]));
+    });
+
+    const addressesArray = this.form.get('addresses') as FormArray;
+    addressesArray.clear();
+    (data.addresses ?? []).forEach((a) => {
+      addressesArray.push(this.createAddressGroup(a));
+    });
+
+    this.form.patchValue({
+      legalName: data.legalName,
+      type: data.type,
+      rif: data.rif,
+      alias: data.alias,
+      paymentType: data.paymentType,
+      creditDays: data.creditDays,
+      creditLimit: data.creditLimit,
+      active: data.active,
+      portalAccess: data.portalAccess ?? false,
+      portalEmail: data.portalEmail ?? '',
+    });
+  }
+
+  protected override onLoadEntity(id: string): void {
     this.service.loadById(id).subscribe({
       next: (customer) => {
         const formModel = this.mapper.toFormModel(customer);
@@ -129,16 +160,7 @@ export class CustomersFormPageComponent implements OnInit {
         const addressesArray = this.form.get('addresses') as FormArray;
         addressesArray.clear();
         formModel.addresses.forEach((a) => {
-          addressesArray.push(
-            this.fb.group({
-              address: [a.address, [Validators.required, CustomerValidators.address()]],
-              state: [a.state ?? ''],
-              municipality: [a.municipality ?? ''],
-              postalCode: [a.postalCode ?? ''],
-              billing: [a.billing],
-              active: [a.active],
-            }),
-          );
+          addressesArray.push(this.createAddressGroup(a));
         });
 
         this.form.patchValue({
@@ -153,8 +175,6 @@ export class CustomersFormPageComponent implements OnInit {
           portalAccess: formModel.portalAccess ?? false,
           portalEmail: formModel.portalEmail ?? '',
         });
-
-        this.cdr.markForCheck();
       },
       error: () => {
         this.messageService.add({
@@ -168,27 +188,32 @@ export class CustomersFormPageComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  override onSubmit(): void {
     if (this.form.valid) {
-      const formValue = this.form.getRawValue();
+      const formValue = this.form.getRawValue() as CustomerFormData;
       const formModel = this.mapper.toFormModel({
-        ...formValue,
-        id: this.customerId() ?? '',
+        id: this.entityId() ?? '',
         code: 0,
         createdAt: '',
-        emails: formValue.emails.map((e: string) => ({ id: '', customerId: '', email: e })),
-        phones: formValue.phones.map((p: string) => ({ id: '', customerId: '', phone: p })),
-        addresses: formValue.addresses.map((a: { address: string; state: string; municipality: string; postalCode: string; billing: boolean; active: boolean }) => ({
-          id: '',
-          customerId: '',
-          ...a,
-        })),
+        legalName: formValue.legalName,
+        type: formValue.type as CustomerType,
+        rif: formValue.rif,
+        alias: formValue.alias,
+        creditDays: formValue.creditDays ?? 0,
+        creditLimit: formValue.creditLimit ?? 0,
+        active: formValue.active,
+        portalAccess: formValue.portalAccess,
+        portalEmail: formValue.portalEmail,
+        emails: formValue.emails.map((email) => ({ id: '', customerId: '', email })),
+        phones: formValue.phones.map((phone) => ({ id: '', customerId: '', phone })),
+        addresses: formValue.addresses.map((a) => ({ id: '', customerId: '', ...a })),
       });
 
-      if (this.isEditMode() && this.customerId()) {
+      if (this.isEditMode() && this.entityId()) {
         const updateData = this.mapper.toUpdateRequest(formModel);
-        this.service.update(this.customerId()!, updateData).subscribe({
+        this.service.update(this.entityId()!, updateData).subscribe({
           next: () => {
+            this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
@@ -210,6 +235,7 @@ export class CustomersFormPageComponent implements OnInit {
         const createData = this.mapper.toCreateRequest(formModel);
         this.service.create(createData).subscribe({
           next: () => {
+            this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
@@ -239,7 +265,22 @@ export class CustomersFormPageComponent implements OnInit {
     }
   }
 
-  onCancel(): void {
-    this.router.navigate(['/customers']);
+  private createEmailControl() {
+    return this.fb.control('', [Validators.required, CustomerValidators.email()]);
+  }
+
+  private createPhoneControl() {
+    return this.fb.control('', [Validators.required, CustomerValidators.phoneNumber()]);
+  }
+
+  private createAddressGroup(data?: Partial<CustomerAddressFormData>) {
+    return this.fb.group({
+      address: [data?.address ?? '', [Validators.required, CustomerValidators.address()]],
+      state: [data?.state ?? ''],
+      municipality: [data?.municipality ?? ''],
+      postalCode: [data?.postalCode ?? ''],
+      billing: [data?.billing ?? false],
+      active: [data?.active ?? true],
+    });
   }
 }

@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
@@ -19,6 +18,15 @@ import { UserApplicationService } from '@features/users/services/application';
 import { UserType, USER_TYPES } from '@features/users/models/enums';
 import { UserValidators } from '@features/users/validators';
 import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
+import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
+
+interface UserFormData {
+  email: string;
+  password: string;
+  userName: string;
+  role: UserType | string;
+  active: boolean;
+}
 
 @Component({
   selector: 'app-users-form-page',
@@ -41,28 +49,16 @@ import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@feat
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [MessageService],
 })
-export class UsersFormPageComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private service = inject(UserApplicationService);
   private messageService = inject(MessageService);
 
   loading = this.service.loading;
-  isEditMode = signal(false);
-  userId = signal<string | null>(null);
 
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
-
-  title = computed(() => (this.isEditMode() ? 'Editar Usuario' : 'Nuevo Usuario'));
-  subtitle = computed(() =>
-    this.isEditMode()
-      ? 'Actualice la información del usuario'
-      : 'Complete la información del nuevo usuario',
-  );
-  submitLabel = computed(() => (this.isEditMode() ? 'Actualizar' : 'Crear'));
 
   userTypes = [...USER_TYPES];
 
@@ -71,24 +67,39 @@ export class UsersFormPageComponent implements OnInit {
     { label: 'Inactivo', value: false },
   ];
 
-  form: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', this.isEditMode() ? [] : [Validators.required, UserValidators.passwordStrength()]],
-    userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-    role: ['', Validators.required],
-    active: [true],
-  });
-
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id && id !== 'new') {
-      this.isEditMode.set(true);
-      this.userId.set(id);
-      this.loadUser(id);
-    }
+  getConfig(): FormConfig {
+    return {
+      entityDisplayName: 'Usuario',
+      entityArticle: 'del',
+      module: 'users',
+      routeBase: '/users',
+    };
   }
 
-  private loadUser(id: string): void {
+  createForm(): FormGroup {
+    return this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', this.isCreateMode() ? [Validators.required, UserValidators.passwordStrength()] : []],
+      userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      role: ['', Validators.required],
+      active: [true],
+    });
+  }
+
+  protected override getPendingTabTitle(formData: UserFormData): string {
+    return formData.userName?.trim() || super.getPendingTabTitle(formData);
+  }
+
+  protected override restoreFormData(data: UserFormData): void {
+    this.form.patchValue({
+      email: data.email,
+      userName: data.userName,
+      role: data.role,
+      active: data.active,
+    });
+  }
+
+  protected override onLoadEntity(id: string): void {
     this.service.loadUserById(id).subscribe({
       next: (user) => {
         this.form.patchValue({
@@ -112,21 +123,22 @@ export class UsersFormPageComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  override onSubmit(): void {
     if (this.form.valid) {
       const formValue = this.form.getRawValue();
 
-      if (this.isEditMode() && this.userId()) {
+      if (this.isEditMode() && this.entityId()) {
         const editData = {
-          id: this.userId()!,
+          id: this.entityId()!,
           email: formValue.email,
           userName: formValue.userName,
           role: formValue.role,
           active: formValue.active,
         };
 
-        this.service.updateUser(this.userId()!, editData).subscribe({
+        this.service.updateUser(this.entityId()!, editData).subscribe({
           next: () => {
+            this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
@@ -155,6 +167,7 @@ export class UsersFormPageComponent implements OnInit {
 
         this.service.createUser(createData).subscribe({
           next: () => {
+            this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
@@ -182,10 +195,6 @@ export class UsersFormPageComponent implements OnInit {
         life: 5000,
       });
     }
-  }
-
-  onCancel(): void {
-    this.router.navigate(['/users']);
   }
 
   onEmailChanged(newEmail: string): void {

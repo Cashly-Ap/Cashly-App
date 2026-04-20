@@ -127,14 +127,14 @@
   </app-form-container>
 </app-main-layout>
 
-@if (isEditMode() && userId()) {
+@if (isEditMode() && entityId()) {
   <app-change-password-dialog
-    [userId]="userId()!"
+    [userId]="entityId()!"
     [visible]="showChangePasswordDialog()"
     (visibleChange)="showChangePasswordDialog.set($event)"
   />
   <app-change-email-dialog
-    [userId]="userId()!"
+    [userId]="entityId()!"
     [visible]="showChangeEmailDialog()"
     (visibleChange)="showChangeEmailDialog.set($event)"
     (changed)="onEmailChanged($event)"

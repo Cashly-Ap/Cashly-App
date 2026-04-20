@@ -7,6 +7,7 @@ export const PENDING_TABS_CONFIG = {
 
 export const MODULE_LABELS: Record<string, string> = {
   customers: 'Clientes',
+  users: 'Usuarios',
   products: 'Productos',
   orders: 'Pedidos',
   invoices: 'Facturas',
