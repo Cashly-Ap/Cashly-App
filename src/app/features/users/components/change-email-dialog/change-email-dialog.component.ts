@@ -1,16 +1,21 @@
 import { Component, inject, input, output, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
+import { TextInputComponent } from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
 import { MessageService } from 'primeng/api';
+
+function emailsMatch(group: AbstractControl): ValidationErrors | null {
+  const email = group.get('email')?.value;
+  const confirm = group.get('confirmEmail')?.value;
+  return email && confirm && email !== confirm ? { emailsMismatch: true } : null;
+}
 
 @Component({
   selector: 'app-change-email-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, DialogModule, ButtonModule, InputTextModule],
+  imports: [ReactiveFormsModule, DialogModule, ButtonModule, TextInputComponent],
   templateUrl: './change-email-dialog.component.html',
 })
 export class ChangeEmailDialogComponent implements OnInit {
@@ -27,10 +32,17 @@ export class ChangeEmailDialogComponent implements OnInit {
 
   form!: FormGroup;
 
+  get emailControl() { return this.form.get('email') as import('@angular/forms').FormControl; }
+  get confirmEmailControl() { return this.form.get('confirmEmail') as import('@angular/forms').FormControl; }
+
   ngOnInit(): void {
-    this.form = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-    });
+    this.form = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        confirmEmail: ['', [Validators.required, Validators.email]],
+      },
+      { validators: emailsMatch }
+    );
   }
 
   onSubmit(): void {
@@ -73,6 +85,14 @@ export class ChangeEmailDialogComponent implements OnInit {
     const errors = this.form.get('email')?.errors;
     if (errors?.['required']) return 'El correo electrónico es requerido';
     if (errors?.['email']) return 'El formato del correo electrónico es inválido';
+    return '';
+  }
+
+  getConfirmEmailError(): string {
+    const controlErrors = this.form.get('confirmEmail')?.errors;
+    if (controlErrors?.['required']) return 'La confirmación del correo es requerida';
+    if (controlErrors?.['email']) return 'El formato del correo electrónico es inválido';
+    if (this.form.errors?.['emailsMismatch']) return 'Los correos electrónicos no coinciden';
     return '';
   }
 }

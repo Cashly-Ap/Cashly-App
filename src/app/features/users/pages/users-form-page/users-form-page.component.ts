@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-import { SelectModule } from 'primeng/select';
-import { SelectButtonModule } from 'primeng/selectbutton';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import {
@@ -13,6 +8,9 @@ import {
   FormHeaderComponent,
   FormCardComponent,
   FormActionsComponent,
+  TextInputComponent,
+  SelectInputComponent,
+  CheckboxInputComponent,
 } from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserType, USER_TYPES } from '@features/users/models/enums';
@@ -32,18 +30,16 @@ interface UserFormData {
   selector: 'app-users-form-page',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MainLayoutComponent,
-    InputTextModule,
-    PasswordModule,
-    SelectModule,
-    SelectButtonModule,
     ButtonModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
+    TextInputComponent,
+    SelectInputComponent,
+    CheckboxInputComponent,
     ChangePasswordDialogComponent,
     ChangeEmailDialogComponent,
   ],
@@ -62,10 +58,11 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
 
   userTypes = [...USER_TYPES];
 
-  activeOptions = [
-    { label: 'Activo', value: true },
-    { label: 'Inactivo', value: false },
-  ];
+  get emailControl(): FormControl { return this.form.get('email') as FormControl; }
+  get passwordControl(): FormControl { return this.form.get('password') as FormControl; }
+  get userNameControl(): FormControl { return this.form.get('userName') as FormControl; }
+  get roleControl(): FormControl { return this.form.get('role') as FormControl; }
+  get activeControl(): FormControl { return this.form.get('active') as FormControl; }
 
   getConfig(): FormConfig {
     return {

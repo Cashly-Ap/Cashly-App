@@ -5,95 +5,47 @@
       <app-form-card>
         <div class="p-4 md:p-6 flex flex-col gap-6">
 
-          <div class="flex flex-col gap-2">
-            <label for="email" class="font-semibold text-surface-700 dark:text-surface-300">
-              Correo Electrónico
-            </label>
-            <input
-              pInputText
-              type="email"
-              id="email"
-              formControlName="email"
-              placeholder="usuario@correo.com"
-              class="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
-              [ngClass]="{
-                'ng-invalid ng-dirty': form.controls['email'].invalid && form.controls['email'].touched,
-              }"
-            />
-            @if (form.controls['email'].invalid && form.controls['email'].touched) {
-              <small class="text-red-500 dark:text-red-400">{{ getEmailError() }}</small>
-            }
-          </div>
-
           @if (!isEditMode()) {
-            <div class="flex flex-col gap-2">
-              <label for="password" class="font-semibold text-surface-700 dark:text-surface-300">
-                Contraseña
-              </label>
-              <p-password
-                formControlName="password"
-                placeholder="••••••••"
-                [toggleMask]="true"
-                styleClass="w-full"
-                inputStyleClass="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
-                [ngClass]="{
-                  'ng-invalid ng-dirty': form.controls['password'].invalid && form.controls['password'].touched,
-                }"
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <app-text-input
+                label="Correo Electrónico"
+                placeholder="usuario@correo.com"
+                [control]="emailControl"
+                [errorMessage]="getEmailError()"
               />
-              @if (form.controls['password'].invalid && form.controls['password'].touched) {
-                <small class="text-red-500 dark:text-red-400">{{ getPasswordError() }}</small>
-              }
+              <app-text-input
+                label="Contraseña"
+                placeholder="••••••••"
+                variant="password"
+                [control]="passwordControl"
+                [errorMessage]="getPasswordError()"
+              />
             </div>
           }
 
-          <div class="flex flex-col gap-2">
-            <label for="userName" class="font-semibold text-surface-700 dark:text-surface-300">
-              Nombre de Usuario
-            </label>
-            <input
-              pInputText
-              type="text"
-              id="userName"
-              formControlName="userName"
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <app-text-input
+              label="Nombre de Usuario"
               placeholder="Nombre completo"
-              class="w-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 border-surface-300 dark:border-surface-600"
-              [ngClass]="{
-                'ng-invalid ng-dirty': form.controls['userName'].invalid && form.controls['userName'].touched,
-              }"
+              [control]="userNameControl"
+              [errorMessage]="getUserNameError()"
             />
-            @if (form.controls['userName'].invalid && form.controls['userName'].touched) {
-              <small class="text-red-500 dark:text-red-400">{{ getUserNameError() }}</small>
-            }
-          </div>
 
-          <div class="flex flex-col gap-2">
-            <label for="role" class="font-semibold text-surface-700 dark:text-surface-300">
-              Rol de Usuario
-            </label>
-            <p-select
-              formControlName="role"
-              [options]="userTypes"
-              optionLabel="label"
-              optionValue="value"
+            <app-select-input
+              label="Rol de Usuario"
               placeholder="Seleccione un rol"
-              styleClass="w-full"
+              [options]="userTypes"
+              [control]="roleControl"
+              errorMessage="El rol de usuario es requerido"
             />
-            @if (form.controls['role'].invalid && form.controls['role'].touched) {
-              <small class="text-red-500 dark:text-red-400">El rol de usuario es requerido</small>
-            }
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="font-semibold text-surface-700 dark:text-surface-300">
-              Estado
-            </label>
-            <p-selectButton
-              formControlName="active"
-              [options]="activeOptions"
-              optionLabel="label"
-              optionValue="value"
+          @if (isEditMode()) {
+            <app-checkbox-input
+              label="Usuario Activo"
+              [control]="activeControl"
             />
-          </div>
+          }
 
           @if (isEditMode()) {
             <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-200 dark:border-surface-700">
