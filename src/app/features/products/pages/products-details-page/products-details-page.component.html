@@ -1,0 +1,62 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (product(); as p) {
+        <div class="flex flex-col gap-6">
+          <app-page-header title="Detalles de Producto" subtitle="Información completa del producto" />
+
+          <app-details-card>
+            <app-details-card-header [title]="p.name">
+              <div actions class="flex gap-3">
+                <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" styleClass="w-full sm:w-auto" />
+                <p-button label="Editar" icon="pi pi-pencil" severity="contrast" (onClick)="onEdit()" styleClass="w-full sm:w-auto" />
+              </div>
+            </app-details-card-header>
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field label="Nombre" [value]="p.name" />
+                <app-details-info-field label="Categoría" [value]="p.categoryName" />
+                <app-details-info-field label="Tipo" [value]="p.composite ? 'Compuesto' : 'Simple'" />
+                <app-details-info-field label="Precio de Venta" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
+                <app-details-info-field label="Stock Total" [value]="p.stockTotal != null ? p.stockTotal.toString() : '—'" />
+                <app-details-info-field label="Estado" [value]="p.active ? 'Activo' : 'Inactivo'" />
+                <app-details-info-field label="Creado" [value]="(p.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
+                <app-details-info-field label="Actualizado" [value]="(p.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''" />
+                <app-details-info-field class="col-span-full" label="Descripción" [value]="p.description || '—'" />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+
+          @if (p.composite && p.components.length > 0) {
+            <app-details-card>
+              <app-details-card-header title="Componentes" />
+              <div class="p-4 sm:p-6">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                     <thead>
+                      <tr class="border-b border-surface-200 dark:border-surface-700">
+                        <th class="text-left py-2 font-semibold">Producto</th>
+                        <th class="text-right py-2 font-semibold">Cantidad</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (comp of p.components; track comp.componentId) {
+                        <tr class="border-b border-surface-100 dark:border-surface-800">
+                          <td class="py-2">{{ comp.componentName }}</td>
+                          <td class="py-2 text-right font-medium">{{ comp.quantity }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </app-details-card>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</app-main-layout>

@@ -1,0 +1,228 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header [title]="title()" [subtitle]="subtitle()" />
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-card>
+        <p-tabs value="0">
+          <p-tablist>
+            <p-tab value="0" styleClass="text-sm md:text-base">
+              <i class="pi pi-box mr-2"></i>
+              <span>Información General</span>
+            </p-tab>
+            @if (isComposite()) {
+              <p-tab value="1" styleClass="text-sm md:text-base">
+                <i class="pi pi-sitemap mr-2"></i>
+                <span>Composición</span>
+              </p-tab>
+            }
+          </p-tablist>
+          <p-tabpanels>
+            <p-tabpanel value="0">
+              <app-tab-content>
+                <app-text-input
+                  label="Nombre"
+                  placeholder="Nombre del producto"
+                  errorMessage="El nombre es requerido"
+                  containerClass="md:col-span-2"
+                  [control]="asFormControl('name')"
+                />
+                <app-select-input
+                  label="Categoría"
+                  icon="pi-tags"
+                  placeholder="Seleccionar categoría"
+                  errorMessage="La categoría es requerida"
+                  [options]="categoryOptions()"
+                  [control]="asFormControl('categoryId')"
+                />
+                <app-select-input
+                  label="Tipo de Producto"
+                  icon="pi-box"
+                  placeholder="Seleccionar tipo"
+                  [options]="productTypeOptions"
+                  [control]="asFormControl('composite')"
+                />
+                <app-number-input
+                  label="Precio Base"
+                  icon="pi-dollar"
+                  placeholder="0.00"
+                  prefix="$"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="2"
+                  [control]="asFormControl('basePrice')"
+                />
+                <app-number-input
+                  label="Precio de Compra"
+                  icon="pi-dollar"
+                  placeholder="0.00"
+                  prefix="$"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="2"
+                  [control]="asFormControl('purchasePrice')"
+                />
+                <app-number-input
+                  label="Margen de Ganancia (%)"
+                  icon="pi-percentage"
+                  placeholder="0"
+                  [min]="0"
+                  [max]="100"
+                  [minFractionDigits]="0"
+                  [maxFractionDigits]="2"
+                  suffix=" %"
+                  [control]="asFormControl('profitMargin')"
+                />
+                <div class="md:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+                  <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Descripción</label>
+                  <textarea
+                    pTextarea
+                    formControlName="description"
+                    placeholder="Descripción opcional del producto"
+                    rows="3"
+                    class="w-full"
+                  ></textarea>
+                </div>
+              </app-tab-content>
+            </p-tabpanel>
+
+            @if (isComposite()) {
+              <p-tabpanel value="1">
+                <div class="p-4 md:p-6 flex flex-col gap-4 md:gap-6">
+
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <p class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wider">Componentes</p>
+                      <p class="text-xs text-surface-400 dark:text-surface-500 mt-0.5">{{ componentsArray.length }} elemento{{ componentsArray.length !== 1 ? 's' : '' }}</p>
+                    </div>
+                    <p-button
+                      label="Agregar"
+                      icon="pi pi-plus"
+                      severity="secondary"
+                      size="small"
+                      [outlined]="true"
+                      (onClick)="addComponent()"
+                    />
+                  </div>
+
+                  @if (componentsArray.length > 0) {
+                    <div class="flex flex-col gap-2" formArrayName="components">
+
+                      <div class="hidden md:flex items-center gap-3 px-4 pb-1">
+                        <span class="w-5 shrink-0"></span>
+                        <span class="flex-1 min-w-0 text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wider">Producto</span>
+                        <span class="shrink-0 text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wider" style="width: 8rem">Cantidad</span>
+                        <span class="w-8 shrink-0"></span>
+                      </div>
+
+                      @for (control of componentsArray.controls; track $index) {
+                        <div
+                          class="rounded-xl bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+                          [formGroupName]="$index"
+                        >
+                          <div class="flex md:hidden items-center justify-between px-4 pt-3 pb-2 border-b border-surface-200 dark:border-surface-700">
+                            <span class="text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wider">Componente {{ $index + 1 }}</span>
+                            <p-button
+                              icon="pi pi-trash"
+                              severity="danger"
+                              [rounded]="true"
+                              [text]="true"
+                              size="small"
+                              (onClick)="removeComponent($index)"
+                            />
+                          </div>
+
+                          <div class="flex flex-col gap-3 p-4 md:hidden">
+                            <div class="flex flex-col gap-1">
+                              <span class="text-xs text-surface-400 dark:text-surface-500">Producto</span>
+                              <p-select
+                                formControlName="componentId"
+                                [options]="simpleProductOptions()"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="Seleccionar producto"
+                                [filter]="true"
+                                filterPlaceholder="Buscar..."
+                                appendTo="body"
+                                styleClass="w-full"
+                              />
+                            </div>
+                            <div class="flex flex-col gap-1">
+                              <span class="text-xs text-surface-400 dark:text-surface-500">Cantidad</span>
+                              <p-inputNumber
+                                formControlName="quantity"
+                                [minFractionDigits]="2"
+                                [maxFractionDigits]="4"
+                                [min]="0.01"
+                                placeholder="0.00"
+                                styleClass="w-full"
+                                [inputStyle]="{'width': '100%', 'min-width': '0'}"
+                              />
+                            </div>
+                          </div>
+
+                          <div class="hidden md:flex items-center gap-3 px-4 py-3">
+                            <span class="w-5 shrink-0 text-xs font-mono text-surface-400 dark:text-surface-500 text-center">{{ $index + 1 }}</span>
+                            <div class="flex-1 min-w-0">
+                              <p-select
+                                formControlName="componentId"
+                                [options]="simpleProductOptions()"
+                                optionLabel="label"
+                                optionValue="value"
+                                placeholder="Seleccionar producto"
+                                [filter]="true"
+                                filterPlaceholder="Buscar..."
+                                appendTo="body"
+                                styleClass="w-full"
+                              />
+                            </div>
+                            <div class="shrink-0 overflow-hidden" style="width: 8rem">
+                              <p-inputNumber
+                                formControlName="quantity"
+                                [minFractionDigits]="2"
+                                [maxFractionDigits]="4"
+                                [min]="0.01"
+                                placeholder="0.00"
+                                styleClass="w-full"
+                                [inputStyle]="{'width': '100%', 'min-width': '0'}"
+                              />
+                            </div>
+                            <div class="w-8 shrink-0 flex justify-center">
+                              <p-button
+                                icon="pi pi-trash"
+                                severity="danger"
+                                [rounded]="true"
+                                [text]="true"
+                                size="small"
+                                (onClick)="removeComponent($index)"
+                              />
+                            </div>
+                          </div>
+
+                        </div>
+                      }
+
+                    </div>
+                  } @else {
+                    <app-empty-state
+                      icon="pi-sitemap"
+                      message="Agrega los productos que componen este artículo"
+                      buttonLabel="Agregar Primer Componente"
+                      (buttonClick)="addComponent()"
+                    />
+                  }
+
+                </div>
+              </p-tabpanel>
+            }
+
+          </p-tabpanels>
+        </p-tabs>
+
+        <app-form-actions
+          [submitLabel]="submitLabel()"
+          cancelLabel="Cancelar"
+          [loading]="loading()"
+          (cancel)="onCancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
+</app-main-layout>

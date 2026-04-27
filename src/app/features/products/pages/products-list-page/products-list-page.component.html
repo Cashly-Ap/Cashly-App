@@ -1,0 +1,207 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
+          <i class="pi pi-box text-surface-0 dark:text-surface-900 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Productos</h1>
+        <p class="text-sm sm:text-base">Gestiona el catálogo de productos</p>
+      </div>
+
+      @if (showInitialLoading()) {
+        <app-content-card>
+          <app-loading-spinner message="Cargando productos..." />
+        </app-content-card>
+      } @else if (isEmptyDatabase()) {
+        <app-content-card>
+          <app-empty-state
+            icon="pi-box"
+            title="No hay productos registrados"
+            message="Comienza creando el primer producto del catálogo."
+            buttonLabel="Crear primer Producto"
+            (buttonClick)="onCreate()"
+          />
+        </app-content-card>
+      } @else {
+        <app-list-container>
+          <div class="px-4 sm:px-6 py-4">
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
+              <div class="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+                <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[240px]">
+                  <p-inputIcon styleClass="pi pi-search" />
+                  <input
+                    #searchInput
+                    pInputText
+                    type="text"
+                    [value]="searchTerm()"
+                    (input)="onSearch(searchInput.value)"
+                    placeholder="Buscar producto..."
+                    class="w-full"
+                  />
+                </p-iconField>
+                <p-button
+                  #filterBtn
+                  icon="pi pi-filter"
+                  [outlined]="true"
+                  severity="secondary"
+                  (onClick)="filterPopover.toggle($event)"
+                  pTooltip="Filtros"
+                  [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+                  badgeSeverity="contrast"
+                />
+                <p-popover #filterPopover>
+                  <div class="flex flex-col gap-4 p-1 min-w-[240px]">
+                    <div class="flex items-center justify-between">
+                      <span class="font-semibold text-sm">Filtros</span>
+                      @if (activeFilterCount() > 0) {
+                        <p-button
+                          label="Limpiar"
+                          [text]="true"
+                          size="small"
+                          severity="secondary"
+                          (onClick)="clearFilters()"
+                        />
+                      }
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Categoría</label>
+                      <p-select
+                        [options]="categoryOptions()"
+                        [ngModel]="filterCategoryId()"
+                        (onChange)="onCategoryFilterChange($event.value)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todas las categorías"
+                        styleClass="w-full"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Tipo</label>
+                      <p-select
+                        [options]="compositeFilterOptions"
+                        [ngModel]="filterComposite()"
+                        (onChange)="onCompositeFilterChange($event.value)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos"
+                        styleClass="w-full"
+                      />
+                    </div>
+                    <div class="flex flex-col gap-1">
+                      <label class="text-xs font-medium text-surface-500">Estado</label>
+                      <p-select
+                        [options]="activeFilterOptions"
+                        [ngModel]="filterActive()"
+                        (onChange)="onActiveFilterChange($event.value)"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Todos"
+                        styleClass="w-full"
+                      />
+                    </div>
+                  </div>
+                </p-popover>
+              </div>
+              <p-button
+                label="Nuevo Producto"
+                icon="pi pi-plus"
+                (onClick)="onCreate()"
+                severity="contrast"
+                styleClass="font-medium w-full sm:w-auto"
+              />
+            </div>
+          </div>
+        </app-list-container>
+
+        <app-list-container class="mt-4">
+          <div class="relative">
+            @if (loading()) {
+              <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl">
+                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+              </div>
+            }
+            @if (hasFilteredResults()) {
+              <app-empty-state
+                icon="pi-search"
+                title="No se encontraron resultados"
+                message="No hay productos que coincidan con los filtros."
+                buttonLabel="Crear Nuevo Producto"
+                (buttonClick)="onCreate()"
+              />
+            } @else {
+              <div class="overflow-x-auto rounded-t-2xl">
+                <p-table [value]="products()" styleClass="p-datatable-striped">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="w-auto"><div class="font-semibold">Nombre</div></th>
+                      <th class="w-auto hidden md:table-cell"><div class="font-semibold">Categoría</div></th>
+                      <th class="w-28 hidden sm:table-cell"><div class="font-semibold">Tipo</div></th>
+                      <th class="w-28 text-right"><div class="font-semibold">Precio</div></th>
+                      <th class="w-24"><div class="font-semibold">Estado</div></th>
+                      <th class="w-36"><div class="font-semibold text-center">Acciones</div></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-product>
+                    <tr class="transition-colors duration-150">
+                      <td>
+                        <div class="font-medium">{{ product.name }}</div>
+                      </td>
+                      <td class="hidden md:table-cell">
+                        <div class="text-sm text-surface-500">{{ product.categoryName }}</div>
+                      </td>
+                      <td class="hidden sm:table-cell">
+                        <span
+                          class="px-2 py-1 text-xs font-semibold rounded"
+                          [ngClass]="{
+                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': product.composite,
+                            'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300': !product.composite
+                          }"
+                        >
+                          {{ product.composite ? 'Compuesto' : 'Simple' }}
+                        </span>
+                      </td>
+                      <td class="text-right">
+                        <div class="font-medium">{{ product.salePrice | currency: 'USD' : 'symbol' : '1.2-2' }}</div>
+                      </td>
+                      <td>
+                        <span
+                          class="px-2 py-1 text-xs font-semibold rounded"
+                          [ngClass]="{
+                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': product.active,
+                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !product.active
+                          }"
+                        >
+                          {{ product.active ? 'Activo' : 'Inactivo' }}
+                        </span>
+                      </td>
+                      <td>
+                        <div class="flex gap-1 justify-center">
+                          <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(product)" pTooltip="Ver" />
+                          <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(product)" pTooltip="Editar" />
+                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(product)" pTooltip="Eliminar" />
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="px-4 sm:px-6 py-3">
+                <p-paginator
+                  [first]="first()"
+                  [rows]="rows()"
+                  [totalRecords]="totalElements()"
+                  [rowsPerPageOptions]="[10, 25, 50]"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} productos"
+                  (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+                />
+              </div>
+            }
+          </div>
+        </app-list-container>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" />
+</app-main-layout>
