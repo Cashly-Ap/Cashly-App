@@ -1,0 +1,75 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header [title]="title()" [subtitle]="subtitle()" />
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-card>
+        <div class="p-6 flex flex-col gap-4">
+
+          <app-text-input
+            label="Nombre *"
+            placeholder="Nombre del almacén"
+            errorMessage="El nombre es requerido"
+            [control]="asFormControl('name')"
+          />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <app-select-input
+              label="Estado *"
+              placeholder="Selecciona un estado"
+              [options]="stateOptions"
+              [filter]="true"
+              filterPlaceholder="Buscar estado..."
+              errorMessage="El estado es requerido"
+              [control]="asFormControl('state')"
+            />
+            <app-select-input
+              label="Municipio *"
+              placeholder="Selecciona un municipio"
+              [options]="municipalityOptions()"
+              [filter]="true"
+              filterPlaceholder="Buscar municipio..."
+              errorMessage="El municipio es requerido"
+              [disabled]="!selectedStateName()"
+              [control]="asFormControl('municipality')"
+            />
+          </div>
+
+          <app-text-input
+            label="Dirección"
+            placeholder="Dirección física del almacén (opcional)"
+            [control]="asFormControl('address')"
+          />
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              Descripción
+            </label>
+            <textarea
+              pTextarea
+              formControlName="description"
+              placeholder="Descripción opcional del almacén"
+              rows="3"
+              class="w-full"
+            ></textarea>
+            <div class="min-h-[20px] mt-1.5">
+              @if (form.get('description')?.errors?.['maxlength'] && form.get('description')?.touched) {
+                <small class="flex items-center gap-1 text-red-500 text-xs">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  La descripción no puede superar los 500 caracteres
+                </small>
+              }
+            </div>
+          </div>
+
+        </div>
+
+        <app-form-actions
+          [submitLabel]="submitLabel()"
+          cancelLabel="Cancelar"
+          [loading]="loading()"
+          (cancel)="onCancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
+</app-main-layout>
