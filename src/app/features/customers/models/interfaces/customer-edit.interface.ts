@@ -33,7 +33,6 @@ export interface CustomerEdit {
   creditLimit: number;
   active: boolean;
   portalAccess?: boolean;
-  portalEmail?: string;
   emails: CustomerEditEmail[];
   phones: CustomerEditPhone[];
   addresses: CustomerEditAddress[];
@@ -50,7 +49,6 @@ export interface CustomerFormData {
   creditLimit: number;
   active?: boolean;
   portalAccess?: boolean;
-  portalEmail?: string;
   emails?: CustomerEditEmail[];
   phones?: CustomerEditPhone[];
   addresses?: CustomerEditAddress[];

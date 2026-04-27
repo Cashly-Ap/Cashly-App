@@ -76,7 +76,7 @@
                     <div class="flex-1">
                       <p class="text-sm">{{ address.address }}</p>
                       @if (address.state || address.municipality || address.postalCode) {
-                        <p class="text-xs text-surface-500 mt-1">{{ [address.state, address.municipality, address.postalCode].filter(v => !!v).join(' · ') }}</p>
+                        <p class="text-xs text-surface-500 mt-1">{{ getAddressLocation(address.state, address.municipality, address.postalCode) }}</p>
                       }
                       <div class="flex gap-2 mt-1">
                         @if (address.billing) {
@@ -95,20 +95,34 @@
 
           <app-details-card>
             <app-details-card-header title="Portal del Cliente" />
-            <div class="p-4 sm:p-6 flex flex-col gap-4">
+            <div class="p-4 sm:p-6">
               <div class="flex items-center justify-between">
                 <span class="text-sm font-medium">Acceso al portal</span>
                 <span class="px-2 py-1 text-xs font-semibold rounded" [ngClass]="{ 'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': currentCustomer.portalAccess, 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !currentCustomer.portalAccess }">
                   {{ currentCustomer.portalAccess ? 'Habilitado' : 'Deshabilitado' }}
                 </span>
               </div>
-              @if (currentCustomer.portalAccess) {
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-xs text-surface-500 mb-0.5">Email del portal</p>
-                    <p class="text-sm">{{ currentCustomer.portalEmail || '—' }}</p>
-                  </div>
-                  <p-button label="Cambiar contraseña" icon="pi pi-lock" [outlined]="true" size="small" severity="secondary" (onClick)="showPasswordDialog.set(true)" />
+            </div>
+          </app-details-card>
+
+          <app-details-card>
+            <app-details-card-header title="Almacenes con Acceso" />
+            <div class="p-4 sm:p-6">
+              @if (warehouseAccessLoading()) {
+                <app-loading-spinner />
+              } @else if (warehouseAccess().length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-4 text-center">Sin almacenes asignados</p>
+              } @else {
+                <div class="flex flex-col gap-3">
+                  @for (wa of warehouseAccess(); track wa.warehouseId) {
+                    <div class="flex items-center p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                      <i class="pi pi-warehouse text-surface-400 text-sm mr-3"></i>
+                      <div>
+                        <p class="text-sm font-medium">{{ wa.warehouseName }}</p>
+                        <p class="text-xs text-surface-500 mt-0.5">{{ wa.state }} · {{ wa.municipality }}</p>
+                      </div>
+                    </div>
+                  }
                 </div>
               }
             </div>

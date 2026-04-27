@@ -1,11 +1,14 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { DialogModule } from 'primeng/dialog';
 import {
   FormContainerComponent,
   FormHeaderComponent,
@@ -13,13 +16,16 @@ import {
   FormActionsComponent,
 } from '@core/forms/components';
 import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerMapper } from '@features/customers/services/mappers';
 import { CustomerType, CUSTOMER_TYPES, PaymentType } from '@features/customers/models/enums';
 import { CustomerValidators } from '@features/customers/validators';
+import { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
 import { CustomerGeneralSectionComponent } from '@features/customers/components/customer-general-section/customer-general-section.component';
 import { CustomerContactSectionComponent } from '@features/customers/components/customer-contact-section/customer-contact-section.component';
 import { CustomerAddressesSectionComponent } from '@features/customers/components/customer-addresses-section/customer-addresses-section.component';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 
 interface CustomerAddressFormData {
   address: string;
@@ -40,7 +46,6 @@ interface CustomerFormData {
   creditLimit: number | null;
   active: boolean;
   portalAccess: boolean;
-  portalEmail: string;
   emails: string[];
   phones: string[];
   addresses: CustomerAddressFormData[];
@@ -52,10 +57,14 @@ interface CustomerFormData {
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     MainLayoutComponent,
     TabsModule,
     ToggleSwitchModule,
     InputTextModule,
+    ButtonModule,
+    SelectModule,
+    DialogModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
@@ -69,12 +78,27 @@ interface CustomerFormData {
 })
 export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormData> {
   private service = inject(CustomerApplicationService);
+  private customerApi = inject(CustomerApiService);
+  private warehouseService = inject(WarehouseApplicationService);
   private mapper = inject(CustomerMapper);
   private messageService = inject(MessageService);
 
   loading = this.service.loading;
 
   customerTypes = [...CUSTOMER_TYPES];
+
+  warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
+  warehouseAccessLoading = signal(false);
+  showGrantDialog = signal(false);
+  selectedWarehouseId = signal<string | null>(null);
+  grantLoading = signal(false);
+
+  warehouseOptions = computed(() => {
+    const assigned = new Set(this.warehouseAccess().map((w) => w.warehouseId));
+    return this.warehouseService.simpleWarehouses()
+      .filter((w) => !assigned.has(w.id))
+      .map((w) => ({ label: w.name, value: w.id }));
+  });
 
   getConfig(): FormConfig {
     return {
@@ -96,7 +120,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
       portalAccess: [false],
-      portalEmail: [''],
       emails: this.fb.array([this.createEmailControl()]),
       phones: this.fb.array([this.createPhoneControl()]),
       addresses: this.fb.array([this.createAddressGroup()]),
@@ -136,11 +159,12 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       creditLimit: data.creditLimit,
       active: data.active,
       portalAccess: data.portalAccess ?? false,
-      portalEmail: data.portalEmail ?? '',
     });
   }
 
   protected override onLoadEntity(id: string): void {
+    this.warehouseService.loadSimpleWarehouses().subscribe();
+    this.loadWarehouseAccess(id);
     this.service.loadById(id).subscribe({
       next: (customer) => {
         const formModel = this.mapper.toFormModel(customer);
@@ -173,7 +197,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
           creditLimit: formModel.creditLimit,
           active: formModel.active,
           portalAccess: formModel.portalAccess ?? false,
-          portalEmail: formModel.portalEmail ?? '',
         });
       },
       error: () => {
@@ -203,7 +226,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         creditLimit: formValue.creditLimit ?? 0,
         active: formValue.active,
         portalAccess: formValue.portalAccess,
-        portalEmail: formValue.portalEmail,
         emails: formValue.emails.map((email) => ({ id: '', customerId: '', email })),
         phones: formValue.phones.map((phone) => ({ id: '', customerId: '', phone })),
         addresses: formValue.addresses.map((a) => ({ id: '', customerId: '', ...a })),
@@ -263,6 +285,48 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         life: 5000,
       });
     }
+  }
+
+  loadWarehouseAccess(id: string): void {
+    this.warehouseAccessLoading.set(true);
+    this.customerApi.getWarehouseAccess(id).subscribe({
+      next: (res) => this.warehouseAccess.set(res.items),
+      error: () => this.warehouseAccess.set([]),
+      complete: () => this.warehouseAccessLoading.set(false),
+    });
+  }
+
+  onGrantWarehouse(): void {
+    const warehouseId = this.selectedWarehouseId();
+    const id = this.entityId();
+    if (!warehouseId || !id) return;
+    this.grantLoading.set(true);
+    this.customerApi.grantWarehouseAccess(id, warehouseId).subscribe({
+      next: (res) => {
+        this.warehouseAccess.set(res.items);
+        this.showGrantDialog.set(false);
+        this.selectedWarehouseId.set(null);
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén asignado correctamente', life: 3000 });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al asignar el almacén', life: 5000 });
+      },
+      complete: () => this.grantLoading.set(false),
+    });
+  }
+
+  onRevokeWarehouse(warehouseId: string): void {
+    const id = this.entityId();
+    if (!id) return;
+    this.customerApi.revokeWarehouseAccess(id, warehouseId).subscribe({
+      next: (res) => {
+        this.warehouseAccess.set(res.items);
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Acceso revocado correctamente', life: 3000 });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al revocar el acceso', life: 5000 });
+      },
+    });
   }
 
   private createEmailControl() {

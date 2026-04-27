@@ -16,7 +16,8 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { MessageService } from 'primeng/api';
 import { CustomerApplicationService } from '@features/customers/services/application';
-import { CustomerDetails } from '@features/customers/models/interfaces';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerDetails, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
 
 @Component({
@@ -41,6 +42,7 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
+  private customerApi = inject(CustomerApiService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
@@ -54,6 +56,9 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   passwordTouched = signal(false);
   confirmPasswordTouched = signal(false);
+
+  warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
+  warehouseAccessLoading = signal(false);
 
   passwordError = computed(() => {
     const value = this.newPassword();
@@ -80,6 +85,7 @@ export class CustomersDetailsPageComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadCustomer(id);
+      this.loadWarehouseAccess(id);
     }
   }
 
@@ -100,6 +106,17 @@ export class CustomersDetailsPageComponent implements OnInit {
         });
         this.router.navigate(['/customers']);
       },
+    });
+  }
+
+  private loadWarehouseAccess(id: string): void {
+    this.warehouseAccessLoading.set(true);
+    this.customerApi.getWarehouseAccess(id).subscribe({
+      next: (res) => {
+        this.warehouseAccess.set(res.items);
+        this.warehouseAccessLoading.set(false);
+      },
+      error: () => this.warehouseAccessLoading.set(false),
     });
   }
 
@@ -159,8 +176,7 @@ export class CustomersDetailsPageComponent implements OnInit {
     return getCustomerTypeLabel(type as Parameters<typeof getCustomerTypeLabel>[0]);
   }
 
-  getInitials(): string {
-    const name = this.customer()?.legalName || '';
-    return name.charAt(0).toUpperCase();
+  getAddressLocation(state: string | undefined, municipality: string | undefined, postalCode: string | undefined): string {
+    return [state, municipality, postalCode].filter((v): v is string => !!v).join(' · ');
   }
 }
