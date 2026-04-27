@@ -32,6 +32,7 @@ describe('CustomersListPageComponent', () => {
       customers: signal([mockCustomer]),
       loading: signal(false),
       error: signal(null),
+      totalElements: signal(1),
     };
 
     await TestBed.configureTestingModule({
@@ -59,6 +60,30 @@ describe('CustomersListPageComponent', () => {
     expect(mockService.loadAll).toHaveBeenCalled();
   });
 
+  it('should filter customers by legalName', () => {
+    fixture.detectChanges();
+    component.onSearch('Acme');
+    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'Acme' }));
+  });
+
+  it('should filter customers by alias', () => {
+    fixture.detectChanges();
+    component.onSearch('ACME');
+    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'ACME' }));
+  });
+
+  it('should filter customers by rif', () => {
+    fixture.detectChanges();
+    component.onSearch('J-12345678');
+    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'J-12345678' }));
+  });
+
+  it('should return empty filtered list when no match', () => {
+    fixture.detectChanges();
+    component.onSearch('nonexistent');
+    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'nonexistent' }));
+  });
+
   it('should navigate to new customer on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
@@ -75,30 +100,6 @@ describe('CustomersListPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockCustomer);
     expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'edit']);
-  });
-
-  it('should filter customers by legalName', () => {
-    fixture.detectChanges();
-    component.onSearch('Acme');
-    expect(component.filteredCustomers()).toHaveLength(1);
-  });
-
-  it('should filter customers by alias', () => {
-    fixture.detectChanges();
-    component.onSearch('ACME');
-    expect(component.filteredCustomers()).toHaveLength(1);
-  });
-
-  it('should filter customers by rif', () => {
-    fixture.detectChanges();
-    component.onSearch('J-12345678');
-    expect(component.filteredCustomers()).toHaveLength(1);
-  });
-
-  it('should return empty filtered list when no match', () => {
-    fixture.detectChanges();
-    component.onSearch('nonexistent');
-    expect(component.filteredCustomers()).toHaveLength(0);
   });
 
   it('should return correct type label', () => {

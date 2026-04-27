@@ -47,21 +47,24 @@ describe('UsersFormPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UsersFormPageComponent],
       providers: [
+        provideRouter([]),
         { provide: UserApplicationService, useValue: mockUserService },
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: convertToParamMap(params) } },
+          useValue: {
+            paramMap: of(convertToParamMap(params)),
+            snapshot: {
+              paramMap: convertToParamMap(params),
+              queryParamMap: convertToParamMap({}),
+            },
+          },
         },
         MessageService,
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
       schemas: [NO_ERRORS_SCHEMA],
-    })
-      .overrideProvider(ActivatedRoute, {
-        useValue: { snapshot: { paramMap: convertToParamMap(params) } },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(UsersFormPageComponent);
     component = fixture.componentInstance;
@@ -78,7 +81,7 @@ describe('UsersFormPageComponent', () => {
   it('should initialize in create mode when no id in route', () => {
     fixture.detectChanges();
     expect(component.isEditMode()).toBe(false);
-    expect(component.userId()).toBeNull();
+    expect(component.entityId()).toBeNull();
   });
 
   it('should have correct title in create mode', () => {
@@ -88,7 +91,7 @@ describe('UsersFormPageComponent', () => {
 
   it('should have correct submit label in create mode', () => {
     fixture.detectChanges();
-    expect(component.submitLabel()).toBe('Crear');
+    expect(component.submitLabel()).toBe('Crear Usuario');
   });
 
   it('should build form with required fields', () => {
@@ -136,7 +139,7 @@ describe('UsersFormPageComponent', () => {
 
     it('should have correct submit label in edit mode', () => {
       fixture.detectChanges();
-      expect(component.submitLabel()).toBe('Actualizar');
+      expect(component.submitLabel()).toBe('Actualizar Usuario');
     });
 
     it('should load user data in edit mode', () => {

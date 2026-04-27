@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Router, ActivatedRoute, provideRouter } from '@angular/router';
+import { Router, ActivatedRoute, provideRouter, convertToParamMap } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomersFormPageComponent } from './customers-form-page.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerType } from '@features/customers/models/enums';
@@ -46,8 +48,16 @@ describe('CustomersFormPageComponent', () => {
       providers: [
         provideRouter([]),
         { provide: CustomerApplicationService, useValue: mockService },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({})),
+            snapshot: { paramMap: convertToParamMap({}), queryParamMap: convertToParamMap({}) },
+          },
+        },
         MessageService,
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -70,8 +80,8 @@ describe('CustomersFormPageComponent', () => {
     expect(component.title()).toBe('Nuevo Cliente');
   });
 
-  it('should have submitLabel "Crear" in create mode', () => {
-    expect(component.submitLabel()).toBe('Crear');
+  it('should have submitLabel "Crear Cliente" in create mode', () => {
+    expect(component.submitLabel()).toBe('Crear Cliente');
   });
 
   it('should initialize form with default values', () => {

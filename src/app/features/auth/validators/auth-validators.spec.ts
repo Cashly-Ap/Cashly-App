@@ -142,14 +142,14 @@ describe('AuthValidators', () => {
       const message = AuthValidators.getPasswordErrorMessage({
         required: true,
       });
-      expect(message).toBe('Password is required');
+      expect(message).toBe('La contraseña es requerida');
     });
 
     it('should return correct password error message for min length', () => {
       const message = AuthValidators.getPasswordErrorMessage({
         minlength: { requiredLength: 8, actualLength: 5 },
       });
-      expect(message).toBe('Password must be at least 8 characters');
+      expect(message).toBe('La contraseña debe tener al menos 8 caracteres');
     });
 
     it('should return correct password error message for missing uppercase', () => {
@@ -160,7 +160,7 @@ describe('AuthValidators', () => {
           hasNumeric: true,
         },
       });
-      expect(message).toContain('uppercase letter');
+      expect(message).toContain('letra mayúscula');
     });
 
     it('should return correct password error message for multiple missing requirements', () => {
@@ -171,8 +171,8 @@ describe('AuthValidators', () => {
           hasNumeric: true,
         },
       });
-      expect(message).toContain('uppercase letter');
-      expect(message).toContain('lowercase letter');
+      expect(message).toContain('letra mayúscula');
+      expect(message).toContain('letra minúscula');
     });
   });
 });

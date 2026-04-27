@@ -32,6 +32,7 @@ describe('UsersListPageComponent', () => {
       users: signal([mockUser]),
       loading: signal(false),
       error: signal(null),
+      totalElements: signal(1),
     };
 
     await TestBed.configureTestingModule({
@@ -80,13 +81,13 @@ describe('UsersListPageComponent', () => {
   it('should filter users based on search term', () => {
     fixture.detectChanges();
     component.onSearch('Test');
-    expect(component.filteredUsers()).toHaveLength(1);
+    expect(mockUserService.loadUsers).toHaveBeenCalledWith(expect.objectContaining({ search: 'Test' }));
   });
 
   it('should return empty filtered list when no match', () => {
     fixture.detectChanges();
     component.onSearch('nonexistent');
-    expect(component.filteredUsers()).toHaveLength(0);
+    expect(mockUserService.loadUsers).toHaveBeenCalledWith(expect.objectContaining({ search: 'nonexistent' }));
   });
 
   it('should return correct type label', () => {

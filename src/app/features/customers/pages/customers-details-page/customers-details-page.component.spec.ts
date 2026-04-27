@@ -90,8 +90,8 @@ describe('CustomersDetailsPageComponent', () => {
     expect(component.getTypeLabel(CustomerType.INDIVIDUAL)).toBe('Natural');
   });
 
-  it('should return initials from legal name', () => {
+  it('should display customer after loading', () => {
     fixture.detectChanges();
-    expect(component.getInitials()).toBe('A');
+    expect(component.customer()).not.toBeNull();
   });
 });

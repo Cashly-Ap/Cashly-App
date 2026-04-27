@@ -43,6 +43,7 @@ describe('CustomerMapper', () => {
         rif: 'J-12345678-9',
         type: CustomerType.BUSINESS,
         active: true,
+        portalAccess: false,
       });
     });
   });
