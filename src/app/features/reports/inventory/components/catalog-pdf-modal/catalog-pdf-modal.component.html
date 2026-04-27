@@ -1,0 +1,66 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  header="Catálogo de Productos"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-col gap-4 pt-2">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Búsqueda</label>
+      <input
+        pInputText
+        [(ngModel)]="search"
+        placeholder="Buscar producto..."
+        class="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Categoría</label>
+      <p-select
+        [options]="categoryOptions()"
+        [(ngModel)]="categoryId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todas las categorías"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
+      <p-select
+        [options]="warehouseOptions()"
+        [(ngModel)]="warehouseId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todos los almacenes"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Disponibilidad</label>
+      <p-select
+        [options]="stockOptions"
+        [(ngModel)]="withStock"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Descargar Catálogo PDF"
+      icon="pi pi-file-pdf"
+      [loading]="downloading()"
+      (onClick)="downloadPdf()"
+      severity="primary"
+    />
+  </ng-template>
+</p-dialog>
