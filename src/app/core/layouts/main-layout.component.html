@@ -22,9 +22,10 @@
         <img
           [ngSrc]="logoSrc"
           alt="Logo Parsun"
-          width="123"
+          width="87"
           height="40"
           priority
+          style="width: auto"
           class="h-10 object-contain cursor-pointer"
           [routerLink]="['/dashboard']"
         />
@@ -35,9 +36,10 @@
         <img
           [ngSrc]="logoSrc"
           alt="Logo Parsun"
-          width="99"
+          width="70"
           height="32"
           priority
+          style="width: auto"
           class="h-8 object-contain cursor-pointer"
           [routerLink]="['/dashboard']"
         />
@@ -91,7 +93,7 @@
     <ng-template pTemplate="header">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          <img [ngSrc]="logoSrc" alt="Logo Parsun" width="99" height="32" class="h-8 object-contain" />
+          <img [ngSrc]="logoSrc" alt="Logo Parsun" width="70" height="32" style="width: auto" class="h-8 object-contain" />
         </div>
         <p-button
           icon="pi pi-times"
@@ -187,6 +189,11 @@
    >
     <ng-content />
   </main>
+
+  <app-catalog-pdf-modal
+    [visible]="catalogModalVisible()"
+    (visibleChange)="catalogModalVisible.set($event)"
+  />
 </div>
 
 

@@ -8,6 +8,7 @@ import {
   inject,
   signal,
   HostListener,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule, NavigationStart } from '@angular/router';
@@ -26,12 +27,14 @@ import { AuthService } from '@features/auth/services';
 import { UserType } from '@features/auth/models';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
+import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
 import { fromEvent, Subscription, filter } from 'rxjs';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     NgOptimizedImage,
@@ -47,6 +50,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     PendingTabsDropdownComponent,
     DrawerModule,
     PanelMenuModule,
+    CatalogPdfModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -56,6 +60,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   mobileMenuVisible = signal(false);
   isMobile = signal(false);
+  catalogModalVisible = signal(false);
 
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -111,10 +116,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.routerSubscription?.unsubscribe();
   }
 
+  openCatalogModal(): void {
+    this.catalogModalVisible.set(true);
+  }
+
   private buildMenuItems(userType: UserType): MenuItem[] {
     const user = this.authService.currentUser();
     const role = (user?.role || user?.type) as UserType;
-    return this.filterMenuByRole(buildMenuItems(), role);
+    const callbacks = { openCatalogModal: () => this.openCatalogModal() };
+    return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
 
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
@@ -225,4 +235,3 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return primeItem;
   }
 }
-

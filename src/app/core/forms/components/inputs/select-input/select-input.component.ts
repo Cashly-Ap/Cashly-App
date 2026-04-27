@@ -17,6 +17,9 @@ export class SelectInputComponent {
   control = input<FormControl>();
   colSpan = input<number>();
   errorMessage = input<string>('');
+  filter = input<boolean>(false);
+  filterPlaceholder = input<string>('Buscar...');
+  disabled = input<boolean>(false);
 
   internalControl = computed(() => this.control() || new FormControl());
 }

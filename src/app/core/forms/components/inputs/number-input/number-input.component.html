@@ -13,7 +13,7 @@
       [formControl]="control()"
       [min]="min()"
       [max]="max()"
-      [mode]="mode()"
+      [mode]="mode() ?? 'decimal'"
       [prefix]="prefix()"
       [suffix]="suffix()"
       [placeholder]="placeholder()"
@@ -25,6 +25,7 @@
       decrementButtonIcon="pi pi-minus"
       inputStyleClass="w-full text-left"
       styleClass="w-full"
+      (onInput)="onInput($event)"
     />
   </div>
   <div class="min-h-[20px] mt-1.5">

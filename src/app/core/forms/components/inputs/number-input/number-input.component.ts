@@ -1,6 +1,6 @@
 import { Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { InputNumberModule, InputNumberInputEvent } from 'primeng/inputnumber';
 
 @Component({
   selector: 'app-number-input',
@@ -23,4 +23,15 @@ export class NumberInputComponent {
   maxFractionDigits = input<number>();
   colSpan = input<number>();
   errorMessage = input<string>('');
+
+  onInput(event: InputNumberInputEvent): void {
+    const maxVal = this.max();
+    const minVal = this.min();
+    if (event.value === null) return;
+    if (maxVal !== undefined && event.value > maxVal) {
+      this.control().setValue(maxVal, { emitEvent: false });
+    } else if (minVal !== undefined && event.value < minVal) {
+      this.control().setValue(minVal, { emitEvent: false });
+    }
+  }
 }
