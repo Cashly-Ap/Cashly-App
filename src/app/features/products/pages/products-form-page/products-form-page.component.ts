@@ -35,7 +35,7 @@ interface ProductFormData {
   basePrice: number | null;
   purchasePrice: number | null;
   profitMargin: number | null;
-  components: { componentId: string | null; quantity: number }[];
+  components: { componentProductId: string | null; quantity: number }[];
 }
 
 @Component({
@@ -136,7 +136,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
   addComponent(): void {
     const group = this.fb.group({
-      componentId: [null, Validators.required],
+      componentProductId: [null, Validators.required],
       quantity: [1, [Validators.required, Validators.min(0.01)]],
     });
     this.componentsArray.push(group);
@@ -144,6 +144,14 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
   removeComponent(index: number): void {
     this.componentsArray.removeAt(index);
+  }
+
+  availableOptions(index: number): { value: string; label: string }[] {
+    const usedIds = this.componentsArray.controls
+      .map((c, i) => (i !== index ? c.get('componentProductId')?.value : null))
+      .filter(Boolean);
+    const currentProductId = this.entityId();
+    return this.simpleProductOptions().filter(o => !usedIds.includes(o.value) && o.value !== currentProductId);
   }
 
   protected override getPendingTabTitle(formData: ProductFormData): string {
@@ -165,7 +173,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       while (this.componentsArray.length) this.componentsArray.removeAt(0);
       data.components.forEach((c) => {
         this.componentsArray.push(this.fb.group({
-          componentId: [c.componentId, Validators.required],
+          componentProductId: [c.componentProductId, Validators.required],
           quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
         }));
       });
@@ -190,7 +198,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
         while (this.componentsArray.length) this.componentsArray.removeAt(0);
         product.components.forEach((c) => {
           this.componentsArray.push(this.fb.group({
-            componentId: [c.componentId, Validators.required],
+            componentProductId: [c.componentProductId, Validators.required],
             quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
           }));
         });
@@ -206,7 +214,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     if (this.form.valid) {
       const value = this.form.getRawValue() as ProductFormData;
       const components: ProductComponentInput[] = value.composite
-        ? value.components.map((c) => ({ componentId: c.componentId!, quantity: c.quantity }))
+        ? value.components.map((c) => ({ componentProductId: c.componentProductId!, quantity: c.quantity }))
         : [];
 
       if (this.isEditMode() && this.entityId()) {
@@ -215,6 +223,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
           categoryId: value.categoryId!,
           description: value.description || undefined,
           active: value.active,
+          composite: value.composite,
           basePrice: value.basePrice ?? undefined,
           purchasePrice: value.purchasePrice ?? undefined,
           profitMargin: value.profitMargin ?? undefined,

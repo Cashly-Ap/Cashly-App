@@ -1,11 +1,12 @@
 export interface ProductComponentItem {
-  componentId: string;
+  componentProductId: string;
   componentName: string;
   quantity: number;
 }
 
 export interface ProductDetails {
   id: string;
+  code: string;
   name: string;
   categoryId: string;
   categoryName: string;

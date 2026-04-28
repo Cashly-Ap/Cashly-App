@@ -1,5 +1,5 @@
 export interface ProductComponentInput {
-  componentId: string;
+  componentProductId: string;
   quantity: number;
 }
 
