@@ -170,22 +170,10 @@
                         </div>
                       </td>
                       <td>
-                        <span class="px-2 py-1 text-xs font-semibold rounded bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900">
-                           {{ getTypeLabel(user.role) }}
-                         </span>
+                        <app-text-badge [label]="getTypeLabel(user.role)" variant="label" />
                        </td>
                        <td>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                              user.active,
-                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400':
-                              !user.active
-                          }"
-                        >
-                          {{ user.active ? 'Activo' : 'Inactivo' }}
-                        </span>
+                        <app-status-badge [active]="user.active" />
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">
@@ -266,20 +254,8 @@
                         {{ user.email }}
                       </p>
                       <div class="flex gap-2 mt-2">
-                         <span class="px-2 py-1 text-xs font-semibold rounded bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900">
-                           {{ getTypeLabel(user.role) }}
-                         </span>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600':
-                              user.active,
-                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400':
-                              !user.active
-                          }"
-                        >
-                          {{ user.active ? 'Activo' : 'Inactivo' }}
-                        </span>
+                         <app-text-badge [label]="getTypeLabel(user.role)" variant="label" />
+                        <app-status-badge [active]="user.active" />
                       </div>
                     </div>
                   </div>

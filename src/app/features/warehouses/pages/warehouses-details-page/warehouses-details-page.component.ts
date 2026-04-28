@@ -18,6 +18,7 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { ProductApplicationService } from '@features/products/services/application';
 import { WarehouseDetails } from '@features/warehouses/models/interfaces';
@@ -42,9 +43,10 @@ import { WarehouseDetails } from '@features/warehouses/models/interfaces';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
+    StatusBadgeComponent,
   ],
   templateUrl: './warehouses-details-page.component.html',
-  providers: [MessageService],
+
 })
 export class WarehousesDetailsPageComponent implements OnInit {
   private service = inject(WarehouseApplicationService);

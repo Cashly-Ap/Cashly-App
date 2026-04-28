@@ -222,31 +222,13 @@
                         <div class="text-sm font-mono">{{ customer.rif }}</div>
                       </td>
                       <td>
-                        <span class="px-2 py-1 text-xs font-semibold rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
-                          {{ getTypeLabel(customer.type) }}
-                        </span>
+                        <app-text-badge [label]="getTypeLabel(customer.type)" variant="label" />
                       </td>
                       <td>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': customer.active,
-                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !customer.active
-                          }"
-                        >
-                          {{ customer.active ? 'Activo' : 'Inactivo' }}
-                        </span>
+                        <app-status-badge [active]="customer.active" />
                         </td>
                       <td>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': customer.portalAccess,
-                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !customer.portalAccess
-                          }"
-                        >
-                          {{ customer.portalAccess ? 'Activo' : 'Sin acceso' }}
-                        </span>
+                        <app-status-badge [active]="customer.portalAccess" activeLabel="Activo" inactiveLabel="Sin acceso" />
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">

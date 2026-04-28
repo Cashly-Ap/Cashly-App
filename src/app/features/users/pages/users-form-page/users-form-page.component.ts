@@ -2,6 +2,10 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { TabsModule } from 'primeng/tabs';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
@@ -10,13 +14,14 @@ import {
   FormActionsComponent,
   TextInputComponent,
   SelectInputComponent,
-  CheckboxInputComponent,
 } from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
-import { UserType, USER_TYPES } from '@features/users/models/enums';
+import { UserType, USER_TYPES, BusinessModule, BUSINESS_MODULE_LABELS } from '@features/users/models/enums';
 import { UserValidators } from '@features/users/validators';
 import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
+import { AuthService } from '@features/auth/services';
+import { forkJoin, of, switchMap } from 'rxjs';
 
 interface UserFormData {
   email: string;
@@ -31,30 +36,38 @@ interface UserFormData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    FormsModule,
     MainLayoutComponent,
     ButtonModule,
+    CheckboxModule,
+    TabsModule,
+    ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
     TextInputComponent,
     SelectInputComponent,
-    CheckboxInputComponent,
     ChangePasswordDialogComponent,
     ChangeEmailDialogComponent,
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [MessageService],
+
 })
 export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private service = inject(UserApplicationService);
   private messageService = inject(MessageService);
+  readonly authService = inject(AuthService);
 
   loading = this.service.loading;
 
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
+  selectedModules = signal<BusinessModule[]>([]);
+
+  readonly allModules = Object.values(BusinessModule);
+  readonly moduleLabels = BUSINESS_MODULE_LABELS;
 
   userTypes = [...USER_TYPES];
 
@@ -107,6 +120,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         });
         this.form.get('password')?.setValidators([]);
         this.form.get('password')?.updateValueAndValidity();
+        this.selectedModules.set([...(user.modulePermissions ?? [])]);
       },
       error: () => {
         this.messageService.add({
@@ -133,7 +147,12 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
           active: formValue.active,
         };
 
-        this.service.updateUser(this.entityId()!, editData).subscribe({
+        const updateUser$ = this.service.updateUser(this.entityId()!, editData);
+        const updatePermissions$ = this.authService.isSuperAdmin()
+          ? this.service.updateModulePermissions(this.entityId()!, this.selectedModules())
+          : of(null);
+
+        forkJoin([updateUser$, updatePermissions$]).subscribe({
           next: () => {
             this.markAsSubmitted();
             this.messageService.add({
@@ -162,7 +181,14 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
           active: formValue.active,
         };
 
-        this.service.createUser(createData).subscribe({
+        this.service.createUser(createData).pipe(
+          switchMap((createdUser) => {
+            if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
+              return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
+            }
+            return of(null);
+          }),
+        ).subscribe({
           next: () => {
             this.markAsSubmitted();
             this.messageService.add({
@@ -192,6 +218,18 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         life: 5000,
       });
     }
+  }
+
+  toggleModule(module: BusinessModule): void {
+    this.selectedModules.update((current) =>
+      current.includes(module)
+        ? current.filter((m) => m !== module)
+        : [...current, module],
+    );
+  }
+
+  isModuleSelected(module: BusinessModule): boolean {
+    return this.selectedModules().includes(module);
   }
 
   onEmailChanged(newEmail: string): void {

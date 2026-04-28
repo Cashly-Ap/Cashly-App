@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
+import { Observable, forkJoin, of } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
@@ -8,7 +9,6 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
-import { DialogModule } from 'primeng/dialog';
 import {
   FormContainerComponent,
   FormHeaderComponent,
@@ -64,7 +64,6 @@ interface CustomerFormData {
     InputTextModule,
     ButtonModule,
     SelectModule,
-    DialogModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
@@ -74,7 +73,7 @@ interface CustomerFormData {
     CustomerAddressesSectionComponent,
   ],
   templateUrl: './customers-form-page.component.html',
-  providers: [MessageService],
+
 })
 export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormData> {
   private service = inject(CustomerApplicationService);
@@ -89,9 +88,8 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
   warehouseAccessLoading = signal(false);
-  showGrantDialog = signal(false);
+  initialWarehouseIds = signal<Set<string>>(new Set());
   selectedWarehouseId = signal<string | null>(null);
-  grantLoading = signal(false);
 
   warehouseOptions = computed(() => {
     const assigned = new Set(this.warehouseAccess().map((w) => w.warehouseId));
@@ -235,14 +233,31 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         const updateData = this.mapper.toUpdateRequest(formModel);
         this.service.update(this.entityId()!, updateData).subscribe({
           next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Cliente actualizado exitosamente',
-              life: 3000,
+            const customerId = this.entityId()!;
+            const currentIds = new Set(this.warehouseAccess().map((w) => w.warehouseId));
+            const initial = this.initialWarehouseIds();
+            const toGrant = [...currentIds].filter((id) => !initial.has(id));
+            const toRevoke = [...initial].filter((id) => !currentIds.has(id));
+
+            const ops = [
+              ...toGrant.map((id) => this.customerApi.grantWarehouseAccess(customerId, id)),
+              ...toRevoke.map((id) => this.customerApi.revokeWarehouseAccess(customerId, id)),
+            ];
+
+            const warehouse$: Observable<unknown> = ops.length > 0 ? forkJoin(ops) : of(null);
+
+            warehouse$.subscribe({
+              next: () => {
+                this.markAsSubmitted();
+                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente actualizado exitosamente', life: 3000 });
+                this.router.navigate(['/customers']);
+              },
+              error: () => {
+                this.markAsSubmitted();
+                this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Cliente actualizado, pero hubo un error al sincronizar los almacenes', life: 5000 });
+                this.router.navigate(['/customers']);
+              },
             });
-            this.router.navigate(['/customers']);
           },
           error: () => {
             this.messageService.add({
@@ -290,43 +305,28 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
   loadWarehouseAccess(id: string): void {
     this.warehouseAccessLoading.set(true);
     this.customerApi.getWarehouseAccess(id).subscribe({
-      next: (res) => this.warehouseAccess.set(res.items),
+      next: (res) => {
+        this.warehouseAccess.set(res);
+        this.initialWarehouseIds.set(new Set(res.map((w) => w.warehouseId)));
+      },
       error: () => this.warehouseAccess.set([]),
       complete: () => this.warehouseAccessLoading.set(false),
     });
   }
 
-  onGrantWarehouse(): void {
-    const warehouseId = this.selectedWarehouseId();
-    const id = this.entityId();
-    if (!warehouseId || !id) return;
-    this.grantLoading.set(true);
-    this.customerApi.grantWarehouseAccess(id, warehouseId).subscribe({
-      next: (res) => {
-        this.warehouseAccess.set(res.items);
-        this.showGrantDialog.set(false);
-        this.selectedWarehouseId.set(null);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén asignado correctamente', life: 3000 });
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al asignar el almacén', life: 5000 });
-      },
-      complete: () => this.grantLoading.set(false),
-    });
+  onSelectWarehouse(warehouseId: string | null): void {
+    if (!warehouseId) return;
+    const option = this.warehouseOptions().find((o) => o.value === warehouseId);
+    if (!option) return;
+    this.warehouseAccess.update((list) => [
+      ...list,
+      { id: '', customerId: this.entityId() ?? '', warehouseId, warehouseName: option.label },
+    ]);
+    this.selectedWarehouseId.set(null);
   }
 
   onRevokeWarehouse(warehouseId: string): void {
-    const id = this.entityId();
-    if (!id) return;
-    this.customerApi.revokeWarehouseAccess(id, warehouseId).subscribe({
-      next: (res) => {
-        this.warehouseAccess.set(res.items);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Acceso revocado correctamente', life: 3000 });
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al revocar el acceso', life: 5000 });
-      },
-    });
+    this.warehouseAccess.update((list) => list.filter((w) => w.warehouseId !== warehouseId));
   }
 
   private createEmailControl() {

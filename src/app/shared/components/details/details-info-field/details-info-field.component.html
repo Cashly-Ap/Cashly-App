@@ -16,13 +16,11 @@
       class="text-base font-semibold text-surface-900 dark:text-surface-0"
       >{{ value() }}</span
     >
-  } @else if (type() === "badge") {
-    <ng-content></ng-content>
-  } @else if (value() !== undefined && value() !== null && value() !== '') {
+  } @else if (type() !== "badge" && value() !== undefined && value() !== null && value() !== '') {
     <span class="text-base text-surface-900 dark:text-surface-0">{{
       value()
     }}</span>
-  } @else {
-    <ng-content></ng-content>
   }
+
+  <ng-content />
 </div>

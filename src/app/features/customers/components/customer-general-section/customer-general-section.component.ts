@@ -1,11 +1,11 @@
 import { Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import {
   TabContentComponent,
   TextInputComponent,
   SelectInputComponent,
   NumberInputComponent,
-  CheckboxInputComponent,
 } from '@core/forms/components';
 import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/models/enums';
 
@@ -15,11 +15,11 @@ import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
+    ToggleSwitchModule,
     TabContentComponent,
     TextInputComponent,
     SelectInputComponent,
     NumberInputComponent,
-    CheckboxInputComponent,
   ],
   templateUrl: './customer-general-section.component.html',
 })

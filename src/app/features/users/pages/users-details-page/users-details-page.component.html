@@ -53,14 +53,8 @@
                   label="Usuario"
                   [value]="currentUser.userName"
                 />
-                <app-details-info-field
-                  label="Estado"
-                  [value]="currentUser.active ? 'Activo' : 'Inactivo'"
-                />
-                <app-details-info-field
-                  label="Rol"
-                  [value]="getTypeLabel(currentUser.role)"
-                />
+                <app-details-info-field label="Estado" type="badge"><app-status-badge [active]="currentUser.active" /></app-details-info-field>
+                <app-details-info-field label="Rol" type="badge"><app-text-badge [label]="getTypeLabel(currentUser.role)" variant="label" /></app-details-info-field>
                 <app-details-info-field
                   label="Email Verificado"
                   [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
@@ -77,39 +71,28 @@
             </div>
           </app-details-card>
 
-          @if (authService.isSuperAdmin()) {
-            <app-details-card>
-              <app-details-card-header
-                title="Permisos de Módulos"
-                subtitle="Selecciona los módulos a los que este usuario tendrá acceso"
-              />
-              <div class="p-4 sm:p-6 flex flex-col gap-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  @for (module of allModules; track module) {
-                    <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
-                      <p-checkbox
-                        [binary]="true"
-                        [ngModel]="moduleSelectionMap().get(module)"
-                        (ngModelChange)="toggleModule(module)"
-                      />
-                      <span class="text-sm font-medium dark:text-surface-100">{{ moduleLabels[module] }}</span>
-                    </label>
-                  }
-                </div>
-                <div class="flex justify-end">
-                  <button
-                    pButton
-                    label="Guardar permisos"
-                    icon="pi pi-save"
-                    severity="contrast"
-                    [loading]="savingPermissions()"
-                    [disabled]="hasNoPermissionsSelected()"
-                    (click)="onSavePermissions()"
-                  ></button>
-                </div>
+          <app-details-card>
+            <app-details-card-header
+              title="Permisos de Módulos"
+              subtitle="Módulos a los que este usuario tiene acceso"
+            />
+            <div class="p-4 sm:p-6">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                @for (module of allModules; track module) {
+                  <div class="flex items-center gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700">
+                    @if (isModuleAssigned(module)) {
+                      <i class="pi pi-check-circle text-surface-900 dark:text-surface-0 text-lg"></i>
+                    } @else {
+                      <i class="pi pi-times-circle text-surface-300 dark:text-surface-600 text-lg"></i>
+                    }
+                    <span class="text-sm" [class.font-medium]="isModuleAssigned(module)" [class.text-surface-400]="!isModuleAssigned(module)">
+                      {{ moduleLabels[module] }}
+                    </span>
+                  </div>
+                }
               </div>
-            </app-details-card>
-          }
+            </div>
+          </app-details-card>
         </div>
       }
     </div>

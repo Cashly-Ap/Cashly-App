@@ -5,6 +5,7 @@ import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
@@ -23,6 +24,7 @@ interface WarehouseFormData {
   municipality: string;
   address: string;
   description: string;
+  active: boolean;
 }
 
 @Component({
@@ -36,6 +38,7 @@ interface WarehouseFormData {
     InputTextModule,
     TextareaModule,
     SelectModule,
+    ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
@@ -44,7 +47,7 @@ interface WarehouseFormData {
     SelectInputComponent,
   ],
   templateUrl: './warehouses-form-page.component.html',
-  providers: [MessageService],
+
 })
 export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseFormData> implements OnInit {
   private service = inject(WarehouseApplicationService);
@@ -83,6 +86,7 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
       municipality: ['', [Validators.required]],
       address: ['', [Validators.maxLength(300)]],
       description: ['', [Validators.maxLength(500)]],
+      active: [true],
     });
   }
 
@@ -107,6 +111,7 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
       municipality: data.municipality,
       address: data.address,
       description: data.description,
+      active: data.active,
     });
   }
 
@@ -120,6 +125,7 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
           municipality: warehouse.municipality,
           address: warehouse.address ?? '',
           description: warehouse.description ?? '',
+          active: warehouse.active,
         });
       },
       error: () => {
@@ -138,6 +144,7 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
         municipality: value.municipality,
         address: value.address || undefined,
         description: value.description || undefined,
+        active: value.active,
       };
 
       if (this.isEditMode() && this.entityId()) {

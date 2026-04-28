@@ -14,6 +14,8 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { MessageService } from 'primeng/api';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
@@ -36,9 +38,11 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './customers-details-page.component.html',
-  providers: [MessageService],
+
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
@@ -113,7 +117,7 @@ export class CustomersDetailsPageComponent implements OnInit {
     this.warehouseAccessLoading.set(true);
     this.customerApi.getWarehouseAccess(id).subscribe({
       next: (res) => {
-        this.warehouseAccess.set(res.items);
+        this.warehouseAccess.set(res);
         this.warehouseAccessLoading.set(false);
       },
       error: () => this.warehouseAccessLoading.set(false),

@@ -18,6 +18,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { CategoryFilters } from '@features/categories/services/api/category-api.service';
 import { CategoryList } from '@features/categories/models/interfaces';
@@ -44,9 +45,10 @@ import { CategoryList } from '@features/categories/models/interfaces';
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
+    StatusBadgeComponent,
   ],
   templateUrl: './categories-list-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class CategoriesListPageComponent implements OnInit {
   private service = inject(CategoryApplicationService);

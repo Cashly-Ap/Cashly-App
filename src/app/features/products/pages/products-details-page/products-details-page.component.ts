@@ -12,6 +12,8 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { ProductDetails } from '@features/products/models/interfaces';
 
@@ -29,9 +31,11 @@ import { ProductDetails } from '@features/products/models/interfaces';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './products-details-page.component.html',
-  providers: [MessageService],
+
 })
 export class ProductsDetailsPageComponent implements OnInit {
   private service = inject(ProductApplicationService);

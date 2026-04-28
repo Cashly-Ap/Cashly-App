@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TextareaModule } from 'primeng/textarea';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ButtonModule } from 'primeng/button';
 import { TabsModule } from 'primeng/tabs';
 import { TableModule } from 'primeng/table';
@@ -29,6 +30,7 @@ interface ProductFormData {
   name: string;
   categoryId: string | null;
   description: string;
+  active: boolean;
   composite: boolean;
   basePrice: number | null;
   purchasePrice: number | null;
@@ -50,6 +52,7 @@ interface ProductFormData {
     ButtonModule,
     TabsModule,
     TableModule,
+    ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
@@ -61,7 +64,7 @@ interface ProductFormData {
     EmptyStateComponent,
   ],
   templateUrl: './products-form-page.component.html',
-  providers: [MessageService],
+
 })
 export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData> implements OnInit {
   private service = inject(ProductApplicationService);
@@ -107,6 +110,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       name: ['', [Validators.required, Validators.maxLength(150)]],
       categoryId: [null, [Validators.required]],
       description: ['', [Validators.maxLength(500)]],
+      active: [true],
       composite: [false],
       basePrice: [null, [Validators.min(0)]],
       purchasePrice: [null, [Validators.min(0)]],
@@ -151,6 +155,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       name: data.name,
       categoryId: data.categoryId,
       description: data.description,
+      active: data.active,
       composite: data.composite,
       basePrice: data.basePrice,
       purchasePrice: data.purchasePrice,
@@ -176,6 +181,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
           name: product.name,
           categoryId: product.categoryId,
           description: product.description ?? '',
+          active: product.active,
           composite: product.composite,
           basePrice: product.basePrice ?? null,
           purchasePrice: product.purchasePrice ?? null,
@@ -208,6 +214,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
           name: value.name,
           categoryId: value.categoryId!,
           description: value.description || undefined,
+          active: value.active,
           basePrice: value.basePrice ?? undefined,
           purchasePrice: value.purchasePrice ?? undefined,
           profitMargin: value.profitMargin ?? undefined,
@@ -228,6 +235,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
           name: value.name,
           categoryId: value.categoryId!,
           description: value.description || undefined,
+          active: value.active,
           composite: value.composite,
           basePrice: value.basePrice ?? undefined,
           purchasePrice: value.purchasePrice ?? undefined,

@@ -151,15 +151,15 @@ describe('CustomerValidators', () => {
       });
     });
 
-    it('should return phoneMaxLength when exceeds 10 characters', () => {
-      const control = new FormControl('04141234567');
+    it('should return phoneMaxLength when exceeds 20 characters', () => {
+      const control = new FormControl('0414123456789012345678');
       expect(CustomerValidators.phoneNumber()(control)).toEqual({
-        phoneMaxLength: { message: 'El teléfono no puede exceder 10 caracteres', maxLength: 10 },
+        phoneMaxLength: { message: 'El teléfono no puede exceder 20 caracteres', maxLength: 20 },
       });
     });
 
     it('should return null for valid phone', () => {
-      const control = new FormControl('0414123456');
+      const control = new FormControl('0414-1234567');
       expect(CustomerValidators.phoneNumber()(control)).toBeNull();
     });
   });

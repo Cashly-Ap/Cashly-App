@@ -24,7 +24,7 @@
                 <app-details-info-field label="Estado" [value]="w.state" />
                 <app-details-info-field label="Municipio" [value]="w.municipality" />
                 <app-details-info-field label="Dirección" [value]="w.address || '—'" />
-                <app-details-info-field label="Estatus" [value]="w.active ? 'Activo' : 'Inactivo'" />
+                <app-details-info-field label="Estatus" type="badge"><app-status-badge [active]="w.active" /></app-details-info-field>
                 <app-details-info-field label="Fecha de Creación" [value]="(w.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
                 <app-details-info-field label="Última Actualización" [value]="(w.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''" />
                 @if (w.description) {

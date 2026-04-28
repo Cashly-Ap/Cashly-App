@@ -1,10 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { FormsModule } from '@angular/forms';
 import {
   DetailsCardComponent,
   DetailsCardHeaderComponent,
@@ -13,12 +11,13 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserDetails } from '@features/users/models/interfaces';
 import { getUserTypeLabel, UserType, BusinessModule, BUSINESS_MODULE_LABELS } from '@features/users/models/enums';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
-import { AuthService } from '@features/auth/services';
 
 @Component({
   selector: 'app-users-details-page',
@@ -27,8 +26,6 @@ import { AuthService } from '@features/auth/services';
     CommonModule,
     MainLayoutComponent,
     ButtonModule,
-    CheckboxModule,
-    FormsModule,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
@@ -37,33 +34,26 @@ import { AuthService } from '@features/auth/services';
     PageHeaderComponent,
     ChangePasswordDialogComponent,
     ChangeEmailDialogComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './users-details-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersDetailsPageComponent implements OnInit {
   private service = inject(UserApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
-  readonly authService = inject(AuthService);
 
   user = signal<UserDetails | null>(null);
   loading = signal(false);
-  savingPermissions = signal(false);
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
-  selectedModules = signal<BusinessModule[]>([]);
 
-  readonly allModules = [BusinessModule.USERS];
+  readonly allModules = Object.values(BusinessModule);
   readonly moduleLabels = BUSINESS_MODULE_LABELS;
-  readonly hasNoPermissionsSelected = computed(() => this.selectedModules().length === 0);
-  readonly moduleSelectionMap = computed(() => {
-    const selected = this.selectedModules();
-    return new Map(this.allModules.map((m) => [m, selected.includes(m)]));
-  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -77,7 +67,6 @@ export class UsersDetailsPageComponent implements OnInit {
     this.service.loadUserById(id).subscribe({
       next: (user) => {
         this.user.set(user);
-        this.selectedModules.set([...(user.modulePermissions ?? [])]);
         this.loading.set(false);
       },
       error: () => {
@@ -100,41 +89,6 @@ export class UsersDetailsPageComponent implements OnInit {
     }
   }
 
-  onDelete(): void {
-    const userToDelete = this.user();
-    if (!userToDelete) return;
-
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el usuario "${userToDelete.userName}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.deleteUser(userToDelete.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario eliminado exitosamente',
-              life: 3000,
-            });
-            this.router.navigate(['/users']);
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el usuario. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
-  }
-
   onBack(): void {
     this.router.navigate(['/users']);
   }
@@ -143,53 +97,11 @@ export class UsersDetailsPageComponent implements OnInit {
     this.user.update((u) => (u ? { ...u, email: newEmail } : null));
   }
 
-  onSavePermissions(): void {
-    const userId = this.user()?.id;
-    if (!userId) return;
-    if (this.selectedModules().length === 0) return;
-
-    this.savingPermissions.set(true);
-    this.service.updateModulePermissions(userId, this.selectedModules()).subscribe({
-      next: (updated) => {
-        this.user.set(updated);
-        this.savingPermissions.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Permisos de módulo actualizados correctamente',
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.savingPermissions.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al actualizar los permisos. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  isModuleSelected(module: BusinessModule): boolean {
-    return this.selectedModules().includes(module);
-  }
-
-  toggleModule(module: BusinessModule): void {
-    this.selectedModules.update((current) =>
-      current.includes(module)
-        ? current.filter((m) => m !== module)
-        : [...current, module],
-    );
-  }
-
   getTypeLabel(type: UserType): string {
     return getUserTypeLabel(type);
   }
 
-  getInitials(): string {
-    const userName = this.user()?.userName || '';
-    return userName.charAt(0).toUpperCase();
+  isModuleAssigned(module: BusinessModule): boolean {
+    return this.user()?.modulePermissions?.includes(module) ?? false;
   }
 }

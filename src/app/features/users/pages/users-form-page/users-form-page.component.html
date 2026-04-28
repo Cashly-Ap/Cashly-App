@@ -3,70 +3,107 @@
     <app-form-header [title]="title()" [subtitle]="subtitle()" />
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
       <app-form-card>
-        <div class="p-4 md:p-6 flex flex-col gap-6">
 
-          @if (!isEditMode()) {
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <app-text-input
-                label="Correo Electrónico"
-                placeholder="usuario@correo.com"
-                [control]="emailControl"
-                [errorMessage]="getEmailError()"
-              />
-              <app-text-input
-                label="Contraseña"
-                placeholder="••••••••"
-                variant="password"
-                [control]="passwordControl"
-                [errorMessage]="getPasswordError()"
-              />
-            </div>
-          }
+        <p-tabs value="general">
+          <p-tablist>
+            <p-tab value="general">
+              <i class="pi pi-user mr-2"></i>
+              General
+            </p-tab>
+            @if (authService.isSuperAdmin()) {
+              <p-tab value="permisos">
+                <i class="pi pi-shield mr-2"></i>
+                Permisos
+              </p-tab>
+            }
+          </p-tablist>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <app-text-input
-              label="Nombre de Usuario"
-              placeholder="Nombre completo"
-              [control]="userNameControl"
-              [errorMessage]="getUserNameError()"
-            />
+          <p-tabpanels>
+            <p-tabpanel value="general">
+              <div class="flex flex-col gap-6 py-4">
+                @if (!isEditMode()) {
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <app-text-input
+                      label="Correo Electrónico"
+                      placeholder="usuario@correo.com"
+                      [control]="emailControl"
+                      [errorMessage]="getEmailError()"
+                    />
+                    <app-text-input
+                      label="Contraseña"
+                      placeholder="••••••••"
+                      variant="password"
+                      [control]="passwordControl"
+                      [errorMessage]="getPasswordError()"
+                    />
+                  </div>
+                }
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <app-text-input
+                    label="Nombre de Usuario"
+                    placeholder="Nombre completo"
+                    [control]="userNameControl"
+                    [errorMessage]="getUserNameError()"
+                  />
+                  <app-select-input
+                    label="Rol de Usuario"
+                    placeholder="Seleccione un rol"
+                    [options]="userTypes"
+                    [control]="roleControl"
+                    errorMessage="El rol de usuario es requerido"
+                  />
+                </div>
+                <div class="flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900">
+                  <div>
+                    <p class="font-medium text-surface-800 dark:text-surface-200">Usuario Activo</p>
+                    <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">Indica si el usuario puede acceder al sistema</p>
+                  </div>
+                  <p-toggleswitch formControlName="active" />
+                </div>
+                @if (isEditMode()) {
+                  <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-200 dark:border-surface-700">
+                    <p-button
+                      label="Cambiar Contraseña"
+                      icon="pi pi-lock"
+                      [outlined]="true"
+                      styleClass="w-full sm:w-auto"
+                      (onClick)="showChangePasswordDialog.set(true)"
+                    />
+                    <p-button
+                      label="Cambiar Correo"
+                      icon="pi pi-envelope"
+                      [outlined]="true"
+                      styleClass="w-full sm:w-auto"
+                      (onClick)="showChangeEmailDialog.set(true)"
+                    />
+                  </div>
+                }
+              </div>
+            </p-tabpanel>
 
-            <app-select-input
-              label="Rol de Usuario"
-              placeholder="Seleccione un rol"
-              [options]="userTypes"
-              [control]="roleControl"
-              errorMessage="El rol de usuario es requerido"
-            />
-          </div>
+            @if (authService.isSuperAdmin()) {
+              <p-tabpanel value="permisos">
+                <div class="flex flex-col gap-4 py-4">
+                  <span class="text-xs text-surface-400">Selecciona los módulos a los que este usuario tendrá acceso</span>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    @for (module of allModules; track module) {
+                      <label class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+                        <p-checkbox
+                          [binary]="true"
+                          [ngModel]="isModuleSelected(module)"
+                          [ngModelOptions]="{standalone: true}"
+                          (ngModelChange)="toggleModule(module)"
+                        />
+                        <span class="text-sm font-medium dark:text-surface-100">{{ moduleLabels[module] }}</span>
+                      </label>
+                    }
+                  </div>
+                </div>
+              </p-tabpanel>
+            }
+          </p-tabpanels>
+        </p-tabs>
 
-          @if (isEditMode()) {
-            <app-checkbox-input
-              label="Usuario Activo"
-              [control]="activeControl"
-            />
-          }
-
-          @if (isEditMode()) {
-            <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-200 dark:border-surface-700">
-              <p-button
-                label="Cambiar Contraseña"
-                icon="pi pi-lock"
-                [outlined]="true"
-                styleClass="w-full sm:w-auto"
-                (onClick)="showChangePasswordDialog.set(true)"
-              />
-              <p-button
-                label="Cambiar Correo"
-                icon="pi pi-envelope"
-                [outlined]="true"
-                styleClass="w-full sm:w-auto"
-                (onClick)="showChangeEmailDialog.set(true)"
-              />
-            </div>
-          }
-
-        </div>
         <app-form-actions
           [submitLabel]="submitLabel()"
           cancelLabel="Cancelar"

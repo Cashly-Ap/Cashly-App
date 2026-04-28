@@ -123,15 +123,7 @@
                       <td class="hidden md:table-cell"><div class="text-sm">{{ warehouse.state }}</div></td>
                       <td class="hidden md:table-cell"><div class="text-sm text-surface-500">{{ warehouse.municipality }}</div></td>
                       <td>
-                        <span
-                          class="px-2 py-1 text-xs font-semibold rounded"
-                          [ngClass]="{
-                            'bg-white text-black border border-gray-300 dark:bg-black dark:text-white dark:border-gray-600': warehouse.active,
-                            'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-400': !warehouse.active
-                          }"
-                        >
-                          {{ warehouse.active ? 'Activo' : 'Inactivo' }}
-                        </span>
+                        <app-status-badge [active]="warehouse.active" />
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">

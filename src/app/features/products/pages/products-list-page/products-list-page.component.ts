@@ -19,6 +19,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { ProductFilters } from '@features/products/services/api/product-api.service';
@@ -47,9 +49,11 @@ import { ProductList } from '@features/products/models/interfaces';
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './products-list-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class ProductsListPageComponent implements OnInit {
   private service = inject(ProductApplicationService);

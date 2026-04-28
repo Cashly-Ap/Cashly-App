@@ -19,6 +19,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserFilters } from '@features/users/services/api/user-api.service';
 import { UserList } from '@features/users/models/interfaces';
@@ -47,9 +49,11 @@ import { getUserTypeLabel, UserType, USER_TYPES } from '@features/users/models/e
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './users-list-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class UsersListPageComponent implements OnInit {
   private service = inject(UserApplicationService);

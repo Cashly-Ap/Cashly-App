@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit, CustomerWarehouseAccessResponse } from '../../models/interfaces';
+import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit, CustomerWarehouseAccessItem } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CustomerFilters {
@@ -57,19 +57,15 @@ export class CustomerApiService {
     return this.http.put<void>(`${this.baseUrl}/${id}/portal-password`, { newPassword });
   }
 
-  getWarehouseAccess(id: string): Observable<CustomerWarehouseAccessResponse> {
-    return this.http.get<CustomerWarehouseAccessResponse>(`${this.baseUrl}/${id}/warehouse-access`);
+  getWarehouseAccess(id: string): Observable<CustomerWarehouseAccessItem[]> {
+    return this.http.get<CustomerWarehouseAccessItem[]>(`${this.baseUrl}/${id}/warehouses`);
   }
 
-  grantWarehouseAccess(id: string, warehouseId: string): Observable<CustomerWarehouseAccessResponse> {
-    return this.http.post<CustomerWarehouseAccessResponse>(`${this.baseUrl}/${id}/warehouse-access`, { warehouseId });
+  grantWarehouseAccess(id: string, warehouseId: string): Observable<CustomerWarehouseAccessItem> {
+    return this.http.post<CustomerWarehouseAccessItem>(`${this.baseUrl}/${id}/warehouses/${warehouseId}`, {});
   }
 
-  revokeWarehouseAccess(id: string, warehouseId: string): Observable<CustomerWarehouseAccessResponse> {
-    return this.http.delete<CustomerWarehouseAccessResponse>(`${this.baseUrl}/${id}/warehouse-access/${warehouseId}`);
-  }
-
-  revokeAllWarehouseAccess(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}/warehouse-access`);
+  revokeWarehouseAccess(id: string, warehouseId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}/warehouses/${warehouseId}`);
   }
 }

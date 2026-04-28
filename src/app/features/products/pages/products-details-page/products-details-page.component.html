@@ -19,10 +19,12 @@
               <app-details-info-grid>
                 <app-details-info-field label="Nombre" [value]="p.name" />
                 <app-details-info-field label="Categoría" [value]="p.categoryName" />
-                <app-details-info-field label="Tipo" [value]="p.composite ? 'Compuesto' : 'Simple'" />
+                <app-details-info-field label="Tipo" type="badge"><app-text-badge [label]="p.composite ? 'Compuesto' : 'Simple'" variant="label" /></app-details-info-field>
                 <app-details-info-field label="Precio de Venta" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
                 <app-details-info-field label="Stock Total" [value]="p.stockTotal != null ? p.stockTotal.toString() : '—'" />
-                <app-details-info-field label="Estado" [value]="p.active ? 'Activo' : 'Inactivo'" />
+                <app-details-info-field label="Estado" type="badge">
+                  <app-status-badge [active]="p.active" />
+                </app-details-info-field>
                 <app-details-info-field label="Creado" [value]="(p.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
                 <app-details-info-field label="Actualizado" [value]="(p.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''" />
                 <app-details-info-field class="col-span-full" label="Descripción" [value]="p.description || '—'" />

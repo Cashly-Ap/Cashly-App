@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
@@ -17,6 +18,7 @@ import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.compon
 interface CategoryFormData {
   name: string;
   description: string;
+  active: boolean;
 }
 
 @Component({
@@ -29,13 +31,14 @@ interface CategoryFormData {
     MainLayoutComponent,
     InputTextModule,
     TextareaModule,
+    ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
   ],
   templateUrl: './categories-form-page.component.html',
-  providers: [MessageService],
+
 })
 export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormData> {
   private service = inject(CategoryApplicationService);
@@ -56,6 +59,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
     return this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
       description: ['', [Validators.maxLength(500)]],
+      active: [true],
     });
   }
 
@@ -64,13 +68,13 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
   }
 
   protected override restoreFormData(data: CategoryFormData): void {
-    this.form.patchValue({ name: data.name, description: data.description });
+    this.form.patchValue({ name: data.name, description: data.description, active: data.active });
   }
 
   protected override onLoadEntity(id: string): void {
     this.service.loadById(id).subscribe({
       next: (category) => {
-        this.form.patchValue({ name: category.name, description: category.description ?? '' });
+        this.form.patchValue({ name: category.name, description: category.description ?? '', active: category.active });
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar la categoría.', life: 5000 });
@@ -82,7 +86,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
   override onSubmit(): void {
     if (this.form.valid) {
       const value = this.form.getRawValue() as CategoryFormData;
-      const payload = { name: value.name, description: value.description || undefined };
+      const payload = { name: value.name, description: value.description || undefined, active: value.active };
 
       if (this.isEditMode() && this.entityId()) {
         this.service.update(this.entityId()!, payload).subscribe({

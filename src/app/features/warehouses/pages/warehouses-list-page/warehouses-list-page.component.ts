@@ -18,6 +18,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { WarehouseFilters } from '@features/warehouses/services/api/warehouse-api.service';
 import { WarehouseList } from '@features/warehouses/models/interfaces';
@@ -44,9 +45,10 @@ import { WarehouseList } from '@features/warehouses/models/interfaces';
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
+    StatusBadgeComponent,
   ],
   templateUrl: './warehouses-list-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class WarehousesListPageComponent implements OnInit {
   private service = inject(WarehouseApplicationService);

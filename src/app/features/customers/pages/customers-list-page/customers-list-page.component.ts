@@ -19,6 +19,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerFilters } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
@@ -48,9 +50,11 @@ import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/cust
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './customers-list-page.component.html',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class CustomersListPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);

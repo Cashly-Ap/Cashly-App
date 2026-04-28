@@ -12,6 +12,7 @@ import {
 } from '@shared/components/details';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { CategoryDetails } from '@features/categories/models/interfaces';
 
@@ -29,9 +30,10 @@ import { CategoryDetails } from '@features/categories/models/interfaces';
     DetailsInfoGridComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
+    StatusBadgeComponent,
   ],
   templateUrl: './categories-details-page.component.html',
-  providers: [MessageService],
+
 })
 export class CategoriesDetailsPageComponent implements OnInit {
   private service = inject(CategoryApplicationService);
@@ -69,20 +71,6 @@ export class CategoriesDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/categories', id, 'edit']);
     }
-  }
-
-  onToggleActive(): void {
-    const cat = this.category();
-    if (!cat) return;
-    this.service.toggleActive(cat.id, !cat.active).subscribe({
-      next: (updated) => {
-        this.category.set(updated);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: `Categoría ${updated.active ? 'activada' : 'desactivada'} exitosamente`, life: 3000 });
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cambiar el estado.', life: 5000 });
-      },
-    });
   }
 
   onBack(): void {

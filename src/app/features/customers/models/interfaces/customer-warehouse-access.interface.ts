@@ -1,10 +1,6 @@
 export interface CustomerWarehouseAccessItem {
+  id: string;
+  customerId: string;
   warehouseId: string;
   warehouseName: string;
-  state: string;
-  municipality: string;
-}
-
-export interface CustomerWarehouseAccessResponse {
-  items: CustomerWarehouseAccessItem[];
 }

@@ -67,7 +67,7 @@ export class CustomerValidators {
 
       const trimmed = value.trim();
       if (trimmed.length === 0) return { phoneBlank: { message: 'El teléfono no puede estar vacío' } };
-      if (trimmed.length > 10) return { phoneMaxLength: { message: 'El teléfono no puede exceder 10 caracteres', maxLength: 10 } };
+      if (trimmed.length > 20) return { phoneMaxLength: { message: 'El teléfono no puede exceder 20 caracteres', maxLength: 20 } };
 
       return null;
     };
