@@ -23,6 +23,7 @@ import {
 import { TabContentComponent } from '@core/forms/components/cards';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
+import { ProductPricesSectionComponent } from '../product-prices-section/product-prices-section.component';
 
 @Component({
   selector: 'app-product-general-section',
@@ -41,6 +42,7 @@ import { FormMode } from '@core/forms/enums/form-mode.enum';
     NumberInputComponent,
     FileInputComponent,
     TabContentComponent,
+    ProductPricesSectionComponent,
   ],
   templateUrl: './product-general-section.component.html',
 })

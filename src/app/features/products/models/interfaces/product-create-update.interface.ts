@@ -1,3 +1,5 @@
+import { ProductPriceFormItem } from './product-price-form-item.interface';
+
 export interface ProductComponentInput {
   componentProductId: string;
   quantity: number;
@@ -12,6 +14,7 @@ export interface ProductCreate {
   purchasePrice?: number;
   profitMargin?: number;
   components?: ProductComponentInput[];
+  productPrices: ProductPriceFormItem[];
 }
 
 export interface ProductUpdate {
@@ -22,4 +25,5 @@ export interface ProductUpdate {
   purchasePrice?: number;
   profitMargin?: number;
   components?: ProductComponentInput[];
+  productPrices: ProductPriceFormItem[];
 }

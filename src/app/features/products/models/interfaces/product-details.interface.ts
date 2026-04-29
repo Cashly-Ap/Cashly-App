@@ -1,3 +1,5 @@
+import { ProductPriceItem } from './product-price-item.interface';
+
 export interface ProductComponentItem {
   id: string;
   componentProductId: string;
@@ -21,6 +23,7 @@ export interface ProductDetails {
   active: boolean;
   stockTotal?: number;
   components: ProductComponentItem[];
+  productPrices: ProductPriceItem[];
   createdAt: string;
   updatedAt: string;
 }

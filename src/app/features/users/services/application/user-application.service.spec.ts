@@ -5,6 +5,7 @@ import { UserApplicationService } from './user-application.service';
 import { UserApiService } from '@features/users/services/api';
 import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
 import { UserType } from '@features/users/models/enums';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('UserApplicationService', () => {
   let service: UserApplicationService;
@@ -36,6 +37,14 @@ describe('UserApplicationService', () => {
     emailVerified: true,
     createdAt: '2024-01-01T00:00:00Z',
   };
+
+  const mockPagedResponse = (items: UserList[]): PagedResponse<UserList> => ({
+    content: items,
+    totalElements: items.length,
+    totalPages: 1,
+    size: 20,
+    number: 0,
+  });
 
   beforeEach(() => {
     mockApiService = {
@@ -73,7 +82,7 @@ describe('UserApplicationService', () => {
 
   describe('loadUsers', () => {
     it('should load users and update signal', () => {
-      mockApiService.getAll.mockReturnValue(of([mockUserList]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockUserList])));
 
       service.loadUsers().subscribe(() => {
         expect(service.users()).toHaveLength(1);
@@ -96,7 +105,7 @@ describe('UserApplicationService', () => {
     });
 
     it('should clear previous error before loading', () => {
-      mockApiService.getAll.mockReturnValue(of([mockUserList]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockUserList])));
 
       service.loadUsers().subscribe(() => {
         expect(service.error()).toBeNull();
@@ -175,7 +184,7 @@ describe('UserApplicationService', () => {
 
   describe('updateUser', () => {
     it('should update user and refresh list item', () => {
-      mockApiService.getAll.mockReturnValue(of([mockUserList]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockUserList])));
       service.loadUsers().subscribe();
 
       const updatedDetails: UserDetails = {
@@ -247,7 +256,7 @@ describe('UserApplicationService', () => {
 
   describe('deleteUser', () => {
     it('should delete user and remove from list', () => {
-      mockApiService.getAll.mockReturnValue(of([mockUserList]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockUserList])));
       service.loadUsers().subscribe();
 
       mockApiService.delete.mockReturnValue(of(undefined));

@@ -6,6 +6,7 @@ import { CustomerApiService } from '@features/customers/services/api';
 import { CustomerMapper } from '@features/customers/services/mappers';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '@features/customers/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('CustomerApplicationService', () => {
   let service: CustomerApplicationService;
@@ -42,6 +43,14 @@ describe('CustomerApplicationService', () => {
     type: CustomerType.BUSINESS,
     active: true,
   };
+
+  const mockPagedResponse = (items: CustomerList[]): PagedResponse<CustomerList> => ({
+    content: items,
+    totalElements: items.length,
+    totalPages: 1,
+    size: 20,
+    number: 0,
+  });
 
   beforeEach(() => {
     mockApiService = {
@@ -83,7 +92,7 @@ describe('CustomerApplicationService', () => {
 
   describe('loadAll()', () => {
     it('should load customers and update signal', () => {
-      mockApiService.getAll.mockReturnValue(of([mockListItem]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
 
       service.loadAll().subscribe(() => {
         expect(service.customers()).toHaveLength(1);
@@ -106,7 +115,7 @@ describe('CustomerApplicationService', () => {
     });
 
     it('should clear previous error before loading', () => {
-      mockApiService.getAll.mockReturnValue(of([mockListItem]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
 
       service.loadAll().subscribe(() => {
         expect(service.error()).toBeNull();
@@ -195,7 +204,7 @@ describe('CustomerApplicationService', () => {
 
   describe('update()', () => {
     it('should update customer and refresh list item', () => {
-      mockApiService.getAll.mockReturnValue(of([mockListItem]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
       service.loadAll().subscribe();
 
       const updatedDetails: CustomerDetails = { ...mockDetails, legalName: 'Acme C.A. Updated', alias: 'ACME Updated' };
@@ -252,7 +261,7 @@ describe('CustomerApplicationService', () => {
 
   describe('delete()', () => {
     it('should delete customer and remove from list', () => {
-      mockApiService.getAll.mockReturnValue(of([mockListItem]));
+      mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
       service.loadAll().subscribe();
 
       mockApiService.delete.mockReturnValue(of(undefined));

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy, effect, Injector } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -14,9 +14,11 @@ import {
 import { ProductApplicationService } from '@features/products/services/application';
 import { ProductPhotoService } from '@features/products/services/api';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { ProductComponentInput } from '@features/products/models/interfaces';
+import { ProductComponentInput, ProductPriceItem } from '@features/products/models/interfaces';
 import { ProductGeneralSectionComponent } from '@features/products/components/product-general-section/product-general-section.component';
 import { ProductCompositionSectionComponent } from '@features/products/components/product-composition-section/product-composition-section.component';
+import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeList } from '@features/price-types/models/interfaces';
 import { switchMap, of } from 'rxjs';
 
 interface ProductFormData {
@@ -30,6 +32,7 @@ interface ProductFormData {
   profitMargin: number | null;
   photo: File | null;
   components: { componentProductId: string | null; quantity: number }[];
+  productPrices: { priceTypeId: string; price: number }[];
 }
 
 @Component({
@@ -55,14 +58,21 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
   private readonly service = inject(ProductApplicationService);
   private readonly photoService = inject(ProductPhotoService);
   private readonly messageService = inject(MessageService);
+  private readonly priceTypeService = inject(PriceTypeApplicationService);
+  private readonly injector = inject(Injector);
 
   readonly loading = this.service.loading;
   readonly existingPhotoUrl = this.photoService.photoUrl;
 
   readonly isComposite = signal(false);
+  private pendingExistingPrices: ProductPriceItem[] | null = null;
 
   get componentsArray(): FormArray {
     return this.form.get('components') as FormArray;
+  }
+
+  get pricesArray(): FormArray {
+    return this.form.get('productPrices') as FormArray;
   }
 
   asFormControl(name: string): FormControl {
@@ -90,11 +100,33 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       profitMargin: [null, [Validators.min(0), Validators.max(100)]],
       photo: [null],
       components: this.fb.array([]),
+      productPrices: this.fb.array([]),
+    });
+  }
+
+  private buildPricesFormArray(priceTypes: PriceTypeList[], existingPrices: ProductPriceItem[] = []): void {
+    while (this.pricesArray.length) this.pricesArray.removeAt(0);
+    priceTypes.forEach((pt) => {
+      const existing = existingPrices.find((p) => p.priceTypeId === pt.id);
+      this.pricesArray.push(this.fb.group({
+        priceTypeId: [pt.id],
+        price: [existing?.price ?? 0, [Validators.required, Validators.min(0)]],
+      }));
     });
   }
 
   override ngOnInit(): void {
     super.ngOnInit?.();
+
+    this.priceTypeService.loadAll().subscribe();
+
+    effect(() => {
+      const types = this.priceTypeService.priceTypes();
+      if (types.length > 0) {
+        this.buildPricesFormArray(types, this.pendingExistingPrices ?? []);
+        this.pendingExistingPrices = null;
+      }
+    }, { injector: this.injector });
 
     this.form.get('composite')?.valueChanges.subscribe((val: boolean) => {
       this.isComposite.set(val);
@@ -156,6 +188,15 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
         }));
       });
     }
+    if (data.productPrices?.length) {
+      while (this.pricesArray.length) this.pricesArray.removeAt(0);
+      data.productPrices.forEach((p) => {
+        this.pricesArray.push(this.fb.group({
+          priceTypeId: [p.priceTypeId],
+          price: [p.price, [Validators.required, Validators.min(0)]],
+        }));
+      });
+    }
     this.isComposite.set(!!data.composite);
   }
 
@@ -180,6 +221,12 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
             quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
           }));
         });
+        const types = this.priceTypeService.priceTypes();
+        if (types.length > 0) {
+          this.buildPricesFormArray(types, product.productPrices);
+        } else {
+          this.pendingExistingPrices = product.productPrices;
+        }
         this.photoService.loadPhoto(product.photo);
       },
       error: () => {
@@ -211,6 +258,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       purchasePrice: value.purchasePrice ?? undefined,
       profitMargin: value.profitMargin ?? undefined,
       components,
+      productPrices: value.productPrices,
     };
 
     if (this.isEditMode() && this.entityId()) {

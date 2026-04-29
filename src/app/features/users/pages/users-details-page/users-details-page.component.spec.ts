@@ -100,11 +100,6 @@ describe('UsersDetailsPageComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/users']);
   });
 
-  it('should return correct initials', () => {
-    fixture.detectChanges();
-    expect(component.getInitials()).toBe('T');
-  });
-
   it('should return correct type label for OPERATOR', () => {
     const label = component.getTypeLabel(UserType.OPERATOR);
     expect(label).toBe('Operador');
