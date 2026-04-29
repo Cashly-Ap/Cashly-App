@@ -24,7 +24,7 @@
                 <app-details-info-field label="Precio Base" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
                 <app-details-info-field label="Precio de Compra" [value]="p.purchasePrice != null ? ((p.purchasePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
                 <app-details-info-field label="Margen de Ganancia" [value]="p.profitMargin != null ? ((p.profitMargin | number: '1.2-2') + '%') : '—'" />
-                <app-details-info-field label="Stock Total" [value]="p.stockTotal != null ? p.stockTotal.toString() : '—'" />
+                <app-details-info-field label="Stock Total" [value]="totalStock().toString()" />
                 <app-details-info-field label="Estado" type="badge">
                   <app-status-badge [active]="p.active" />
                 </app-details-info-field>

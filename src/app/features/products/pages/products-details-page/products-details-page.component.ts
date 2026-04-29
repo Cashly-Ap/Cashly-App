@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
@@ -47,6 +47,7 @@ export class ProductsDetailsPageComponent implements OnInit {
 
   product = signal<ProductDetails | null>(null);
   stockByWarehouse = signal<ProductStockByWarehouse[]>([]);
+  totalStock = computed(() => this.stockByWarehouse().reduce((sum, s) => sum + s.quantity, 0));
   loading = signal(false);
   photoUrl = this.photoService.photoUrl;
 
