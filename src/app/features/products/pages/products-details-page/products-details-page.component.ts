@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of, catchError } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
@@ -16,7 +17,7 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { ProductPhotoService } from '@features/products/services/api';
-import { ProductDetails } from '@features/products/models/interfaces';
+import { ProductDetails, ProductStockByWarehouse } from '@features/products/models/interfaces';
 
 @Component({
   selector: 'app-products-details-page',
@@ -45,6 +46,7 @@ export class ProductsDetailsPageComponent implements OnInit {
   private messageService = inject(MessageService);
 
   product = signal<ProductDetails | null>(null);
+  stockByWarehouse = signal<ProductStockByWarehouse[]>([]);
   loading = signal(false);
   photoUrl = this.photoService.photoUrl;
 
@@ -55,9 +57,13 @@ export class ProductsDetailsPageComponent implements OnInit {
 
   private loadProduct(id: string): void {
     this.loading.set(true);
-    this.service.loadById(id).subscribe({
-      next: (product) => {
+    forkJoin({
+      product: this.service.loadById(id),
+      stock: this.service.getStock(id).pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ product, stock }) => {
         this.product.set(product);
+        this.stockByWarehouse.set(stock);
         this.photoService.loadPhoto(product.photo);
         this.loading.set(false);
       },

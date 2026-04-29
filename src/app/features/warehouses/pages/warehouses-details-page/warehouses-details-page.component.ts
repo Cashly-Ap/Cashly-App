@@ -1,14 +1,12 @@
 import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
+import { forkJoin, of, catchError } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { TabsModule } from 'primeng/tabs';
-import { SelectModule } from 'primeng/select';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import {
   DetailsCardComponent,
@@ -20,8 +18,21 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { ProductApplicationService } from '@features/products/services/application';
-import { WarehouseDetails } from '@features/warehouses/models/interfaces';
+import { WarehouseDetails, WarehouseMovementItem } from '@features/warehouses/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+
+const MOVEMENT_TYPE_OPTIONS = [
+  { label: 'Todos los tipos', value: '' },
+  { label: 'Entrada', value: 'ENTRY' },
+  { label: 'Salida', value: 'EXIT' },
+  { label: 'Ajuste', value: 'ADJUSTMENT' },
+  { label: 'Salida por componente', value: 'COMPONENT_EXIT' },
+  { label: 'Transferencia entrada', value: 'TRANSFER_IN' },
+  { label: 'Transferencia salida', value: 'TRANSFER_OUT' },
+];
+
+const MOVEMENTS_PAGE_SIZE = 15;
+const STOCK_PAGE_SIZE = 10;
 
 @Component({
   selector: 'app-warehouses-details-page',
@@ -29,14 +40,11 @@ import { WarehouseDetails } from '@features/warehouses/models/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormsModule,
     MainLayoutComponent,
     ButtonModule,
-    DialogModule,
-    TabsModule,
-    SelectModule,
-    InputNumberModule,
     InputTextModule,
+    SelectModule,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
@@ -46,46 +54,57 @@ import { WarehouseDetails } from '@features/warehouses/models/interfaces';
     StatusBadgeComponent,
   ],
   templateUrl: './warehouses-details-page.component.html',
-
 })
 export class WarehousesDetailsPageComponent implements OnInit {
   private service = inject(WarehouseApplicationService);
-  private productService = inject(ProductApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private fb = inject(FormBuilder);
   private messageService = inject(MessageService);
 
   warehouse = signal<WarehouseDetails | null>(null);
   loading = signal(false);
-  showStockDialog = signal(false);
-  stockLoading = signal(false);
 
-  productOptions = computed(() =>
-    this.productService.simpleProducts().map((p) => ({ value: p.id, label: p.name }))
-  );
+  stockSearch = signal('');
+  stockPage = signal(0);
+  readonly stockPageSize = STOCK_PAGE_SIZE;
 
-  stockForm: FormGroup = this.fb.group({
-    lines: this.fb.array([this.createLineGroup()]),
+  filteredStock = computed(() => {
+    const search = this.stockSearch().toLowerCase().trim();
+    const stock = this.warehouse()?.stock ?? [];
+    return search ? stock.filter((s) => s.productName.toLowerCase().includes(search)) : stock;
   });
 
-  get linesArray(): FormArray {
-    return this.stockForm.get('lines') as FormArray;
-  }
+  pagedStock = computed(() => {
+    const page = this.stockPage();
+    const all = this.filteredStock();
+    return all.slice(page * STOCK_PAGE_SIZE, (page + 1) * STOCK_PAGE_SIZE);
+  });
+
+  stockTotalPages = computed(() => Math.ceil(this.filteredStock().length / STOCK_PAGE_SIZE));
+
+  showMovements = signal(false);
+  movementsLoading = signal(false);
+  movementsPage = signal(0);
+  movementsTotalPages = signal(0);
+  movementsTotalElements = signal(0);
+  movementsList = signal<WarehouseMovementItem[]>([]);
+  movementTypeFilter = signal('');
+
+  readonly movementTypeOptions = MOVEMENT_TYPE_OPTIONS;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadWarehouse(id);
-      this.productService.loadSimpleProducts().subscribe();
-    }
+    if (id) this.loadWarehouse(id);
   }
 
   private loadWarehouse(id: string): void {
     this.loading.set(true);
-    this.service.loadById(id).subscribe({
-      next: (warehouse) => {
-        this.warehouse.set(warehouse);
+    forkJoin({
+      warehouse: this.service.loadById(id),
+      stock: this.service.getStock(id).pipe(catchError(() => of([]))),
+    }).subscribe({
+      next: ({ warehouse, stock }) => {
+        this.warehouse.set({ ...warehouse, stock, recentMovements: [] });
         this.loading.set(false);
       },
       error: () => {
@@ -96,51 +115,48 @@ export class WarehousesDetailsPageComponent implements OnInit {
     });
   }
 
-  private createLineGroup(): FormGroup {
-    return this.fb.group({
-      productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(0.01)]],
-      notes: [''],
-    });
+  onStockSearchChange(): void {
+    this.stockPage.set(0);
   }
 
-  addLine(): void {
-    this.linesArray.push(this.createLineGroup());
+  onStockPageChange(page: number): void {
+    this.stockPage.set(page);
   }
 
-  removeLine(index: number): void {
-    this.linesArray.removeAt(index);
-  }
-
-  openStockDialog(): void {
-    while (this.linesArray.length > 1) this.linesArray.removeAt(1);
-    this.linesArray.at(0).reset({ productId: null, quantity: 1, notes: '' });
-    this.showStockDialog.set(true);
-  }
-
-  onSubmitStock(): void {
-    if (this.stockForm.invalid) {
-      this.stockForm.markAllAsTouched();
-      return;
+  onToggleMovements(): void {
+    const showing = this.showMovements();
+    if (!showing && this.movementsList().length === 0) {
+      this.loadMovements(0);
     }
+    this.showMovements.set(!showing);
+  }
 
-    const warehouseId = this.warehouse()?.id;
-    if (!warehouseId) return;
+  onMovementTypeChange(): void {
+    this.movementsPage.set(0);
+    this.loadMovements(0);
+  }
 
-    const lines = (this.stockForm.getRawValue().lines as { productId: string; quantity: number; notes: string }[])
-      .map((l) => ({ productId: l.productId, quantity: l.quantity, notes: l.notes || undefined }));
+  onMovementsPageChange(page: number): void {
+    this.movementsPage.set(page);
+    this.loadMovements(page);
+  }
 
-    this.stockLoading.set(true);
-    this.service.addStock(warehouseId, { lines }).subscribe({
-      next: (updated) => {
-        this.warehouse.set(updated);
-        this.showStockDialog.set(false);
-        this.stockLoading.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Stock registrado exitosamente', life: 3000 });
+  private loadMovements(page: number): void {
+    const id = this.warehouse()?.id;
+    if (!id) return;
+    this.movementsLoading.set(true);
+    this.service.getMovements(id, { page, size: MOVEMENTS_PAGE_SIZE }).subscribe({
+      next: (res: PagedResponse<WarehouseMovementItem>) => {
+        const type = this.movementTypeFilter();
+        const items = res.content ?? [];
+        this.movementsList.set(type ? items.filter((m) => m.movementType === type) : items);
+        this.movementsTotalPages.set(res.totalPages ?? 0);
+        this.movementsTotalElements.set(res.totalElements ?? 0);
+        this.movementsLoading.set(false);
       },
       error: () => {
-        this.stockLoading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al registrar el stock.', life: 5000 });
+        this.movementsLoading.set(false);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar los movimientos.', life: 5000 });
       },
     });
   }
@@ -150,39 +166,25 @@ export class WarehousesDetailsPageComponent implements OnInit {
     if (id) this.router.navigate(['/warehouses', id, 'edit']);
   }
 
-  onToggleActive(): void {
-    const w = this.warehouse();
-    if (!w) return;
-    this.service.toggleActive(w.id, !w.active).subscribe({
-      next: (updated) => {
-        this.warehouse.set(updated);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: `Almacén ${updated.active ? 'activado' : 'desactivado'} exitosamente`, life: 3000 });
-      },
-      error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cambiar el estado.', life: 5000 });
-      },
-    });
-  }
-
   onBack(): void {
     this.router.navigate(['/warehouses']);
   }
 
   getMovementTypeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      ENTRY: 'Entrada',
-      EXIT: 'Salida',
-      ADJUSTMENT: 'Ajuste',
-    };
-    return labels[type] ?? type;
+    const found = MOVEMENT_TYPE_OPTIONS.find((o) => o.value === type);
+    return found?.label ?? type;
   }
 
-  getMovementTypeClass(type: string): string {
-    const classes: Record<string, string> = {
-      ENTRY: 'px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
-      EXIT: 'px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
-      ADJUSTMENT: 'px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  getMovementTypeBadgeClass(type: string): string {
+    const base = 'px-2 py-0.5 rounded text-xs font-medium';
+    const map: Record<string, string> = {
+      ENTRY: `${base} bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300`,
+      EXIT: `${base} bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300`,
+      ADJUSTMENT: `${base} bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300`,
+      COMPONENT_EXIT: `${base} bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300`,
+      TRANSFER_IN: `${base} bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300`,
+      TRANSFER_OUT: `${base} bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300`,
     };
-    return classes[type] ?? 'px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800';
+    return map[type] ?? `${base} bg-surface-100 text-surface-700`;
   }
 }

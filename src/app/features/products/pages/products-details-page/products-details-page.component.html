@@ -91,6 +91,40 @@
             </app-details-card>
           }
 
+          <app-details-card>
+            <app-details-card-header title="Stock por Almacén" />
+            <div class="p-4 sm:p-6">
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr class="border-b border-surface-200 dark:border-surface-700">
+                      <th class="text-left py-2 font-semibold">Almacén</th>
+                      <th class="text-right py-2 font-semibold">Cantidad</th>
+                      <th class="text-right py-2 font-semibold">Último Movimiento</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (s of stockByWarehouse(); track s.warehouseId) {
+                      <tr class="border-b border-surface-100 dark:border-surface-800">
+                        <td class="py-2">{{ s.warehouseName }}</td>
+                        <td class="py-2 text-right font-medium">{{ s.quantity }}</td>
+                        <td class="py-2 text-right text-surface-500 dark:text-surface-400">
+                          {{ s.lastMovementAt ? (s.lastMovementAt | date: 'dd/MM/yyyy HH:mm') : '—' }}
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="3" class="py-6 text-center text-sm text-surface-400 dark:text-surface-500">
+                          Sin stock registrado en almacenes
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </app-details-card>
+
           @if (photoUrl()) {
             <app-details-card>
               <app-details-card-header title="Foto" />

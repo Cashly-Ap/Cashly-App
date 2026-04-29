@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
 import { ProductApiService, ProductFilters } from '../api/product-api.service';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate } from '../../models/interfaces';
+import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -103,5 +103,13 @@ export class ProductApplicationService {
       }),
       finalize(() => this.loading.set(false)),
     );
+  }
+
+  getById(id: string): Observable<ProductDetails> {
+    return this.api.getById(id);
+  }
+
+  getStock(id: string): Observable<ProductStockByWarehouse[]> {
+    return this.api.getStock(id);
   }
 }

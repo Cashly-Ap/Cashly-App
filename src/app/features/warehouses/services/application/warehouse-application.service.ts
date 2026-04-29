@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
 import { WarehouseApiService, WarehouseFilters } from '../api/warehouse-api.service';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest } from '../../models/interfaces';
+import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -103,15 +103,19 @@ export class WarehouseApplicationService {
     );
   }
 
-  addStock(id: string, data: StockEntryRequest): Observable<WarehouseDetails> {
-    this.loading.set(true);
-    this.error.set(null);
-    return this.api.addStock(id, data).pipe(
-      tap({
-        next: (warehouse) => this.currentWarehouse.set(warehouse),
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
+  addEntry(id: string, data: StockEntryRequest): Observable<void> {
+    return this.api.addEntry(id, data);
+  }
+
+  addExit(id: string, data: StockExitRequest): Observable<void> {
+    return this.api.addExit(id, data);
+  }
+
+  getStock(id: string): Observable<WarehouseStockItem[]> {
+    return this.api.getStock(id);
+  }
+
+  getMovements(id: string, filters?: MovementFilters): Observable<PagedResponse<WarehouseMovementItem>> {
+    return this.api.getMovements(id, filters);
   }
 }

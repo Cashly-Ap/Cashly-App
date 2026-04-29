@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest } from '../../models/interfaces';
+import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface WarehouseFilters {
@@ -53,7 +53,34 @@ export class WarehouseApiService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  addStock(id: string, data: StockEntryRequest): Observable<WarehouseDetails> {
-    return this.http.post<WarehouseDetails>(`${this.baseUrl}/${id}/stock`, data);
+  addEntry(id: string, data: StockEntryRequest): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/stock/entry`, data);
+  }
+
+  addExit(id: string, data: StockExitRequest): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/stock/exit`, data);
+  }
+
+  getStock(id: string): Observable<WarehouseStockItem[]> {
+    const params = new HttpParams().set('size', '1000');
+    return this.http.get<PagedResponse<{ productId: string; productName: string; quantity: number }>>(
+      `${this.baseUrl}/${id}/stock`,
+      { params }
+    ).pipe(
+      map((res) => (res.content ?? []).map((s) => ({
+        productId: s.productId,
+        productName: s.productName,
+        unit: '',
+        quantity: s.quantity,
+      })))
+    );
+  }
+
+  getMovements(id: string, filters?: MovementFilters): Observable<PagedResponse<WarehouseMovementItem>> {
+    let params = new HttpParams();
+    if (filters?.productId) params = params.set('productId', filters.productId);
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    return this.http.get<PagedResponse<WarehouseMovementItem>>(`${this.baseUrl}/${id}/movements`, { params });
   }
 }

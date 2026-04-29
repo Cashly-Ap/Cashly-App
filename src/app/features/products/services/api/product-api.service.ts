@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate } from '../../models/interfaces';
+import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ProductFilters {
@@ -51,5 +51,9 @@ export class ProductApiService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  getStock(id: string): Observable<ProductStockByWarehouse[]> {
+    return this.http.get<ProductStockByWarehouse[]>(`${this.baseUrl}/${id}/stock`);
   }
 }

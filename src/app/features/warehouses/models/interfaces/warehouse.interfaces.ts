@@ -15,13 +15,23 @@ export interface WarehouseStockItem {
 
 export interface WarehouseMovementItem {
   id: string;
+  warehouseId: string;
   productId: string;
+  productCode: string;
   productName: string;
-  type: string;
+  movementType: string;
   quantity: number;
+  previousStock: number;
+  newStock: number;
   notes?: string;
   createdAt: string;
-  createdBy: string;
+}
+
+export interface MovementFilters {
+  productId?: string;
+  movementType?: string;
+  page?: number;
+  size?: number;
 }
 
 export interface WarehouseDetails {
@@ -54,12 +64,16 @@ export interface WarehouseUpdate {
   description?: string;
 }
 
-export interface StockEntryLine {
+export interface StockBatchItem {
   productId: string;
   quantity: number;
   notes?: string;
 }
 
 export interface StockEntryRequest {
-  lines: StockEntryLine[];
+  items: StockBatchItem[];
+}
+
+export interface StockExitRequest {
+  items: StockBatchItem[];
 }
