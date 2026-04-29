@@ -37,6 +37,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
+          label: 'Tipos de Precios',
+          icon: 'pi pi-tag',
+          routerLink: '/price-types',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
           label: 'Productos',
           icon: 'pi pi-box',
           routerLink: '/products',
