@@ -63,19 +63,18 @@ export class WarehousesListPageComponent implements OnInit {
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
-  filterActive = signal('');
+  filterActive = signal('true');
 
   activeFilterOptions = [
-    { label: 'Todos', value: '' },
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
 
   showInitialLoading = computed(() => this.loading() && this.warehouses().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && !this.filterActive() && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (!!this.filterActive() || !!this.searchTerm()));
+  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.filterActive() === 'true' && !this.searchTerm());
+  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.filterActive() !== 'true' || !!this.searchTerm()));
 
-  activeFilterCount = computed(() => (this.filterActive() ? 1 : 0));
+  activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
 
   ngOnInit(): void {
     this.loadWithFilters();
@@ -100,7 +99,7 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.filterActive.set('');
+    this.filterActive.set('true');
     this.first.set(0);
     this.loadWithFilters();
   }

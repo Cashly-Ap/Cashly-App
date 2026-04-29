@@ -70,12 +70,11 @@ export class ProductsListPageComponent implements OnInit {
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
-  filterActive = signal('');
+  filterActive = signal('true');
   filterComposite = signal('');
   filterCategoryId = signal<string | null>(null);
 
   activeFilterOptions = [
-    { label: 'Todos', value: '' },
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
@@ -87,12 +86,12 @@ export class ProductsListPageComponent implements OnInit {
   ];
 
   showInitialLoading = computed(() => this.loading() && this.products().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && !this.filterActive() && !this.filterComposite() && !this.filterCategoryId() && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (!!this.filterActive() || !!this.filterComposite() || !!this.filterCategoryId() || !!this.searchTerm()));
+  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.filterActive() === 'true' && !this.filterComposite() && !this.filterCategoryId() && !this.searchTerm());
+  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.filterActive() !== 'true' || !!this.filterComposite() || !!this.filterCategoryId() || !!this.searchTerm()));
 
   activeFilterCount = computed(() => {
     let count = 0;
-    if (this.filterActive()) count++;
+    if (this.filterActive() !== 'true') count++;
     if (this.filterComposite()) count++;
     if (this.filterCategoryId() !== null) count++;
     return count;
@@ -139,7 +138,7 @@ export class ProductsListPageComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.filterActive.set('');
+    this.filterActive.set('true');
     this.filterComposite.set('');
     this.filterCategoryId.set(null);
     this.first.set(0);

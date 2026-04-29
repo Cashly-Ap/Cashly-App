@@ -73,7 +73,7 @@ export class CustomersListPageComponent implements OnInit {
   orderDir = signal<'asc' | 'desc'>('asc');
 
   filterType = signal<string>('');
-  filterActive = signal<string>('');
+  filterActive = signal<string>('true');
   filterPortalAccess = signal<string>('');
   filterState = signal<string>('');
   filterMunicipality = signal<string>('');
@@ -81,7 +81,7 @@ export class CustomersListPageComponent implements OnInit {
   activeFilterCount = computed(() => {
     let count = 0;
     if (this.filterType()) count++;
-    if (this.filterActive()) count++;
+    if (this.filterActive() !== 'true') count++;
     if (this.filterPortalAccess()) count++;
     if (this.filterState()) count++;
     if (this.filterMunicipality()) count++;
@@ -98,7 +98,6 @@ export class CustomersListPageComponent implements OnInit {
   ];
 
   activeOptions = [
-    { label: 'Todos', value: '' },
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
@@ -184,7 +183,7 @@ export class CustomersListPageComponent implements OnInit {
 
   clearFilters(): void {
     this.filterType.set('');
-    this.filterActive.set('');
+    this.filterActive.set('true');
     this.filterPortalAccess.set('');
     this.filterState.set('');
     this.filterMunicipality.set('');

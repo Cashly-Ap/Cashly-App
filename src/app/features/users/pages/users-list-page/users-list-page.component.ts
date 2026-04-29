@@ -72,12 +72,12 @@ export class UsersListPageComponent implements OnInit {
   orderDir = signal<'asc' | 'desc'>('asc');
 
   filterRole = signal<string>('');
-  filterActive = signal<string>('');
+  filterActive = signal<string>('true');
 
   activeFilterCount = computed(() => {
     let count = 0;
     if (this.filterRole()) count++;
-    if (this.filterActive()) count++;
+    if (this.filterActive() !== 'true') count++;
     return count;
   });
 
@@ -87,7 +87,6 @@ export class UsersListPageComponent implements OnInit {
   ];
 
   activeOptions = [
-    { label: 'Todos', value: '' },
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
@@ -143,7 +142,7 @@ export class UsersListPageComponent implements OnInit {
 
   clearFilters(): void {
     this.filterRole.set('');
-    this.filterActive.set('');
+    this.filterActive.set('true');
     this.first.set(0);
     this.loadWithFilters();
   }
