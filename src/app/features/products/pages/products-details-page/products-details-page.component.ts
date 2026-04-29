@@ -15,6 +15,7 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ProductApplicationService } from '@features/products/services/application';
+import { ProductPhotoService } from '@features/products/services/api';
 import { ProductDetails } from '@features/products/models/interfaces';
 
 @Component({
@@ -35,16 +36,17 @@ import { ProductDetails } from '@features/products/models/interfaces';
     TextBadgeComponent,
   ],
   templateUrl: './products-details-page.component.html',
-
 })
 export class ProductsDetailsPageComponent implements OnInit {
   private service = inject(ProductApplicationService);
+  private photoService = inject(ProductPhotoService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
 
   product = signal<ProductDetails | null>(null);
   loading = signal(false);
+  photoUrl = this.photoService.photoUrl;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -56,6 +58,7 @@ export class ProductsDetailsPageComponent implements OnInit {
     this.service.loadById(id).subscribe({
       next: (product) => {
         this.product.set(product);
+        this.photoService.loadPhoto(product.photo);
         this.loading.set(false);
       },
       error: () => {

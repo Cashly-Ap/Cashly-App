@@ -17,10 +17,13 @@
             </app-details-card-header>
             <div class="p-4 sm:p-6">
               <app-details-info-grid>
+                <app-details-info-field label="Código" [value]="p.code" />
                 <app-details-info-field label="Nombre" [value]="p.name" />
                 <app-details-info-field label="Categoría" [value]="p.categoryName" />
                 <app-details-info-field label="Tipo" type="badge"><app-text-badge [label]="p.composite ? 'Compuesto' : 'Simple'" variant="label" /></app-details-info-field>
-                <app-details-info-field label="Precio de Venta" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
+                <app-details-info-field label="Precio Base" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
+                <app-details-info-field label="Precio de Compra" [value]="p.purchasePrice != null ? ((p.purchasePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
+                <app-details-info-field label="Margen de Ganancia" [value]="p.profitMargin != null ? ((p.profitMargin | number: '1.2-2') + '%') : '—'" />
                 <app-details-info-field label="Stock Total" [value]="p.stockTotal != null ? p.stockTotal.toString() : '—'" />
                 <app-details-info-field label="Estado" type="badge">
                   <app-status-badge [active]="p.active" />
@@ -47,12 +50,27 @@
                     <tbody>
                       @for (comp of p.components; track comp.componentProductId) {
                         <tr class="border-b border-surface-100 dark:border-surface-800">
-                          <td class="py-2">{{ comp.componentName }}</td>
+                          <td class="py-2">{{ comp.componentProductName }}</td>
                           <td class="py-2 text-right font-medium">{{ comp.quantity }}</td>
                         </tr>
                       }
                     </tbody>
                   </table>
+                </div>
+              </div>
+            </app-details-card>
+          }
+
+          @if (photoUrl()) {
+            <app-details-card>
+              <app-details-card-header title="Foto" />
+              <div class="p-4 sm:p-6">
+                <div class="overflow-hidden rounded-xl w-56">
+                  <img
+                    [src]="photoUrl()!"
+                    [alt]="p.name"
+                    class="w-full aspect-square object-cover"
+                  />
                 </div>
               </div>
             </app-details-card>

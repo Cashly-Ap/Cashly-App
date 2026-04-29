@@ -1,6 +1,8 @@
 export interface ProductComponentItem {
+  id: string;
   componentProductId: string;
-  componentName: string;
+  componentProductCode: string;
+  componentProductName: string;
   quantity: number;
 }
 
@@ -11,6 +13,7 @@ export interface ProductDetails {
   categoryId: string;
   categoryName: string;
   composite: boolean;
+  photo: string | null;
   basePrice?: number;
   purchasePrice?: number;
   profitMargin?: number;

@@ -1,30 +1,23 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { ButtonModule } from 'primeng/button';
 import { TabsModule } from 'primeng/tabs';
-import { TableModule } from 'primeng/table';
-import { SelectModule } from 'primeng/select';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
-import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
   FormContainerComponent,
   FormHeaderComponent,
   FormCardComponent,
   FormActionsComponent,
-  TabContentComponent,
-  TextInputComponent,
-  SelectInputComponent,
-  NumberInputComponent,
 } from '@core/forms/components';
 import { ProductApplicationService } from '@features/products/services/application';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { ProductPhotoService } from '@features/products/services/api';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { ProductComponentInput } from '@features/products/models/interfaces';
+import { ProductGeneralSectionComponent } from '@features/products/components/product-general-section/product-general-section.component';
+import { ProductCompositionSectionComponent } from '@features/products/components/product-composition-section/product-composition-section.component';
+import { switchMap, of } from 'rxjs';
 
 interface ProductFormData {
   name: string;
@@ -35,6 +28,7 @@ interface ProductFormData {
   basePrice: number | null;
   purchasePrice: number | null;
   profitMargin: number | null;
+  photo: File | null;
   components: { componentProductId: string | null; quantity: number }[];
 }
 
@@ -46,47 +40,26 @@ interface ProductFormData {
     CommonModule,
     ReactiveFormsModule,
     MainLayoutComponent,
-    TextareaModule,
-    SelectModule,
-    InputNumberModule,
     ButtonModule,
     TabsModule,
-    TableModule,
-    ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
-    TabContentComponent,
-    TextInputComponent,
-    SelectInputComponent,
-    NumberInputComponent,
-    EmptyStateComponent,
+    ProductGeneralSectionComponent,
+    ProductCompositionSectionComponent,
   ],
   templateUrl: './products-form-page.component.html',
-
 })
 export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData> implements OnInit {
-  private service = inject(ProductApplicationService);
-  private categoryService = inject(CategoryApplicationService);
-  private messageService = inject(MessageService);
+  private readonly service = inject(ProductApplicationService);
+  private readonly photoService = inject(ProductPhotoService);
+  private readonly messageService = inject(MessageService);
 
-  loading = this.service.loading;
+  readonly loading = this.service.loading;
+  readonly existingPhotoUrl = this.photoService.photoUrl;
 
-  productTypeOptions = [
-    { value: false, label: 'Simple' },
-    { value: true, label: 'Compuesto' },
-  ];
-
-  categoryOptions = computed(() =>
-    this.categoryService.categories().map((c) => ({ value: c.id, label: c.name }))
-  );
-
-  simpleProductOptions = computed(() =>
-    this.service.simpleProducts().map((p) => ({ value: p.id, label: p.name }))
-  );
-
-  isComposite = signal(false);
+  readonly isComposite = signal(false);
 
   get componentsArray(): FormArray {
     return this.form.get('components') as FormArray;
@@ -115,14 +88,13 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       basePrice: [null, [Validators.min(0)]],
       purchasePrice: [null, [Validators.min(0)]],
       profitMargin: [null, [Validators.min(0), Validators.max(100)]],
+      photo: [null],
       components: this.fb.array([]),
     });
   }
 
   override ngOnInit(): void {
     super.ngOnInit?.();
-    this.categoryService.loadAll({ size: 1000 }).subscribe();
-    this.service.loadSimpleProducts().subscribe();
 
     this.form.get('composite')?.valueChanges.subscribe((val: boolean) => {
       this.isComposite.set(val);
@@ -146,12 +118,18 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     this.componentsArray.removeAt(index);
   }
 
-  availableOptions(index: number): { value: string; label: string }[] {
-    const usedIds = this.componentsArray.controls
-      .map((c, i) => (i !== index ? c.get('componentProductId')?.value : null))
-      .filter(Boolean);
-    const currentProductId = this.entityId();
-    return this.simpleProductOptions().filter(o => !usedIds.includes(o.value) && o.value !== currentProductId);
+  onDeletePhoto(): void {
+    const id = this.entityId();
+    if (!id) return;
+    this.photoService.deletePhoto(id).subscribe({
+      next: () => {
+        this.photoService.clearPhoto();
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Foto eliminada exitosamente', life: 3000 });
+      },
+      error: () => {
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar la foto.', life: 5000 });
+      },
+    });
   }
 
   protected override getPendingTabTitle(formData: ProductFormData): string {
@@ -202,6 +180,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
             quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
           }));
         });
+        this.photoService.loadPhoto(product.photo);
       },
       error: () => {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el producto.', life: 5000 });
@@ -211,60 +190,65 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
   }
 
   override onSubmit(): void {
-    if (this.form.valid) {
-      const value = this.form.getRawValue() as ProductFormData;
-      const components: ProductComponentInput[] = value.composite
-        ? value.components.map((c) => ({ componentProductId: c.componentProductId!, quantity: c.quantity }))
-        : [];
-
-      if (this.isEditMode() && this.entityId()) {
-        const payload = {
-          name: value.name,
-          categoryId: value.categoryId!,
-          description: value.description || undefined,
-          active: value.active,
-          composite: value.composite,
-          basePrice: value.basePrice ?? undefined,
-          purchasePrice: value.purchasePrice ?? undefined,
-          profitMargin: value.profitMargin ?? undefined,
-          components,
-        };
-        this.service.update(this.entityId()!, payload).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto actualizado exitosamente', life: 3000 });
-            this.router.navigate(['/products']);
-          },
-          error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el producto.', life: 5000 });
-          },
-        });
-      } else {
-        const payload = {
-          name: value.name,
-          categoryId: value.categoryId!,
-          description: value.description || undefined,
-          active: value.active,
-          composite: value.composite,
-          basePrice: value.basePrice ?? undefined,
-          purchasePrice: value.purchasePrice ?? undefined,
-          profitMargin: value.profitMargin ?? undefined,
-          components,
-        };
-        this.service.create(payload).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto creado exitosamente', life: 3000 });
-            this.router.navigate(['/products']);
-          },
-          error: (err: { error?: { message?: string } }) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear el producto.', life: 5000 });
-          },
-        });
-      }
-    } else {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, complete todos los campos requeridos.', life: 5000 });
+      return;
+    }
+
+    const value = this.form.getRawValue() as ProductFormData;
+    const components: ProductComponentInput[] = value.composite
+      ? value.components.map((c) => ({ componentProductId: c.componentProductId!, quantity: c.quantity }))
+      : [];
+
+    const payload = {
+      name: value.name,
+      categoryId: value.categoryId!,
+      description: value.description || undefined,
+      active: value.active,
+      composite: value.composite,
+      basePrice: value.basePrice ?? undefined,
+      purchasePrice: value.purchasePrice ?? undefined,
+      profitMargin: value.profitMargin ?? undefined,
+      components,
+    };
+
+    if (this.isEditMode() && this.entityId()) {
+      this.service.update(this.entityId()!, payload).pipe(
+        switchMap((product) => {
+          if (value.photo) {
+            return this.photoService.uploadPhoto(product?.id ?? this.entityId()!, value.photo);
+          }
+          return of(undefined);
+        }),
+      ).subscribe({
+        next: () => {
+          this.markAsSubmitted();
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto actualizado exitosamente', life: 3000 });
+          this.router.navigate(['/products']);
+        },
+        error: () => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el producto.', life: 5000 });
+        },
+      });
+    } else {
+      this.service.create(payload).pipe(
+        switchMap((product) => {
+          if (value.photo && product?.id) {
+            return this.photoService.uploadPhoto(product.id, value.photo);
+          }
+          return of(undefined);
+        }),
+      ).subscribe({
+        next: () => {
+          this.markAsSubmitted();
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto creado exitosamente', life: 3000 });
+          this.router.navigate(['/products']);
+        },
+        error: (err: { error?: { message?: string } }) => {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear el producto.', life: 5000 });
+        },
+      });
     }
   }
 }
