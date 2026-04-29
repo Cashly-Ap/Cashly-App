@@ -23,6 +23,7 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application';
+import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { ProductFilters } from '@features/products/services/api/product-api.service';
 import { ProductList } from '@features/products/models/interfaces';
 
@@ -58,6 +59,7 @@ import { ProductList } from '@features/products/models/interfaces';
 export class ProductsListPageComponent implements OnInit {
   private service = inject(ProductApplicationService);
   private categoryService = inject(CategoryApplicationService);
+  private priceTypeService = inject(PriceTypeApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
@@ -73,6 +75,7 @@ export class ProductsListPageComponent implements OnInit {
   filterActive = signal('true');
   filterComposite = signal('');
   filterCategoryId = signal<string | null>(null);
+  selectedPriceTypeId = signal<string | null>(null);
 
   activeFilterOptions = [
     { label: 'Activos', value: 'true' },
@@ -102,9 +105,27 @@ export class ProductsListPageComponent implements OnInit {
     ...this.categories().map((c) => ({ label: c.name, value: c.id })),
   ]);
 
+  priceTypeOptions = computed(() =>
+    this.priceTypeService.priceTypes()
+      .filter((pt) => pt.active)
+      .map((pt) => ({ label: pt.name, value: pt.id }))
+  );
+
   ngOnInit(): void {
     this.categoryService.loadAll({ size: 1000 }).subscribe();
+    this.priceTypeService.loadAll().subscribe(() => {
+      const types = this.priceTypeService.priceTypes().filter((pt) => pt.active);
+      if (types.length > 0) {
+        this.selectedPriceTypeId.set(types[0].id);
+      }
+    });
     this.loadWithFilters();
+  }
+
+  getPriceForProduct(product: ProductList): number {
+    const selected = this.selectedPriceTypeId();
+    if (!selected) return 0;
+    return product.productPrices.find((pp) => pp.priceTypeId === selected)?.price ?? 0;
   }
 
   onSearch(value: string): void {

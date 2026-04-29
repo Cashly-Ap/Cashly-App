@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy, effect, Injector } from '@angular/core';
+import { Component, inject, OnInit, signal, ChangeDetectionStrategy, Injector } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -19,7 +20,7 @@ import { ProductGeneralSectionComponent } from '@features/products/components/pr
 import { ProductCompositionSectionComponent } from '@features/products/components/product-composition-section/product-composition-section.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeList } from '@features/price-types/models/interfaces';
-import { switchMap, of } from 'rxjs';
+import { switchMap, of, combineLatest, filter, take } from 'rxjs';
 
 interface ProductFormData {
   name: string;
@@ -65,7 +66,6 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
   readonly existingPhotoUrl = this.photoService.photoUrl;
 
   readonly isComposite = signal(false);
-  private pendingExistingPrices: ProductPriceItem[] | null = null;
 
   get componentsArray(): FormArray {
     return this.form.get('components') as FormArray;
@@ -120,13 +120,14 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
     this.priceTypeService.loadAll().subscribe();
 
-    effect(() => {
-      const types = this.priceTypeService.priceTypes();
-      if (types.length > 0) {
-        this.buildPricesFormArray(types, this.pendingExistingPrices ?? []);
-        this.pendingExistingPrices = null;
-      }
-    }, { injector: this.injector });
+    if (!this.isEditMode()) {
+      toObservable(this.priceTypeService.priceTypes, { injector: this.injector }).pipe(
+        filter(t => t.length > 0),
+        take(1),
+      ).subscribe(types => {
+        this.buildPricesFormArray(types, []);
+      });
+    }
 
     this.form.get('composite')?.valueChanges.subscribe((val: boolean) => {
       this.isComposite.set(val);
@@ -201,8 +202,14 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
   }
 
   protected override onLoadEntity(id: string): void {
-    this.service.loadById(id).subscribe({
-      next: (product) => {
+    combineLatest([
+      this.service.loadById(id),
+      toObservable(this.priceTypeService.priceTypes, { injector: this.injector }).pipe(
+        filter(t => t.length > 0),
+        take(1),
+      ),
+    ]).subscribe({
+      next: ([product, types]) => {
         this.isComposite.set(product.composite);
         this.form.patchValue({
           name: product.name,
@@ -221,12 +228,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
             quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
           }));
         });
-        const types = this.priceTypeService.priceTypes();
-        if (types.length > 0) {
-          this.buildPricesFormArray(types, product.productPrices);
-        } else {
-          this.pendingExistingPrices = product.productPrices;
-        }
+        this.buildPricesFormArray(types, product.productPrices);
         this.photoService.loadPhoto(product.photo);
       },
       error: () => {
