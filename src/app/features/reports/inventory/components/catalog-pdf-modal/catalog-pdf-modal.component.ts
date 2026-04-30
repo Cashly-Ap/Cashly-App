@@ -5,10 +5,9 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
-import { CatalogPdfApiService } from '../../services/api/catalog-pdf-api.service';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { finalize } from 'rxjs';
+import { CatalogPdfFilters } from '../../models/interfaces';
 
 @Component({
   selector: 'app-catalog-pdf-modal',
@@ -25,18 +24,17 @@ import { finalize } from 'rxjs';
   templateUrl: './catalog-pdf-modal.component.html',
 })
 export class CatalogPdfModalComponent implements OnInit {
-  private readonly pdfApi = inject(CatalogPdfApiService);
   private readonly categoryService = inject(CategoryApplicationService);
   private readonly warehouseService = inject(WarehouseApplicationService);
 
   readonly visible = input(false);
   readonly visibleChange = output<boolean>();
+  readonly onGeneratePdf = output<CatalogPdfFilters>();
 
   readonly search = signal('');
   readonly categoryId = signal<string | null>(null);
   readonly warehouseId = signal<string | null>(null);
   readonly withStock = signal<boolean | null>(null);
-  readonly downloading = signal(false);
 
   readonly stockOptions = [
     { value: null, label: 'Todos' },
@@ -67,24 +65,12 @@ export class CatalogPdfModalComponent implements OnInit {
     this.visibleChange.emit(false);
   }
 
-  downloadPdf(): void {
-    this.downloading.set(true);
-    this.pdfApi.downloadPdf({
+  generatePdf(): void {
+    this.onGeneratePdf.emit({
       search: this.search() || undefined,
       categoryId: this.categoryId() ?? undefined,
       warehouseId: this.warehouseId() ?? undefined,
       withStock: this.withStock() ?? undefined,
-    }).pipe(
-      finalize(() => this.downloading.set(false))
-    ).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'catalogo-productos.pdf';
-        a.click();
-        URL.revokeObjectURL(url);
-      },
     });
   }
 }

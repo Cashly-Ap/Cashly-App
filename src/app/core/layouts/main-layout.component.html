@@ -184,16 +184,38 @@
     </div>
   </p-popover>
 
+  <app-catalog-pdf-modal
+    [visible]="activeModal() === 'catalog'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onCatalogPdf($event)"
+  />
+
+  <app-stock-pdf-modal
+    [visible]="activeModal() === 'stock'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onStockPdf($event)"
+  />
+
+  <app-movements-pdf-modal
+    [visible]="activeModal() === 'movements'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onMovementsPdf($event)"
+  />
+
+  <app-pdf-viewer-modal
+    [visible]="pdfViewerVisible()"
+    [pdfUrl]="pdfUrl()"
+    [title]="pdfTitle()"
+    [loading]="loadingPdf()"
+    (visibleChange)="$event === false && closePdfViewer()"
+  />
+
   <main
     class="pt-16 min-h-screen bg-gradient-to-br from-app-bg-primary via-app-bg-primary-via to-app-bg-primary-to"
    >
     <ng-content />
   </main>
 
-  <app-catalog-pdf-modal
-    [visible]="catalogModalVisible()"
-    (visibleChange)="catalogModalVisible.set($event)"
-  />
 </div>
 
 

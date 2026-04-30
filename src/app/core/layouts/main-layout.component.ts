@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterLink, RouterModule, NavigationStart } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MenuItem as PrimeMenuItem } from 'primeng/api';
@@ -21,6 +22,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { Popover } from 'primeng/popover';
 import { DrawerModule, Drawer } from 'primeng/drawer';
 import { PanelMenuModule } from 'primeng/panelmenu';
+import { finalize } from 'rxjs';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/auth/services';
@@ -28,6 +30,13 @@ import { UserType } from '@features/auth/models';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
+import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
+import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
+import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
+import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
+import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
+import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { CatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 import { fromEvent, Subscription, filter } from 'rxjs';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
@@ -51,6 +60,9 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     DrawerModule,
     PanelMenuModule,
     CatalogPdfModalComponent,
+    StockPdfModalComponent,
+    MovementsPdfModalComponent,
+    PdfViewerModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -60,18 +72,28 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   mobileMenuVisible = signal(false);
   isMobile = signal(false);
-  catalogModalVisible = signal(false);
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private sanitizer = inject(DomSanitizer);
+  private catalogPdfApi = inject(CatalogPdfApiService);
+  private stockPdfApi = inject(StockPdfApiService);
+  private movementsPdfApi = inject(MovementsPdfApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
+  private currentObjectUrl: string | null = null;
 
   maxWidth = input<ContentMaxWidth>('7xl');
 
   currentUser = this.authService.currentUser;
 
   logoSrc = '/Parsun.png';
+
+  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | null>(null);
+  readonly pdfViewerVisible = signal(false);
+  readonly pdfUrl = signal<SafeResourceUrl | null>(null);
+  readonly pdfTitle = signal('');
+  readonly loadingPdf = signal(false);
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
@@ -114,16 +136,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.scrollSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
-  }
-
-  openCatalogModal(): void {
-    this.catalogModalVisible.set(true);
+    this.revokeCurrentUrl();
   }
 
   private buildMenuItems(userType: UserType): MenuItem[] {
     const user = this.authService.currentUser();
     const role = (user?.role || user?.type) as UserType;
-    const callbacks = { openCatalogModal: () => this.openCatalogModal() };
+    const callbacks = {
+      openCatalogModal: () => this.activeModal.set('catalog'),
+      openStockModal: () => this.activeModal.set('stock'),
+      openMovementsModal: () => this.activeModal.set('movements'),
+    };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
 
@@ -161,6 +184,70 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     return primeItem;
+  }
+
+  onCatalogPdf(filters: CatalogPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Catálogo de Productos');
+    this.pdfViewerVisible.set(true);
+    this.catalogPdfApi.downloadPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onStockPdf(filters: StockPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Stock de Almacenes');
+    this.pdfViewerVisible.set(true);
+    this.stockPdfApi.getPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onMovementsPdf(filters: MovementsPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Historial de Movimientos');
+    this.pdfViewerVisible.set(true);
+    this.movementsPdfApi.getPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  closePdfViewer(): void {
+    this.pdfViewerVisible.set(false);
+    this.revokeCurrentUrl();
+    this.pdfUrl.set(null);
+  }
+
+  private revokeCurrentUrl(): void {
+    if (this.currentObjectUrl) {
+      URL.revokeObjectURL(this.currentObjectUrl);
+      this.currentObjectUrl = null;
+    }
   }
 
   toggleUserMenu(event: Event): void {

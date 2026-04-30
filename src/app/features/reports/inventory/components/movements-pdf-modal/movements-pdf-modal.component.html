@@ -1,0 +1,66 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '500px' }"
+  header="Historial de Movimientos"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-col gap-4 pt-2">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
+      <p-select
+        [options]="warehouseOptions()"
+        [(ngModel)]="warehouseId"
+        optionLabel="label"
+        optionValue="value"
+        appendTo="body"
+        placeholder="Todos los almacenes"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Movimiento</label>
+      <p-select
+        [options]="movementTypeOptions"
+        [(ngModel)]="movementType"
+        optionLabel="label"
+        optionValue="value"
+        appendTo="body"
+        placeholder="Todos los tipos"
+        styleClass="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde</label>
+      <input
+        type="date"
+        pInputText
+        [(ngModel)]="from"
+        class="w-full"
+      />
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta</label>
+      <input
+        type="date"
+        pInputText
+        [(ngModel)]="to"
+        class="w-full"
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Ver PDF"
+      icon="pi pi-file-pdf"
+      (onClick)="generatePdf()"
+      severity="primary"
+    />
+  </ng-template>
+</p-dialog>

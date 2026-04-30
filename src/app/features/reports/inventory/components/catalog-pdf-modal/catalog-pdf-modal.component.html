@@ -25,6 +25,7 @@
         [(ngModel)]="categoryId"
         optionLabel="label"
         optionValue="value"
+        appendTo="body"
         placeholder="Todas las categorías"
         styleClass="w-full"
       />
@@ -37,6 +38,7 @@
         [(ngModel)]="warehouseId"
         optionLabel="label"
         optionValue="value"
+        appendTo="body"
         placeholder="Todos los almacenes"
         styleClass="w-full"
       />
@@ -49,6 +51,7 @@
         [(ngModel)]="withStock"
         optionLabel="label"
         optionValue="value"
+        appendTo="body"
         styleClass="w-full"
       />
     </div>
@@ -56,10 +59,9 @@
 
   <ng-template pTemplate="footer">
     <p-button
-      label="Descargar Catálogo PDF"
+      label="Ver PDF"
       icon="pi pi-file-pdf"
-      [loading]="downloading()"
-      (onClick)="downloadPdf()"
+      (onClick)="generatePdf()"
       severity="primary"
     />
   </ng-template>

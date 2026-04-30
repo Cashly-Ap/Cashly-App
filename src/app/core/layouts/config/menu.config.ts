@@ -2,6 +2,8 @@ import { MenuItem } from '@core/layouts/models';
 
 export interface MenuCallbacks {
   openCatalogModal: () => void;
+  openStockModal: () => void;
+  openMovementsModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -66,10 +68,22 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           icon: 'pi pi-box',
           children: [
             {
-              label: 'Catálogo',
-              icon: 'pi pi-list',
-              command: callbacks.openCatalogModal,
+              label: 'Catálogo PDF',
+              icon: 'pi pi-book',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openCatalogModal(),
+            },
+            {
+              label: 'Stock PDF',
+              icon: 'pi pi-warehouse',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openStockModal(),
+            },
+            {
+              label: 'Movimientos PDF',
+              icon: 'pi pi-arrow-right-arrow-left',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openMovementsModal(),
             },
           ],
         },

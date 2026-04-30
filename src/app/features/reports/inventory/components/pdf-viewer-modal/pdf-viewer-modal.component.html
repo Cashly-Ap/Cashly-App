@@ -1,0 +1,21 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [style]="{ width: '90vw', 'max-width': '1200px' }"
+  [header]="title()"
+  [draggable]="false"
+  [resizable]="false"
+>
+  @if (loading()) {
+    <div class="flex justify-center items-center h-64">
+      <p-progressSpinner />
+    </div>
+  } @else if (pdfUrl()) {
+    <iframe [src]="pdfUrl()" width="100%" height="600px" style="border:none"></iframe>
+  } @else {
+    <div class="flex justify-center items-center h-64 text-surface-500">
+      <p>Seleccione los filtros y cargue el PDF.</p>
+    </div>
+  }
+</p-dialog>
