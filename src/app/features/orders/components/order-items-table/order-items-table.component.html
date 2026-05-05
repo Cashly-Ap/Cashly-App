@@ -1,0 +1,150 @@
+<div class="p-4 md:p-6">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+    <h3 class="text-base font-medium text-surface-800 dark:text-surface-200 flex items-center gap-2">
+      <i class="pi pi-list text-surface-500"></i>
+      Líneas del Pedido
+    </h3>
+    @if (!readonly()) {
+      <p-button
+        label="Agregar Producto"
+        icon="pi pi-plus"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="w-full sm:w-auto"
+        (onClick)="addItem()"
+      />
+    }
+  </div>
+
+  @if (items().length > 0) {
+    <div class="space-y-2">
+      @for (item of items(); track itemIdx; let itemIdx = $index) {
+        <div class="border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-950">
+          @if (!readonly()) {
+            <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 text-xs font-medium shrink-0">
+                {{ itemIdx + 1 }}
+              </span>
+
+              <div class="flex-1 min-w-[140px]">
+                <input
+                  pInputText
+                  [ngModel]="item.productId"
+                  (ngModelChange)="updateItem(itemIdx, 'productId', $event)"
+                  placeholder="ID del producto"
+                  class="w-full text-sm"
+                />
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <p-inputNumber
+                  [ngModel]="item.quantity"
+                  (ngModelChange)="updateItem(itemIdx, 'quantity', $event ?? 1)"
+                  [min]="1"
+                  [maxFractionDigits]="3"
+                  [showButtons]="false"
+                  inputStyleClass="w-20 text-right text-sm font-mono"
+                />
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">P.U.:</span>
+                <p-inputNumber
+                  [ngModel]="item.unitPrice"
+                  (ngModelChange)="updateItem(itemIdx, 'unitPrice', $event ?? 0)"
+                  [min]="0"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="2"
+                  [showButtons]="false"
+                  inputStyleClass="w-24 text-right text-sm font-mono"
+                />
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
+                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+
+              <p-button
+                icon="pi pi-trash"
+                severity="secondary"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                pTooltip="Eliminar línea"
+                class="shrink-0"
+                (onClick)="removeItem(itemIdx)"
+              />
+            </div>
+          } @else {
+            <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 text-xs font-medium shrink-0">
+                {{ itemIdx + 1 }}
+              </span>
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-100 flex-1 min-w-0 truncate">
+                {{ item.productId }}
+              </span>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.quantity | number: '1.0-3' }}
+                </span>
+              </div>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">P.U.:</span>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
+                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <div class="flex justify-end p-3 sm:p-4 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-surface-600 dark:text-surface-400">Total Pedido:</span>
+          <span class="font-mono font-semibold text-lg text-surface-900 dark:text-surface-100">
+            {{ total() | number: '1.2-2' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <app-empty-state
+      icon="pi-shopping-cart"
+      title="Sin líneas de pedido"
+      message="Agrega productos al pedido"
+    >
+      @if (!readonly()) {
+        <div class="flex justify-center mt-4">
+          <p-button
+            label="Agregar Producto"
+            icon="pi pi-plus"
+            severity="secondary"
+            styleClass="w-full sm:w-auto"
+            (onClick)="addItem()"
+          />
+        </div>
+      }
+    </app-empty-state>
+  }
+</div>

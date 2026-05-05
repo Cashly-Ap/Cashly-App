@@ -38,6 +38,10 @@ export const routes: Routes = [
     loadChildren: () => import('@features/warehouses/router').then((m) => m.WAREHOUSE_ROUTES),
   },
   {
+    path: 'pedidos',
+    loadChildren: () => import('@features/orders/router').then((m) => m.ORDER_ROUTES),
+  },
+  {
     path: 'reports',
     loadChildren: () => import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
   },

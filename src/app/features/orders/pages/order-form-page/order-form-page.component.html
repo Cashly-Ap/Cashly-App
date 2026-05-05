@@ -1,0 +1,97 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header
+      [title]="isEditMode() ? 'Editar Pedido' : 'Nuevo Pedido'"
+      [subtitle]="isEditMode() ? 'Modifica los datos del pedido' : 'Complete la información del pedido'"
+    />
+    @if (isSubmitting() && !form.value.customerId) {
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <app-form-card>
+          <div class="p-4 md:p-6">
+            <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
+              <i class="pi pi-info-circle text-surface-500"></i>
+              Información del Pedido
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                  Cliente *
+                </label>
+                <input
+                  pInputText
+                  formControlName="customerId"
+                  placeholder="ID del cliente"
+                  class="w-full"
+                />
+                <div class="min-h-[20px] mt-1.5">
+                  @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                    <small class="flex items-center gap-1 text-red-500 text-xs">
+                      <i class="pi pi-exclamation-circle text-xs"></i>
+                      El cliente es requerido
+                    </small>
+                  }
+                </div>
+              </div>
+
+              <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                  Moneda *
+                </label>
+                <p-select
+                  formControlName="currency"
+                  [options]="currencyOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione moneda"
+                  appendTo="body"
+                  styleClass="w-full"
+                />
+                <div class="min-h-[20px] mt-1.5"></div>
+              </div>
+
+              <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                  Notas
+                  <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span>
+                </label>
+                <textarea
+                  pTextarea
+                  formControlName="notes"
+                  rows="3"
+                  class="w-full"
+                  placeholder="Notas o instrucciones adicionales..."
+                ></textarea>
+                <div class="min-h-[20px] mt-1.5"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-t border-surface-200 dark:border-surface-800">
+            <app-order-items-table
+              [items]="items()"
+              [readonly]="false"
+              (itemsChange)="onItemsChange($event)"
+            />
+          </div>
+
+          @if (submitError()) {
+            <div class="mx-4 md:mx-6 mb-4 flex items-center gap-2 rounded-lg bg-red-50 dark:bg-red-950 border border-red-200 dark:border-red-800 px-4 py-3">
+              <i class="pi pi-times-circle text-red-600 text-sm"></i>
+              <span class="text-sm text-red-700 dark:text-red-300">{{ submitError() }}</span>
+            </div>
+          }
+
+          <app-form-actions
+            submitLabel="Guardar"
+            cancelLabel="Cancelar"
+            [loading]="isSubmitting()"
+            [disabled]="form.invalid"
+            (cancel)="cancel()"
+          />
+        </app-form-card>
+      </form>
+    }
+  </app-form-container>
+</app-main-layout>

@@ -14,15 +14,28 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
       children: [
         {
+          label: 'Clientes',
+          icon: 'pi pi-id-card',
+          routerLink: '/customers',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
           label: 'Usuarios',
           icon: 'pi pi-user',
           routerLink: '/users',
           allowedRoles: ['SUPER_ADMIN'],
         },
+      ],
+    },
+    {
+      label: 'Gestión Comercial',
+      icon: 'pi pi-briefcase',
+      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      children: [
         {
-          label: 'Clientes',
-          icon: 'pi pi-id-card',
-          routerLink: '/customers',
+          label: 'Pedidos',
+          icon: 'pi pi-shopping-cart',
+          routerLink: '/pedidos',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
       ],
