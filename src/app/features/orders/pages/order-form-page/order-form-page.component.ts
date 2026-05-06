@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
-import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -20,10 +19,10 @@ import { FormActionsComponent } from '@core/forms/components/headers/form-action
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/orders/models/interfaces';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { ProductList } from '@features/products/models/interfaces';
+import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 
 @Component({
   selector: 'app-order-form-page',
@@ -32,13 +31,13 @@ import { ProductList } from '@features/products/models/interfaces';
     ReactiveFormsModule,
     ButtonModule,
     TextareaModule,
-    SelectModule,
     MainLayoutComponent,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
     OrderItemsTableComponent,
+    CustomerPickerDialogComponent,
   ],
   templateUrl: './order-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,15 +47,16 @@ export class OrderFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
-  private readonly customerApi = inject(CustomerApiService);
   private readonly productApi = inject(ProductApiService);
   private readonly messageService = inject(MessageService);
 
   readonly isEditMode = signal<boolean>(false);
   readonly orderId = signal<string | null>(null);
   readonly isSubmitting = signal<boolean>(false);
-  readonly customers = signal<CustomerList[]>([]);
   readonly products = signal<ProductList[]>([]);
+  readonly selectedCustomer = signal<CustomerList | null>(null);
+  readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
+  readonly pickerVisible = signal<boolean>(false);
 
   readonly items = signal<OrderItemFormData[]>([{ productId: '', quantity: 1, unitPrice: 0 }]);
 
@@ -70,7 +70,6 @@ export class OrderFormPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadCustomers();
     this.loadProducts();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -78,12 +77,6 @@ export class OrderFormPageComponent implements OnInit {
       this.orderId.set(id);
       this.loadOrder(id);
     }
-  }
-
-  private loadCustomers(): void {
-    this.customerApi.getAll({ active: true, size: 200 }).subscribe({
-      next: (page) => this.customers.set(page.content),
-    });
   }
 
   private loadProducts(): void {
@@ -95,10 +88,12 @@ export class OrderFormPageComponent implements OnInit {
   private loadOrder(id: string): void {
     this.orderService.loadById(id).subscribe({
       next: (order) => {
-        this.form.patchValue({
-          customerId: order.customerId,
-          notes: order.notes ?? '',
+        this.form.patchValue({ notes: order.notes ?? '' });
+        this.selectedCustomerLabel.set({
+          alias: order.customerAlias,
+          legalName: order.customerLegalName,
         });
+        this.form.patchValue({ customerId: order.customerId });
         this.items.set(
           order.items.map((item) => ({
             productId: item.productId,
@@ -108,6 +103,21 @@ export class OrderFormPageComponent implements OnInit {
         );
       },
     });
+  }
+
+  openPicker(): void {
+    this.pickerVisible.set(true);
+  }
+
+  onCustomerSelected(customer: CustomerList): void {
+    this.selectedCustomer.set(customer);
+    this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
+    this.form.patchValue({ customerId: customer.id });
+    this.pickerVisible.set(false);
+  }
+
+  onPickerCancelled(): void {
+    this.pickerVisible.set(false);
   }
 
   onItemsChange(updated: OrderItemFormData[]): void {

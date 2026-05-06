@@ -17,17 +17,32 @@
               <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                 Cliente *
               </label>
-              <p-select
-                formControlName="customerId"
-                [options]="customers()"
-                optionLabel="legalName"
-                optionValue="id"
-                placeholder="Seleccione un cliente"
-                [filter]="true"
-                filterBy="legalName,alias,rif"
-                appendTo="body"
-                styleClass="w-full"
-              />
+              @if (selectedCustomerLabel(); as customer) {
+                <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
+                  </div>
+                  @if (!isEditMode()) {
+                    <button
+                      type="button"
+                      class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                      (click)="openPicker()"
+                    >
+                      Cambiar
+                    </button>
+                  }
+                </div>
+              } @else {
+                <button
+                  type="button"
+                  class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 text-surface-400 dark:text-surface-500 text-sm transition-colors"
+                  (click)="openPicker()"
+                >
+                  <i class="pi pi-search text-sm"></i>
+                  Buscar y seleccionar cliente...
+                </button>
+              }
               <div class="min-h-[20px] mt-1.5">
                 @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
                   <small class="flex items-center gap-1 text-red-500 text-xs">
@@ -75,3 +90,9 @@
     </form>
   </app-form-container>
 </app-main-layout>
+
+<app-customer-picker-dialog
+  [visible]="pickerVisible()"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onPickerCancelled()"
+/>

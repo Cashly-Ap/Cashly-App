@@ -1,0 +1,132 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '42rem', maxHeight: '90vh' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-100 dark:bg-surface-800 shrink-0">
+        <i class="pi pi-user text-surface-600 dark:text-surface-300 text-lg"></i>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Seleccionar Cliente</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">Busque y seleccione el cliente para el pedido</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4 pt-1">
+    <div class="flex items-center gap-2">
+      <div class="relative flex-1">
+        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"></i>
+        <input
+          pInputText
+          type="text"
+          [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Buscar por código, alias, razón social o RIF..."
+          class="w-full pl-9"
+        />
+      </div>
+      <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
+        {{ totalElements() }} {{ totalElements() === 1 ? 'cliente' : 'clientes' }}
+      </span>
+    </div>
+
+    <div class="rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700">
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-20">
+              Código
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">
+              Alias
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">
+              Razón Social
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-36">
+              RIF
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="px-4 py-3" colspan="4">
+                  <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-full"></div>
+                </td>
+              </tr>
+            }
+          } @else if (customers().length === 0) {
+            <tr>
+              <td colspan="4" class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+                <i class="pi pi-search text-2xl block mb-2"></i>
+                No se encontraron clientes
+              </td>
+            </tr>
+          } @else {
+            @for (customer of customers(); track customer.id) {
+              <tr
+                class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-800 cursor-pointer transition-colors"
+                (click)="onSelect(customer)"
+              >
+                <td class="px-4 py-3 font-mono text-xs text-surface-500 dark:text-surface-400">
+                  #{{ customer.code }}
+                </td>
+                <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
+                  {{ customer.alias }}
+                </td>
+                <td class="px-4 py-3 text-surface-700 dark:text-surface-300">
+                  {{ customer.legalName }}
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-surface-500 dark:text-surface-400">
+                  {{ customer.rif }}
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <div class="flex gap-1">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === 0"
+            (click)="onPagePrev()"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === totalPages() - 1"
+            (click)="onPageNext()"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end pt-1">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="onCancel()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
