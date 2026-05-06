@@ -11,6 +11,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
@@ -21,6 +22,8 @@ import { OrderItemsTableComponent } from '@features/orders/components/order-item
 import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
+import { ProductApiService } from '@features/products/services/api/product-api.service';
+import { ProductList } from '@features/products/models/interfaces';
 
 @Component({
   selector: 'app-order-form-page',
@@ -46,12 +49,14 @@ export class OrderFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
   private readonly customerApi = inject(CustomerApiService);
+  private readonly productApi = inject(ProductApiService);
+  private readonly messageService = inject(MessageService);
 
   readonly isEditMode = signal<boolean>(false);
   readonly orderId = signal<string | null>(null);
   readonly isSubmitting = signal<boolean>(false);
-  readonly submitError = signal<string | null>(null);
   readonly customers = signal<CustomerList[]>([]);
+  readonly products = signal<ProductList[]>([]);
 
   readonly items = signal<OrderItemFormData[]>([{ productId: '', quantity: 1, unitPrice: 0 }]);
 
@@ -66,6 +71,7 @@ export class OrderFormPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadCustomers();
+    this.loadProducts();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
@@ -77,6 +83,12 @@ export class OrderFormPageComponent implements OnInit {
   private loadCustomers(): void {
     this.customerApi.getAll({ active: true, size: 200 }).subscribe({
       next: (page) => this.customers.set(page.content),
+    });
+  }
+
+  private loadProducts(): void {
+    this.productApi.getAllSimple().subscribe({
+      next: (products) => this.products.set(products),
     });
   }
 
@@ -109,11 +121,10 @@ export class OrderFormPageComponent implements OnInit {
     }
 
     if (this.items().length === 0) {
-      this.submitError.set('Debes agregar al menos un ítem al pedido.');
+      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes agregar al menos un producto al pedido.', life: 4000 });
       return;
     }
 
-    this.submitError.set(null);
     this.isSubmitting.set(true);
 
     const formValue = this.form.value;
@@ -133,9 +144,9 @@ export class OrderFormPageComponent implements OnInit {
             this.isSubmitting.set(false);
             this.router.navigate(['/pedidos', order.id]);
           },
-          error: (err: Error) => {
+          error: () => {
             this.isSubmitting.set(false);
-            this.submitError.set(err.message);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el pedido. Por favor, intente nuevamente.', life: 5000 });
           },
         });
     } else {
@@ -154,9 +165,9 @@ export class OrderFormPageComponent implements OnInit {
             this.isSubmitting.set(false);
             this.router.navigate(['/pedidos', order.id]);
           },
-          error: (err: Error) => {
+          error: () => {
             this.isSubmitting.set(false);
-            this.submitError.set(err.message);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el pedido. Por favor, intente nuevamente.', life: 5000 });
           },
         });
     }

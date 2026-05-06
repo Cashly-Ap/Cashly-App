@@ -2,21 +2,23 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { EmptyStateComponent } from '@shared/components/ui';
 import { OrderItemFormData } from '@features/orders/models/interfaces';
+import { ProductList } from '@features/products/models/interfaces';
 
 @Component({
   selector: 'app-order-items-table',
   standalone: true,
-  imports: [DecimalPipe, FormsModule, ButtonModule, InputTextModule, InputNumberModule, TooltipModule, EmptyStateComponent],
+  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, SelectModule, TooltipModule, EmptyStateComponent],
   templateUrl: './order-items-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderItemsTableComponent {
   readonly items = input<OrderItemFormData[]>([]);
+  readonly products = input<ProductList[]>([]);
   readonly readonly = input<boolean>(false);
   readonly itemsChange = output<OrderItemFormData[]>();
 
@@ -40,5 +42,10 @@ export class OrderItemsTableComponent {
       return { ...item, [field]: value };
     });
     this.itemsChange.emit(updated);
+  }
+
+  resolveProductName(productId: string): string {
+    const product = this.products().find((p) => p.id === productId);
+    return product ? `${product.code} — ${product.name}` : productId;
   }
 }
