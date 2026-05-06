@@ -9,7 +9,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -20,6 +19,8 @@ import { FormActionsComponent } from '@core/forms/components/headers/form-action
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/orders/models/interfaces';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerList } from '@features/customers/models/interfaces';
 
 @Component({
   selector: 'app-order-form-page',
@@ -27,7 +28,6 @@ import { OrderItemFormData } from '@features/orders/models/interfaces';
   imports: [
     ReactiveFormsModule,
     ButtonModule,
-    InputTextModule,
     TextareaModule,
     SelectModule,
     MainLayoutComponent,
@@ -45,11 +45,13 @@ export class OrderFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
+  private readonly customerApi = inject(CustomerApiService);
 
   readonly isEditMode = signal<boolean>(false);
   readonly orderId = signal<string | null>(null);
   readonly isSubmitting = signal<boolean>(false);
   readonly submitError = signal<string | null>(null);
+  readonly customers = signal<CustomerList[]>([]);
 
   readonly items = signal<OrderItemFormData[]>([{ productId: '', quantity: 1, unitPrice: 0 }]);
 
@@ -57,24 +59,25 @@ export class OrderFormPageComponent implements OnInit {
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
   );
 
-  readonly currencyOptions = [
-    { label: 'USD - Dólar', value: 'USD' },
-    { label: 'VES - Bolívar', value: 'VES' },
-  ];
-
   readonly form = this.fb.group({
     customerId: ['', [Validators.required]],
-    currency: ['USD', [Validators.required]],
     notes: [''],
   });
 
   ngOnInit(): void {
+    this.loadCustomers();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
       this.orderId.set(id);
       this.loadOrder(id);
     }
+  }
+
+  private loadCustomers(): void {
+    this.customerApi.getAll({ active: true, size: 200 }).subscribe({
+      next: (page) => this.customers.set(page.content),
+    });
   }
 
   private loadOrder(id: string): void {

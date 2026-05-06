@@ -15,15 +15,20 @@
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+              <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
                 <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                   Cliente *
                 </label>
-                <input
-                  pInputText
+                <p-select
                   formControlName="customerId"
-                  placeholder="ID del cliente"
-                  class="w-full"
+                  [options]="customers()"
+                  optionLabel="legalName"
+                  optionValue="id"
+                  placeholder="Seleccione un cliente"
+                  [filter]="true"
+                  filterBy="legalName,alias,rif"
+                  appendTo="body"
+                  styleClass="w-full"
                 />
                 <div class="min-h-[20px] mt-1.5">
                   @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
@@ -33,22 +38,6 @@
                     </small>
                   }
                 </div>
-              </div>
-
-              <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
-                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-                  Moneda *
-                </label>
-                <p-select
-                  formControlName="currency"
-                  [options]="currencyOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione moneda"
-                  appendTo="body"
-                  styleClass="w-full"
-                />
-                <div class="min-h-[20px] mt-1.5"></div>
               </div>
 
               <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
