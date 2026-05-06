@@ -102,13 +102,13 @@ export class OrderApiService {
   }
 
   confirm(id: string): Observable<OrderDetails> {
-    return this.http.patch<OrderDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
+    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
       map((r) => this.toOrderDetails(r)),
     );
   }
 
   cancel(id: string): Observable<OrderDetails> {
-    return this.http.patch<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, {}).pipe(
+    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, {}).pipe(
       map((r) => this.toOrderDetails(r)),
     );
   }
