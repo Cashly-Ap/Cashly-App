@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -41,6 +41,25 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
   private messageService = inject(MessageService);
 
   loading = this.service.isLoading;
+
+  submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    name: 'Nombre',
+  };
+
+  override ngOnInit(): void {
+    super.ngOnInit?.();
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+  }
 
   getConfig(): FormConfig {
     return {

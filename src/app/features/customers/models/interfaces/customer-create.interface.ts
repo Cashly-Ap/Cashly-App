@@ -29,4 +29,6 @@ export interface CustomerCreate {
   emails: CustomerCreateEmail[];
   phones: CustomerCreatePhone[];
   addresses: CustomerCreateAddress[];
+  notes?: string;
+  priceTypeId?: string;
 }

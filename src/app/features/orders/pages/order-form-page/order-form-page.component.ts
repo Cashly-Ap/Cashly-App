@@ -58,6 +58,12 @@ export class OrderFormPageComponent implements OnInit {
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
 
+  readonly submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    customerId: 'Cliente',
+  };
+
   readonly items = signal<OrderItemFormData[]>([{ productId: '', quantity: 1, unitPrice: 0 }]);
 
   readonly total = computed(() =>
@@ -71,6 +77,8 @@ export class OrderFormPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadProducts();
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
@@ -83,6 +91,13 @@ export class OrderFormPageComponent implements OnInit {
     this.productApi.getAllSimple().subscribe({
       next: (products) => this.products.set(products),
     });
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
   }
 
   private loadOrder(id: string): void {

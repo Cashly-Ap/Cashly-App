@@ -21,6 +21,7 @@ import { CustomerApplicationService } from '@features/customers/services/applica
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerDetails, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
+import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
 @Component({
   selector: 'app-customers-details-page',
@@ -47,6 +48,7 @@ import { getCustomerTypeLabel } from '@features/customers/models/enums';
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
   private customerApi = inject(CustomerApiService);
+  private priceTypeService = inject(PriceTypeApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
@@ -91,7 +93,14 @@ export class CustomersDetailsPageComponent implements OnInit {
       this.loadCustomer(id);
       this.loadWarehouseAccess(id);
     }
+    this.priceTypeService.loadAll().subscribe();
   }
+
+  priceTypeName = computed(() => {
+    const priceTypeId = this.customer()?.priceTypeId;
+    if (!priceTypeId) return null;
+    return this.priceTypeService.priceTypes().find((pt) => pt.id === priceTypeId)?.name ?? null;
+  });
 
   private loadCustomer(id: string): void {
     this.loading.set(true);

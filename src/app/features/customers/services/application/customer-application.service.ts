@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CustomerApiService, CustomerFilters } from '../api/customer-api.service';
+import { CustomerApiService, CustomerFilters, CustomerCreatedResponse } from '../api/customer-api.service';
 import { CustomerMapper } from '../mappers/customer.mapper';
 import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
@@ -45,16 +45,12 @@ export class CustomerApplicationService {
     );
   }
 
-  create(data: CustomerCreate): Observable<CustomerDetails> {
+  create(data: CustomerCreate): Observable<CustomerCreatedResponse> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.create(data).pipe(
       tap({
-        next: (customer) => {
-          const listItem = this.mapper.toList(customer);
-          this.customers.update((current) => [...current, listItem]);
-        },
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

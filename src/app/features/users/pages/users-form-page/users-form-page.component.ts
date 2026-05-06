@@ -62,6 +62,28 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
 
   loading = this.service.loading;
 
+  submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    email: 'Correo electrónico',
+    password: 'Contraseña',
+    userName: 'Nombre de usuario',
+    role: 'Rol',
+  };
+
+  override ngOnInit(): void {
+    super.ngOnInit?.();
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+  }
+
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
   selectedModules = signal<BusinessModule[]>([]);

@@ -17,6 +17,10 @@ export interface CustomerFilters {
   orderDir?: 'asc' | 'desc';
 }
 
+export interface CustomerCreatedResponse {
+  id: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CustomerApiService {
   private readonly http = inject(HttpClient);
@@ -41,8 +45,8 @@ export class CustomerApiService {
     return this.http.get<CustomerDetails>(`${this.baseUrl}/${id}`);
   }
 
-  create(data: CustomerCreate): Observable<CustomerDetails> {
-    return this.http.post<CustomerDetails>(this.baseUrl, data);
+  create(data: CustomerCreate): Observable<CustomerCreatedResponse> {
+    return this.http.post<CustomerCreatedResponse>(this.baseUrl, data);
   }
 
   update(id: string, data: CustomerEdit): Observable<CustomerDetails> {

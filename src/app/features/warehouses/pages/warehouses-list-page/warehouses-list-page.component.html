@@ -324,7 +324,7 @@
     <ng-template pTemplate="footer">
       <div class="flex gap-2 justify-end">
         <p-button label="Cancelar" icon="pi pi-times" [outlined]="true" severity="secondary" (onClick)="showEntryDialog.set(false)" />
-        <p-button label="Registrar Entradas" icon="pi pi-check" severity="contrast" [loading]="entryLoading()" (onClick)="onSubmitEntry()" />
+        <p-button label="Registrar Entradas" icon="pi pi-check" severity="contrast" [loading]="entryLoading()" [disabled]="entryForm.invalid" (onClick)="onSubmitEntry()" />
       </div>
     </ng-template>
   </p-dialog>
@@ -417,7 +417,7 @@
     <ng-template pTemplate="footer">
       <div class="flex gap-2 justify-end">
         <p-button label="Cancelar" icon="pi pi-times" [outlined]="true" severity="secondary" (onClick)="showExitDialog.set(false)" />
-        <p-button label="Registrar Salidas" icon="pi pi-check" severity="contrast" [loading]="exitLoading()" (onClick)="onSubmitExit()" />
+        <p-button label="Registrar Salidas" icon="pi pi-check" severity="contrast" [loading]="exitLoading()" [disabled]="exitForm.invalid" (onClick)="onSubmitExit()" />
       </div>
     </ng-template>
   </p-dialog>

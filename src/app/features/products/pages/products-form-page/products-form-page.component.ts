@@ -67,6 +67,20 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
   readonly isComposite = signal(false);
 
+  submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    name: 'Nombre',
+    categoryId: 'Categoría',
+  };
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+  }
+
   get componentsArray(): FormArray {
     return this.form.get('components') as FormArray;
   }
@@ -119,6 +133,8 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     super.ngOnInit?.();
 
     this.priceTypeService.loadAll().subscribe();
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
 
     if (!this.isEditMode()) {
       toObservable(this.priceTypeService.priceTypes, { injector: this.injector }).pipe(

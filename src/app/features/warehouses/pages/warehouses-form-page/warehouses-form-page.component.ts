@@ -55,6 +55,14 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
 
   loading = this.service.loading;
 
+  submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    name: 'Nombre',
+    state: 'Estado',
+    municipality: 'Municipio',
+  };
+
   stateOptions = VENEZUELA_STATES.map((s: VenezuelaState) => ({ value: s.name, label: s.name }));
 
   selectedStateName = signal<string | null>(null);
@@ -93,6 +101,9 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
   override ngOnInit(): void {
     super.ngOnInit?.();
 
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
+
     this.form.get('state')?.valueChanges.subscribe((val: string) => {
       this.selectedStateName.set(val);
       this.form.get('municipality')?.setValue('');
@@ -101,6 +112,13 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
 
   protected override getPendingTabTitle(formData: WarehouseFormData): string {
     return formData.name?.trim() || super.getPendingTabTitle(formData);
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
   }
 
   protected override restoreFormData(data: WarehouseFormData): void {

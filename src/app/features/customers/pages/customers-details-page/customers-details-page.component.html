@@ -28,8 +28,15 @@
                 <app-details-info-field label="Estado" type="badge"><app-status-badge [active]="currentCustomer.active" /></app-details-info-field>
                 <app-details-info-field label="Días de Crédito" [value]="currentCustomer.creditDays + ' días'" />
                 <app-details-info-field label="Límite de Crédito" [value]="(currentCustomer.creditLimit | number: '1.2-2') ?? ''" />
+                <app-details-info-field label="Lista de Precio" [value]="priceTypeName() ?? 'Sin asignar'" />
                 <app-details-info-field label="Fecha de Registro" [value]="(currentCustomer.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
               </app-details-info-grid>
+              @if (currentCustomer.notes) {
+                <div class="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+                  <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1">Notas</p>
+                  <p class="text-sm text-surface-600 dark:text-surface-400 whitespace-pre-wrap">{{ currentCustomer.notes }}</p>
+                </div>
+              }
             </div>
           </app-details-card>
 

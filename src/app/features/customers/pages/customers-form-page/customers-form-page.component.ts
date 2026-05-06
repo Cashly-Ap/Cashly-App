@@ -26,6 +26,7 @@ import { CustomerContactSectionComponent } from '@features/customers/components/
 import { CustomerAddressesSectionComponent } from '@features/customers/components/customer-addresses-section/customer-addresses-section.component';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
 interface CustomerAddressFormData {
   address: string;
@@ -49,6 +50,8 @@ interface CustomerFormData {
   emails: string[];
   phones: string[];
   addresses: CustomerAddressFormData[];
+  notes: string;
+  priceTypeId: string | null;
 }
 
 @Component({
@@ -79,12 +82,18 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
   private service = inject(CustomerApplicationService);
   private customerApi = inject(CustomerApiService);
   private warehouseService = inject(WarehouseApplicationService);
+  private priceTypeService = inject(PriceTypeApplicationService);
   private mapper = inject(CustomerMapper);
   private messageService = inject(MessageService);
 
   loading = this.service.loading;
 
   customerTypes = [...CUSTOMER_TYPES];
+  priceTypeOptions = computed(() =>
+    this.priceTypeService.priceTypes()
+      .filter((pt) => pt.active)
+      .map((pt) => ({ label: pt.name, value: pt.id }))
+  );
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
   warehouseAccessLoading = signal(false);
@@ -97,6 +106,36 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       .filter((w) => !assigned.has(w.id))
       .map((w) => ({ label: w.name, value: w.id }));
   });
+
+  submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    legalName: 'Razón social',
+    type: 'Tipo de cliente',
+    rif: 'RIF',
+    paymentType: 'Tipo de pago',
+    creditDays: 'Días de crédito',
+    creditLimit: 'Límite de crédito',
+    priceTypeId: 'Tipo de precio',
+    emails: 'Correos electrónicos',
+    phones: 'Teléfonos',
+    addresses: 'Direcciones',
+  };
+
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.warehouseService.loadSimpleWarehouses().subscribe();
+    this.priceTypeService.loadAll().subscribe();
+    this.updateSubmitTooltip();
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+  }
 
   getConfig(): FormConfig {
     return {
@@ -112,15 +151,17 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       legalName: ['', [Validators.required, CustomerValidators.legalName()]],
       type: [CustomerType.BUSINESS, Validators.required],
       rif: ['', [Validators.required, CustomerValidators.rif()]],
-      alias: ['', [Validators.required, CustomerValidators.customerAlias()]],
+      alias: ['', [CustomerValidators.customerAlias()]],
       paymentType: [PaymentType.CASH, Validators.required],
       creditDays: [{ value: null, disabled: true }, [Validators.required, Validators.min(0), Validators.max(365)]],
       creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
       portalAccess: [false],
-      emails: this.fb.array([this.createEmailControl()]),
-      phones: this.fb.array([this.createPhoneControl()]),
-      addresses: this.fb.array([this.createAddressGroup()]),
+      emails: this.fb.array([]),
+      phones: this.fb.array([]),
+      addresses: this.fb.array([this.createAddressGroup()], [CustomerValidators.minLengthArray(1)]),
+      notes: [''],
+      priceTypeId: [null, Validators.required],
     });
   }
 
@@ -157,11 +198,12 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       creditLimit: data.creditLimit,
       active: data.active,
       portalAccess: data.portalAccess ?? false,
+      notes: data.notes ?? '',
+      priceTypeId: data.priceTypeId ?? null,
     });
   }
 
   protected override onLoadEntity(id: string): void {
-    this.warehouseService.loadSimpleWarehouses().subscribe();
     this.loadWarehouseAccess(id);
     this.service.loadById(id).subscribe({
       next: (customer) => {
@@ -195,6 +237,8 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
           creditLimit: formModel.creditLimit,
           active: formModel.active,
           portalAccess: formModel.portalAccess ?? false,
+          notes: formModel.notes ?? '',
+          priceTypeId: formModel.priceTypeId ?? null,
         });
       },
       error: () => {
@@ -227,6 +271,8 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         emails: formValue.emails.map((email) => ({ id: '', customerId: '', email })),
         phones: formValue.phones.map((phone) => ({ id: '', customerId: '', phone })),
         addresses: formValue.addresses.map((a) => ({ id: '', customerId: '', ...a })),
+        notes: formValue.notes || undefined,
+        priceTypeId: formValue.priceTypeId || undefined,
       });
 
       if (this.isEditMode() && this.entityId()) {
@@ -271,15 +317,25 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       } else {
         const createData = this.mapper.toCreateRequest(formModel);
         this.service.create(createData).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Cliente creado exitosamente',
-              life: 3000,
+          next: (created) => {
+            const warehouseIds = this.warehouseAccess().map((w) => w.warehouseId);
+            const grants$: Observable<unknown> =
+              warehouseIds.length > 0
+                ? forkJoin(warehouseIds.map((id) => this.customerApi.grantWarehouseAccess(created.id, id)))
+                : of(null);
+
+            grants$.subscribe({
+              next: () => {
+                this.markAsSubmitted();
+                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente creado exitosamente', life: 3000 });
+                this.router.navigate(['/customers']);
+              },
+              error: () => {
+                this.markAsSubmitted();
+                this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Cliente creado, pero hubo un error al asignar los almacenes', life: 5000 });
+                this.router.navigate(['/customers']);
+              },
             });
-            this.router.navigate(['/customers']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

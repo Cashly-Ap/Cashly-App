@@ -24,6 +24,8 @@ export interface CustomerFormModel {
     municipality?: string;
     postalCode?: string;
   }>;
+  notes?: string;
+  priceTypeId?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -65,6 +67,8 @@ export class CustomerMapper {
         municipality: a.municipality,
         postalCode: a.postalCode,
       })),
+      notes: details.notes,
+      priceTypeId: details.priceTypeId,
     };
   }
 
@@ -88,6 +92,8 @@ export class CustomerMapper {
         municipality: a.municipality,
         postalCode: a.postalCode,
       })),
+      notes: form.notes || undefined,
+      priceTypeId: form.priceTypeId || undefined,
     };
   }
 
@@ -112,6 +118,8 @@ export class CustomerMapper {
         municipality: a.municipality,
         postalCode: a.postalCode,
       })),
+      notes: form.notes || undefined,
+      priceTypeId: form.priceTypeId || undefined,
     };
   }
 }

@@ -21,17 +21,15 @@
               <i class="pi pi-globe mr-2"></i>
               Portal
             </p-tab>
-            @if (isEditMode()) {
-              <p-tab value="4">
-                <i class="pi pi-warehouse mr-2"></i>
-                Almacenes
-              </p-tab>
-            }
+            <p-tab value="4">
+              <i class="pi pi-warehouse mr-2"></i>
+              Almacenes
+            </p-tab>
           </p-tablist>
 
           <p-tabpanels>
             <p-tabpanel value="0">
-              <app-customer-general-section [form]="form" [isEditMode]="isEditMode()" />
+              <app-customer-general-section [form]="form" [isEditMode]="isEditMode()" [priceTypeOptions]="priceTypeOptions()" />
             </p-tabpanel>
             <p-tabpanel value="1">
               <app-customer-contact-section [form]="form" />
@@ -50,8 +48,7 @@
                 </div>
               </div>
             </p-tabpanel>
-            @if (isEditMode()) {
-              <p-tabpanel value="4">
+            <p-tabpanel value="4">
                 <div class="p-6 flex flex-col gap-4">
                   <p class="font-medium text-surface-800 dark:text-surface-200">Almacenes con Acceso</p>
 
@@ -95,9 +92,8 @@
                       </div>
                     }
                   }
-                </div>
+               </div>
               </p-tabpanel>
-            }
           </p-tabpanels>
         </p-tabs>
 
@@ -106,6 +102,7 @@
           cancelLabel="Cancelar"
           [loading]="loading()"
           [disabled]="form.invalid"
+          [tooltipMessage]="submitTooltip()"
           (cancel)="onCancel()"
         />
       </app-form-card>

@@ -20,6 +20,7 @@ export class SelectInputComponent {
   filter = input<boolean>(false);
   filterPlaceholder = input<string>('Buscar...');
   disabled = input<boolean>(false);
+  showClear = input<boolean>(false);
 
   internalControl = computed(() => this.control() || new FormControl());
 }

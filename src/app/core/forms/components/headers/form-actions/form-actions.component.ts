@@ -1,10 +1,11 @@
 import { Component, input, output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-form-actions',
   standalone: true,
-  imports: [ButtonModule],
+  imports: [ButtonModule, TooltipModule],
   templateUrl: './form-actions.component.html',
 })
 export class FormActionsComponent {
@@ -12,6 +13,7 @@ export class FormActionsComponent {
   cancelLabel = input<string>('Cancelar');
   loading = input<boolean>(false);
   disabled = input<boolean>(false);
+  tooltipMessage = input<string>('');
 
   cancel = output<void>();
 }

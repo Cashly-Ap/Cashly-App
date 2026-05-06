@@ -1,6 +1,7 @@
 import { Component, input, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { TextareaModule } from 'primeng/textarea';
 import {
   TabContentComponent,
   TextInputComponent,
@@ -9,6 +10,11 @@ import {
 } from '@core/forms/components';
 import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/models/enums';
 
+interface SelectOption {
+  label: string;
+  value: string;
+}
+
 @Component({
   selector: 'app-customer-general-section',
   standalone: true,
@@ -16,6 +22,7 @@ import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/
   imports: [
     ReactiveFormsModule,
     ToggleSwitchModule,
+    TextareaModule,
     TabContentComponent,
     TextInputComponent,
     SelectInputComponent,
@@ -26,6 +33,7 @@ import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/
 export class CustomerGeneralSectionComponent implements OnInit {
   form = input.required<FormGroup>();
   isEditMode = input<boolean>(false);
+  priceTypeOptions = input<SelectOption[]>([]);
 
   customerTypes = [...CUSTOMER_TYPES];
   paymentTypes = [...PAYMENT_TYPES];

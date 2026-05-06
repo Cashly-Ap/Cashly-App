@@ -38,4 +38,6 @@ export interface CustomerDetails {
   emails: CustomerEmail[];
   phones: CustomerPhone[];
   addresses: CustomerAddress[];
+  notes?: string;
+  priceTypeId?: string;
 }

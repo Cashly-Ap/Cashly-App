@@ -44,6 +44,8 @@
           [submitLabel]="submitLabel()"
           cancelLabel="Cancelar"
           [loading]="loading()"
+          [disabled]="form.invalid"
+          [tooltipMessage]="submitTooltip()"
           (cancel)="onCancel()"
         />
       </app-form-card>

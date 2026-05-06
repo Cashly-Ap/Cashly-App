@@ -9,12 +9,19 @@
     (onClick)="cancel.emit()"
     [disabled]="loading()"
   />
-  <p-button
-    type="submit"
-    [label]="submitLabel()"
-    icon="pi pi-check"
-    severity="contrast"
-    [loading]="loading()"
-    [disabled]="disabled()"
-  />
+  <span
+    [pTooltip]="disabled() ? tooltipMessage() : ''"
+    tooltipPosition="top"
+    [tooltipOptions]="{ showDelay: 200 }"
+    class="inline-flex"
+  >
+    <p-button
+      type="submit"
+      [label]="submitLabel()"
+      icon="pi pi-check"
+      severity="contrast"
+      [loading]="loading()"
+      [disabled]="disabled()"
+    />
+  </span>
 </div>

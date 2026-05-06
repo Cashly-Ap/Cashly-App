@@ -1,4 +1,5 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormArray } from '@angular/forms';
 
 export class CustomerValidators {
   static rif(): ValidatorFn {
@@ -8,7 +9,11 @@ export class CustomerValidators {
 
       const trimmed = value.trim();
       if (trimmed.length === 0) return { rifBlank: { message: 'El RIF no puede estar vacío' } };
-      if (trimmed.length > 20) return { rifMaxLength: { message: 'El RIF no puede exceder 20 caracteres', maxLength: 20 } };
+
+      const rifPattern = /^[JVGEPjvgep]-\d{8}-\d$/;
+      if (!rifPattern.test(trimmed)) {
+        return { rifInvalidFormat: { message: 'Formato de RIF inválido. Ejemplo: J-12345678-9' } };
+      }
 
       return null;
     };
@@ -82,6 +87,16 @@ export class CustomerValidators {
       if (trimmed.length === 0) return { addressBlank: { message: 'La dirección no puede estar vacía' } };
       if (trimmed.length > 500) return { addressMaxLength: { message: 'La dirección no puede exceder 500 caracteres', maxLength: 500 } };
 
+      return null;
+    };
+  }
+
+  static minLengthArray(min: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const array = control as FormArray;
+      if (array.length < min) {
+        return { minLengthArray: { message: `Se requiere al menos ${min} elemento(s)`, min, actual: array.length } };
+      }
       return null;
     };
   }

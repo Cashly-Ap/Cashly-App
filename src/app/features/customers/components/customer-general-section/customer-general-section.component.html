@@ -40,6 +40,16 @@
     errorMessage="La condición de pago es requerida"
   />
 
+  <app-select-input
+    [control]="control('priceTypeId')"
+    label="Lista de Precio"
+    placeholder="Seleccione la lista de precio"
+    [options]="priceTypeOptions()"
+    optionLabel="label"
+    optionValue="value"
+    [showClear]="true"
+  />
+
   @if (isCreditPayment()) {
     <app-number-input
       [control]="control('creditDays')"
@@ -60,12 +70,25 @@
     />
   }
 
-  <div [formGroup]="form()" class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900">
-    <div>
-      <p class="font-medium text-surface-800 dark:text-surface-200">Cliente Activo</p>
-      <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">Indica si el cliente está activo en el sistema</p>
+  @if (isEditMode()) {
+    <div [formGroup]="form()" class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900">
+      <div>
+        <p class="font-medium text-surface-800 dark:text-surface-200">Cliente Activo</p>
+        <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">Indica si el cliente está activo en el sistema</p>
+      </div>
+      <p-toggleswitch formControlName="active" />
     </div>
-    <p-toggleswitch formControlName="active" />
+  }
+
+  <div [formGroup]="form()" class="md:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+    <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Notas</label>
+    <textarea
+      pTextarea
+      formControlName="notes"
+      rows="4"
+      placeholder="Observaciones o notas internas sobre el cliente..."
+      class="w-full resize-none"
+    ></textarea>
   </div>
 
 </app-tab-content>

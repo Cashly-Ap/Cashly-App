@@ -36,6 +36,8 @@ export interface CustomerEdit {
   emails: CustomerEditEmail[];
   phones: CustomerEditPhone[];
   addresses: CustomerEditAddress[];
+  notes?: string;
+  priceTypeId?: string;
 }
 
 export interface CustomerFormData {
@@ -52,4 +54,6 @@ export interface CustomerFormData {
   emails?: CustomerEditEmail[];
   phones?: CustomerEditPhone[];
   addresses?: CustomerEditAddress[];
+  notes?: string;
+  priceTypeId?: string;
 }
