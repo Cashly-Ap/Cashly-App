@@ -29,6 +29,79 @@
           class="w-full pl-9"
         />
       </div>
+
+      <div class="relative shrink-0">
+        <button
+          type="button"
+          class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors"
+          [class.border-surface-900]="activeFilterCount() > 0"
+          [class.bg-surface-900]="activeFilterCount() > 0"
+          [class.text-white]="activeFilterCount() > 0"
+          [class.dark:border-surface-0]="activeFilterCount() > 0"
+          [class.dark:bg-surface-0]="activeFilterCount() > 0"
+          [class.dark:text-surface-900]="activeFilterCount() > 0"
+          [class.border-surface-200]="activeFilterCount() === 0"
+          [class.dark:border-surface-700]="activeFilterCount() === 0"
+          [class.text-surface-500]="activeFilterCount() === 0"
+          [class.hover:bg-surface-100]="activeFilterCount() === 0"
+          [class.dark:hover:bg-surface-800]="activeFilterCount() === 0"
+          (click)="toggleFilterPanel()"
+        >
+          <i class="pi pi-filter text-sm"></i>
+          @if (activeFilterCount() > 0) {
+            <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 text-[10px] font-bold flex items-center justify-center border border-surface-900 dark:border-surface-0">
+              {{ activeFilterCount() }}
+            </span>
+          }
+        </button>
+
+        @if (filterVisible()) {
+          <div class="absolute right-0 top-full mt-2 z-50 w-52 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+              <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+              @if (activeFilterCount() > 0) {
+                <button
+                  type="button"
+                  class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
+                  (click)="clearFilters()"
+                >
+                  Limpiar
+                </button>
+              }
+            </div>
+
+            <div class="px-4 py-3 flex flex-col gap-3">
+              <div class="flex flex-col gap-1.5">
+                <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Tipo</span>
+                <div class="flex flex-wrap gap-1.5">
+                  @for (option of customerTypes; track option.value) {
+                    <button
+                      type="button"
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors"
+                      [class.border-surface-900]="filterType() === option.value"
+                      [class.bg-surface-900]="filterType() === option.value"
+                      [class.text-white]="filterType() === option.value"
+                      [class.dark:border-surface-0]="filterType() === option.value"
+                      [class.dark:bg-surface-0]="filterType() === option.value"
+                      [class.dark:text-surface-900]="filterType() === option.value"
+                      [class.border-surface-200]="filterType() !== option.value"
+                      [class.dark:border-surface-700]="filterType() !== option.value"
+                      [class.text-surface-600]="filterType() !== option.value"
+                      [class.dark:text-surface-300]="filterType() !== option.value"
+                      [class.hover:bg-surface-100]="filterType() !== option.value"
+                      [class.dark:hover:bg-surface-800]="filterType() !== option.value"
+                      (click)="selectType(option.value)"
+                    >
+                      {{ option.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
         {{ totalElements() }} {{ totalElements() === 1 ? 'cliente' : 'clientes' }}
       </span>

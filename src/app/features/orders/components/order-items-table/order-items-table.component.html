@@ -11,14 +11,20 @@
         severity="secondary"
         [outlined]="true"
         styleClass="w-full sm:w-auto"
-        (onClick)="addItem()"
+        (onClick)="openPicker()"
       />
     }
   </div>
 
+  <app-product-picker-dialog
+    [visible]="pickerVisible()"
+    (productsAdded)="onProductsAdded($event)"
+    (cancelled)="onPickerCancelled()"
+  />
+
   @if (items().length > 0) {
     <div class="space-y-2">
-      @for (item of items(); track itemIdx; let itemIdx = $index) {
+      @for (item of items(); track item.productId; let itemIdx = $index) {
         <div class="border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-950">
           @if (!readonly()) {
             <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
@@ -26,20 +32,9 @@
                 {{ itemIdx + 1 }}
               </span>
 
-              <div class="flex-1 min-w-[200px]">
-                <p-select
-                  [ngModel]="item.productId"
-                  (ngModelChange)="updateItem(itemIdx, 'productId', $event)"
-                  [options]="products()"
-                  optionLabel="name"
-                  optionValue="id"
-                  placeholder="Seleccione un producto"
-                  [filter]="true"
-                  filterBy="name,code"
-                  appendTo="body"
-                  styleClass="w-full text-sm"
-                />
-              </div>
+              <span class="flex-1 min-w-[200px] text-sm font-medium text-surface-900 dark:text-surface-100 truncate">
+                {{ resolveProductName(item.productId) }}
+              </span>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
@@ -49,6 +44,7 @@
                   [ngModel]="item.quantity"
                   (ngModelChange)="updateItem(itemIdx, 'quantity', $event ?? 1)"
                   [min]="1"
+                  [max]="resolveProductStock(item.productId) ?? undefined"
                   [maxFractionDigits]="3"
                   [showButtons]="false"
                   inputStyleClass="w-20 text-right text-sm font-mono"
@@ -146,7 +142,7 @@
             icon="pi pi-plus"
             severity="secondary"
             styleClass="w-full sm:w-auto"
-            (onClick)="addItem()"
+            (onClick)="openPicker()"
           />
         </div>
       }

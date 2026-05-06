@@ -1,0 +1,358 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '56rem', maxHeight: '90vh' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-100 dark:bg-surface-800 shrink-0">
+        <i class="pi pi-box text-surface-600 dark:text-surface-300 text-lg"></i>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Seleccionar Productos</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">Busque y seleccione los productos para agregar al pedido</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4 pt-1">
+    <div class="flex items-center gap-2">
+      <div class="relative flex-1">
+        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"></i>
+        <input
+          pInputText
+          type="text"
+          [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Buscar por código o nombre..."
+          class="w-full pl-9"
+        />
+      </div>
+
+      <div class="relative shrink-0">
+        <button
+          type="button"
+          class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors"
+          [class.border-surface-900]="activeFilterCount() > 0"
+          [class.bg-surface-900]="activeFilterCount() > 0"
+          [class.text-white]="activeFilterCount() > 0"
+          [class.dark:border-surface-0]="activeFilterCount() > 0"
+          [class.dark:bg-surface-0]="activeFilterCount() > 0"
+          [class.dark:text-surface-900]="activeFilterCount() > 0"
+          [class.border-surface-200]="activeFilterCount() === 0"
+          [class.dark:border-surface-700]="activeFilterCount() === 0"
+          [class.text-surface-500]="activeFilterCount() === 0"
+          [class.hover:bg-surface-100]="activeFilterCount() === 0"
+          [class.dark:hover:bg-surface-800]="activeFilterCount() === 0"
+          (click)="toggleFilterPanel()"
+        >
+          <i class="pi pi-filter text-sm"></i>
+          @if (activeFilterCount() > 0) {
+            <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 text-[10px] font-bold flex items-center justify-center border border-surface-900 dark:border-surface-0">
+              {{ activeFilterCount() }}
+            </span>
+          }
+        </button>
+
+        @if (filterVisible()) {
+          <div class="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+              <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+              @if (activeFilterCount() > 0) {
+                <button
+                  type="button"
+                  class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
+                  (click)="clearFilters()"
+                >
+                  Limpiar
+                </button>
+              }
+            </div>
+
+            <div class="px-4 py-3 flex flex-col gap-4">
+              <div class="flex flex-col gap-1.5">
+                <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Tipo</span>
+                <div class="flex gap-1.5">
+                  @for (option of [{label: 'Simple', value: false}, {label: 'Compuesto', value: true}]; track option.label) {
+                    <button
+                      type="button"
+                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors"
+                      [class.border-surface-900]="filterComposite() === option.value"
+                      [class.bg-surface-900]="filterComposite() === option.value"
+                      [class.text-white]="filterComposite() === option.value"
+                      [class.dark:border-surface-0]="filterComposite() === option.value"
+                      [class.dark:bg-surface-0]="filterComposite() === option.value"
+                      [class.dark:text-surface-900]="filterComposite() === option.value"
+                      [class.border-surface-200]="filterComposite() !== option.value"
+                      [class.dark:border-surface-700]="filterComposite() !== option.value"
+                      [class.text-surface-600]="filterComposite() !== option.value"
+                      [class.dark:text-surface-300]="filterComposite() !== option.value"
+                      [class.hover:bg-surface-100]="filterComposite() !== option.value"
+                      [class.dark:hover:bg-surface-800]="filterComposite() !== option.value"
+                      (click)="selectComposite(option.value)"
+                    >
+                      {{ option.label }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              @if (categories().length > 0) {
+                <div class="flex flex-col gap-1.5">
+                  <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Categoría</span>
+                  <div class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
+                    @for (cat of categories(); track cat.id) {
+                      <button
+                        type="button"
+                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors"
+                        [class.border-surface-900]="filterCategoryId() === cat.id"
+                        [class.bg-surface-900]="filterCategoryId() === cat.id"
+                        [class.text-white]="filterCategoryId() === cat.id"
+                        [class.dark:border-surface-0]="filterCategoryId() === cat.id"
+                        [class.dark:bg-surface-0]="filterCategoryId() === cat.id"
+                        [class.dark:text-surface-900]="filterCategoryId() === cat.id"
+                        [class.border-surface-200]="filterCategoryId() !== cat.id"
+                        [class.dark:border-surface-700]="filterCategoryId() !== cat.id"
+                        [class.text-surface-600]="filterCategoryId() !== cat.id"
+                        [class.dark:text-surface-300]="filterCategoryId() !== cat.id"
+                        [class.hover:bg-surface-100]="filterCategoryId() !== cat.id"
+                        [class.dark:hover:bg-surface-800]="filterCategoryId() !== cat.id"
+                        (click)="selectCategory(cat.id)"
+                      >
+                        {{ cat.name }}
+                      </button>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
+        {{ totalElements() }} {{ totalElements() === 1 ? 'producto' : 'productos' }}
+      </span>
+    </div>
+
+    <div class="rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700">
+            <th class="px-4 py-2.5 w-10"></th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28">
+              Código
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">
+              Nombre
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24">
+              Tipo
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-32">
+              Categoría
+            </th>
+            <th class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28">
+              Stock
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="px-4 py-3" colspan="6">
+                  <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-full"></div>
+                </td>
+              </tr>
+            }
+          } @else if (products().length === 0) {
+            <tr>
+              <td colspan="6" class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+                <i class="pi pi-search text-2xl block mb-2"></i>
+                No se encontraron productos
+              </td>
+            </tr>
+          } @else {
+            @for (product of products(); track product.id) {
+              <tr
+                class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-800 cursor-pointer transition-colors"
+                [class.bg-primary-50]="isSelected(product.id)"
+                [class.dark:bg-primary-950]="isSelected(product.id)"
+                (click)="toggleSelection(product)"
+              >
+                <td class="px-4 py-3">
+                  <div
+                    class="w-4 h-4 rounded border-2 flex items-center justify-center transition-colors"
+                    [class.border-primary-500]="isSelected(product.id)"
+                    [class.bg-primary-500]="isSelected(product.id)"
+                    [class.border-surface-300]="!isSelected(product.id)"
+                    [class.dark:border-surface-600]="!isSelected(product.id)"
+                  >
+                    @if (isSelected(product.id)) {
+                      <i class="pi pi-check text-white" style="font-size: 0.6rem"></i>
+                    }
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300">
+                    {{ product.code }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
+                  {{ product.name }}
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
+                    {{ product.composite ? 'Compuesto' : 'Simple' }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-sm text-surface-600 dark:text-surface-400">
+                  {{ product.categoryName }}
+                </td>
+                <td class="px-4 py-3">
+                  <div class="flex items-center justify-end gap-2">
+                    @if (getAllocationQuantity(product.id) > 0) {
+                      <span class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400">
+                        {{ getAllocationQuantity(product.id) | number: '1.0-3' }}
+                      </span>
+                    } @else if (product.stockTotal != null) {
+                      <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
+                        {{ product.stockTotal | number: '1.0-3' }}
+                      </span>
+                    } @else {
+                      <span class="text-surface-400 dark:text-surface-500 text-xs">—</span>
+                    }
+                    <button
+                      type="button"
+                      class="inline-flex items-center justify-center w-7 h-7 rounded-md transition-colors"
+                      [class.text-primary-500]="popoverProductId() === product.id"
+                      [class.bg-primary-50]="popoverProductId() === product.id"
+                      [class.dark:bg-primary-950]="popoverProductId() === product.id"
+                      [class.text-surface-400]="popoverProductId() !== product.id"
+                      [class.hover:text-surface-700]="popoverProductId() !== product.id"
+                      [class.dark:hover:text-surface-200]="popoverProductId() !== product.id"
+                      [class.hover:bg-surface-100]="popoverProductId() !== product.id"
+                      [class.dark:hover:bg-surface-700]="popoverProductId() !== product.id"
+                      pTooltip="Stock por almacén"
+                      tooltipPosition="left"
+                      (click)="openStockPopover($event, product)"
+                    >
+                      <i class="pi pi-warehouse text-sm"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <div class="flex gap-1">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === 0"
+            (click)="onPagePrev()"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === totalPages() - 1"
+            (click)="onPageNext()"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (popoverProductId() !== null) {
+    <div
+      class="fixed z-[9999] w-64 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl"
+      [style.top.px]="popoverAnchor()?.top ?? 0"
+      [style.left.px]="popoverAnchor()?.left ?? 0"
+    >
+      <div class="flex items-center gap-2 px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+        <i class="pi pi-warehouse text-sm text-surface-500 dark:text-surface-400"></i>
+        <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Stock por Almacén</span>
+      </div>
+
+      <div class="px-4 py-3 flex flex-col gap-3">
+        @if (popoverLoading()) {
+          <div class="flex items-center gap-2 text-xs text-surface-400 dark:text-surface-500 py-2">
+            <i class="pi pi-spin pi-spinner text-sm"></i>
+            Cargando...
+          </div>
+        } @else if (popoverAllocations().length === 0) {
+          <span class="text-xs text-surface-400 dark:text-surface-500 py-2">Sin registros de stock</span>
+        } @else {
+          @for (alloc of popoverAllocations(); track alloc.warehouseId; let i = $index) {
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex flex-col min-w-0">
+                <span class="text-xs font-medium text-surface-800 dark:text-surface-200 truncate">{{ alloc.warehouseName }}</span>
+                <span class="text-xs text-surface-400 dark:text-surface-500">disp: {{ alloc.available | number: '1.0-3' }}</span>
+              </div>
+              <p-inputNumber
+                [ngModel]="alloc.requested"
+                (ngModelChange)="updateAllocation(i, $event ?? 0)"
+                [min]="0"
+                [max]="alloc.available"
+                [maxFractionDigits]="3"
+                [showButtons]="false"
+                inputStyleClass="w-20 text-right text-sm font-mono"
+                (click)="$event.stopPropagation()"
+              />
+            </div>
+          }
+        }
+      </div>
+
+      @if (!popoverLoading() && popoverAllocations().length > 0) {
+        <div class="px-4 pb-4">
+          <button
+            type="button"
+            class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-surface-900 dark:bg-surface-0 text-white dark:text-surface-900 text-sm font-medium hover:bg-surface-700 dark:hover:bg-surface-200 transition-colors"
+            (click)="saveAllocation()"
+          >
+            <i class="pi pi-check text-xs"></i>
+            Guardar
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex items-center justify-between pt-1">
+      <span class="text-xs text-surface-500 dark:text-surface-400">
+        @if (selectedCount() > 0) {
+          {{ selectedCount() }} {{ selectedCount() === 1 ? 'producto seleccionado' : 'productos seleccionados' }}
+        }
+      </span>
+      <div class="flex gap-2">
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          [outlined]="true"
+          severity="secondary"
+          (onClick)="onCancel()"
+        />
+        <p-button
+          label="Agregar"
+          icon="pi pi-plus"
+          [disabled]="selectedCount() === 0"
+          (onClick)="onAdd()"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

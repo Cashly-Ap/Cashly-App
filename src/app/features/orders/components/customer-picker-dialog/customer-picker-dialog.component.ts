@@ -14,6 +14,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
+import { CUSTOMER_TYPES, CustomerType } from '@features/customers/models/enums/customer-type.enum';
 
 const PAGE_SIZE = 10;
 
@@ -38,12 +39,20 @@ export class CustomerPickerDialogComponent implements OnChanges {
   readonly currentPage = signal<number>(0);
   readonly loading = signal<boolean>(false);
 
+  readonly filterVisible = signal<boolean>(false);
+  readonly filterType = signal<CustomerType | null>(null);
+
+  readonly customerTypes = CUSTOMER_TYPES;
   readonly pageSize = PAGE_SIZE;
 
   readonly pageLabel = computed(() => {
     const total = this.totalPages();
     const current = this.currentPage() + 1;
     return total > 0 ? `Página ${current} de ${total}` : '';
+  });
+
+  readonly activeFilterCount = computed(() => {
+    return this.filterType() !== null ? 1 : 0;
   });
 
   ngOnChanges(): void {
@@ -78,10 +87,30 @@ export class CustomerPickerDialogComponent implements OnChanges {
     this.cancelled.emit();
   }
 
+  toggleFilterPanel(): void {
+    this.filterVisible.set(!this.filterVisible());
+  }
+
+  selectType(type: CustomerType): void {
+    this.filterType.set(this.filterType() === type ? null : type);
+    this.load(0);
+  }
+
+  clearFilters(): void {
+    this.filterType.set(null);
+    this.load(0);
+  }
+
   private load(page: number): void {
     this.loading.set(true);
     this.customerApi
-      .getAll({ search: this.search() || undefined, active: true, page, size: PAGE_SIZE })
+      .getAll({
+        search: this.search() || undefined,
+        type: this.filterType() ?? undefined,
+        active: true,
+        page,
+        size: PAGE_SIZE,
+      })
       .subscribe({
         next: (response) => {
           this.customers.set(response.content);
@@ -100,5 +129,7 @@ export class CustomerPickerDialogComponent implements OnChanges {
     this.totalElements.set(0);
     this.totalPages.set(0);
     this.currentPage.set(0);
+    this.filterVisible.set(false);
+    this.filterType.set(null);
   }
 }
