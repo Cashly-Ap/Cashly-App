@@ -156,7 +156,13 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(order)" pTooltip="Ver" />
                           @if (order.status === 'DRAFT') {
+                            <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
+                            <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                             <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(order)" pTooltip="Eliminar" />
+                          }
+                          @if (order.status === 'CONFIRMED') {
+                            <p-button icon="pi pi-file" [text]="true" [rounded]="true" severity="success" (onClick)="onConvertToInvoice(order)" pTooltip="Convertir a Factura" />
+                            <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                           }
                         </div>
                       </td>
@@ -217,7 +223,13 @@
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(order)" />
                     @if (order.status === 'DRAFT') {
+                      <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
+                      <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                       <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(order)" />
+                    }
+                    @if (order.status === 'CONFIRMED') {
+                      <p-button icon="pi pi-file" [text]="true" [rounded]="true" severity="success" (onClick)="onConvertToInvoice(order)" pTooltip="Convertir a Factura" />
+                      <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                     }
                   </div>
                 </div>
@@ -240,4 +252,18 @@
     </div>
   </div>
   <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
+  <app-cancel-order-dialog
+    [visible]="cancelDialogVisible()"
+    [order]="orderToCancel()"
+    (confirmed)="onCancelDialogConfirmed($event)"
+    (cancelled)="onCancelDialogDismissed()"
+  />
+  <app-convert-to-invoice-dialog
+    [visible]="invoiceDialogVisible()"
+    [orderNumber]="orderToInvoice()?.orderNumber ?? ''"
+    [customerName]="orderToInvoice()?.customerAlias ?? ''"
+    [totalAmount]="orderToInvoice()?.totalAmount ?? 0"
+    (confirmed)="onInvoiceDialogConfirmed()"
+    (cancelled)="onInvoiceDialogDismissed()"
+  />
 </app-main-layout>

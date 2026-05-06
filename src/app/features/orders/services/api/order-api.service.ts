@@ -107,8 +107,14 @@ export class OrderApiService {
     );
   }
 
-  cancel(id: string): Observable<OrderDetails> {
-    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, {}).pipe(
+  convertToInvoice(id: string): Observable<OrderDetails> {
+    return this.http.post<OrderDetailApiResponse>(`${this.baseUrl}/${id}/convert-to-invoice`, {}).pipe(
+      map((r) => this.toOrderDetails(r)),
+    );
+  }
+
+  cancel(id: string, reason: string): Observable<OrderDetails> {
+    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
       map((r) => this.toOrderDetails(r)),
     );
   }

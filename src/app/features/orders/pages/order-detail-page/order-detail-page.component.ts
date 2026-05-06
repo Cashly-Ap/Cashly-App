@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -52,9 +52,6 @@ export class OrderDetailPageComponent implements OnInit {
   readonly order = this.orderService.currentOrder;
   readonly loading = this.orderService.loading;
 
-  readonly isConfirming = signal(false);
-  readonly isCancelling = signal(false);
-
   readonly OrderStatus = OrderStatus;
 
   ngOnInit(): void {
@@ -81,38 +78,6 @@ export class OrderDetailPageComponent implements OnInit {
   onEdit(): void {
     const id = this.order()?.id;
     if (id) this.router.navigate(['/pedidos', id, 'editar']);
-  }
-
-  onConfirm(): void {
-    const id = this.order()?.id;
-    if (!id) return;
-    this.isConfirming.set(true);
-    this.orderService.confirm(id).subscribe({
-      next: () => {
-        this.isConfirming.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido confirmado exitosamente', life: 3000 });
-      },
-      error: () => {
-        this.isConfirming.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar el pedido.', life: 5000 });
-      },
-    });
-  }
-
-  onCancel(): void {
-    const id = this.order()?.id;
-    if (!id) return;
-    this.isCancelling.set(true);
-    this.orderService.cancel(id).subscribe({
-      next: () => {
-        this.isCancelling.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido cancelado exitosamente', life: 3000 });
-      },
-      error: () => {
-        this.isCancelling.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cancelar el pedido.', life: 5000 });
-      },
-    });
   }
 
   getStatusLabel(status: OrderStatus): string {

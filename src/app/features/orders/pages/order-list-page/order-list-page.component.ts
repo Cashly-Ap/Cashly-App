@@ -19,6 +19,8 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderFilters } from '@features/orders/services/api/order-api.service';
 import { OrderStatus, ORDER_STATUS_LABELS, getOrderStatusLabel } from '@features/orders/models/enums/order-status.enum';
@@ -47,6 +49,8 @@ import { OrderList } from '@features/orders/models/interfaces';
     EmptyStateComponent,
     ListContainerComponent,
     TextBadgeComponent,
+    CancelOrderDialogComponent,
+    ConvertToInvoiceDialogComponent,
   ],
   templateUrl: './order-list-page.component.html',
   providers: [ConfirmationService],
@@ -65,6 +69,12 @@ export class OrderListPageComponent implements OnInit {
   readonly first = signal(0);
   readonly rows = signal(10);
   readonly filterStatus = signal('');
+
+  readonly cancelDialogVisible = signal(false);
+  readonly orderToCancel = signal<OrderList | null>(null);
+
+  readonly invoiceDialogVisible = signal(false);
+  readonly orderToInvoice = signal<OrderList | null>(null);
 
   readonly statusOptions = [
     { label: 'Todos los estados', value: '' },
@@ -148,6 +158,110 @@ export class OrderListPageComponent implements OnInit {
         });
       },
     });
+  }
+
+  onConfirm(order: OrderList): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea confirmar el pedido #${order.orderNumber}?`,
+      header: 'Confirmar Pedido',
+      icon: 'pi pi-check-circle',
+      acceptLabel: 'Sí, confirmar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-success',
+      accept: () => {
+        this.orderService.confirm(order.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: `Pedido #${order.orderNumber} confirmado exitosamente`,
+              life: 3000,
+            });
+            this.loadWithFilters();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al confirmar el pedido. Por favor, intente nuevamente.',
+              life: 5000,
+            });
+          },
+        });
+      },
+    });
+  }
+
+  onCancelOrder(order: OrderList): void {
+    this.orderToCancel.set(order);
+    this.cancelDialogVisible.set(true);
+  }
+
+  onCancelDialogConfirmed(event: { orderId: string; reason: string }): void {
+    this.cancelDialogVisible.set(false);
+    this.orderService.cancel(event.orderId, event.reason).subscribe({
+      next: () => {
+        this.orderToCancel.set(null);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Pedido cancelado exitosamente',
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.orderToCancel.set(null);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cancelar el pedido. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onCancelDialogDismissed(): void {
+    this.cancelDialogVisible.set(false);
+    this.orderToCancel.set(null);
+  }
+
+  onConvertToInvoice(order: OrderList): void {
+    this.orderToInvoice.set(order);
+    this.invoiceDialogVisible.set(true);
+  }
+
+  onInvoiceDialogConfirmed(): void {
+    const order = this.orderToInvoice();
+    if (!order) return;
+    this.invoiceDialogVisible.set(false);
+    this.orderService.convertToInvoice(order.id).subscribe({
+      next: () => {
+        this.orderToInvoice.set(null);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Pedido #${order.orderNumber} convertido a factura exitosamente`,
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.orderToInvoice.set(null);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al convertir el pedido a factura. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onInvoiceDialogDismissed(): void {
+    this.invoiceDialogVisible.set(false);
+    this.orderToInvoice.set(null);
   }
 
   getStatusLabel(status: OrderStatus): string {

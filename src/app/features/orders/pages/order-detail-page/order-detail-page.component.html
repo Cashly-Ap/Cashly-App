@@ -33,34 +33,6 @@
                     (onClick)="onEdit()"
                     styleClass="w-full sm:w-auto"
                   />
-                  <p-button
-                    label="Confirmar"
-                    icon="pi pi-check"
-                    severity="success"
-                    [loading]="isConfirming()"
-                    (onClick)="onConfirm()"
-                    styleClass="w-full sm:w-auto"
-                  />
-                  <p-button
-                    label="Cancelar Pedido"
-                    icon="pi pi-times"
-                    severity="danger"
-                    [outlined]="true"
-                    [loading]="isCancelling()"
-                    (onClick)="onCancel()"
-                    styleClass="w-full sm:w-auto"
-                  />
-                }
-                @if (currentOrder.status === OrderStatus.CONFIRMED) {
-                  <p-button
-                    label="Cancelar Pedido"
-                    icon="pi pi-times"
-                    severity="danger"
-                    [outlined]="true"
-                    [loading]="isCancelling()"
-                    (onClick)="onCancel()"
-                    styleClass="w-full sm:w-auto"
-                  />
                 }
               </div>
             </app-details-card-header>

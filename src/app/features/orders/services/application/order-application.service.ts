@@ -110,11 +110,30 @@ export class OrderApplicationService {
     );
   }
 
-  cancel(id: string): Observable<OrderDetails> {
+  convertToInvoice(id: string): Observable<OrderDetails> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.cancel(id).pipe(
+    return this.api.convertToInvoice(id).pipe(
+      tap({
+        next: (order) => {
+          const listItem = OrderMapper.toList(order);
+          this.orders.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentOrder()?.id === id) {
+            this.currentOrder.set(order);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  cancel(id: string, reason: string): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.cancel(id, reason).pipe(
       tap({
         next: (order) => {
           const listItem = OrderMapper.toList(order);
