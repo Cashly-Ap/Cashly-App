@@ -107,10 +107,8 @@ export class OrderApiService {
     );
   }
 
-  convertToInvoice(id: string): Observable<OrderDetails> {
-    return this.http.post<OrderDetailApiResponse>(`${this.baseUrl}/${id}/convert-to-invoice`, {}).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+  convertToInvoice(id: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/convert-to-invoice`, {});
   }
 
   cancel(id: string, reason: string): Observable<OrderDetails> {

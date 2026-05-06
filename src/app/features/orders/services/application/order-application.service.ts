@@ -110,19 +110,12 @@ export class OrderApplicationService {
     );
   }
 
-  convertToInvoice(id: string): Observable<OrderDetails> {
+  convertToInvoice(id: string): Observable<void> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.convertToInvoice(id).pipe(
       tap({
-        next: (order) => {
-          const listItem = OrderMapper.toList(order);
-          this.orders.update((current) => current.map((o) => (o.id === id ? listItem : o)));
-          if (this.currentOrder()?.id === id) {
-            this.currentOrder.set(order);
-          }
-        },
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),
