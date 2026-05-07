@@ -33,6 +33,8 @@ export class OrderItemsTableComponent {
   readonly activeItemIdx = signal<number | null>(null);
   readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
+  readonly excludedProductIds = computed(() => new Set(this.items().map((i) => i.productId)));
+
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
   );
@@ -94,13 +96,21 @@ export class OrderItemsTableComponent {
       item.warehouseAllocations.map((a) => [a.warehouseId, a.allocated]),
     );
 
-    const allocations: WarehouseStockEntry[] = item.stock.map((s) => ({
-      warehouseId: s.warehouseId,
-      warehouseCode: s.warehouseCode,
-      warehouseName: s.warehouseName,
-      available: s.quantity,
-      allocated: existingMap.get(s.warehouseId) ?? 0,
-    }));
+    const allocations: WarehouseStockEntry[] = item.stock.length > 0
+      ? item.stock.map((s) => ({
+          warehouseId: s.warehouseId,
+          warehouseCode: s.warehouseCode,
+          warehouseName: s.warehouseName,
+          available: s.quantity,
+          allocated: existingMap.get(s.warehouseId) ?? 0,
+        }))
+      : item.warehouseAllocations.map((a) => ({
+          warehouseId: a.warehouseId,
+          warehouseCode: a.warehouseCode,
+          warehouseName: a.warehouseName,
+          available: a.available,
+          allocated: a.allocated,
+        }));
 
     this.activeItemIdx.set(itemIdx);
     this.popoverAllocations.set(allocations);

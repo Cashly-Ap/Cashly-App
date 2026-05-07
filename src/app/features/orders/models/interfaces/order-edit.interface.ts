@@ -12,5 +12,5 @@ export interface OrderItemEdit {
 
 export interface OrderEdit {
   notes: string | null;
-  items: OrderItemEdit[];
+  lines: OrderItemEdit[];
 }

@@ -70,7 +70,7 @@ interface OrderDetailApiResponse {
       warehouseId: string;
       warehouseCode: string;
       warehouseName: string;
-      available: number;
+      availableStock: number;
       allocated: number;
     }[];
   }[];
@@ -174,7 +174,7 @@ export class OrderApiService {
           warehouseId: a.warehouseId,
           warehouseCode: a.warehouseCode,
           warehouseName: a.warehouseName,
-          available: a.available,
+          available: a.availableStock,
           allocated: a.allocated,
         })),
       })),

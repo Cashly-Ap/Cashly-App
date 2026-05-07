@@ -128,6 +128,10 @@ export class OrderListPageComponent implements OnInit {
     this.router.navigate(['/pedidos', order.id]);
   }
 
+  onEdit(order: OrderList): void {
+    this.router.navigate(['/pedidos', order.id, 'editar']);
+  }
+
   onDelete(order: OrderList): void {
     this.confirmationService.confirm({
       message: `¿Está seguro de que desea eliminar el pedido #${order.orderNumber}?`,

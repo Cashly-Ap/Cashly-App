@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnDestroy,
   OnInit,
   computed,
   inject,
@@ -16,11 +17,14 @@ import { FormContainerComponent } from '@core/forms/components/cards/form-contai
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
 import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
+import { PendingTabsService } from '@core/pending-tabs';
+import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
+import { OrderFormData, OrderItemFormData } from '@features/orders/models/interfaces';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages';
 
 @Component({
   selector: 'app-order-form-page',
@@ -40,15 +44,21 @@ import { CustomerPickerDialogComponent } from '@features/orders/components/custo
   templateUrl: './order-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrderFormPageComponent implements OnInit {
+export class OrderFormPageComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
   private readonly messageService = inject(MessageService);
+  private readonly pendingTabsService = inject(PendingTabsService);
+
+  private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  private isSubmitted = false;
+  private tabId = '';
 
   readonly isEditMode = signal<boolean>(false);
   readonly orderId = signal<string | null>(null);
+  readonly orderNumber = signal<string | null>(null);
   readonly isSubmitting = signal<boolean>(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
@@ -80,8 +90,67 @@ export class OrderFormPageComponent implements OnInit {
     if (id) {
       this.isEditMode.set(true);
       this.orderId.set(id);
+      this.tabId = `orders-edit-${id}`;
       this.loadOrder(id);
+    } else {
+      const queryTabId = this.route.snapshot.queryParamMap.get('tabId');
+      this.tabId = queryTabId || `orders-create-${Date.now()}`;
+      this.restoreFromPendingTab();
     }
+    this.form.controls.notes.valueChanges.subscribe(() => this.scheduleAutoSave());
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    if (this.form.dirty && !this.isSubmitted) {
+      this.savePendingTab();
+    }
+  }
+
+  private scheduleAutoSave(): void {
+    if (this.isSubmitted) return;
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    this.autoSaveTimer = setTimeout(() => this.savePendingTab(), PENDING_TABS_CONFIG.DEBOUNCE_TIME);
+  }
+
+  private savePendingTab(): void {
+    const label = this.selectedCustomerLabel();
+    const formData: OrderFormData = {
+      customerId: this.form.value.customerId ?? '',
+      customerAlias: label?.alias ?? '',
+      customerLegalName: label?.legalName ?? '',
+      notes: this.form.value.notes ?? '',
+      items: this.items(),
+    };
+    const title = this.orderNumber()
+      ? `Editar Pedido ${this.orderNumber()}`
+      : this.isEditMode()
+        ? 'Editar Pedido'
+        : 'Nuevo Pedido';
+    const route = this.isEditMode()
+      ? `/pedidos/${this.orderId()}/editar`
+      : `/pedidos/nuevo?tabId=${this.tabId}`;
+
+    this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'orders');
+  }
+
+  private restoreFromPendingTab(): void {
+    const tab = this.pendingTabsService.get<OrderFormData>(this.tabId);
+    if (!tab) return;
+    this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
+    this.items.set(tab.formData.items);
+    if (tab.formData.customerId) {
+      this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
+      this.selectedCustomerLabel.set({
+        alias: tab.formData.customerAlias,
+        legalName: tab.formData.customerLegalName,
+      });
+    }
+  }
+
+  private markAsSubmitted(): void {
+    this.isSubmitted = true;
+    this.pendingTabsService.remove(this.tabId);
   }
 
   private updateSubmitTooltip(): void {
@@ -92,8 +161,20 @@ export class OrderFormPageComponent implements OnInit {
   }
 
   private loadOrder(id: string): void {
+    const tab = this.pendingTabsService.get<OrderFormData>(this.tabId);
+    if (tab) {
+      this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
+      this.items.set(tab.formData.items);
+      this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
+      this.selectedCustomerLabel.set({
+        alias: tab.formData.customerAlias,
+        legalName: tab.formData.customerLegalName,
+      });
+      return;
+    }
     this.orderService.loadById(id).subscribe({
       next: (order) => {
+        this.orderNumber.set(order.orderNumber ?? null);
         this.form.patchValue({ notes: order.notes ?? '' });
         this.selectedCustomerLabel.set({
           alias: order.customerAlias,
@@ -131,6 +212,7 @@ export class OrderFormPageComponent implements OnInit {
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
     this.pickerVisible.set(false);
+    this.scheduleAutoSave();
   }
 
   onPickerCancelled(): void {
@@ -139,6 +221,7 @@ export class OrderFormPageComponent implements OnInit {
 
   onItemsChange(updated: OrderItemFormData[]): void {
     this.items.set(updated);
+    this.scheduleAutoSave();
   }
 
   submit(): void {
@@ -166,7 +249,7 @@ export class OrderFormPageComponent implements OnInit {
       this.orderService
         .update(this.orderId()!, {
           notes: formValue.notes ?? null,
-          items: this.items().map((i) => ({
+          lines: this.items().map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
@@ -179,6 +262,8 @@ export class OrderFormPageComponent implements OnInit {
         .subscribe({
           next: (order) => {
             this.isSubmitting.set(false);
+            this.markAsSubmitted();
+            this.messageService.add(ORDER_SUCCESS_MESSAGES.updated);
             this.router.navigate(['/pedidos', order.id]);
           },
           error: () => {
@@ -191,7 +276,7 @@ export class OrderFormPageComponent implements OnInit {
         .create({
           customerId: formValue.customerId ?? '',
           notes: formValue.notes ?? null,
-          items: this.items().map((i) => ({
+          lines: this.items().map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
@@ -204,6 +289,8 @@ export class OrderFormPageComponent implements OnInit {
         .subscribe({
           next: (order) => {
             this.isSubmitting.set(false);
+            this.markAsSubmitted();
+            this.messageService.add(ORDER_SUCCESS_MESSAGES.created);
             this.router.navigate(['/pedidos', order.id]);
           },
           error: () => {

@@ -3,6 +3,8 @@ import { WarehouseAllocation } from './order-item-allocation.interface';
 
 export interface OrderFormData {
   customerId: string;
+  customerAlias: string;
+  customerLegalName: string;
   notes: string;
   items: OrderItemFormData[];
 }

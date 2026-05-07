@@ -156,6 +156,7 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(order)" pTooltip="Ver" />
                           @if (order.status === 'DRAFT') {
+                            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(order)" pTooltip="Editar" />
                             <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
                             <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                             <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(order)" pTooltip="Eliminar" />
@@ -223,6 +224,7 @@
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(order)" />
                     @if (order.status === 'DRAFT') {
+                      <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(order)" pTooltip="Editar" />
                       <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
                       <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelOrder(order)" pTooltip="Cancelar" />
                       <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(order)" />

@@ -13,5 +13,5 @@ export interface OrderItemCreate {
 export interface OrderCreate {
   customerId: string;
   notes: string | null;
-  items: OrderItemCreate[];
+  lines: OrderItemCreate[];
 }

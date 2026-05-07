@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnChanges,
   ViewChild,
+  effect,
   inject,
   input,
   output,
@@ -49,7 +49,7 @@ export interface ProductSelection {
   imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule, WarehouseStockPopoverComponent],
   templateUrl: './product-picker-dialog.component.html',
 })
-export class ProductPickerDialogComponent implements OnChanges {
+export class ProductPickerDialogComponent {
   private readonly orderApi = inject(OrderApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
@@ -58,6 +58,7 @@ export class ProductPickerDialogComponent implements OnChanges {
 
   readonly visible = input<boolean>(false);
   readonly customerId = input.required<string>();
+  readonly excludedProductIds = input<Set<string>>(new Set());
   readonly productsAdded = output<OrderItemFormData[]>();
   readonly cancelled = output<void>();
 
@@ -106,6 +107,10 @@ export class ProductPickerDialogComponent implements OnChanges {
     return total > 0 ? `Página ${current} de ${total}` : '';
   });
 
+  readonly visibleProducts = computed(() =>
+    this.products().filter((p) => !this.excludedProductIds().has(p.id)),
+  );
+
   readonly selectedCount = computed(() => this.selectedIds().size);
 
   readonly activeFilterCount = computed(() => {
@@ -116,12 +121,14 @@ export class ProductPickerDialogComponent implements OnChanges {
     return count;
   });
 
-  ngOnChanges(): void {
-    if (this.visible()) {
-      this.reset();
-      this.loadCategories();
-      this.load(0);
-    }
+  constructor() {
+    effect(() => {
+      if (this.visible()) {
+        this.reset();
+        this.loadCategories();
+        this.load(0);
+      }
+    });
   }
 
   onSearchChange(value: string): void {
