@@ -43,30 +43,37 @@
 
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
-                <p-inputNumber
-                  [ngModel]="item.quantity"
-                  (ngModelChange)="updateItem(itemIdx, 'quantity', $event ?? 1)"
-                  [min]="1"
-                  [max]="resolveProductStock(item.productId) ?? undefined"
-                  [maxFractionDigits]="3"
-                  [showButtons]="false"
-                  inputStyleClass="w-20 text-right text-sm font-mono"
-                />
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.quantity | number: '1.0-3' }}
+                </span>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs transition-colors shrink-0"
+                  [class.text-green-700]="item.quantity > 0"
+                  [class.dark:text-green-400]="item.quantity > 0"
+                  [class.bg-green-50]="item.quantity > 0"
+                  [class.dark:bg-green-950]="item.quantity > 0"
+                  [class.hover:bg-green-100]="item.quantity > 0"
+                  [class.dark:hover:bg-green-900]="item.quantity > 0"
+                  [class.text-surface-500]="item.quantity === 0"
+                  [class.dark:text-surface-400]="item.quantity === 0"
+                  [class.hover:bg-surface-100]="item.quantity === 0"
+                  [class.dark:hover:bg-surface-800]="item.quantity === 0"
+                  pTooltip="Distribuir stock por almacén"
+                  tooltipPosition="top"
+                  (click)="openAllocationPopover($event, itemIdx)"
+                >
+                  <i class="pi pi-warehouse text-sm"></i>
+                </button>
               </div>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">P.U.:</span>
-                <p-inputNumber
-                  [ngModel]="item.unitPrice"
-                  (ngModelChange)="updateItem(itemIdx, 'unitPrice', $event ?? 0)"
-                  [min]="0"
-                  [minFractionDigits]="2"
-                  [maxFractionDigits]="2"
-                  [showButtons]="false"
-                  inputStyleClass="w-24 text-right text-sm font-mono"
-                />
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.unitPrice | number: '1.2-2' }}
+                </span>
               </div>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
@@ -77,6 +84,8 @@
                   {{ item.quantity * item.unitPrice | number: '1.2-2' }}
                 </span>
               </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <p-button
                 icon="pi pi-trash"
@@ -118,6 +127,13 @@
                   {{ item.quantity * item.unitPrice | number: '1.2-2' }}
                 </span>
               </div>
+              @if (item.warehouseAllocations.length > 0) {
+                <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+                <div class="flex items-center gap-1 shrink-0 text-xs text-surface-500 dark:text-surface-400">
+                  <i class="pi pi-warehouse text-xs"></i>
+                  <span>{{ item.warehouseAllocations.length }} almacén(es)</span>
+                </div>
+              }
             </div>
           }
         </div>
@@ -152,3 +168,14 @@
     </app-empty-state>
   }
 </div>
+
+<p-popover #allocationPopover appendTo="body" (onHide)="activeItemIdx.set(null)">
+  <app-warehouse-stock-popover
+    [entries]="popoverAllocations()"
+    [total]="allocationTotal()"
+    confirmLabel="Confirmar"
+    emptyMessage="Sin almacenes disponibles para este producto"
+    (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
+    (confirm)="confirmAllocations()"
+  />
+</p-popover>

@@ -1,22 +1,28 @@
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, computed, input, output, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui';
 import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { ProductList } from '@features/products/models/interfaces';
 import { ProductPickerDialogComponent } from '@features/orders/components/product-picker-dialog/product-picker-dialog.component';
+import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
+import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 
 @Component({
   selector: 'app-order-items-table',
   standalone: true,
-  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, TooltipModule, EmptyStateComponent, ProductPickerDialogComponent],
+  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, TooltipModule, PopoverModule, EmptyStateComponent, ProductPickerDialogComponent, WarehouseStockPopoverComponent],
   templateUrl: './order-items-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderItemsTableComponent {
+  @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
+
   readonly items = input<OrderItemFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly customerId = input<string | null>(null);
@@ -24,9 +30,21 @@ export class OrderItemsTableComponent {
   readonly itemsChange = output<OrderItemFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
+  readonly activeItemIdx = signal<number | null>(null);
+  readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
+  );
+
+  readonly activeItemQuantity = computed<number>(() => {
+    const idx = this.activeItemIdx();
+    if (idx === null) return 0;
+    return this.items()[idx]?.quantity ?? 0;
+  });
+
+  readonly allocationTotal = computed(() =>
+    this.popoverAllocations().reduce((sum, a) => sum + (a.allocated ?? 0), 0),
   );
 
   openPicker(): void {
@@ -39,16 +57,11 @@ export class OrderItemsTableComponent {
     const merged = [...current];
 
     for (const incoming of newItems) {
-      const stock = this.resolveProductStock(incoming.productId);
       const existingIndex = merged.findIndex((i) => i.productId === incoming.productId);
-
       if (existingIndex >= 0) {
-        const combined = merged[existingIndex].quantity + incoming.quantity;
-        const clamped = stock != null ? Math.min(combined, stock) : combined;
-        merged[existingIndex] = { ...merged[existingIndex], quantity: clamped };
+        merged[existingIndex] = { ...merged[existingIndex] };
       } else {
-        const clamped = stock != null ? Math.min(incoming.quantity, stock) : incoming.quantity;
-        merged.push({ ...incoming, quantity: clamped });
+        merged.push({ ...incoming });
       }
     }
 
@@ -65,20 +78,78 @@ export class OrderItemsTableComponent {
     this.itemsChange.emit(updated);
   }
 
-  updateItem(index: number, field: keyof OrderItemFormData, value: string | number): void {
+  openAllocationPopover(event: MouseEvent, itemIdx: number): void {
+    event.stopPropagation();
+
+    if (this.activeItemIdx() === itemIdx) {
+      this.allocationPopover.hide();
+      this.activeItemIdx.set(null);
+      return;
+    }
+
+    const item = this.items()[itemIdx];
+    if (!item) return;
+
+    const existingMap = new Map(
+      item.warehouseAllocations.map((a) => [a.warehouseId, a.allocated]),
+    );
+
+    const allocations: WarehouseStockEntry[] = item.stock.map((s) => ({
+      warehouseId: s.warehouseId,
+      warehouseCode: s.warehouseCode,
+      warehouseName: s.warehouseName,
+      available: s.quantity,
+      allocated: existingMap.get(s.warehouseId) ?? 0,
+    }));
+
+    this.activeItemIdx.set(itemIdx);
+    this.popoverAllocations.set(allocations);
+    this.allocationPopover.show(event);
+  }
+
+  updatePopoverAllocation(index: number, value: number): void {
+    const updated = this.popoverAllocations().map((a, i) =>
+      i === index ? { ...a, allocated: value } : a,
+    );
+    this.popoverAllocations.set(updated);
+  }
+
+  confirmAllocations(): void {
+    const itemIdx = this.activeItemIdx();
+    if (itemIdx === null) return;
+
+    const allocations: WarehouseAllocation[] = this.popoverAllocations()
+      .filter((a) => a.allocated > 0)
+      .map((a) => ({
+        warehouseId: a.warehouseId,
+        warehouseCode: a.warehouseCode,
+        warehouseName: a.warehouseName,
+        available: a.available,
+        allocated: a.allocated,
+      }));
+
+    const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
+
     const updated = this.items().map((item, i) => {
-      if (i !== index) return item;
-      return { ...item, [field]: value };
+      if (i !== itemIdx) return item;
+      return { ...item, quantity, warehouseAllocations: allocations };
     });
+
     this.itemsChange.emit(updated);
+    this.allocationPopover.hide();
+    this.activeItemIdx.set(null);
   }
 
   resolveProductName(productId: string): string {
+    const item = this.items().find((i) => i.productId === productId);
+    if (item?.productCode && item?.productName) return `${item.productCode} — ${item.productName}`;
     const product = this.products().find((p) => p.id === productId);
     return product ? `${product.code} — ${product.name}` : productId;
   }
 
   resolveProductStock(productId: string): number | null {
+    const item = this.items().find((i) => i.productId === productId);
+    if (item?.stock) return item.stock.reduce((sum, s) => sum + s.quantity, 0);
     const product = this.products().find((p) => p.id === productId);
     return product?.stockTotal ?? null;
   }

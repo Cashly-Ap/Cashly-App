@@ -22,6 +22,8 @@ import { OrderApiService } from '@features/orders/services/api/order-api.service
 import { OrderProduct, OrderProductStockItem, OrderItemFormData } from '@features/orders/models/interfaces';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 import { CategoryList } from '@features/categories/models/interfaces';
+import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 
 const PAGE_SIZE = 10;
 
@@ -30,7 +32,7 @@ export interface WarehouseAllocation {
   warehouseName: string;
   warehouseCode: string;
   available: number;
-  requested: number;
+  allocated: number;
 }
 
 export interface ProductSelection {
@@ -44,7 +46,7 @@ export interface ProductSelection {
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule],
+  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule, WarehouseStockPopoverComponent],
   templateUrl: './product-picker-dialog.component.html',
 })
 export class ProductPickerDialogComponent implements OnChanges {
@@ -70,7 +72,7 @@ export class ProductPickerDialogComponent implements OnChanges {
   readonly selections = signal<Map<string, ProductSelection>>(new Map());
 
   readonly popoverProductId = signal<string | null>(null);
-  readonly popoverAllocations = signal<WarehouseAllocation[]>([]);
+  readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
   readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
@@ -166,12 +168,14 @@ export class ProductPickerDialogComponent implements OnChanges {
       ids.delete(product.id);
       map.delete(product.id);
     } else {
+      const allocations = this.buildAllocations(product.stock, new Map());
+      const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
       ids.add(product.id);
       map.set(product.id, {
         product,
-        quantity: 0,
+        quantity,
         unitPrice: product.customerPrice,
-        allocations: this.buildAllocations(product.stock, new Map()),
+        allocations,
       });
     }
 
@@ -190,7 +194,7 @@ export class ProductPickerDialogComponent implements OnChanges {
 
     const existing = this.selections().get(product.id);
     const existingMap = new Map(
-      (existing?.allocations ?? []).map((a) => [a.warehouseId, a.requested]),
+      (existing?.allocations ?? []).map((a) => [a.warehouseId, a.allocated]),
     );
 
     this.popoverProductId.set(product.id);
@@ -205,7 +209,7 @@ export class ProductPickerDialogComponent implements OnChanges {
 
   updateAllocation(index: number, value: number): void {
     const updated = this.popoverAllocations().map((a, i) =>
-      i === index ? { ...a, requested: value } : a,
+      i === index ? { ...a, allocated: value } : a,
     );
     this.popoverAllocations.set(updated);
   }
@@ -215,7 +219,7 @@ export class ProductPickerDialogComponent implements OnChanges {
     if (!productId) return;
 
     const allocations = this.popoverAllocations();
-    const quantity = allocations.reduce((sum, a) => sum + (a.requested ?? 0), 0);
+    const quantity = allocations.reduce((sum, a) => sum + (a.allocated ?? 0), 0);
 
     const map = new Map(this.selections());
     const existing = map.get(productId);
@@ -244,9 +248,7 @@ export class ProductPickerDialogComponent implements OnChanges {
 
   getAllocationQuantity(productId: string): number {
     return this.selections().get(productId)?.quantity ?? 0;
-  }
-
-  toggleFilterPanel(event: MouseEvent): void {
+  }  toggleFilterPanel(event: MouseEvent): void {
     if (this.filterVisible()) {
       this.filterPopover.hide();
     } else {
@@ -265,8 +267,18 @@ export class ProductPickerDialogComponent implements OnChanges {
   onAdd(): void {
     const items: OrderItemFormData[] = Array.from(this.selections().values()).map((s) => ({
       productId: s.product.id,
-      quantity: s.quantity > 0 ? s.quantity : 1,
+      productCode: s.product.code,
+      productName: s.product.name,
+      stock: s.product.stock,
+      quantity: s.quantity,
       unitPrice: s.unitPrice,
+      warehouseAllocations: s.allocations.map((a) => ({
+        warehouseId: a.warehouseId,
+        warehouseCode: a.warehouseCode,
+        warehouseName: a.warehouseName,
+        available: a.available,
+        allocated: a.allocated,
+      })),
     }));
     this.productsAdded.emit(items);
   }
@@ -278,13 +290,13 @@ export class ProductPickerDialogComponent implements OnChanges {
   private buildAllocations(
     stock: OrderProductStockItem[],
     existingMap: Map<string, number>,
-  ): WarehouseAllocation[] {
+  ): WarehouseStockEntry[] {
     return stock.map((s) => ({
       warehouseId: s.warehouseId,
       warehouseName: s.warehouseName,
       warehouseCode: s.warehouseCode,
       available: s.quantity,
-      requested: existingMap instanceof Map ? (existingMap.get(s.warehouseId) ?? 0) : 0,
+      allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : s.quantity,
     }));
   }
 
