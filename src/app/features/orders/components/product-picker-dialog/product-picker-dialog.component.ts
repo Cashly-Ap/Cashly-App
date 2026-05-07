@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnChanges,
+  ViewChild,
   inject,
   input,
   output,
@@ -15,6 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { ProductList, ProductStockByWarehouse } from '@features/products/models/interfaces';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
@@ -42,12 +44,14 @@ export interface ProductSelection {
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, DecimalPipe],
+  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe],
   templateUrl: './product-picker-dialog.component.html',
 })
 export class ProductPickerDialogComponent implements OnChanges {
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);
+
+  @ViewChild('stockPopover') private readonly stockPopover!: Popover;
 
   readonly visible = input<boolean>(false);
   readonly productsAdded = output<OrderItemFormData[]>();
@@ -66,7 +70,6 @@ export class ProductPickerDialogComponent implements OnChanges {
   readonly popoverProductId = signal<string | null>(null);
   readonly popoverAllocations = signal<WarehouseAllocation[]>([]);
   readonly popoverLoading = signal<boolean>(false);
-  readonly popoverAnchor = signal<{ top: number; left: number } | null>(null);
 
   readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
@@ -144,21 +147,15 @@ export class ProductPickerDialogComponent implements OnChanges {
     event.stopPropagation();
 
     if (this.popoverProductId() === product.id) {
+      this.stockPopover.hide();
       this.popoverProductId.set(null);
       return;
     }
 
-    const button = event.currentTarget as HTMLElement;
-    const rect = button.getBoundingClientRect();
-
-    this.popoverAnchor.set({
-      top: rect.bottom + 8,
-      left: rect.right - 256,
-    });
-
     this.popoverProductId.set(product.id);
     this.popoverAllocations.set([]);
     this.popoverLoading.set(true);
+    this.stockPopover.show(event);
 
     this.productApi.getStock(product.id).subscribe({
       next: (stock: ProductStockByWarehouse[]) => {
@@ -183,6 +180,7 @@ export class ProductPickerDialogComponent implements OnChanges {
   }
 
   closePopover(): void {
+    this.stockPopover.hide();
     this.popoverProductId.set(null);
   }
 

@@ -275,62 +275,6 @@
     }
   </div>
 
-  @if (popoverProductId() !== null) {
-    <div
-      class="fixed z-[9999] w-64 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl"
-      [style.top.px]="popoverAnchor()?.top ?? 0"
-      [style.left.px]="popoverAnchor()?.left ?? 0"
-    >
-      <div class="flex items-center gap-2 px-4 py-3 border-b border-surface-100 dark:border-surface-800">
-        <i class="pi pi-warehouse text-sm text-surface-500 dark:text-surface-400"></i>
-        <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Stock por Almacén</span>
-      </div>
-
-      <div class="px-4 py-3 flex flex-col gap-3">
-        @if (popoverLoading()) {
-          <div class="flex items-center gap-2 text-xs text-surface-400 dark:text-surface-500 py-2">
-            <i class="pi pi-spin pi-spinner text-sm"></i>
-            Cargando...
-          </div>
-        } @else if (popoverAllocations().length === 0) {
-          <span class="text-xs text-surface-400 dark:text-surface-500 py-2">Sin registros de stock</span>
-        } @else {
-          @for (alloc of popoverAllocations(); track alloc.warehouseId; let i = $index) {
-            <div class="flex items-center justify-between gap-3">
-              <div class="flex flex-col min-w-0">
-                <span class="text-xs font-medium text-surface-800 dark:text-surface-200 truncate">{{ alloc.warehouseName }}</span>
-                <span class="text-xs text-surface-400 dark:text-surface-500">disp: {{ alloc.available | number: '1.0-3' }}</span>
-              </div>
-              <p-inputNumber
-                [ngModel]="alloc.requested"
-                (ngModelChange)="updateAllocation(i, $event ?? 0)"
-                [min]="0"
-                [max]="alloc.available"
-                [maxFractionDigits]="3"
-                [showButtons]="false"
-                inputStyleClass="w-20 text-right text-sm font-mono"
-                (click)="$event.stopPropagation()"
-              />
-            </div>
-          }
-        }
-      </div>
-
-      @if (!popoverLoading() && popoverAllocations().length > 0) {
-        <div class="px-4 pb-4">
-          <button
-            type="button"
-            class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-surface-900 dark:bg-surface-0 text-white dark:text-surface-900 text-sm font-medium hover:bg-surface-700 dark:hover:bg-surface-200 transition-colors"
-            (click)="saveAllocation()"
-          >
-            <i class="pi pi-check text-xs"></i>
-            Guardar
-          </button>
-        </div>
-      }
-    </div>
-  }
-
   <ng-template pTemplate="footer">
     <div class="flex items-center justify-between pt-1">
       <span class="text-xs text-surface-500 dark:text-surface-400">
@@ -356,3 +300,55 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-popover #stockPopover appendTo="body" (onHide)="popoverProductId.set(null)">
+  <div class="w-64">
+    <div class="flex items-center gap-2 px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+      <i class="pi pi-warehouse text-sm text-surface-500 dark:text-surface-400"></i>
+      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Stock por Almacén</span>
+    </div>
+
+    <div class="px-4 py-3 flex flex-col gap-3">
+      @if (popoverLoading()) {
+        <div class="flex items-center gap-2 text-xs text-surface-400 dark:text-surface-500 py-2">
+          <i class="pi pi-spin pi-spinner text-sm"></i>
+          Cargando...
+        </div>
+      } @else if (popoverAllocations().length === 0) {
+        <span class="text-xs text-surface-400 dark:text-surface-500 py-2">Sin registros de stock</span>
+      } @else {
+        @for (alloc of popoverAllocations(); track alloc.warehouseId; let i = $index) {
+          <div class="flex items-center justify-between gap-3">
+            <div class="flex flex-col min-w-0">
+              <span class="text-xs font-medium text-surface-800 dark:text-surface-200 truncate">{{ alloc.warehouseName }}</span>
+              <span class="text-xs text-surface-400 dark:text-surface-500">disp: {{ alloc.available | number: '1.0-3' }}</span>
+            </div>
+            <p-inputNumber
+              [ngModel]="alloc.requested"
+              (ngModelChange)="updateAllocation(i, $event ?? 0)"
+              [min]="0"
+              [max]="alloc.available"
+              [maxFractionDigits]="3"
+              [showButtons]="false"
+              inputStyleClass="w-20 text-right text-sm font-mono"
+              (click)="$event.stopPropagation()"
+            />
+          </div>
+        }
+      }
+    </div>
+
+    @if (!popoverLoading() && popoverAllocations().length > 0) {
+      <div class="px-4 pb-4">
+        <button
+          type="button"
+          class="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-surface-900 dark:bg-surface-0 text-white dark:text-surface-900 text-sm font-medium hover:bg-surface-700 dark:hover:bg-surface-200 transition-colors"
+          (click)="saveAllocation()"
+        >
+          <i class="pi pi-check text-xs"></i>
+          Guardar
+        </button>
+      </div>
+    }
+  </div>
+</p-popover>
