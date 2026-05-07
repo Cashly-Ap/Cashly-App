@@ -2,6 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   OnChanges,
+  ViewChild,
   inject,
   input,
   output,
@@ -12,9 +13,11 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { Popover, PopoverModule } from 'primeng/popover';
+import { SelectModule } from 'primeng/select';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
-import { CUSTOMER_TYPES, CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CUSTOMER_TYPES, CustomerType, getCustomerTypeLabel } from '@features/customers/models/enums/customer-type.enum';
 
 const PAGE_SIZE = 10;
 
@@ -22,10 +25,12 @@ const PAGE_SIZE = 10;
   selector: 'app-customer-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule],
+  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, PopoverModule, SelectModule],
   templateUrl: './customer-picker-dialog.component.html',
 })
 export class CustomerPickerDialogComponent implements OnChanges {
+  @ViewChild('filterPopover') private readonly filterPopover!: Popover;
+
   private readonly customerApi = inject(CustomerApiService);
 
   readonly visible = input<boolean>(false);
@@ -39,11 +44,11 @@ export class CustomerPickerDialogComponent implements OnChanges {
   readonly currentPage = signal<number>(0);
   readonly loading = signal<boolean>(false);
 
-  readonly filterVisible = signal<boolean>(false);
   readonly filterType = signal<CustomerType | null>(null);
 
-  readonly customerTypes = CUSTOMER_TYPES;
+  readonly customerTypes = [...CUSTOMER_TYPES];
   readonly pageSize = PAGE_SIZE;
+  readonly getCustomerTypeLabel = getCustomerTypeLabel;
 
   readonly pageLabel = computed(() => {
     const total = this.totalPages();
@@ -87,12 +92,12 @@ export class CustomerPickerDialogComponent implements OnChanges {
     this.cancelled.emit();
   }
 
-  toggleFilterPanel(): void {
-    this.filterVisible.set(!this.filterVisible());
+  toggleFilterPanel(event: MouseEvent): void {
+    this.filterPopover.toggle(event);
   }
 
-  selectType(type: CustomerType): void {
-    this.filterType.set(this.filterType() === type ? null : type);
+  selectType(type: CustomerType | null): void {
+    this.filterType.set(type ?? null);
     this.load(0);
   }
 
@@ -129,7 +134,6 @@ export class CustomerPickerDialogComponent implements OnChanges {
     this.totalElements.set(0);
     this.totalPages.set(0);
     this.currentPage.set(0);
-    this.filterVisible.set(false);
     this.filterType.set(null);
   }
 }

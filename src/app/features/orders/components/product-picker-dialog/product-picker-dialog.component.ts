@@ -17,6 +17,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
+import { SelectModule } from 'primeng/select';
 import { OrderApiService } from '@features/orders/services/api/order-api.service';
 import { OrderProduct, OrderProductStockItem, OrderItemFormData } from '@features/orders/models/interfaces';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
@@ -43,13 +44,14 @@ export interface ProductSelection {
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe],
+  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule],
   templateUrl: './product-picker-dialog.component.html',
 })
 export class ProductPickerDialogComponent implements OnChanges {
   private readonly orderApi = inject(OrderApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
+  @ViewChild('filterPopover') private readonly filterPopover!: Popover;
   @ViewChild('stockPopover') private readonly stockPopover!: Popover;
 
   readonly visible = input<boolean>(false);
@@ -73,9 +75,28 @@ export class ProductPickerDialogComponent implements OnChanges {
   readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
   readonly filterComposite = signal<boolean | null>(null);
+  readonly filterWithStock = signal<boolean | null>(true);
   readonly categories = signal<CategoryList[]>([]);
 
   readonly pageSize = PAGE_SIZE;
+  readonly String = String;
+
+  readonly compositeOptions = [
+    { label: 'Todos los tipos', value: null },
+    { label: 'Simple', value: false },
+    { label: 'Compuesto', value: true },
+  ];
+
+  readonly withStockOptions = [
+    { label: 'Todos', value: null },
+    { label: 'Con stock', value: true },
+    { label: 'Sin stock', value: false },
+  ];
+
+  readonly categoryOptions = computed(() => [
+    { label: 'Todas las categorías', value: null },
+    ...this.categories().map((c) => ({ label: c.name, value: c.id })),
+  ]);
 
   readonly pageLabel = computed(() => {
     const total = this.totalPages();
@@ -89,6 +110,7 @@ export class ProductPickerDialogComponent implements OnChanges {
     let count = 0;
     if (this.filterCategoryId() !== null) count++;
     if (this.filterComposite() !== null) count++;
+    if (this.filterWithStock() !== true) count++;
     return count;
   });
 
@@ -102,6 +124,21 @@ export class ProductPickerDialogComponent implements OnChanges {
 
   onSearchChange(value: string): void {
     this.search.set(value);
+    this.load(0);
+  }
+
+  onCategoryChange(value: string | null): void {
+    this.filterCategoryId.set(value ?? null);
+    this.load(0);
+  }
+
+  onCompositeChange(value: boolean | null): void {
+    this.filterComposite.set(value ?? null);
+    this.load(0);
+  }
+
+  onWithStockChange(value: boolean | null): void {
+    this.filterWithStock.set(value ?? null);
     this.load(0);
   }
 
@@ -209,23 +246,19 @@ export class ProductPickerDialogComponent implements OnChanges {
     return this.selections().get(productId)?.quantity ?? 0;
   }
 
-  toggleFilterPanel(): void {
-    this.filterVisible.set(!this.filterVisible());
-  }
-
-  selectCategory(categoryId: string): void {
-    this.filterCategoryId.set(this.filterCategoryId() === categoryId ? null : categoryId);
-    this.load(0);
-  }
-
-  selectComposite(value: boolean): void {
-    this.filterComposite.set(this.filterComposite() === value ? null : value);
-    this.load(0);
+  toggleFilterPanel(event: MouseEvent): void {
+    if (this.filterVisible()) {
+      this.filterPopover.hide();
+    } else {
+      this.filterVisible.set(true);
+      this.filterPopover.show(event);
+    }
   }
 
   clearFilters(): void {
     this.filterCategoryId.set(null);
     this.filterComposite.set(null);
+    this.filterWithStock.set(true);
     this.load(0);
   }
 
@@ -264,6 +297,7 @@ export class ProductPickerDialogComponent implements OnChanges {
         search: this.search() || undefined,
         categoryId: this.filterCategoryId() ?? undefined,
         composite: this.filterComposite() ?? undefined,
+        withStock: this.filterWithStock() ?? undefined,
         page,
         size: PAGE_SIZE,
       })
@@ -299,6 +333,7 @@ export class ProductPickerDialogComponent implements OnChanges {
     this.filterVisible.set(false);
     this.filterCategoryId.set(null);
     this.filterComposite.set(null);
+    this.filterWithStock.set(true);
     this.categories.set([]);
   }
 }

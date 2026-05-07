@@ -66,7 +66,7 @@ export class OrderFormPageComponent implements OnInit {
     customerId: 'Cliente',
   };
 
-  readonly items = signal<OrderItemFormData[]>([{ productId: '', quantity: 1, unitPrice: 0 }]);
+  readonly items = signal<OrderItemFormData[]>([]);
 
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),

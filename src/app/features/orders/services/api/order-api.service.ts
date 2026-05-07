@@ -9,6 +9,7 @@ export interface OrderProductFilters {
   search?: string;
   categoryId?: string;
   composite?: boolean;
+  withStock?: boolean;
   page?: number;
   size?: number;
 }
@@ -138,6 +139,7 @@ export class OrderApiService {
     if (filters.search) params = params.set('search', filters.search);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
     if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
+    if (filters.withStock !== undefined) params = params.set('withStock', String(filters.withStock));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
     return this.http.get<PageResponse<OrderProduct>>(`${this.baseUrl}/products`, { params });

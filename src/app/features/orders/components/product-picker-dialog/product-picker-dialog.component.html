@@ -2,7 +2,7 @@
   [visible]="visible()"
   [modal]="true"
   [closable]="false"
-  [style]="{ width: '56rem', maxHeight: '90vh' }"
+  [style]="{ width: '56rem', height: '600px' }"
 >
   <ng-template pTemplate="header">
     <div class="flex items-center gap-3">
@@ -18,19 +18,7 @@
 
   <div class="flex flex-col gap-4 pt-1">
     <div class="flex items-center gap-2">
-      <div class="relative flex-1">
-        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"></i>
-        <input
-          pInputText
-          type="text"
-          [ngModel]="search()"
-          (ngModelChange)="onSearchChange($event)"
-          placeholder="Buscar por código o nombre..."
-          class="w-full pl-9"
-        />
-      </div>
-
-      <div class="relative shrink-0">
+      <div class="shrink-0">
         <button
           type="button"
           class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors"
@@ -45,7 +33,7 @@
           [class.text-surface-500]="activeFilterCount() === 0"
           [class.hover:bg-surface-100]="activeFilterCount() === 0"
           [class.dark:hover:bg-surface-800]="activeFilterCount() === 0"
-          (click)="toggleFilterPanel()"
+          (click)="toggleFilterPanel($event)"
         >
           <i class="pi pi-filter text-sm"></i>
           @if (activeFilterCount() > 0) {
@@ -54,81 +42,6 @@
             </span>
           }
         </button>
-
-        @if (filterVisible()) {
-          <div class="absolute right-0 top-full mt-2 z-50 w-64 rounded-xl border border-surface-200 dark:border-surface-700 bg-white dark:bg-surface-900 shadow-xl">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800">
-              <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
-              @if (activeFilterCount() > 0) {
-                <button
-                  type="button"
-                  class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
-                  (click)="clearFilters()"
-                >
-                  Limpiar
-                </button>
-              }
-            </div>
-
-            <div class="px-4 py-3 flex flex-col gap-4">
-              <div class="flex flex-col gap-1.5">
-                <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Tipo</span>
-                <div class="flex gap-1.5">
-                  @for (option of [{label: 'Simple', value: false}, {label: 'Compuesto', value: true}]; track option.label) {
-                    <button
-                      type="button"
-                      class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors"
-                      [class.border-surface-900]="filterComposite() === option.value"
-                      [class.bg-surface-900]="filterComposite() === option.value"
-                      [class.text-white]="filterComposite() === option.value"
-                      [class.dark:border-surface-0]="filterComposite() === option.value"
-                      [class.dark:bg-surface-0]="filterComposite() === option.value"
-                      [class.dark:text-surface-900]="filterComposite() === option.value"
-                      [class.border-surface-200]="filterComposite() !== option.value"
-                      [class.dark:border-surface-700]="filterComposite() !== option.value"
-                      [class.text-surface-600]="filterComposite() !== option.value"
-                      [class.dark:text-surface-300]="filterComposite() !== option.value"
-                      [class.hover:bg-surface-100]="filterComposite() !== option.value"
-                      [class.dark:hover:bg-surface-800]="filterComposite() !== option.value"
-                      (click)="selectComposite(option.value)"
-                    >
-                      {{ option.label }}
-                    </button>
-                  }
-                </div>
-              </div>
-
-              @if (categories().length > 0) {
-                <div class="flex flex-col gap-1.5">
-                  <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Categoría</span>
-                  <div class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto">
-                    @for (cat of categories(); track cat.id) {
-                      <button
-                        type="button"
-                        class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border transition-colors"
-                        [class.border-surface-900]="filterCategoryId() === cat.id"
-                        [class.bg-surface-900]="filterCategoryId() === cat.id"
-                        [class.text-white]="filterCategoryId() === cat.id"
-                        [class.dark:border-surface-0]="filterCategoryId() === cat.id"
-                        [class.dark:bg-surface-0]="filterCategoryId() === cat.id"
-                        [class.dark:text-surface-900]="filterCategoryId() === cat.id"
-                        [class.border-surface-200]="filterCategoryId() !== cat.id"
-                        [class.dark:border-surface-700]="filterCategoryId() !== cat.id"
-                        [class.text-surface-600]="filterCategoryId() !== cat.id"
-                        [class.dark:text-surface-300]="filterCategoryId() !== cat.id"
-                        [class.hover:bg-surface-100]="filterCategoryId() !== cat.id"
-                        [class.dark:hover:bg-surface-800]="filterCategoryId() !== cat.id"
-                        (click)="selectCategory(cat.id)"
-                      >
-                        {{ cat.name }}
-                      </button>
-                    }
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        }
       </div>
 
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
@@ -147,11 +60,11 @@
             <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">
               Nombre
             </th>
-            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24">
-              Tipo
-            </th>
             <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-32">
               Categoría
+            </th>
+            <th class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24">
+              Precio
             </th>
             <th class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28">
               Stock
@@ -162,14 +75,14 @@
           @if (loading()) {
             @for (i of [1, 2, 3, 4, 5]; track i) {
               <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="px-4 py-3" colspan="6">
+                <td class="px-4 py-3" colspan="5">
                   <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-full"></div>
                 </td>
               </tr>
             }
           } @else if (products().length === 0) {
             <tr>
-              <td colspan="6" class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+              <td colspan="5" class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500">
                 <i class="pi pi-search text-2xl block mb-2"></i>
                 No se encontraron productos
               </td>
@@ -203,13 +116,13 @@
                 <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
                   {{ product.name }}
                 </td>
-                <td class="px-4 py-3">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
-                    {{ product.composite ? 'Compuesto' : 'Simple' }}
-                  </span>
-                </td>
                 <td class="px-4 py-3 text-sm text-surface-600 dark:text-surface-400">
                   {{ product.categoryName }}
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
+                    ${{ product.customerPrice | number: '1.2-2' }}
+                  </span>
                 </td>
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-2">
@@ -298,6 +211,76 @@
     </div>
   </ng-template>
 </p-dialog>
+
+<p-popover #filterPopover appendTo="body" (onHide)="filterVisible.set(false)">
+  <div class="w-72">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+      @if (activeFilterCount() > 0) {
+        <button
+          type="button"
+          class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
+          (click)="clearFilters()"
+        >
+          Limpiar
+        </button>
+      }
+    </div>
+
+    <div class="px-4 py-3 flex flex-col gap-4">
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Buscar</span>
+        <div class="relative">
+          <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"></i>
+          <input
+            pInputText
+            type="text"
+            [ngModel]="search()"
+            (ngModelChange)="onSearchChange($event)"
+            placeholder="Código o nombre..."
+            class="w-full pl-9 text-sm"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Categoría</span>
+        <p-select
+          [options]="categoryOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="filterCategoryId()"
+          (ngModelChange)="onCategoryChange($event)"
+          styleClass="w-full text-sm"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Tipo</span>
+        <p-select
+          [options]="compositeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="filterComposite()"
+          (ngModelChange)="onCompositeChange($event)"
+          styleClass="w-full text-sm"
+        />
+      </div>
+
+      <div class="flex flex-col gap-1.5">
+        <span class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Stock</span>
+        <p-select
+          [options]="withStockOptions"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="filterWithStock()"
+          (ngModelChange)="onWithStockChange($event)"
+          styleClass="w-full text-sm"
+        />
+      </div>
+    </div>
+  </div>
+</p-popover>
 
 <p-popover #stockPopover appendTo="body" (onHide)="popoverProductId.set(null)">
   <div class="w-64">
