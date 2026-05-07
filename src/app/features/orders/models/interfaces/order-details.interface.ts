@@ -1,5 +1,13 @@
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
+export interface OrderItemAllocationDetail {
+  warehouseId: string;
+  warehouseCode: string;
+  warehouseName: string;
+  available: number;
+  allocated: number;
+}
+
 export interface OrderItemDetail {
   id: string;
   productId: string;
@@ -8,6 +16,7 @@ export interface OrderItemDetail {
   quantity: number;
   unitPrice: number;
   subtotal: number;
+  warehouseAllocations: OrderItemAllocationDetail[];
 }
 
 export interface OrderDetails {

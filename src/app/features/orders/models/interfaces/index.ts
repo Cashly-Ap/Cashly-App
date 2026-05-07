@@ -4,3 +4,4 @@ export * from './order-create.interface';
 export * from './order-edit.interface';
 export * from './order-form-data.interface';
 export * from './order-product.interface';
+export * from './order-item-allocation.interface';
