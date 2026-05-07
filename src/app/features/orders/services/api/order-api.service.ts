@@ -66,6 +66,13 @@ interface OrderDetailApiResponse {
     quantity: number;
     unitPrice: number;
     lineTotal: number;
+    warehouseAllocations?: {
+      warehouseId: string;
+      warehouseCode: string;
+      warehouseName: string;
+      available: number;
+      allocated: number;
+    }[];
   }[];
 }
 
@@ -163,6 +170,13 @@ export class OrderApiService {
         quantity: l.quantity,
         unitPrice: l.unitPrice,
         subtotal: l.lineTotal,
+        warehouseAllocations: (l.warehouseAllocations ?? []).map((a) => ({
+          warehouseId: a.warehouseId,
+          warehouseCode: a.warehouseCode,
+          warehouseName: a.warehouseName,
+          available: a.available,
+          allocated: a.allocated,
+        })),
       })),
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,

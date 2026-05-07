@@ -20,8 +20,6 @@ import { OrderApplicationService } from '@features/orders/services/application/o
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { CustomerList } from '@features/customers/models/interfaces';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { ProductList } from '@features/products/models/interfaces';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 
 @Component({
@@ -47,13 +45,11 @@ export class OrderFormPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
-  private readonly productApi = inject(ProductApiService);
   private readonly messageService = inject(MessageService);
 
   readonly isEditMode = signal<boolean>(false);
   readonly orderId = signal<string | null>(null);
   readonly isSubmitting = signal<boolean>(false);
-  readonly products = signal<ProductList[]>([]);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
@@ -78,7 +74,6 @@ export class OrderFormPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.loadProducts();
     this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
     this.updateSubmitTooltip();
     const id = this.route.snapshot.paramMap.get('id');
@@ -87,12 +82,6 @@ export class OrderFormPageComponent implements OnInit {
       this.orderId.set(id);
       this.loadOrder(id);
     }
-  }
-
-  private loadProducts(): void {
-    this.productApi.getAllSimple().subscribe({
-      next: (products) => this.products.set(products),
-    });
   }
 
   private updateSubmitTooltip(): void {
@@ -115,8 +104,18 @@ export class OrderFormPageComponent implements OnInit {
         this.items.set(
           order.items.map((item) => ({
             productId: item.productId,
+            productCode: item.productCode,
+            productName: item.productName,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
+            stock: [],
+            warehouseAllocations: item.warehouseAllocations.map((a) => ({
+              warehouseId: a.warehouseId,
+              warehouseCode: a.warehouseCode,
+              warehouseName: a.warehouseName,
+              available: a.available,
+              allocated: a.allocated,
+            })),
           })),
         );
       },
@@ -153,6 +152,12 @@ export class OrderFormPageComponent implements OnInit {
       return;
     }
 
+    const unallocated = this.items().filter((i) => i.warehouseAllocations.length === 0);
+    if (unallocated.length > 0) {
+      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Todos los productos deben tener asignación de almacén antes de guardar.', life: 5000 });
+      return;
+    }
+
     this.isSubmitting.set(true);
 
     const formValue = this.form.value;
@@ -165,6 +170,10 @@ export class OrderFormPageComponent implements OnInit {
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
+            warehouseAllocations: i.warehouseAllocations.map((a) => ({
+              warehouseId: a.warehouseId,
+              allocated: a.allocated,
+            })),
           })),
         })
         .subscribe({
@@ -186,6 +195,10 @@ export class OrderFormPageComponent implements OnInit {
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
+            warehouseAllocations: i.warehouseAllocations.map((a) => ({
+              warehouseId: a.warehouseId,
+              allocated: a.allocated,
+            })),
           })),
         })
         .subscribe({
