@@ -16,11 +16,14 @@
     }
   </div>
 
-  <app-product-picker-dialog
-    [visible]="pickerVisible()"
-    (productsAdded)="onProductsAdded($event)"
-    (cancelled)="onPickerCancelled()"
-  />
+  @if (customerId()) {
+    <app-product-picker-dialog
+      [visible]="pickerVisible()"
+      [customerId]="customerId()!"
+      (productsAdded)="onProductsAdded($event)"
+      (cancelled)="onPickerCancelled()"
+    />
+  }
 
   @if (items().length > 0) {
     <div class="space-y-2">

@@ -17,11 +17,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { ProductList, ProductStockByWarehouse } from '@features/products/models/interfaces';
+import { OrderApiService } from '@features/orders/services/api/order-api.service';
+import { OrderProduct, OrderProductStockItem, OrderItemFormData } from '@features/orders/models/interfaces';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 import { CategoryList } from '@features/categories/models/interfaces';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
 
 const PAGE_SIZE = 10;
 
@@ -34,7 +33,7 @@ export interface WarehouseAllocation {
 }
 
 export interface ProductSelection {
-  product: ProductList;
+  product: OrderProduct;
   quantity: number;
   unitPrice: number;
   allocations: WarehouseAllocation[];
@@ -48,17 +47,18 @@ export interface ProductSelection {
   templateUrl: './product-picker-dialog.component.html',
 })
 export class ProductPickerDialogComponent implements OnChanges {
-  private readonly productApi = inject(ProductApiService);
+  private readonly orderApi = inject(OrderApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
   @ViewChild('stockPopover') private readonly stockPopover!: Popover;
 
   readonly visible = input<boolean>(false);
+  readonly customerId = input.required<string>();
   readonly productsAdded = output<OrderItemFormData[]>();
   readonly cancelled = output<void>();
 
   readonly search = signal<string>('');
-  readonly products = signal<ProductList[]>([]);
+  readonly products = signal<OrderProduct[]>([]);
   readonly totalElements = signal<number>(0);
   readonly totalPages = signal<number>(0);
   readonly currentPage = signal<number>(0);
@@ -69,7 +69,6 @@ export class ProductPickerDialogComponent implements OnChanges {
 
   readonly popoverProductId = signal<string | null>(null);
   readonly popoverAllocations = signal<WarehouseAllocation[]>([]);
-  readonly popoverLoading = signal<boolean>(false);
 
   readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
@@ -122,7 +121,7 @@ export class ProductPickerDialogComponent implements OnChanges {
     return this.selectedIds().has(productId);
   }
 
-  toggleSelection(product: ProductList): void {
+  toggleSelection(product: OrderProduct): void {
     const ids = new Set(this.selectedIds());
     const map = new Map(this.selections());
 
@@ -134,8 +133,8 @@ export class ProductPickerDialogComponent implements OnChanges {
       map.set(product.id, {
         product,
         quantity: 0,
-        unitPrice: product.basePrice ?? 0,
-        allocations: [],
+        unitPrice: product.customerPrice,
+        allocations: this.buildAllocations(product.stock, new Map()),
       });
     }
 
@@ -143,7 +142,7 @@ export class ProductPickerDialogComponent implements OnChanges {
     this.selections.set(map);
   }
 
-  openStockPopover(event: MouseEvent, product: ProductList): void {
+  openStockPopover(event: MouseEvent, product: OrderProduct): void {
     event.stopPropagation();
 
     if (this.popoverProductId() === product.id) {
@@ -152,31 +151,14 @@ export class ProductPickerDialogComponent implements OnChanges {
       return;
     }
 
+    const existing = this.selections().get(product.id);
+    const existingMap = new Map(
+      (existing?.allocations ?? []).map((a) => [a.warehouseId, a.requested]),
+    );
+
     this.popoverProductId.set(product.id);
-    this.popoverAllocations.set([]);
-    this.popoverLoading.set(true);
+    this.popoverAllocations.set(this.buildAllocations(product.stock, existingMap));
     this.stockPopover.show(event);
-
-    this.productApi.getStock(product.id).subscribe({
-      next: (stock: ProductStockByWarehouse[]) => {
-        const existing = this.selections().get(product.id);
-        const existingMap = new Map(
-          (existing?.allocations ?? []).map((a) => [a.warehouseId, a.requested]),
-        );
-
-        this.popoverAllocations.set(
-          stock.map((s) => ({
-            warehouseId: s.warehouseId,
-            warehouseName: s.warehouseName,
-            warehouseCode: s.warehouseId,
-            available: s.quantity,
-            requested: existingMap.get(s.warehouseId) ?? 0,
-          })),
-        );
-        this.popoverLoading.set(false);
-      },
-      error: () => this.popoverLoading.set(false),
-    });
   }
 
   closePopover(): void {
@@ -200,24 +182,26 @@ export class ProductPickerDialogComponent implements OnChanges {
 
     const map = new Map(this.selections());
     const existing = map.get(productId);
+
     if (existing) {
       map.set(productId, { ...existing, quantity, allocations });
-    }
-    this.selections.set(map);
-
-    if (!this.selectedIds().has(productId)) {
+    } else {
       const product = this.products().find((p) => p.id === productId);
       if (product) {
+        map.set(productId, {
+          product,
+          quantity,
+          unitPrice: product.customerPrice,
+          allocations,
+        });
         const ids = new Set(this.selectedIds());
         ids.add(productId);
         this.selectedIds.set(ids);
-        if (!map.has(productId)) {
-          map.set(productId, { product, quantity, unitPrice: product.basePrice ?? 0, allocations });
-          this.selections.set(map);
-        }
       }
     }
 
+    this.selections.set(map);
+    this.stockPopover.hide();
     this.popoverProductId.set(null);
   }
 
@@ -258,15 +242,28 @@ export class ProductPickerDialogComponent implements OnChanges {
     this.cancelled.emit();
   }
 
+  private buildAllocations(
+    stock: OrderProductStockItem[],
+    existingMap: Map<string, number>,
+  ): WarehouseAllocation[] {
+    return stock.map((s) => ({
+      warehouseId: s.warehouseId,
+      warehouseName: s.warehouseName,
+      warehouseCode: s.warehouseCode,
+      available: s.quantity,
+      requested: existingMap instanceof Map ? (existingMap.get(s.warehouseId) ?? 0) : 0,
+    }));
+  }
+
   private load(page: number): void {
     this.loading.set(true);
     this.popoverProductId.set(null);
-    this.productApi
-      .getAll({
+    this.orderApi
+      .getProductsForOrder({
+        customerId: this.customerId(),
         search: this.search() || undefined,
         categoryId: this.filterCategoryId() ?? undefined,
         composite: this.filterComposite() ?? undefined,
-        active: true,
         page,
         size: PAGE_SIZE,
       })

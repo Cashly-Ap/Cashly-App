@@ -58,6 +58,8 @@ export class OrderFormPageComponent implements OnInit {
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
 
+  readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
+
   readonly submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
@@ -109,6 +111,7 @@ export class OrderFormPageComponent implements OnInit {
           legalName: order.customerLegalName,
         });
         this.form.patchValue({ customerId: order.customerId });
+        this.selectedCustomer.set({ id: order.customerId } as CustomerList);
         this.items.set(
           order.items.map((item) => ({
             productId: item.productId,

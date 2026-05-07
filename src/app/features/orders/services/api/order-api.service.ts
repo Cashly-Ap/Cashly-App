@@ -1,8 +1,24 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { OrderList, OrderDetails, OrderCreate, OrderEdit } from '../../models/interfaces';
+import { OrderList, OrderDetails, OrderCreate, OrderEdit, OrderProduct } from '../../models/interfaces';
 import { OrderStatus } from '../../models/enums/order-status.enum';
+
+export interface OrderProductFilters {
+  customerId: string;
+  search?: string;
+  categoryId?: string;
+  composite?: boolean;
+  page?: number;
+  size?: number;
+}
+
+interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number;
+}
 
 export interface OrderFilters {
   search?: string;
@@ -115,6 +131,16 @@ export class OrderApiService {
     return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
       map((r) => this.toOrderDetails(r)),
     );
+  }
+
+  getProductsForOrder(filters: OrderProductFilters): Observable<PageResponse<OrderProduct>> {
+    let params = new HttpParams().set('customerId', filters.customerId);
+    if (filters.search) params = params.set('search', filters.search);
+    if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
+    if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
+    if (filters.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters.size !== undefined) params = params.set('size', String(filters.size));
+    return this.http.get<PageResponse<OrderProduct>>(`${this.baseUrl}/products`, { params });
   }
 
   private toOrderDetails(r: OrderDetailApiResponse): OrderDetails {

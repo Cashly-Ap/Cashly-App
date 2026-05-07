@@ -19,6 +19,7 @@ import { ProductPickerDialogComponent } from '@features/orders/components/produc
 export class OrderItemsTableComponent {
   readonly items = input<OrderItemFormData[]>([]);
   readonly products = input<ProductList[]>([]);
+  readonly customerId = input<string | null>(null);
   readonly readonly = input<boolean>(false);
   readonly itemsChange = output<OrderItemFormData[]>();
 
@@ -29,6 +30,7 @@ export class OrderItemsTableComponent {
   );
 
   openPicker(): void {
+    if (!this.customerId()) return;
     this.pickerVisible.set(true);
   }
 
