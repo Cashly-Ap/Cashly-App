@@ -3,7 +3,7 @@
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
-  [style]="{ width: '450px' }"
+  [style]="{ width: '500px' }"
   [draggable]="false"
   [resizable]="false"
 >
@@ -20,6 +20,30 @@
       />
     </div>
 
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="dateFrom" class="text-sm font-medium">Desde</label>
+        <p-datepicker
+          id="dateFrom"
+          [(ngModel)]="dateFrom"
+          dateFormat="yy-mm-dd"
+          placeholder="Fecha inicial"
+          styleClass="w-full"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="dateTo" class="text-sm font-medium">Hasta</label>
+        <p-datepicker
+          id="dateTo"
+          [(ngModel)]="dateTo"
+          dateFormat="yy-mm-dd"
+          placeholder="Fecha final"
+          styleClass="w-full"
+        />
+      </div>
+    </div>
+
     <div class="flex flex-col gap-2">
       <label for="status" class="text-sm font-medium">Estado del Pedido</label>
       <p-select
@@ -33,28 +57,34 @@
       />
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label for="fromDate" class="text-sm font-medium">Desde</label>
-        <p-datepicker
-          id="fromDate"
-          [(ngModel)]="fromDate"
-          dateFormat="yy-mm-dd"
-          placeholder="Fecha inicial"
-          styleClass="w-full"
-        />
-      </div>
+    <div class="flex flex-col gap-2">
+      <label for="product" class="text-sm font-medium">Producto</label>
+      <p-select
+        id="product"
+        [options]="productOptions()"
+        [(ngModel)]="productId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todos los productos"
+        [filter]="true"
+        filterPlaceholder="Buscar producto"
+        styleClass="w-full"
+      />
+    </div>
 
-      <div class="flex flex-col gap-2">
-        <label for="toDate" class="text-sm font-medium">Hasta</label>
-        <p-datepicker
-          id="toDate"
-          [(ngModel)]="toDate"
-          dateFormat="yy-mm-dd"
-          placeholder="Fecha final"
-          styleClass="w-full"
-        />
-      </div>
+    <div class="flex flex-col gap-2">
+      <label for="category" class="text-sm font-medium">Categoría</label>
+      <p-select
+        id="category"
+        [options]="categoryOptions()"
+        [(ngModel)]="categoryId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todas las categorías"
+        [filter]="true"
+        filterPlaceholder="Buscar categoría"
+        styleClass="w-full"
+      />
     </div>
   </div>
 

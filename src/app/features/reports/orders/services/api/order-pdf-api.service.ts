@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 
 export interface OrdersPdfFilters {
+  dateFrom?: string;
+  dateTo?: string;
   customerId?: string;
   status?: string;
-  fromDate?: string;
-  toDate?: string;
-  createdBy?: string;
-  mode?: string;
+  productId?: string;
+  categoryId?: string;
+  mode?: 'SIMPLE' | 'DETAILED';
 }
 
 @Injectable({
@@ -34,20 +35,23 @@ export class OrderPdfApiService {
   downloadOrdersReportPdf(filters: OrdersPdfFilters): Observable<Blob> {
     let params = new HttpParams();
 
+    if (filters.dateFrom) {
+      params = params.set('dateFrom', filters.dateFrom);
+    }
+    if (filters.dateTo) {
+      params = params.set('dateTo', filters.dateTo);
+    }
     if (filters.customerId) {
       params = params.set('customerId', filters.customerId);
     }
     if (filters.status) {
       params = params.set('status', filters.status);
     }
-    if (filters.fromDate) {
-      params = params.set('fromDate', filters.fromDate);
+    if (filters.productId) {
+      params = params.set('productId', filters.productId);
     }
-    if (filters.toDate) {
-      params = params.set('toDate', filters.toDate);
-    }
-    if (filters.createdBy) {
-      params = params.set('createdBy', filters.createdBy);
+    if (filters.categoryId) {
+      params = params.set('categoryId', filters.categoryId);
     }
     if (filters.mode) {
       params = params.set('mode', filters.mode);

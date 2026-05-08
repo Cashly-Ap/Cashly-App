@@ -15,6 +15,13 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { OrderPdfApiService, OrdersPdfFilters } from '../../services/api/order-pdf-api.service';
+import { ProductApiService } from '@features/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+
+interface SelectOption {
+  value: string | null;
+  label: string;
+}
 
 @Component({
   selector: 'app-order-pdf-modal',
@@ -32,17 +39,21 @@ import { OrderPdfApiService, OrdersPdfFilters } from '../../services/api/order-p
 })
 export class OrderPdfModalComponent implements OnInit {
   private readonly orderPdfApi = inject(OrderPdfApiService);
+  private readonly productApi = inject(ProductApiService);
+  private readonly categoryApi = inject(CategoryApiService);
 
   readonly visible = input(false);
   readonly visibleChange = output<boolean>();
   readonly onGeneratePdf = output<OrdersPdfFilters>();
 
+  readonly dateFrom = signal<Date | null>(null);
+  readonly dateTo = signal<Date | null>(null);
   readonly status = signal<string | null>(null);
-  readonly fromDate = signal<Date | null>(null);
-  readonly toDate = signal<Date | null>(null);
-  readonly mode = signal<'simple' | 'detailed'>('simple');
+  readonly productId = signal<string | null>(null);
+  readonly categoryId = signal<string | null>(null);
+  readonly mode = signal<'SIMPLE' | 'DETAILED'>('SIMPLE');
 
-  readonly statusOptions = [
+  readonly statusOptions: SelectOption[] = [
     { value: null, label: 'Todos los estados' },
     { value: 'DRAFT', label: 'Borrador' },
     { value: 'CONFIRMED', label: 'Confirmado' },
@@ -50,13 +61,28 @@ export class OrderPdfModalComponent implements OnInit {
     { value: 'CANCELLED', label: 'Cancelado' },
   ];
 
-  readonly modeOptions = [
-    { value: 'simple', label: 'Simple' },
-    { value: 'detailed', label: 'Detallado' },
+  readonly modeOptions: SelectOption[] = [
+    { value: 'SIMPLE', label: 'Simple' },
+    { value: 'DETAILED', label: 'Detallado' },
   ];
 
+  readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
+  readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
+
   ngOnInit(): void {
-    // No need to load data here, filters are applied on the backend
+    this.productApi.getAllSimple().subscribe((products) => {
+      this.productOptions.set([
+        { value: null, label: 'Todos los productos' },
+        ...products.map((p) => ({ value: p.id, label: p.name })),
+      ]);
+    });
+
+    this.categoryApi.getAll({ size: 1000 }).subscribe((response) => {
+      this.categoryOptions.set([
+        { value: null, label: 'Todas las categorías' },
+        ...(response.content ?? []).map((c) => ({ value: c.id, label: c.name })),
+      ]);
+    });
   }
 
   onHide(): void {
@@ -65,9 +91,11 @@ export class OrderPdfModalComponent implements OnInit {
 
   generatePdf(): void {
     const filters: OrdersPdfFilters = {
+      dateFrom: this.dateFrom() ? this.formatDate(this.dateFrom()!) : undefined,
+      dateTo: this.dateTo() ? this.formatDate(this.dateTo()!) : undefined,
       status: this.status() ?? undefined,
-      fromDate: this.fromDate() ? this.formatDate(this.fromDate()!) : undefined,
-      toDate: this.toDate() ? this.formatDate(this.toDate()!) : undefined,
+      productId: this.productId() ?? undefined,
+      categoryId: this.categoryId() ?? undefined,
       mode: this.mode(),
     };
 
