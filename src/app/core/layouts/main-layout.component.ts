@@ -37,6 +37,8 @@ import { CatalogPdfApiService } from '@features/reports/inventory/services/api/c
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { CatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
+import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
@@ -63,6 +65,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     StockPdfModalComponent,
     MovementsPdfModalComponent,
     PdfViewerModalComponent,
+    OrderPdfModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -79,6 +82,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private catalogPdfApi = inject(CatalogPdfApiService);
   private stockPdfApi = inject(StockPdfApiService);
   private movementsPdfApi = inject(MovementsPdfApiService);
+  private orderPdfApi = inject(OrderPdfApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
   private currentObjectUrl: string | null = null;
@@ -89,7 +93,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/Parsun.png';
 
-  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | null>(null);
+  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | null>(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -146,6 +150,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openCatalogModal: () => this.activeModal.set('catalog'),
       openStockModal: () => this.activeModal.set('stock'),
       openMovementsModal: () => this.activeModal.set('movements'),
+      openOrdersPdfModal: () => this.activeModal.set('orders'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
@@ -226,6 +231,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.pdfTitle.set('Historial de Movimientos');
     this.pdfViewerVisible.set(true);
     this.movementsPdfApi.getPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onOrdersPdf(filters: OrdersPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Reporte de Pedidos');
+    this.pdfViewerVisible.set(true);
+    this.orderPdfApi.downloadOrdersReportPdf(filters).pipe(
       finalize(() => this.loadingPdf.set(false))
     ).subscribe({
       next: (blob) => {

@@ -202,6 +202,12 @@
     (onGeneratePdf)="onMovementsPdf($event)"
   />
 
+  <app-order-pdf-modal
+    [visible]="activeModal() === 'orders'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onOrdersPdf($event)"
+  />
+
   <app-pdf-viewer-modal
     [visible]="pdfViewerVisible()"
     [pdfUrl]="pdfUrl()"

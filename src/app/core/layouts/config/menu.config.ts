@@ -4,6 +4,7 @@ export interface MenuCallbacks {
   openCatalogModal: () => void;
   openStockModal: () => void;
   openMovementsModal: () => void;
+  openOrdersPdfModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -97,6 +98,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-arrow-right-arrow-left',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               command: () => callbacks.openMovementsModal(),
+            },
+          ],
+        },
+        {
+          label: 'Pedidos',
+          icon: 'pi pi-shopping-cart',
+          children: [
+            {
+              label: 'Reporte de Pedidos PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openOrdersPdfModal(),
             },
           ],
         },

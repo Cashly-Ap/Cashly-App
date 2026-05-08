@@ -23,8 +23,10 @@ import { CancelOrderDialogComponent } from '@features/orders/components/cancel-o
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderFilters } from '@features/orders/services/api/order-api.service';
+import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { OrderStatus, ORDER_STATUS_LABELS, getOrderStatusLabel } from '@features/orders/models/enums/order-status.enum';
 import { OrderList } from '@features/orders/models/interfaces';
+import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
 @Component({
   selector: 'app-order-list-page',
@@ -57,9 +59,11 @@ import { OrderList } from '@features/orders/models/interfaces';
 })
 export class OrderListPageComponent implements OnInit {
   private readonly orderService = inject(OrderApplicationService);
+  private readonly orderPdfApi = inject(OrderPdfApiService);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  private readonly pdfViewerService = inject(PdfViewerService);
 
   readonly orders = this.orderService.orders;
   readonly loading = this.orderService.loading;
@@ -266,6 +270,15 @@ export class OrderListPageComponent implements OnInit {
   onInvoiceDialogDismissed(): void {
     this.invoiceDialogVisible.set(false);
     this.orderToInvoice.set(null);
+  }
+
+  onDownloadPdf(order: OrderList): void {
+    const config: PdfViewerConfig = {
+      url: `/api/reports/orders/${order.id}/pdf`,
+      title: `Pedido #${order.orderNumber}`,
+      fileName: `pedido-${order.orderNumber}.pdf`,
+    };
+    this.pdfViewerService.open(config);
   }
 
   getStatusLabel(status: OrderStatus): string {
