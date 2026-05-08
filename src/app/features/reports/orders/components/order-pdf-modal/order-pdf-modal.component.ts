@@ -3,7 +3,6 @@ import {
   Component,
   inject,
   signal,
-  computed,
   OnInit,
   input,
   output,
@@ -38,7 +37,6 @@ interface SelectOption {
   templateUrl: './order-pdf-modal.component.html',
 })
 export class OrderPdfModalComponent implements OnInit {
-  private readonly orderPdfApi = inject(OrderPdfApiService);
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
