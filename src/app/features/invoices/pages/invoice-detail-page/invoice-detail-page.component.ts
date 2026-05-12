@@ -1,0 +1,102 @@
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { DatePipe, DecimalPipe } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MainLayoutComponent } from '@core/layouts/main-layout.component';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { MessageService } from 'primeng/api';
+import {
+  DetailsCardComponent,
+  DetailsCardHeaderComponent,
+  DetailsInfoFieldComponent,
+  DetailsInfoGridComponent,
+  DetailsSectionCardComponent,
+} from '@shared/components/details';
+import {
+  EmptyStateComponent,
+  LoadingSpinnerComponent,
+  PageHeaderComponent,
+  TextBadgeComponent,
+} from '@shared/components/ui';
+import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
+import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
+
+@Component({
+  selector: 'app-invoice-detail-page',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    MainLayoutComponent,
+    ButtonModule,
+    TableModule,
+    DetailsCardComponent,
+    DetailsCardHeaderComponent,
+    DetailsInfoFieldComponent,
+    DetailsInfoGridComponent,
+    DetailsSectionCardComponent,
+    EmptyStateComponent,
+    LoadingSpinnerComponent,
+    PageHeaderComponent,
+    TextBadgeComponent,
+  ],
+  templateUrl: './invoice-detail-page.component.html',
+})
+export class InvoiceDetailPageComponent implements OnInit {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly invoiceService = inject(InvoiceApplicationService);
+  private readonly messageService = inject(MessageService);
+
+  readonly invoice = this.invoiceService.currentInvoice;
+  readonly loading = this.invoiceService.loading;
+
+  readonly InvoiceStatus = InvoiceStatus;
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.invoiceService.loadById(id).subscribe({
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar la factura. Es posible que no exista.',
+            life: 5000,
+          });
+          this.router.navigate(['/facturas']);
+        },
+      });
+    }
+  }
+
+  onBack(): void {
+    this.router.navigate(['/facturas']);
+  }
+
+  onEdit(): void {
+    const id = this.invoice()?.id;
+    if (id) this.router.navigate(['/facturas', id, 'editar']);
+  }
+
+  getStatusLabel(status: InvoiceStatus): string {
+    return getInvoiceStatusLabel(status);
+  }
+
+  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' {
+    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label'> = {
+      [InvoiceStatus.DRAFT]: 'label',
+      [InvoiceStatus.PENDING_PAYMENT]: 'info',
+      [InvoiceStatus.PARTIALLY_PAID]: 'info',
+      [InvoiceStatus.PAID]: 'success',
+      [InvoiceStatus.CANCELLED]: 'danger',
+    };
+    return variants[status] ?? 'label';
+  }
+
+  getPaymentTypeLabel(paymentType: PaymentType): string {
+    return getPaymentTypeLabel(paymentType);
+  }
+}

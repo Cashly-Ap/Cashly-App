@@ -18,6 +18,7 @@ export class DetailsInfoFieldComponent {
   label = input.required<string>();
   value = input<string | number>();
   type = input<FieldType>('text');
+  colspan = input<'normal' | 'full'>('normal');
   active = input<boolean | undefined>(undefined);
   activeLabel = input<string>('Activo');
   inactiveLabel = input<string>('Inactivo');

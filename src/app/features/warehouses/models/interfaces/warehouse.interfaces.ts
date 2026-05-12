@@ -67,6 +67,7 @@ export interface WarehouseUpdate {
 export interface StockBatchItem {
   productId: string;
   quantity: number;
+  unitPrice?: number;
   notes?: string;
 }
 

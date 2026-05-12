@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { of, catchError } from 'rxjs';
@@ -54,6 +54,7 @@ import { ProductDetails } from '@features/products/models/interfaces';
     EmptyStateComponent,
     ListContainerComponent,
     StatusBadgeComponent,
+    CurrencyPipe,
   ],
   templateUrl: './warehouses-list-page.component.html',
   providers: [ConfirmationService],
@@ -157,10 +158,18 @@ export class WarehousesListPageComponent implements OnInit {
     this.productService.loadSimpleProducts().subscribe();
   }
 
+  getEntrySubtotal(index: number): number {
+    const line = this.entryLines.at(index);
+    const quantity = line.get('quantity')?.value ?? 0;
+    const unitPrice = line.get('unitPrice')?.value ?? 0;
+    return quantity * unitPrice;
+  }
+
   private createEntryLine(): FormGroup {
     return this.fb.group({
       productId: [null, Validators.required],
       quantity: [1, [Validators.required, Validators.min(0.01)]],
+      unitPrice: [null],
       notes: [''],
     });
   }
@@ -271,11 +280,12 @@ export class WarehousesListPageComponent implements OnInit {
     const warehouseId = this.selectedWarehouseId();
     if (!warehouseId) return;
 
-    type LineValue = { productId: string; quantity: number; notes: string };
+    type LineValue = { productId: string; quantity: number; unitPrice: number | null; notes: string };
     const lines = this.entryForm.getRawValue().lines as LineValue[];
     const items = lines.map((line) => ({
       productId: line.productId,
       quantity: line.quantity,
+      ...(line.unitPrice != null && line.unitPrice > 0 ? { unitPrice: line.unitPrice } : {}),
       notes: line.notes || undefined,
     }));
 

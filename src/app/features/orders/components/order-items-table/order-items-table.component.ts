@@ -23,6 +23,7 @@ import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock
 export class OrderItemsTableComponent {
   @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
 
+  readonly context = input<'order' | 'invoice'>('order');
   readonly items = input<OrderItemFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly customerId = input<string | null>(null);
@@ -47,6 +48,13 @@ export class OrderItemsTableComponent {
 
   readonly allocationTotal = computed(() =>
     this.popoverAllocations().reduce((sum, a) => sum + (a.allocated ?? 0), 0),
+  );
+
+  readonly titleLabel = computed(() =>
+    this.context() === 'order' ? 'Líneas del Pedido' : 'Líneas de Factura',
+  );
+  readonly totalLabel = computed(() =>
+    this.context() === 'order' ? 'Total Pedido:' : 'Total Factura:',
   );
 
   openPicker(): void {
@@ -97,13 +105,16 @@ export class OrderItemsTableComponent {
     );
 
     const allocations: WarehouseStockEntry[] = item.stock.length > 0
-      ? item.stock.map((s) => ({
-          warehouseId: s.warehouseId,
-          warehouseCode: s.warehouseCode,
-          warehouseName: s.warehouseName,
-          available: s.quantity,
-          allocated: existingMap.get(s.warehouseId) ?? 0,
-        }))
+      ? item.stock.map((s) => {
+          const existingAlloc = item.warehouseAllocations.find(a => a.warehouseId === s.warehouseId);
+          return {
+            warehouseId: s.warehouseId,
+            warehouseCode: s.warehouseCode,
+            warehouseName: s.warehouseName,
+            available: existingAlloc ? existingAlloc.available : s.quantity,
+            allocated: existingMap.get(s.warehouseId) ?? 0,
+          };
+        })
       : item.warehouseAllocations.map((a) => ({
           warehouseId: a.warehouseId,
           warehouseCode: a.warehouseCode,

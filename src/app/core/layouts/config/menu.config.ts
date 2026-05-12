@@ -39,6 +39,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           routerLink: '/pedidos',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
+        {
+          label: 'Facturas',
+          icon: 'pi pi-file',
+          routerLink: '/facturas',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
       ],
     },
     {

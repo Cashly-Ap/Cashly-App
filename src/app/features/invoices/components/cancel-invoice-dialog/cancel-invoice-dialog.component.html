@@ -1,0 +1,65 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '28rem' }"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-red-100 dark:bg-red-950 shrink-0">
+        <i class="pi pi-times-circle text-red-600 dark:text-red-400 text-lg"></i>
+      </div>
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Cancelar Factura</span>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4 pt-1">
+    <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
+      Está a punto de cancelar la factura
+      <span class="font-semibold text-surface-900 dark:text-surface-0">#{{ invoice()?.invoiceNumber }}</span>
+      de <span class="font-semibold text-surface-900 dark:text-surface-0">{{ invoice()?.customerName }}</span>.
+    </p>
+
+    <form [formGroup]="form" class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-200">
+        Motivo de cancelación <span class="text-red-500">*</span>
+      </label>
+      <textarea
+        pTextarea
+        formControlName="reason"
+        rows="4"
+        placeholder="Indique el motivo de la cancelación..."
+        class="w-full resize-none"
+        [class.ng-invalid]="reasonInvalid"
+        [class.ng-dirty]="reasonInvalid"
+      ></textarea>
+      @if (reasonInvalid) {
+        @if (reasonTooLong) {
+          <small class="text-red-500">El motivo no puede superar los 500 caracteres.</small>
+        } @else {
+          <small class="text-red-500">El motivo de cancelación es requerido.</small>
+        }
+      }
+      <small class="text-surface-400 text-right text-xs">
+        {{ form.get('reason')?.value?.length ?? 0 }} / 500
+      </small>
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end pt-1">
+      <p-button
+        label="Volver"
+        [outlined]="true"
+        severity="secondary"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        label="Cancelar Factura"
+        icon="pi pi-times"
+        severity="danger"
+        (onClick)="onConfirm()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

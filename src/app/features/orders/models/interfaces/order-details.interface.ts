@@ -17,6 +17,12 @@ export interface OrderItemDetail {
   unitPrice: number;
   subtotal: number;
   warehouseAllocations: OrderItemAllocationDetail[];
+  warehouseStocks?: {
+    warehouseId: string;
+    warehouseCode: string;
+    warehouseName: string;
+    quantity: number;
+  }[];
 }
 
 export interface OrderDetails {

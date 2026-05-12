@@ -161,17 +161,6 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   }
 
   private loadOrder(id: string): void {
-    const tab = this.pendingTabsService.get<OrderFormData>(this.tabId);
-    if (tab) {
-      this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
-      this.items.set(tab.formData.items);
-      this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
-      this.selectedCustomerLabel.set({
-        alias: tab.formData.customerAlias,
-        legalName: tab.formData.customerLegalName,
-      });
-      return;
-    }
     this.orderService.loadById(id).subscribe({
       next: (order) => {
         this.orderNumber.set(order.orderNumber ?? null);
@@ -189,7 +178,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             productName: item.productName,
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            stock: [],
+            stock: item.warehouseStocks ?? [],
             warehouseAllocations: item.warehouseAllocations.map((a) => ({
               warehouseId: a.warehouseId,
               warehouseCode: a.warehouseCode,
@@ -253,7 +242,9 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
-            warehouseAllocations: i.warehouseAllocations.map((a) => ({
+            warehouseAllocations: i.warehouseAllocations
+              .filter((a) => a.allocated > 0)
+              .map((a) => ({
               warehouseId: a.warehouseId,
               allocated: a.allocated,
             })),
@@ -280,7 +271,9 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             productId: i.productId,
             quantity: i.quantity,
             unitPrice: i.unitPrice,
-            warehouseAllocations: i.warehouseAllocations.map((a) => ({
+            warehouseAllocations: i.warehouseAllocations
+              .filter((a) => a.allocated > 0)
+              .map((a) => ({
               warehouseId: a.warehouseId,
               allocated: a.allocated,
             })),

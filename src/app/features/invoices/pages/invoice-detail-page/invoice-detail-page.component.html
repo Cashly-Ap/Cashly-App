@@ -1,0 +1,152 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (invoice(); as currentInvoice) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles de la Factura"
+            subtitle="Información completa de la factura"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="'Factura #' + currentInvoice.invoiceNumber"
+              [subtitle]="currentInvoice.customerName"
+            >
+              <div actions class="flex gap-3 flex-wrap">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                @if (currentInvoice.status === InvoiceStatus.DRAFT) {
+                  <p-button
+                    label="Editar"
+                    icon="pi pi-pencil"
+                    severity="contrast"
+                    (onClick)="onEdit()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Número de Factura"
+                  [value]="'#' + currentInvoice.invoiceNumber"
+                  type="code"
+                />
+                <app-details-info-field label="Estado" type="badge">
+                  <app-text-badge
+                    [label]="getStatusLabel(currentInvoice.status)"
+                    [variant]="getStatusVariant(currentInvoice.status)"
+                  />
+                </app-details-info-field>
+                <app-details-info-field
+                  label="Cliente"
+                  [value]="currentInvoice.customerName"
+                />
+                <app-details-info-field
+                  label="RIF"
+                  [value]="currentInvoice.customerRif"
+                />
+                <app-details-info-field
+                  label="Tipo de Pago"
+                  [value]="getPaymentTypeLabel(currentInvoice.paymentType)"
+                  colspan="full"
+                />
+                <app-details-info-field
+                  label="Total"
+                  [value]="(currentInvoice.subtotal | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                <app-details-info-field
+                  label="Creado por"
+                  [value]="currentInvoice.createdByName"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(currentInvoice.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+                @if (currentInvoice.orderNumber) {
+                  <app-details-info-field
+                    label="Pedido Origen"
+                    [value]="'#' + currentInvoice.orderNumber"
+                    type="code"
+                  />
+                }
+                @if (currentInvoice.cancelledAt) {
+                  <app-details-info-field
+                    label="Fecha de Cancelación"
+                    [value]="(currentInvoice.cancelledAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                  />
+                  <app-details-info-field
+                    label="Razón de Cancelación"
+                    [value]="currentInvoice.cancelledReason || ''"
+                  />
+                }
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+
+          @if (currentInvoice.notes) {
+            <app-details-section-card title="Notas" icon="pi-align-left">
+              <p class="text-sm whitespace-pre-wrap">{{ currentInvoice.notes }}</p>
+            </app-details-section-card>
+          }
+
+          <app-details-section-card title="Líneas de la Factura" icon="pi-list">
+            @if (currentInvoice.lines && currentInvoice.lines.length > 0) {
+              <p-table [value]="currentInvoice.lines" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-12">#</th>
+                    <th>Producto</th>
+                    <th class="w-32 text-right">Cantidad</th>
+                    <th class="w-40 text-right">Precio Unit.</th>
+                    <th class="w-40 text-right">Subtotal</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-line let-index="rowIndex">
+                  <tr>
+                    <td class="text-surface-400 text-sm">{{ index + 1 }}</td>
+                    <td>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium text-sm">{{ line.productName }}</span>
+                        <span class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit">
+                          {{ line.productCode }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                    <td class="text-right font-mono text-sm">{{ line.unitPrice | number:'1.2-2' }}</td>
+                    <td class="text-right font-mono font-semibold text-sm">{{ line.lineTotal | number:'1.2-2' }}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="4" class="text-right font-semibold">Total:</td>
+                    <td class="text-right font-mono font-bold">{{ currentInvoice.subtotal | number:'1.2-2' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            } @else {
+              <app-empty-state
+                icon="pi-inbox"
+                message="No hay líneas en esta factura"
+              />
+            }
+          </app-details-section-card>
+
+        </div>
+      }
+    </div>
+  </div>
+</app-main-layout>

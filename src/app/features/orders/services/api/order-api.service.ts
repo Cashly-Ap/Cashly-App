@@ -73,6 +73,12 @@ interface OrderDetailApiResponse {
       availableStock: number;
       allocated: number;
     }[];
+    warehouseStocks?: {
+      warehouseId: string;
+      warehouseCode: string;
+      warehouseName: string;
+      quantity: number;
+    }[];
   }[];
 }
 
@@ -177,6 +183,7 @@ export class OrderApiService {
           available: a.availableStock,
           allocated: a.allocated,
         })),
+        warehouseStocks: l.warehouseStocks,
       })),
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
