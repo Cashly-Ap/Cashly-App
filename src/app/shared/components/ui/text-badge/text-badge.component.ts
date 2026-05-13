@@ -13,7 +13,7 @@ export class TextBadgeComponent {
   variant = input<TextBadgeVariant>('default');
 
   badgeClass = computed(() => {
-    const baseClasses = 'text-xs font-medium px-3 py-1.5 rounded-lg w-fit';
+    const baseClasses = 'text-xs font-medium px-3 py-1.5 rounded-lg w-fit whitespace-nowrap';
 
     const variantClasses: Record<TextBadgeVariant, string> = {
       default: 'bg-surface-900 dark:bg-surface-0 text-surface-0 dark:text-surface-900',

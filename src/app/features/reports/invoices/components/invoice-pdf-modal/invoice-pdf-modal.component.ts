@@ -1,0 +1,82 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  input,
+  output,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
+import { InvoicesPdfFilters } from '../../models/interfaces';
+
+interface SelectOption {
+  value: string | null;
+  label: string;
+}
+
+@Component({
+  selector: 'app-invoice-pdf-modal',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DialogModule,
+    ButtonModule,
+    SelectModule,
+    DatePickerModule,
+  ],
+  templateUrl: './invoice-pdf-modal.component.html',
+})
+export class InvoicePdfModalComponent {
+  readonly visible = input(false);
+  readonly visibleChange = output<boolean>();
+  readonly onGeneratePdf = output<InvoicesPdfFilters>();
+
+  readonly dateFrom = signal<Date | null>(null);
+  readonly dateTo = signal<Date | null>(null);
+  readonly status = signal<string | null>(null);
+  readonly mode = signal<'SIMPLE' | 'DETAILED'>('SIMPLE');
+
+  readonly statusOptions: SelectOption[] = [
+    { value: null, label: 'Todos los estados' },
+    { value: 'DRAFT', label: 'Borrador' },
+    { value: 'PENDING_PAYMENT', label: 'Pendiente de Pago' },
+    { value: 'PARTIALLY_PAID', label: 'Parcialmente Pagada' },
+    { value: 'PAID', label: 'Pagada' },
+    { value: 'CANCELLED', label: 'Cancelada' },
+  ];
+
+  readonly modeOptions: SelectOption[] = [
+    { value: 'SIMPLE', label: 'Simple' },
+    { value: 'DETAILED', label: 'Detallado' },
+  ];
+
+  onHide(): void {
+    this.visibleChange.emit(false);
+  }
+
+  generatePdf(): void {
+    const filters: InvoicesPdfFilters = {
+      dateFrom: this.dateFrom() ? this.formatDate(this.dateFrom()!) : undefined,
+      dateTo: this.dateTo() ? this.formatDate(this.dateTo()!) : undefined,
+      status: this.status() ?? undefined,
+      mode: this.mode(),
+    };
+
+    this.onGeneratePdf.emit(filters);
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+}

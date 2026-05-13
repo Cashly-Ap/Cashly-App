@@ -208,6 +208,12 @@
     (onGeneratePdf)="onOrdersPdf($event)"
   />
 
+  <app-invoice-pdf-modal
+    [visible]="activeModal() === 'invoices'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onInvoicesPdf($event)"
+  />
+
   <app-pdf-viewer-modal
     [visible]="pdfViewerVisible()"
     [pdfUrl]="pdfUrl()"

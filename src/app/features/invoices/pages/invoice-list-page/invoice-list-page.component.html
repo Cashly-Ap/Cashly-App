@@ -196,7 +196,9 @@
                       <td>
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(invoice)" pTooltip="Ver" />
+                          <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(invoice)" pTooltip="Descargar PDF" />
                           @if (invoice.status === 'DRAFT') {
+                            <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirmInvoice(invoice)" pTooltip="Confirmar" />
                             <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(invoice)" pTooltip="Editar" />
                             <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(invoice)" pTooltip="Eliminar" />
                           }
@@ -252,7 +254,7 @@
                         {{ invoice.customerName }}
                       </h3>
                       <p class="text-sm font-medium mb-2">{{ invoice.subtotal | number: '1.2-2' }}</p>
-                      <div class="flex flex-wrap gap-2">
+                      <div class="flex flex-nowrap gap-2">
                         <app-text-badge [label]="getPaymentTypeLabel(invoice.paymentType)" variant="label" />
                         <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
                       </div>
@@ -261,7 +263,9 @@
                   </div>
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(invoice)" />
+                    <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(invoice)" pTooltip="Descargar PDF" />
                     @if (invoice.status === 'DRAFT') {
+                      <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirmInvoice(invoice)" pTooltip="Confirmar" />
                       <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(invoice)" pTooltip="Editar" />
                       <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(invoice)" pTooltip="Eliminar" />
                     }

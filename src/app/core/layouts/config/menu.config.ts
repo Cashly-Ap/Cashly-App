@@ -5,6 +5,7 @@ export interface MenuCallbacks {
   openStockModal: () => void;
   openMovementsModal: () => void;
   openOrdersPdfModal: () => void;
+  openInvoicesPdfModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -116,6 +117,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               command: () => callbacks.openOrdersPdfModal(),
+            },
+          ],
+        },
+        {
+          label: 'Facturas',
+          icon: 'pi pi-file',
+          children: [
+            {
+              label: 'Reporte de Facturas PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openInvoicesPdfModal(),
             },
           ],
         },

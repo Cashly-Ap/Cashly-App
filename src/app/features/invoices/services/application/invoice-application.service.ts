@@ -110,6 +110,25 @@ export class InvoiceApplicationService {
     );
   }
 
+  confirm(id: string): Observable<InvoiceDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.confirm(id).pipe(
+      tap({
+        next: (invoice) => {
+          const listItem = InvoiceMapper.toList(invoice);
+          this.invoices.update((current) => current.map((i) => (i.id === id ? listItem : i)));
+          if (this.currentInvoice()?.id === id) {
+            this.currentInvoice.set(invoice);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
   duplicate(id: string): Observable<InvoiceDetails> {
     this.loading.set(true);
     this.error.set(null);

@@ -133,6 +133,12 @@ export class InvoiceApiService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
+  confirm(id: string): Observable<InvoiceDetails> {
+    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
+      map((r) => this.toInvoiceDetails(r)),
+    );
+  }
+
   duplicate(id: string): Observable<InvoiceDetails> {
     return this.http.post<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/duplicate`, {}).pipe(
       map((r) => this.toInvoiceDetails(r)),

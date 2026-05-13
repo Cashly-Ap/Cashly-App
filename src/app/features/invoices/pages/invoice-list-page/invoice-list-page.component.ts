@@ -26,6 +26,7 @@ import { InvoiceFilters } from '@features/invoices/services/api/invoice-api.serv
 import { InvoiceStatus, INVOICE_STATUS_LABELS, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType, PAYMENT_TYPE_LABELS, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
 import { InvoiceList } from '@features/invoices/models/interfaces';
+import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
 @Component({
   selector: 'app-invoice-list-page',
@@ -61,6 +62,7 @@ export class InvoiceListPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  private readonly pdfViewerService = inject(PdfViewerService);
 
   readonly invoices = this.invoiceService.invoices;
   readonly loading = this.invoiceService.loading;
@@ -200,6 +202,38 @@ export class InvoiceListPageComponent implements OnInit {
     });
   }
 
+  onConfirmInvoice(invoice: InvoiceList): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea confirmar la factura #${invoice.invoiceNumber}? Esta acción no se puede deshacer.`,
+      header: 'Confirmar Factura',
+      icon: 'pi pi-check-circle',
+      acceptLabel: 'Sí, confirmar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-success',
+      accept: () => {
+        this.invoiceService.confirm(invoice.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Factura confirmada exitosamente',
+              life: 3000,
+            });
+            this.loadWithFilters();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al confirmar la factura. Por favor, intente nuevamente.',
+              life: 5000,
+            });
+          },
+        });
+      },
+    });
+  }
+
   onCancelInvoice(invoice: InvoiceList): void {
     this.invoiceToCancel.set(invoice);
     this.cancelDialogVisible.set(true);
@@ -267,6 +301,15 @@ export class InvoiceListPageComponent implements OnInit {
     });
   }
 
+  onDownloadPdf(invoice: InvoiceList): void {
+    const config: PdfViewerConfig = {
+      url: `/api/reports/invoices/${invoice.id}/pdf`,
+      title: `Factura #${invoice.invoiceNumber}`,
+      fileName: `factura-${invoice.invoiceNumber}.pdf`,
+    };
+    this.pdfViewerService.open(config);
+  }
+
   getStatusLabel(status: InvoiceStatus): string {
     return getInvoiceStatusLabel(status);
   }
@@ -287,7 +330,7 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   canCancel(status: InvoiceStatus): boolean {
-    return status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID;
+    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID;
   }
 
   private loadWithFilters(): void {
