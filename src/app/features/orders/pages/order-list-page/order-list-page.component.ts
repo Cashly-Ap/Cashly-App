@@ -240,11 +240,11 @@ export class OrderListPageComponent implements OnInit {
     this.invoiceDialogVisible.set(true);
   }
 
-  onInvoiceDialogConfirmed(): void {
+  onInvoiceDialogConfirmed(paymentType: string): void {
     const order = this.orderToInvoice();
     if (!order) return;
     this.invoiceDialogVisible.set(false);
-    this.orderService.convertToInvoice(order.id).subscribe({
+    this.orderService.convertToInvoice(order.id, paymentType).subscribe({
       next: () => {
         this.orderToInvoice.set(null);
         this.messageService.add({

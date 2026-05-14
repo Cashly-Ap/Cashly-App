@@ -36,15 +36,29 @@
                 {{ itemIdx + 1 }}
               </span>
 
-              <span class="flex-1 min-w-[200px] text-sm font-medium text-surface-900 dark:text-surface-100 truncate">
-                {{ resolveProductName(item.productId) }}
-              </span>
+              <div class="flex-1 min-w-[200px]">
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
+                  {{ resolveProductName(item.productId) }}
+                </span>
+                @if (item.stock && item.stock.length > 0) {
+                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
+                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
+                    @if (getItemTotalReserved(item) > 0) {
+                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
+                    }
+                  </span>
+                }
+              </div>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
-                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                <span class="font-mono text-sm font-medium"
+                  [class.text-surface-900]="!isItemOverAllocated(item)"
+                  [class.dark:text-surface-100]="!isItemOverAllocated(item)"
+                  [class.text-red-600]="isItemOverAllocated(item)"
+                  [class.dark:text-red-400]="isItemOverAllocated(item)">
                   {{ item.quantity | number: '1.0-3' }}
                 </span>
                 <button
@@ -104,9 +118,19 @@
               <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 text-xs font-medium shrink-0">
                 {{ itemIdx + 1 }}
               </span>
-              <span class="text-sm font-medium text-surface-900 dark:text-surface-100 flex-1 min-w-0 truncate">
-                {{ resolveProductName(item.productId) }}
-              </span>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
+                  {{ resolveProductName(item.productId) }}
+                </span>
+                @if (item.stock && item.stock.length > 0) {
+                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
+                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
+                    @if (getItemTotalReserved(item) > 0) {
+                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
+                    }
+                  </span>
+                }
+              </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>

@@ -265,7 +265,7 @@
     [orderNumber]="orderToInvoice()?.orderNumber ?? ''"
     [customerName]="orderToInvoice()?.customerAlias ?? ''"
     [totalAmount]="orderToInvoice()?.totalAmount ?? 0"
-    (confirmed)="onInvoiceDialogConfirmed()"
+    (confirmed)="onInvoiceDialogConfirmed($event)"
     (cancelled)="onInvoiceDialogDismissed()"
   />
 </app-main-layout>

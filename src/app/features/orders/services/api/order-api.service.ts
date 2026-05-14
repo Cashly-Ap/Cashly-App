@@ -78,6 +78,8 @@ interface OrderDetailApiResponse {
       warehouseCode: string;
       warehouseName: string;
       quantity: number;
+      reserved: number;
+      available: number;
     }[];
   }[];
 }
@@ -137,8 +139,8 @@ export class OrderApiService {
     );
   }
 
-  convertToInvoice(id: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${id}/convert-to-invoice`, {});
+  convertToInvoice(id: string, paymentType: string): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/convert-to-invoice`, { paymentType });
   }
 
   cancel(id: string, reason: string): Observable<OrderDetails> {
@@ -183,7 +185,14 @@ export class OrderApiService {
           available: a.availableStock,
           allocated: a.allocated,
         })),
-        warehouseStocks: l.warehouseStocks,
+        warehouseStocks: (l.warehouseStocks ?? []).map((s) => ({
+          warehouseId: s.warehouseId,
+          warehouseCode: s.warehouseCode,
+          warehouseName: s.warehouseName,
+          quantity: s.quantity,
+          reserved: s.reserved,
+          available: s.available,
+        })),
       })),
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,

@@ -111,7 +111,9 @@ export class OrderItemsTableComponent {
             warehouseId: s.warehouseId,
             warehouseCode: s.warehouseCode,
             warehouseName: s.warehouseName,
-            available: existingAlloc ? existingAlloc.available : s.quantity,
+            quantity: s.quantity,
+            reserved: s.reserved,
+            available: s.available,
             allocated: existingMap.get(s.warehouseId) ?? 0,
           };
         })
@@ -119,7 +121,9 @@ export class OrderItemsTableComponent {
           warehouseId: a.warehouseId,
           warehouseCode: a.warehouseCode,
           warehouseName: a.warehouseName,
-          available: a.available,
+          quantity: a.available,
+          reserved: 0,
+          available: Math.max(0, a.available - Number(a.allocated)),
           allocated: a.allocated,
         }));
 
@@ -173,5 +177,18 @@ export class OrderItemsTableComponent {
     if (item?.stock) return item.stock.reduce((sum, s) => sum + s.quantity, 0);
     const product = this.products().find((p) => p.id === productId);
     return product?.stockTotal ?? null;
+  }
+
+  getItemTotalReserved(item: OrderItemFormData): number {
+    return (item.stock ?? []).reduce((sum, s) => sum + (s.reserved ?? 0), 0);
+  }
+
+  getItemTotalAvailable(item: OrderItemFormData): number {
+    return (item.stock ?? []).reduce((sum, s) => sum + (s.available ?? 0), 0);
+  }
+
+  isItemOverAllocated(item: OrderItemFormData): boolean {
+    const totalAvailable = this.getItemTotalAvailable(item);
+    return item.quantity > totalAvailable && totalAvailable > 0;
   }
 }

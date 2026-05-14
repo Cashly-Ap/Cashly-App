@@ -183,21 +183,33 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         this.form.patchValue({ customerId: invoice.customerId });
         this.selectedCustomer.set({ id: invoice.customerId } as CustomerList);
         this.items.set(
-          invoice.lines.map((item) => ({
-            productId: item.productId,
-            productCode: item.productCode,
-            productName: item.productName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            stock: item.warehouseStocks ?? [],
-            warehouseAllocations: item.warehouseAllocations.map((a) => ({
-              warehouseId: a.warehouseId,
-              warehouseCode: a.warehouseCode,
-              warehouseName: a.warehouseName,
-              available: a.available,
-              allocated: a.allocated,
-            })),
-          })),
+          invoice.lines.map((item) => {
+            const allocByWarehouse = new Map(
+              (item.warehouseAllocations ?? []).map((a) => [a.warehouseId, Number(a.allocated)]),
+            );
+            return {
+              productId: item.productId,
+              productCode: item.productCode,
+              productName: item.productName,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              stock: (item.warehouseStocks ?? []).map((s) => {
+                const alreadyAllocated = allocByWarehouse.get(s.warehouseId) ?? 0;
+                return {
+                  ...s,
+                  reserved: 0,
+                  available: Math.max(0, s.quantity - alreadyAllocated),
+                };
+              }),
+              warehouseAllocations: item.warehouseAllocations.map((a) => ({
+                warehouseId: a.warehouseId,
+                warehouseCode: a.warehouseCode,
+                warehouseName: a.warehouseName,
+                available: a.available,
+                allocated: a.allocated,
+              })),
+            };
+          }),
         );
       },
     });

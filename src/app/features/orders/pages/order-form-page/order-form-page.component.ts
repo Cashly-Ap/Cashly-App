@@ -172,21 +172,30 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
         this.form.patchValue({ customerId: order.customerId });
         this.selectedCustomer.set({ id: order.customerId } as CustomerList);
         this.items.set(
-          order.items.map((item) => ({
-            productId: item.productId,
-            productCode: item.productCode,
-            productName: item.productName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            stock: item.warehouseStocks ?? [],
-            warehouseAllocations: item.warehouseAllocations.map((a) => ({
-              warehouseId: a.warehouseId,
-              warehouseCode: a.warehouseCode,
-              warehouseName: a.warehouseName,
-              available: a.available,
-              allocated: a.allocated,
-            })),
-          })),
+          order.items.map((item) => {
+            return {
+              productId: item.productId,
+              productCode: item.productCode,
+              productName: item.productName,
+              quantity: item.quantity,
+              unitPrice: item.unitPrice,
+              stock: (item.warehouseStocks ?? []).map((s) => ({
+                warehouseId: s.warehouseId,
+                warehouseCode: s.warehouseCode,
+                warehouseName: s.warehouseName,
+                quantity: s.quantity,
+                reserved: s.reserved,
+                available: s.available,
+              })),
+              warehouseAllocations: item.warehouseAllocations.map((a) => ({
+                warehouseId: a.warehouseId,
+                warehouseCode: a.warehouseCode,
+                warehouseName: a.warehouseName,
+                available: a.available,
+                allocated: a.allocated,
+              })),
+            };
+          }),
         );
       },
     });

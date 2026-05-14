@@ -22,6 +22,8 @@ export interface OrderItemDetail {
     warehouseCode: string;
     warehouseName: string;
     quantity: number;
+    reserved: number;
+    available: number;
   }[];
 }
 

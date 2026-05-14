@@ -110,11 +110,11 @@ export class OrderApplicationService {
     );
   }
 
-  convertToInvoice(id: string): Observable<void> {
+  convertToInvoice(id: string, paymentType: string): Observable<void> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.convertToInvoice(id).pipe(
+    return this.api.convertToInvoice(id, paymentType).pipe(
       tap({
         error: (err: Error) => this.error.set(err.message),
       }),

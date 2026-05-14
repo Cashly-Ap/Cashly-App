@@ -4,6 +4,7 @@
   [closable]="false"
   [style]="{ width: '42rem', maxHeight: '90vh' }"
   [breakpoints]="{ '960px': '95vw' }"
+  (onShow)="onDialogShow()"
 >
   <ng-template pTemplate="header">
     <div class="flex items-center gap-3">

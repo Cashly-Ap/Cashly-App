@@ -78,7 +78,7 @@ export class ProductPickerDialogComponent {
   readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
   readonly filterComposite = signal<boolean | null>(null);
-  readonly filterWithStock = signal<boolean | null>(true);
+  readonly filterWithStock = signal<boolean>(true);
   readonly categories = signal<CategoryList[]>([]);
 
   readonly pageSize = PAGE_SIZE;
@@ -91,7 +91,6 @@ export class ProductPickerDialogComponent {
   ];
 
   readonly withStockOptions = [
-    { label: 'Todos', value: null },
     { label: 'Con stock', value: true },
     { label: 'Sin stock', value: false },
   ];
@@ -121,14 +120,22 @@ export class ProductPickerDialogComponent {
     return count;
   });
 
+  private initialized = false;
+
   constructor() {
     effect(() => {
-      if (this.visible()) {
-        this.reset();
-        this.loadCategories();
-        this.load(0);
-      }
+      this.customerId();
+      this.initialized = false;
     });
+  }
+
+  onDialogShow(): void {
+    if (!this.initialized) {
+      this.initialized = true;
+      this.loadCategories();
+      this.load(0);
+    }
+    this.resetSelectionState();
   }
 
   onSearchChange(value: string): void {
@@ -146,8 +153,8 @@ export class ProductPickerDialogComponent {
     this.load(0);
   }
 
-  onWithStockChange(value: boolean | null): void {
-    this.filterWithStock.set(value ?? null);
+  onWithStockChange(value: boolean): void {
+    this.filterWithStock.set(value);
     this.load(0);
   }
 
@@ -167,7 +174,13 @@ export class ProductPickerDialogComponent {
     return this.selectedIds().has(productId);
   }
 
+  canSelectProduct(product: OrderProduct): boolean {
+    return this.getTotalAvailable(product) > 0;
+  }
+
   toggleSelection(product: OrderProduct): void {
+    if (!this.isSelected(product.id) && !this.canSelectProduct(product)) return;
+
     const ids = new Set(this.selectedIds());
     const map = new Map(this.selections());
 
@@ -225,15 +238,26 @@ export class ProductPickerDialogComponent {
     const productId = this.popoverProductId();
     if (!productId) return;
 
-    const allocations = this.popoverAllocations();
-    const quantity = allocations.reduce((sum, a) => sum + (a.allocated ?? 0), 0);
+    // Clamp each allocated value to its available stock
+    const allocations = this.popoverAllocations().map((a) => ({
+      ...a,
+      allocated: Math.min(a.allocated ?? 0, a.available),
+    }));
+    const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
 
     const map = new Map(this.selections());
     const existing = map.get(productId);
 
     if (existing) {
-      map.set(productId, { ...existing, quantity, allocations });
-    } else {
+      if (quantity === 0) {
+        const ids = new Set(this.selectedIds());
+        ids.delete(productId);
+        this.selectedIds.set(ids);
+        map.delete(productId);
+      } else {
+        map.set(productId, { ...existing, quantity, allocations });
+      }
+    } else if (quantity > 0) {
       const product = this.products().find((p) => p.id === productId);
       if (product) {
         map.set(productId, {
@@ -255,7 +279,17 @@ export class ProductPickerDialogComponent {
 
   getAllocationQuantity(productId: string): number {
     return this.selections().get(productId)?.quantity ?? 0;
-  }  toggleFilterPanel(event: MouseEvent): void {
+  }
+
+  getTotalReserved(product: OrderProduct): number {
+    return product.stock.reduce((sum, s) => sum + s.reserved, 0);
+  }
+
+  getTotalAvailable(product: OrderProduct): number {
+    return product.stock.reduce((sum, s) => sum + s.available, 0);
+  }
+
+  toggleFilterPanel(event: MouseEvent): void {
     if (this.filterVisible()) {
       this.filterPopover.hide();
     } else {
@@ -302,8 +336,10 @@ export class ProductPickerDialogComponent {
       warehouseId: s.warehouseId,
       warehouseName: s.warehouseName,
       warehouseCode: s.warehouseCode,
-      available: s.quantity,
-      allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : s.quantity,
+      quantity: s.quantity,
+      reserved: s.reserved,
+      available: s.available,
+      allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : s.available,
     }));
   }
 
@@ -316,7 +352,7 @@ export class ProductPickerDialogComponent {
         search: this.search() || undefined,
         categoryId: this.filterCategoryId() ?? undefined,
         composite: this.filterComposite() ?? undefined,
-        withStock: this.filterWithStock() ?? undefined,
+        withStock: this.filterWithStock(),
         page,
         size: PAGE_SIZE,
       })
@@ -339,20 +375,13 @@ export class ProductPickerDialogComponent {
     });
   }
 
-  private reset(): void {
+  private resetSelectionState(): void {
     this.search.set('');
-    this.products.set([]);
-    this.totalElements.set(0);
-    this.totalPages.set(0);
     this.currentPage.set(0);
     this.selectedIds.set(new Set());
     this.selections.set(new Map());
     this.popoverProductId.set(null);
     this.popoverAllocations.set([]);
     this.filterVisible.set(false);
-    this.filterCategoryId.set(null);
-    this.filterComposite.set(null);
-    this.filterWithStock.set(true);
-    this.categories.set([]);
   }
 }

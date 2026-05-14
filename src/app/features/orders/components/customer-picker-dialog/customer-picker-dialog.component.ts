@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  OnChanges,
   ViewChild,
   inject,
   input,
@@ -28,7 +27,7 @@ const PAGE_SIZE = 10;
   imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, PopoverModule, SelectModule],
   templateUrl: './customer-picker-dialog.component.html',
 })
-export class CustomerPickerDialogComponent implements OnChanges {
+export class CustomerPickerDialogComponent {
   @ViewChild('filterPopover') private readonly filterPopover!: Popover;
 
   private readonly customerApi = inject(CustomerApiService);
@@ -60,11 +59,14 @@ export class CustomerPickerDialogComponent implements OnChanges {
     return this.filterType() !== null ? 1 : 0;
   });
 
-  ngOnChanges(): void {
-    if (this.visible()) {
-      this.reset();
+  private initialized = false;
+
+  onDialogShow(): void {
+    if (!this.initialized) {
+      this.initialized = true;
       this.load(0);
     }
+    this.resetSelectionState();
   }
 
   onSearchChange(value: string): void {
@@ -128,12 +130,8 @@ export class CustomerPickerDialogComponent implements OnChanges {
       });
   }
 
-  private reset(): void {
+  private resetSelectionState(): void {
     this.search.set('');
-    this.customers.set([]);
-    this.totalElements.set(0);
-    this.totalPages.set(0);
     this.currentPage.set(0);
-    this.filterType.set(null);
   }
 }

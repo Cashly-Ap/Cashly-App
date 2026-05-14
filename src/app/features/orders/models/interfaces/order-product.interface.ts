@@ -3,6 +3,8 @@ export interface OrderProductStockItem {
   warehouseCode: string;
   warehouseName: string;
   quantity: number;
+  reserved: number;
+  available: number;
 }
 
 export interface OrderProduct {
