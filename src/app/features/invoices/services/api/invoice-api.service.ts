@@ -67,6 +67,8 @@ interface InvoiceDetailApiResponse {
       warehouseCode: string;
       warehouseName: string;
       quantity: number;
+      reserved: number;
+      available: number;
     }[];
   }[];
 }
@@ -180,7 +182,14 @@ export class InvoiceApiService {
           available: a.available,
           allocated: a.allocated,
         })),
-        warehouseStocks: l.warehouseStocks,
+        warehouseStocks: (l.warehouseStocks ?? []).map((s) => ({
+          warehouseId: s.warehouseId,
+          warehouseCode: s.warehouseCode,
+          warehouseName: s.warehouseName,
+          quantity: s.quantity,
+          reserved: s.reserved,
+          available: s.available,
+        })),
       })),
     };
   }
