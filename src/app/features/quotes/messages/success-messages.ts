@@ -17,30 +17,6 @@ export const QUOTE_SUCCESS_MESSAGES = {
     detail: 'Presupuesto eliminado exitosamente',
     life: 3000,
   },
-  sent: {
-    severity: 'success' as const,
-    summary: 'Éxito',
-    detail: 'Presupuesto enviado exitosamente',
-    life: 3000,
-  },
-  accepted: {
-    severity: 'success' as const,
-    summary: 'Éxito',
-    detail: 'Presupuesto aceptado exitosamente',
-    life: 3000,
-  },
-  rejected: {
-    severity: 'success' as const,
-    summary: 'Éxito',
-    detail: 'Presupuesto rechazado exitosamente',
-    life: 3000,
-  },
-  cancelled: {
-    severity: 'success' as const,
-    summary: 'Éxito',
-    detail: 'Presupuesto cancelado exitosamente',
-    life: 3000,
-  },
   convertedToOrder: {
     severity: 'success' as const,
     summary: 'Éxito',

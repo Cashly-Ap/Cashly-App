@@ -155,30 +155,6 @@ export class QuoteApiService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  send(id: string): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/send`, {}).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
-  }
-
-  accept(id: string): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/accept`, {}).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
-  }
-
-  reject(id: string): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/reject`, {}).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
-  }
-
-  cancel(id: string, reason: string): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
-  }
-
   getProductsForQuote(filters: QuoteProductFilters): Observable<PageResponse<QuoteProduct>> {
     let params = new HttpParams().set('customerId', filters.customerId);
     if (filters.search) params = params.set('search', filters.search);

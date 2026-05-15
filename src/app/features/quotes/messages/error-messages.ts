@@ -23,30 +23,6 @@ export const QUOTE_ERROR_MESSAGES = {
     detail: 'Error al eliminar el presupuesto. Por favor, intente nuevamente.',
     life: 5000,
   },
-  send: {
-    severity: 'error' as const,
-    summary: 'Error',
-    detail: 'Error al enviar el presupuesto. Por favor, intente nuevamente.',
-    life: 5000,
-  },
-  accept: {
-    severity: 'error' as const,
-    summary: 'Error',
-    detail: 'Error al aceptar el presupuesto. Por favor, intente nuevamente.',
-    life: 5000,
-  },
-  reject: {
-    severity: 'error' as const,
-    summary: 'Error',
-    detail: 'Error al rechazar el presupuesto. Por favor, intente nuevamente.',
-    life: 5000,
-  },
-  cancel: {
-    severity: 'error' as const,
-    summary: 'Error',
-    detail: 'Error al cancelar el presupuesto. Por favor, intente nuevamente.',
-    life: 5000,
-  },
   convertToOrder: {
     severity: 'error' as const,
     summary: 'Error',
