@@ -83,8 +83,9 @@ export class QuoteListPageComponent implements OnInit {
 
   readonly statusOptions = [
     { label: 'Borrador', value: 'DRAFT' },
-    { label: 'Pedido', value: 'CONVERTED_TO_ORDER' },
-    { label: 'Factura', value: 'CONVERTED_TO_INVOICE' },
+    ...Object.values(QuoteStatus)
+      .filter((s) => s !== QuoteStatus.DRAFT && s !== QuoteStatus.CANCELLED)
+      .map((s) => ({ label: QUOTE_STATUS_LABELS[s], value: s })),
   ];
 
   readonly activeFilterCount = computed(() => {

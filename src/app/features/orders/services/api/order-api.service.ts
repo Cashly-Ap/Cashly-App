@@ -24,7 +24,11 @@ interface PageResponse<T> {
 export interface OrderFilters {
   search?: string;
   status?: string;
+  dateFrom?: string;
+  dateTo?: string;
   customerId?: string;
+  productId?: string;
+  categoryId?: string;
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
 }
@@ -95,7 +99,11 @@ export class OrderApiService {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.status) params = params.set('status', filters.status);
+    if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
+    if (filters?.productId) params = params.set('productId', filters.productId);
+    if (filters?.categoryId) params = params.set('categoryId', filters.categoryId);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
