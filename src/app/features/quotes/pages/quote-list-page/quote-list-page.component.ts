@@ -6,9 +6,12 @@ import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { PaginatorModule } from 'primeng/paginator';
+import { TooltipModule } from 'primeng/tooltip';
+import { PopoverModule } from 'primeng/popover';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
@@ -19,8 +22,10 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
-import { QuoteStatus, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
+import { QuoteFilters } from '@features/quotes/services/api/quote-api.service';
+import { QuoteStatus, QUOTE_STATUS_LABELS, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
 import { QuoteList } from '@features/quotes/models/interfaces';
+import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
 @Component({
   selector: 'app-quote-list-page',
@@ -33,9 +38,12 @@ import { QuoteList } from '@features/quotes/models/interfaces';
     ButtonModule,
     TableModule,
     InputTextModule,
+    SelectModule,
+    PaginatorModule,
     IconFieldModule,
     InputIconModule,
-    PaginatorModule,
+    TooltipModule,
+    PopoverModule,
     ConfirmDialogModule,
     ContentCardComponent,
     LoadingSpinnerComponent,
@@ -50,6 +58,7 @@ import { QuoteList } from '@features/quotes/models/interfaces';
 })
 export class QuoteListPageComponent implements OnInit {
   private readonly quoteService = inject(QuoteApplicationService);
+  private readonly pdfViewerService = inject(PdfViewerService);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
@@ -61,19 +70,7 @@ export class QuoteListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-
-  readonly filteredQuotes = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    return (this.quotes() ?? [])
-      .filter((q) => q.status === 'DRAFT')
-      .filter((q) => {
-        if (!term) return true;
-        return q.quoteNumber.toLowerCase().includes(term) ||
-               q.customerName.toLowerCase().includes(term);
-      });
-  });
-
-  readonly displayedTotal = computed(() => this.filteredQuotes().length);
+  readonly filterStatus = signal('DRAFT');
 
   readonly orderDialogVisible = signal(false);
   readonly quoteToConvertToOrder = signal<QuoteList | null>(null);
@@ -84,12 +81,24 @@ export class QuoteListPageComponent implements OnInit {
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
+  readonly statusOptions = [
+    { label: 'Borrador', value: 'DRAFT' },
+    { label: 'Pedido', value: 'CONVERTED_TO_ORDER' },
+    { label: 'Factura', value: 'CONVERTED_TO_INVOICE' },
+  ];
+
+  readonly activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterStatus() && this.filterStatus() !== 'DRAFT') count++;
+    return count;
+  });
+
   readonly showInitialLoading = computed(() => this.loading() && (this.quotes()?.length ?? 0) === 0);
   readonly isEmptyDatabase = computed(
-    () => !this.loading() && this.displayedTotal() === 0 && !this.searchTerm(),
+    () => !this.loading() && this.totalElements() === 0 && !this.searchTerm(),
   );
   readonly hasFilteredResults = computed(
-    () => !this.loading() && this.displayedTotal() === 0 && !!this.searchTerm(),
+    () => !this.loading() && this.totalElements() === 0 && !!this.searchTerm(),
   );
 
   ngOnInit(): void {
@@ -99,6 +108,21 @@ export class QuoteListPageComponent implements OnInit {
   onSearch(value: string): void {
     this.searchTerm.set(value);
     this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onStatusFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterStatus()) return;
+    this.filterStatus.set(normalized);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  clearFilters(): void {
+    this.filterStatus.set('DRAFT');
+    this.first.set(0);
+    this.loadWithFilters();
   }
 
   onPageChange(event: { first: number; rows: number }): void {
@@ -234,6 +258,15 @@ export class QuoteListPageComponent implements OnInit {
     this.quoteToConvertToInvoice.set(null);
   }
 
+  onDownloadPdf(quote: QuoteList): void {
+    const config: PdfViewerConfig = {
+      url: `/api/reports/quotes/${quote.id}/pdf`,
+      title: `Presupuesto #${quote.quoteNumber}`,
+      fileName: `presupuesto-${quote.quoteNumber}.pdf`,
+    };
+    this.pdfViewerService.open(config);
+  }
+
   getStatusLabel(status: QuoteStatus): string {
     return getQuoteStatusLabel(status);
   }
@@ -249,6 +282,11 @@ export class QuoteListPageComponent implements OnInit {
   }
 
   private loadWithFilters(): void {
-    this.quoteService.loadAll().subscribe();
+    const filters: QuoteFilters = {};
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    if (this.filterStatus()) filters.status = this.filterStatus();
+    filters.orderBy = this.orderBy();
+    filters.orderDir = this.orderDir();
+    this.quoteService.loadAll(filters).subscribe();
   }
 }

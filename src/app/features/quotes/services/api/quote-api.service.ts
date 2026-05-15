@@ -20,6 +20,18 @@ export interface QuoteProductFilters {
   size?: number;
 }
 
+export interface QuoteFilters {
+  search?: string;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  customerId?: string;
+  productId?: string;
+  categoryId?: string;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
+}
+
 interface PageResponse<T> {
   content: T[];
   totalElements: number;
@@ -92,9 +104,19 @@ export class QuoteApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/quotes';
 
-  getAll(): Observable<QuoteList[]> {
+  getAll(filters?: QuoteFilters): Observable<QuoteList[]> {
+    let params = new HttpParams();
+    if (filters?.search) params = params.set('search', filters.search);
+    if (filters?.status) params = params.set('status', filters.status);
+    if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
+    if (filters?.customerId) params = params.set('customerId', filters.customerId);
+    if (filters?.productId) params = params.set('productId', filters.productId);
+    if (filters?.categoryId) params = params.set('categoryId', filters.categoryId);
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
-      .get<QuoteListApiResponse[]>(this.baseUrl)
+      .get<QuoteListApiResponse[]>(this.baseUrl, { params })
       .pipe(map((items) => items.map((r) => this.toQuoteList(r))));
   }
 

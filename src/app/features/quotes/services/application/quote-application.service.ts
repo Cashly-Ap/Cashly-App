@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, map } from 'rxjs';
-import { QuoteApiService } from '../api/quote-api.service';
+import { QuoteApiService, QuoteFilters } from '../api/quote-api.service';
 import { QuoteMapper } from '../mappers/quote.mapper';
 import { QuoteList, QuoteDetails, QuoteCreate, QuoteEdit } from '../../models/interfaces';
 
@@ -14,11 +14,11 @@ export class QuoteApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadAll(): Observable<QuoteList[]> {
+  loadAll(filters?: QuoteFilters): Observable<QuoteList[]> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getAll().pipe(
+    return this.api.getAll(filters).pipe(
       tap({
         next: (items) => {
           this.quotes.set(items);

@@ -60,6 +60,38 @@
         appendTo="body"
       />
     </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="product" class="text-sm font-medium">Producto</label>
+      <p-select
+        id="product"
+        [options]="productOptions()"
+        [(ngModel)]="productId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todos los productos"
+        [filter]="true"
+        filterPlaceholder="Buscar producto"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <label for="category" class="text-sm font-medium">Categoría</label>
+      <p-select
+        id="category"
+        [options]="categoryOptions()"
+        [(ngModel)]="categoryId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todas las categorías"
+        [filter]="true"
+        filterPlaceholder="Buscar categoría"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
   </div>
 
   <ng-template pTemplate="footer">

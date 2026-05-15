@@ -6,6 +6,7 @@ export interface MenuCallbacks {
   openMovementsModal: () => void;
   openOrdersPdfModal: () => void;
   openInvoicesPdfModal: () => void;
+  openQuotesPdfModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -135,6 +136,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               command: () => callbacks.openInvoicesPdfModal(),
+            },
+          ],
+        },
+        {
+          label: 'Presupuestos',
+          icon: 'pi pi-file-edit',
+          children: [
+            {
+              label: 'Reporte de Presupuestos PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openQuotesPdfModal(),
             },
           ],
         },

@@ -34,6 +34,12 @@ export class InvoicePdfApiService {
     if (filters.status) {
       params = params.set('status', filters.status);
     }
+    if (filters.productId) {
+      params = params.set('productId', filters.productId);
+    }
+    if (filters.categoryId) {
+      params = params.set('categoryId', filters.categoryId);
+    }
     if (filters.mode) {
       params = params.set('mode', filters.mode);
     }

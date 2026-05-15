@@ -41,6 +41,8 @@ import { OrderPdfModalComponent } from '@features/reports/orders/components/orde
 import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
 import { InvoicePdfApiService, InvoicesPdfFilters } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
+import { QuotePdfApiService, QuotesPdfFilters } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
@@ -69,6 +71,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     PdfViewerModalComponent,
     OrderPdfModalComponent,
     InvoicePdfModalComponent,
+    QuotePdfModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -87,6 +90,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private movementsPdfApi = inject(MovementsPdfApiService);
   private orderPdfApi = inject(OrderPdfApiService);
   private invoicePdfApi = inject(InvoicePdfApiService);
+  private quotePdfApi = inject(QuotePdfApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
   private currentObjectUrl: string | null = null;
@@ -97,7 +101,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/Parsun.png';
 
-  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | null>(null);
+  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | null>(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -156,6 +160,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openMovementsModal: () => this.activeModal.set('movements'),
       openOrdersPdfModal: () => this.activeModal.set('orders'),
       openInvoicesPdfModal: () => this.activeModal.set('invoices'),
+      openQuotesPdfModal: () => this.activeModal.set('quotes'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
@@ -270,6 +275,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.pdfTitle.set('Reporte de Facturas');
     this.pdfViewerVisible.set(true);
     this.invoicePdfApi.downloadInvoicesReportPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onQuotesPdf(filters: QuotesPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Reporte de Presupuestos');
+    this.pdfViewerVisible.set(true);
+    this.quotePdfApi.downloadQuotesReportPdf(filters).pipe(
       finalize(() => this.loadingPdf.set(false))
     ).subscribe({
       next: (blob) => {

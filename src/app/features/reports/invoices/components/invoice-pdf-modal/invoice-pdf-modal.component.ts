@@ -3,9 +3,9 @@ import {
   Component,
   inject,
   signal,
-  OnInit,
   input,
   output,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -14,6 +14,8 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { InvoicesPdfFilters } from '../../models/interfaces';
+import { ProductApiService } from '@features/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 
 interface SelectOption {
   value: string | null;
@@ -34,7 +36,10 @@ interface SelectOption {
   ],
   templateUrl: './invoice-pdf-modal.component.html',
 })
-export class InvoicePdfModalComponent {
+export class InvoicePdfModalComponent implements OnInit {
+  private readonly productApi = inject(ProductApiService);
+  private readonly categoryApi = inject(CategoryApiService);
+
   readonly visible = input(false);
   readonly visibleChange = output<boolean>();
   readonly onGeneratePdf = output<InvoicesPdfFilters>();
@@ -42,6 +47,8 @@ export class InvoicePdfModalComponent {
   readonly dateFrom = signal<Date | null>(null);
   readonly dateTo = signal<Date | null>(null);
   readonly status = signal<string | null>(null);
+  readonly productId = signal<string | null>(null);
+  readonly categoryId = signal<string | null>(null);
   readonly mode = signal<'SIMPLE' | 'DETAILED'>('SIMPLE');
 
   readonly statusOptions: SelectOption[] = [
@@ -58,6 +65,25 @@ export class InvoicePdfModalComponent {
     { value: 'DETAILED', label: 'Detallado' },
   ];
 
+  readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
+  readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
+
+  ngOnInit(): void {
+    this.productApi.getAllSimple().subscribe((products) => {
+      this.productOptions.set([
+        { value: null, label: 'Todos los productos' },
+        ...products.map((p) => ({ value: p.id, label: p.name })),
+      ]);
+    });
+
+    this.categoryApi.getAll({ size: 1000 }).subscribe((response) => {
+      this.categoryOptions.set([
+        { value: null, label: 'Todas las categorías' },
+        ...(response.content ?? []).map((c) => ({ value: c.id, label: c.name })),
+      ]);
+    });
+  }
+
   onHide(): void {
     this.visibleChange.emit(false);
   }
@@ -67,6 +93,8 @@ export class InvoicePdfModalComponent {
       dateFrom: this.dateFrom() ? this.formatDate(this.dateFrom()!) : undefined,
       dateTo: this.dateTo() ? this.formatDate(this.dateTo()!) : undefined,
       status: this.status() ?? undefined,
+      productId: this.productId() ?? undefined,
+      categoryId: this.categoryId() ?? undefined,
       mode: this.mode(),
     };
 
