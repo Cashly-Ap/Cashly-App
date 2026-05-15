@@ -42,8 +42,16 @@ export const routes: Routes = [
     loadChildren: () => import('@features/orders/router').then((m) => m.ORDER_ROUTES),
   },
   {
+    path: 'cotizaciones',
+    loadChildren: () => import('@features/quotes/router').then((m) => m.QUOTE_ROUTES),
+  },
+  {
     path: 'facturas',
     loadChildren: () => import('@features/invoices/router').then((m) => m.INVOICE_ROUTES),
+  },
+  {
+    path: 'presupuestos',
+    loadChildren: () => import('@features/quotes/router').then((m) => m.QUOTE_ROUTES),
   },
   {
     path: 'reports',

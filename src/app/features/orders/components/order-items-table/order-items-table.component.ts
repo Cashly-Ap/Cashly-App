@@ -123,7 +123,7 @@ export class OrderItemsTableComponent {
           warehouseName: a.warehouseName,
           quantity: a.available,
           reserved: 0,
-          available: Math.max(0, a.available - Number(a.allocated)),
+          available: a.available,
           allocated: a.allocated,
         }));
 

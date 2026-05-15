@@ -1,0 +1,145 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [style]="{ width: '900px' }"
+  [closable]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-green-100 dark:bg-green-950 shrink-0">
+        <i class="pi pi-file text-green-600 dark:text-green-400 text-lg"></i>
+      </div>
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Convertir a Factura</span>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4">
+    @if (loading()) {
+      <div class="flex items-center justify-center py-8">
+        <i class="pi pi-spin pi-spinner text-2xl text-surface-400"></i>
+        <span class="ml-3 text-surface-500">Cargando datos del presupuesto...</span>
+      </div>
+    }
+
+    @if (error(); as err) {
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
+        {{ err }}
+      </div>
+    }
+
+    @if (quoteInfo(); as info) {
+      <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+        <div class="flex items-center gap-2 mb-1">
+          <i class="pi pi-file-edit text-surface-400"></i>
+          <span class="font-semibold text-sm">Presupuesto #{{ info.number }}</span>
+        </div>
+        <p class="text-sm text-surface-500 ml-6">{{ info.customerName }}</p>
+        <p class="text-sm text-surface-500 ml-6 font-medium">{{ info.subtotal | number: '1.2-2' }}</p>
+        <p class="text-xs text-surface-400 ml-6 mt-1">
+          <i class="pi pi-info-circle mr-1"></i>
+          Se verificar&aacute; el stock disponible antes de generar la factura.
+        </p>
+      </div>
+
+      <p-table [value]="lines()" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th class="w-20 text-center">Cant.</th>
+            <th>Almac&eacute;n</th>
+            <th class="w-20 text-center">Asigna</th>
+            <th class="w-24 text-center">Stock Disp.</th>
+            <th class="w-24 text-center">Disp. Despu&eacute;s</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-line>
+          <ng-container>
+            @for (alloc of line.allocations; track $index; let first = $first) {
+              <tr>
+                @if (first) {
+                  <td [attr.rowspan]="line.allocations.length" class="align-top">
+                    <div class="flex flex-col gap-1">
+                      <span class="font-medium text-sm">{{ line.productName }}</span>
+                      <span class="font-mono text-xs text-surface-400">{{ line.productCode }}</span>
+                    </div>
+                  </td>
+                  <td [attr.rowspan]="line.allocations.length" class="text-center align-top">
+                    <span class="font-mono text-sm">{{ line.quantity }}</span>
+                  </td>
+                }
+                <td>
+                  <span class="text-sm">{{ alloc.warehouseName }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="font-mono text-sm">{{ alloc.allocated }}</span>
+                </td>
+                <td class="text-center">
+                  <span class="font-mono text-sm">
+                    {{ alloc.available }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span
+                    class="font-mono text-sm"
+                    [class.font-bold]="alloc.wouldBeNegative"
+                  >
+                    {{ alloc.availableAfterReserve }}
+                  </span>
+                  @if (alloc.wouldBeNegative) {
+                    <i
+                      class="pi pi-exclamation-triangle text-red-500 ml-1"
+                      pTooltip="Stock insuficiente: disponible {{ alloc.available }}, reservando {{ alloc.allocated }}"
+                    ></i>
+                  }
+                </td>
+              </tr>
+            }
+          </ng-container>
+        </ng-template>
+      </p-table>
+
+      @if (hasAnyNegativeStock()) {
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start gap-3">
+          <i class="pi pi-exclamation-circle text-red-500 mt-0.5"></i>
+          <div class="text-sm text-red-700 dark:text-red-300">
+            <span class="font-semibold">No se puede convertir.</span>
+            No hay suficiente stock disponible en uno o m&aacute;s almacenes.
+            La conversi&oacute;n reservar&iacute;a stock y dejar&iacute;a existencias negativas.
+          </div>
+        </div>
+      }
+
+      <div class="flex flex-col gap-1.5">
+        <label for="paymentType" class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Tipo de Pago</label>
+        <p-select
+          id="paymentType"
+          [options]="paymentTypeOptions"
+          [(ngModel)]="paymentType"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        label="Convertir a Factura"
+        icon="pi pi-file"
+        severity="success"
+        [disabled]="loading() || hasAnyNegativeStock() || !quoteInfo()"
+        (onClick)="onConfirm()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

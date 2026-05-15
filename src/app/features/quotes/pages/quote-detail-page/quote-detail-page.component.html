@@ -1,0 +1,158 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (quote(); as currentQuote) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles del Presupuesto"
+            subtitle="Información completa del presupuesto"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="'Presupuesto #' + currentQuote.quoteNumber"
+              [subtitle]="currentQuote.customerName"
+            >
+              <div actions class="flex gap-3 flex-wrap">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                @if (currentQuote.status === QuoteStatus.DRAFT) {
+                  <p-button
+                    label="Editar"
+                    icon="pi pi-pencil"
+                    severity="contrast"
+                    (onClick)="onEdit()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+                @if (currentQuote.status === QuoteStatus.CONVERTED_TO_ORDER) {
+                  <span class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg">
+                    <i class="pi pi-check-circle"></i>
+                    <span>Este presupuesto fue convertido a pedido</span>
+                  </span>
+                }
+                @if (currentQuote.status === QuoteStatus.CONVERTED_TO_INVOICE) {
+                  <span class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg">
+                    <i class="pi pi-check-circle"></i>
+                    <span>Este presupuesto fue convertido a factura</span>
+                  </span>
+                }
+                @if (currentQuote.status === QuoteStatus.CANCELLED) {
+                  <span class="flex items-center gap-2 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 px-3 py-2 rounded-lg">
+                    <i class="pi pi-ban"></i>
+                    <span>Presupuesto cancelado</span>
+                  </span>
+                }
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Número de Presupuesto"
+                  [value]="'#' + currentQuote.quoteNumber"
+                  type="code"
+                />
+                <app-details-info-field label="Estado" type="badge">
+                  <app-text-badge
+                    [label]="getStatusLabel(currentQuote.status)"
+                    [variant]="getStatusVariant(currentQuote.status)"
+                  />
+                </app-details-info-field>
+                <app-details-info-field
+                  label="Cliente"
+                  [value]="currentQuote.customerName"
+                />
+                <app-details-info-field
+                  label="RIF"
+                  [value]="currentQuote.customerRif"
+                />
+                <app-details-info-field
+                  label="Total"
+                  [value]="(currentQuote.subtotal | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(currentQuote.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+                <app-details-info-field
+                  label="Última Actualización"
+                  [value]="(currentQuote.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+
+          @if (currentQuote.notes) {
+            <app-details-section-card title="Notas" icon="pi-align-left">
+              <p class="text-sm whitespace-pre-wrap">{{ currentQuote.notes }}</p>
+            </app-details-section-card>
+          }
+
+          <app-details-section-card title="Líneas del Presupuesto" icon="pi-list">
+            @if (currentQuote.lines && currentQuote.lines.length > 0) {
+              <div class="overflow-x-auto">
+                <p-table [value]="currentQuote.lines" styleClass="p-datatable-sm">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Producto</th>
+                      <th class="text-right">Cantidad</th>
+                      <th class="text-right">Precio Unit.</th>
+                      <th class="text-right">Subtotal</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-line>
+                    <tr>
+                      <td>
+                        <div class="flex flex-col gap-1">
+                          <span class="font-medium">{{ line.productName }}</span>
+                          <span class="font-mono text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded w-fit">
+                            {{ line.productCode }}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="text-right">
+                        <span class="font-mono">{{ line.quantity | number: '1.0-3' }}</span>
+                      </td>
+                      <td class="text-right">
+                        <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                      </td>
+                      <td class="text-right">
+                        <span class="font-mono font-semibold">{{ line.subtotal | number: '1.2-2' }}</span>
+                      </td>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="footer">
+                    <tr>
+                      <td colspan="3" class="text-right font-semibold">Total:</td>
+                      <td class="text-right">
+                        <span class="font-mono font-bold text-lg">
+                          {{ currentQuote.subtotal | number: '1.2-2' }}
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            } @else {
+              <app-empty-state
+                icon="pi-inbox"
+                message="No hay líneas en este presupuesto"
+              />
+            }
+          </app-details-section-card>
+
+        </div>
+      }
+    </div>
+  </div>
+</app-main-layout>

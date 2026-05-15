@@ -35,6 +35,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
       children: [
         {
+          label: 'Presupuestos',
+          icon: 'pi pi-file-edit',
+          routerLink: '/presupuestos',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
           label: 'Pedidos',
           icon: 'pi pi-shopping-cart',
           routerLink: '/pedidos',

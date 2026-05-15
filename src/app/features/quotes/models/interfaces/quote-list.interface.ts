@@ -1,0 +1,12 @@
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
+
+export interface QuoteList {
+  id: string;
+  quoteNumber: string;
+  customerName: string;
+  customerRif: string;
+  status: QuoteStatus;
+  subtotal: number;
+  expiryDate: string;
+  createdAt: string;
+}
