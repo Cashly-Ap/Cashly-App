@@ -204,8 +204,8 @@
                           }
                           @if (canCancel(invoice.status)) {
                             <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelInvoice(invoice)" pTooltip="Cancelar" />
-                            <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
                           }
+                          <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
                         </div>
                       </td>
                     </tr>
@@ -271,8 +271,8 @@
                     }
                     @if (canCancel(invoice.status)) {
                       <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelInvoice(invoice)" pTooltip="Cancelar" />
-                      <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
                     }
+                    <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
                   </div>
                 </div>
               }
@@ -299,5 +299,11 @@
     [invoice]="invoiceToCancel()"
     (confirmed)="onCancelDialogConfirmed($event)"
     (cancelled)="onCancelDialogDismissed()"
+  />
+  <app-duplicate-invoice-dialog
+    [visible]="duplicateDialogVisible()"
+    [invoiceId]="invoiceToDuplicate()?.id ?? null"
+    (confirmed)="onDuplicateDialogConfirmed($event)"
+    (cancelled)="onDuplicateDialogDismissed()"
   />
 </app-main-layout>

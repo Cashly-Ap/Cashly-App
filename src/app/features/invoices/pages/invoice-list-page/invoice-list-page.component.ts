@@ -21,6 +21,7 @@ import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-sta
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { CancelInvoiceDialogComponent } from '@features/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
+import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceFilters } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceStatus, INVOICE_STATUS_LABELS, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
@@ -53,6 +54,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     ListContainerComponent,
     TextBadgeComponent,
     CancelInvoiceDialogComponent,
+    DuplicateInvoiceDialogComponent,
   ],
   templateUrl: './invoice-list-page.component.html',
   providers: [ConfirmationService],
@@ -78,6 +80,9 @@ export class InvoiceListPageComponent implements OnInit {
 
   readonly cancelDialogVisible = signal(false);
   readonly invoiceToCancel = signal<InvoiceList | null>(null);
+
+  readonly duplicateDialogVisible = signal(false);
+  readonly invoiceToDuplicate = signal<InvoiceList | null>(null);
 
   readonly statusOptions = [
     { label: 'Todos los estados', value: '' },
@@ -270,35 +275,38 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   onDuplicate(invoice: InvoiceList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea duplicar la factura #${invoice.invoiceNumber}?`,
-      header: 'Confirmar Duplicación',
-      icon: 'pi pi-copy',
-      acceptLabel: 'Sí, duplicar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-success',
-      accept: () => {
-        this.invoiceService.duplicate(invoice.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Factura duplicada exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al duplicar la factura. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
+    this.invoiceToDuplicate.set(invoice);
+    this.duplicateDialogVisible.set(true);
+  }
+
+  onDuplicateDialogConfirmed(invoiceId: string): void {
+    this.duplicateDialogVisible.set(false);
+    this.invoiceService.duplicate(invoiceId).subscribe({
+      next: () => {
+        this.invoiceToDuplicate.set(null);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Factura duplicada exitosamente',
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.invoiceToDuplicate.set(null);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al duplicar la factura. Por favor, intente nuevamente.',
+          life: 5000,
         });
       },
     });
+  }
+
+  onDuplicateDialogDismissed(): void {
+    this.duplicateDialogVisible.set(false);
+    this.invoiceToDuplicate.set(null);
   }
 
   onDownloadPdf(invoice: InvoiceList): void {

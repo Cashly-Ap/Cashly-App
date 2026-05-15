@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -18,6 +18,7 @@ import {
   PageHeaderComponent,
   TextBadgeComponent,
 } from '@shared/components/ui';
+import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
@@ -41,6 +42,7 @@ import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enum
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
+    DuplicateInvoiceDialogComponent,
   ],
   templateUrl: './invoice-detail-page.component.html',
 })
@@ -54,6 +56,8 @@ export class InvoiceDetailPageComponent implements OnInit {
   readonly loading = this.invoiceService.loading;
 
   readonly InvoiceStatus = InvoiceStatus;
+
+  readonly duplicateDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -79,6 +83,37 @@ export class InvoiceDetailPageComponent implements OnInit {
   onEdit(): void {
     const id = this.invoice()?.id;
     if (id) this.router.navigate(['/facturas', id, 'editar']);
+  }
+
+  onDuplicate(): void {
+    this.duplicateDialogVisible.set(true);
+  }
+
+  onDuplicateDialogConfirmed(invoiceId: string): void {
+    this.duplicateDialogVisible.set(false);
+    this.invoiceService.duplicate(invoiceId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Factura duplicada exitosamente',
+          life: 3000,
+        });
+        this.router.navigate(['/facturas']);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al duplicar la factura. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onDuplicateDialogDismissed(): void {
+    this.duplicateDialogVisible.set(false);
   }
 
   getStatusLabel(status: InvoiceStatus): string {

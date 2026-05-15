@@ -33,6 +33,14 @@
                     styleClass="w-full sm:w-auto"
                   />
                 }
+                <p-button
+                  label="Duplicar"
+                  icon="pi pi-copy"
+                  severity="info"
+                  [outlined]="true"
+                  (onClick)="onDuplicate()"
+                  styleClass="w-full sm:w-auto"
+                />
               </div>
             </app-details-card-header>
 
@@ -149,4 +157,10 @@
       }
     </div>
   </div>
+  <app-duplicate-invoice-dialog
+    [visible]="duplicateDialogVisible()"
+    [invoiceId]="invoice()?.id ?? null"
+    (confirmed)="onDuplicateDialogConfirmed($event)"
+    (cancelled)="onDuplicateDialogDismissed()"
+  />
 </app-main-layout>
