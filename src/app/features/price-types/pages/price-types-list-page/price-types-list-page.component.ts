@@ -10,7 +10,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -53,6 +53,8 @@ export class PriceTypesListPageComponent implements OnInit {
   isLoading = this.service.isLoading;
 
   searchTerm = signal('');
+  orderBy = signal('name');
+  orderDir = signal<'asc' | 'desc'>('asc');
 
   filteredPriceTypes = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
@@ -65,11 +67,20 @@ export class PriceTypesListPageComponent implements OnInit {
   hasFilteredResults = computed(() => !this.isLoading() && this.filteredPriceTypes().length === 0 && !!this.searchTerm());
 
   ngOnInit(): void {
-    this.service.loadAll().subscribe();
+    this.service.loadAll(this.orderBy(), this.orderDir()).subscribe();
   }
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
+  }
+
+  onSort(event: SortEvent): void {
+    const newField = event.field ?? 'name';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
+    this.service.loadAll(this.orderBy(), this.orderDir()).subscribe();
   }
 
   onCreate(): void {

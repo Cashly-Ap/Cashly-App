@@ -13,7 +13,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -80,6 +80,9 @@ export class OrderListPageComponent implements OnInit {
   readonly invoiceDialogVisible = signal(false);
   readonly orderToInvoice = signal<OrderList | null>(null);
 
+  readonly orderBy = signal('createdAt');
+  readonly orderDir = signal<'asc' | 'desc'>('desc');
+
   readonly statusOptions = [
     { label: 'Todos los estados', value: '' },
     ...Object.values(OrderStatus).map((s) => ({ label: ORDER_STATUS_LABELS[s], value: s })),
@@ -116,6 +119,16 @@ export class OrderListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+  }
+
+  onSort(event: SortEvent): void {
+    const newField = event.field ?? 'createdAt';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
+    this.first.set(0);
+    this.loadWithFilters();
   }
 
   clearFilters(): void {
@@ -299,6 +312,8 @@ export class OrderListPageComponent implements OnInit {
     const filters: OrderFilters = {};
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterStatus()) filters.status = this.filterStatus();
+    filters.orderBy = this.orderBy();
+    filters.orderDir = this.orderDir();
     this.orderService.loadAll(filters).subscribe();
   }
 }

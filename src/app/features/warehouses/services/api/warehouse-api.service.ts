@@ -10,6 +10,8 @@ export interface WarehouseFilters {
   active?: boolean;
   page?: number;
   size?: number;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +26,8 @@ export class WarehouseApiService {
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http.get<PagedResponse<WarehouseList>>(this.baseUrl, { params });
   }
 

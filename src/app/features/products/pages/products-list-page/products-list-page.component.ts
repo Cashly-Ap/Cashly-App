@@ -14,7 +14,7 @@ import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -72,6 +72,8 @@ export class ProductsListPageComponent implements OnInit {
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
+  orderBy = signal('name');
+  orderDir = signal<'asc' | 'desc'>('asc');
   filterActive = signal('true');
   filterComposite = signal('');
   filterCategoryId = signal<string | null>(null);
@@ -137,6 +139,16 @@ export class ProductsListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
+  }
+
+  onSort(event: SortEvent): void {
+    const newField = event.field ?? 'name';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
+    this.first.set(0);
     this.loadWithFilters();
   }
 
@@ -234,6 +246,8 @@ export class ProductsListPageComponent implements OnInit {
     const filters: ProductFilters = {
       page: Math.floor(this.first() / this.rows()),
       size: this.rows(),
+      orderBy: this.orderBy(),
+      orderDir: this.orderDir(),
     };
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterActive()) filters.active = this.filterActive() === 'true';

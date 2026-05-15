@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PriceTypeList, PriceTypeDetails, PriceTypeCreate, PriceTypeUpdate } from '../../models/interfaces';
 
@@ -8,8 +8,11 @@ export class PriceTypeApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/price-types';
 
-  findAll(): Observable<PriceTypeList[]> {
-    return this.http.get<PriceTypeList[]>(this.baseUrl);
+  findAll(orderBy?: string, orderDir?: string): Observable<PriceTypeList[]> {
+    let params = new HttpParams();
+    if (orderBy) params = params.set('orderBy', orderBy);
+    if (orderDir) params = params.set('orderDir', orderDir);
+    return this.http.get<PriceTypeList[]>(this.baseUrl, { params });
   }
 
   findById(id: string): Observable<PriceTypeDetails> {

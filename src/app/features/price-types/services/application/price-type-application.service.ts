@@ -12,11 +12,11 @@ export class PriceTypeApplicationService {
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
 
-  loadAll(): Observable<PriceTypeList[]> {
+  loadAll(orderBy?: string, orderDir?: string): Observable<PriceTypeList[]> {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return this.api.findAll().pipe(
+    return this.api.findAll(orderBy, orderDir).pipe(
       tap({
         next: (types) => this.priceTypes.set(types),
         error: (err: Error) => this.error.set(err.message),

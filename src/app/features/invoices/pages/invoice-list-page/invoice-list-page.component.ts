@@ -14,7 +14,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -84,6 +84,9 @@ export class InvoiceListPageComponent implements OnInit {
   readonly duplicateDialogVisible = signal(false);
   readonly invoiceToDuplicate = signal<InvoiceList | null>(null);
 
+  readonly orderBy = signal('createdAt');
+  readonly orderDir = signal<'asc' | 'desc'>('desc');
+
   readonly statusOptions = [
     { label: 'Todos los estados', value: '' },
     ...Object.values(InvoiceStatus).map((s) => ({ label: INVOICE_STATUS_LABELS[s], value: s })),
@@ -152,6 +155,16 @@ export class InvoiceListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+  }
+
+  onSort(event: SortEvent): void {
+    const newField = event.field ?? 'createdAt';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
+    this.first.set(0);
+    this.loadWithFilters();
   }
 
   clearFilters(): void {
@@ -348,6 +361,8 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.filterPaymentType()) filters.paymentType = this.filterPaymentType();
     if (this.filterDateFrom()) filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];
+    filters.orderBy = this.orderBy();
+    filters.orderDir = this.orderDir();
     this.invoiceService.loadAll(filters).subscribe();
   }
 }

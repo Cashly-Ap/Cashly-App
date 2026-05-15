@@ -144,26 +144,28 @@
                 <p-table
                   [value]="invoices()"
                   styleClass="p-datatable-striped"
+                  [customSort]="true"
+                  (sortFunction)="onSort($event)"
                 >
                   <ng-template pTemplate="header">
                     <tr>
-                      <th class="w-32">
-                        <div class="font-semibold">Número</div>
+                      <th pSortableColumn="invoiceNumber" class="w-32">
+                        <div class="font-semibold">Número <p-sortIcon field="invoiceNumber" /></div>
                       </th>
-                      <th class="w-auto">
-                        <div class="font-semibold">Cliente</div>
+                      <th pSortableColumn="customerName" class="w-auto">
+                        <div class="font-semibold">Cliente <p-sortIcon field="customerName" /></div>
                       </th>
-                      <th class="w-28">
-                        <div class="font-semibold">Tipo de Pago</div>
+                      <th pSortableColumn="paymentType" class="w-28">
+                        <div class="font-semibold">Tipo de Pago <p-sortIcon field="paymentType" /></div>
                       </th>
-                      <th class="w-28">
-                        <div class="font-semibold">Estado</div>
+                      <th pSortableColumn="status" class="w-28">
+                        <div class="font-semibold">Estado <p-sortIcon field="status" /></div>
                       </th>
-                      <th class="w-32 text-right">
-                        <div class="font-semibold">Total</div>
+                      <th pSortableColumn="subtotal" class="w-32 text-right">
+                        <div class="font-semibold">Total <p-sortIcon field="subtotal" /></div>
                       </th>
-                      <th class="w-32 hidden lg:table-cell">
-                        <div class="font-semibold">Fecha</div>
+                      <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
+                        <div class="font-semibold">Fecha <p-sortIcon field="createdAt" /></div>
                       </th>
                       <th class="w-28">
                         <div class="font-semibold text-center">Acciones</div>

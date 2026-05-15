@@ -25,6 +25,8 @@ export interface OrderFilters {
   search?: string;
   status?: string;
   customerId?: string;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
 }
 
 interface OrderListApiResponse {
@@ -94,6 +96,8 @@ export class OrderApiService {
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
       .get<OrderListApiResponse[]>(this.baseUrl, { params })
       .pipe(map((items) => items.map((r) => this.toOrderList(r))));

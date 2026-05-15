@@ -12,6 +12,8 @@ export interface InvoiceFilters {
   paymentType?: string;
   dateFrom?: string;
   dateTo?: string;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
 }
 
 interface InvoiceListApiResponse {
@@ -86,6 +88,8 @@ export class InvoiceApiService {
     if (filters?.paymentType) params = params.set('paymentType', filters.paymentType);
     if (filters?.dateFrom) params = params.set('fromDate', filters.dateFrom);
     if (filters?.dateTo) params = params.set('toDate', filters.dateTo);
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
       .get<InvoiceListApiResponse[]>(this.baseUrl, { params })
       .pipe(map((items) => items.map((r) => this.toInvoiceList(r))));

@@ -131,12 +131,27 @@
               />
             } @else {
               <div class="overflow-x-auto rounded-t-2xl">
-                <p-table [value]="products()" styleClass="p-datatable-striped">
+                <p-table [value]="products()" [customSort]="true" (sortFunction)="onSort($event)" styleClass="p-datatable-striped">
                   <ng-template pTemplate="header">
                     <tr>
-                      <th class="w-auto"><div class="font-semibold">Nombre</div></th>
-                      <th class="w-auto hidden lg:table-cell"><div class="font-semibold">Categoría</div></th>
-                      <th class="w-28 hidden md:table-cell"><div class="font-semibold">Tipo</div></th>
+                      <th pSortableColumn="name" class="w-auto">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Nombre
+                          <p-sortIcon field="name" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="category" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Categoría
+                          <p-sortIcon field="category" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="composite" class="w-28 hidden md:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Tipo
+                          <p-sortIcon field="composite" />
+                        </div>
+                      </th>
                       <th class="w-48 text-right">
                         <div class="flex items-center justify-end">
                           <div class="w-36">
@@ -151,7 +166,12 @@
                           </div>
                         </div>
                       </th>
-                      <th class="w-24"><div class="font-semibold">Estado</div></th>
+                      <th pSortableColumn="active" class="w-24">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Estado
+                          <p-sortIcon field="active" />
+                        </div>
+                      </th>
                       <th class="w-36"><div class="font-semibold text-center">Acciones</div></th>
                     </tr>
                   </ng-template>

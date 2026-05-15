@@ -107,13 +107,33 @@
               />
             } @else {
               <div class="overflow-x-auto rounded-t-2xl">
-                <p-table [value]="warehouses()" styleClass="p-datatable-striped">
+                <p-table [value]="warehouses()" [customSort]="true" (sortFunction)="onSort($event)" styleClass="p-datatable-striped">
                   <ng-template pTemplate="header">
                     <tr>
-                      <th class="w-auto"><div class="font-semibold">Nombre</div></th>
-                      <th class="w-auto hidden lg:table-cell"><div class="font-semibold">Estado</div></th>
-                      <th class="w-auto hidden lg:table-cell"><div class="font-semibold">Municipio</div></th>
-                      <th class="w-24"><div class="font-semibold">Activo</div></th>
+                      <th pSortableColumn="name" class="w-auto">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Nombre
+                          <p-sortIcon field="name" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="state" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Estado
+                          <p-sortIcon field="state" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="municipality" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Municipio
+                          <p-sortIcon field="municipality" />
+                        </div>
+                      </th>
+                      <th pSortableColumn="active" class="w-24">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Activo
+                          <p-sortIcon field="active" />
+                        </div>
+                      </th>
                       <th class="w-48"><div class="font-semibold text-center">Acciones</div></th>
                     </tr>
                   </ng-template>
