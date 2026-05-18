@@ -70,11 +70,11 @@
                       <label class="text-xs font-medium text-surface-500">Estado</label>
                       <p-select
                         [options]="statusOptions"
-                        [ngModel]="filterStatus()"
+                        [ngModel]="selectedStatus()"
                         (onChange)="onStatusFilterChange($event.value)"
                         optionLabel="label"
                         optionValue="value"
-                        placeholder="Todos los estados"
+                        placeholder="Facturas activas"
                         styleClass="w-full"
                       />
                     </div>

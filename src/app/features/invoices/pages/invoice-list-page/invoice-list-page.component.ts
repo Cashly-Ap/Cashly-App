@@ -73,10 +73,17 @@ export class InvoiceListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly filterStatus = signal('');
+  readonly selectedStatus = signal('');
   readonly filterPaymentType = signal('');
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
+
+  readonly defaultStatuses = [InvoiceStatus.DRAFT, InvoiceStatus.PENDING_PAYMENT, InvoiceStatus.PARTIALLY_PAID];
+
+  readonly filterStatus = computed(() => {
+    const s = this.selectedStatus();
+    return s ? [s] : [];
+  });
 
   readonly cancelDialogVisible = signal(false);
   readonly invoiceToCancel = signal<InvoiceList | null>(null);
@@ -88,7 +95,7 @@ export class InvoiceListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
-    { label: 'Todos los estados', value: '' },
+    { label: 'Facturas activas', value: '' },
     ...Object.values(InvoiceStatus).map((s) => ({ label: INVOICE_STATUS_LABELS[s], value: s })),
   ];
 
@@ -99,7 +106,8 @@ export class InvoiceListPageComponent implements OnInit {
 
   readonly activeFilterCount = computed(() => {
     let count = 0;
-    if (this.filterStatus()) count++;
+    const statuses = this.filterStatus();
+    if (statuses.length > 0) count++;
     if (this.filterPaymentType()) count++;
     if (this.filterDateFrom()) count++;
     if (this.filterDateTo()) count++;
@@ -126,8 +134,8 @@ export class InvoiceListPageComponent implements OnInit {
 
   onStatusFilterChange(value: string | null): void {
     const normalized = value ?? '';
-    if (normalized === this.filterStatus()) return;
-    this.filterStatus.set(normalized);
+    if (normalized === this.selectedStatus()) return;
+    this.selectedStatus.set(normalized);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -168,7 +176,7 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.filterStatus.set('');
+    this.selectedStatus.set('');
     this.filterPaymentType.set('');
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
@@ -357,7 +365,7 @@ export class InvoiceListPageComponent implements OnInit {
   private loadWithFilters(): void {
     const filters: InvoiceFilters = {};
     if (this.searchTerm()) filters.search = this.searchTerm();
-    if (this.filterStatus()) filters.status = this.filterStatus();
+    if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
     if (this.filterPaymentType()) filters.paymentType = this.filterPaymentType();
     if (this.filterDateFrom()) filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];

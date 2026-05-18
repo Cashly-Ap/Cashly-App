@@ -7,7 +7,7 @@ import { PaymentType } from '../../models/enums/payment-type.enum';
 
 export interface InvoiceFilters {
   search?: string;
-  status?: string;
+  statuses?: string[];
   customerId?: string;
   paymentType?: string;
   dateFrom?: string;
@@ -83,7 +83,9 @@ export class InvoiceApiService {
   getAll(filters?: InvoiceFilters): Observable<InvoiceList[]> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
-    if (filters?.status) params = params.set('status', filters.status);
+    if (filters?.statuses && filters.statuses.length > 0) {
+      filters.statuses.forEach((s) => (params = params.append('status', s)));
+    }
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
     if (filters?.paymentType) params = params.set('paymentType', filters.paymentType);
     if (filters?.dateFrom) params = params.set('fromDate', filters.dateFrom);
