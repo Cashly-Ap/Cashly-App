@@ -116,38 +116,44 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ],
         },
         {
-          label: 'Pedidos',
-          icon: 'pi pi-shopping-cart',
+          label: 'Gestión Comercial',
+          icon: 'pi pi-briefcase',
           children: [
             {
-              label: 'Reporte de Pedidos PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openOrdersPdfModal(),
+              label: 'Presupuestos',
+              icon: 'pi pi-file-edit',
+              children: [
+                {
+                  label: 'Reporte de Presupuestos PDF',
+                  icon: 'pi pi-file-pdf',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openQuotesPdfModal(),
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: 'Facturas',
-          icon: 'pi pi-file',
-          children: [
             {
-              label: 'Reporte de Facturas PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openInvoicesPdfModal(),
+              label: 'Pedidos',
+              icon: 'pi pi-shopping-cart',
+              children: [
+                {
+                  label: 'Reporte de Pedidos PDF',
+                  icon: 'pi pi-file-pdf',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openOrdersPdfModal(),
+                },
+              ],
             },
-          ],
-        },
-        {
-          label: 'Presupuestos',
-          icon: 'pi pi-file-edit',
-          children: [
             {
-              label: 'Reporte de Presupuestos PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openQuotesPdfModal(),
+              label: 'Facturas',
+              icon: 'pi pi-file',
+              children: [
+                {
+                  label: 'Reporte de Facturas PDF',
+                  icon: 'pi pi-file-pdf',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openInvoicesPdfModal(),
+                },
+              ],
             },
           ],
         },
