@@ -1,0 +1,22 @@
+import { describe, it, expect } from 'vitest';
+import { REPORTS_ROUTES } from './reports.routes';
+import { INVENTORY_REPORTS_ROUTES } from '@features/reports/inventory/router';
+
+describe('Reports Routes', () => {
+  it('should have 1 top-level route', () => {
+    expect(REPORTS_ROUTES).toHaveLength(1);
+  });
+
+  it('should have inventory as child route', () => {
+    expect(REPORTS_ROUTES[0].path).toBe('inventory');
+  });
+
+  it('should use lazy loading for inventory module', () => {
+    expect(REPORTS_ROUTES[0].loadChildren).toBeDefined();
+  });
+
+  it('should reference INVENTORY_REPORTS_ROUTES', () => {
+    expect(INVENTORY_REPORTS_ROUTES).toBeDefined();
+    expect(Array.isArray(INVENTORY_REPORTS_ROUTES)).toBe(true);
+  });
+});
