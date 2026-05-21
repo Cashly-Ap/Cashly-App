@@ -87,6 +87,49 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       ],
     },
     {
+      label: 'Finanzas',
+      icon: 'pi pi-dollar',
+      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      children: [
+        {
+          label: 'Métodos de Pago',
+          icon: 'pi pi-credit-card',
+          routerLink: '/finances',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Pagos',
+          icon: 'pi pi-money-bill',
+          routerLink: '/finances/pagos',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Control de Crédito',
+          icon: 'pi pi-check-circle',
+          routerLink: '/finances/credito',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Notas de Crédito',
+          icon: 'pi pi-file-plus',
+          routerLink: '/finances/notas-credito',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Notas de Débito',
+          icon: 'pi pi-minus-circle',
+          routerLink: '/finances/notas-debito',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Devoluciones',
+          icon: 'pi pi-undo',
+          routerLink: '/finances/devoluciones',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+      ],
+    },
+    {
       label: 'Reportes',
       icon: 'pi pi-chart-bar',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
@@ -154,6 +197,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
                   command: () => callbacks.openInvoicesPdfModal(),
                 },
               ],
+            },
+          ],
+        },
+        {
+          label: 'Finanzas',
+          icon: 'pi pi-dollar',
+          children: [
+            {
+              label: 'Pago PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              routerLink: '/finances/pagos',
             },
           ],
         },

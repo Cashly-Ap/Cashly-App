@@ -1,0 +1,92 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="true"
+  [style]="{ width: '40rem', borderRadius: '1rem' }"
+  (visibleChange)="!$event && onCancel()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-wallet text-primary"></i>
+      <span class="font-semibold">Seleccionar Anticipo</span>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4">
+    @if (advances().length === 0) {
+      <div class="text-center py-6 text-surface-500">
+        <i class="pi pi-inbox text-4xl mb-3"></i>
+        <p class="text-sm">No hay anticipos disponibles para este cliente.</p>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
+          Anticipo *
+        </label>
+        <p-select
+          [ngModel]="form.value.advanceId"
+          (ngModelChange)="form.patchValue({ advanceId: $event }); onAdvanceChange()"
+          [options]="advanceOptions()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccione un anticipo..."
+          styleClass="w-full"
+        />
+      </div>
+
+      @if (selectedAdvance(); as advance) {
+        <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg">
+          <div class="flex justify-between items-center mb-2">
+            <span class="text-sm font-medium">Anticipo #{{ advance.paymentNumber }}</span>
+            <app-text-badge [label]="getStatusLabel(advance.status)" [variant]="getStatusVariant(advance.status)" />
+          </div>
+          <div class="flex justify-between text-sm">
+            <span>Monto Original:</span>
+            <span class="font-mono">{{ advance.amount | number: '1.2-2' }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span>Restante:</span>
+            <span class="font-mono font-semibold text-primary">{{ advance.remainingAmount | number: '1.2-2' }}</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300">
+            Monto a Aplicar *
+          </label>
+          <p-inputNumber
+            [ngModel]="form.value.amount"
+            (ngModelChange)="form.patchValue({ amount: $event })"
+            mode="decimal"
+            [min]="0.01"
+            [max]="maxAmount()"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            styleClass="w-full"
+          />
+          <small class="text-xs text-surface-500">
+            Máximo: {{ maxAmount() | number: '1.2-2' }}
+          </small>
+        </div>
+      }
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        [text]="true"
+        severity="secondary"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        label="Aplicar Anticipo"
+        icon="pi pi-check"
+        severity="contrast"
+        (onClick)="onConfirm()"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

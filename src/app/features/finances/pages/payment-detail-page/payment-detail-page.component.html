@@ -1,0 +1,174 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (payment(); as currentPayment) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles del Pago"
+            subtitle="Información completa del pago"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="'Pago #' + currentPayment.paymentNumber"
+              [subtitle]="currentPayment.customerName"
+            >
+              <div actions class="flex gap-3 flex-wrap">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="PDF"
+                  icon="pi pi-file-pdf"
+                  severity="success"
+                  [outlined]="true"
+                  (onClick)="onGeneratePdf()"
+                  styleClass="w-full sm:w-auto"
+                />
+                @if (canCancel($any(currentPayment.status))) {
+                  <p-button
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [outlined]="true"
+                    (onClick)="onCancel()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Número de Pago"
+                  [value]="'#' + currentPayment.paymentNumber"
+                  type="code"
+                />
+                <app-details-info-field label="Estado" type="badge">
+                  <app-text-badge
+                    [label]="getStatusLabel($any(currentPayment.status))"
+                    [variant]="getStatusVariant($any(currentPayment.status))"
+                  />
+                </app-details-info-field>
+                <app-details-info-field
+                  label="Cliente"
+                  [value]="currentPayment.customerName"
+                />
+                <app-details-info-field
+                  label="RIF"
+                  [value]="currentPayment.customerRif"
+                />
+                <app-details-info-field
+                  label="Tipo"
+                  [value]="getPaymentTypeLabel($any(currentPayment.type))"
+                />
+                <app-details-info-field
+                  label="Método de Pago"
+                  [value]="currentPayment.paymentMethodName"
+                />
+                <app-details-info-field
+                  label="Monto Total"
+                  [value]="(currentPayment.amount | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                <app-details-info-field
+                  label="Monto Aplicado"
+                  [value]="(currentPayment.appliedAmount | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                <app-details-info-field
+                  label="Monto Restante"
+                  [value]="(currentPayment.remainingAmount | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                @if (currentPayment.referenceNumber) {
+                  <app-details-info-field
+                    label="Número de Referencia"
+                    [value]="currentPayment.referenceNumber"
+                    type="code"
+                  />
+                }
+                <app-details-info-field
+                  label="Fecha de Pago"
+                  [value]="(currentPayment.paymentDate | date: 'dd/MM/yyyy') || ''"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(currentPayment.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+
+          @if (currentPayment.notes) {
+            <app-details-section-card title="Notas" icon="pi-align-left">
+              <p class="text-sm whitespace-pre-wrap">{{ currentPayment.notes }}</p>
+            </app-details-section-card>
+          }
+
+          <app-details-section-card title="Asignaciones" icon="pi-list">
+            @if (currentPayment.allocations && currentPayment.allocations.length > 0) {
+              <p-table [value]="currentPayment.allocations" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-12">#</th>
+                    <th>Factura</th>
+                    <th class="w-40 text-right">Monto Asignado</th>
+                    <th class="w-40 text-right hidden sm:table-cell">Fecha</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-allocation let-index="rowIndex">
+                  <tr>
+                    <td class="text-surface-400 text-sm">{{ index + 1 }}</td>
+                    <td>
+                      @if (allocation.invoiceNumber) {
+                        <span class="font-mono text-sm bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded">
+                          #{{ allocation.invoiceNumber }}
+                        </span>
+                      } @else {
+                        <span class="text-sm text-surface-400">Factura {{ allocation.invoiceId }}</span>
+                      }
+                    </td>
+                    <td class="text-right font-mono font-semibold text-sm">{{ allocation.allocatedAmount | number:'1.2-2' }}</td>
+                    <td class="text-right text-sm text-surface-500 hidden sm:table-cell">{{ allocation.createdAt | date:'dd/MM/yyyy' }}</td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="3" class="text-right font-semibold">Total Aplicado:</td>
+                    <td class="text-right font-mono font-bold">{{ currentPayment.appliedAmount | number:'1.2-2' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            } @else {
+              <app-empty-state
+                icon="pi-inbox"
+                message="No hay asignaciones en este pago"
+              />
+            }
+          </app-details-section-card>
+
+        </div>
+      }
+    </div>
+  </div>
+  <app-cancel-payment-dialog
+    [visible]="cancelDialogVisible()"
+    [paymentId]="payment()?.id ?? null"
+    (confirmed)="onCancelDialogConfirmed($event)"
+    (cancelled)="onCancelDialogDismissed()"
+  />
+  <app-payment-pdf-modal
+    [visible]="pdfModalVisible()"
+    [paymentId]="payment()?.id ?? null"
+    (visibleChange)="onPdfModalDismissed()"
+  />
+</app-main-layout>

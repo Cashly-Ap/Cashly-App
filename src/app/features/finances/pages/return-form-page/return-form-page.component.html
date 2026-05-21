@@ -1,0 +1,157 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header
+      title="Nueva Devolución"
+      subtitle="Complete la información de la devolución"
+    />
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <app-form-card>
+        <div class="p-4 md:p-6">
+          <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
+            <i class="pi pi-info-circle text-surface-500"></i>
+            Información de la Devolución
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Tipo de Devolución *
+              </label>
+              <p-select
+                formControlName="returnType"
+                [options]="returnTypeOptions"
+                optionLabel="label"
+                optionValue="value"
+                styleClass="w-full"
+              />
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('returnType')?.invalid && form.get('returnType')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    El tipo de devolución es requerido
+                  </small>
+                }
+              </div>
+            </div>
+
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Factura *
+              </label>
+              @if (selectedInvoiceLabel(); as label) {
+                <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                  <span class="text-sm font-medium text-surface-900 dark:text-surface-0">{{ label }}</span>
+                </div>
+              } @else {
+                <div class="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-surface-400 dark:text-surface-500 text-sm">
+                  <i class="pi pi-file text-sm"></i>
+                  Seleccione una factura...
+                </div>
+              }
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    La factura es requerida
+                  </small>
+                }
+              </div>
+            </div>
+
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Motivo *
+              </label>
+              <textarea
+                pTextarea
+                formControlName="reason"
+                rows="3"
+                class="w-full"
+                placeholder="Motivo de la devolución..."
+              ></textarea>
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    El motivo es requerido
+                  </small>
+                }
+              </div>
+            </div>
+
+            @if (returnType() === 'AUTOMATIC' && selectedInvoice()) {
+              <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                  Almacén de Destino *
+                </label>
+                <app-return-warehouse-selector
+                  [selectedWarehouseId]="selectedWarehouseId()"
+                  (warehouseChange)="onWarehouseChange($event)"
+                />
+              </div>
+            }
+          </div>
+        </div>
+
+        @if (selectedInvoice()) {
+          <div class="border-t border-surface-200 dark:border-surface-800">
+            @if (returnType() === 'MANUAL') {
+              <app-return-lines-table
+                [invoiceLines]="selectedInvoice()!.lines"
+                [returnLines]="returnLines()"
+                (returnLinesChange)="onLinesChange($event)"
+              />
+            } @else {
+              <div class="p-4 md:p-6">
+                <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
+                  <i class="pi pi-list text-surface-500"></i>
+                  Líneas de Devolución (Automático)
+                </h3>
+                @if (returnLines().length > 0) {
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                      <thead>
+                        <tr class="border-b border-surface-200 dark:border-surface-700">
+                          <th class="text-left py-2 font-semibold">Producto</th>
+                          <th class="text-right py-2 font-semibold">Cantidad</th>
+                          <th class="text-right py-2 font-semibold">Precio Unit.</th>
+                          <th class="text-right py-2 font-semibold">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (line of returnLines(); track line.invoiceLineId) {
+                          <tr class="border-b border-surface-100 dark:border-surface-800">
+                            <td class="py-2">{{ line.productName }}</td>
+                            <td class="text-right py-2">{{ line.quantity }}</td>
+                            <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
+                            <td class="text-right py-2 font-medium">{{ (line.quantity * line.unitPrice) | number: '1.2-2' }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                      <tfoot>
+                        <tr class="border-t border-surface-200 dark:border-surface-700">
+                          <td colspan="3" class="text-right py-3 font-semibold">Total:</td>
+                          <td class="text-right py-3 font-bold">{{ totalAmount() | number: '1.2-2' }}</td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                } @else {
+                  <p class="text-sm text-surface-500">Seleccione un almacén para auto-completar las líneas.</p>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <app-form-actions
+          submitLabel="Guardar"
+          cancelLabel="Cancelar"
+          [loading]="isSubmitting()"
+          [disabled]="form.invalid"
+          (cancel)="cancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
+</app-main-layout>

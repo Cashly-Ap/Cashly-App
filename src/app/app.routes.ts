@@ -58,6 +58,10 @@ export const routes: Routes = [
     loadChildren: () => import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
   },
   {
+    path: 'finances',
+    loadChildren: () => import('@features/finances/router').then((m) => m.FINANCES_ROUTES),
+  },
+  {
     path: '**',
     redirectTo: '',
   },

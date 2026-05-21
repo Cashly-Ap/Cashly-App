@@ -1,0 +1,55 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+  [draggable]="false"
+  [resizable]="false"
+  header="Seleccionar Método de Pago"
+>
+  <div class="flex flex-col gap-4">
+    <p-iconField iconPosition="left">
+      <p-inputIcon styleClass="pi pi-search" />
+      <input
+        #searchInput
+        pInputText
+        type="text"
+        [value]="searchTerm()"
+        (input)="onSearch(searchInput.value)"
+        placeholder="Buscar método de pago..."
+        class="w-full"
+      />
+    </p-iconField>
+
+    @if (loading()) {
+      <div class="flex items-center justify-center py-8">
+        <i class="pi pi-spin pi-spinner text-2xl text-primary"></i>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-2 max-h-[300px] overflow-y-auto">
+        @for (paymentMethod of filteredPaymentMethods(); track paymentMethod.id) {
+          <button
+            type="button"
+            class="flex items-center gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700 transition-colors cursor-pointer text-left"
+            (click)="onSelect(paymentMethod)"
+          >
+            <div class="flex-1">
+              <div class="font-medium">{{ paymentMethod.name }}</div>
+              @if (paymentMethod.description) {
+                <div class="text-sm text-surface-500">{{ paymentMethod.description }}</div>
+              }
+            </div>
+            <span class="text-xs font-mono text-surface-400">{{ paymentMethod.code }}</span>
+          </button>
+        } @empty {
+          <div class="text-center py-4 text-surface-500">
+            No se encontraron métodos de pago
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="close()" />
+  </ng-template>
+</p-dialog>
