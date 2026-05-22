@@ -1,0 +1,72 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (showLoading()) {
+        <app-loading-spinner />
+      }
+      @if (noteData(); as note) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles de la Nota de Crédito"
+            subtitle="Información completa de la nota de crédito"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="'Nota de Crédito #' + note.noteNumber"
+              [subtitle]="'Factura #' + note.invoiceNumber"
+            >
+              <div actions class="flex gap-3">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="goBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                @if (canDelete(note.status)) {
+                  <p-button
+                    label="Eliminar"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    (onClick)="onDelete()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+                @if (canCancel(note.status)) {
+                  <p-button
+                    label="Cancelar"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [outlined]="true"
+                    (onClick)="onCancel()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+              </div>
+            </app-details-card-header>
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field label="Número" [value]="'#' + note.noteNumber" />
+                <app-details-info-field label="Cliente" [value]="note.customerName" />
+                <app-details-info-field label="RIF" [value]="note.customerRif" />
+
+                <app-details-info-field label="Factura Asociada" [value]="note.invoiceNumber" />
+                <app-details-info-field label="Monto" [value]="(note.amount | number: '1.2-2') ?? ''" />
+                <app-details-info-field label="Estado" type="badge">
+                  <app-text-badge [label]="getStatusLabel(note.status)" [variant]="getStatusVariant(note.status)" />
+                </app-details-info-field>
+                <app-details-info-field label="Monto Aplicado" [value]="(note.appliedAmount | number: '1.2-2') ?? ''" />
+                <app-details-info-field label="Motivo" [value]="note.reason" />
+                <app-details-info-field label="Creado por" [value]="note.createdByName" />
+                <app-details-info-field label="Fecha de creación" [value]="(note.createdAt | date: 'dd/MM/yyyy HH:mm') || ''" />
+                <app-details-info-field label="Última actualización" [value]="(note.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''" />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+        </div>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
+</app-main-layout>
