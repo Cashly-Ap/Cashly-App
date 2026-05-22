@@ -88,7 +88,7 @@ export class ReturnDetailPageComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/finanzas/devoluciones']);
+    this.router.navigate(['/finances/devoluciones']);
   }
 
   getReturnTypeLabel(type: string): string {

@@ -119,14 +119,14 @@ describe('CreditNoteListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-credito', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito', 'nuevo']);
     });
 
     it('should navigate to /finanzas/notas-credito/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockNotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-credito', 'cn-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito', 'cn-001']);
     });
   });
 
@@ -191,9 +191,9 @@ describe('CreditNoteListPageComponent', () => {
 
     it('should check canCancel', () => {
       fixture.detectChanges();
-      expect(component.canCancel('PENDING')).toBe(true);
+      expect(component.canCancel('DRAFT')).toBe(false);
+      expect(component.canCancel('APPLIED')).toBe(true);
       expect(component.canCancel('CANCELLED')).toBe(false);
-      expect(component.canCancel('APPLIED')).toBe(false);
     });
   });
 });

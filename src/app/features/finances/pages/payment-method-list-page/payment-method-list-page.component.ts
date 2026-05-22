@@ -131,26 +131,40 @@ export class PaymentMethodListPageComponent implements OnInit {
     this.router.navigate(['/finances', 'nuevo']);
   }
 
+  onDetail(paymentMethod: PaymentMethodList): void {
+    this.router.navigate(['/finances', paymentMethod.id]);
+  }
+
   onEdit(paymentMethod: PaymentMethodList): void {
     this.router.navigate(['/finances', paymentMethod.id, 'editar']);
   }
 
-  onToggleActive(paymentMethod: PaymentMethodList): void {
-    this.service.togglePaymentMethod(paymentMethod.id).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: `Método de pago ${!paymentMethod.isActive ? 'activado' : 'desactivado'} exitosamente`,
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cambiar el estado del método de pago.',
-          life: 5000,
+  onDelete(paymentMethod: PaymentMethodList): void {
+    this.confirmationService.confirm({
+      header: 'Eliminar Método de Pago',
+      message: `¿Estás seguro de que deseas eliminar "${paymentMethod.name}"? Esta acción no se puede deshacer.`,
+      acceptIcon: 'pi pi-trash',
+      acceptLabel: 'Eliminar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectLabel: 'Cancelar',
+      accept: () => {
+        this.service.deletePaymentMethod(paymentMethod.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Método de pago eliminado exitosamente',
+              life: 3000,
+            });
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.error?.message || 'No se pudo eliminar el método de pago.',
+              life: 5000,
+            });
+          },
         });
       },
     });

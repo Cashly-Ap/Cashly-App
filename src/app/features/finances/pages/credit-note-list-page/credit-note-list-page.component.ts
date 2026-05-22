@@ -25,6 +25,7 @@ import { CreditNoteFilters } from '@features/finances/services/api/credit-note-a
 import { CreditNoteList } from '@features/finances/models/interfaces';
 
 const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Borrador',
   PENDING: 'Pendiente',
   APPLIED: 'Aplicada',
   CANCELLED: 'Cancelada',
@@ -153,15 +154,15 @@ export class CreditNoteListPageComponent implements OnInit {
   }
 
   onView(note: CreditNoteList): void {
-    this.router.navigate(['/finanzas/notas-credito', note.id]);
+    this.router.navigate(['/finances/notas-credito', note.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/finanzas/notas-credito/nuevo']);
+    this.router.navigate(['/finances/notas-credito/nuevo']);
   }
 
   onApply(note: CreditNoteList): void {
-    this.router.navigate(['/finanzas/notas-credito', note.id, 'aplicar']);
+    this.router.navigate(['/finances/notas-credito', note.id, 'aplicar']);
   }
 
   onCancel(note: CreditNoteList): void {
@@ -210,7 +211,43 @@ export class CreditNoteListPageComponent implements OnInit {
   }
 
   canCancel(status: string): boolean {
-    return status !== 'CANCELLED' && status !== 'APPLIED';
+    return status === 'APPLIED';
+  }
+
+  canDelete(status: string): boolean {
+    return status === 'DRAFT';
+  }
+
+  onDelete(note: CreditNoteList): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea eliminar la nota de crédito #${note.noteNumber}? Esta acción no se puede deshacer.`,
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.financeService.deleteCreditNote(note.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Nota de crédito eliminada exitosamente',
+              life: 3000,
+            });
+            this.loadWithFilters();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al eliminar la nota de crédito',
+              life: 5000,
+            });
+          },
+        });
+      },
+    });
   }
 
   private loadWithFilters(): void {

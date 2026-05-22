@@ -16,4 +16,5 @@ export interface PaymentMethodCreate {
 export interface PaymentMethodUpdate {
   name: string;
   description?: string;
+  isActive?: boolean;
 }

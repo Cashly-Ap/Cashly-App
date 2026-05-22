@@ -87,6 +87,10 @@ export class DebitNoteApiService {
     );
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   private toList(r: DebitNoteListApiResponse): DebitNoteList {
     return {
       id: r.id,

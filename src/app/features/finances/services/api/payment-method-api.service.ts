@@ -73,6 +73,10 @@ export class PaymentMethodApiService {
       .pipe(map((r) => this.toPaymentMethodDetail(r)));
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   toggle(id: string): Observable<PaymentMethodDetail> {
     return this.http
       .patch<PaymentMethodDetailApiResponse>(`${this.baseUrl}/${id}/toggle`, {})

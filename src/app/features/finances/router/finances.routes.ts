@@ -24,14 +24,7 @@ export const FINANCES_ROUTES: Routes = [
           ),
         title: 'Nuevo Método de Pago',
       },
-      {
-        path: ':id/editar',
-        loadComponent: () =>
-          import('../pages/payment-method-form-page/payment-method-form-page.component').then(
-            (m) => m.PaymentMethodFormPageComponent,
-          ),
-        title: 'Editar Método de Pago',
-      },
+
       {
         path: 'pagos',
         loadComponent: () =>
@@ -89,6 +82,14 @@ export const FINANCES_ROUTES: Routes = [
         title: 'Nueva Nota de Crédito',
       },
       {
+        path: 'notas-credito/:id',
+        loadComponent: () =>
+          import('../pages/credit-note-detail-page/credit-note-detail-page.component').then(
+            (m) => m.CreditNoteDetailPageComponent,
+          ),
+        title: 'Detalle de Nota de Crédito',
+      },
+      {
         path: 'notas-debito',
         loadComponent: () =>
           import('../pages/debit-note-list-page/debit-note-list-page.component').then(
@@ -103,6 +104,14 @@ export const FINANCES_ROUTES: Routes = [
             (m) => m.DebitNoteFormPageComponent,
           ),
         title: 'Nueva Nota de Débito',
+      },
+      {
+        path: 'notas-debito/:id',
+        loadComponent: () =>
+          import('../pages/debit-note-detail-page/debit-note-detail-page.component').then(
+            (m) => m.DebitNoteDetailPageComponent,
+          ),
+        title: 'Detalle de Nota de Débito',
       },
       {
         path: 'devoluciones',
@@ -127,6 +136,22 @@ export const FINANCES_ROUTES: Routes = [
             (m) => m.ReturnDetailPageComponent,
           ),
         title: 'Detalle de Devolución',
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('../pages/payment-method-detail-page/payment-method-detail-page.component').then(
+            (m) => m.PaymentMethodDetailPageComponent,
+          ),
+        title: 'Detalle del Método de Pago',
+      },
+      {
+        path: ':id/editar',
+        loadComponent: () =>
+          import('../pages/payment-method-form-page/payment-method-form-page.component').then(
+            (m) => m.PaymentMethodFormPageComponent,
+          ),
+        title: 'Editar Método de Pago',
       },
     ],
   },

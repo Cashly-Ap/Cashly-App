@@ -87,6 +87,10 @@ export class CreditNoteApiService {
     );
   }
 
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
   private toList(r: CreditNoteListApiResponse): CreditNoteList {
     return {
       id: r.id,

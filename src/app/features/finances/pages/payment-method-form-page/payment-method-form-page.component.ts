@@ -13,6 +13,7 @@ import {
   FormActionsComponent,
 } from '@core/forms/components';
 import { FinanceApplicationService } from '@features/finances/services/application';
+import { PaymentMethodUpdate } from '@features/finances/models/interfaces';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 
 interface PaymentMethodFormData {
@@ -113,9 +114,13 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
   override onSubmit(): void {
     if (this.form.valid) {
       const value = this.form.getRawValue() as PaymentMethodFormData;
-      const payload = { name: value.name, description: value.description || undefined };
 
       if (this.isEditMode() && this.entityId()) {
+        const payload: PaymentMethodUpdate = {
+          name: value.name,
+          description: value.description || undefined,
+          isActive: value.isActive,
+        };
         this.service.updatePaymentMethod(this.entityId()!, payload).subscribe({
           next: () => {
             this.markAsSubmitted();
@@ -137,7 +142,8 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
           },
         });
       } else {
-        this.service.createPaymentMethod(payload).subscribe({
+        const createPayload = { name: value.name, description: value.description || undefined };
+        this.service.createPaymentMethod(createPayload).subscribe({
           next: () => {
             this.markAsSubmitted();
             this.messageService.add({

@@ -73,14 +73,14 @@ export class PaymentDetailPageComponent implements OnInit {
             detail: 'Error al cargar el pago. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/finanzas', 'pagos']);
+          this.router.navigate(['/finances', 'pagos']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/finanzas', 'pagos']);
+    this.router.navigate(['/finances', 'pagos']);
   }
 
   onCancel(): void {
@@ -97,7 +97,7 @@ export class PaymentDetailPageComponent implements OnInit {
           detail: 'Pago cancelado exitosamente',
           life: 3000,
         });
-        this.router.navigate(['/finanzas', 'pagos']);
+        this.router.navigate(['/finances', 'pagos']);
       },
       error: () => {
         this.messageService.add({

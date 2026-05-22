@@ -6,11 +6,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -20,21 +23,29 @@ import { FormActionsComponent } from '@core/forms/components/headers/form-action
 import { FinanceApplicationService } from '@features/finances/services/application/finance-application.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
+import { InvoiceList } from '@features/invoices/models/interfaces';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
 @Component({
   selector: 'app-credit-note-form-page',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     ButtonModule,
     TextareaModule,
     InputNumberModule,
+    InputTextModule,
+    DialogModule,
     MainLayoutComponent,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
     CustomerPickerDialogComponent,
+    TextBadgeComponent,
   ],
   templateUrl: './credit-note-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,11 +55,20 @@ export class CreditNoteFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly financeService = inject(FinanceApplicationService);
   private readonly messageService = inject(MessageService);
+  private readonly invoiceApi = inject(InvoiceApiService);
 
   readonly isSubmitting = signal<boolean>(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
+
+  readonly invoicePickerVisible = signal(false);
+  readonly searchedInvoices = signal<InvoiceList[]>([]);
+  readonly selectedInvoice = signal<InvoiceList | null>(null);
+  readonly searchingInvoices = signal(false);
+  readonly invoiceSearchTerm = signal('');
+
+  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
 
@@ -95,6 +115,47 @@ export class CreditNoteFormPageComponent implements OnInit {
     this.pickerVisible.set(false);
   }
 
+  openInvoicePicker(): void {
+    this.invoicePickerVisible.set(true);
+    this.searchInvoices({});
+  }
+
+  onInvoiceSearch(): void {
+    if (this.searchTimeout) clearTimeout(this.searchTimeout);
+    this.searchTimeout = setTimeout(() => {
+      this.searchInvoices({ search: this.invoiceSearchTerm() });
+    }, 300);
+  }
+
+  searchInvoices(filters: { search?: string; customerId?: string; dateFrom?: string; dateTo?: string }): void {
+    this.searchingInvoices.set(true);
+    this.invoiceApi.getAll({
+      search: filters.search,
+      customerId: filters.customerId,
+      dateFrom: filters.dateFrom,
+      dateTo: filters.dateTo,
+    }).subscribe({
+      next: (invoices) => this.searchedInvoices.set(invoices),
+      error: () => this.searchedInvoices.set([]),
+      complete: () => this.searchingInvoices.set(false),
+    });
+  }
+
+  onInvoiceSelected(invoice: InvoiceList): void {
+    this.selectedInvoice.set(invoice);
+    this.form.patchValue({ invoiceId: invoice.id });
+    if (!this.selectedCustomer()) {
+      this.selectedCustomer.set({ id: invoice.customerId, alias: invoice.customerName, legalName: '' } as CustomerList);
+      this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: '' });
+      this.form.patchValue({ customerId: invoice.customerId });
+    }
+    this.invoicePickerVisible.set(false);
+  }
+
+  onInvoicePickerCancelled(): void {
+    this.invoicePickerVisible.set(false);
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -121,7 +182,7 @@ export class CreditNoteFormPageComponent implements OnInit {
             detail: 'Nota de crédito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finanzas/notas-credito']);
+          this.router.navigate(['/finances/notas-credito']);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -136,6 +197,6 @@ export class CreditNoteFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finanzas/notas-credito']);
+    this.router.navigate(['/finances/notas-credito']);
   }
 }

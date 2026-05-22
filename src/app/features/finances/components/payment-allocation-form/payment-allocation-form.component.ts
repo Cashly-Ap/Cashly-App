@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
 interface InvoiceAllocation {
   invoiceId: string;
@@ -27,7 +26,6 @@ interface InvoiceAllocation {
     DialogModule,
     TableModule,
     InputNumberModule,
-    TextBadgeComponent,
   ],
   templateUrl: './payment-allocation-form.component.html',
 })

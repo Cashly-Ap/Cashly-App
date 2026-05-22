@@ -79,14 +79,14 @@ describe('DebitNoteListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-debito', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito', 'nuevo']);
     });
 
     it('should navigate to /finanzas/notas-debito/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockNotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-debito', 'dn-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito', 'dn-001']);
     });
   });
 
@@ -121,9 +121,9 @@ describe('DebitNoteListPageComponent', () => {
 
     it('should check canCancel', () => {
       fixture.detectChanges();
-      expect(component.canCancel('PENDING')).toBe(true);
+      expect(component.canCancel('DRAFT')).toBe(false);
+      expect(component.canCancel('APPLIED')).toBe(true);
       expect(component.canCancel('CANCELLED')).toBe(false);
-      expect(component.canCancel('APPLIED')).toBe(false);
     });
   });
 });

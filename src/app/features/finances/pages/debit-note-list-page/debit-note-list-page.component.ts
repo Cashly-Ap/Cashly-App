@@ -25,6 +25,7 @@ import { DebitNoteFilters } from '@features/finances/services/api/debit-note-api
 import { DebitNoteList } from '@features/finances/models/interfaces';
 
 const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Borrador',
   PENDING: 'Pendiente',
   APPLIED: 'Aplicada',
   CANCELLED: 'Cancelada',
@@ -153,11 +154,11 @@ export class DebitNoteListPageComponent implements OnInit {
   }
 
   onView(note: DebitNoteList): void {
-    this.router.navigate(['/finanzas/notas-debito', note.id]);
+    this.router.navigate(['/finances/notas-debito', note.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/finanzas/notas-debito/nuevo']);
+    this.router.navigate(['/finances/notas-debito/nuevo']);
   }
 
   onCancel(note: DebitNoteList): void {
@@ -206,7 +207,43 @@ export class DebitNoteListPageComponent implements OnInit {
   }
 
   canCancel(status: string): boolean {
-    return status !== 'CANCELLED' && status !== 'APPLIED';
+    return status === 'APPLIED';
+  }
+
+  canDelete(status: string): boolean {
+    return status === 'DRAFT';
+  }
+
+  onDelete(note: DebitNoteList): void {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de que desea eliminar la nota de débito #${note.noteNumber}? Esta acción no se puede deshacer.`,
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.financeService.deleteDebitNote(note.id).subscribe({
+          next: () => {
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Nota de débito eliminada exitosamente',
+              life: 3000,
+            });
+            this.loadWithFilters();
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al eliminar la nota de débito',
+              life: 5000,
+            });
+          },
+        });
+      },
+    });
   }
 
   private loadWithFilters(): void {

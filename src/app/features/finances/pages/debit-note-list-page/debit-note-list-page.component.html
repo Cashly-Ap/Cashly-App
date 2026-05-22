@@ -192,6 +192,9 @@
                           @if (canCancel(note.status)) {
                             <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(note)" pTooltip="Cancelar" />
                           }
+                          @if (canDelete(note.status)) {
+                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -251,6 +254,9 @@
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(note)" />
                     @if (canCancel(note.status)) {
                       <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(note)" pTooltip="Cancelar" />
+                    }
+                    @if (canDelete(note.status)) {
+                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
                     }
                   </div>
                 </div>

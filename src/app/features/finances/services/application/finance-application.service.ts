@@ -28,6 +28,8 @@ export class FinanceApplicationService {
   readonly debitNotes = signal<DebitNoteList[]>([]);
   readonly returns = signal<ReturnList[]>([]);
   readonly selectedReturn = signal<ReturnDetail | null>(null);
+  readonly currentDebitNote = signal<DebitNoteDetail | null>(null);
+  readonly currentCreditNote = signal<CreditNoteDetail | null>(null);
   readonly loading = signal(false);
   readonly loadingCredit = signal(false);
   readonly error = signal<string | null>(null);
@@ -105,6 +107,24 @@ export class FinanceApplicationService {
           );
           if (this.currentPaymentMethod()?.id === id) {
             this.currentPaymentMethod.set(paymentMethod);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  deletePaymentMethod(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.paymentMethodApi.delete(id).pipe(
+      tap({
+        next: () => {
+          this.paymentMethods.update((current) => current.filter((c) => c.id !== id));
+          if (this.currentPaymentMethod()?.id === id) {
+            this.currentPaymentMethod.set(null);
           }
         },
         error: (err: Error) => this.error.set(err.message),
@@ -342,6 +362,21 @@ export class FinanceApplicationService {
     );
   }
 
+  deleteCreditNote(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.creditNoteApi.delete(id).pipe(
+      tap({
+        next: () => {
+          this.creditNotes.update((current) => current.filter((n) => n.id !== id));
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
   loadDebitNotes(filters?: DebitNoteFilters): Observable<DebitNoteList[]> {
     this.loading.set(true);
     this.error.set(null);
@@ -403,6 +438,21 @@ export class FinanceApplicationService {
             createdAt: note.createdAt,
           };
           this.debitNotes.update((current) => current.map((n) => (n.id === id ? listItem : n)));
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  deleteDebitNote(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.debitNoteApi.delete(id).pipe(
+      tap({
+        next: () => {
+          this.debitNotes.update((current) => current.filter((n) => n.id !== id));
         },
         error: (err: Error) => this.error.set(err.message),
       }),
@@ -486,6 +536,32 @@ export class FinanceApplicationService {
             this.selectedReturn.set(ret);
           }
         },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  loadDebitNoteById(id: string): Observable<DebitNoteDetail> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.debitNoteApi.getById(id).pipe(
+      tap({
+        next: (note) => this.currentDebitNote.set(note),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  loadCreditNoteById(id: string): Observable<CreditNoteDetail> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.creditNoteApi.getById(id).pipe(
+      tap({
+        next: (note) => this.currentCreditNote.set(note),
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

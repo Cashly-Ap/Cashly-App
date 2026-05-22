@@ -143,7 +143,7 @@ describe('CreditNoteFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-credito']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito']);
     });
 
     it('should show error on failure', () => {
@@ -178,7 +178,7 @@ describe('CreditNoteFormPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.cancel();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finanzas/notas-credito']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito']);
     });
   });
 });
