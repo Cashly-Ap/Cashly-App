@@ -88,7 +88,6 @@
       <div class="space-y-2">
         <label for="paymentDate" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
           Fecha de Pago
-          <span class="text-red-500">*</span>
         </label>
         <p-datepicker
           id="paymentDate"
@@ -98,6 +97,7 @@
           dateFormat="dd/mm/yy"
           [defaultDate]="maxDate"
           [maxDate]="maxDate"
+          [autofocus]="false"
           appendTo="body"
           styleClass="w-full"
           [class.ng-invalid]="form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched"

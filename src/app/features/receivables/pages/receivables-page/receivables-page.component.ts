@@ -27,6 +27,7 @@ import { CustomerDebtList, CustomerInvoiceDebt } from '../../models/interfaces';
 import {
   CustomerDebtDialogComponent,
   PaymentFormDialogComponent,
+  PaymentHistoryDialogComponent,
 } from '../../components';
 import { PaymentSubmitEvent } from '../../components/payment-form-dialog/payment-form-dialog.component';
 import { PayPartialDebtRequest } from '../../models/interfaces';
@@ -51,6 +52,7 @@ import { PayPartialDebtRequest } from '../../models/interfaces';
     SkeletonModule,
     CustomerDebtDialogComponent,
     PaymentFormDialogComponent,
+    PaymentHistoryDialogComponent,
   ],
   templateUrl: './receivables-page.component.html',
 })
@@ -74,6 +76,10 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly paymentCustomerName = signal('');
   readonly paymentTotalDebt = signal(0);
   readonly paymentSubmitting = signal(false);
+
+  readonly paymentHistoryVisible = signal(false);
+  readonly paymentHistoryCustomerId = signal('');
+  readonly paymentHistoryInvoiceId = signal<string | null>(null);
 
   readonly showInitialLoading = computed(
     () => this.service.loading() && this.service.customers().length === 0,
@@ -222,6 +228,19 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
           },
         });
     }
+  }
+
+  onViewInvoicePaymentHistory(invoice: CustomerInvoiceDebt): void {
+    const customer = this.selectedCustomer();
+    this.paymentHistoryCustomerId.set(customer?.customerId ?? '');
+    this.paymentHistoryInvoiceId.set(invoice.invoiceId);
+    this.paymentHistoryVisible.set(true);
+  }
+
+  onClosePaymentHistoryDialog(): void {
+    this.paymentHistoryVisible.set(false);
+    this.paymentHistoryCustomerId.set('');
+    this.paymentHistoryInvoiceId.set(null);
   }
 
   onViewInvoicePdf(invoice: CustomerInvoiceDebt): void {

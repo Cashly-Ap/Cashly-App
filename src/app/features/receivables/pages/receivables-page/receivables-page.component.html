@@ -278,6 +278,7 @@
   (payAll)="onCustomerDebtPayAll()"
   (payPartial)="onCustomerDebtPayPartial()"
   (viewInvoicePdf)="onViewInvoicePdf($event)"
+  (viewInvoicePaymentHistory)="onViewInvoicePaymentHistory($event)"
 />
 
 <app-payment-form-dialog
@@ -288,6 +289,13 @@
   [totalDebt]="paymentTotalDebt()"
   (close)="onClosePaymentFormDialog()"
   (submit)="onSubmitPayment($event)"
+/>
+
+<app-payment-history-dialog
+  [visible]="paymentHistoryVisible()"
+  [customerId]="paymentHistoryCustomerId()"
+  [invoiceId]="paymentHistoryInvoiceId()"
+  (close)="onClosePaymentHistoryDialog()"
 />
 
 
