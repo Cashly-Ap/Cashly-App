@@ -1,0 +1,303 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
+          <i class="pi pi-wallet text-surface-0 dark:text-surface-900 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Cuentas por Cobrar</h1>
+        <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
+          Gestiona las deudas de clientes y cobros pendientes
+        </p>
+      </div>
+
+      @if (service.globalSummary(); as summary) {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div class="group relative overflow-hidden bg-surface-0 dark:bg-surface-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
+                <i class="pi pi-dollar text-surface-700 dark:text-surface-300 text-2xl"></i>
+              </div>
+              <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
+                <span class="text-xs font-semibold text-surface-700 dark:text-surface-300">Total</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">Deuda Total</p>
+            <p class="text-3xl font-bold text-red-600 dark:text-red-400">
+              {{ summary.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </p>
+          </div>
+
+          <div class="group relative overflow-hidden bg-surface-0 dark:bg-surface-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
+                <i class="pi pi-file text-surface-700 dark:text-surface-300 text-2xl"></i>
+              </div>
+              <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
+                <span class="text-xs font-semibold text-surface-700 dark:text-surface-300">Facturas</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">Facturas Pendientes</p>
+            <p class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+              {{ summary.totalInvoicesWithDebt }}
+            </p>
+          </div>
+
+          <div class="group relative overflow-hidden bg-surface-0 dark:bg-surface-800 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 border border-surface-200 dark:border-surface-700">
+            <div class="flex items-center justify-between mb-4">
+              <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
+                <i class="pi pi-users text-surface-700 dark:text-surface-300 text-2xl"></i>
+              </div>
+              <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
+                <span class="text-xs font-semibold text-surface-700 dark:text-surface-300">Clientes</span>
+              </div>
+            </div>
+            <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">Clientes con Deuda</p>
+            <p class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+              {{ summary.totalCustomersWithDebt }}
+            </p>
+          </div>
+        </div>
+      } @else if (service.loading()) {
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          @for (_ of [1,2,3]; track _) {
+            <div class="bg-surface-0 dark:bg-surface-800 rounded-2xl p-6 shadow-md border border-surface-200 dark:border-surface-700">
+              <p-skeleton width="3rem" height="3rem" borderRadius="0.75rem" styleClass="mb-4" />
+              <p-skeleton width="50%" height="1rem" styleClass="mb-3" />
+              <p-skeleton width="70%" height="2rem" />
+            </div>
+          }
+        </div>
+      }
+
+      <div class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-md border border-surface-200 dark:border-surface-700 overflow-hidden">
+        <div class="p-6">
+          <div class="mb-6">
+            <div class="relative">
+              <p-iconField iconPosition="left" class="w-full">
+                <p-inputIcon styleClass="pi pi-search" />
+                <input
+                  #searchInput
+                  pInputText
+                  type="text"
+                  (input)="onSearch(searchInput.value)"
+                  placeholder="Buscar por nombre o RIF..."
+                  class="w-full"
+                />
+              </p-iconField>
+            </div>
+          </div>
+
+          @if (showInitialLoading()) {
+            <div class="space-y-4">
+              @for (_ of [1,2,3,4,5]; track _) {
+                <div class="flex items-center gap-4">
+                  <p-skeleton width="2.5rem" height="2.5rem" borderRadius="0.5rem" />
+                  <div class="flex-1">
+                    <p-skeleton width="60%" height="1rem" styleClass="mb-2" />
+                    <p-skeleton width="40%" height="0.75rem" />
+                  </div>
+                  <p-skeleton width="5rem" height="1rem" />
+                </div>
+              }
+            </div>
+          } @else if (isEmpty()) {
+            <div class="py-16 text-center">
+              <div class="inline-flex items-center justify-center w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full mb-4">
+                <i class="pi pi-users text-4xl text-surface-400"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-2">No hay clientes con deuda</h3>
+              <p class="text-sm text-surface-500 dark:text-surface-400">Todos los clientes están al día con sus pagos</p>
+            </div>
+          } @else {
+            <div class="hidden md:block overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700">
+              <p-table
+                [value]="service.customers()"
+                [loading]="service.loading()"
+                styleClass="p-datatable-striped"
+                [tableStyle]="{ 'min-width': '100%' }"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="customerName" class="bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200">
+                        <i class="pi pi-user text-sm"></i>
+                        Cliente
+                        <p-sortIcon field="customerName" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="totalDebt" class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200 justify-end">
+                        <i class="pi pi-money-bill text-sm"></i>
+                        Deuda Total
+                        <p-sortIcon field="totalDebt" />
+                      </div>
+                    </th>
+                    <th class="text-center bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200 justify-center">
+                        <i class="pi pi-file text-sm"></i>
+                        Facturas Pendientes
+                      </div>
+                    </th>
+                    <th class="text-center bg-surface-50 dark:bg-surface-800">
+                      <div class="font-semibold text-surface-700 dark:text-surface-200">Acciones</div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-customer>
+                  <tr class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30">
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="flex items-center justify-center w-10 h-10 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold">
+                          {{ customer.customerName.charAt(0).toUpperCase() }}
+                        </div>
+                        <div>
+                          <div class="font-semibold text-surface-900 dark:text-surface-0">
+                            {{ customer.customerName }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-bold text-lg text-red-600 dark:text-red-400">
+                        {{ customer.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <span class="inline-flex items-center justify-center px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-sm font-semibold rounded-full">
+                        {{ customer.invoicesWithDebt }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <p-button
+                        label="Ver Deuda"
+                        icon="pi pi-eye"
+                        size="small"
+                        severity="contrast"
+                        [outlined]="true"
+                        (onClick)="onViewCustomerDebt(customer)"
+                        styleClass="font-medium"
+                      />
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="4" class="py-16">
+                      <div class="flex flex-col items-center gap-4">
+                        <div class="w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center">
+                          <i class="pi pi-users text-4xl text-surface-400"></i>
+                        </div>
+                        <div class="text-center">
+                          <p class="text-lg font-semibold text-surface-700 dark:text-surface-200 mb-1">
+                            No hay clientes con deuda
+                          </p>
+                          <p class="text-sm text-surface-500 dark:text-surface-400">
+                            Todos los clientes están al día con sus pagos
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
+            <div class="flex justify-center py-4">
+              <p-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="service.totalCustomers()"
+                [rowsPerPageOptions]="[10, 20, 50]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+
+            <!-- Mobile Cards -->
+            <div class="md:hidden space-y-4">
+              @if (service.loading()) {
+                <div class="flex items-center justify-center py-12">
+                  <i class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100"></i>
+                </div>
+              } @else {
+                @for (customer of service.customers(); track customer.customerId) {
+                  <div class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 shadow-md border border-surface-200 dark:border-surface-700">
+                    <div class="flex items-start gap-3 mb-3">
+                      <div class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold text-lg flex-shrink-0">
+                        {{ customer.customerName.charAt(0).toUpperCase() }}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                          {{ customer.customerName }}
+                        </h3>
+                      </div>
+                    </div>
+                    <div class="space-y-2 mb-3">
+                      <div class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-red-500">
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">Deuda Total</span>
+                        <span class="font-mono font-bold text-red-600 dark:text-red-400">
+                          {{ customer.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs text-surface-600 dark:text-surface-400">Facturas Pendientes</span>
+                        <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs font-semibold rounded-full">
+                          {{ customer.invoicesWithDebt }}
+                        </span>
+                      </div>
+                    </div>
+                    <p-button
+                      label="Ver Deuda"
+                      icon="pi pi-eye"
+                      size="small"
+                      severity="contrast"
+                      (onClick)="onViewCustomerDebt(customer)"
+                      styleClass="w-full font-medium"
+                    />
+                  </div>
+                }
+                <div class="pt-2">
+                  <p-paginator
+                    [first]="first()"
+                    [rows]="rows()"
+                    [totalRecords]="service.totalCustomers()"
+                    [rowsPerPageOptions]="[10, 20, 50]"
+                    [showCurrentPageReport]="true"
+                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+                    (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+                  />
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+</app-main-layout>
+
+<app-customer-debt-dialog
+  [visible]="customerDebtVisible()"
+  [customerId]="selectedCustomer()?.customerId ?? ''"
+  (close)="onCloseCustomerDebtDialog()"
+  (payInvoice)="onCustomerDebtPayInvoice($event)"
+  (payAll)="onCustomerDebtPayAll()"
+  (payPartial)="onCustomerDebtPayPartial()"
+  (viewInvoicePdf)="onViewInvoicePdf($event)"
+/>
+
+<app-payment-form-dialog
+  [visible]="paymentFormVisible()"
+  [mode]="paymentFormMode()"
+  [invoice]="paymentInvoice()"
+  [customerName]="paymentCustomerName()"
+  [totalDebt]="paymentTotalDebt()"
+  (close)="onClosePaymentFormDialog()"
+  (submit)="onSubmitPayment($event)"
+/>
+
+

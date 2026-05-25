@@ -100,7 +100,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         {
           label: 'Cuentas por Cobrar',
           icon: 'pi pi-money-bill',
-          routerLink: '/finances/pagos',
+          routerLink: '/finances/receivables',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
@@ -202,7 +202,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               label: 'Cuentas por Cobrar PDF',
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              routerLink: '/finances/pagos',
+              routerLink: '/finances/receivables',
             },
           ],
         },

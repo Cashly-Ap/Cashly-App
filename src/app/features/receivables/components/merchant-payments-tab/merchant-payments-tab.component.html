@@ -1,0 +1,138 @@
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+    <div>
+      <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 m-0">Mis Pagos</h3>
+      <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
+        Historial de pagos registrados
+      </p>
+    </div>
+    <p-button
+      label="Actualizar"
+      icon="pi pi-refresh"
+      severity="secondary"
+      [text]="true"
+      (onClick)="loadPayments()"
+      [loading]="loading()"
+    />
+  </div>
+
+  <div class="flex flex-wrap gap-2 mb-4">
+    <p-button
+      label="Todos"
+      severity="contrast"
+      [outlined]="statusFilter() !== null"
+      size="small"
+      (onClick)="filterByStatus(null)"
+    />
+    <p-button
+      label="Pendientes"
+      severity="warn"
+      [outlined]="statusFilter() !== 'PENDING_APPROVAL'"
+      size="small"
+      (onClick)="filterByStatus('PENDING_APPROVAL')"
+    />
+    <p-button
+      label="Aprobados"
+      severity="success"
+      [outlined]="statusFilter() !== 'APPROVED'"
+      size="small"
+      (onClick)="filterByStatus('APPROVED')"
+    />
+    <p-button
+      label="Rechazados"
+      severity="danger"
+      [outlined]="statusFilter() !== 'REJECTED'"
+      size="small"
+      (onClick)="filterByStatus('REJECTED')"
+    />
+  </div>
+
+  @if (loading() && payments().length === 0) {
+    <div class="flex flex-col items-center justify-center py-16">
+      <i class="pi pi-spin pi-spinner text-3xl text-surface-500 mb-4"></i>
+      <p class="text-surface-500">Cargando pagos...</p>
+    </div>
+  } @else if (payments().length === 0) {
+    <div class="flex flex-col items-center justify-center py-16">
+      <i class="pi pi-inbox text-5xl text-surface-300 mb-4"></i>
+      <h4 class="font-bold text-surface-700 dark:text-surface-300 m-0 text-lg">No hay pagos registrados</h4>
+      <p class="text-surface-500 dark:text-surface-400 m-0 mt-1">
+        Seleccione un cliente y registre un pago
+      </p>
+    </div>
+  } @else {
+    <p-table
+      [value]="payments()"
+      [lazy]="true"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 20, 50]"
+      [totalRecords]="payments().length"
+      styleClass="p-datatable-sm"
+      sortField="createdAt"
+      [sortOrder]="-1"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>N° Pago</th>
+          <th>Factura</th>
+          <th>Monto</th>
+          <th>Método</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th style="width: 60px"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-payment>
+        <tr>
+          <td class="font-mono text-sm text-surface-700 dark:text-surface-300">
+            {{ payment.paymentNumber }}
+          </td>
+          <td class="font-mono font-medium text-surface-900 dark:text-surface-0">
+            {{ payment.invoiceNumber }}
+          </td>
+          <td class="font-semibold font-mono text-green-600 dark:text-green-400">
+            {{ payment.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
+          </td>
+          <td class="text-surface-700 dark:text-surface-300">
+            {{ payment.paymentMethodName }}
+          </td>
+          <td class="text-surface-600 dark:text-surface-400 text-sm">
+            {{ payment.paymentDate | date : 'dd/MM/yyyy' }}
+          </td>
+          <td>
+            <p-tag
+              [value]="getStatusLabel(payment.status)"
+              [severity]="getStatusSeverity(payment.status)"
+              [rounded]="true"
+            />
+          </td>
+          <td>
+            <p-button
+              icon="pi pi-eye"
+              [rounded]="true"
+              [text]="true"
+              severity="info"
+              pTooltip="Ver detalle"
+              tooltipPosition="top"
+              (onClick)="onViewDetail(payment)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="7" class="text-center py-8 text-surface-500">
+            No se encontraron pagos
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</div>
+
+<app-payment-detail-dialog
+  [visible]="detailVisible()"
+  [payment]="selectedPayment()"
+  (close)="onCloseDetail()"
+/>

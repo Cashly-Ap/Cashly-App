@@ -1,0 +1,18 @@
+export const RECEIVABLES_ERROR_MESSAGES = {
+  LOAD_GLOBAL_SUMMARY_FAILED: 'Error al cargar el resumen de cuentas por cobrar',
+  SEARCH_CUSTOMERS_FAILED: 'Error al buscar clientes con deuda',
+  LOAD_CUSTOMER_DEBT_FAILED: 'Error al cargar la deuda del cliente',
+  LOAD_CUSTOMER_INVOICES_FAILED: 'Error al cargar las facturas del cliente',
+  PAY_INVOICE_FAILED: 'Error al procesar el pago de la factura',
+  PAY_ALL_DEBT_FAILED: 'Error al procesar el pago total de la deuda',
+  PAY_PARTIAL_DEBT_FAILED: 'Error al procesar el pago parcial',
+  LOAD_PENDING_PAYMENTS_FAILED: 'Error al cargar los pagos pendientes',
+  LOAD_PAYMENT_HISTORY_FAILED: 'Error al cargar el historial de pagos',
+  LOAD_MERCHANT_PAYMENTS_FAILED: 'Error al cargar los pagos del comercio',
+  LOAD_ALL_PAYMENTS_FAILED: 'Error al cargar todos los pagos',
+  APPROVE_PAYMENT_FAILED: 'Error al aprobar el pago',
+  REJECT_PAYMENT_FAILED: 'Error al rechazar el pago',
+  LOAD_CUSTOMER_PAYMENT_HISTORY_FAILED: 'Error al cargar el historial de pagos del cliente',
+  LOAD_INVOICE_PAYMENT_HISTORY_FAILED: 'Error al cargar el historial de pagos de la factura',
+  LOAD_PAYMENT_PROOF_FAILED: 'Error al cargar el comprobante de pago',
+};

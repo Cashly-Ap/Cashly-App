@@ -1,0 +1,233 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="title()"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '550px' }"
+  [dismissableMask]="false"
+  [closable]="!loading()"
+  [closeOnEscape]="!loading()"
+  appendTo="body"
+  (visibleChange)="onVisibleChange($event)"
+  styleClass="payment-form-dialog"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="space-y-5">
+      @if (mode() === 'single' && invoice()) {
+        <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Saldo Pendiente</span>
+            <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+              {{ invoice()!.balance | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (mode() !== 'single' && customerName()) {
+        <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Cliente</span>
+            <span class="font-semibold text-surface-900 dark:text-surface-0">
+              {{ customerName() }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Deuda Total</span>
+            <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+              {{ totalDebt() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (showAmountField()) {
+        <div class="space-y-2">
+          <label for="amount" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+            Monto
+            <span class="text-red-500">*</span>
+          </label>
+          <p-inputNumber
+            id="amount"
+            formControlName="amount"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            [min]="0.01"
+            [max]="maxAmount()"
+            [maxFractionDigits]="2"
+            styleClass="w-full"
+            [class.ng-invalid]="form.get('amount')?.invalid && form.get('amount')?.touched"
+          />
+          @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <small class="text-red-500 text-xs block mt-1">
+              @if (form.get('amount')?.errors?.['required']) {
+                El monto es requerido
+              }
+              @if (form.get('amount')?.errors?.['min']) {
+                El monto debe ser mayor a cero
+              }
+            </small>
+          }
+          <small class="text-surface-500 dark:text-surface-400 text-xs block mt-1">
+            Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }}
+          </small>
+        </div>
+      } @else {
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+            Monto Total a Pagar
+          </label>
+          <div class="bg-surface-50 dark:bg-surface-900/50 border-2 border-surface-200 dark:border-surface-700 rounded-lg p-4 text-center">
+            <span class="font-mono text-2xl font-bold text-green-600 dark:text-green-400">
+              {{ totalDebt() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      <div class="space-y-2">
+        <label for="paymentDate" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Fecha de Pago
+          <span class="text-red-500">*</span>
+        </label>
+        <p-datepicker
+          id="paymentDate"
+          formControlName="paymentDate"
+          [showIcon]="true"
+          [showButtonBar]="true"
+          dateFormat="dd/mm/yy"
+          [defaultDate]="maxDate"
+          [maxDate]="maxDate"
+          appendTo="body"
+          styleClass="w-full"
+          [class.ng-invalid]="form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched"
+        />
+        @if (form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched) {
+          <small class="text-red-500 text-xs block mt-1">
+            La fecha es requerida
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label for="paymentMethod" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Método de Pago
+          <span class="text-red-500">*</span>
+        </label>
+        <p-select
+          id="paymentMethod"
+          formControlName="paymentMethodId"
+          [options]="paymentMethods"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccione un método de pago"
+          appendTo="body"
+          styleClass="w-full"
+          [class.ng-invalid]="form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched"
+        />
+        @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {
+          <small class="text-red-500 text-xs block mt-1">
+            El método de pago es requerido
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label for="reference" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Referencia
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="reference"
+          type="text"
+          pInputText
+          formControlName="referenceNumber"
+          placeholder="Ingrese la referencia del pago"
+          class="w-full"
+          [class.ng-invalid]="form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched"
+        />
+        @if (form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched) {
+          <small class="text-red-500 text-xs block mt-1">
+            @if (form.get('referenceNumber')?.errors?.['required']) {
+              La referencia es requerida
+            }
+            @if (form.get('referenceNumber')?.errors?.['maxlength']) {
+              La referencia no puede exceder 100 caracteres
+            }
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label for="voucherFile" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Comprobante de Pago
+          @if (receivablesService.isMerchant()) {
+            <span class="text-red-500">*</span>
+          }
+        </label>
+        <label
+          for="voucherFile"
+          class="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer transition-colors"
+          [class]="fileError() ? 'border-red-400 bg-red-50 dark:bg-red-900/10' : selectedFile() ? 'border-green-400 bg-green-50 dark:bg-green-900/10' : 'border-surface-300 dark:border-surface-600 bg-surface-50 dark:bg-surface-900/30 hover:border-surface-500 dark:hover:border-surface-400'"
+        >
+          @if (selectedFile()) {
+            <div class="flex items-center gap-2 text-green-600 dark:text-green-400">
+              <i class="pi pi-check-circle text-lg"></i>
+              <span class="text-sm font-medium truncate max-w-xs">{{ selectedFile()!.name }}</span>
+            </div>
+            <span class="text-xs text-surface-500 dark:text-surface-400 mt-1">Haz clic para cambiar</span>
+          } @else {
+            <div class="flex items-center gap-2 text-surface-500 dark:text-surface-400">
+              <i class="pi pi-upload text-lg"></i>
+              <span class="text-sm">Seleccionar comprobante</span>
+            </div>
+            <span class="text-xs text-surface-400 mt-1">PDF, imagen (JPG, PNG) — Máx. 10MB</span>
+          }
+          <input
+            id="voucherFile"
+            type="file"
+            class="hidden"
+            accept=".pdf,image/jpeg,image/png,image/jpg"
+            [disabled]="loading()"
+            (change)="onFileSelected($event)"
+          />
+        </label>
+        @if (fileError()) {
+          <small class="text-red-500 text-xs block mt-1">{{ fileError() }}</small>
+        }
+      </div>
+
+      <div class="bg-surface-100 dark:bg-surface-800 border-l-4 border-surface-900 dark:border-surface-100 rounded-r-lg p-3">
+        <div class="flex items-start gap-2">
+          <i class="pi pi-info-circle text-surface-600 dark:text-surface-400 text-sm mt-0.5"></i>
+          <p class="text-xs text-surface-600 dark:text-surface-400">
+            El pago quedará registrado como pendiente de aprobación hasta que un administrador lo valide.
+          </p>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col sm:flex-row gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="onCancel()"
+        [disabled]="loading()"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="font-medium w-full sm:w-auto"
+      />
+      <p-button
+        label="Registrar Pago"
+        icon="pi pi-check"
+        (onClick)="onSubmit()"
+        [disabled]="form.invalid || loading()"
+        [loading]="loading()"
+        severity="success"
+        styleClass="font-medium w-full sm:w-auto"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

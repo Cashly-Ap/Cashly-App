@@ -17,6 +17,11 @@ export const FINANCES_ROUTES: Routes = [
         title: 'Métodos de Pago',
       },
       {
+        path: 'receivables',
+        loadChildren: () =>
+          import('../../receivables/router/receivables.routes').then((m) => m.RECEIVABLES_ROUTES),
+      },
+      {
         path: 'nuevo',
         loadComponent: () =>
           import('../pages/payment-method-form-page/payment-method-form-page.component').then(
