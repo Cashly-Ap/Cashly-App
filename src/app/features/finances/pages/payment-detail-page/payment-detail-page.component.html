@@ -7,13 +7,13 @@
       @if (payment(); as currentPayment) {
         <div class="flex flex-col gap-6">
           <app-page-header
-            title="Detalles del Pago"
-            subtitle="Información completa del pago"
+            title="Detalles de la Cuenta por Cobrar"
+            subtitle="Información completa de la cuenta por cobrar"
           />
 
           <app-details-card>
             <app-details-card-header
-              [title]="'Pago #' + currentPayment.paymentNumber"
+              [title]="'Cuenta por Cobrar #' + currentPayment.paymentNumber"
               [subtitle]="currentPayment.customerName"
             >
               <div actions class="flex gap-3 flex-wrap">
@@ -48,7 +48,7 @@
             <div class="p-4 sm:p-6">
               <app-details-info-grid>
                 <app-details-info-field
-                  label="Número de Pago"
+                  label="Número de Cuenta"
                   [value]="'#' + currentPayment.paymentNumber"
                   type="code"
                 />
@@ -151,7 +151,7 @@
             } @else {
               <app-empty-state
                 icon="pi-inbox"
-                message="No hay asignaciones en este pago"
+                message="No hay asignaciones en esta cuenta por cobrar"
               />
             }
           </app-details-section-card>

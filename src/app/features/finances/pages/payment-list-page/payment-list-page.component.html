@@ -7,20 +7,20 @@
         >
           <i class="pi pi-credit-card text-surface-0 dark:text-surface-900 text-3xl"></i>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Pagos</h1>
-        <p class="text-sm sm:text-base">Gestiona los pagos y anticipos de clientes</p>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Cuentas por Cobrar</h1>
+        <p class="text-sm sm:text-base">Gestiona las cuentas por cobrar y anticipos de clientes</p>
       </div>
 
       @if (showInitialLoading()) {
         <app-content-card>
-          <app-loading-spinner message="Cargando pagos..." />
+          <app-loading-spinner message="Cargando cuentas por cobrar..." />
         </app-content-card>
       } @else if (isEmptyDatabase()) {
         <app-content-card>
           <app-empty-state
             icon="pi-credit-card"
-            title="No hay pagos registrados"
-            message="Registra tu primer pago para comenzar."
+            title="No hay cuentas por cobrar registradas"
+            message="Registra tu primera cuenta por cobrar para comenzar."
             buttonLabel="Registrar Primer Pago"
             (buttonClick)="onCreate()"
           />
@@ -137,7 +137,7 @@
               <app-empty-state
                 icon="pi-search"
                 title="No se encontraron resultados"
-                message="No hay pagos que coincidan con tu búsqueda."
+                message="No hay cuentas por cobrar que coincidan con tu búsqueda."
               />
             } @else {
               <div class="overflow-x-auto rounded-t-2xl">
@@ -220,7 +220,7 @@
                   [totalRecords]="totalElements()"
                   [rowsPerPageOptions]="[10, 25, 50, 100]"
                   [showCurrentPageReport]="true"
-                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pagos"
+                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} cuentas por cobrar"
                   (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
                 />
               </div>
@@ -239,7 +239,7 @@
               <app-empty-state
                 icon="pi-search"
                 title="No se encontraron resultados"
-                message="No hay pagos que coincidan con tu búsqueda."
+                message="No hay cuentas por cobrar que coincidan con tu búsqueda."
               />
             </app-content-card>
           } @else {
@@ -281,7 +281,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} pagos"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} cuentas por cobrar"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>

@@ -21,7 +21,7 @@ describe('BUSINESS_MODULE_LABELS', () => {
     expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('Gestión de Usuarios y Roles');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('Gestión de Inventario (Inventario 360°)');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('Gestión Comercial (Ventas)');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas y Control de Crédito');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas y Cuentas por Cobrar');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('Módulo de Compras');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.CUSTOMER_PORTAL]).toBe('Portal Web de Clientes');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('Administrador Documental Global');

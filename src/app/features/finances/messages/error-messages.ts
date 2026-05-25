@@ -8,17 +8,11 @@ export const PAYMENT_METHOD_ERROR_MESSAGES = {
 };
 
 export const PAYMENT_ERROR_MESSAGES = {
-  LOAD_FAILED: 'Error al cargar los pagos',
+  LOAD_FAILED: 'Error al cargar las cuentas por cobrar',
   LOAD_BY_ID_FAILED: 'Error al cargar el pago',
   CREATE_FAILED: 'Error al crear el pago',
   APPLY_FAILED: 'Error al aplicar el pago',
   CANCEL_FAILED: 'Error al cancelar el pago',
-};
-
-export const CREDIT_ERROR_MESSAGES = {
-  STATUS_LOAD_FAILED: 'Error al cargar el estado de crédito',
-  OVERDUE_LOAD_FAILED: 'Error al cargar las facturas vencidas',
-  BALANCES_LOAD_FAILED: 'Error al cargar los saldos de clientes',
 };
 
 export const CREDIT_NOTE_ERROR_MESSAGES = {

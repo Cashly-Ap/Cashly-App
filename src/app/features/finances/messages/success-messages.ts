@@ -11,10 +11,6 @@ export const PAYMENT_SUCCESS_MESSAGES = {
   CANCELLED: 'Pago cancelado exitosamente',
 };
 
-export const CREDIT_SUCCESS_MESSAGES = {
-  STATUS_LOADED: 'Estado de crédito cargado exitosamente',
-};
-
 export const CREDIT_NOTE_SUCCESS_MESSAGES = {
   CREATED: 'Nota de crédito creada exitosamente',
   APPLIED: 'Nota de crédito aplicada exitosamente',

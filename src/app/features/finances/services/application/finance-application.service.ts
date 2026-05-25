@@ -2,18 +2,16 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
 import { PaymentMethodApiService, PaymentMethodFilters } from '../api/payment-method-api.service';
 import { PaymentApiService, PaymentFilters } from '../api/payment-api.service';
-import { CreditApiService } from '../api/credit-api.service';
 import { CreditNoteApiService, CreditNoteFilters } from '../api/credit-note-api.service';
 import { DebitNoteApiService, DebitNoteFilters } from '../api/debit-note-api.service';
 import { ReturnApiService, ReturnFilters } from '../api/return-api.service';
-import { PaymentMethodList, PaymentMethodDetail, PaymentMethodCreate, PaymentMethodUpdate, PaymentList, PaymentDetail, PaymentCreate, ApplyPayment, CreditStatus, CustomerBalance, CreditNoteList, CreditNoteDetail, CreditNoteCreate, DebitNoteList, DebitNoteDetail, DebitNoteCreate, ReturnList, ReturnDetail, ReturnCreate } from '../../models/interfaces';
+import { PaymentMethodList, PaymentMethodDetail, PaymentMethodCreate, PaymentMethodUpdate, PaymentList, PaymentDetail, PaymentCreate, ApplyPayment, CreditNoteList, CreditNoteDetail, CreditNoteCreate, DebitNoteList, DebitNoteDetail, DebitNoteCreate, ReturnList, ReturnDetail, ReturnCreate } from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
 export class FinanceApplicationService {
   private readonly paymentMethodApi = inject(PaymentMethodApiService);
   private readonly paymentApi = inject(PaymentApiService);
-  private readonly creditApi = inject(CreditApiService);
   private readonly creditNoteApi = inject(CreditNoteApiService);
   private readonly debitNoteApi = inject(DebitNoteApiService);
   private readonly returnApi = inject(ReturnApiService);
@@ -22,8 +20,6 @@ export class FinanceApplicationService {
   readonly currentPaymentMethod = signal<PaymentMethodDetail | null>(null);
   readonly payments = signal<PaymentList[]>([]);
   readonly selectedPayment = signal<PaymentDetail | null>(null);
-  readonly creditStatus = signal<CreditStatus | null>(null);
-  readonly customerBalances = signal<CustomerBalance[]>([]);
   readonly creditNotes = signal<CreditNoteList[]>([]);
   readonly debitNotes = signal<DebitNoteList[]>([]);
   readonly returns = signal<ReturnList[]>([]);
@@ -31,7 +27,6 @@ export class FinanceApplicationService {
   readonly currentDebitNote = signal<DebitNoteDetail | null>(null);
   readonly currentCreditNote = signal<CreditNoteDetail | null>(null);
   readonly loading = signal(false);
-  readonly loadingCredit = signal(false);
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
@@ -269,28 +264,6 @@ export class FinanceApplicationService {
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),
-    );
-  }
-
-  loadCreditStatus(customerId: string): Observable<CreditStatus> {
-    this.loadingCredit.set(true);
-    this.error.set(null);
-
-    return this.creditApi.getCreditStatus(customerId).pipe(
-      tap({
-        next: (status) => this.creditStatus.set(status),
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loadingCredit.set(false)),
-    );
-  }
-
-  checkAdvanceForCustomer(customerId: string): Observable<CustomerBalance[]> {
-    return this.creditApi.getCustomerBalances().pipe(
-      tap({
-        next: (balances) => this.customerBalances.set(balances),
-        error: (err: Error) => this.error.set(err.message),
-      }),
     );
   }
 

@@ -31,7 +31,7 @@ export const FINANCES_ROUTES: Routes = [
           import('../pages/payment-list-page/payment-list-page.component').then(
             (m) => m.PaymentListPageComponent,
           ),
-        title: 'Pagos',
+        title: 'Cuentas por Cobrar',
       },
       {
         path: 'pagos/nuevo',
@@ -56,14 +56,6 @@ export const FINANCES_ROUTES: Routes = [
             (m) => m.PaymentFormPageComponent,
           ),
         title: 'Editar Pago',
-      },
-      {
-        path: 'credito',
-        loadComponent: () =>
-          import('../pages/credit-status-page/credit-status-page.component').then(
-            (m) => m.CreditStatusPageComponent,
-          ),
-        title: 'Estado de Crédito',
       },
       {
         path: 'notas-credito',

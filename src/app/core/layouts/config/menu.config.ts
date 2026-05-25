@@ -98,15 +98,9 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
-          label: 'Pagos',
+          label: 'Cuentas por Cobrar',
           icon: 'pi pi-money-bill',
           routerLink: '/finances/pagos',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Control de Crédito',
-          icon: 'pi pi-check-circle',
-          routerLink: '/finances/credito',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
@@ -205,7 +199,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           icon: 'pi pi-dollar',
           children: [
             {
-              label: 'Pago PDF',
+              label: 'Cuentas por Cobrar PDF',
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               routerLink: '/finances/pagos',
