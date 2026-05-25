@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
@@ -30,7 +29,6 @@ import { ReturnType, getReturnTypeLabel } from '@features/finances/models/enums/
     ButtonModule,
     TableModule,
     ConfirmDialogModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     TextBadgeComponent,
     DetailsCardComponent,

@@ -12,6 +12,11 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { DialogModule } from 'primeng/dialog';
+import { TableModule } from 'primeng/table';
+import { InputTextModule } from 'primeng/inputtext';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -22,8 +27,8 @@ import { FinanceApplicationService } from '@features/finances/services/applicati
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { ReturnType, RETURN_TYPE_LABELS } from '@features/finances/models/enums/return-type.enum';
 import { ReturnLinesTableComponent } from '@features/finances/components/return-lines-table/return-lines-table.component';
-import { ReturnWarehouseSelectorComponent } from '@features/finances/components/return-warehouse-selector/return-warehouse-selector.component';
-import { InvoiceDetails } from '@features/invoices/models/interfaces';
+import { InvoicePickerDialogComponent } from '@features/finances/components/invoice-picker-dialog/invoice-picker-dialog.component';
+import { InvoiceDetails, InvoiceList } from '@features/invoices/models/interfaces';
 
 interface InvoiceLineFormData {
   invoiceLineId: string;
@@ -32,6 +37,7 @@ interface InvoiceLineFormData {
   quantity: number;
   warehouseId: string;
   unitPrice: number;
+  warehouseAllocations: { warehouseId: string; allocated: number }[];
 }
 
 @Component({
@@ -44,13 +50,18 @@ interface InvoiceLineFormData {
     ButtonModule,
     TextareaModule,
     SelectModule,
+    DialogModule,
+    TableModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
     MainLayoutComponent,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
     ReturnLinesTableComponent,
-    ReturnWarehouseSelectorComponent,
+    InvoicePickerDialogComponent,
   ],
   templateUrl: './return-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,9 +75,9 @@ export class ReturnFormPageComponent implements OnInit {
 
   readonly isSubmitting = signal<boolean>(false);
   readonly selectedInvoice = signal<InvoiceDetails | null>(null);
-  readonly selectedInvoiceLabel = signal<string | null>(null);
+  readonly showInvoicePicker = signal(false);
+
   readonly returnType = signal<ReturnType>(ReturnType.MANUAL);
-  readonly selectedWarehouseId = signal<string>('');
 
   readonly returnTypeOptions = Object.values(ReturnType).map((t) => ({
     label: RETURN_TYPE_LABELS[t],
@@ -95,24 +106,23 @@ export class ReturnFormPageComponent implements OnInit {
         }
       }
     });
+
   }
 
-  onInvoiceSelected(invoice: InvoiceDetails): void {
-    this.selectedInvoice.set(invoice);
-    this.selectedInvoiceLabel.set(`#${invoice.invoiceNumber} - ${invoice.customerName}`);
-    this.form.patchValue({ invoiceId: invoice.id, customerId: invoice.customerId });
-    this.resetLines();
+  onInvoiceSelected(invoice: InvoiceList): void {
+    this.showInvoicePicker.set(false);
+    this.form.patchValue({ invoiceId: invoice.id });
+    this.invoiceApi.getById(invoice.id).subscribe({
+      next: (inv) => {
+        this.selectedInvoice.set(inv);
+        this.form.patchValue({ customerId: inv.customerId });
+        this.resetLines();
+      },
+    });
   }
 
   onLinesChange(lines: InvoiceLineFormData[]): void {
     this.returnLines.set(lines);
-  }
-
-  onWarehouseChange(warehouseId: string): void {
-    this.selectedWarehouseId.set(warehouseId);
-    if (this.returnType() === ReturnType.AUTOMATIC && this.selectedInvoice()) {
-      this.autoFillLines(warehouseId);
-    }
   }
 
   submit(): void {
@@ -132,12 +142,12 @@ export class ReturnFormPageComponent implements OnInit {
       return;
     }
 
-    const invalidLines = lines.filter((l) => l.quantity <= 0 || !l.warehouseId);
+    const invalidLines = lines.filter((l) => l.quantity <= 0);
     if (invalidLines.length > 0) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Todas las líneas deben tener cantidad mayor a 0 y un almacén asignado.',
+        detail: 'Todas las líneas deben tener cantidad mayor a 0.',
         life: 5000,
       });
       return;
@@ -194,34 +204,15 @@ export class ReturnFormPageComponent implements OnInit {
       return;
     }
 
-    if (this.returnType() === ReturnType.AUTOMATIC) {
-      this.returnLines.set([]);
-    } else {
-      this.returnLines.set(
-        invoice.lines.map((l) => ({
-          invoiceLineId: l.id,
-          productId: l.productId,
-          productName: l.productName,
-          quantity: 0,
-          warehouseId: '',
-          unitPrice: l.unitPrice,
-        })),
-      );
-    }
-  }
-
-  private autoFillLines(warehouseId: string): void {
-    const invoice = this.selectedInvoice();
-    if (!invoice) return;
-
     this.returnLines.set(
       invoice.lines.map((l) => ({
         invoiceLineId: l.id,
         productId: l.productId,
         productName: l.productName,
-        quantity: l.quantity,
-        warehouseId,
-        unitPrice: l.unitPrice,
+        quantity: 0,
+          warehouseId: '',
+          unitPrice: l.unitPrice,
+          warehouseAllocations: [],
       })),
     );
   }

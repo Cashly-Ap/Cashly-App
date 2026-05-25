@@ -4,15 +4,25 @@
     Líneas de Devolución
   </h3>
 
+  <p-popover #allocationPopover appendTo="body">
+    <app-warehouse-stock-popover
+      [entries]="popoverAllocations()"
+      [total]="allocationTotal()"
+      confirmLabel="Guardar"
+      emptyMessage="Sin stock disponible en almacenes"
+      (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
+      (confirm)="confirmAllocations()"
+    />
+  </p-popover>
+
   <div class="overflow-x-auto">
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-surface-200 dark:border-surface-700">
           <th class="text-left py-2 font-semibold">Producto</th>
-          <th class="text-right py-2 font-semibold w-24">Cantidad</th>
-          <th class="text-left py-2 font-semibold w-40">Almacén</th>
-          <th class="text-right py-2 font-semibold w-28">Precio Unit.</th>
-          <th class="text-right py-2 font-semibold w-28">Total</th>
+          <th class="text-center py-2 font-semibold w-10">Stock</th>
+          <th class="text-right py-2 font-semibold w-24">Precio Unit.</th>
+          <th class="text-right py-2 font-semibold w-24">Total</th>
         </tr>
       </thead>
       <tbody>
@@ -20,41 +30,21 @@
           <tr class="border-b border-surface-100 dark:border-surface-800">
             <td class="py-2">
               <div class="font-medium">{{ line.productName }}</div>
-              <div class="text-xs text-surface-400">Máx: {{ getMaxQuantity(idx) }}</div>
+              <div class="text-xs text-surface-400">Máx: {{ getMaxQuantity(idx) }} | Cant: {{ line.quantity || 0 }}</div>
             </td>
-            <td class="text-right py-2">
-              <p-inputNumber
-                [(ngModel)]="line.quantity"
-                (ngModelChange)="onQuantityChange(idx, $event)"
-                [min]="0"
-                [max]="getMaxQuantity(idx)"
-                [showButtons]="true"
-                buttonLayout="horizontal"
-                decrementButtonClass="p-button-text"
-                incrementButtonClass="p-button-text"
-                inputId="qty-{{ idx }}"
-                styleClass="w-20"
-              />
-            </td>
-            <td class="py-2">
-              <p-select
-                [ngModel]="line.warehouseId"
-                (onChange)="onWarehouseChange(idx, $event.value)"
-                [options]="warehouseOptions()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Seleccionar..."
-                styleClass="w-full"
-              />
+            <td class="text-center py-2">
+              <button type="button" (click)="openAllocationPopover($event, idx)" class="w-9 h-9 rounded-lg bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 flex items-center justify-center transition-colors mx-auto" pTooltip="Distribuir por almacenes">
+                <i class="pi pi-warehouse text-sm text-surface-600 dark:text-surface-300"></i>
+              </button>
             </td>
             <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-            <td class="text-right py-2 font-medium">{{ (line.quantity * line.unitPrice) | number: '1.2-2' }}</td>
+            <td class="text-right py-2 font-medium">{{ (line.unitPrice) | number: '1.2-2' }}</td>
           </tr>
         }
       </tbody>
       <tfoot>
         <tr class="border-t border-surface-200 dark:border-surface-700">
-          <td colspan="4" class="text-right py-3 font-semibold">Total:</td>
+          <td colspan="3" class="text-right py-3 font-semibold">Total:</td>
           <td class="text-right py-3 font-bold">{{ totalAmount() | number: '1.2-2' }}</td>
         </tr>
       </tfoot>
