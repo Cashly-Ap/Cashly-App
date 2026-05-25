@@ -181,7 +181,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
 
     if (this.paymentFormMode() === 'single' && this.paymentInvoice()) {
       this.service
-        .payInvoice(this.paymentInvoice()!.invoiceId, event.request, event.voucherFile)
+        .payInvoice(this.paymentInvoice()!.invoiceId, event.request)
         .pipe(
           finalize(() => this.paymentSubmitting.set(false)),
           takeUntil(this.destroy$),
@@ -196,7 +196,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
         });
     } else if (this.paymentFormMode() === 'all') {
       this.service
-        .payAllCustomerDebt(customer.customerId, event.request, event.voucherFile)
+        .payAllCustomerDebt(customer.customerId, event.request)
         .pipe(
           finalize(() => this.paymentSubmitting.set(false)),
           takeUntil(this.destroy$),
@@ -210,7 +210,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
         });
     } else if (this.paymentFormMode() === 'partial') {
       this.service
-        .payPartialDebt(customer.customerId, event.request as PayPartialDebtRequest, event.voucherFile)
+        .payPartialDebt(customer.customerId, event.request as PayPartialDebtRequest)
         .pipe(
           finalize(() => this.paymentSubmitting.set(false)),
           takeUntil(this.destroy$),

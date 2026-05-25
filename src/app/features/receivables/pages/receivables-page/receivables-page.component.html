@@ -204,18 +204,6 @@
               </p-table>
             </div>
 
-            <div class="flex justify-center py-4">
-              <p-paginator
-                [first]="first()"
-                [rows]="rows()"
-                [totalRecords]="service.totalCustomers()"
-                [rowsPerPageOptions]="[10, 20, 50]"
-                [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
-                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
-              />
-            </div>
-
             <!-- Mobile Cards -->
             <div class="md:hidden space-y-4">
               @if (service.loading()) {
@@ -259,21 +247,23 @@
                     />
                   </div>
                 }
-                <div class="pt-2">
-                  <p-paginator
-                    [first]="first()"
-                    [rows]="rows()"
-                    [totalRecords]="service.totalCustomers()"
-                    [rowsPerPageOptions]="[10, 20, 50]"
-                    [showCurrentPageReport]="true"
-                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-                    (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
-                  />
-                </div>
               }
             </div>
           }
         </div>
+      </div>
+
+
+      <div class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-md border border-surface-200 dark:border-surface-700 mt-4 px-6 py-3">
+        <p-paginator
+          [first]="first()"
+          [rows]="rows()"
+          [totalRecords]="service.totalCustomers()"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+          (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+        />
       </div>
 
     </div>
