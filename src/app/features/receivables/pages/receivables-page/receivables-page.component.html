@@ -166,7 +166,7 @@
                     </td>
                     <td class="text-center">
                       <span class="inline-flex items-center justify-center px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-sm font-semibold rounded-full">
-                        {{ customer.invoicesWithDebt }}
+                        {{ customer.pendingInvoicesCount }}
                       </span>
                     </td>
                     <td class="text-center">
@@ -245,7 +245,7 @@
                       <div class="flex items-center justify-between">
                         <span class="text-xs text-surface-600 dark:text-surface-400">Facturas Pendientes</span>
                         <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs font-semibold rounded-full">
-                          {{ customer.invoicesWithDebt }}
+                          {{ customer.pendingInvoicesCount }}
                         </span>
                       </div>
                     </div>
