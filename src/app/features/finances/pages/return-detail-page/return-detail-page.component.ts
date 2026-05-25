@@ -9,10 +9,16 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import {
+  DetailsCardComponent,
+  DetailsCardHeaderComponent,
+  DetailsInfoGridComponent,
+  DetailsInfoFieldComponent,
+} from '@shared/components/details';
 import { FinanceApplicationService } from '@features/finances/services/application/finance-application.service';
 import { ReturnDetail } from '@features/finances/models/interfaces';
 import { ReturnType, getReturnTypeLabel } from '@features/finances/models/enums/return-type.enum';
-import { ReturnStatus } from '@features/finances/models/enums/return-status.enum';
 
 @Component({
   selector: 'app-return-detail-page',
@@ -27,6 +33,11 @@ import { ReturnStatus } from '@features/finances/models/enums/return-status.enum
     ContentCardComponent,
     LoadingSpinnerComponent,
     TextBadgeComponent,
+    DetailsCardComponent,
+    DetailsCardHeaderComponent,
+    DetailsInfoGridComponent,
+    DetailsInfoFieldComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './return-detail-page.component.html',
   providers: [ConfirmationService],
@@ -117,7 +128,7 @@ export class ReturnDetailPageComponent implements OnInit {
     return variants[status] ?? 'label';
   }
 
-  canCancel(status: string): boolean {
-    return status !== ReturnStatus.CANCELLED && status !== ReturnStatus.COMPLETED;
+  canCancel(_status: string): boolean {
+    return false;
   }
 }
