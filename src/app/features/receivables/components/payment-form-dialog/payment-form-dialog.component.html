@@ -117,7 +117,7 @@
         <p-select
           id="paymentMethod"
           formControlName="paymentMethodId"
-          [options]="paymentMethods"
+          [options]="paymentMethods()"
           optionLabel="label"
           optionValue="value"
           placeholder="Seleccione un método de pago"

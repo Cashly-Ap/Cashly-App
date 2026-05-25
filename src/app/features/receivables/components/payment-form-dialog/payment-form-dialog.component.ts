@@ -98,26 +98,31 @@ export class PaymentFormDialogComponent implements OnInit {
   constructor() {
     effect(() => {
       const isVisible = this.visible();
-      const currentMaxAmount = this.maxAmount();
-      const currentMode = this.mode();
-
       if (isVisible && this.form) {
+        const currentMode = this.mode();
         const inv = this.invoice();
         const defaultAmount =
           currentMode === 'single'
-            ? (inv?.displayStatus === 'PARTIAL_PENDING_APPROVAL' ? inv.realBalance || 0 : inv?.balance || 0)
+            ? (inv?.balance || 0)
             : currentMode === 'partial'
               ? this.totalDebt()
               : 0;
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        this.form.patchValue({
+        const patch: Record<string, unknown> = {
           amount: defaultAmount,
           paymentDate: today,
-          paymentMethodId: 'TRANSFER',
           referenceNumber: '',
-        });
+        };
+        const pm = this.form.get('paymentMethodId')?.value;
+        if (!pm) {
+          const methods = this.paymentMethods();
+          if (methods.length > 0) {
+            patch['paymentMethodId'] = methods[0].value;
+          }
+        }
+        this.form.patchValue(patch);
         this.loading.set(false);
       }
     });
@@ -142,7 +147,11 @@ export class PaymentFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(catchError(() => of({ content: [] }))).subscribe(res => {
-      this.paymentMethods.set(res.content.map(pm => ({ label: pm.name, value: pm.code })));
+      const methods = res.content.map(pm => ({ label: pm.name, value: pm.code }));
+      this.paymentMethods.set(methods);
+      if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
+        this.form.patchValue({ paymentMethodId: methods[0].value });
+      }
     });
   }
 
@@ -169,7 +178,7 @@ export class PaymentFormDialogComponent implements OnInit {
 
   protected onCancel(): void {
     if (!this.loading()) {
-      this.form.reset();
+      this.form.patchValue({ referenceNumber: '' });
       this.loading.set(false);
       this.submitting.emit(false);
       this.close.emit();

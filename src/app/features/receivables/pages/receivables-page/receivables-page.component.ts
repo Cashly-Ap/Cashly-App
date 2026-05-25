@@ -7,7 +7,7 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -39,7 +39,6 @@ import { PayPartialDebtRequest } from '../../models/interfaces';
     CommonModule,
     FormsModule,
     CurrencyPipe,
-    DatePipe,
     MainLayoutComponent,
     TableModule,
     ButtonModule,
