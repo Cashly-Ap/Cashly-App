@@ -119,14 +119,14 @@ describe('CreditNoteListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/credit-notes/new']);
     });
 
     it('should navigate to /finanzas/notas-credito/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockNotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-credito', 'cn-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/credit-notes', 'cn-001']);
     });
   });
 

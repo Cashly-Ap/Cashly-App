@@ -110,13 +110,13 @@ describe('PaymentMethodListPageComponent', () => {
   it('should navigate to /finances/nuevo on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/finances', 'nuevo']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/payment-methods/new']);
   });
 
   it('should navigate to /finances/{id}/editar on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockPaymentMethod);
-    expect(navigateSpy).toHaveBeenCalledWith(['/finances', mockPaymentMethod.id, 'editar']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/payment-methods', mockPaymentMethod.id, 'edit']);
   });
 
   it('should call service.togglePaymentMethod on onToggleActive', () => {

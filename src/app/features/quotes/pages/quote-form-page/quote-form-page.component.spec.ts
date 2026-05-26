@@ -238,7 +238,7 @@ describe('QuoteFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/budgets']);
     });
 
     it('should show success message on create success', () => {
@@ -351,7 +351,7 @@ describe('QuoteFormPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.cancel();
-      expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/budgets']);
     });
   });
 

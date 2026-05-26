@@ -143,11 +143,11 @@ export class ReturnListPageComponent implements OnInit {
   }
 
   onView(ret: ReturnList): void {
-    this.router.navigate(['/finances/devoluciones', ret.id]);
+    this.router.navigate(['/returns', ret.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/finances/devoluciones/nuevo']);
+    this.router.navigate(['/returns/new']);
   }
 
   getReturnTypeLabel(type: string): string {

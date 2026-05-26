@@ -154,15 +154,15 @@ export class CreditNoteListPageComponent implements OnInit {
   }
 
   onView(note: CreditNoteList): void {
-    this.router.navigate(['/finances/notas-credito', note.id]);
+    this.router.navigate(['/credit-notes', note.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/finances/notas-credito/nuevo']);
+    this.router.navigate(['/credit-notes/new']);
   }
 
   onApply(note: CreditNoteList): void {
-    this.router.navigate(['/finances/notas-credito', note.id, 'aplicar']);
+    this.router.navigate(['/credit-notes', note.id, 'apply']);
   }
 
   onCancel(note: CreditNoteList): void {

@@ -70,7 +70,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
       entityDisplayName: 'Método de Pago',
       entityArticle: 'del',
       module: 'finances',
-      routeBase: '/finances',
+      routeBase: '/payment-methods',
     };
   }
 
@@ -106,7 +106,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
           detail: 'Error al cargar el método de pago.',
           life: 5000,
         });
-        this.router.navigate(['/finances']);
+        this.router.navigate(['/payment-methods']);
       },
     });
   }
@@ -130,7 +130,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
               detail: 'Método de pago actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finances']);
+            this.router.navigate(['/payment-methods']);
           },
           error: () => {
             this.messageService.add({
@@ -152,7 +152,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
               detail: 'Método de pago creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finances']);
+            this.router.navigate(['/payment-methods']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

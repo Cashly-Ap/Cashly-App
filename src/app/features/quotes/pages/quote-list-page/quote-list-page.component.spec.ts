@@ -161,21 +161,21 @@ describe('QuoteListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/budgets/new']);
     });
 
     it('should navigate to /presupuestos/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockQuotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos', 'q-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/budgets', 'q-001']);
     });
 
     it('should navigate to /presupuestos/{id}/editar on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockQuotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos', 'q-001', 'editar']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/budgets', 'q-001', 'edit']);
     });
   });
 

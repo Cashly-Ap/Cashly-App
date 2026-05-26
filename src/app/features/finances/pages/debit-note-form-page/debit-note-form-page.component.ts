@@ -182,7 +182,7 @@ export class DebitNoteFormPageComponent implements OnInit {
             detail: 'Nota de débito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finances/notas-debito']);
+          this.router.navigate(['/debit-notes']);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -197,6 +197,6 @@ export class DebitNoteFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finances/notas-debito']);
+    this.router.navigate(['/debit-notes']);
   }
 }

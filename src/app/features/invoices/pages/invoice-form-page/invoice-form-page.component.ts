@@ -274,7 +274,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(INVOICE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/facturas', invoice.id]);
+            this.router.navigate(['/invoices', invoice.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -304,7 +304,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(INVOICE_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/facturas', invoice.id]);
+            this.router.navigate(['/invoices', invoice.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -315,6 +315,6 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/facturas']);
+    this.router.navigate(['/invoices']);
   }
 }

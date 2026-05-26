@@ -86,7 +86,7 @@ export class CreditNoteDetailPageComponent implements OnInit {
               detail: 'Nota de crédito eliminada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finances/notas-credito']);
+            this.router.navigate(['/credit-notes']);
           },
           error: (err) => {
             this.messageService.add({
@@ -137,7 +137,7 @@ export class CreditNoteDetailPageComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/finances/notas-credito']);
+    this.router.navigate(['/credit-notes']);
   }
 
   getStatusLabel(status: string): string {

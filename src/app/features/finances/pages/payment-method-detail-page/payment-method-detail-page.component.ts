@@ -59,20 +59,20 @@ export class PaymentMethodDetailPageComponent implements OnInit {
             detail: 'Error al cargar el método de pago. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/finances']);
+          this.router.navigate(['/payment-methods']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/finances']);
+    this.router.navigate(['/payment-methods']);
   }
 
   onEdit(): void {
     const id = this.paymentMethod()?.id;
     if (id) {
-      this.router.navigate(['/finances', id, 'editar']);
+      this.router.navigate(['/payment-methods', id, 'edit']);
     }
   }
 
@@ -96,7 +96,7 @@ export class PaymentMethodDetailPageComponent implements OnInit {
               detail: 'Método de pago eliminado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finances']);
+            this.router.navigate(['/payment-methods']);
           },
           error: (err) => {
             this.messageService.add({

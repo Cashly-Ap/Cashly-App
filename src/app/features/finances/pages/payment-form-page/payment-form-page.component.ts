@@ -149,7 +149,7 @@ export class PaymentFormPageComponent implements OnInit {
             detail: 'Pago creado exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finances', 'pagos', payment.id]);
+          this.router.navigate(['/payments', payment.id]);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -164,6 +164,6 @@ export class PaymentFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finances', 'pagos']);
+    this.router.navigate(['/payments']);
   }
 }

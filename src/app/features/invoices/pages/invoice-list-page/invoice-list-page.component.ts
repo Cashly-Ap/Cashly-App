@@ -185,15 +185,15 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   onView(invoice: InvoiceList): void {
-    this.router.navigate(['/facturas', invoice.id]);
+    this.router.navigate(['/invoices', invoice.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/facturas', 'nuevo']);
+    this.router.navigate(['/invoices/new']);
   }
 
   onEdit(invoice: InvoiceList): void {
-    this.router.navigate(['/facturas', invoice.id, 'editar']);
+    this.router.navigate(['/invoices', invoice.id, 'edit']);
   }
 
   onDelete(invoice: InvoiceList): void {

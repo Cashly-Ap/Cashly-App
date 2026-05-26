@@ -79,14 +79,14 @@ describe('DebitNoteListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/debit-notes/new']);
     });
 
     it('should navigate to /finanzas/notas-debito/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockNotes[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito', 'dn-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/debit-notes', 'dn-001']);
     });
   });
 

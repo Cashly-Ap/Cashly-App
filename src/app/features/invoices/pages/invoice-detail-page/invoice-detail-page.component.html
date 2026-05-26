@@ -41,6 +41,23 @@
                   (onClick)="onDuplicate()"
                   styleClass="w-full sm:w-auto"
                 />
+                @if (currentInvoice.status !== InvoiceStatus.DRAFT && currentInvoice.status !== InvoiceStatus.CANCELLED) {
+                  <p-button
+                    label="Devolución"
+                    icon="pi pi-undo"
+                    severity="contrast"
+                    (onClick)="onReturnDialogOpen()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                  <p-button
+                    label="Nota"
+                    icon="pi pi-file-edit"
+                    severity="contrast"
+                    [outlined]="true"
+                    (onClick)="onNoteDialogOpen()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
               </div>
             </app-details-card-header>
 
@@ -163,4 +180,18 @@
     (confirmed)="onDuplicateDialogConfirmed($event)"
     (cancelled)="onDuplicateDialogDismissed()"
   />
+  @if (invoice(); as inv) {
+    <app-return-form-dialog
+      [visible]="returnDialogVisible()"
+      [invoice]="inv"
+      (confirmed)="onReturnDialogConfirmed()"
+      (cancelled)="onReturnDialogDismissed()"
+    />
+    <app-note-form-dialog
+      [visible]="noteDialogVisible()"
+      [invoice]="inv"
+      (confirmed)="onNoteDialogConfirmed()"
+      (cancelled)="onNoteDialogDismissed()"
+    />
+  }
 </app-main-layout>

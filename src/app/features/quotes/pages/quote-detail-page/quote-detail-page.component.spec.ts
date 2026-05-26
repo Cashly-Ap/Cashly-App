@@ -99,14 +99,14 @@ describe('QuoteDetailPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/budgets']);
   });
 
   it('should navigate to edit route', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/presupuestos', 'q-001', 'editar']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/budgets', 'q-001', 'edit']);
   });
 
   it('should get status label', () => {

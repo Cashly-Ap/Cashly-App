@@ -108,7 +108,7 @@ describe('DebitNoteFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/debit-notes']);
     });
 
     it('should not submit when form is invalid', () => {
@@ -123,7 +123,7 @@ describe('DebitNoteFormPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.cancel();
-      expect(navigateSpy).toHaveBeenCalledWith(['/finances/notas-debito']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/debit-notes']);
     });
   });
 });

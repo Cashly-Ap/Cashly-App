@@ -86,7 +86,7 @@ export class DebitNoteDetailPageComponent implements OnInit {
               detail: 'Nota de débito eliminada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finances/notas-debito']);
+            this.router.navigate(['/debit-notes']);
           },
           error: (err) => {
             this.messageService.add({
@@ -137,7 +137,7 @@ export class DebitNoteDetailPageComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/finances/notas-debito']);
+    this.router.navigate(['/debit-notes']);
   }
 
   getStatusLabel(status: string): string {

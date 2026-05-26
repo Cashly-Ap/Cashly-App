@@ -166,21 +166,21 @@ describe('OrderListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/pedidos', 'nuevo']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/orders/new']);
     });
 
     it('should navigate to /pedidos/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockOrders[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/pedidos', 'ord-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001']);
     });
 
     it('should navigate to /pedidos/{id}/editar on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockOrders[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/pedidos', 'ord-001', 'editar']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001', 'edit']);
     });
   });
 

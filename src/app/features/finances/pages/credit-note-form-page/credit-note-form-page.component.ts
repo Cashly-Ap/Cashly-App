@@ -182,7 +182,7 @@ export class CreditNoteFormPageComponent implements OnInit {
             detail: 'Nota de crédito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finances/notas-credito']);
+          this.router.navigate(['/credit-notes']);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -197,6 +197,6 @@ export class CreditNoteFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finances/notas-credito']);
+    this.router.navigate(['/credit-notes']);
   }
 }

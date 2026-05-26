@@ -176,15 +176,15 @@ export class PaymentListPageComponent implements OnInit {
   }
 
   onView(payment: PaymentList): void {
-    this.router.navigate(['/finances', 'pagos', payment.id]);
+    this.router.navigate(['/payments', payment.id]);
   }
 
   onCreate(): void {
-    this.router.navigate(['/finances', 'pagos', 'nuevo']);
+    this.router.navigate(['/payments/new']);
   }
 
   onApply(payment: PaymentList): void {
-    this.router.navigate(['/finances', 'pagos', payment.id, 'aplicar']);
+    this.router.navigate(['/payments', payment.id, 'apply']);
   }
 
   onCancelPayment(payment: PaymentList): void {

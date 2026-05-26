@@ -19,6 +19,8 @@ import {
   TextBadgeComponent,
 } from '@shared/components/ui';
 import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
+import { ReturnFormDialogComponent } from '@features/finances/components/return-form-dialog/return-form-dialog.component';
+import { NoteFormDialogComponent } from '@features/finances/components/note-form-dialog/note-form-dialog.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
@@ -43,6 +45,8 @@ import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enum
     PageHeaderComponent,
     TextBadgeComponent,
     DuplicateInvoiceDialogComponent,
+    ReturnFormDialogComponent,
+    NoteFormDialogComponent,
   ],
   templateUrl: './invoice-detail-page.component.html',
 })
@@ -58,6 +62,8 @@ export class InvoiceDetailPageComponent implements OnInit {
   readonly InvoiceStatus = InvoiceStatus;
 
   readonly duplicateDialogVisible = signal(false);
+  readonly returnDialogVisible = signal(false);
+  readonly noteDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -70,19 +76,19 @@ export class InvoiceDetailPageComponent implements OnInit {
             detail: 'Error al cargar la factura. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/facturas']);
+          this.router.navigate(['/invoices']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/facturas']);
+    this.router.navigate(['/invoices']);
   }
 
   onEdit(): void {
     const id = this.invoice()?.id;
-    if (id) this.router.navigate(['/facturas', id, 'editar']);
+    if (id) this.router.navigate(['/invoices', id, 'edit']);
   }
 
   onDuplicate(): void {
@@ -99,7 +105,7 @@ export class InvoiceDetailPageComponent implements OnInit {
           detail: 'Factura duplicada exitosamente',
           life: 3000,
         });
-        this.router.navigate(['/facturas']);
+        this.router.navigate(['/invoices']);
       },
       error: () => {
         this.messageService.add({
@@ -114,6 +120,30 @@ export class InvoiceDetailPageComponent implements OnInit {
 
   onDuplicateDialogDismissed(): void {
     this.duplicateDialogVisible.set(false);
+  }
+
+  onReturnDialogOpen(): void {
+    this.returnDialogVisible.set(true);
+  }
+
+  onReturnDialogConfirmed(): void {
+    this.returnDialogVisible.set(false);
+  }
+
+  onReturnDialogDismissed(): void {
+    this.returnDialogVisible.set(false);
+  }
+
+  onNoteDialogOpen(): void {
+    this.noteDialogVisible.set(true);
+  }
+
+  onNoteDialogConfirmed(): void {
+    this.noteDialogVisible.set(false);
+  }
+
+  onNoteDialogDismissed(): void {
+    this.noteDialogVisible.set(false);
   }
 
   getStatusLabel(status: InvoiceStatus): string {

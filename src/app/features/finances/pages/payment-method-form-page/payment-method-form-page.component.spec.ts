@@ -121,7 +121,7 @@ describe('PaymentMethodFormPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('Transferencia');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/finances']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/payment-methods']);
   });
 
   it('should show success message on create success', () => {

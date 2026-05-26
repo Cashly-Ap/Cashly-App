@@ -65,19 +65,19 @@ export class OrderDetailPageComponent implements OnInit {
             detail: 'Error al cargar el pedido. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/pedidos']);
+          this.router.navigate(['/orders']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/pedidos']);
+    this.router.navigate(['/orders']);
   }
 
   onEdit(): void {
     const id = this.order()?.id;
-    if (id) this.router.navigate(['/pedidos', id, 'editar']);
+    if (id) this.router.navigate(['/orders', id, 'edit']);
   }
 
   getStatusLabel(status: OrderStatus): string {

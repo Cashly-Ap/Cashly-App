@@ -223,7 +223,7 @@ export class ReturnFormPageComponent implements OnInit {
             detail: 'Devolución creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finances/devoluciones', ret.id]);
+          this.router.navigate(['/returns', ret.id]);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -238,7 +238,7 @@ export class ReturnFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finances/devoluciones']);
+    this.router.navigate(['/returns']);
   }
 
   private resetLines(): void {

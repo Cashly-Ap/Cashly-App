@@ -128,15 +128,15 @@ export class PaymentMethodListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/finances', 'nuevo']);
+    this.router.navigate(['/payment-methods/new']);
   }
 
   onDetail(paymentMethod: PaymentMethodList): void {
-    this.router.navigate(['/finances', paymentMethod.id]);
+    this.router.navigate(['/payment-methods', paymentMethod.id]);
   }
 
   onEdit(paymentMethod: PaymentMethodList): void {
-    this.router.navigate(['/finances', paymentMethod.id, 'editar']);
+    this.router.navigate(['/payment-methods', paymentMethod.id, 'edit']);
   }
 
   onDelete(paymentMethod: PaymentMethodList): void {

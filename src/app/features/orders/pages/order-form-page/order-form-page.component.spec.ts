@@ -236,7 +236,7 @@ describe('OrderFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/pedidos', 'ord-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001']);
     });
 
     it('should show success message on create success', () => {
@@ -365,7 +365,7 @@ describe('OrderFormPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.cancel();
-      expect(navigateSpy).toHaveBeenCalledWith(['/pedidos']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/orders']);
     });
   });
 

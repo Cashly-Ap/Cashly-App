@@ -65,19 +65,19 @@ export class QuoteDetailPageComponent implements OnInit {
             detail: 'Error al cargar el presupuesto. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/presupuestos']);
+          this.router.navigate(['/budgets']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/presupuestos']);
+    this.router.navigate(['/budgets']);
   }
 
   onEdit(): void {
     const id = this.quote()?.id;
-    if (id) this.router.navigate(['/presupuestos', id, 'editar']);
+    if (id) this.router.navigate(['/budgets', id, 'edit']);
   }
 
   getStatusLabel(status: QuoteStatus): string {

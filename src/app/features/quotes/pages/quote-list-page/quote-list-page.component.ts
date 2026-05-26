@@ -142,15 +142,15 @@ export class QuoteListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/presupuestos', 'nuevo']);
+    this.router.navigate(['/budgets/new']);
   }
 
   onView(quote: QuoteList): void {
-    this.router.navigate(['/presupuestos', quote.id]);
+    this.router.navigate(['/budgets', quote.id]);
   }
 
   onEdit(quote: QuoteList): void {
-    this.router.navigate(['/presupuestos', quote.id, 'editar']);
+    this.router.navigate(['/budgets', quote.id, 'edit']);
   }
 
   onDelete(quote: QuoteList): void {

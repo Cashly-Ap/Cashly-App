@@ -97,14 +97,14 @@ describe('OrderDetailPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/pedidos']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/orders']);
   });
 
   it('should navigate to edit route', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/pedidos', 'ord-001', 'editar']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001', 'edit']);
   });
 
   it('should get status label', () => {
