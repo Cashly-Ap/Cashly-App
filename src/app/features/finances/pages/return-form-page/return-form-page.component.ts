@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
@@ -29,6 +29,7 @@ import { ReturnType, RETURN_TYPE_LABELS } from '@features/finances/models/enums/
 import { ReturnLinesTableComponent } from '@features/finances/components/return-lines-table/return-lines-table.component';
 import { InvoicePickerDialogComponent } from '@features/finances/components/invoice-picker-dialog/invoice-picker-dialog.component';
 import { InvoiceDetails, InvoiceList } from '@features/invoices/models/interfaces';
+import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
 
 interface InvoiceLineFormData {
   invoiceLineId: string;
@@ -47,6 +48,7 @@ interface InvoiceLineFormData {
     CommonModule,
     DecimalPipe,
     ReactiveFormsModule,
+    FormsModule,
     ButtonModule,
     TextareaModule,
     SelectModule,
@@ -71,6 +73,7 @@ export class ReturnFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly financeService = inject(FinanceApplicationService);
   private readonly invoiceApi = inject(InvoiceApiService);
+  private readonly warehouseApi = inject(WarehouseApiService);
   private readonly messageService = inject(MessageService);
 
   readonly isSubmitting = signal<boolean>(false);
@@ -84,7 +87,14 @@ export class ReturnFormPageComponent implements OnInit {
     value: t,
   }));
 
+  readonly warehouses = signal<{ id: string; name: string }[]>([]);
+  readonly autoWarehouseId = signal<string>('');
+
   readonly returnLines = signal<InvoiceLineFormData[]>([]);
+
+  readonly warehouseOptions = computed(() =>
+    this.warehouses().map((w) => ({ label: w.name, value: w.id })),
+  );
 
   readonly totalAmount = computed(() =>
     this.returnLines().reduce((sum, l) => sum + l.quantity * l.unitPrice, 0),
@@ -98,15 +108,19 @@ export class ReturnFormPageComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.warehouseApi.getAllSimple().subscribe({
+      next: (whs) => this.warehouses.set(whs.map((w) => ({ id: w.id, name: w.name }))),
+    });
+
     this.form.controls.returnType.valueChanges.subscribe((type) => {
       if (type) {
         this.returnType.set(type as ReturnType);
+        this.autoWarehouseId.set('');
         if (this.selectedInvoice()) {
           this.resetLines();
         }
       }
     });
-
   }
 
   onInvoiceSelected(invoice: InvoiceList): void {
@@ -125,6 +139,26 @@ export class ReturnFormPageComponent implements OnInit {
     this.returnLines.set(lines);
   }
 
+  onAutoWarehouseSelected(warehouseId: string): void {
+    this.autoWarehouseId.set(warehouseId);
+    if (!warehouseId) return;
+
+    const invoice = this.selectedInvoice();
+    if (!invoice) return;
+
+    this.returnLines.set(
+      invoice.lines.map((l) => ({
+        invoiceLineId: l.id,
+        productId: l.productId,
+        productName: l.productName,
+        quantity: l.quantity,
+        warehouseId,
+        unitPrice: l.unitPrice,
+        warehouseAllocations: [{ warehouseId, allocated: l.quantity }],
+      })),
+    );
+  }
+
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -137,6 +171,16 @@ export class ReturnFormPageComponent implements OnInit {
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Debes agregar al menos una línea a la devolución.',
+        life: 4000,
+      });
+      return;
+    }
+
+    if (this.returnType() === ReturnType.AUTOMATIC && !this.autoWarehouseId()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes seleccionar un almacén para la devolución automática.',
         life: 4000,
       });
       return;

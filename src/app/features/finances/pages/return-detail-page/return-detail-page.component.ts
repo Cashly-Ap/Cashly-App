@@ -4,8 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
@@ -28,7 +26,6 @@ import { ReturnType, getReturnTypeLabel } from '@features/finances/models/enums/
     MainLayoutComponent,
     ButtonModule,
     TableModule,
-    ConfirmDialogModule,
     LoadingSpinnerComponent,
     TextBadgeComponent,
     DetailsCardComponent,
@@ -38,14 +35,11 @@ import { ReturnType, getReturnTypeLabel } from '@features/finances/models/enums/
     PageHeaderComponent,
   ],
   templateUrl: './return-detail-page.component.html',
-  providers: [ConfirmationService],
 })
 export class ReturnDetailPageComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly financeService = inject(FinanceApplicationService);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
 
   readonly returnData = signal<ReturnDetail | null>(null);
   readonly loading = this.financeService.loading;
@@ -59,41 +53,6 @@ export class ReturnDetailPageComponent implements OnInit {
         next: (ret) => this.returnData.set(ret),
       });
     }
-  }
-
-  onCancel(): void {
-    const ret = this.returnData();
-    if (!ret) return;
-
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea cancelar la devolución #${ret.returnNumber}?`,
-      header: 'Confirmar Cancelación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, cancelar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.financeService.cancelReturn(ret.id).subscribe({
-          next: (updated) => {
-            this.returnData.set(updated);
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Devolución cancelada exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al cancelar la devolución',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
   }
 
   goBack(): void {
@@ -126,7 +85,4 @@ export class ReturnDetailPageComponent implements OnInit {
     return variants[status] ?? 'label';
   }
 
-  canCancel(_status: string): boolean {
-    return false;
-  }
 }

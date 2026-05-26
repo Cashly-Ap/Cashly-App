@@ -487,34 +487,6 @@ export class FinanceApplicationService {
     );
   }
 
-  cancelReturn(id: string): Observable<ReturnDetail> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.returnApi.cancel(id).pipe(
-      tap({
-        next: (ret) => {
-          const listItem: ReturnList = {
-            id: ret.id,
-            returnNumber: ret.returnNumber,
-            invoiceNumber: ret.invoiceNumber,
-            customerName: ret.customerName,
-            returnType: ret.returnType,
-            reason: ret.reason,
-            status: ret.status,
-            createdAt: ret.createdAt,
-          };
-          this.returns.update((current) => current.map((r) => (r.id === id ? listItem : r)));
-          if (this.selectedReturn()?.id === id) {
-            this.selectedReturn.set(ret);
-          }
-        },
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
   loadDebitNoteById(id: string): Observable<DebitNoteDetail> {
     this.loading.set(true);
     this.error.set(null);

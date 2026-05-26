@@ -183,9 +183,6 @@
                       <td>
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(ret)" pTooltip="Ver" />
-                          @if (canCancel(ret.status)) {
-                            <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(ret)" pTooltip="Cancelar" />
-                          }
                         </div>
                       </td>
                     </tr>
@@ -243,9 +240,6 @@
                   </div>
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(ret)" />
-                    @if (canCancel(ret.status)) {
-                      <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(ret)" pTooltip="Cancelar" />
-                    }
                   </div>
                 </div>
               }
@@ -266,5 +260,4 @@
       }
     </div>
   </div>
-  <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
 </app-main-layout>

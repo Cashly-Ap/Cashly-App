@@ -12,9 +12,8 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
-import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
+import { SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -24,7 +23,6 @@ import { FinanceApplicationService } from '@features/finances/services/applicati
 import { ReturnFilters } from '@features/finances/services/api/return-api.service';
 import { ReturnList } from '@features/finances/models/interfaces';
 import { ReturnType, RETURN_TYPE_LABELS, getReturnTypeLabel } from '@features/finances/models/enums/return-type.enum';
-import { ReturnStatus } from '@features/finances/models/enums/return-status.enum';
 
 @Component({
   selector: 'app-return-list-page',
@@ -43,7 +41,6 @@ import { ReturnStatus } from '@features/finances/models/enums/return-status.enum
     InputIconModule,
     TooltipModule,
     PopoverModule,
-    ConfirmDialogModule,
     DatePickerModule,
     ContentCardComponent,
     LoadingSpinnerComponent,
@@ -52,13 +49,10 @@ import { ReturnStatus } from '@features/finances/models/enums/return-status.enum
     TextBadgeComponent,
   ],
   templateUrl: './return-list-page.component.html',
-  providers: [ConfirmationService],
 })
 export class ReturnListPageComponent implements OnInit {
   private readonly financeService = inject(FinanceApplicationService);
   private readonly router = inject(Router);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly messageService = inject(MessageService);
 
   readonly returns = this.financeService.returns;
   readonly loading = this.financeService.loading;
@@ -156,38 +150,6 @@ export class ReturnListPageComponent implements OnInit {
     this.router.navigate(['/finances/devoluciones/nuevo']);
   }
 
-  onCancel(ret: ReturnList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea cancelar la devolución #${ret.returnNumber}?`,
-      header: 'Confirmar Cancelación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, cancelar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.financeService.cancelReturn(ret.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Devolución cancelada exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al cancelar la devolución',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
-  }
-
   getReturnTypeLabel(type: string): string {
     return getReturnTypeLabel(type as ReturnType);
   }
@@ -203,10 +165,6 @@ export class ReturnListPageComponent implements OnInit {
       CANCELLED: 'danger',
     };
     return variants[status] ?? 'label';
-  }
-
-  canCancel(status: string): boolean {
-    return status !== ReturnStatus.CANCELLED && status !== ReturnStatus.COMPLETED;
   }
 
   private loadWithFilters(): void {

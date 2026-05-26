@@ -146,30 +146,5 @@ describe('ReturnApiService', () => {
     });
   });
 
-  describe('cancel', () => {
-    it('should cancel a return', () => {
-      service.cancel('1').subscribe();
 
-      const req = httpMock.expectOne('/api/finances/returns/1/cancel');
-      expect(req.request.method).toBe('PUT');
-      req.flush({
-        id: '1',
-        returnNumber: 'RET-001',
-        invoiceId: 'inv-1',
-        invoiceNumber: 'INV-001',
-        customerId: 'cust-1',
-        customerName: 'Test Customer',
-        customerRif: 'J-12345678-9',
-        returnType: ReturnType.MANUAL,
-        reason: 'Test',
-        status: 'CANCELLED',
-        totalAmount: 50,
-        createdBy: 'user-1',
-        createdByName: 'Test User',
-        createdAt: '2024-01-01',
-        updatedAt: '2024-01-01',
-        lines: [],
-      });
-    });
-  });
 });

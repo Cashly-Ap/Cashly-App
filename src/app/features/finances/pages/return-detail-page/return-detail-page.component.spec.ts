@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReturnDetailPageComponent } from './return-detail-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+
 import { of } from 'rxjs';
 import { FinanceApplicationService } from '@features/finances/services/application/finance-application.service';
 
@@ -30,15 +30,12 @@ describe('ReturnDetailPageComponent', () => {
       updatedAt: '2024-01-01',
       lines: [],
     })),
-    cancelReturn: jasmine.createSpy('cancelReturn'),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ReturnDetailPageComponent, RouterTestingModule],
       providers: [
-        ConfirmationService,
-        MessageService,
         { provide: FinanceApplicationService, useValue: mockFinanceService },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => '1' } } } },
       ],
@@ -68,9 +65,4 @@ describe('ReturnDetailPageComponent', () => {
     expect(component.getStatusLabel('CANCELLED')).toBe('Cancelada');
   });
 
-  it('should check if can cancel', () => {
-    expect(component.canCancel('PENDING')).toBe(true);
-    expect(component.canCancel('CANCELLED')).toBe(false);
-    expect(component.canCancel('COMPLETED')).toBe(false);
-  });
 });

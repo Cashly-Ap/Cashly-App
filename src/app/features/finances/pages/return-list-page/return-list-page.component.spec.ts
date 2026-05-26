@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReturnListPageComponent } from './return-list-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 
 describe('ReturnListPageComponent', () => {
   let component: ReturnListPageComponent;
@@ -10,7 +10,7 @@ describe('ReturnListPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ReturnListPageComponent, RouterTestingModule],
-      providers: [ConfirmationService, MessageService],
+      providers: [MessageService],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ReturnListPageComponent);
@@ -52,9 +52,4 @@ describe('ReturnListPageComponent', () => {
     expect(component.getReturnTypeLabel('AUTOMATIC')).toBe('Automática');
   });
 
-  it('should check if can cancel', () => {
-    expect(component.canCancel('PENDING')).toBe(true);
-    expect(component.canCancel('CANCELLED')).toBe(false);
-    expect(component.canCancel('COMPLETED')).toBe(false);
-  });
 });

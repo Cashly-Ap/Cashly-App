@@ -86,12 +86,6 @@ export class ReturnApiService {
     );
   }
 
-  cancel(id: string): Observable<ReturnDetail> {
-    return this.http.put<ReturnDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, {}).pipe(
-      map((r) => this.toDetail(r)),
-    );
-  }
-
   private toList(r: ReturnListApiResponse): ReturnList {
     return {
       id: r.id,
