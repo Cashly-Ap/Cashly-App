@@ -38,19 +38,19 @@ export const routes: Routes = [
     loadChildren: () => import('@features/warehouses/router').then((m) => m.WAREHOUSE_ROUTES),
   },
   {
-    path: 'pedidos',
+    path: 'orders',
     loadChildren: () => import('@features/orders/router').then((m) => m.ORDER_ROUTES),
   },
   {
-    path: 'cotizaciones',
+    path: 'quotes',
     loadChildren: () => import('@features/quotes/router').then((m) => m.QUOTE_ROUTES),
   },
   {
-    path: 'facturas',
+    path: 'invoices',
     loadChildren: () => import('@features/invoices/router').then((m) => m.INVOICE_ROUTES),
   },
   {
-    path: 'presupuestos',
+    path: 'budgets',
     loadChildren: () => import('@features/quotes/router').then((m) => m.QUOTE_ROUTES),
   },
   {
@@ -58,8 +58,28 @@ export const routes: Routes = [
     loadChildren: () => import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
   },
   {
-    path: 'finances',
-    loadChildren: () => import('@features/finances/router').then((m) => m.FINANCES_ROUTES),
+    path: 'payment-methods',
+    loadChildren: () => import('@features/finances/router').then((m) => m.PAYMENT_METHOD_ROUTES),
+  },
+  {
+    path: 'payments',
+    loadChildren: () => import('@features/finances/router').then((m) => m.PAYMENT_ROUTES),
+  },
+  {
+    path: 'credit-notes',
+    loadChildren: () => import('@features/finances/router').then((m) => m.CREDIT_NOTE_ROUTES),
+  },
+  {
+    path: 'debit-notes',
+    loadChildren: () => import('@features/finances/router').then((m) => m.DEBIT_NOTE_ROUTES),
+  },
+  {
+    path: 'returns',
+    loadChildren: () => import('@features/finances/router').then((m) => m.RETURN_ROUTES),
+  },
+  {
+    path: 'receivables',
+    loadChildren: () => import('@features/receivables/router').then((m) => m.RECEIVABLES_ROUTES),
   },
   {
     path: '**',
