@@ -1,0 +1,97 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (payment(); as p) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalles del Pago"
+            subtitle="Información completa del pago"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="p.paymentNumber"
+              [subtitle]="'Monto: ' + (p.amount | number:'1.2-2')"
+            >
+              <div actions class="flex gap-3 flex-wrap">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  severity="contrast"
+                  (onClick)="onEdit()"
+                  styleClass="w-full sm:w-auto"
+                />
+                <p-button
+                  label="Eliminar"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  (onClick)="onDelete()"
+                  styleClass="w-full sm:w-auto"
+                />
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Número"
+                  [value]="p.paymentNumber"
+                  type="code"
+                />
+                <app-details-info-field
+                  label="Cliente"
+                  [value]="p.customerName || '—'"
+                />
+                <app-details-info-field
+                  label="RIF"
+                  [value]="p.customerRif || '—'"
+                  type="code"
+                />
+                <app-details-info-field
+                  label="Factura"
+                  [value]="p.invoiceNumber || '—'"
+                  type="code"
+                />
+                <app-details-info-field
+                  label="Monto"
+                  [value]="(p.amount | number:'1.2-2') || ''"
+                />
+                <app-details-info-field
+                  label="Tipo"
+                  [value]="labelForType(p.paymentType) || '—'"
+                />
+                <app-details-info-field
+                  label="Referencia"
+                  [value]="p.reference || '—'"
+                />
+                <app-details-info-field
+                  label="Creado por"
+                  [value]="p.createdByName"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(p.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+                <app-details-info-field
+                  label="Última Actualización"
+                  [value]="(p.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+        </div>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" />
+</app-main-layout>
