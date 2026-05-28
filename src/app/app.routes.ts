@@ -59,23 +59,23 @@ export const routes: Routes = [
   },
   {
     path: 'payment-methods',
-    loadChildren: () => import('@features/finances/router').then((m) => m.PAYMENT_METHOD_ROUTES),
+    loadChildren: () => import('@features/payment-methods/router').then((m) => m.PAYMENT_METHOD_ROUTES),
   },
   {
     path: 'payments',
-    loadChildren: () => import('@features/finances/router').then((m) => m.PAYMENT_ROUTES),
+    loadChildren: () => import('@features/payments/router').then((m) => m.PAYMENT_ROUTES),
   },
   {
     path: 'credit-notes',
-    loadChildren: () => import('@features/finances/router').then((m) => m.CREDIT_NOTE_ROUTES),
+    loadChildren: () => import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
   },
   {
     path: 'debit-notes',
-    loadChildren: () => import('@features/finances/router').then((m) => m.DEBIT_NOTE_ROUTES),
+    loadChildren: () => import('@features/debit-notes/router').then((m) => m.DEBIT_NOTE_ROUTES),
   },
   {
     path: 'returns',
-    loadChildren: () => import('@features/finances/router').then((m) => m.RETURN_ROUTES),
+    loadChildren: () => import('@features/returns/router').then((m) => m.RETURN_ROUTES),
   },
   {
     path: 'receivables',
