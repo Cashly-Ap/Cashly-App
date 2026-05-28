@@ -297,37 +297,9 @@ export class FinanceApplicationService {
             customerName: note.customerName,
             invoiceNumber: note.invoiceNumber,
             amount: note.amount,
-            status: note.status,
-            appliedAmount: note.appliedAmount,
             createdAt: note.createdAt,
           };
           this.creditNotes.update((current) => [listItem, ...current]);
-        },
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
-  cancelCreditNote(id: string): Observable<CreditNoteDetail> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.creditNoteApi.cancel(id).pipe(
-      tap({
-        next: (note) => {
-          const listItem: CreditNoteList = {
-            id: note.id,
-            noteNumber: note.noteNumber,
-            customerId: note.customerId,
-            customerName: note.customerName,
-            invoiceNumber: note.invoiceNumber,
-            amount: note.amount,
-            status: note.status,
-            appliedAmount: note.appliedAmount,
-            createdAt: note.createdAt,
-          };
-          this.creditNotes.update((current) => current.map((n) => (n.id === id ? listItem : n)));
         },
         error: (err: Error) => this.error.set(err.message),
       }),
@@ -380,37 +352,9 @@ export class FinanceApplicationService {
             customerName: note.customerName,
             invoiceNumber: note.invoiceNumber,
             amount: note.amount,
-            status: note.status,
-            appliedAmount: note.appliedAmount,
             createdAt: note.createdAt,
           };
           this.debitNotes.update((current) => [listItem, ...current]);
-        },
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
-  cancelDebitNote(id: string): Observable<DebitNoteDetail> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.debitNoteApi.cancel(id).pipe(
-      tap({
-        next: (note) => {
-          const listItem: DebitNoteList = {
-            id: note.id,
-            noteNumber: note.noteNumber,
-            customerId: note.customerId,
-            customerName: note.customerName,
-            invoiceNumber: note.invoiceNumber,
-            amount: note.amount,
-            status: note.status,
-            appliedAmount: note.appliedAmount,
-            createdAt: note.createdAt,
-          };
-          this.debitNotes.update((current) => current.map((n) => (n.id === id ? listItem : n)));
         },
         error: (err: Error) => this.error.set(err.message),
       }),

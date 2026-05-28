@@ -21,7 +21,6 @@ describe('DebitNoteListPageComponent', () => {
       customerName: 'Test Customer',
       invoiceNumber: 'FAC-001',
       amount: 500,
-      status: 'PENDING',
       appliedAmount: 0,
       createdAt: '2025-01-01T00:00:00Z',
     },
@@ -31,7 +30,7 @@ describe('DebitNoteListPageComponent', () => {
     mockService = {
       loadDebitNotes: vi.fn().mockReturnValue(loadAllValue),
       createDebitNote: vi.fn().mockReturnValue(of({})),
-      cancelDebitNote: vi.fn().mockReturnValue(of({})),
+      deleteDebitNote: vi.fn().mockReturnValue(of({})),
       debitNotes: signal(mockNotes),
       loading: signal(false),
       error: signal(null),
@@ -100,30 +99,8 @@ describe('DebitNoteListPageComponent', () => {
 
     it('should clear filters', () => {
       fixture.detectChanges();
-      component.selectedStatus.set('PENDING');
       component.clearFilters();
-      expect(component.selectedStatus()).toBe('');
-    });
-  });
-
-  describe('status helpers', () => {
-    it('should get status label', () => {
-      fixture.detectChanges();
-      expect(component.getStatusLabel('PENDING')).toBe('Pendiente');
-    });
-
-    it('should get status variant', () => {
-      fixture.detectChanges();
-      expect(component.getStatusVariant('PENDING')).toBe('info');
-      expect(component.getStatusVariant('APPLIED')).toBe('success');
-      expect(component.getStatusVariant('CANCELLED')).toBe('danger');
-    });
-
-    it('should check canCancel', () => {
-      fixture.detectChanges();
-      expect(component.canCancel('DRAFT')).toBe(false);
-      expect(component.canCancel('APPLIED')).toBe(true);
-      expect(component.canCancel('CANCELLED')).toBe(false);
+      expect(component.filterDateFrom()).toBeNull();
     });
   });
 });

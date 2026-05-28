@@ -22,7 +22,6 @@ describe('CreditNoteListPageComponent', () => {
       customerName: 'Test Customer',
       invoiceNumber: 'FAC-001',
       amount: 500,
-      status: 'PENDING',
       appliedAmount: 0,
       createdAt: '2025-01-01T00:00:00Z',
     },
@@ -33,7 +32,6 @@ describe('CreditNoteListPageComponent', () => {
       customerName: 'Customer B',
       invoiceNumber: 'FAC-002',
       amount: 1000,
-      status: 'APPLIED',
       appliedAmount: 1000,
       createdAt: '2025-01-02T00:00:00Z',
     },
@@ -43,7 +41,7 @@ describe('CreditNoteListPageComponent', () => {
     mockService = {
       loadCreditNotes: vi.fn().mockReturnValue(loadAllValue),
       createCreditNote: vi.fn().mockReturnValue(of({})),
-      cancelCreditNote: vi.fn().mockReturnValue(of({})),
+      deleteCreditNote: vi.fn().mockReturnValue(of({})),
       creditNotes: signal(mockNotes),
       loading: signal(false),
       error: signal(null),
@@ -108,9 +106,8 @@ describe('CreditNoteListPageComponent', () => {
     });
 
     it('should compute active filter count', () => {
-      component.selectedStatus.set('PENDING');
       component.filterDateFrom.set(new Date('2025-01-01'));
-      expect(component.activeFilterCount()).toBe(2);
+      expect(component.activeFilterCount()).toBe(1);
     });
   });
 
@@ -154,46 +151,8 @@ describe('CreditNoteListPageComponent', () => {
 
     it('should clear filters', () => {
       fixture.detectChanges();
-      component.selectedStatus.set('PENDING');
       component.clearFilters();
-      expect(component.selectedStatus()).toBe('');
-    });
-
-    it('should update status filter', () => {
-      fixture.detectChanges();
-      component.onStatusFilterChange('PENDING');
-      expect(component.selectedStatus()).toBe('PENDING');
-    });
-  });
-
-  describe('cancel', () => {
-    it('should call cancel service on confirm', () => {
-      fixture.detectChanges();
-      component.onCancel(mockNotes[0]);
-      expect(mockService.cancelCreditNote).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('status helpers', () => {
-    it('should get status label', () => {
-      fixture.detectChanges();
-      expect(component.getStatusLabel('PENDING')).toBe('Pendiente');
-      expect(component.getStatusLabel('APPLIED')).toBe('Aplicada');
-      expect(component.getStatusLabel('CANCELLED')).toBe('Cancelada');
-    });
-
-    it('should get status variant', () => {
-      fixture.detectChanges();
-      expect(component.getStatusVariant('PENDING')).toBe('info');
-      expect(component.getStatusVariant('APPLIED')).toBe('success');
-      expect(component.getStatusVariant('CANCELLED')).toBe('danger');
-    });
-
-    it('should check canCancel', () => {
-      fixture.detectChanges();
-      expect(component.canCancel('DRAFT')).toBe(false);
-      expect(component.canCancel('APPLIED')).toBe(true);
-      expect(component.canCancel('CANCELLED')).toBe(false);
+      expect(component.filterDateFrom()).toBeNull();
     });
   });
 });

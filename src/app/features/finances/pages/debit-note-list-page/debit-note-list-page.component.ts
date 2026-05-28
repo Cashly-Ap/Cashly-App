@@ -6,7 +6,6 @@ import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -19,17 +18,9 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { FinanceApplicationService } from '@features/finances/services/application/finance-application.service';
 import { DebitNoteFilters } from '@features/finances/services/api/debit-note-api.service';
 import { DebitNoteList } from '@features/finances/models/interfaces';
-
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Borrador',
-  PENDING: 'Pendiente',
-  APPLIED: 'Aplicada',
-  CANCELLED: 'Cancelada',
-};
 
 @Component({
   selector: 'app-debit-note-list-page',
@@ -42,7 +33,6 @@ const STATUS_LABELS: Record<string, string> = {
     ButtonModule,
     TableModule,
     InputTextModule,
-    SelectModule,
     PaginatorModule,
     IconFieldModule,
     InputIconModule,
@@ -54,7 +44,6 @@ const STATUS_LABELS: Record<string, string> = {
     LoadingSpinnerComponent,
     EmptyStateComponent,
     ListContainerComponent,
-    TextBadgeComponent,
   ],
   templateUrl: './debit-note-list-page.component.html',
   providers: [ConfirmationService],
@@ -72,21 +61,14 @@ export class DebitNoteListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly selectedStatus = signal('');
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
-  readonly statusOptions = [
-    { label: 'Todos los estados', value: '' },
-    ...Object.entries(STATUS_LABELS).map(([key, label]) => ({ label, value: key })),
-  ];
-
   readonly activeFilterCount = computed(() => {
     let count = 0;
-    if (this.selectedStatus()) count++;
     if (this.filterDateFrom()) count++;
     if (this.filterDateTo()) count++;
     return count;
@@ -106,14 +88,6 @@ export class DebitNoteListPageComponent implements OnInit {
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
-    this.first.set(0);
-    this.loadWithFilters();
-  }
-
-  onStatusFilterChange(value: string | null): void {
-    const normalized = value ?? '';
-    if (normalized === this.selectedStatus()) return;
-    this.selectedStatus.set(normalized);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -146,7 +120,6 @@ export class DebitNoteListPageComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.selectedStatus.set('');
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
     this.first.set(0);
@@ -159,59 +132,6 @@ export class DebitNoteListPageComponent implements OnInit {
 
   onCreate(): void {
     this.router.navigate(['/debit-notes/new']);
-  }
-
-  onCancel(note: DebitNoteList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea cancelar la nota de débito #${note.noteNumber}?`,
-      header: 'Confirmar Cancelación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, cancelar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.financeService.cancelDebitNote(note.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Nota de débito cancelada exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al cancelar la nota de débito',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
-  }
-
-  getStatusLabel(status: string): string {
-    return STATUS_LABELS[status] ?? status;
-  }
-
-  getStatusVariant(status: string): 'success' | 'danger' | 'info' | 'label' {
-    const variants: Record<string, 'success' | 'danger' | 'info' | 'label'> = {
-      PENDING: 'info',
-      APPLIED: 'success',
-      CANCELLED: 'danger',
-    };
-    return variants[status] ?? 'label';
-  }
-
-  canCancel(status: string): boolean {
-    return status === 'APPLIED';
-  }
-
-  canDelete(status: string): boolean {
-    return status === 'DRAFT';
   }
 
   onDelete(note: DebitNoteList): void {
@@ -249,7 +169,6 @@ export class DebitNoteListPageComponent implements OnInit {
   private loadWithFilters(): void {
     const filters: DebitNoteFilters = {};
     if (this.searchTerm()) filters.search = this.searchTerm();
-    if (this.selectedStatus()) filters.status = this.selectedStatus();
     if (this.filterDateFrom()) filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];
     filters.orderBy = this.orderBy();

@@ -5,8 +5,6 @@ export interface DebitNoteList {
   customerName: string;
   invoiceNumber: string;
   amount: number;
-  status: string;
-  appliedAmount: number;
   createdAt: string;
 }
 
@@ -19,9 +17,6 @@ export interface DebitNoteDetail {
   invoiceId: string;
   invoiceNumber: string;
   amount: number;
-  appliedAmount: number;
-  remainingAmount: number;
-  status: string;
   reason: string;
   createdBy: string;
   createdByName: string;

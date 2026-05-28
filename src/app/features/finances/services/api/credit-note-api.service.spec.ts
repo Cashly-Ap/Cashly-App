@@ -16,7 +16,6 @@ describe('CreditNoteApiService', () => {
       customerName: 'Test Customer',
       invoiceNumber: 'FAC-001',
       amount: 500,
-      status: 'PENDING',
       appliedAmount: 0,
       createdAt: '2025-01-01T00:00:00Z',
     },
@@ -33,7 +32,6 @@ describe('CreditNoteApiService', () => {
     amount: 500,
     appliedAmount: 0,
     remainingAmount: 500,
-    status: 'PENDING',
     reason: 'Test reason',
     createdBy: 'user-001',
     createdByName: 'John Doe',
@@ -87,16 +85,6 @@ describe('CreditNoteApiService', () => {
       req.flush([]);
     });
 
-    it('should GET with status filter', () => {
-      const filters: CreditNoteFilters = { status: 'PENDING' };
-
-      service.getAll(filters).subscribe();
-
-      const req = httpMock.expectOne((r) => r.url === '/api/finances/credit-notes' && r.method === 'GET');
-      expect(req.request.params.get('status')).toBe('PENDING');
-      req.flush([]);
-    });
-
     it('should GET with date filters', () => {
       const filters: CreditNoteFilters = { dateFrom: '2025-01-01', dateTo: '2025-01-31' };
 
@@ -138,31 +126,6 @@ describe('CreditNoteApiService', () => {
       const req = httpMock.expectOne('/api/finances/credit-notes');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(createData);
-      req.flush(mockDetails);
-    });
-  });
-
-  describe('apply()', () => {
-    it('should PUT /api/finances/credit-notes/:id/apply', () => {
-      service.apply('cn-001', 'inv-002', 200).subscribe((result) => {
-        expect(result.id).toBe('cn-001');
-      });
-
-      const req = httpMock.expectOne('/api/finances/credit-notes/cn-001/apply');
-      expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({ invoiceId: 'inv-002', amount: 200 });
-      req.flush(mockDetails);
-    });
-  });
-
-  describe('cancel()', () => {
-    it('should PUT /api/finances/credit-notes/:id/cancel', () => {
-      service.cancel('cn-001').subscribe((result) => {
-        expect(result.id).toBe('cn-001');
-      });
-
-      const req = httpMock.expectOne('/api/finances/credit-notes/cn-001/cancel');
-      expect(req.request.method).toBe('PUT');
       req.flush(mockDetails);
     });
   });

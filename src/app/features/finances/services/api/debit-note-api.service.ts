@@ -6,7 +6,6 @@ import { DebitNoteList, DebitNoteDetail, DebitNoteCreate } from '../../models/in
 export interface DebitNoteFilters {
   search?: string;
   customerId?: string;
-  status?: string;
   dateFrom?: string;
   dateTo?: string;
   orderBy?: string;
@@ -20,8 +19,6 @@ interface DebitNoteListApiResponse {
   customerName: string;
   invoiceNumber: string;
   amount: number;
-  status: string;
-  appliedAmount: number;
   createdAt: string;
 }
 
@@ -34,9 +31,6 @@ interface DebitNoteDetailApiResponse {
   invoiceId: string;
   invoiceNumber: string;
   amount: number;
-  appliedAmount: number;
-  remainingAmount: number;
-  status: string;
   reason: string;
   createdBy: string;
   createdByName: string;
@@ -53,7 +47,6 @@ export class DebitNoteApiService {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
-    if (filters?.status) params = params.set('status', filters.status);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
@@ -75,18 +68,6 @@ export class DebitNoteApiService {
     );
   }
 
-  apply(id: string, invoiceId: string, amount: number): Observable<DebitNoteDetail> {
-    return this.http.put<DebitNoteDetailApiResponse>(`${this.baseUrl}/${id}/apply`, { invoiceId, amount }).pipe(
-      map((r) => this.toDetail(r)),
-    );
-  }
-
-  cancel(id: string): Observable<DebitNoteDetail> {
-    return this.http.put<DebitNoteDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, {}).pipe(
-      map((r) => this.toDetail(r)),
-    );
-  }
-
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
@@ -99,8 +80,6 @@ export class DebitNoteApiService {
       customerName: r.customerName,
       invoiceNumber: r.invoiceNumber,
       amount: r.amount,
-      status: r.status,
-      appliedAmount: r.appliedAmount,
       createdAt: r.createdAt,
     };
   }
@@ -115,9 +94,6 @@ export class DebitNoteApiService {
       invoiceId: r.invoiceId,
       invoiceNumber: r.invoiceNumber,
       amount: r.amount,
-      appliedAmount: r.appliedAmount,
-      remainingAmount: r.remainingAmount,
-      status: r.status,
       reason: r.reason,
       createdBy: r.createdBy,
       createdByName: r.createdByName,

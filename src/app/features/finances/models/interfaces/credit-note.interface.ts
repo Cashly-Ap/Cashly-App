@@ -5,8 +5,6 @@ export interface CreditNoteList {
   customerName: string;
   invoiceNumber: string;
   amount: number;
-  status: string;
-  appliedAmount: number;
   createdAt: string;
 }
 
@@ -19,9 +17,6 @@ export interface CreditNoteDetail {
   invoiceId: string;
   invoiceNumber: string;
   amount: number;
-  appliedAmount: number;
-  remainingAmount: number;
-  status: string;
   reason: string;
   createdBy: string;
   createdByName: string;

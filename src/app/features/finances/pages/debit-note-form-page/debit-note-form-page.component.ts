@@ -12,8 +12,7 @@ import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angu
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
-import { DialogModule } from 'primeng/dialog';
+import { InvoicePickerDialogComponent } from '@features/finances/components/invoice-picker-dialog/invoice-picker-dialog.component';
 import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -23,9 +22,7 @@ import { FormActionsComponent } from '@core/forms/components/headers/form-action
 import { FinanceApplicationService } from '@features/finances/services/application/finance-application.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
-import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceList } from '@features/invoices/models/interfaces';
-import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
 @Component({
   selector: 'app-debit-note-form-page',
@@ -36,8 +33,6 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
     ButtonModule,
     TextareaModule,
     InputNumberModule,
-    InputTextModule,
-    DialogModule,
     CommonModule,
     MainLayoutComponent,
     FormContainerComponent,
@@ -45,7 +40,7 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
     FormCardComponent,
     FormActionsComponent,
     CustomerPickerDialogComponent,
-    TextBadgeComponent,
+    InvoicePickerDialogComponent,
   ],
   templateUrl: './debit-note-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,20 +50,14 @@ export class DebitNoteFormPageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly financeService = inject(FinanceApplicationService);
   private readonly messageService = inject(MessageService);
-  private readonly invoiceApi = inject(InvoiceApiService);
 
   readonly isSubmitting = signal<boolean>(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
 
-  readonly invoicePickerVisible = signal(false);
-  readonly searchedInvoices = signal<InvoiceList[]>([]);
+  readonly showInvoicePicker = signal(false);
   readonly selectedInvoice = signal<InvoiceList | null>(null);
-  readonly searchingInvoices = signal(false);
-  readonly invoiceSearchTerm = signal('');
-
-  private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
   readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
 
@@ -115,32 +104,6 @@ export class DebitNoteFormPageComponent implements OnInit {
     this.pickerVisible.set(false);
   }
 
-  openInvoicePicker(): void {
-    this.invoicePickerVisible.set(true);
-    this.searchInvoices({});
-  }
-
-  onInvoiceSearch(): void {
-    if (this.searchTimeout) clearTimeout(this.searchTimeout);
-    this.searchTimeout = setTimeout(() => {
-      this.searchInvoices({ search: this.invoiceSearchTerm() });
-    }, 300);
-  }
-
-  searchInvoices(filters: { search?: string; customerId?: string; dateFrom?: string; dateTo?: string }): void {
-    this.searchingInvoices.set(true);
-    this.invoiceApi.getAll({
-      search: filters.search,
-      customerId: filters.customerId,
-      dateFrom: filters.dateFrom,
-      dateTo: filters.dateTo,
-    }).subscribe({
-      next: (invoices) => this.searchedInvoices.set(invoices),
-      error: () => this.searchedInvoices.set([]),
-      complete: () => this.searchingInvoices.set(false),
-    });
-  }
-
   onInvoiceSelected(invoice: InvoiceList): void {
     this.selectedInvoice.set(invoice);
     this.form.patchValue({ invoiceId: invoice.id });
@@ -149,11 +112,11 @@ export class DebitNoteFormPageComponent implements OnInit {
       this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: '' });
       this.form.patchValue({ customerId: invoice.customerId });
     }
-    this.invoicePickerVisible.set(false);
+    this.showInvoicePicker.set(false);
   }
 
-  onInvoicePickerCancelled(): void {
-    this.invoicePickerVisible.set(false);
+  onInvoiceCancelled(): void {
+    this.showInvoicePicker.set(false);
   }
 
   submit(): void {

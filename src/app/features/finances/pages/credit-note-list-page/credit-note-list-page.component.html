@@ -67,18 +67,6 @@
                       }
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Estado</label>
-                      <p-select
-                        [options]="statusOptions"
-                        [ngModel]="selectedStatus()"
-                        (onChange)="onStatusFilterChange($event.value)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Todos los estados"
-                        styleClass="w-full"
-                      />
-                    </div>
-                    <div class="flex flex-col gap-1">
                       <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
                       <p-datepicker
                         [ngModel]="filterDateFrom()"
@@ -149,12 +137,6 @@
                       <th pSortableColumn="amount" class="w-32 text-right">
                         <div class="font-semibold">Monto <p-sortIcon field="amount" /></div>
                       </th>
-                      <th pSortableColumn="status" class="w-28">
-                        <div class="font-semibold">Estado <p-sortIcon field="status" /></div>
-                      </th>
-                      <th pSortableColumn="appliedAmount" class="w-32 text-right">
-                        <div class="font-semibold">Aplicado <p-sortIcon field="appliedAmount" /></div>
-                      </th>
                       <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
                         <div class="font-semibold">Fecha <p-sortIcon field="createdAt" /></div>
                       </th>
@@ -177,24 +159,13 @@
                       <td class="text-right">
                         <span class="text-sm font-medium">{{ note.amount | number: '1.2-2' }}</span>
                       </td>
-                      <td>
-                        <app-text-badge [label]="getStatusLabel(note.status)" [variant]="getStatusVariant(note.status)" />
-                      </td>
-                      <td class="text-right">
-                        <span class="text-sm font-medium">{{ note.appliedAmount | number: '1.2-2' }}</span>
-                      </td>
                       <td class="hidden lg:table-cell">
                         <div class="text-sm text-surface-500">{{ note.createdAt | date: 'dd/MM/yyyy' }}</div>
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(note)" pTooltip="Ver" />
-                          @if (canCancel(note.status)) {
-                            <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(note)" pTooltip="Cancelar" />
-                          }
-                          @if (canDelete(note.status)) {
-                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
-                          }
+                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
                         </div>
                       </td>
                     </tr>
@@ -244,20 +215,12 @@
                       </h3>
                       <p class="text-sm text-surface-500 mb-1">Factura #{{ note.invoiceNumber }}</p>
                       <p class="text-sm font-medium mb-2">{{ note.amount | number: '1.2-2' }}</p>
-                      <div class="flex flex-nowrap gap-2">
-                        <app-text-badge [label]="getStatusLabel(note.status)" [variant]="getStatusVariant(note.status)" />
-                      </div>
                     </div>
                     <div class="text-xs text-surface-400 ml-2">{{ note.createdAt | date: 'dd/MM/yyyy' }}</div>
                   </div>
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(note)" />
-                    @if (canCancel(note.status)) {
-                      <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancel(note)" pTooltip="Cancelar" />
-                    }
-                    @if (canDelete(note.status)) {
-                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
-                    }
+                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(note)" pTooltip="Eliminar" />
                   </div>
                 </div>
               }

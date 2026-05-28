@@ -16,7 +16,6 @@ describe('DebitNoteApiService', () => {
       customerName: 'Test Customer',
       invoiceNumber: 'FAC-001',
       amount: 500,
-      status: 'PENDING',
       appliedAmount: 0,
       createdAt: '2025-01-01T00:00:00Z',
     },
@@ -33,7 +32,6 @@ describe('DebitNoteApiService', () => {
     amount: 500,
     appliedAmount: 0,
     remainingAmount: 500,
-    status: 'PENDING',
     reason: 'Test reason',
     createdBy: 'user-001',
     createdByName: 'John Doe',
@@ -86,16 +84,6 @@ describe('DebitNoteApiService', () => {
       expect(req.request.params.get('customerId')).toBe('c1');
       req.flush([]);
     });
-
-    it('should GET with status filter', () => {
-      const filters: DebitNoteFilters = { status: 'PENDING' };
-
-      service.getAll(filters).subscribe();
-
-      const req = httpMock.expectOne((r) => r.url === '/api/finances/debit-notes' && r.method === 'GET');
-      expect(req.request.params.get('status')).toBe('PENDING');
-      req.flush([]);
-    });
   });
 
   describe('getById()', () => {
@@ -129,29 +117,5 @@ describe('DebitNoteApiService', () => {
       req.flush(mockDetails);
     });
   });
-
-  describe('apply()', () => {
-    it('should PUT /api/finances/debit-notes/:id/apply', () => {
-      service.apply('dn-001', 'inv-002', 200).subscribe((result) => {
-        expect(result.id).toBe('dn-001');
-      });
-
-      const req = httpMock.expectOne('/api/finances/debit-notes/dn-001/apply');
-      expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual({ invoiceId: 'inv-002', amount: 200 });
-      req.flush(mockDetails);
-    });
-  });
-
-  describe('cancel()', () => {
-    it('should PUT /api/finances/debit-notes/:id/cancel', () => {
-      service.cancel('dn-001').subscribe((result) => {
-        expect(result.id).toBe('dn-001');
-      });
-
-      const req = httpMock.expectOne('/api/finances/debit-notes/dn-001/cancel');
-      expect(req.request.method).toBe('PUT');
-      req.flush(mockDetails);
-    });
-  });
 });
+
