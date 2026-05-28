@@ -290,8 +290,12 @@ export class ReturnFormDialogComponent implements OnInit {
           invoiceLineId: l.invoiceLineId,
           productId: l.productId,
           quantity: l.quantity,
-          warehouseId: l.warehouseId,
           unitPrice: l.unitPrice,
+          subtotal: l.quantity * l.unitPrice,
+          allocations: l.warehouseAllocations.map((a) => ({
+            warehouseId: a.warehouseId,
+            allocated: a.allocated,
+          })),
         })),
       })
       .subscribe({

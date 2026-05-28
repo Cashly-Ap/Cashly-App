@@ -17,6 +17,12 @@ export interface ReturnFilters {
   orderDir?: 'asc' | 'desc';
 }
 
+interface AllocationApiResponse {
+  warehouseId: string;
+  warehouseName?: string;
+  allocated: number;
+}
+
 interface ReturnLineApiResponse {
   id: string;
   invoiceLineId: string;
@@ -26,8 +32,7 @@ interface ReturnLineApiResponse {
   quantity: number;
   unitPrice: number;
   subtotal: number;
-  warehouseId: string;
-  warehouseName: string;
+  allocations: AllocationApiResponse[];
 }
 
 interface ReturnListApiResponse {
@@ -104,7 +109,7 @@ export class ReturnApiService {
       customerName: r.customerName ?? '',
       invoiceNumber: r.invoiceNumber ?? '',
       returnType: r.returnType,
-      totalAmount: r.totalAmount ?? 0,
+      totalAmount: r.total ?? r.totalAmount ?? 0,
       reason: r.reason,
       createdByName: r.createdByName,
       createdAt: r.createdAt,
@@ -135,8 +140,11 @@ export class ReturnApiService {
         productCode: l.productCode ?? '',
         quantity: l.quantity,
         unitPrice: l.unitPrice,
-        warehouseId: l.warehouseId,
-        warehouseName: l.warehouseName ?? '',
+        allocations: (l.allocations ?? []).map((a) => ({
+          warehouseId: a.warehouseId,
+          warehouseName: a.warehouseName ?? '',
+          allocated: a.allocated,
+        })),
       })),
     };
   }

@@ -50,6 +50,7 @@ export interface ReturnCreateLine {
   productId: string;
   quantity: number;
   unitPrice: number;
+  subtotal: number;
   allocations: { warehouseId: string; allocated: number }[];
 }
 

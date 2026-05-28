@@ -81,7 +81,6 @@ export class ReturnApplicationService {
                 ...line,
                 productName: line.productName || product?.name || '',
                 productCode: line.productCode || product?.code || '',
-                warehouseName: line.warehouseName || 'Por definir',
               };
             });
           }),

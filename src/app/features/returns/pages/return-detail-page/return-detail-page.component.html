@@ -63,10 +63,6 @@
                   [value]="(ret.totalAmount | number:'1.2-2') || ''"
                 />
                 <app-details-info-field
-                  label="Motivo"
-                  [value]="ret.reason"
-                />
-                <app-details-info-field
                   label="Creado por"
                   [value]="ret.createdByName"
                 />
@@ -82,7 +78,20 @@
             </div>
           </app-details-card>
 
-          <!-- Lines Section -->
+          @if (ret.reason) {
+            <app-details-card>
+              <app-details-card-header
+                title="Motivo de la Devolución"
+                subtitle="Razón registrada para esta devolución"
+              />
+              <div class="p-4 sm:p-6">
+                <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+                  <p class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap">{{ ret.reason }}</p>
+                </div>
+              </div>
+            </app-details-card>
+          }
+
           @if (ret.lines && ret.lines.length > 0) {
             <app-details-card>
               <app-details-card-header

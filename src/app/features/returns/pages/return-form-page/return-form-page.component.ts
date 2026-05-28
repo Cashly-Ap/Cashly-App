@@ -12,6 +12,7 @@ import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angu
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -50,6 +51,7 @@ interface ReturnLineFormData {
     ButtonModule,
     TextareaModule,
     SelectModule,
+    TableModule,
     MainLayoutComponent,
     FormContainerComponent,
     FormHeaderComponent,
@@ -255,6 +257,7 @@ export class ReturnFormPageComponent implements OnInit {
         productId: l.productId,
         quantity: l.quantity,
         unitPrice: l.unitPrice,
+        subtotal: l.quantity * l.unitPrice,
         allocations: l.warehouseAllocations.map((a) => ({
           warehouseId: a.warehouseId,
           allocated: a.allocated,
@@ -296,12 +299,14 @@ export class ReturnFormPageComponent implements OnInit {
       return;
     }
 
+    const isAuto = this.returnType() === ReturnType.AUTOMATIC;
+
     this.returnLines.set(
       invoice.lines.map((l) => ({
         invoiceLineId: l.id,
         productId: l.productId,
         productName: l.productName,
-        quantity: 0,
+        quantity: isAuto ? l.quantity : 0,
         warehouseId: '',
         unitPrice: l.unitPrice,
         warehouseAllocations: [],

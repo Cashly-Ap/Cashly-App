@@ -14,7 +14,7 @@
 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <!-- Customer -->
-            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
               <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                 Cliente <span class="text-red-500">*</span>
               </label>
@@ -52,8 +52,30 @@
               </div>
             </div>
 
+            <!-- Reason -->
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Motivo <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                pTextarea
+                formControlName="reason"
+                rows="3"
+                class="w-full"
+                placeholder="Motivo de la devolución..."
+              ></textarea>
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    El motivo es requerido
+                  </small>
+                }
+              </div>
+            </div>
+
             <!-- Invoice -->
-            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
               <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                 Factura Asociada <span class="text-red-500">*</span>
               </label>
@@ -91,8 +113,7 @@
               </div>
             </div>
 
-            <!-- Return Type -->
-            <div class="col-span-1 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
               <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
                 Tipo de Devolución <span class="text-red-500">*</span>
               </label>
@@ -108,9 +129,9 @@
 
             <!-- Auto Warehouse (only for AUTOMATIC) -->
             @if (returnType() === ReturnType.AUTOMATIC) {
-              <div class="col-span-1 md:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+              <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
                 <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-                  Almacén (Asignación Automática)
+                  Almacén de destino <span class="text-red-500">*</span>
                 </label>
                 <p-select
                   [options]="warehouseOptions()"
@@ -129,8 +150,42 @@
             }
           </div>
 
-          <!-- Return Lines Table -->
-          @if (selectedInvoice() && returnLines().length > 0) {
+          <!-- Lines for AUTOMATIC: simple read-only table -->
+          @if (returnType() === ReturnType.AUTOMATIC && selectedInvoice() && returnLines().length > 0) {
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
+                Líneas de la Factura
+              </h4>
+              <div class="overflow-x-auto rounded-lg border border-surface-200 dark:border-surface-700">
+                <p-table [value]="returnLines()" styleClass="p-datatable-striped">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="w-auto">Producto</th>
+                      <th class="w-28 text-right">Cantidad</th>
+                      <th class="w-28 text-right">Precio Unit.</th>
+                      <th class="w-28 text-right">Subtotal</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-line>
+                    <tr>
+                      <td class="font-medium">{{ line.productName }}</td>
+                      <td class="text-right">{{ line.quantity }}</td>
+                      <td class="text-right">{{ line.unitPrice | number:'1.2-2' }}</td>
+                      <td class="text-right font-medium">{{ line.quantity * line.unitPrice | number:'1.2-2' }}</td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <div class="flex justify-end mt-3 px-2">
+                <span class="text-base font-semibold text-surface-800 dark:text-surface-200">
+                  Total: {{ totalAmount() | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- Lines for MANUAL: use return-lines-table with allocation popover -->
+          @if (returnType() === ReturnType.MANUAL && selectedInvoice() && returnLines().length > 0) {
             <div class="mt-6">
               <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
                 Líneas de la Factura — Selecciona cantidades a devolver
@@ -147,28 +202,6 @@
               </div>
             </div>
           }
-
-          <!-- Reason -->
-          <div class="mt-6 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Motivo <span class="text-red-500">*</span>
-            </label>
-            <textarea
-              pTextarea
-              formControlName="reason"
-              rows="3"
-              class="w-full"
-              placeholder="Motivo de la devolución..."
-            ></textarea>
-            <div class="min-h-[20px] mt-1.5">
-              @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
-                <small class="flex items-center gap-1 text-red-500 text-xs">
-                  <i class="pi pi-exclamation-circle text-xs"></i>
-                  El motivo es requerido
-                </small>
-              }
-            </div>
-          </div>
         </div>
 
         <app-form-actions
