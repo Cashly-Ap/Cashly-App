@@ -8,6 +8,7 @@ import { InvoiceDetailPageComponent } from './invoice-detail-page.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
+import { NoteInfo } from '@features/invoices/models/interfaces/invoice-details.interface';
 
 describe('InvoiceDetailPageComponent', () => {
   let component: InvoiceDetailPageComponent;
@@ -30,6 +31,10 @@ describe('InvoiceDetailPageComponent', () => {
     paymentType: PaymentType.CASH,
     notes: 'Test notes',
     subtotal: 500,
+    creditApplied: 0,
+    debitApplied: 0,
+    total: 500,
+    notesList: [],
     cancelledAt: null,
     cancelledReason: null,
     createdAt: '2025-01-01T00:00:00Z',
@@ -102,6 +107,12 @@ describe('InvoiceDetailPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onDuplicateDialogConfirmed('inv-001');
     expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+  });
+
+  it('should refresh invoice on note dialog confirmed', () => {
+    fixture.detectChanges();
+    component.onNoteDialogConfirmed();
+    expect(mockService.loadById).toHaveBeenCalledWith('inv-001');
   });
 
   it('should show error on duplicate failure', () => {

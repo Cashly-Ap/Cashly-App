@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -58,6 +58,13 @@ export class InvoiceDetailPageComponent implements OnInit {
 
   readonly invoice = this.invoiceService.currentInvoice;
   readonly loading = this.invoiceService.loading;
+
+  readonly creditNotes = computed(() =>
+    this.invoice()?.notesList?.filter(n => n.type === 'CREDIT') ?? []
+  );
+  readonly debitNotes = computed(() =>
+    this.invoice()?.notesList?.filter(n => n.type === 'DEBIT') ?? []
+  );
 
   readonly InvoiceStatus = InvoiceStatus;
 
@@ -140,6 +147,10 @@ export class InvoiceDetailPageComponent implements OnInit {
 
   onNoteDialogConfirmed(): void {
     this.noteDialogVisible.set(false);
+    const id = this.invoice()?.id;
+    if (id) {
+      this.invoiceService.loadById(id).subscribe();
+    }
   }
 
   onNoteDialogDismissed(): void {

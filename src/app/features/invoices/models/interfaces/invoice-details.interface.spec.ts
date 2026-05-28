@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceDetails, InvoiceLineDetail } from './invoice-details.interface';
+import { InvoiceDetails, InvoiceLineDetail, NoteInfo } from './invoice-details.interface';
 import { InvoiceStatus } from '../enums/invoice-status.enum';
 import { PaymentType } from '../enums/payment-type.enum';
 
@@ -56,6 +56,36 @@ describe('InvoiceLineDetail interface', () => {
   });
 });
 
+describe('NoteInfo interface', () => {
+  it('should have all required properties', () => {
+    const note: NoteInfo = {
+      id: 'note-001',
+      type: 'CREDIT',
+      amount: 200,
+      reason: 'Damaged goods',
+      applicationDate: '2026-05-28T10:00:00Z',
+    };
+
+    expect(note.id).toBe('note-001');
+    expect(note.type).toBe('CREDIT');
+    expect(note.amount).toBe(200);
+    expect(note.reason).toBe('Damaged goods');
+  });
+
+  it('should accept DEBIT type', () => {
+    const note: NoteInfo = {
+      id: 'note-002',
+      type: 'DEBIT',
+      amount: 150,
+      reason: 'Extra shipping',
+      applicationDate: '2026-05-28T11:00:00Z',
+    };
+
+    expect(note.type).toBe('DEBIT');
+    expect(note.amount).toBe(150);
+  });
+});
+
 describe('InvoiceDetails interface', () => {
   it('should have all required properties', () => {
     const invoice: InvoiceDetails = {
@@ -72,6 +102,10 @@ describe('InvoiceDetails interface', () => {
       paymentType: PaymentType.CASH,
       notes: 'Test notes',
       subtotal: 500,
+      creditApplied: 0,
+      debitApplied: 0,
+      total: 500,
+      notesList: [],
       cancelledAt: null,
       cancelledReason: null,
       createdAt: '2025-01-01T00:00:00Z',
@@ -83,6 +117,45 @@ describe('InvoiceDetails interface', () => {
     expect(invoice.customerRif).toBe('J-12345678-9');
     expect(invoice.createdByName).toBe('John Doe');
     expect(invoice.lines).toEqual([]);
+    expect(invoice.creditApplied).toBe(0);
+    expect(invoice.debitApplied).toBe(0);
+    expect(invoice.total).toBe(500);
+    expect(invoice.notesList).toEqual([]);
+  });
+
+  it('should accept note data with computed total', () => {
+    const invoice: InvoiceDetails = {
+      id: 'inv-003',
+      invoiceNumber: 'FAC-003',
+      customerId: 'c3',
+      customerName: 'Customer C',
+      customerRif: 'J-11111111-1',
+      createdBy: 'user-003',
+      createdByName: 'Alice',
+      orderId: null,
+      orderNumber: null,
+      status: InvoiceStatus.PENDING_PAYMENT,
+      paymentType: PaymentType.CREDIT,
+      notes: null,
+      subtotal: 1000,
+      creditApplied: 200,
+      debitApplied: 50,
+      total: 850,
+      notesList: [
+        { id: 'n1', type: 'CREDIT', amount: 200, reason: 'Discount', applicationDate: '2026-05-28T10:00:00Z' },
+        { id: 'n2', type: 'DEBIT', amount: 50, reason: 'Charge', applicationDate: '2026-05-28T11:00:00Z' },
+      ],
+      cancelledAt: null,
+      cancelledReason: null,
+      createdAt: '2026-05-28T00:00:00Z',
+      updatedAt: '2026-05-28T00:00:00Z',
+      lines: [],
+    };
+
+    expect(invoice.creditApplied).toBe(200);
+    expect(invoice.debitApplied).toBe(50);
+    expect(invoice.total).toBe(850);
+    expect(invoice.notesList).toHaveLength(2);
   });
 
   it('should accept cancelled invoice fields', () => {
@@ -100,6 +173,10 @@ describe('InvoiceDetails interface', () => {
       paymentType: PaymentType.CREDIT,
       notes: null,
       subtotal: 0,
+      creditApplied: 0,
+      debitApplied: 0,
+      total: 0,
+      notesList: [],
       cancelledAt: '2025-01-15T10:00:00Z',
       cancelledReason: 'Customer request',
       createdAt: '2025-01-01T00:00:00Z',

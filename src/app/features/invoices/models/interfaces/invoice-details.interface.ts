@@ -27,6 +27,14 @@ export interface InvoiceLineDetail {
   }[];
 }
 
+export interface NoteInfo {
+  id: string;
+  type: 'CREDIT' | 'DEBIT';
+  amount: number;
+  reason: string;
+  applicationDate: string;
+}
+
 export interface InvoiceDetails {
   id: string;
   invoiceNumber: string;
@@ -41,6 +49,10 @@ export interface InvoiceDetails {
   paymentType: PaymentType;
   notes: string | null;
   subtotal: number;
+  creditApplied: number;
+  debitApplied: number;
+  total: number;
+  notesList: NoteInfo[];
   cancelledAt: string | null;
   cancelledReason: string | null;
   createdAt: string;

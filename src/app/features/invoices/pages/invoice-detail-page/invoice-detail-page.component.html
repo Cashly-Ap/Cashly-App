@@ -89,6 +89,11 @@
                 />
                 <app-details-info-field
                   label="Total"
+                  [value]="(currentInvoice.total | number: '1.2-2') || ''"
+                  type="currency"
+                />
+                <app-details-info-field
+                  label="Subtotal"
                   [value]="(currentInvoice.subtotal | number: '1.2-2') || ''"
                   type="currency"
                 />
@@ -157,9 +162,10 @@
                 </ng-template>
                 <ng-template pTemplate="footer">
                   <tr>
-                    <td colspan="4" class="text-right font-semibold">Total:</td>
-                    <td class="text-right font-mono font-bold">{{ currentInvoice.subtotal | number:'1.2-2' }}</td>
+                    <td colspan="4" class="text-right font-semibold">Subtotal:</td>
+                    <td class="text-right font-mono text-sm">{{ currentInvoice.subtotal | number:'1.2-2' }}</td>
                   </tr>
+
                 </ng-template>
               </p-table>
             } @else {
@@ -169,6 +175,52 @@
               />
             }
           </app-details-section-card>
+
+          @if (creditNotes().length > 0) {
+            <app-details-section-card title="Notas de Crédito" icon="pi-arrow-down">
+              <p-table [value]="creditNotes()" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="text-right">Monto</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-note>
+                  <tr>
+                    <td class="text-right font-mono text-green-600 dark:text-green-400">
+                      -{{ note.amount | number:'1.2-2' }}
+                    </td>
+                    <td class="text-sm">{{ note.reason }}</td>
+                    <td class="text-sm">{{ note.applicationDate | date:'dd/MM/yyyy' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </app-details-section-card>
+          }
+
+          @if (debitNotes().length > 0) {
+            <app-details-section-card title="Notas de Débito" icon="pi-arrow-up">
+              <p-table [value]="debitNotes()" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="text-right">Monto</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-note>
+                  <tr>
+                    <td class="text-right font-mono text-red-600 dark:text-red-400">
+                      +{{ note.amount | number:'1.2-2' }}
+                    </td>
+                    <td class="text-sm">{{ note.reason }}</td>
+                    <td class="text-sm">{{ note.applicationDate | date:'dd/MM/yyyy' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </app-details-section-card>
+          }
 
         </div>
       }

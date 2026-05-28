@@ -40,6 +40,10 @@ describe('InvoiceApiService', () => {
     paymentType: 'CASH',
     notes: 'Test notes',
     subtotal: 500,
+    creditApplied: 0,
+    debitApplied: 0,
+    total: 500,
+    notesList: [],
     cancelledAt: null,
     cancelledReason: null,
     createdAt: '2025-01-01T00:00:00Z',
@@ -61,6 +65,34 @@ describe('InvoiceApiService', () => {
         ],
       },
     ],
+  };
+
+  const mockDetailsWithNotes = {
+    id: 'inv-002',
+    invoiceNumber: 'FAC-002',
+    customerId: 'c2',
+    customerName: 'Customer B',
+    customerRif: 'J-98765432-1',
+    createdBy: 'user-002',
+    createdByName: 'Jane Doe',
+    orderId: null,
+    orderNumber: null,
+    status: 'PENDING_PAYMENT',
+    paymentType: 'CREDIT',
+    notes: null,
+    subtotal: 1000,
+    creditApplied: 200,
+    debitApplied: 50,
+    total: 850,
+    notesList: [
+      { id: 'n1', type: 'CREDIT', amount: 200, reason: 'Discount', applicationDate: '2026-05-28T10:00:00Z' },
+      { id: 'n2', type: 'DEBIT', amount: 50, reason: 'Charge', applicationDate: '2026-05-28T11:00:00Z' },
+    ],
+    cancelledAt: null,
+    cancelledReason: null,
+    createdAt: '2026-05-28T00:00:00Z',
+    updatedAt: '2026-05-28T00:00:00Z',
+    lines: [],
   };
 
   beforeEach(() => {
@@ -159,11 +191,32 @@ describe('InvoiceApiService', () => {
         expect(result.id).toBe('inv-001');
         expect(result.lines).toHaveLength(1);
         expect(result.lines[0].warehouseStocks).toHaveLength(1);
+        expect(result.creditApplied).toBe(0);
+        expect(result.debitApplied).toBe(0);
+        expect(result.total).toBe(500);
+        expect(result.notesList).toEqual([]);
       });
 
       const req = httpMock.expectOne('/api/invoices/inv-001');
       expect(req.request.method).toBe('GET');
       req.flush(mockDetails);
+    });
+
+    it('should map notes from response', () => {
+      service.getById('inv-002').subscribe((result) => {
+        expect(result.creditApplied).toBe(200);
+        expect(result.debitApplied).toBe(50);
+        expect(result.total).toBe(850);
+        expect(result.notesList).toHaveLength(2);
+        expect(result.notesList[0].type).toBe('CREDIT');
+        expect(result.notesList[1].type).toBe('DEBIT');
+        expect(result.notesList[0].amount).toBe(200);
+        expect(result.notesList[1].amount).toBe(50);
+      });
+
+      const req = httpMock.expectOne('/api/invoices/inv-002');
+      expect(req.request.method).toBe('GET');
+      req.flush(mockDetailsWithNotes);
     });
   });
 

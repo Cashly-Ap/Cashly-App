@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate } from '../../models/interfaces';
+import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate, NoteInfo } from '../../models/interfaces';
 import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
 import { PaymentType } from '../../models/enums/payment-type.enum';
 
@@ -44,6 +44,16 @@ interface InvoiceDetailApiResponse {
   paymentType: string;
   notes: string | null;
   subtotal: number;
+  creditApplied: number;
+  debitApplied: number;
+  total: number;
+  notesList: {
+    id: string;
+    type: string;
+    amount: number;
+    reason: string;
+    applicationDate: string;
+  }[];
   cancelledAt: string | null;
   cancelledReason: string | null;
   createdAt: string;
@@ -168,6 +178,16 @@ export class InvoiceApiService {
       paymentType: r.paymentType as PaymentType,
       notes: r.notes,
       subtotal: r.subtotal,
+      creditApplied: r.creditApplied ?? 0,
+      debitApplied: r.debitApplied ?? 0,
+      total: r.total ?? r.subtotal,
+      notesList: (r.notesList ?? []).map((n) => ({
+        id: n.id,
+        type: n.type as 'CREDIT' | 'DEBIT',
+        amount: n.amount,
+        reason: n.reason,
+        applicationDate: n.applicationDate,
+      })),
       cancelledAt: r.cancelledAt,
       cancelledReason: r.cancelledReason,
       createdAt: r.createdAt,
