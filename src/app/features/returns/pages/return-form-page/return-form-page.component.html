@@ -1,0 +1,197 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header
+      title="Nueva Devolución"
+      subtitle="Complete la información de la devolución"
+    />
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <app-form-card>
+        <div class="p-4 md:p-6">
+          <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
+            <i class="pi pi-info-circle text-surface-500"></i>
+            Información de la Devolución
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Customer -->
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Cliente <span class="text-red-500">*</span>
+              </label>
+              @if (selectedCustomerLabel(); as customer) {
+                <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                    (click)="openCustomerPicker()"
+                  >
+                    Cambiar
+                  </button>
+                </div>
+              } @else {
+                <button
+                  type="button"
+                  class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 text-surface-400 dark:text-surface-500 text-sm transition-colors"
+                  (click)="openCustomerPicker()"
+                >
+                  <i class="pi pi-search text-sm"></i>
+                  Buscar y seleccionar cliente...
+                </button>
+              }
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    El cliente es requerido
+                  </small>
+                }
+              </div>
+            </div>
+
+            <!-- Invoice -->
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Factura Asociada <span class="text-red-500">*</span>
+              </label>
+              @if (selectedInvoice(); as invoice) {
+                <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                  <div class="flex flex-col min-w-0">
+                    <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">Factura #{{ invoice.invoiceNumber }}</span>
+                    <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ invoice.customerName }}</span>
+                  </div>
+                  <button
+                    type="button"
+                    class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                    (click)="openInvoicePicker()"
+                  >
+                    Cambiar
+                  </button>
+                </div>
+              } @else {
+                <button
+                  type="button"
+                  class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 text-surface-400 dark:text-surface-500 text-sm transition-colors"
+                  (click)="openInvoicePicker()"
+                >
+                  <i class="pi pi-search text-sm"></i>
+                  Buscar factura por número, cliente o fecha...
+                </button>
+              }
+              <div class="min-h-[20px] mt-1.5">
+                @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
+                  <small class="flex items-center gap-1 text-red-500 text-xs">
+                    <i class="pi pi-exclamation-circle text-xs"></i>
+                    La factura es requerida
+                  </small>
+                }
+              </div>
+            </div>
+
+            <!-- Return Type -->
+            <div class="col-span-1 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                Tipo de Devolución <span class="text-red-500">*</span>
+              </label>
+              <p-select
+                formControlName="returnType"
+                [options]="returnTypeOptions"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Seleccionar tipo..."
+                styleClass="w-full"
+              />
+            </div>
+
+            <!-- Auto Warehouse (only for AUTOMATIC) -->
+            @if (returnType() === ReturnType.AUTOMATIC) {
+              <div class="col-span-1 md:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+                <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+                  Almacén (Asignación Automática)
+                </label>
+                <p-select
+                  [options]="warehouseOptions()"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccionar almacén..."
+                  styleClass="w-full"
+                  [(ngModel)]="autoWarehouseId"
+                  [ngModelOptions]="{standalone: true}"
+                  (onChange)="onAutoWarehouseSelected($event.value)"
+                />
+                <p class="text-xs text-surface-500 mt-1">
+                  Asignará todas las líneas al almacén seleccionado.
+                </p>
+              </div>
+            }
+          </div>
+
+          <!-- Return Lines Table -->
+          @if (selectedInvoice() && returnLines().length > 0) {
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
+                Líneas de la Factura — Selecciona cantidades a devolver
+              </h4>
+              <app-return-lines-table
+                [invoiceLines]="selectedInvoice()!.lines"
+                [returnLines]="returnLines()"
+                (returnLinesChange)="returnLines.set($event)"
+              />
+              <div class="flex justify-end mt-3 px-2">
+                <span class="text-base font-semibold text-surface-800 dark:text-surface-200">
+                  Total: {{ totalAmount() | number:'1.2-2' }}
+                </span>
+              </div>
+            </div>
+          }
+
+          <!-- Reason -->
+          <div class="mt-6 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600">
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              Motivo <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              pTextarea
+              formControlName="reason"
+              rows="3"
+              class="w-full"
+              placeholder="Motivo de la devolución..."
+            ></textarea>
+            <div class="min-h-[20px] mt-1.5">
+              @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                <small class="flex items-center gap-1 text-red-500 text-xs">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  El motivo es requerido
+                </small>
+              }
+            </div>
+          </div>
+        </div>
+
+        <app-form-actions
+          submitLabel="Crear Devolución"
+          cancelLabel="Cancelar"
+          [loading]="isSubmitting()"
+          [disabled]="form.invalid || hasInvalidLines()"
+          (cancel)="cancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
+</app-main-layout>
+
+<app-customer-picker-dialog
+  [visible]="showCustomerPicker()"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onCustomerPickerCancelled()"
+/>
+
+<app-invoice-picker-dialog
+  [visible]="showInvoicePicker()"
+  [customerId]="selectedCustomer()?.id ?? ''"
+  (invoiceSelected)="onInvoiceSelected($event)"
+  (cancelled)="onInvoicePickerCancelled()"
+/>
