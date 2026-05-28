@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
-import { PaymentMethodApiService } from '@features/finances/services/api/payment-method-api.service';
+import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
 import { CustomerInvoiceDebt, PayInvoiceRequest } from '../../models/interfaces';
 
 export type PaymentFormMode = 'single' | 'all' | 'partial';
@@ -146,8 +146,8 @@ export class PaymentFormDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
-    this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(catchError(() => of({ content: [] }))).subscribe(res => {
-      const methods = res.content.map(pm => ({ label: pm.name, value: pm.code }));
+    this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(catchError(() => of([]))).subscribe(res => {
+      const methods = res.map(pm => ({ label: pm.name, value: pm.code }));
       this.paymentMethods.set(methods);
       if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
         this.form.patchValue({ paymentMethodId: methods[0].value });

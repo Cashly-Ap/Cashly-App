@@ -28,7 +28,7 @@ export interface ReceivablesSearchParams {
 @Injectable({ providedIn: 'root' })
 export class ReceivablesApiService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.apiUrl}/finances/receivables`;
+  private readonly baseUrl = `${environment.apiUrl}/receivables`;
 
   getGlobalSummary(): Observable<GlobalDebtSummary> {
     return this.http.get<GlobalDebtSummary>(`${this.baseUrl}/summary`);
