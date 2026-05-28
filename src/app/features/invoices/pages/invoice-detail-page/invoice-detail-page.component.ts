@@ -19,8 +19,8 @@ import {
   TextBadgeComponent,
 } from '@shared/components/ui';
 import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
-import { ReturnFormDialogComponent } from '@features/finances/components/return-form-dialog/return-form-dialog.component';
-import { NoteFormDialogComponent } from '@features/finances/components/note-form-dialog/note-form-dialog.component';
+import { ReturnFormDialogComponent } from '@features/returns/components/return-form-dialog/return-form-dialog.component';
+import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
