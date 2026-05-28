@@ -1,0 +1,103 @@
+<app-main-layout>
+  <app-form-container>
+    <app-form-header [title]="title()" [subtitle]="subtitle()" />
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-card>
+        <div class="p-4 md:p-6 flex flex-col gap-4">
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Cliente <span class="text-red-500">*</span>
+            </label>
+            <p-autoComplete
+              formControlName="customerName"
+              [suggestions]="filteredCustomers"
+              (completeMethod)="searchCustomers($event)"
+              (onSelect)="onCustomerSelect($event.value)"
+              field="name"
+              [forceSelection]="false"
+              placeholder="Buscar cliente..."
+              class="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (form.get('customerName')?.errors?.['required'] && form.get('customerName')?.touched) {
+              <small class="text-red-500 text-xs">El cliente es requerido</small>
+            }
+          </div>
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Factura <span class="text-red-500">*</span>
+            </label>
+            <p-autoComplete
+              formControlName="invoiceNumber"
+              [suggestions]="filteredInvoices"
+              (completeMethod)="searchInvoices($event)"
+              (onSelect)="onInvoiceSelect($event.value)"
+              field="number"
+              [forceSelection]="false"
+              placeholder="Buscar factura..."
+              class="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (form.get('invoiceNumber')?.errors?.['required'] && form.get('invoiceNumber')?.touched) {
+              <small class="text-red-500 text-xs">La factura es requerida</small>
+            }
+          </div>
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Monto <span class="text-red-500">*</span>
+            </label>
+            <p-inputNumber
+              formControlName="amount"
+              [min]="0.01"
+              [maxFractionDigits]="2"
+              mode="currency"
+              currency="VES"
+              locale="es-VE"
+              placeholder="0.00"
+              class="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (form.get('amount')?.errors?.['required'] && form.get('amount')?.touched) {
+              <small class="text-red-500 text-xs">El monto es requerido</small>
+            }
+            @if (form.get('amount')?.errors?.['min'] && form.get('amount')?.touched) {
+              <small class="text-red-500 text-xs">El monto debe ser mayor a cero</small>
+            }
+          </div>
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Motivo <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              pTextarea
+              formControlName="reason"
+              placeholder="Motivo de la nota de crédito"
+              rows="4"
+              class="w-full"
+            ></textarea>
+            @if (form.get('reason')?.errors?.['required'] && form.get('reason')?.touched) {
+              <small class="text-red-500 text-xs">El motivo es requerido</small>
+            }
+            @if (form.get('reason')?.errors?.['maxlength'] && form.get('reason')?.touched) {
+              <small class="text-red-500 text-xs">El motivo no puede superar los 500 caracteres</small>
+            }
+          </div>
+
+        </div>
+
+        <app-form-actions
+          [submitLabel]="submitLabel()"
+          cancelLabel="Cancelar"
+          [loading]="loading()"
+          [disabled]="form.invalid"
+          [tooltipMessage]="submitTooltip()"
+          (cancel)="onCancel()"
+        />
+      </app-form-card>
+    </form>
+  </app-form-container>
+</app-main-layout>
