@@ -11,22 +11,7 @@
         <p class="text-sm sm:text-base">Gestiona los presupuestos de clientes</p>
       </div>
 
-      @if (showInitialLoading()) {
-        <app-content-card>
-          <app-loading-spinner message="Cargando presupuestos..." />
-        </app-content-card>
-      } @else if (isEmptyDatabase()) {
-        <app-content-card>
-          <app-empty-state
-            icon="pi-file-edit"
-            title="No hay presupuestos registrados"
-            message="Comienza a gestionar presupuestos creando el primero."
-            buttonLabel="Crear mi Primer Presupuesto"
-            (buttonClick)="onCreate()"
-          />
-        </app-content-card>
-      } @else {
-        <app-list-container>
+      <app-list-container>
           <div class="px-4 sm:px-6 py-4">
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
               <div class="flex gap-2 items-center w-full sm:w-auto">
@@ -92,6 +77,24 @@
           </div>
         </app-list-container>
 
+<div class="h-4"></div>
+
+@if (showInitialLoading()) {
+        <app-content-card>
+          <app-loading-spinner message="Cargando presupuestos..." />
+        </app-content-card>
+      } @else if (isEmptyDatabase()) {
+        <app-content-card>
+          <app-empty-state
+            icon="pi-file-edit"
+            title="No hay presupuestos registrados"
+            message="Comienza a gestionar presupuestos creando el primero."
+            
+          />
+        </app-content-card>
+      } @else {
+        
+
         <app-list-container class="mt-4 hidden md:block">
           <div class="relative">
             @if (loading()) {
@@ -104,8 +107,7 @@
                 icon="pi-search"
                 title="No se encontraron resultados"
                 message="No hay presupuestos que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo presupuesto."
-                buttonLabel="Crear Nuevo Presupuesto"
-                (buttonClick)="onCreate()"
+                
               />
             } @else {
               <div class="overflow-x-auto rounded-t-2xl">
@@ -197,8 +199,7 @@
                 icon="pi-search"
                 title="No se encontraron resultados"
                 message="No hay presupuestos que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo presupuesto."
-                buttonLabel="Crear Nuevo Presupuesto"
-                (buttonClick)="onCreate()"
+                
               />
             </app-content-card>
           } @else {
