@@ -8,6 +8,7 @@ import { PaymentType } from '../../models/enums/payment-type.enum';
 export interface InvoiceFilters {
   search?: string;
   statuses?: string[];
+  returnStatus?: string[];
   customerId?: string;
   paymentType?: string;
   dateFrom?: string;
@@ -28,6 +29,8 @@ interface InvoiceListApiResponse {
   orderId: string | null;
   orderNumber: string | null;
   createdAt: string;
+  returnedTotal: number;
+  returnStatus: string | null;
 }
 
 interface InvoiceDetailApiResponse {
@@ -82,6 +85,31 @@ interface InvoiceDetailApiResponse {
       reserved: number;
       available: number;
     }[];
+    returnedQuantity: number;
+  }[];
+  returnedTotal: number;
+  returnStatus: string | null;
+  returns: {
+    id: string;
+    returnNumber: string;
+    returnType: string;
+    reason: string;
+    total: number;
+    createdAt: string;
+    createdByName: string;
+    lines: {
+      productId: string;
+      productName: string;
+      productCode: string;
+      quantity: number;
+      unitPrice: number;
+      subtotal: number;
+      allocations: {
+        warehouseId: string;
+        warehouseName: string;
+        allocated: number;
+      }[];
+    }[];
   }[];
 }
 
@@ -95,6 +123,9 @@ export class InvoiceApiService {
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.statuses && filters.statuses.length > 0) {
       filters.statuses.forEach((s) => (params = params.append('status', s)));
+    }
+    if (filters?.returnStatus && filters.returnStatus.length > 0) {
+      filters.returnStatus.forEach((s) => (params = params.append('returnStatus', s)));
     }
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
     if (filters?.paymentType) params = params.set('paymentType', filters.paymentType);
@@ -120,6 +151,7 @@ export class InvoiceApiService {
       orderId: r.orderId,
       orderNumber: r.orderNumber,
       createdAt: r.createdAt,
+      returnStatus: r.returnStatus as 'PARTIAL' | 'FULL' | null,
     };
   }
 
@@ -215,6 +247,31 @@ export class InvoiceApiService {
           quantity: s.quantity,
           reserved: s.reserved,
           available: s.available,
+        })),
+        returnedQuantity: l.returnedQuantity ?? 0,
+      })),
+      returnedTotal: r.returnedTotal ?? 0,
+      returnStatus: r.returnStatus as 'PARTIAL' | 'FULL' | null,
+      returns: (r.returns ?? []).map((ret) => ({
+        id: ret.id,
+        returnNumber: ret.returnNumber,
+        returnType: ret.returnType as 'AUTOMATIC' | 'MANUAL',
+        reason: ret.reason,
+        total: ret.total,
+        createdAt: ret.createdAt,
+        createdByName: ret.createdByName,
+        lines: ret.lines.map((line) => ({
+          productId: line.productId,
+          productName: line.productName,
+          productCode: line.productCode,
+          quantity: line.quantity,
+          unitPrice: line.unitPrice,
+          subtotal: line.subtotal,
+          allocations: line.allocations.map((a) => ({
+            warehouseId: a.warehouseId,
+            warehouseName: a.warehouseName,
+            allocated: a.allocated,
+          })),
         })),
       })),
     };

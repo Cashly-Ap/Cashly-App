@@ -13,4 +13,5 @@ export interface InvoiceList {
   orderId: string | null;
   orderNumber: string | null;
   createdAt: string;
+  returnStatus: 'PARTIAL' | 'FULL' | null;
 }

@@ -17,6 +17,7 @@ export class InvoiceMapper {
       orderId: detail.orderId,
       orderNumber: detail.orderNumber,
       createdAt: detail.createdAt,
+      returnStatus: detail.returnStatus ?? null,
     };
   }
 }

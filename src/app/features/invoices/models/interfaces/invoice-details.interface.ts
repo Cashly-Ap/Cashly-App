@@ -25,6 +25,7 @@ export interface InvoiceLineDetail {
     reserved: number;
     available: number;
   }[];
+  returnedQuantity: number;
 }
 
 export interface NoteInfo {
@@ -58,4 +59,34 @@ export interface InvoiceDetails {
   createdAt: string;
   updatedAt: string;
   lines: InvoiceLineDetail[];
+  returnedTotal: number;
+  returnStatus: 'PARTIAL' | 'FULL' | null;
+  returns: ReturnDetail[];
+}
+
+export interface ReturnDetail {
+  id: string;
+  returnNumber: string;
+  returnType: 'AUTOMATIC' | 'MANUAL';
+  reason: string;
+  total: number;
+  createdAt: string;
+  createdByName: string;
+  lines: ReturnLineDetail[];
+}
+
+export interface ReturnLineDetail {
+  productId: string;
+  productName: string;
+  productCode: string;
+  quantity: number;
+  unitPrice: number;
+  subtotal: number;
+  allocations: ReturnAllocationDetail[];
+}
+
+export interface ReturnAllocationDetail {
+  warehouseId: string;
+  warehouseName: string;
+  allocated: number;
 }
