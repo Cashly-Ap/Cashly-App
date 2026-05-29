@@ -27,6 +27,8 @@ interface InvoiceListApiResponse {
   subtotal: number;
   total: number;
   paidAmount: number;
+  creditApplied: number;
+  debitApplied: number;
   lineCount: number;
   orderId: string | null;
   orderNumber: string | null;
@@ -151,6 +153,8 @@ export class InvoiceApiService {
       subtotal: r.subtotal,
       total: r.total,
       paidAmount: r.paidAmount,
+      creditApplied: r.creditApplied ?? 0,
+      debitApplied: r.debitApplied ?? 0,
       lineCount: r.lineCount,
       orderId: r.orderId,
       orderNumber: r.orderNumber,

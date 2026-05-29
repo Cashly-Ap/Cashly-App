@@ -15,6 +15,8 @@ export class InvoiceMapper {
       subtotal: detail.subtotal,
       total: detail.total,
       paidAmount: 0,
+      creditApplied: detail.creditApplied ?? 0,
+      debitApplied: detail.debitApplied ?? 0,
       lineCount: detail.lines.length,
       orderId: detail.orderId,
       orderNumber: detail.orderNumber,

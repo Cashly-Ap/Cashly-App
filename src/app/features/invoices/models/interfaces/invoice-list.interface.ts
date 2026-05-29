@@ -11,6 +11,8 @@ export interface InvoiceList {
   subtotal: number;
   total: number;
   paidAmount: number;
+  creditApplied: number;
+  debitApplied: number;
   lineCount: number;
   orderId: string | null;
   orderNumber: string | null;
