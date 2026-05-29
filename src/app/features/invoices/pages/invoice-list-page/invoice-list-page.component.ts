@@ -74,6 +74,7 @@ export class InvoiceListPageComponent implements OnInit {
   readonly first = signal(0);
   readonly rows = signal(10);
   readonly selectedStatus = signal('');
+  readonly selectedReturnStatus = signal('');
   readonly filterPaymentType = signal('');
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
@@ -104,11 +105,19 @@ export class InvoiceListPageComponent implements OnInit {
     ...Object.values(PaymentType).map((p) => ({ label: PAYMENT_TYPE_LABELS[p], value: p })),
   ];
 
+  readonly returnStatusOptions = [
+    { label: 'Todas', value: '' },
+    { label: 'Sin devolución', value: 'NONE' },
+    { label: 'Parcialmente Devuelta', value: 'PARTIAL' },
+    { label: 'Totalmente Devuelta', value: 'FULL' },
+  ];
+
   readonly activeFilterCount = computed(() => {
     let count = 0;
     const statuses = this.filterStatus();
     if (statuses.length > 0) count++;
     if (this.filterPaymentType()) count++;
+    if (this.selectedReturnStatus()) count++;
     if (this.filterDateFrom()) count++;
     if (this.filterDateTo()) count++;
     return count;
@@ -148,6 +157,14 @@ export class InvoiceListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
+  onReturnStatusFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.selectedReturnStatus()) return;
+    this.selectedReturnStatus.set(normalized);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
   onDateFromChange(value: Date | null): void {
     this.filterDateFrom.set(value);
     this.first.set(0);
@@ -177,6 +194,7 @@ export class InvoiceListPageComponent implements OnInit {
 
   clearFilters(): void {
     this.selectedStatus.set('');
+    this.selectedReturnStatus.set('');
     this.filterPaymentType.set('');
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
@@ -347,25 +365,41 @@ export class InvoiceListPageComponent implements OnInit {
     return getPaymentTypeLabel(paymentType);
   }
 
-  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' {
-    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label'> = {
+  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' | 'warning' {
+    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
       [InvoiceStatus.DRAFT]: 'label',
       [InvoiceStatus.PENDING_PAYMENT]: 'info',
       [InvoiceStatus.PARTIALLY_PAID]: 'info',
       [InvoiceStatus.PAID]: 'success',
       [InvoiceStatus.CANCELLED]: 'danger',
+      [InvoiceStatus.FULLY_RETURNED]: 'info',
     };
     return variants[status] ?? 'label';
   }
 
+  getReturnStatusLabel(returnStatus: string | null): string {
+    const labels: Record<string, string> = {
+      PARTIAL: 'Parcialmente Devuelta',
+      FULL: 'Totalmente Devuelta',
+    };
+    return returnStatus ? labels[returnStatus] ?? '' : '';
+  }
+
+  getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
+    if (returnStatus === 'PARTIAL') return 'warning';
+    if (returnStatus === 'FULL') return 'info';
+    return undefined;
+  }
+
   canCancel(status: InvoiceStatus): boolean {
-    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID;
+    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID && status !== InvoiceStatus.FULLY_RETURNED;
   }
 
   private loadWithFilters(): void {
     const filters: InvoiceFilters = {};
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
+    if (this.selectedReturnStatus()) filters.returnStatus = [this.selectedReturnStatus()];
     if (this.filterPaymentType()) filters.paymentType = this.filterPaymentType();
     if (this.filterDateFrom()) filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];

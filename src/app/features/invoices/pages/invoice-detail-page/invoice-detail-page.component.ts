@@ -135,6 +135,10 @@ export class InvoiceDetailPageComponent implements OnInit {
 
   onReturnDialogConfirmed(): void {
     this.returnDialogVisible.set(false);
+    const id = this.invoice()?.id;
+    if (id) {
+      this.invoiceService.loadById(id).subscribe();
+    }
   }
 
   onReturnDialogDismissed(): void {
@@ -161,15 +165,34 @@ export class InvoiceDetailPageComponent implements OnInit {
     return getInvoiceStatusLabel(status);
   }
 
-  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' {
-    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label'> = {
+  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' | 'warning' {
+    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
       [InvoiceStatus.DRAFT]: 'label',
       [InvoiceStatus.PENDING_PAYMENT]: 'info',
       [InvoiceStatus.PARTIALLY_PAID]: 'info',
       [InvoiceStatus.PAID]: 'success',
       [InvoiceStatus.CANCELLED]: 'danger',
+      [InvoiceStatus.FULLY_RETURNED]: 'info',
     };
     return variants[status] ?? 'label';
+  }
+
+  getReturnStatusLabel(returnStatus: string | null): string {
+    const labels: Record<string, string> = {
+      PARTIAL: 'Parcialmente Devuelta',
+      FULL: 'Totalmente Devuelta',
+    };
+    return returnStatus ? labels[returnStatus] ?? '' : '';
+  }
+
+  getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
+    if (returnStatus === 'PARTIAL') return 'warning';
+    if (returnStatus === 'FULL') return 'info';
+    return undefined;
+  }
+
+  canCancel(status: InvoiceStatus): boolean {
+    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID && status !== InvoiceStatus.FULLY_RETURNED;
   }
 
   getPaymentTypeLabel(paymentType: PaymentType): string {

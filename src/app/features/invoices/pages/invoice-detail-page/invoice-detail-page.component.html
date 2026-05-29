@@ -41,7 +41,7 @@
                   (onClick)="onDuplicate()"
                   styleClass="w-full sm:w-auto"
                 />
-                @if (currentInvoice.status !== InvoiceStatus.DRAFT && currentInvoice.status !== InvoiceStatus.CANCELLED) {
+                @if (currentInvoice.status !== InvoiceStatus.DRAFT && currentInvoice.status !== InvoiceStatus.CANCELLED && currentInvoice.status !== InvoiceStatus.FULLY_RETURNED) {
                   <p-button
                     label="Devolución"
                     icon="pi pi-undo"
@@ -49,6 +49,8 @@
                     (onClick)="onReturnDialogOpen()"
                     styleClass="w-full sm:w-auto"
                   />
+                }
+                @if (currentInvoice.status !== InvoiceStatus.DRAFT && currentInvoice.status !== InvoiceStatus.CANCELLED && currentInvoice.status !== InvoiceStatus.FULLY_RETURNED) {
                   <p-button
                     label="Nota"
                     icon="pi pi-file-edit"
@@ -69,10 +71,18 @@
                   type="code"
                 />
                 <app-details-info-field label="Estado" type="badge">
-                  <app-text-badge
-                    [label]="getStatusLabel(currentInvoice.status)"
-                    [variant]="getStatusVariant(currentInvoice.status)"
-                  />
+                  <div class="flex gap-2 flex-wrap">
+                    <app-text-badge
+                      [label]="getStatusLabel(currentInvoice.status)"
+                      [variant]="getStatusVariant(currentInvoice.status)"
+                    />
+                    @if (currentInvoice.returnStatus === 'PARTIAL') {
+                      <app-text-badge
+                        label="Parcialmente Devuelta"
+                        variant="warning"
+                      />
+                    }
+                  </div>
                 </app-details-info-field>
                 <app-details-info-field
                   label="Cliente"
@@ -87,16 +97,23 @@
                   [value]="getPaymentTypeLabel(currentInvoice.paymentType)"
                   colspan="full"
                 />
-                <app-details-info-field
-                  label="Total"
-                  [value]="(currentInvoice.total | number: '1.2-2') || ''"
-                  type="currency"
-                />
-                <app-details-info-field
-                  label="Subtotal"
-                  [value]="(currentInvoice.subtotal | number: '1.2-2') || ''"
-                  type="currency"
-                />
+                <app-details-info-field label="Total" type="badge">
+                  <span class="font-mono font-bold text-lg">
+                    {{ currentInvoice.total | number:'1.2-2' }}
+                  </span>
+                </app-details-info-field>
+                <app-details-info-field label="Subtotal" type="badge">
+                  <span class="font-mono">
+                    {{ currentInvoice.subtotal | number:'1.2-2' }}
+                  </span>
+                </app-details-info-field>
+                @if (currentInvoice.returnedTotal > 0) {
+                  <app-details-info-field label="Total Devuelto" type="badge">
+                    <span class="font-mono font-semibold text-amber-600 dark:text-amber-400">
+                      -{{ currentInvoice.returnedTotal | number:'1.2-2' }}
+                    </span>
+                  </app-details-info-field>
+                }
                 <app-details-info-field
                   label="Creado por"
                   [value]="currentInvoice.createdByName"
@@ -132,6 +149,77 @@
             </app-details-section-card>
           }
 
+          @if (currentInvoice.returns.length > 0) {
+            <app-details-section-card title="Devoluciones" icon="pi-undo">
+              <div class="flex flex-col gap-6">
+                @for (ret of currentInvoice.returns; track ret.id) {
+                  <div class="border border-surface-200 dark:border-surface-700 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-4">
+                      <div class="flex items-center gap-3">
+                        <span class="font-semibold text-sm">Devolución #{{ ret.returnNumber }}</span>
+                        <app-text-badge
+                          [label]="ret.returnType === 'AUTOMATIC' ? 'Automática' : 'Manual'"
+                          variant="info"
+                        />
+                      </div>
+                      <span class="font-mono text-sm font-semibold text-amber-600 dark:text-amber-400">
+                        -{{ ret.total | number:'1.2-2' }}
+                      </span>
+                    </div>
+                    @if (ret.reason) {
+                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-3">
+                        <span class="font-medium">Motivo:</span> {{ ret.reason }}
+                      </p>
+                    }
+                    <div class="flex gap-4 text-xs text-surface-500 dark:text-surface-400 mb-4">
+                      <span>Creado por: {{ ret.createdByName }}</span>
+                      <span>{{ ret.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                    <p-table [value]="ret.lines" styleClass="p-datatable-sm">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>Producto</th>
+                          <th class="w-24 text-right">Cantidad</th>
+                          <th class="w-32 text-right">Precio Unit.</th>
+                          <th class="w-32 text-right">Subtotal</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-line>
+                        <tr>
+                          <td>
+                            <div class="flex flex-col gap-1">
+                              <span class="font-medium text-sm">{{ line.productName }}</span>
+                              <span class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit">
+                                {{ line.productCode }}
+                              </span>
+                            </div>
+                          </td>
+                          <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                          <td class="text-right font-mono text-sm">{{ line.unitPrice | number:'1.2-2' }}</td>
+                          <td class="text-right font-mono font-semibold text-sm">{{ line.subtotal | number:'1.2-2' }}</td>
+                        </tr>
+                        @if (line.allocations.length > 0) {
+                          <tr>
+                            <td colspan="4" class="pb-2 pt-0">
+                              <div class="flex flex-col gap-1 pl-4 border-l-2 border-surface-200 dark:border-surface-700 ml-2">
+                                <span class="text-xs font-medium text-surface-500 dark:text-surface-400">Asignaciones a almacén:</span>
+                                @for (alloc of line.allocations; track alloc.warehouseId) {
+                                  <span class="text-xs text-surface-600 dark:text-surface-400">
+                                    {{ alloc.warehouseName }}: {{ alloc.allocated }}
+                                  </span>
+                                }
+                              </div>
+                            </td>
+                          </tr>
+                        }
+                      </ng-template>
+                    </p-table>
+                  </div>
+                }
+              </div>
+            </app-details-section-card>
+          }
+
           <app-details-section-card title="Líneas de la Factura" icon="pi-list">
             @if (currentInvoice.lines && currentInvoice.lines.length > 0) {
               <p-table [value]="currentInvoice.lines" styleClass="p-datatable-sm">
@@ -140,8 +228,10 @@
                     <th class="w-12">#</th>
                     <th>Producto</th>
                     <th class="w-32 text-right">Cantidad</th>
+                    <th class="w-32 text-right">Devuelto</th>
                     <th class="w-40 text-right">Precio Unit.</th>
                     <th class="w-40 text-right">Subtotal</th>
+                    <th class="w-40 text-right">Total Neto</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-line let-index="rowIndex">
@@ -156,16 +246,31 @@
                       </div>
                     </td>
                     <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                    <td class="text-right font-mono text-sm text-amber-600 dark:text-amber-400">
+                      @if (line.returnedQuantity > 0) {
+                        {{ line.returnedQuantity }}
+                      } @else {
+                        <span class="text-surface-300 dark:text-surface-600">-</span>
+                      }
+                    </td>
                     <td class="text-right font-mono text-sm">{{ line.unitPrice | number:'1.2-2' }}</td>
                     <td class="text-right font-mono font-semibold text-sm">{{ line.lineTotal | number:'1.2-2' }}</td>
+                    <td class="text-right font-mono text-sm">
+                      {{ line.lineTotal - line.returnedQuantity * line.unitPrice | number:'1.2-2' }}
+                    </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
                   <tr>
-                    <td colspan="4" class="text-right font-semibold">Subtotal:</td>
+                    <td colspan="6" class="text-right font-semibold">Subtotal:</td>
                     <td class="text-right font-mono text-sm">{{ currentInvoice.subtotal | number:'1.2-2' }}</td>
                   </tr>
-
+                  @if (currentInvoice.returnedTotal > 0) {
+                    <tr>
+                      <td colspan="6" class="text-right font-semibold text-amber-600 dark:text-amber-400">Total Neto:</td>
+                      <td class="text-right font-mono text-sm font-semibold">{{ currentInvoice.subtotal - currentInvoice.returnedTotal | number:'1.2-2' }}</td>
+                    </tr>
+                  }
                 </ng-template>
               </p-table>
             } @else {

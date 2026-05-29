@@ -11,6 +11,120 @@
         <p class="text-sm sm:text-base">Gestiona las facturas de clientes</p>
       </div>
 
+      <app-list-container>
+        <div class="px-4 sm:px-6 py-4">
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
+            <div class="flex gap-2 items-center w-full sm:w-auto">
+              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
+                <p-inputIcon styleClass="pi pi-search" />
+                <input
+                  #searchInput
+                  pInputText
+                  type="text"
+                  [value]="searchTerm()"
+                  (input)="onSearch(searchInput.value)"
+                  placeholder="Buscar por número o cliente..."
+                  class="w-full"
+                />
+              </p-iconField>
+              <p-button
+                #filterBtn
+                icon="pi pi-filter"
+                [outlined]="true"
+                severity="secondary"
+                (onClick)="filterPopover.toggle($event)"
+                pTooltip="Filtros"
+                [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+                badgeSeverity="contrast"
+              />
+              <p-popover #filterPopover>
+                <div class="flex flex-col gap-4 p-1 min-w-[280px]">
+                  <div class="flex items-center justify-between">
+                    <span class="font-semibold text-sm">Filtros</span>
+                    @if (activeFilterCount() > 0) {
+                      <p-button
+                        label="Limpiar"
+                        [text]="true"
+                        size="small"
+                        severity="secondary"
+                        (onClick)="clearFilters()"
+                      />
+                    }
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Estado</label>
+                    <p-select
+                      [options]="statusOptions"
+                      [ngModel]="selectedStatus()"
+                      (onChange)="onStatusFilterChange($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Facturas activas"
+                      styleClass="w-full"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Tipo de Pago</label>
+                    <p-select
+                      [options]="paymentTypeOptions"
+                      [ngModel]="filterPaymentType()"
+                      (onChange)="onPaymentTypeFilterChange($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Todos los tipos"
+                      styleClass="w-full"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
+                    <p-datepicker
+                      [ngModel]="filterDateFrom()"
+                      (onSelect)="onDateFromChange($event)"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="Desde"
+                      styleClass="w-full"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
+                    <p-datepicker
+                      [ngModel]="filterDateTo()"
+                      (onSelect)="onDateToChange($event)"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="Hasta"
+                      styleClass="w-full"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Devolución</label>
+                    <p-select
+                      [options]="returnStatusOptions"
+                      [ngModel]="selectedReturnStatus()"
+                      (onChange)="onReturnStatusFilterChange($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Todas"
+                      styleClass="w-full"
+                    />
+                  </div>
+                </div>
+              </p-popover>
+            </div>
+            <p-button
+              label="Nueva Factura"
+              icon="pi pi-plus"
+              (onClick)="onCreate()"
+              severity="contrast"
+              styleClass="font-medium w-full sm:w-auto"
+            />
+          </div>
+        </div>
+      </app-list-container>
+
+      <div class="h-4"></div>
+
       @if (showInitialLoading()) {
         <app-content-card>
           <app-loading-spinner message="Cargando facturas..." />
@@ -21,110 +135,9 @@
             icon="pi-file"
             title="No hay facturas registradas"
             message="Crea tu primera factura para comenzar."
-            buttonLabel="Crear mi Primera Factura"
-            (buttonClick)="onCreate()"
           />
         </app-content-card>
       } @else {
-        <app-list-container>
-          <div class="px-4 sm:px-6 py-4">
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
-              <div class="flex gap-2 items-center w-full sm:w-auto">
-                <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-                  <p-inputIcon styleClass="pi pi-search" />
-                  <input
-                    #searchInput
-                    pInputText
-                    type="text"
-                    [value]="searchTerm()"
-                    (input)="onSearch(searchInput.value)"
-                    placeholder="Buscar por número o cliente..."
-                    class="w-full"
-                  />
-                </p-iconField>
-                <p-button
-                  #filterBtn
-                  icon="pi pi-filter"
-                  [outlined]="true"
-                  severity="secondary"
-                  (onClick)="filterPopover.toggle($event)"
-                  pTooltip="Filtros"
-                  [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-                  badgeSeverity="contrast"
-                />
-                <p-popover #filterPopover>
-                  <div class="flex flex-col gap-4 p-1 min-w-[280px]">
-                    <div class="flex items-center justify-between">
-                      <span class="font-semibold text-sm">Filtros</span>
-                      @if (activeFilterCount() > 0) {
-                        <p-button
-                          label="Limpiar"
-                          [text]="true"
-                          size="small"
-                          severity="secondary"
-                          (onClick)="clearFilters()"
-                        />
-                      }
-                    </div>
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Estado</label>
-                      <p-select
-                        [options]="statusOptions"
-                        [ngModel]="selectedStatus()"
-                        (onChange)="onStatusFilterChange($event.value)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Facturas activas"
-                        styleClass="w-full"
-                      />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Tipo de Pago</label>
-                      <p-select
-                        [options]="paymentTypeOptions"
-                        [ngModel]="filterPaymentType()"
-                        (onChange)="onPaymentTypeFilterChange($event.value)"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Todos los tipos"
-                        styleClass="w-full"
-                      />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
-                      <p-datepicker
-                        [ngModel]="filterDateFrom()"
-                        (onSelect)="onDateFromChange($event)"
-                        [showIcon]="true"
-                        dateFormat="dd/mm/yy"
-                        placeholder="Desde"
-                        styleClass="w-full"
-                      />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
-                      <p-datepicker
-                        [ngModel]="filterDateTo()"
-                        (onSelect)="onDateToChange($event)"
-                        [showIcon]="true"
-                        dateFormat="dd/mm/yy"
-                        placeholder="Hasta"
-                        styleClass="w-full"
-                      />
-                    </div>
-                  </div>
-                </p-popover>
-              </div>
-              <p-button
-                label="Nueva Factura"
-                icon="pi pi-plus"
-                (onClick)="onCreate()"
-                severity="contrast"
-                styleClass="font-medium w-full sm:w-auto"
-              />
-            </div>
-          </div>
-        </app-list-container>
 
         <app-list-container class="mt-4 hidden md:block">
           <div class="relative">
@@ -187,7 +200,12 @@
                         <app-text-badge [label]="getPaymentTypeLabel(invoice.paymentType)" variant="label" />
                       </td>
                       <td>
-                        <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
+                        <div class="flex gap-2 flex-wrap">
+                          <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
+                          @if (invoice.returnStatus === 'PARTIAL') {
+                            <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                          }
+                        </div>
                       </td>
                       <td class="text-right">
                         <span class="text-sm font-medium">{{ invoice.subtotal | number: '1.2-2' }}</span>
@@ -259,6 +277,9 @@
                       <div class="flex flex-nowrap gap-2">
                         <app-text-badge [label]="getPaymentTypeLabel(invoice.paymentType)" variant="label" />
                         <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
+                        @if (invoice.returnStatus === 'PARTIAL') {
+                          <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                        }
                       </div>
                     </div>
                     <div class="text-xs text-surface-400 ml-2">{{ invoice.createdAt | date: 'dd/MM/yyyy' }}</div>
