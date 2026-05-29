@@ -13,6 +13,8 @@ export class InvoiceMapper {
       status: detail.status,
       paymentType: detail.paymentType,
       subtotal: detail.subtotal,
+      total: detail.total,
+      paidAmount: 0,
       lineCount: detail.lines.length,
       orderId: detail.orderId,
       orderNumber: detail.orderNumber,

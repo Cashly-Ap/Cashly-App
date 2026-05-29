@@ -9,6 +9,8 @@ export interface InvoiceList {
   status: InvoiceStatus;
   paymentType: PaymentType;
   subtotal: number;
+  total: number;
+  paidAmount: number;
   lineCount: number;
   orderId: string | null;
   orderNumber: string | null;

@@ -174,8 +174,11 @@
                       <th pSortableColumn="status" class="w-28">
                         <div class="font-semibold">Estado <p-sortIcon field="status" /></div>
                       </th>
-                      <th pSortableColumn="subtotal" class="w-32 text-right">
-                        <div class="font-semibold">Total <p-sortIcon field="subtotal" /></div>
+                      <th pSortableColumn="total" class="w-32 text-right">
+                        <div class="font-semibold">Total <p-sortIcon field="total" /></div>
+                      </th>
+                      <th class="w-32 text-right">
+                        <div class="font-semibold">Pendiente de pagar</div>
                       </th>
                       <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
                         <div class="font-semibold">Fecha <p-sortIcon field="createdAt" /></div>
@@ -208,7 +211,10 @@
                         </div>
                       </td>
                       <td class="text-right">
-                        <span class="text-sm font-medium">{{ invoice.subtotal | number: '1.2-2' }}</span>
+                        <span class="text-sm font-medium">{{ invoice.total | number: '1.2-2' }}</span>
+                      </td>
+                      <td class="text-right">
+                        <span class="text-sm font-medium">{{ pendingAmount(invoice) | number: '1.2-2' }}</span>
                       </td>
                       <td class="hidden lg:table-cell">
                         <div class="text-sm text-surface-500">{{ invoice.createdAt | date: 'dd/MM/yyyy' }}</div>
@@ -273,7 +279,8 @@
                       <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
                         {{ invoice.customerName }}
                       </h3>
-                      <p class="text-sm font-medium mb-2">{{ invoice.subtotal | number: '1.2-2' }}</p>
+                      <p class="text-sm font-medium mb-1">Total: {{ invoice.total | number:'1.2-2' }}</p>
+                      <p class="text-sm text-surface-500 mb-2">Pendiente: {{ pendingAmount(invoice) | number:'1.2-2' }}</p>
                       <div class="flex flex-nowrap gap-2">
                         <app-text-badge [label]="getPaymentTypeLabel(invoice.paymentType)" variant="label" />
                         <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />

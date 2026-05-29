@@ -385,6 +385,10 @@ export class InvoiceListPageComponent implements OnInit {
     return returnStatus ? labels[returnStatus] ?? '' : '';
   }
 
+  pendingAmount(invoice: InvoiceList): number {
+    return Math.max(0, invoice.total - invoice.paidAmount);
+  }
+
   getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
     if (returnStatus === 'PARTIAL') return 'warning';
     if (returnStatus === 'FULL') return 'info';
