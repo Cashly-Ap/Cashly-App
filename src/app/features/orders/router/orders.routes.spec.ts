@@ -26,13 +26,13 @@ describe('Order Routes', () => {
   });
 
   it('should have new order route', () => {
-    const newRoute = ORDER_ROUTES[0].children?.find((r) => r.path === 'nuevo');
+    const newRoute = ORDER_ROUTES[0].children?.find((r) => r.path === 'new');
     expect(newRoute).toBeDefined();
     expect(newRoute?.title).toBe('Nuevo Pedido');
   });
 
   it('should have edit order route', () => {
-    const editRoute = ORDER_ROUTES[0].children?.find((r) => r.path === ':id/editar');
+    const editRoute = ORDER_ROUTES[0].children?.find((r) => r.path === ':id/edit');
     expect(editRoute).toBeDefined();
     expect(editRoute?.title).toBe('Editar Pedido');
   });

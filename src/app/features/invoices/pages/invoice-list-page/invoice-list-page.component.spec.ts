@@ -133,7 +133,7 @@ describe('InvoiceListPageComponent', () => {
   });
 
   describe('navigation', () => {
-    it('should navigate to /facturas/nuevo on create', () => {
+    it('should navigate to /invoices/new on create', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
@@ -147,7 +147,7 @@ describe('InvoiceListPageComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/invoices', 'inv-001']);
     });
 
-    it('should navigate to /facturas/{id}/editar on edit', () => {
+    it('should navigate to /invoices/{id}/edit on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockInvoices[0]);

@@ -131,8 +131,8 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
         ? 'Editar Presupuesto'
         : 'Nuevo Presupuesto';
     const route = this.isEditMode()
-      ? `/presupuestos/${this.quoteId()}/editar`
-      : `/presupuestos/nuevo?tabId=${this.tabId}`;
+      ? `/presupuestos/${this.quoteId()}/edit`
+      : `/presupuestos/new?tabId=${this.tabId}`;
 
     this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'quotes');
   }

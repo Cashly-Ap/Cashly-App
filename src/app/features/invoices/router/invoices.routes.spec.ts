@@ -26,13 +26,13 @@ describe('Invoice Routes', () => {
   });
 
   it('should have new invoice route', () => {
-    const newRoute = INVOICE_ROUTES[0].children?.find((r) => r.path === 'nuevo');
+    const newRoute = INVOICE_ROUTES[0].children?.find((r) => r.path === 'new');
     expect(newRoute).toBeDefined();
     expect(newRoute?.title).toBe('Nueva Factura');
   });
 
   it('should have edit invoice route', () => {
-    const editRoute = INVOICE_ROUTES[0].children?.find((r) => r.path === ':id/editar');
+    const editRoute = INVOICE_ROUTES[0].children?.find((r) => r.path === ':id/edit');
     expect(editRoute).toBeDefined();
     expect(editRoute?.title).toBe('Editar Factura');
   });

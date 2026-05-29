@@ -162,7 +162,7 @@ describe('OrderListPageComponent', () => {
   });
 
   describe('navigation', () => {
-    it('should navigate to /pedidos/nuevo on create', () => {
+    it('should navigate to /orders/new on create', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
@@ -176,7 +176,7 @@ describe('OrderListPageComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001']);
     });
 
-    it('should navigate to /pedidos/{id}/editar on edit', () => {
+    it('should navigate to /orders/{id}/edit on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockOrders[0]);

@@ -17,7 +17,7 @@ export const ORDER_ROUTES: Routes = [
         title: 'Pedidos',
       },
       {
-        path: 'nuevo',
+        path: 'new',
         loadComponent: () =>
           import('../pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,
@@ -33,7 +33,7 @@ export const ORDER_ROUTES: Routes = [
         title: 'Detalle del Pedido',
       },
       {
-        path: ':id/editar',
+        path: ':id/edit',
         loadComponent: () =>
           import('../pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,

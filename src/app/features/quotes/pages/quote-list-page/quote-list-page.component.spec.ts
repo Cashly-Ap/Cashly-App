@@ -157,7 +157,7 @@ describe('QuoteListPageComponent', () => {
   });
 
   describe('navigation', () => {
-    it('should navigate to /presupuestos/nuevo on create', () => {
+    it('should navigate to /budgets/new on create', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
@@ -171,7 +171,7 @@ describe('QuoteListPageComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/budgets', 'q-001']);
     });
 
-    it('should navigate to /presupuestos/{id}/editar on edit', () => {
+    it('should navigate to /budgets/{id}/edit on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockQuotes[0]);

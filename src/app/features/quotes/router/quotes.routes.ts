@@ -17,7 +17,7 @@ export const QUOTE_ROUTES: Routes = [
         title: 'Presupuestos',
       },
       {
-        path: 'nuevo',
+        path: 'new',
         loadComponent: () =>
           import('../pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,
@@ -33,7 +33,7 @@ export const QUOTE_ROUTES: Routes = [
         title: 'Detalle del Presupuesto',
       },
       {
-        path: ':id/editar',
+        path: ':id/edit',
         loadComponent: () =>
           import('../pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,

@@ -17,7 +17,7 @@ export const INVOICE_ROUTES: Routes = [
         title: 'Facturas',
       },
       {
-        path: 'nuevo',
+        path: 'new',
         loadComponent: () =>
           import('../pages/invoice-form-page/invoice-form-page.component').then(
             (m) => m.InvoiceFormPageComponent,
@@ -25,7 +25,7 @@ export const INVOICE_ROUTES: Routes = [
         title: 'Nueva Factura',
       },
       {
-        path: ':id/editar',
+        path: ':id/edit',
         loadComponent: () =>
           import('../pages/invoice-form-page/invoice-form-page.component').then(
             (m) => m.InvoiceFormPageComponent,

@@ -26,13 +26,13 @@ describe('Quote Routes', () => {
   });
 
   it('should have new quote route', () => {
-    const newRoute = QUOTE_ROUTES[0].children?.find((r) => r.path === 'nuevo');
+    const newRoute = QUOTE_ROUTES[0].children?.find((r) => r.path === 'new');
     expect(newRoute).toBeDefined();
     expect(newRoute?.title).toBe('Nuevo Presupuesto');
   });
 
   it('should have edit quote route', () => {
-    const editRoute = QUOTE_ROUTES[0].children?.find((r) => r.path === ':id/editar');
+    const editRoute = QUOTE_ROUTES[0].children?.find((r) => r.path === ':id/edit');
     expect(editRoute).toBeDefined();
     expect(editRoute?.title).toBe('Editar Presupuesto');
   });

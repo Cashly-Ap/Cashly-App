@@ -128,8 +128,8 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
         ? 'Editar Pedido'
         : 'Nuevo Pedido';
     const route = this.isEditMode()
-      ? `/pedidos/${this.orderId()}/editar`
-      : `/pedidos/nuevo?tabId=${this.tabId}`;
+      ? `/pedidos/${this.orderId()}/edit`
+      : `/pedidos/new?tabId=${this.tabId}`;
 
     this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'orders');
   }

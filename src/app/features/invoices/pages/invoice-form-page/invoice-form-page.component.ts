@@ -139,8 +139,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         ? 'Editar Factura'
         : 'Nueva Factura';
     const route = this.isEditMode()
-      ? `/facturas/${this.invoiceId()}/editar`
-      : `/facturas/nuevo?tabId=${this.tabId}`;
+      ? `/facturas/${this.invoiceId()}/edit`
+      : `/facturas/new?tabId=${this.tabId}`;
 
     this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'invoices');
   }
