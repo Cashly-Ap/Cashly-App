@@ -14,6 +14,9 @@ export interface CustomerInvoiceDebt {
   subtotal: number;
   returnedTotal: number;
   totalPaid: number;
+  creditApplied: number;
+  debitApplied: number;
+  total: number;
   balance: number;
   realBalance: number;
   pendingPayment: PendingPaymentSummary | null;

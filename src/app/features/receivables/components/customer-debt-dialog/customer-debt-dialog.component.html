@@ -169,7 +169,7 @@
               </td>
               <td class="text-right">
                 <span class="font-mono text-sm text-surface-900 dark:text-surface-0">
-                  {{ invoice.subtotal | currency : 'USD' : 'symbol' : '1.2-2' }}
+                  {{ invoice.total | currency : 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td class="text-right">
@@ -280,7 +280,7 @@
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-surface-500 dark:text-surface-400">Total</span>
                   <span class="font-mono text-surface-900 dark:text-surface-0">
-                    {{ invoice.subtotal | currency : 'USD' : 'symbol' : '1.2-2' }}
+                    {{ invoice.total | currency : 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
