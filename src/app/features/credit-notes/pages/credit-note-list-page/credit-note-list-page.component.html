@@ -124,8 +124,6 @@
                       <th class="w-auto"><div class="font-semibold">Cliente</div></th>
                       <th class="w-32"><div class="font-semibold">Factura</div></th>
                       <th class="w-28"><div class="font-semibold">Monto</div></th>
-                      <th class="w-auto hidden lg:table-cell"><div class="font-semibold">Motivo</div></th>
-                      <th class="w-28"><div class="font-semibold">Creado por</div></th>
                       <th class="w-36"><div class="font-semibold text-center">Acciones</div></th>
                     </tr>
                   </ng-template>
@@ -142,12 +140,6 @@
                       </td>
                       <td>
                         <div class="font-medium">{{ creditNote.amount | number:'1.2-2' }}</div>
-                      </td>
-                      <td class="hidden lg:table-cell">
-                        <div class="text-sm text-surface-500 truncate max-w-[200px]">{{ creditNote.reason }}</div>
-                      </td>
-                      <td>
-                        <div class="text-sm">{{ creditNote.createdByName }}</div>
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">
@@ -205,9 +197,6 @@
                       </p>
                       <p class="text-sm font-medium mb-1">
                         {{ creditNote.amount | number:'1.2-2' }}
-                      </p>
-                      <p class="text-xs text-surface-500 dark:text-surface-400">
-                        {{ creditNote.createdByName }}
                       </p>
                     </div>
                   </div>

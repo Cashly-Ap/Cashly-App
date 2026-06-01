@@ -1,22 +1,16 @@
-import { Component, input, output, inject, signal } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { environment } from '@env/environment';
 import { PendingPayment } from '../../models/interfaces';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
 
 function getPaymentStatusLabel(status: string): string {
   switch (status) {
-    case 'PENDING_APPROVAL':
-      return 'Pendiente de Aprobación';
-    case 'APPROVED':
-      return 'Aprobado';
-    case 'REJECTED':
-      return 'Rechazado';
-    case 'PENDING':
-      return 'Pendiente';
+    case 'APPLIED':
+      return 'Aplicado';
+    case 'CANCELLED':
+      return 'Cancelado';
     default:
       return status;
   }
@@ -24,14 +18,10 @@ function getPaymentStatusLabel(status: string): string {
 
 function getPaymentStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
   switch (status) {
-    case 'APPROVED':
+    case 'APPLIED':
       return 'success';
-    case 'PENDING_APPROVAL':
-      return 'warn';
-    case 'REJECTED':
+    case 'CANCELLED':
       return 'danger';
-    case 'PENDING':
-      return 'info';
     default:
       return 'info';
   }
@@ -44,8 +34,6 @@ function getPaymentStatusSeverity(status: string): 'success' | 'warn' | 'danger'
   templateUrl: './payment-detail-dialog.component.html',
 })
 export class PaymentDetailDialogComponent {
-  private service = inject(ReceivablesApplicationService);
-
   readonly visible = input.required<boolean>();
   readonly payment = input.required<PendingPayment | null>();
 
@@ -62,12 +50,5 @@ export class PaymentDetailDialogComponent {
     if (!isVisible) {
       this.onClose();
     }
-  }
-
-  protected onViewProof(): void {
-    const payment = this.payment();
-    if (!payment?.voucherPath) return;
-
-    window.open(payment.voucherPath, '_blank');
   }
 }

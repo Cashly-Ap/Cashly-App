@@ -57,33 +57,27 @@ export class ReceivablesApiService {
   payInvoice(
     invoiceId: string,
     request: PayInvoiceRequest,
-    voucherFile?: File,
   ): Observable<PaymentResult> {
-    const formData = this.buildFormData(request, voucherFile);
-    return this.http.post<PaymentResult>(`${this.baseUrl}/invoices/${invoiceId}/pay`, formData);
+    return this.http.post<PaymentResult>(`${this.baseUrl}/invoices/${invoiceId}/pay`, request);
   }
 
   payAllCustomerDebt(
     customerId: string,
     request: PayCustomerDebtRequest,
-    voucherFile?: File,
   ): Observable<BulkPaymentResult> {
-    const formData = this.buildFormData(request, voucherFile);
     return this.http.post<BulkPaymentResult>(
       `${this.baseUrl}/customers/${customerId}/pay-all`,
-      formData,
+      request,
     );
   }
 
   payPartialDebt(
     customerId: string,
     request: PayPartialDebtRequest,
-    voucherFile?: File,
   ): Observable<BulkPaymentResult> {
-    const formData = this.buildFormData(request, voucherFile);
     return this.http.post<BulkPaymentResult>(
       `${this.baseUrl}/customers/${customerId}/pay-partial`,
-      formData,
+      request,
     );
   }
 
@@ -101,25 +95,7 @@ export class ReceivablesApiService {
     });
   }
 
-  getMerchantPayments(params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>> {
-    const httpParams = this.buildParams(params);
-    return this.http.get<PagedResponse<PendingPayment>>(`${this.baseUrl}/payments/merchant`, {
-      params: httpParams,
-    });
-  }
 
-  approvePayment(
-    paymentId: string,
-    commissionPercentage?: number,
-  ): Observable<PaymentResult> {
-    return this.http.post<PaymentResult>(`${this.baseUrl}/payments/${paymentId}/approve`, {
-      commissionPercentage,
-    });
-  }
-
-  rejectPayment(paymentId: string, reason: string): Observable<PaymentResult> {
-    return this.http.post<PaymentResult>(`${this.baseUrl}/payments/${paymentId}/reject`, { reason });
-  }
 
   getCustomerPaymentHistory(
     customerId: string,
@@ -136,10 +112,6 @@ export class ReceivablesApiService {
     return this.http.get(`${this.baseUrl}/invoices/${invoiceId}/payment-history`);
   }
 
-  getPaymentProofImage(imageUrl: string): Observable<Blob> {
-    return this.http.get(imageUrl, { responseType: 'blob' });
-  }
-
   private buildParams(params?: ReceivablesSearchParams): HttpParams {
     let httpParams = new HttpParams();
     if (!params) return httpParams;
@@ -152,12 +124,4 @@ export class ReceivablesApiService {
     return httpParams;
   }
 
-  private buildFormData(request: object, voucherFile?: File): FormData {
-    const formData = new FormData();
-    formData.append('request', new Blob([JSON.stringify(request)], { type: 'application/json' }));
-    if (voucherFile) {
-      formData.append('voucherFile', voucherFile, voucherFile.name);
-    }
-    return formData;
-  }
 }

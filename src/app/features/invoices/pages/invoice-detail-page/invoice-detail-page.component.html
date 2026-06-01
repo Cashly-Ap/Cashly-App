@@ -73,7 +73,7 @@
                 <app-details-info-field label="Estado" type="badge">
                   <div class="flex gap-2 flex-wrap">
                     <app-text-badge
-                      [label]="getStatusLabel(currentInvoice.status)"
+                      [label]="currentInvoice.statusLabel"
                       [variant]="getStatusVariant(currentInvoice.status)"
                     />
                     @if (currentInvoice.returnStatus === 'PARTIAL') {

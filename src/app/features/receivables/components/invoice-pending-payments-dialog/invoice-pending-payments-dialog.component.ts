@@ -29,7 +29,7 @@ export class InvoicePendingPaymentsDialogComponent {
 
   protected dialogTitle = computed(() => {
     const num = this.invoiceNumber();
-    return num ? `Pagos Pendientes - Factura ${num}` : 'Pagos Pendientes';
+    return num ? `Historial de Pagos - Factura ${num}` : 'Historial de Pagos';
   });
 
   protected readonly isMerchant = computed(() => this.service.isMerchant());
@@ -58,13 +58,9 @@ export class InvoicePendingPaymentsDialogComponent {
 
   private loadPendingPayments(invoiceId: string): void {
     this.loading.set(true);
-    const params = { invoiceId, page: 0, size: 100, status: 'PENDING_APPROVAL' };
+    const params = { invoiceId, page: 0, size: 100 };
 
-    const request$ = this.service.isMerchant()
-      ? this.apiService.getMerchantPayments(params)
-      : this.apiService.getPendingPayments(params);
-
-    request$.subscribe({
+    this.apiService.getPendingPayments(params).subscribe({
       next: (response) => {
         this.payments.set(response.content ?? []);
         this.loading.set(false);

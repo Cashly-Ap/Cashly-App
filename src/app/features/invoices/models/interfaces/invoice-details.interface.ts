@@ -47,6 +47,7 @@ export interface InvoiceDetails {
   orderId: string | null;
   orderNumber: string | null;
   status: InvoiceStatus;
+  statusLabel: string;
   paymentType: PaymentType;
   notes: string | null;
   subtotal: number;

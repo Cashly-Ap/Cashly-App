@@ -7,6 +7,7 @@ export interface InvoiceList {
   customerId: string;
   customerName: string;
   status: InvoiceStatus;
+  statusLabel: string;
   paymentType: PaymentType;
   subtotal: number;
   total: number;

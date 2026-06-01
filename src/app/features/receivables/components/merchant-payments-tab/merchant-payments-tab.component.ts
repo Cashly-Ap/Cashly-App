@@ -11,20 +11,16 @@ import { PaymentDetailDialogComponent } from '../payment-detail-dialog/payment-d
 
 function getStatusLabel(status: string): string {
   switch (status) {
-    case 'PENDING_APPROVAL': return 'Pendiente de Aprobación';
-    case 'APPROVED': return 'Aprobado';
-    case 'REJECTED': return 'Rechazado';
-    case 'PENDING': return 'Pendiente';
+    case 'APPLIED': return 'Aplicado';
+    case 'CANCELLED': return 'Cancelado';
     default: return status;
   }
 }
 
-function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' {
+function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
   switch (status) {
-    case 'APPROVED': return 'success';
-    case 'PENDING_APPROVAL': return 'warn';
-    case 'REJECTED': return 'danger';
-    case 'PENDING': return 'info';
+    case 'APPLIED': return 'success';
+    case 'CANCELLED': return 'danger';
     default: return 'info';
   }
 }

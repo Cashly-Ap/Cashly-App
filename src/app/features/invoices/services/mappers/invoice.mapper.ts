@@ -11,6 +11,7 @@ export class InvoiceMapper {
       customerId: detail.customerId,
       customerName: detail.customerName,
       status: detail.status,
+      statusLabel: detail.statusLabel,
       paymentType: detail.paymentType,
       subtotal: detail.subtotal,
       total: detail.total,

@@ -23,6 +23,7 @@ interface InvoiceListApiResponse {
   customerId: string;
   customerName: string;
   status: string;
+  statusLabel: string;
   paymentType: string;
   subtotal: number;
   total: number;
@@ -48,6 +49,7 @@ interface InvoiceDetailApiResponse {
   orderId: string | null;
   orderNumber: string | null;
   status: string;
+  statusLabel: string;
   paymentType: string;
   notes: string | null;
   subtotal: number;
@@ -149,6 +151,7 @@ export class InvoiceApiService {
       customerId: r.customerId,
       customerName: r.customerName,
       status: r.status as InvoiceStatus,
+      statusLabel: r.statusLabel,
       paymentType: r.paymentType as PaymentType,
       subtotal: r.subtotal,
       total: r.total,
@@ -215,8 +218,9 @@ export class InvoiceApiService {
       orderId: r.orderId,
       orderNumber: r.orderNumber,
       status: r.status as InvoiceStatus,
-      paymentType: r.paymentType as PaymentType,
+      statusLabel: r.statusLabel,
       notes: r.notes,
+      paymentType: r.paymentType as PaymentType,
       subtotal: r.subtotal,
       creditApplied: r.creditApplied ?? 0,
       debitApplied: r.debitApplied ?? 0,

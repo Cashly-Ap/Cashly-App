@@ -25,25 +25,18 @@
       (onClick)="filterByStatus(null)"
     />
     <p-button
-      label="Pendientes"
-      severity="warn"
-      [outlined]="statusFilter() !== 'PENDING_APPROVAL'"
-      size="small"
-      (onClick)="filterByStatus('PENDING_APPROVAL')"
-    />
-    <p-button
-      label="Aprobados"
+      label="Aplicados"
       severity="success"
-      [outlined]="statusFilter() !== 'APPROVED'"
+      [outlined]="statusFilter() !== 'APPLIED'"
       size="small"
-      (onClick)="filterByStatus('APPROVED')"
+      (onClick)="filterByStatus('APPLIED')"
     />
     <p-button
-      label="Rechazados"
+      label="Cancelados"
       severity="danger"
-      [outlined]="statusFilter() !== 'REJECTED'"
+      [outlined]="statusFilter() !== 'CANCELLED'"
       size="small"
-      (onClick)="filterByStatus('REJECTED')"
+      (onClick)="filterByStatus('CANCELLED')"
     />
   </div>
 

@@ -204,7 +204,7 @@
                       </td>
                       <td>
                         <div class="flex gap-2 flex-wrap">
-                          <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
+                          <app-text-badge [label]="invoice.statusLabel" [variant]="getStatusVariant(invoice.status)" />
                           @if (invoice.returnStatus === 'PARTIAL') {
                             <app-text-badge label="Parcialmente Devuelta" variant="warning" />
                           }

@@ -1,6 +1,6 @@
 <app-main-layout>
   <div class="min-h-screen">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
       @if (loading()) {
         <app-loading-spinner />
       }
@@ -16,7 +16,7 @@
               [title]="dn.noteNumber"
               [subtitle]="'Monto: ' + (dn.amount | number:'1.2-2')"
             >
-              <div actions class="flex gap-3 flex-wrap">
+              <div actions class="flex gap-3">
                 <p-button
                   label="Volver"
                   icon="pi pi-arrow-left"
@@ -60,10 +60,6 @@
                   [value]="(dn.amount | number:'1.2-2') || ''"
                 />
                 <app-details-info-field
-                  label="Motivo"
-                  [value]="dn.reason"
-                />
-                <app-details-info-field
                   label="Creado por"
                   [value]="dn.createdByName"
                 />
@@ -78,6 +74,15 @@
               </app-details-info-grid>
             </div>
           </app-details-card>
+
+          @if (dn.reason) {
+            <app-details-card>
+              <app-details-card-header title="Motivo" />
+              <div class="p-4 sm:p-6">
+                <p class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap leading-relaxed">{{ dn.reason }}</p>
+              </div>
+            </app-details-card>
+          }
         </div>
       }
     </div>

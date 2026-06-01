@@ -11,12 +11,12 @@
   @if (loading()) {
     <div class="flex flex-col items-center justify-center py-12">
       <i class="pi pi-spin pi-spinner text-3xl text-surface-500 mb-4"></i>
-      <p class="text-surface-500">Cargando pagos pendientes...</p>
+      <p class="text-surface-500">Cargando pagos...</p>
     </div>
   } @else if (payments().length === 0) {
     <div class="flex flex-col items-center justify-center py-12">
-      <i class="pi pi-check-circle text-4xl text-green-400 mb-4"></i>
-      <p class="text-surface-500 font-medium">No hay pagos pendientes para esta factura</p>
+      <i class="pi pi-inbox text-4xl text-surface-300 mb-4"></i>
+      <p class="text-surface-500 font-medium">No hay pagos registrados para esta factura</p>
     </div>
   } @else {
     <p-table
@@ -41,12 +41,12 @@
           <td>{{ payment.paymentMethodName }}</td>
           <td>{{ payment.paymentDate | date : 'dd/MM/yyyy' }}</td>
           <td>
-            @if (payment.status === 'PENDING_APPROVAL') {
-              <span class="text-yellow-600 dark:text-yellow-400 font-medium">Pendiente</span>
-            } @else if (payment.status === 'APPROVED') {
-              <span class="text-green-600 dark:text-green-400 font-medium">Aprobado</span>
-            } @else if (payment.status === 'REJECTED') {
-              <span class="text-red-600 dark:text-red-400 font-medium">Rechazado</span>
+            @if (payment.status === 'APPLIED') {
+              <span class="text-green-600 dark:text-green-400 font-medium">Aplicado</span>
+            } @else if (payment.status === 'CANCELLED') {
+              <span class="text-red-600 dark:text-red-400 font-medium">Cancelado</span>
+            } @else {
+              <span class="text-surface-600 dark:text-surface-400 font-medium">{{ payment.status }}</span>
             }
           </td>
         </tr>

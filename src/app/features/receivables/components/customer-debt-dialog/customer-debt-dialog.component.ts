@@ -43,8 +43,6 @@ export class CustomerDebtDialogComponent {
   readonly payPartial = output<void>();
   readonly viewInvoicePaymentHistory = output<CustomerInvoiceDebt>();
   readonly viewInvoicePdf = output<CustomerInvoiceDebt>();
-  readonly approveInvoice = output<CustomerInvoiceDebt>();
-  readonly rejectInvoice = output<CustomerInvoiceDebt>();
 
   protected customer = computed(() => this.service.currentCustomer());
   protected invoices = computed(() => this.service.customerInvoices());
@@ -111,14 +109,6 @@ export class CustomerDebtDialogComponent {
     this.viewInvoicePdf.emit(invoice);
   }
 
-  protected onApproveInvoice(invoice: CustomerInvoiceDebt): void {
-    this.approveInvoice.emit(invoice);
-  }
-
-  protected onRejectInvoice(invoice: CustomerInvoiceDebt): void {
-    this.rejectInvoice.emit(invoice);
-  }
-
   protected onStatusFilterChange(filter: InvoiceStatusFilter): void {
     this.selectedStatusFilter.set(filter);
     this.invoiceFirst.set(0);
@@ -142,6 +132,8 @@ export class CustomerDebtDialogComponent {
         return 'Parcial';
       case 'PAID':
         return 'Pagado';
+      case 'PARTIALLY_PAID':
+        return 'Pagada parcialmente';
       case 'CANCELLED':
         return 'Cancelada';
       default:

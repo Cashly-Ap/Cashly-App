@@ -159,12 +159,11 @@ export class ReceivablesApplicationService {
   payInvoice(
     invoiceId: string,
     request: PayInvoiceRequest,
-    voucherFile?: File,
   ): Observable<PaymentResult | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.payInvoice(invoiceId, request, voucherFile).pipe(
+    return this.api.payInvoice(invoiceId, request).pipe(
       tap({
         next: () => {
           this.messageService.add({
@@ -192,12 +191,11 @@ export class ReceivablesApplicationService {
   payAllCustomerDebt(
     customerId: string,
     request: PayCustomerDebtRequest,
-    voucherFile?: File,
   ): Observable<BulkPaymentResult | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.payAllCustomerDebt(customerId, request, voucherFile).pipe(
+    return this.api.payAllCustomerDebt(customerId, request).pipe(
       tap({
         next: () => {
           this.messageService.add({
@@ -225,12 +223,11 @@ export class ReceivablesApplicationService {
   payPartialDebt(
     customerId: string,
     request: PayPartialDebtRequest,
-    voucherFile?: File,
   ): Observable<BulkPaymentResult | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.payPartialDebt(customerId, request, voucherFile).pipe(
+    return this.api.payPartialDebt(customerId, request).pipe(
       tap({
         next: () => {
           this.messageService.add({
@@ -314,7 +311,7 @@ export class ReceivablesApplicationService {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getMerchantPayments(params).pipe(
+    return this.api.getPaymentHistory(params).pipe(
       tap({
         next: (res) => {
           this.merchantPayments.set(res.content ?? []);
@@ -362,67 +359,6 @@ export class ReceivablesApplicationService {
     );
   }
 
-  approvePayment(
-    paymentId: string,
-    commissionPercentage?: number,
-  ): Observable<PaymentResult | null> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.api.approvePayment(paymentId, commissionPercentage).pipe(
-      tap({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Pago aprobado exitosamente',
-            life: 3000,
-          });
-        },
-        error: () => {
-          this.error.set(RECEIVABLES_ERROR_MESSAGES.APPROVE_PAYMENT_FAILED);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: RECEIVABLES_ERROR_MESSAGES.APPROVE_PAYMENT_FAILED,
-            life: 5000,
-          });
-        },
-      }),
-      catchError(() => of(null)),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
-  rejectPayment(paymentId: string, reason: string): Observable<PaymentResult | null> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.api.rejectPayment(paymentId, reason).pipe(
-      tap({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Pago rechazado exitosamente',
-            life: 3000,
-          });
-        },
-        error: () => {
-          this.error.set(RECEIVABLES_ERROR_MESSAGES.REJECT_PAYMENT_FAILED);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: RECEIVABLES_ERROR_MESSAGES.REJECT_PAYMENT_FAILED,
-            life: 5000,
-          });
-        },
-      }),
-      catchError(() => of(null)),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
   clearCurrentCustomer(): void {
     this.currentCustomer.set(null);
     this.customerInvoices.set([]);
@@ -433,7 +369,4 @@ export class ReceivablesApplicationService {
     this.error.set(null);
   }
 
-  getPaymentProofImageUrl(imageUrl: string): Observable<Blob> {
-    return this.api.getPaymentProofImage(imageUrl);
-  }
 }

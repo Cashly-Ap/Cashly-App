@@ -137,7 +137,10 @@ export class PaymentFormDialogComponent implements OnInit {
         if (isLoading) {
           ctrl.disable({ emitEvent: false });
         } else {
-          if (name === 'amount' && this.mode() === 'all') return;
+          if (name === 'amount' && this.mode() === 'all') {
+            ctrl.disable({ emitEvent: false });
+            return;
+          }
           ctrl.enable({ emitEvent: false });
         }
       });
@@ -146,8 +149,9 @@ export class PaymentFormDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.initForm();
+    this.setupAmountClamp();
     this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(catchError(() => of([]))).subscribe(res => {
-      const methods = res.map(pm => ({ label: pm.name, value: pm.code }));
+      const methods = res.map(pm => ({ label: pm.name, value: pm.id }));
       this.paymentMethods.set(methods);
       if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
         this.form.patchValue({ paymentMethodId: methods[0].value });
@@ -212,6 +216,19 @@ export class PaymentFormDialogComponent implements OnInit {
     if (this.mode() === 'all') {
       this.form.get('amount')?.disable();
     }
+  }
+
+  private setupAmountClamp(): void {
+    const amountCtrl = this.form.get('amount');
+    if (!amountCtrl) return;
+
+    amountCtrl.valueChanges.subscribe(value => {
+      if (!this.showAmountField()) return;
+      const max = this.maxAmount();
+      if (value != null && max > 0 && value > max) {
+        amountCtrl.patchValue(max, { emitEvent: false });
+      }
+    });
   }
 
   private formatDate(date: Date): string {

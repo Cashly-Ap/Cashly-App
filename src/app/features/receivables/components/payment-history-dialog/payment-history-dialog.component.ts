@@ -2,7 +2,7 @@ import { Component, input, output, inject, signal, effect, computed } from '@ang
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
+
 import { PaginatorModule } from 'primeng/paginator';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApiService } from '../../services/api/receivables-api.service';
@@ -11,7 +11,7 @@ import { PendingPayment } from '../../models/interfaces';
 @Component({
   selector: 'app-payment-history-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TableModule, TagModule, PaginatorModule, CurrencyPipe, DatePipe],
+  imports: [DialogModule, ButtonModule, TableModule, PaginatorModule, CurrencyPipe, DatePipe],
   templateUrl: './payment-history-dialog.component.html',
 })
 export class PaymentHistoryDialogComponent {
@@ -29,22 +29,6 @@ export class PaymentHistoryDialogComponent {
   protected totalAmount = computed(() =>
     this.payments().reduce((sum, p) => sum + p.amount, 0),
   );
-
-  protected getStatusSeverity(status: string): 'success' | 'danger' | 'warn' | 'info' {
-    switch (status) {
-      case 'APPROVED': return 'success';
-      case 'REJECTED': return 'danger';
-      default: return 'warn';
-    }
-  }
-
-  protected getStatusLabel(status: string): string {
-    switch (status) {
-      case 'APPROVED': return 'Aprobado';
-      case 'REJECTED': return 'Rechazado';
-      default: return 'Pendiente';
-    }
-  }
 
   protected dialogTitle = computed(() => {
     if (this.payments().length > 0) {
