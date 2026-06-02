@@ -120,8 +120,28 @@
           optionValue="value"
           styleClass="w-full"
           appendTo="body"
+          (onChange)="onPaymentTypeChange($event.value)"
         />
       </div>
+
+      @if (creditWarningMessage(); as warning) {
+        <div class="rounded-lg p-3 border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 flex items-start gap-3">
+          <i class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"></i>
+          <div class="flex flex-col gap-1">
+            <span class="font-semibold text-sm text-amber-800 dark:text-amber-300">Crédito Insuficiente</span>
+            <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed">{{ warning.message }}</p>
+            <div class="flex flex-wrap gap-3 mt-1 text-xs text-amber-600 dark:text-amber-400">
+              <span>Límite: <strong>{{ warning.creditLimit | number:'1.2-2' }}</strong></span>
+              <span>Disponible: <strong>{{ warning.availableCredit | number:'1.2-2' }}</strong></span>
+              <span>Total: <strong>{{ warning.invoiceTotal | number:'1.2-2' }}</strong></span>
+            </div>
+            <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
+              <i class="pi pi-info-circle mr-1"></i>
+              Selecciona un tipo de pago diferente o contacta al administrador para regularizar el crédito.
+            </p>
+          </div>
+        </div>
+      }
     }
   </div>
 
@@ -137,7 +157,7 @@
         label="Convertir a Factura"
         icon="pi pi-file"
         severity="success"
-        [disabled]="loading() || hasAnyNegativeStock() || !quoteInfo()"
+        [disabled]="loading() || hasAnyNegativeStock() || creditBlocked() || !quoteInfo()"
         (onClick)="onConfirm()"
       />
     </div>

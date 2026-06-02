@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -28,12 +29,15 @@ import { CustomerPickerDialogComponent } from '@features/orders/components/custo
 import { PaymentType, PAYMENT_TYPE_LABELS } from '@features/invoices/models/enums';
 import { InvoiceFormData } from '@features/invoices/models/interfaces';
 import { INVOICE_SUCCESS_MESSAGES } from '@features/invoices/messages';
+import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
+import { CreditStatusResponse } from '@features/receivables/models/interfaces';
 
 @Component({
   selector: 'app-invoice-form-page',
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    DecimalPipe,
     ButtonModule,
     TextareaModule,
     SelectModule,
@@ -55,6 +59,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   private readonly invoiceService = inject(InvoiceApplicationService);
   private readonly messageService = inject(MessageService);
   private readonly pendingTabsService = inject(PendingTabsService);
+  private readonly receivablesApi = inject(ReceivablesApiService);
 
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   private isSubmitted = false;
@@ -71,6 +76,47 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
 
   readonly submitTooltip = signal('');
+
+  readonly creditStatus = signal<CreditStatusResponse | null>(null);
+
+  readonly creditWarningMessage = computed(() => {
+    const status = this.creditStatus();
+    const paymentType = this.form.get('paymentType')?.value;
+    const total = this.total();
+
+    if (!status || paymentType !== PaymentType.CREDIT) return null;
+    if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice) return null;
+
+    return {
+      hasOverdue: status.hasOverdue,
+      canCreateCreditInvoice: status.canCreateCreditInvoice,
+      creditLimit: status.creditLimit,
+      availableCredit: status.availableCredit,
+      invoiceTotal: total,
+      message: this.buildCreditWarningMessage(status, total),
+    };
+  });
+
+  private buildCreditWarningMessage(status: CreditStatusResponse, total: number): string {
+    const parts: string[] = [];
+
+    if (status.hasOverdue) {
+      parts.push('El cliente tiene facturas vencidas.');
+    }
+
+    if (total > status.availableCredit) {
+      const deficit = total - status.availableCredit;
+      parts.push(
+        `El total de la factura (${total.toLocaleString()}) excede el crédito disponible (${status.availableCredit.toLocaleString()}) por ${deficit.toLocaleString()}.`,
+      );
+    }
+
+    if (!status.canCreateCreditInvoice) {
+      parts.push('El cliente no puede crear facturas a crédito.');
+    }
+
+    return parts.join(' ');
+  }
 
   private readonly FIELD_LABELS: Record<string, string> = {
     customerId: 'Cliente',
@@ -109,6 +155,16 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       this.restoreFromPendingTab();
     }
     this.form.controls.notes.valueChanges.subscribe(() => this.scheduleAutoSave());
+
+    // Fetch credit status when payment type changes
+    this.form.controls.paymentType.valueChanges.subscribe((paymentType) => {
+      const customerId = this.selectedCustomerId();
+      if (customerId && paymentType === PaymentType.CREDIT) {
+        this.loadCreditStatus(customerId);
+      } else {
+        this.creditStatus.set(null);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -210,6 +266,13 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private loadCreditStatus(customerId: string): void {
+    this.receivablesApi.getCreditStatus(customerId).subscribe({
+      next: (status) => this.creditStatus.set(status),
+      error: () => this.creditStatus.set(null),
+    });
+  }
+
   openPicker(): void {
     this.pickerVisible.set(true);
   }
@@ -220,6 +283,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.form.patchValue({ customerId: customer.id });
     this.pickerVisible.set(false);
     this.scheduleAutoSave();
+
+    // If payment type is already CREDIT, fetch credit status for the new customer
+    if (this.form.get('paymentType')?.value === PaymentType.CREDIT) {
+      this.loadCreditStatus(customer.id);
+    }
   }
 
   onPickerCancelled(): void {
