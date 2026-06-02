@@ -60,6 +60,20 @@
               {{ customer()!.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
+          <div class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Límite de Crédito</span>
+            <span class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0">
+              {{ customer()!.creditLimit | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Crédito Disponible</span>
+            <span class="font-mono text-base font-bold"
+                  [class.text-green-600]="customer()!.availableCredit > 0"
+                  [class.text-red-600]="customer()!.availableCredit <= 0">
+              {{ customer()!.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
         </div>
       </div>
     </div>

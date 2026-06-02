@@ -120,24 +120,39 @@
               >
                 <ng-template pTemplate="header">
                   <tr>
-                    <th pSortableColumn="customerName" class="bg-surface-50 dark:bg-surface-800">
-                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200">
-                        <i class="pi pi-user text-sm"></i>
+                    <th class="bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 cursor-pointer select-none"
+                           (click)="toggleSort('customerName')">
                         Cliente
-                        <p-sortIcon field="customerName" />
+                        <i [class]="sortIcon('customerName')"></i>
                       </div>
                     </th>
-                    <th pSortableColumn="totalDebt" class="text-right bg-surface-50 dark:bg-surface-800">
-                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200 justify-end">
-                        <i class="pi pi-money-bill text-sm"></i>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                           (click)="toggleSort('totalDebt')">
                         Deuda Total
-                        <p-sortIcon field="totalDebt" />
+                        <i [class]="sortIcon('totalDebt')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                           (click)="toggleSort('creditLimit')">
+                        Límite Crédito
+                        <i [class]="sortIcon('creditLimit')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                           (click)="toggleSort('availableCredit')">
+                        Crédito Disponible
+                        <i [class]="sortIcon('availableCredit')"></i>
                       </div>
                     </th>
                     <th class="text-center bg-surface-50 dark:bg-surface-800">
-                      <div class="flex items-center gap-2 font-semibold text-surface-700 dark:text-surface-200 justify-center">
-                        <i class="pi pi-file text-sm"></i>
+                      <div class="flex items-center gap-2 justify-center cursor-pointer select-none"
+                           (click)="toggleSort('pendingInvoicesCount')">
                         Facturas Pendientes
+                        <i [class]="sortIcon('pendingInvoicesCount')"></i>
                       </div>
                     </th>
                     <th class="text-center bg-surface-50 dark:bg-surface-800">
@@ -164,6 +179,22 @@
                         {{ customer.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                        {{ customer.creditLimit | currency : 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      @if (customer.availableCredit > 0) {
+                        <span class="font-mono font-semibold text-green-600 dark:text-green-400">
+                          {{ customer.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      } @else {
+                        <span class="font-mono font-semibold text-red-600 dark:text-red-400">
+                          {{ customer.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      }
+                    </td>
                     <td class="text-center">
                       <span class="inline-flex items-center justify-center px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-sm font-semibold rounded-full">
                         {{ customer.pendingInvoicesCount }}
@@ -184,17 +215,17 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                   <tr>
-                    <td colspan="4" class="py-16">
+                    <td colspan="6" class="py-16">
                       <div class="flex flex-col items-center gap-4">
                         <div class="w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center">
                           <i class="pi pi-users text-4xl text-surface-400"></i>
                         </div>
                         <div class="text-center">
                           <p class="text-lg font-semibold text-surface-700 dark:text-surface-200 mb-1">
-                            No hay clientes con deuda
+                            No se encontraron clientes
                           </p>
                           <p class="text-sm text-surface-500 dark:text-surface-400">
-                            Todos los clientes están al día con sus pagos
+                            No hay clientes registrados en el sistema
                           </p>
                         </div>
                       </div>
@@ -228,6 +259,22 @@
                         <span class="text-xs font-medium text-surface-600 dark:text-surface-400">Deuda Total</span>
                         <span class="font-mono font-bold text-red-600 dark:text-red-400">
                           {{ customer.totalDebt | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400">
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">Límite Crédito</span>
+                        <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                          {{ customer.creditLimit | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4"
+                           [class.border-green-500]="customer.availableCredit > 0"
+                           [class.border-red-500]="customer.availableCredit <= 0">
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">Crédito Disponible</span>
+                        <span class="font-mono font-semibold"
+                              [class.text-green-600]="customer.availableCredit > 0"
+                              [class.text-red-600]="customer.availableCredit <= 0">
+                          {{ customer.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
                         </span>
                       </div>
                       <div class="flex items-center justify-between">

@@ -66,6 +66,8 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
+  readonly sortField = signal<string>('');
+  readonly sortOrder = signal<number>(0);
 
   readonly customerDebtVisible = signal(false);
   readonly selectedCustomer = signal<CustomerDebtList | null>(null);
@@ -127,6 +129,25 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.loadCustomers();
   }
 
+  toggleSort(field: string): void {
+    if (this.sortField() === field) {
+      const nextOrder = this.sortOrder() === 0 ? 1 : this.sortOrder() === 1 ? -1 : 0;
+      this.sortOrder.set(nextOrder);
+      if (nextOrder === 0) this.sortField.set('');
+    } else {
+      this.sortField.set(field);
+      this.sortOrder.set(1);
+    }
+    this.first.set(0);
+    this.loadCustomers();
+  }
+
+  sortIcon(field: string): string {
+    if (this.sortField() !== field) return 'pi pi-fw pi-sort-alt text-surface-400';
+    return this.sortOrder() === 1
+      ? 'pi pi-fw pi-sort-up font-bold text-primary'
+      : 'pi pi-fw pi-sort-down font-bold text-primary';
+  }
 
   onViewCustomerDebt(customer: CustomerDebtList): void {
     this.selectedCustomer.set(customer);
@@ -259,6 +280,9 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     };
     if (this.searchTerm()) {
       params.search = this.searchTerm();
+    }
+    if (this.sortField() && this.sortOrder() !== 0) {
+      params.sort = `${this.sortField()},${this.sortOrder() === 1 ? 'asc' : 'desc'}`;
     }
     this.service.searchCustomersWithDebt(params)
       .pipe(takeUntil(this.destroy$))

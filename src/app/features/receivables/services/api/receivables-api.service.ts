@@ -14,6 +14,7 @@ import {
   PayInvoiceRequest,
   PayCustomerDebtRequest,
   PayPartialDebtRequest,
+  CreditStatusResponse,
 } from '../../models/interfaces';
 
 export interface ReceivablesSearchParams {
@@ -110,6 +111,10 @@ export class ReceivablesApiService {
 
   getInvoicePaymentHistory(invoiceId: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/invoices/${invoiceId}/payment-history`);
+  }
+
+  getCreditStatus(customerId: string): Observable<CreditStatusResponse> {
+    return this.http.get<CreditStatusResponse>(`${environment.apiUrl}/credit/${customerId}`);
   }
 
   private buildParams(params?: ReceivablesSearchParams): HttpParams {

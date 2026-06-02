@@ -9,4 +9,6 @@ export interface CustomerDebtList {
   validatedInvoicesCount: number;
   pendingInvoicesCount: number;
   oldestInvoiceDate: string;
+  creditLimit: number;
+  availableCredit: number;
 }
