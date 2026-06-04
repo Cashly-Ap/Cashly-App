@@ -1,0 +1,7 @@
+export enum BalanceType {
+  ADVANCED = 'ADVANCED',
+  RETURNS = 'RETURNS',
+  PAYMENTS = 'PAYMENTS',
+  INVOICES = 'INVOICES',
+  REFUND = 'REFUND',
+}

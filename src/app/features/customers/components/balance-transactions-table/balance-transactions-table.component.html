@@ -1,0 +1,67 @@
+<p-table
+  [value]="transactions()"
+  [loading]="loading()"
+  [paginator]="true"
+  [rows]="rows()"
+  [first]="first()"
+  [totalRecords]="totalRecords()"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [lazy]="true"
+  (onPage)="pageChanged.emit($event)"
+  dataKey="id"
+  styleClass="w-full"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="createdAt" class="w-40">
+        <div class="flex items-center gap-2">Fecha <p-sortIcon field="createdAt" /></div>
+      </th>
+      <th pSortableColumn="type" class="w-28">Tipo</th>
+      <th pSortableColumn="amount" class="w-28 text-right">Monto</th>
+      <th class="w-36">Saldo Antes / Después</th>
+      <th class="w-40">Referencia</th>
+      <th>Notas</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-tx>
+    <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
+      <td class="text-sm text-surface-600 dark:text-surface-400">
+        {{ tx.createdAt | date:'dd/MM/yyyy HH:mm' }}
+      </td>
+      <td>
+        <span [class]="typeBadgeClass(tx.type)">
+          {{ tx.type }}
+        </span>
+      </td>
+      <td class="text-right font-medium" [class.text-green-600]="tx.amount >= 0" [class.text-red-600]="tx.amount < 0">
+        {{ tx.amount | currency:'USD':'symbol':'1.2-2' }}
+      </td>
+      <td class="text-sm text-surface-600 dark:text-surface-400">
+        <span class="font-mono">{{ tx.balanceBefore | number:'1.2-2' }}</span>
+        <i class="pi pi-arrow-right text-xs mx-1"></i>
+        <span class="font-mono">{{ tx.balanceAfter | number:'1.2-2' }}</span>
+      </td>
+      <td class="text-sm text-surface-600 dark:text-surface-400">
+        @if (tx.referenceType) {
+          <span class="font-medium">{{ tx.referenceType }}</span>
+          @if (tx.referenceId) {
+            <span class="text-surface-400 mx-1">·</span>
+            <span class="font-mono text-xs">{{ tx.referenceId }}</span>
+          }
+        }
+      </td>
+      <td class="text-sm text-surface-500 dark:text-surface-400 max-w-xs truncate">
+        {{ tx.notes ?? '-' }}
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="6" class="text-center py-12 text-surface-400 dark:text-surface-500">
+        No se encontraron movimientos
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
