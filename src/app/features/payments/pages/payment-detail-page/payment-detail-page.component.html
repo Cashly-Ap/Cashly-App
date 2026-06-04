@@ -67,8 +67,8 @@
                   [value]="(p.amount | number:'1.2-2') || ''"
                 />
                 <app-details-info-field
-                  label="Tipo"
-                  [value]="labelForType(p.paymentType) || '—'"
+                  label="Estado"
+                  [value]="p.status || '—'"
                 />
                 <app-details-info-field
                   label="Referencia"

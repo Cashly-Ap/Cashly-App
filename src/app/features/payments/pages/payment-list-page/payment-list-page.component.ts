@@ -22,7 +22,7 @@ import { ListContainerComponent } from '@shared/components/list/list-container/l
 import { PaymentApplicationService } from '../../services/application/payment-application.service';
 import { PaymentFilters } from '../../services/api/payment-api.service';
 import { PaymentList } from '../../models/interfaces';
-import { PaymentType, PAYMENT_TYPE_LABELS } from '../../models/enums';
+
 
 @Component({
   selector: 'app-payment-list-page',
@@ -57,12 +57,6 @@ export class PaymentListPageComponent implements OnInit {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
 
-  readonly PAYMENT_TYPE_LABELS = PAYMENT_TYPE_LABELS;
-
-  getPaymentTypeLabel(type: PaymentType): string {
-    return PAYMENT_TYPE_LABELS[type] ?? type;
-  }
-
   payments = this.service.payments;
   loading = this.service.loading;
   totalElements = this.service.totalElements;
@@ -72,18 +66,11 @@ export class PaymentListPageComponent implements OnInit {
   rows = signal(10);
   dateFrom = signal<string | null>(null);
   dateTo = signal<string | null>(null);
-  selectedPaymentType = signal<PaymentType | null>(null);
-
-  paymentTypeOptions = Object.values(PaymentType).map((type) => ({
-    value: type,
-    label: PAYMENT_TYPE_LABELS[type],
-  }));
 
   activeFilterCount = computed(() => {
     let count = 0;
     if (this.dateFrom()) count++;
     if (this.dateTo()) count++;
-    if (this.selectedPaymentType()) count++;
     return count;
   });
 
@@ -94,14 +81,13 @@ export class PaymentListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       !this.dateFrom() &&
       !this.dateTo() &&
-      !this.searchTerm() &&
-      !this.selectedPaymentType(),
+      !this.searchTerm(),
   );
   hasFilteredResults = computed(
     () =>
       !this.loading() &&
       this.totalElements() === 0 &&
-      (this.dateFrom() || this.dateTo() || !!this.searchTerm() || !!this.selectedPaymentType()),
+      (this.dateFrom() || this.dateTo() || !!this.searchTerm()),
   );
 
   ngOnInit(): void {
@@ -123,7 +109,6 @@ export class PaymentListPageComponent implements OnInit {
   clearFilters(): void {
     this.dateFrom.set(null);
     this.dateTo.set(null);
-    this.selectedPaymentType.set(null);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -171,7 +156,6 @@ export class PaymentListPageComponent implements OnInit {
     const filters: PaymentFilters = {};
     if (this.dateFrom()) filters.dateFrom = this.dateFrom()!;
     if (this.dateTo()) filters.dateTo = this.dateTo()!;
-    if (this.selectedPaymentType()) filters.paymentType = this.selectedPaymentType()!;
     this.service.loadPayments(filters).subscribe();
   }
 }

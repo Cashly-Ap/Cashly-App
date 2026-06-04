@@ -10,7 +10,7 @@ export class PaymentMapper {
       customerName: detail.customerName,
       invoiceNumber: detail.invoiceNumber,
       amount: detail.amount,
-      paymentType: detail.paymentType,
+      status: detail.status,
       createdByName: detail.createdByName,
       createdAt: detail.createdAt,
     };

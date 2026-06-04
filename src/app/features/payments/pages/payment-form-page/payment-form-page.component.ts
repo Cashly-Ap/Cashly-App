@@ -15,7 +15,6 @@ import {
 } from '@core/forms/components';
 import { PaymentApplicationService } from '../../services/application/payment-application.service';
 import { PaymentCreate, PaymentUpdate } from '../../models/interfaces';
-import { PaymentType, PAYMENT_TYPE_LABELS } from '../../models/enums';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 
 interface PaymentFormData {
@@ -25,7 +24,6 @@ interface PaymentFormData {
   invoiceNumber: string;
   amount: number;
   reference: string;
-  paymentType: PaymentType;
 }
 
 interface CustomerOption {
@@ -69,16 +67,10 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
   filteredCustomers: CustomerOption[] = [];
   filteredInvoices: InvoiceOption[] = [];
 
-  paymentTypeOptions = Object.values(PaymentType).map((type) => ({
-    value: type,
-    label: PAYMENT_TYPE_LABELS[type],
-  }));
-
   private readonly FIELD_LABELS: Record<string, string> = {
     customerName: 'Cliente',
     invoiceId: 'Factura',
     amount: 'Monto',
-    paymentType: 'Tipo de Pago',
   };
 
   override ngOnInit(): void {
@@ -112,7 +104,6 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
       invoiceNumber: ['', Validators.required],
       amount: [null, [Validators.required, Validators.min(0.01)]],
       reference: ['', Validators.maxLength(100)],
-      paymentType: [PaymentType.PAYMENT, Validators.required],
     });
   }
 
@@ -157,7 +148,6 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
           id: this.entityId()!,
           amount: value.amount,
           reference: value.reference || undefined,
-          paymentType: value.paymentType,
         };
 
         this.service.updatePayment(this.entityId()!, payload).subscribe({
@@ -186,7 +176,6 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
           invoiceId: value.invoiceId,
           amount: value.amount,
           reference: value.reference || undefined,
-          paymentType: value.paymentType,
         };
 
         this.service.createPayment(payload).subscribe({

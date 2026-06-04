@@ -12,7 +12,7 @@ export interface PaymentFilters {
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
-  paymentType?: string;
+  status?: string;
 }
 
 interface PaymentListApiResponse {
@@ -21,7 +21,7 @@ interface PaymentListApiResponse {
   customerName: string | null;
   invoiceNumber: string | null;
   amount: number;
-  paymentType: string;
+  status: string;
   createdByName: string;
   createdAt: string;
 }
@@ -36,7 +36,7 @@ interface PaymentDetailApiResponse {
   invoiceNumber: string | null;
   amount: number;
   reference: string | null;
-  paymentType: string;
+  status: string;
   createdBy: string;
   createdByName: string;
   createdAt: string;
@@ -53,7 +53,7 @@ export class PaymentApiService {
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
-    if (filters?.paymentType) params = params.set('paymentType', filters.paymentType);
+    if (filters?.status) params = params.set('status', filters.status);
     return this.http
       .get<PaymentListApiResponse[]>(this.baseUrl, { params })
       .pipe(map((items) => items.map((r) => this.toPaymentList(r))));
@@ -88,7 +88,7 @@ export class PaymentApiService {
       customerName: r.customerName,
       invoiceNumber: r.invoiceNumber,
       amount: r.amount,
-      paymentType: r.paymentType as PaymentList['paymentType'],
+      status: r.status,
       createdByName: r.createdByName,
       createdAt: r.createdAt,
     };
@@ -105,7 +105,7 @@ export class PaymentApiService {
       invoiceNumber: r.invoiceNumber,
       amount: r.amount,
       reference: r.reference,
-      paymentType: r.paymentType as PaymentDetail['paymentType'],
+      status: r.status,
       createdBy: r.createdBy,
       createdByName: r.createdByName,
       createdAt: r.createdAt,

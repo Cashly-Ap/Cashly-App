@@ -1,12 +1,10 @@
-import { PaymentType } from '../enums';
-
 export interface PaymentList {
   id: string;
   paymentNumber: string;
   customerName: string | null;
   invoiceNumber: string | null;
   amount: number;
-  paymentType: PaymentType;
+  status: string;
   createdByName: string;
   createdAt: string;
 }
@@ -21,7 +19,7 @@ export interface PaymentDetail {
   invoiceNumber: string | null;
   amount: number;
   reference: string | null;
-  paymentType: PaymentType;
+  status: string;
   createdBy: string;
   createdByName: string;
   createdAt: string;
@@ -33,14 +31,10 @@ export interface PaymentCreate {
   invoiceId: string;
   amount: number;
   reference?: string;
-  paymentType: PaymentType;
 }
 
 export interface PaymentUpdate {
   id: string;
-  customerId?: string;
-  invoiceId?: string;
   amount?: number;
   reference?: string;
-  paymentType?: PaymentType;
 }

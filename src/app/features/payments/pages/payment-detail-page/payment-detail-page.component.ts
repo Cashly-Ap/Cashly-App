@@ -16,7 +16,7 @@ import {
   PageHeaderComponent,
 } from '@shared/components/ui';
 import { PaymentApplicationService } from '../../services/application/payment-application.service';
-import { PaymentType, getPaymentTypeLabel } from '../../models/enums';
+
 
 @Component({
   selector: 'app-payment-detail-page',
@@ -47,10 +47,6 @@ export class PaymentDetailPageComponent implements OnInit {
 
   readonly payment = this.service.currentPayment;
   readonly loading = this.service.loading;
-
-  labelForType(type: PaymentType): string {
-    return getPaymentTypeLabel(type);
-  }
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');

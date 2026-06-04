@@ -1,0 +1,127 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      @if (loading()) {
+        <app-loading-spinner />
+      }
+      @if (advance(); as a) {
+        <div class="flex flex-col gap-6">
+          <app-page-header
+            title="Detalle del Anticipo"
+            subtitle="Información completa del anticipo"
+          />
+
+          <app-details-card>
+            <app-details-card-header
+              [title]="a.advanceNumber"
+              [subtitle]="'Monto: ' + (a.amount | number:'1.2-2')"
+            >
+              <div actions class="flex gap-3 flex-wrap">
+                <p-button
+                  label="Volver"
+                  icon="pi pi-arrow-left"
+                  [outlined]="true"
+                  (onClick)="onBack()"
+                  styleClass="w-full sm:w-auto"
+                />
+                @if (a.status === 'ACTIVE' || a.status === 'PARTIALLY_CONSUMED') {
+                  <p-button
+                    label="Anular"
+                    icon="pi pi-ban"
+                    severity="danger"
+                    (onClick)="onCancel()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
+              </div>
+            </app-details-card-header>
+
+            <div class="p-4 sm:p-6">
+              <app-details-info-grid>
+                <app-details-info-field
+                  label="Número"
+                  [value]="a.advanceNumber"
+                  type="code"
+                />
+                <app-details-info-field
+                  label="Monto"
+                  [value]="(a.amount | number:'1.2-2') || ''"
+                />
+                <app-details-info-field
+                  label="Monto Restante"
+                  [value]="(a.remainingAmount | number:'1.2-2') || ''"
+                />
+                <app-details-info-field label="Estado">
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': a.status === 'ACTIVE',
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': a.status === 'PARTIALLY_CONSUMED',
+                      'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': a.status === 'FULLY_CONSUMED',
+                      'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': a.status === 'CANCELLED'
+                    }"
+                  >
+                    {{ labelForStatus(a.status) }}
+                  </span>
+                </app-details-info-field>
+                <app-details-info-field
+                  label="Notas"
+                  [value]="a.notes || '—'"
+                  [colspan]="'full'"
+                />
+                <app-details-info-field
+                  label="Fecha de Creación"
+                  [value]="(a.createdAt | date:'dd/MM/yyyy HH:mm') || ''"
+                />
+                <app-details-info-field
+                  label="Última Actualización"
+                  [value]="(a.updatedAt | date:'dd/MM/yyyy HH:mm') || ''"
+                />
+              </app-details-info-grid>
+            </div>
+          </app-details-card>
+
+          <!-- Consumptions Section -->
+          @if (a.consumptions && a.consumptions.length > 0) {
+            <app-details-card>
+              <app-details-card-header
+                title="Consumos del Anticipo"
+                [subtitle]="'Total de consumos: ' + a.consumptions.length"
+              />
+              <div class="p-4 sm:p-6">
+                <div class="overflow-x-auto">
+                  <p-table
+                    [value]="a.consumptions"
+                    styleClass="p-datatable-striped"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="w-36"><div class="font-semibold">Factura</div></th>
+                        <th class="w-28"><div class="font-semibold">Monto</div></th>
+                        <th class="w-36"><div class="font-semibold">Fecha</div></th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-consumption>
+                      <tr>
+                        <td>
+                          <span class="font-mono text-sm">{{ consumption.invoiceId | slice:0:8 }}...</span>
+                        </td>
+                        <td>
+                          <div class="font-medium">{{ consumption.amount | number:'1.2-2' }}</div>
+                        </td>
+                        <td>
+                          <div class="text-sm">{{ consumption.createdAt | date:'dd/MM/yyyy' }}</div>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+              </div>
+            </app-details-card>
+          }
+        </div>
+      }
+    </div>
+  </div>
+  <p-confirmDialog styleClass="max-w-md" />
+</app-main-layout>

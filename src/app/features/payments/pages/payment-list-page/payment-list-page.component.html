@@ -83,18 +83,6 @@
                           styleClass="w-full"
                         />
                       </div>
-                      <div class="flex flex-col gap-1">
-                        <label class="text-xs font-medium text-surface-500">Tipo</label>
-                        <p-select
-                          [(ngModel)]="selectedPaymentType"
-                          [options]="paymentTypeOptions"
-                          optionLabel="label"
-                          optionValue="value"
-                          placeholder="Todos los tipos"
-                          styleClass="w-full"
-                          [showClear]="true"
-                        />
-                      </div>
                     </div>
                   </div>
                 </p-popover>
@@ -134,7 +122,6 @@
                       <th class="w-auto"><div class="font-semibold">Cliente</div></th>
                       <th class="w-32"><div class="font-semibold">Factura</div></th>
                       <th class="w-28"><div class="font-semibold">Monto</div></th>
-                      <th class="w-28"><div class="font-semibold">Tipo</div></th>
                       <th class="w-28"><div class="font-semibold">Creado por</div></th>
                       <th class="w-36"><div class="font-semibold text-center">Acciones</div></th>
                     </tr>
@@ -152,11 +139,6 @@
                       </td>
                       <td>
                         <div class="font-medium">{{ payment.amount | number:'1.2-2' }}</div>
-                      </td>
-                      <td>
-                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-surface-100 dark:bg-surface-800">
-                          {{ getPaymentTypeLabel(payment.paymentType) }}
-                        </span>
                       </td>
                       <td>
                         <div class="text-sm">{{ payment.createdByName }}</div>
@@ -218,9 +200,6 @@
                       <p class="text-sm font-medium mb-1">
                         {{ payment.amount | number:'1.2-2' }}
                       </p>
-                      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-surface-100 dark:bg-surface-800">
-                          {{ getPaymentTypeLabel(payment.paymentType) }}
-                        </span>
                       <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">
                         {{ payment.createdByName }}
                       </p>
