@@ -66,10 +66,6 @@ export const routes: Routes = [
     loadChildren: () => import('@features/payments/router').then((m) => m.PAYMENT_ROUTES),
   },
   {
-    path: 'advances',
-    loadChildren: () => import('@features/advances/router/advances.routes').then((m) => m.ADVANCE_ROUTES),
-  },
-  {
     path: 'credit-notes',
     loadChildren: () => import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
   },

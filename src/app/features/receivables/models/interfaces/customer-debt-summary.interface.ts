@@ -9,6 +9,7 @@ export interface CustomerDebtSummary {
   availableDebt: number;
   creditLimit: number;
   availableCredit: number;
+  customerBalance: number;
   invoicesWithDebt: number;
   pendingPaymentsCount: number;
   pendingInvoicesCount: number;

@@ -148,6 +148,9 @@
                         <i [class]="sortIcon('availableCredit')"></i>
                       </div>
                     </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="font-semibold text-surface-700 dark:text-surface-200">Saldo a Favor</div>
+                    </th>
                     <th class="text-center bg-surface-50 dark:bg-surface-800">
                       <div class="flex items-center gap-2 justify-center cursor-pointer select-none"
                            (click)="toggleSort('pendingInvoicesCount')">
@@ -193,6 +196,15 @@
                         <span class="font-mono font-semibold text-red-600 dark:text-red-400">
                           {{ customer.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
                         </span>
+                      }
+                    </td>
+                    <td class="text-right">
+                      @if (customer.customerBalance > 0) {
+                        <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                          {{ customer.customerBalance | currency : 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      } @else {
+                        <span class="font-mono text-surface-400 dark:text-surface-500">$0.00</span>
                       }
                     </td>
                     <td class="text-center">
@@ -277,6 +289,14 @@
                           {{ customer.availableCredit | currency : 'USD' : 'symbol' : '1.2-2' }}
                         </span>
                       </div>
+                      @if (customer.customerBalance > 0) {
+                        <div class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-blue-500">
+                          <span class="text-xs font-medium text-surface-600 dark:text-surface-400">Saldo a Favor</span>
+                          <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                            {{ customer.customerBalance | currency : 'USD' : 'symbol' : '1.2-2' }}
+                          </span>
+                        </div>
+                      }
                       <div class="flex items-center justify-between">
                         <span class="text-xs text-surface-600 dark:text-surface-400">Facturas Pendientes</span>
                         <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs font-semibold rounded-full">

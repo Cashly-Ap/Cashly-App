@@ -11,4 +11,5 @@ export interface CustomerDebtList {
   oldestInvoiceDate: string;
   creditLimit: number;
   availableCredit: number;
+  customerBalance: number;
 }

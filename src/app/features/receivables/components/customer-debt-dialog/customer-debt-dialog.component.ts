@@ -1,19 +1,33 @@
 import { Component, input, output, inject, signal, computed, effect } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
 import { CustomerInvoiceDebt } from '../../models/interfaces';
+import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
+import { BalanceTransactionResponse } from '@features/customers/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 type InvoiceStatusFilter = 'ALL' | 'PENDING' | 'PARTIAL' | 'PAID';
+type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
   label: string;
   value: InvoiceStatusFilter;
+}
+
+interface BalanceFilterOption {
+  label: string;
+  value: BalanceFilter;
 }
 
 @Component({
@@ -26,13 +40,21 @@ interface StatusFilterOption {
     PaginatorModule,
     TagModule,
     TooltipModule,
+    InputNumberModule,
+    InputTextModule,
+    ReactiveFormsModule,
     CurrencyPipe,
     DatePipe,
+    ToastModule,
   ],
+  providers: [MessageService],
   templateUrl: './customer-debt-dialog.component.html',
 })
 export class CustomerDebtDialogComponent {
   protected service = inject(ReceivablesApplicationService);
+  private balanceApi = inject(CustomerBalanceApiService);
+  private messageService = inject(MessageService);
+  private fb = inject(FormBuilder);
 
   readonly visible = input.required<boolean>();
   readonly customerId = input.required<string>();
@@ -68,12 +90,36 @@ export class CustomerDebtDialogComponent {
     { label: 'Pagados', value: 'PAID' },
   ];
 
+  // Balance section
+  protected balance = signal<number>(0);
+  protected transactions = signal<BalanceTransactionResponse[]>([]);
+  protected loadingBalance = signal(false);
+  protected loadingTransactions = signal(false);
+  protected balanceFirst = signal(0);
+  protected balanceRows = signal(10);
+  protected balanceTotalRecords = signal(0);
+  protected selectedBalanceFilter = signal<BalanceFilter>('ALL');
+
+  protected readonly balanceFilterOptions: BalanceFilterOption[] = [
+    { label: 'Créditos', value: 'CREDITS' },
+    { label: 'Usados', value: 'USES' },
+  ];
+
+  // Advance dialog
+  protected showAdvanceDialog = signal(false);
+  protected creatingAdvance = signal(false);
+  protected advanceForm: FormGroup = this.fb.group({
+    amount: [null, [Validators.required, Validators.min(0.01)]],
+    notes: [''],
+  });
+
   constructor() {
     effect(() => {
       const isVisible = this.visible();
       const id = this.customerId();
       if (isVisible && id) {
         this.loadCustomerData(id);
+        this.loadBalanceData(id);
       }
     });
   }
@@ -171,6 +217,101 @@ export class CustomerDebtDialogComponent {
     return 'Registrar pago';
   }
 
+  // Balance methods
+  protected getBalanceTypeLabel(type: string): string {
+    switch (type) {
+      case 'ADVANCED': return 'Anticipo';
+      case 'RETURNS': return 'Devolución';
+      case 'PAYMENTS': return 'Pago';
+      case 'INVOICES': return 'Factura';
+      case 'REFUND': return 'Reintegro';
+      default: return type;
+    }
+  }
+
+  protected getBalanceTypeSeverity(type: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
+    switch (type) {
+      case 'ADVANCED': return 'info';
+      case 'RETURNS': return 'warn';
+      case 'PAYMENTS': return 'success';
+      case 'INVOICES': return 'contrast';
+      case 'REFUND': return 'danger';
+      default: return 'info';
+    }
+  }
+
+  protected isPositive(type: string): boolean {
+    return type === 'ADVANCED' || type === 'RETURNS' || type === 'PAYMENTS';
+  }
+
+  protected isNegative(type: string): boolean {
+    return type === 'INVOICES' || type === 'REFUND';
+  }
+
+  protected onBalanceFilterChange(filter: BalanceFilter): void {
+    this.selectedBalanceFilter.set(filter);
+    this.balanceFirst.set(0);
+    this.loadTransactionsForCurrentFilter();
+  }
+
+  protected onBalancePageChange(event: { first?: number; rows?: number }): void {
+    this.balanceFirst.set(event.first ?? 0);
+    this.balanceRows.set(event.rows ?? 10);
+    this.loadTransactionsForCurrentFilter();
+  }
+
+  protected onCreateAdvance(): void {
+    this.advanceForm.reset({ amount: null, notes: '' });
+    this.showAdvanceDialog.set(true);
+  }
+
+  protected onCancelAdvance(): void {
+    this.showAdvanceDialog.set(false);
+    this.advanceForm.reset();
+  }
+
+  protected onAdvanceVisibleChange(visible: boolean): void {
+    if (!visible) {
+      this.advanceForm.reset();
+    }
+  }
+
+  protected submitAdvance(): void {
+    if (this.advanceForm.invalid) return;
+    const amount = this.advanceForm.get('amount')?.value;
+    const notes = this.advanceForm.get('notes')?.value;
+    const customerId = this.customerId();
+    if (!amount || amount <= 0 || !customerId) return;
+
+    this.creatingAdvance.set(true);
+    this.balanceApi.createAdvance(customerId, {
+      amount,
+      notes: notes || undefined,
+    }).subscribe({
+      next: (response) => {
+        this.balance.set(response.totalBalance);
+        this.showAdvanceDialog.set(false);
+        this.service.loadCustomerDebt(customerId).subscribe();
+        this.service.customerDebtChange.next();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Anticipo registrado',
+          detail: `Se agregaron $${amount.toFixed(2)} al balance del cliente`,
+        });
+        this.loadTransactionsForCurrentFilter();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo registrar el anticipo',
+        });
+        this.creatingAdvance.set(false);
+      },
+      complete: () => this.creatingAdvance.set(false),
+    });
+  }
+
   private loadCustomerData(customerId: string): void {
     this.service.loadCustomerDebt(customerId).subscribe();
     this.loadInvoices(customerId, 'ALL', true);
@@ -215,5 +356,52 @@ export class CustomerDebtDialogComponent {
         }
       },
     });
+  }
+
+  private loadBalanceData(customerId: string): void {
+    this.loadingBalance.set(true);
+    this.balanceApi.getBalance(customerId).subscribe({
+      next: (response) => {
+        this.balance.set(response.totalBalance);
+        this.loadingBalance.set(false);
+      },
+      error: () => {
+        this.balance.set(0);
+        this.loadingBalance.set(false);
+      },
+    });
+    this.loadTransactionsForCurrentFilter();
+  }
+
+  private loadTransactionsForCurrentFilter(): void {
+    const customerId = this.customerId();
+    if (!customerId) return;
+
+    this.loadingTransactions.set(true);
+    const first = this.balanceFirst();
+    const rows = this.balanceRows();
+    const filter = this.selectedBalanceFilter();
+
+        this.balanceApi.getTransactions(customerId, Math.floor(first / rows), rows)
+      .subscribe({
+        next: (response: PagedResponse<BalanceTransactionResponse>) => {
+          let filtered = response.content;
+
+          if (filter === 'CREDITS') {
+            filtered = filtered.filter(t => this.isPositive(t.type));
+          } else if (filter === 'USES') {
+            filtered = filtered.filter(t => this.isNegative(t.type));
+          }
+
+          this.transactions.set(filtered);
+          this.balanceTotalRecords.set(filter === 'ALL' ? response.totalElements : filtered.length);
+          this.loadingTransactions.set(false);
+        },
+        error: () => {
+          this.transactions.set([]);
+          this.balanceTotalRecords.set(0);
+          this.loadingTransactions.set(false);
+        },
+      });
   }
 }

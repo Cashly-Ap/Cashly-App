@@ -5,23 +5,15 @@ export interface OverdueInvoice {
   daysOverdue: number;
 }
 
-export interface AdvanceInfo {
-  paymentNumber: string;
-  amount: number;
-  remainingAmount: number;
-  date: string;
-}
-
 export interface CreditStatusResponse {
   customerId: string;
   customerName: string;
   customerRif: string;
   creditLimit: number;
   pendingBalance: number;
-  unconsumedAdvances: number;
+  customerBalance: number;
   availableCredit: number;
   overdueInvoices: OverdueInvoice[];
-  advances: AdvanceInfo[];
   hasOverdue: boolean;
   canCreateCreditInvoice: boolean;
 }

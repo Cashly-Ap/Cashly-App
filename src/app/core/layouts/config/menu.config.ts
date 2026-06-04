@@ -104,12 +104,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
-          label: 'Anticipos',
-          icon: 'pi pi-wallet',
-          routerLink: '/advances',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
           label: 'Notas de Crédito',
           icon: 'pi pi-file-plus',
           routerLink: '/credit-notes',

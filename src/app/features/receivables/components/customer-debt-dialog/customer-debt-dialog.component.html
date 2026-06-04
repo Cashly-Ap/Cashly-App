@@ -1,3 +1,5 @@
+<p-toast />
+
 <p-dialog
   [visible]="visible()"
   [header]="customer()?.customerName || 'Detalles de Deuda'"
@@ -76,9 +78,12 @@
           </div>
         </div>
       </div>
+
+
     </div>
 
-    <div class="bg-surface-0 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl p-5 shadow-sm">
+    <!-- Invoices Section -->
+    <div class="bg-surface-0 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl p-5 shadow-sm mb-6">
       <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div class="flex items-center gap-3">
@@ -346,6 +351,123 @@
         }
       </div>
     </div>
+
+    <!-- Balance Transactions Section -->
+    <div class="bg-surface-0 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-xl p-5 shadow-sm">
+      <div class="flex flex-col gap-4 mb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 bg-surface-100 dark:bg-surface-700 rounded-lg">
+              <i class="pi pi-history text-surface-700 dark:text-surface-300 text-lg"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">Movimientos del Balance</h3>
+          </div>
+          <p-button
+            label="Generar Anticipo"
+            icon="pi pi-plus-circle"
+            severity="info"
+            [outlined]="true"
+            styleClass="font-medium"
+            (onClick)="onCreateAdvance()"
+          />
+        </div>
+        <div class="flex flex-wrap gap-2">
+          @for (option of balanceFilterOptions; track option.value) {
+            <button
+              type="button"
+              (click)="onBalanceFilterChange(option.value)"
+              [class]="selectedBalanceFilter() === option.value
+                ? 'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900 font-semibold'
+                : 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700'"
+              class="px-4 py-2 rounded-lg text-sm transition-all duration-200 border border-surface-200 dark:border-surface-600"
+            >
+              {{ option.label }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="overflow-hidden rounded-lg border border-surface-200 dark:border-surface-700">
+        <p-table
+          [value]="transactions()"
+          styleClass="p-datatable-striped"
+          [loading]="loadingTransactions()"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="bg-surface-50 dark:bg-surface-800">
+                <div class="font-semibold text-surface-700 dark:text-surface-200">Fecha</div>
+              </th>
+              <th class="bg-surface-50 dark:bg-surface-800">
+                <div class="font-semibold text-surface-700 dark:text-surface-200">Tipo</div>
+              </th>
+              <th class="text-right bg-surface-50 dark:bg-surface-800">
+                <div class="font-semibold text-surface-700 dark:text-surface-200">Monto</div>
+              </th>
+
+              <th class="bg-surface-50 dark:bg-surface-800">
+                <div class="font-semibold text-surface-700 dark:text-surface-200">Notas</div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tx>
+            <tr class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30">
+              <td>
+                <span class="text-sm text-surface-600 dark:text-surface-400">
+                  {{ tx.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+                </span>
+              </td>
+              <td>
+                <p-tag
+                  [value]="getBalanceTypeLabel(tx.type)"
+                  [severity]="getBalanceTypeSeverity(tx.type)"
+                  size="small"
+                />
+              </td>
+              <td class="text-right">
+                <span class="font-mono text-sm font-bold"
+                      [class.text-green-600]="isPositive(tx.type)"
+                      [class.text-red-600]="isNegative(tx.type)">
+                  {{ tx.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+
+              <td>
+                <span class="text-sm text-surface-500 dark:text-surface-400">
+                  {{ tx.notes || '-' }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="4" class="py-12">
+                <div class="flex flex-col items-center gap-3">
+                  <div class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center">
+                    <i class="pi pi-inbox text-3xl text-surface-400"></i>
+                  </div>
+                  <p class="text-surface-600 dark:text-surface-400">No hay movimientos</p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="flex justify-center py-3 border-t border-surface-200 dark:border-surface-700">
+        <p-paginator
+          [first]="balanceFirst()"
+          [rows]="balanceRows()"
+          [totalRecords]="balanceTotalRecords()"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} movimientos"
+          (onPageChange)="onBalancePageChange($event)"
+          styleClass="text-sm"
+          [dropdownAppendTo]="'body'"
+        />
+      </div>
+    </div>
   }
 
   <ng-template pTemplate="footer">
@@ -357,6 +479,101 @@
         severity="secondary"
         [outlined]="true"
         styleClass="font-medium"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Advance Dialog (outside outer dialog to avoid nesting issues) -->
+<p-dialog
+  [(visible)]="showAdvanceDialog"
+  header="Registrar Anticipo"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '550px' }"
+  [dismissableMask]="false"
+  [closable]="!creatingAdvance()"
+  [closeOnEscape]="!creatingAdvance()"
+  appendTo="body"
+  (visibleChange)="onAdvanceVisibleChange($event)"
+  styleClass="advance-form-dialog"
+>
+  <form [formGroup]="advanceForm">
+    <div class="space-y-5">
+      <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Balance Actual del Cliente</span>
+          <span class="font-mono text-lg font-bold text-green-600 dark:text-green-400">
+            {{ balance() | currency : 'USD' : 'symbol' : '1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="advanceAmount" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Monto del Anticipo
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputNumber
+          id="advanceAmount"
+          formControlName="amount"
+          mode="currency"
+          currency="USD"
+          locale="en-US"
+          [min]="0.01"
+          [maxFractionDigits]="2"
+          [showButtons]="true"
+          [step]="10"
+          styleClass="w-full"
+          inputStyleClass="text-right font-mono"
+          [class.ng-invalid]="advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched"
+        />
+        @if (advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched) {
+          <small class="text-red-500 text-xs block mt-1">
+            @if (advanceForm.get('amount')?.errors?.['required']) {
+              El monto es requerido
+            }
+            @if (advanceForm.get('amount')?.errors?.['min']) {
+              El monto debe ser mayor a cero
+            }
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label for="advanceNotes" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          Notas
+        </label>
+        <input
+          id="advanceNotes"
+          type="text"
+          pInputText
+          formControlName="notes"
+          placeholder="Motivo del anticipo (opcional)"
+          class="w-full"
+        />
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col sm:flex-row gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        (onClick)="onCancelAdvance()"
+        [disabled]="creatingAdvance()"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="font-medium w-full sm:w-auto"
+      />
+      <p-button
+        label="Registrar Anticipo"
+        icon="pi pi-plus-circle"
+        (onClick)="submitAdvance()"
+        [disabled]="advanceForm.invalid || creatingAdvance()"
+        [loading]="creatingAdvance()"
+        severity="info"
+        styleClass="font-medium w-full sm:w-auto"
       />
     </div>
   </ng-template>

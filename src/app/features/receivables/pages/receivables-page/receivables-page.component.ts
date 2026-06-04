@@ -105,6 +105,13 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
     this.loadCustomers();
 
+    this.service.customerDebtChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
+        this.loadCustomers();
+      });
+
     this.searchSubject
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
       .subscribe((term) => {
