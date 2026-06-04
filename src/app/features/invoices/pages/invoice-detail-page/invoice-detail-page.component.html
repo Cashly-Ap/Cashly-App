@@ -50,7 +50,7 @@
                     styleClass="w-full sm:w-auto"
                   />
                 }
-                @if (currentInvoice.status !== InvoiceStatus.DRAFT && currentInvoice.status !== InvoiceStatus.CANCELLED && currentInvoice.status !== InvoiceStatus.FULLY_RETURNED) {
+                @if (currentInvoice.status !== InvoiceStatus.CANCELLED && currentInvoice.status !== InvoiceStatus.FULLY_RETURNED) {
                   <p-button
                     label="Nota"
                     icon="pi pi-file-edit"
