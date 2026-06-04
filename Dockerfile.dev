@@ -13,6 +13,10 @@ RUN bun install
 
 COPY . .
 
+COPY wait-for-backend.sh /usr/local/bin/wait-for-backend.sh
+RUN chmod +x /usr/local/bin/wait-for-backend.sh
+
 EXPOSE 4200
 
+ENTRYPOINT ["wait-for-backend.sh"]
 CMD ["./node_modules/.bin/ng", "serve", "--host", "0.0.0.0", "--poll", "2000"]
