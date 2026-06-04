@@ -77,7 +77,7 @@ export class ReturnLinesTableComponent implements OnInit {
     }
     const line = this.invoiceLines()[itemIdx];
     if (!line) return;
-    const maxQty = line.quantity;
+    const maxQty = Math.max(0, line.quantity - line.returnedQuantity);
     const existingLine = this.returnLines()[itemIdx];
     const existingAllocs = existingLine?.warehouseAllocations ?? [];
 
@@ -93,7 +93,7 @@ export class ReturnLinesTableComponent implements OnInit {
         warehouseName: w.name,
         quantity: maxQty,
         reserved: 0,
-        available: allocated + remainingExisting,
+        available: this.getAllocationRemaining(maxQty, allocated, totalExisting),
         allocated,
       };
     });
@@ -102,9 +102,14 @@ export class ReturnLinesTableComponent implements OnInit {
     this.allocationPopover.show(event);
   }
 
+  private getAllocationRemaining(maxQty: number, allocated: number, totalExisting: number): number {
+    return Math.max(0, maxQty - totalExisting + allocated);
+  }
+
   updatePopoverAllocation(index: number, value: number): void {
     const current = this.popoverAllocations();
-    const maxQty = this.invoiceLines()[this.activeItemIdx() ?? 0]?.quantity ?? 0;
+    const line = this.invoiceLines()[this.activeItemIdx() ?? -1];
+    const maxQty = line ? Math.max(0, line.quantity - line.returnedQuantity) : 0;
     const othersTotal = current.reduce((s, a, i) => s + (i !== index ? (a.allocated ?? 0) : 0), 0);
     const maxForThis = Math.max(0, maxQty - othersTotal);
     const clampedValue = Math.min(value, maxForThis);
@@ -120,7 +125,9 @@ export class ReturnLinesTableComponent implements OnInit {
   }
 
   getMaxQuantity(lineIndex: number): number {
-    return this.invoiceLines()[lineIndex]?.quantity ?? 0;
+    const line = this.invoiceLines()[lineIndex];
+    if (!line) return 0;
+    return Math.max(0, line.quantity - line.returnedQuantity);
   }
 
   confirmAllocations(): void {
@@ -129,7 +136,8 @@ export class ReturnLinesTableComponent implements OnInit {
 
     const popoverData = this.popoverAllocations();
     const totalAllocated = popoverData.reduce((s, a) => s + (a.allocated ?? 0), 0);
-    const maxQty = this.invoiceLines()[itemIdx]?.quantity ?? 0;
+    const line = this.invoiceLines()[itemIdx];
+    const maxQty = line ? Math.max(0, line.quantity - line.returnedQuantity) : 0;
     const finalQty = Math.min(totalAllocated, maxQty);
     const firstAlloc = popoverData.find((a) => (a.allocated ?? 0) > 0);
 

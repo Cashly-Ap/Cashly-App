@@ -195,15 +195,20 @@ export class ReturnFormPageComponent implements OnInit {
     if (!invoice) return;
 
     this.returnLines.set(
-      invoice.lines.map((l) => ({
-        invoiceLineId: l.id,
-        productId: l.productId,
-        productName: l.productName,
-        quantity: l.quantity,
-        warehouseId,
-        unitPrice: l.unitPrice,
-        warehouseAllocations: [{ warehouseId, allocated: l.quantity }],
-      })),
+      invoice.lines
+        .filter((l) => l.quantity - l.returnedQuantity > 0)
+        .map((l) => {
+          const remaining = l.quantity - l.returnedQuantity;
+          return {
+            invoiceLineId: l.id,
+            productId: l.productId,
+            productName: l.productName,
+            quantity: remaining,
+            warehouseId,
+            unitPrice: l.unitPrice,
+            warehouseAllocations: [{ warehouseId, allocated: remaining }],
+          };
+        }),
     );
   }
 
@@ -302,15 +307,20 @@ export class ReturnFormPageComponent implements OnInit {
     const isAuto = this.returnType() === ReturnType.AUTOMATIC;
 
     this.returnLines.set(
-      invoice.lines.map((l) => ({
-        invoiceLineId: l.id,
-        productId: l.productId,
-        productName: l.productName,
-        quantity: isAuto ? l.quantity : 0,
-        warehouseId: '',
-        unitPrice: l.unitPrice,
-        warehouseAllocations: [],
-      })),
+      invoice.lines
+        .filter((l) => !isAuto || l.quantity - l.returnedQuantity > 0)
+        .map((l) => {
+          const remaining = l.quantity - l.returnedQuantity;
+          return {
+            invoiceLineId: l.id,
+            productId: l.productId,
+            productName: l.productName,
+            quantity: isAuto ? remaining : 0,
+            warehouseId: '',
+            unitPrice: l.unitPrice,
+            warehouseAllocations: [],
+          };
+        }),
     );
   }
 }

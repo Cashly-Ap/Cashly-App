@@ -263,15 +263,20 @@ export class ReturnFormDialogComponent implements OnInit {
 
     const inv = this.invoice();
     this.returnLines.set(
-      inv.lines.map((l) => ({
-        invoiceLineId: l.id,
-        productId: l.productId,
-        productName: l.productName,
-        quantity: l.quantity,
-        warehouseId,
-        unitPrice: l.unitPrice,
-        warehouseAllocations: [{ warehouseId, allocated: l.quantity }],
-      })),
+      inv.lines
+        .filter((l) => l.quantity - l.returnedQuantity > 0)
+        .map((l) => {
+          const remaining = l.quantity - l.returnedQuantity;
+          return {
+            invoiceLineId: l.id,
+            productId: l.productId,
+            productName: l.productName,
+            quantity: remaining,
+            warehouseId,
+            unitPrice: l.unitPrice,
+            warehouseAllocations: [{ warehouseId, allocated: remaining }],
+          };
+        }),
     );
   }
 
