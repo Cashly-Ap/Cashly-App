@@ -521,10 +521,7 @@
           locale="en-US"
           [min]="0.01"
           [maxFractionDigits]="2"
-          [showButtons]="true"
-          [step]="10"
           styleClass="w-full"
-          inputStyleClass="text-right font-mono"
           [class.ng-invalid]="advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched"
         />
         @if (advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched) {
