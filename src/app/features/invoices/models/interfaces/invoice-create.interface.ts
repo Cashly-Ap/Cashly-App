@@ -11,5 +11,8 @@ export interface InvoiceCreate {
   customerId: string;
   paymentType: PaymentType;
   notes?: string;
+  useBalance?: boolean;
+  balanceAmount?: number;
+  paymentMethodId?: string;
   lines: InvoiceLineCreate[];
 }

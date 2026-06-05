@@ -110,11 +110,11 @@ export class InvoiceApplicationService {
     );
   }
 
-  confirm(id: string): Observable<InvoiceDetails> {
+  confirm(id: string, data?: { confirmationPassword?: string; useBalance?: boolean; balanceAmount?: number; paymentMethodId?: string }): Observable<InvoiceDetails> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.confirm(id).pipe(
+    return this.api.confirm(id, data).pipe(
       tap({
         next: (invoice) => {
           const listItem = InvoiceMapper.toList(invoice);

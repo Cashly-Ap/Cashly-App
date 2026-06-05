@@ -194,8 +194,8 @@ export class InvoiceApiService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  confirm(id: string): Observable<InvoiceDetails> {
-    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
+  confirm(id: string, data?: { confirmationPassword?: string; useBalance?: boolean; balanceAmount?: number; paymentMethodId?: string }): Observable<InvoiceDetails> {
+    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, data ?? {}).pipe(
       map((r) => this.toInvoiceDetails(r)),
     );
   }
