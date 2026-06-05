@@ -237,6 +237,7 @@ export class CustomerDebtDialogComponent {
       case 'PAYMENTS': return 'Pago';
       case 'INVOICES': return 'Factura';
       case 'REFUND': return 'Reintegro';
+      case 'CREDIT_NOTE': return 'Nota de Crédito';
       default: return type;
     }
   }
@@ -248,12 +249,13 @@ export class CustomerDebtDialogComponent {
       case 'PAYMENTS': return 'success';
       case 'INVOICES': return 'contrast';
       case 'REFUND': return 'danger';
+      case 'CREDIT_NOTE': return 'info';
       default: return 'info';
     }
   }
 
   protected isPositive(type: string): boolean {
-    return type === 'ADVANCED' || type === 'RETURNS' || type === 'PAYMENTS';
+    return type === 'ADVANCED' || type === 'RETURNS' || type === 'PAYMENTS' || type === 'CREDIT_NOTE';
   }
 
   protected isNegative(type: string): boolean {
