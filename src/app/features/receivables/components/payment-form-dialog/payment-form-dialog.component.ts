@@ -1,5 +1,5 @@
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -7,6 +7,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DatePickerModule } from 'primeng/datepicker';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
@@ -34,10 +35,22 @@ export interface PaymentMethodOption {
     DatePickerModule,
     SelectModule,
     InputTextModule,
+    RadioButtonModule,
+    FormsModule,
     ReactiveFormsModule,
     CurrencyPipe,
   ],
   templateUrl: './payment-form-dialog.component.html',
+  styles: [`
+    ::ng-deep .payment-form-dialog .p-select,
+    ::ng-deep .payment-form-dialog .p-inputnumber {
+      width: 100% !important;
+    }
+    ::ng-deep .payment-form-dialog .p-select .p-select-label,
+    ::ng-deep .payment-form-dialog .p-inputnumber .p-inputnumber-input {
+      width: 100% !important;
+    }
+  `],
 })
 export class PaymentFormDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -49,6 +62,7 @@ export class PaymentFormDialogComponent implements OnInit {
   readonly invoice = input<CustomerInvoiceDebt | null>(null);
   readonly customerName = input<string>('');
   readonly totalDebt = input<number>(0);
+  readonly customerBalance = input<number>(0);
 
   readonly close = output<void>();
   readonly submit = output<PaymentSubmitEvent>();
@@ -56,6 +70,7 @@ export class PaymentFormDialogComponent implements OnInit {
 
   protected loading = signal(false);
   protected paymentMethods = signal<PaymentMethodOption[]>([]);
+  protected useBalance = signal(false);
 
   protected form!: FormGroup;
   protected maxDate = new Date();
@@ -73,7 +88,26 @@ export class PaymentFormDialogComponent implements OnInit {
     }
   });
 
+  protected balanceApplied = computed(() => {
+    if (!this.useBalance()) return 0;
+    const balance = this.customerBalance();
+    const total = this.mode() === 'single' ? (this.invoice()?.balance || 0) : this.totalDebt();
+    return Math.min(balance, total);
+  });
+
+  protected remainingAfterBalance = computed(() => {
+    const total = this.mode() === 'single' ? (this.invoice()?.balance || 0) : this.totalDebt();
+    return Math.max(0, total - this.balanceApplied());
+  });
+
+  protected isFullyCoveredByBalance = computed(() => {
+    return this.useBalance() && this.remainingAfterBalance() === 0;
+  });
+
   protected maxAmount = computed(() => {
+    if (this.useBalance()) {
+      return this.remainingAfterBalance();
+    }
     switch (this.mode()) {
       case 'single': {
         const inv = this.invoice();
@@ -91,6 +125,10 @@ export class PaymentFormDialogComponent implements OnInit {
     }
   });
 
+  protected onBalanceChange(value: boolean): void {
+    this.useBalance.set(value);
+  }
+
   protected showAmountField = computed(() => {
     return this.mode() === 'single' || this.mode() === 'partial';
   });
@@ -101,6 +139,8 @@ export class PaymentFormDialogComponent implements OnInit {
       if (isVisible && this.form) {
         const currentMode = this.mode();
         const inv = this.invoice();
+        const balance = this.customerBalance();
+        const total = currentMode === 'single' ? (inv?.balance || 0) : this.totalDebt();
         const defaultAmount =
           currentMode === 'single'
             ? (inv?.balance || 0)
@@ -114,6 +154,7 @@ export class PaymentFormDialogComponent implements OnInit {
           amount: defaultAmount,
           paymentDate: today,
           referenceNumber: '',
+          useBalance: false,
         };
         const pm = this.form.get('paymentMethodId')?.value;
         if (!pm) {
@@ -130,6 +171,7 @@ export class PaymentFormDialogComponent implements OnInit {
     effect(() => {
       if (!this.form) return;
       const isLoading = this.loading();
+      const fullyCovered = this.isFullyCoveredByBalance();
       const controls = ['amount', 'paymentDate', 'paymentMethodId', 'referenceNumber'];
       controls.forEach((name) => {
         const ctrl = this.form.get(name);
@@ -141,9 +183,36 @@ export class PaymentFormDialogComponent implements OnInit {
             ctrl.disable({ emitEvent: false });
             return;
           }
+          if (fullyCovered && (name === 'amount' || name === 'paymentMethodId')) {
+            ctrl.disable({ emitEvent: false });
+            return;
+          }
           ctrl.enable({ emitEvent: false });
         }
       });
+    });
+
+    effect(() => {
+      if (!this.form) return;
+      const useBal = this.useBalance();
+      const amountCtrl = this.form.get('amount');
+      const paymentMethodCtrl = this.form.get('paymentMethodId');
+      if (!amountCtrl) return;
+
+      if (useBal) {
+        const remaining = this.remainingAfterBalance();
+        amountCtrl.patchValue(remaining, { emitEvent: false });
+      } else {
+        const currentMode = this.mode();
+        const inv = this.invoice();
+        const defaultAmount =
+          currentMode === 'single'
+            ? (inv?.balance || 0)
+            : currentMode === 'partial'
+              ? this.totalDebt()
+              : 0;
+        amountCtrl.patchValue(defaultAmount, { emitEvent: false });
+      }
     });
   }
 
@@ -170,6 +239,8 @@ export class PaymentFormDialogComponent implements OnInit {
         paymentMethodId: formValue.paymentMethodId,
         referenceNumber: formValue.referenceNumber || undefined,
         paymentDate: this.formatDate(formValue.paymentDate),
+        useBalance: this.useBalance(),
+        balanceAmount: this.balanceApplied(),
       };
 
       if (this.mode() === 'single' || this.mode() === 'partial') {

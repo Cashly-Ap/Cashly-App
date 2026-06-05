@@ -40,6 +40,50 @@
         </div>
       }
 
+      @if (customerBalance() > 0) {
+        <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-wallet text-green-600 text-sm"></i>
+              <span class="text-sm font-medium text-green-700 dark:text-green-300">Saldo a Favor</span>
+            </div>
+            <span class="font-mono font-bold text-green-600">
+              {{ customerBalance() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+          <div class="flex gap-3">
+            <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
+              [class.border-primary]="useBalance()"
+              [class.bg-primary/5]="useBalance()"
+              [class.border-surface-200]="!useBalance()"
+              [class.dark:border-surface-600]="!useBalance()">
+              <p-radioButton [value]="true" [ngModel]="useBalance()" (ngModelChange)="onBalanceChange($event)" [ngModelOptions]="{standalone: true}" name="balanceGroup" inputId="useBalance" />
+              <span class="text-sm font-medium">Usar saldo</span>
+            </label>
+            <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
+              [class.border-primary]="!useBalance()"
+              [class.bg-primary/5]="!useBalance()"
+              [class.border-surface-200]="useBalance()"
+              [class.dark:border-surface-600]="useBalance()">
+              <p-radioButton [value]="false" [ngModel]="useBalance()" (ngModelChange)="onBalanceChange($event)" [ngModelOptions]="{standalone: true}" name="balanceGroup" inputId="noBalance" />
+              <span class="text-sm font-medium">No usar</span>
+            </label>
+          </div>
+        </div>
+
+        @if (useBalance()) {
+          <div class="flex items-center justify-between px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+            <div class="flex items-center gap-2">
+              <i class="pi pi-check-circle text-green-600"></i>
+              <span class="text-sm font-medium text-green-700 dark:text-green-300">Saldo aplicado</span>
+            </div>
+            <span class="font-mono font-bold text-green-600">
+              -{{ balanceApplied() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        }
+      }
+
       @if (showAmountField()) {
         <div class="space-y-2">
           <label for="amount" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
@@ -57,6 +101,7 @@
             [maxFractionDigits]="2"
             styleClass="w-full"
             [class.ng-invalid]="form.get('amount')?.invalid && form.get('amount')?.touched"
+            [class.opacity-60]="isFullyCoveredByBalance()"
           />
           @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
             <small class="text-red-500 text-xs block mt-1">
@@ -69,7 +114,13 @@
             </small>
           }
           <small class="text-surface-500 dark:text-surface-400 text-xs block mt-1">
-            Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            @if (isFullyCoveredByBalance()) {
+              Pago cubierto completamente por saldo a favor
+            } @else if (useBalance()) {
+              Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }} (saldo aplicado: {{ balanceApplied() | currency : 'USD' : 'symbol' : '1.2-2' }})
+            } @else {
+              Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }}
+            }
           </small>
         </div>
       } @else {
@@ -123,6 +174,8 @@
           placeholder="Seleccione un método de pago"
           appendTo="body"
           styleClass="w-full"
+          [class.opacity-60]="isFullyCoveredByBalance()"
+        />
           [class.ng-invalid]="form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched"
         />
         @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {

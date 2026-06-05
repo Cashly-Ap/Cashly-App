@@ -354,6 +354,7 @@
   [invoice]="paymentInvoice()"
   [customerName]="paymentCustomerName()"
   [totalDebt]="paymentTotalDebt()"
+  [customerBalance]="service.currentCustomer()?.customerBalance ?? 0"
   (close)="onClosePaymentFormDialog()"
   (submit)="onSubmitPayment($event)"
 />
