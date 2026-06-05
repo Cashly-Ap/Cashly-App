@@ -40,6 +40,16 @@ import { CustomerBalanceApiService } from '@features/customers/services/api/cust
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styles: [`
+    ::ng-deep .confirm-invoice-dialog .p-select,
+    ::ng-deep .confirm-invoice-dialog .p-inputnumber {
+      width: 100% !important;
+    }
+    ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
+    ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
+      width: 100% !important;
+    }
+  `],
   imports: [
     CommonModule,
     FormsModule,
@@ -133,10 +143,20 @@ export class InvoiceListPageComponent implements OnInit {
     return Math.max(0, total - balanceUsed - alreadyAssigned);
   });
 
+  maxForLine(index: number): number {
+    const total = this.invoiceToConfirm()?.total ?? 0;
+    const balanceUsed = this.useBalanceConfirm() ? Math.min(this.customerBalanceConfirm(), total) : 0;
+    const otherLines = this.paymentLines()
+      .filter((_, i) => i !== index)
+      .reduce((s, l) => s + (l.amount || 0), 0);
+    return Math.max(0, total - balanceUsed - otherLines);
+  }
+
   readonly allPaymentsValid = computed(() => {
     const lines = this.paymentLines();
+    const total = this.invoiceToConfirm()?.total ?? 0;
     if (lines.length === 0 && !this.useBalanceConfirm()) return false;
-    return lines.every(l => l.methodId && l.amount > 0) && this.remainingToPay() === 0;
+    return lines.every(l => l.methodId && l.amount > 0) && this.totalPayments() === total;
   });
 
   readonly orderBy = signal('createdAt');
@@ -326,8 +346,8 @@ export class InvoiceListPageComponent implements OnInit {
       const updated = [...lines];
       if (field === 'amount') {
         const v = Number(value) || 0;
-        const max = this.maxPaymentPerLine();
-        updated[index] = { ...updated[index], amount: max > 0 ? Math.min(v, max) : 0 };
+        const max = this.maxForLine(index);
+        updated[index] = { ...updated[index], amount: v > max ? max : v };
       } else {
         updated[index] = { ...updated[index], [field]: value };
       }

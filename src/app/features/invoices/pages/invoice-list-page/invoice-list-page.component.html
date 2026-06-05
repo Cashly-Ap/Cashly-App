@@ -337,77 +337,112 @@
     (cancelled)="onDuplicateDialogDismissed()"
   />
 
-<p-dialog [visible]="confirmDialogVisible()" (visibleChange)="confirmDialogVisible.set($event)" header="Confirmar Factura" [modal]="true" [style]="{ width: '90vw', maxWidth: '550px' }" [contentStyle]="{ overflow: 'visible' }" [closable]="false" appendTo="body">
+<p-dialog [visible]="confirmDialogVisible()" (visibleChange)="confirmDialogVisible.set($event)" header="Confirmar Factura" [modal]="true" [style]="{ width: '90vw', maxWidth: '520px' }" [contentStyle]="{ overflow: 'visible', padding: '0' }" [closable]="false" appendTo="body" styleClass="confirm-invoice-dialog">
   @if (invoiceToConfirm()?.paymentType === 'CASH') {
-    <div class="space-y-4 overflow-x-hidden">
-      <div class="grid grid-cols-2 gap-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg p-4 border border-surface-200 dark:border-surface-700">
-        <div>
-          <span class="text-xs text-surface-500">Total Factura</span>
-          <div class="font-bold font-mono text-lg">${{ (invoiceToConfirm()?.total ?? 0) | number:'1.2-2' }}</div>
-        </div>
-        <div class="text-right">
-          <span class="text-xs text-surface-500">Cliente</span>
-          <div class="font-medium text-sm truncate">{{ invoiceToConfirm()?.customerName }}</div>
+    <div class="p-5 space-y-5">
+      <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">Total a Pagar</span>
+            <div class="font-mono text-2xl font-bold text-surface-900 dark:text-surface-0 mt-0.5">${{ (invoiceToConfirm()?.total ?? 0) | number:'1.2-2' }}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">Cliente</span>
+            <div class="font-semibold text-surface-700 dark:text-surface-300 mt-0.5 max-w-[180px] truncate">{{ invoiceToConfirm()?.customerName }}</div>
+          </div>
         </div>
         @if (customerBalanceConfirm() > 0) {
-          <div class="col-span-2 flex justify-between items-center pt-2 border-t border-surface-200 dark:border-surface-700">
-            <span class="text-sm">Saldo a Favor</span>
-            <span class="font-bold font-mono text-green-600">${{ customerBalanceConfirm() | number:'1.2-2' }}</span>
-          </div>
-          <div class="col-span-2 flex gap-4">
-            <label class="flex items-center gap-2 cursor-pointer">
-              <p-radioButton [value]="true" [ngModel]="useBalanceConfirm()" (ngModelChange)="useBalanceConfirm.set($event)" inputId="ub" name="bg" />
-              <span class="text-sm">Usar saldo</span>
-            </label>
-            <label class="flex items-center gap-2 cursor-pointer">
-              <p-radioButton [value]="false" [ngModel]="useBalanceConfirm()" (ngModelChange)="useBalanceConfirm.set($event)" inputId="nb" name="bg" />
-              <span class="text-sm">No usar</span>
-            </label>
+          <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-wallet text-green-600 text-sm"></i>
+                <span class="text-sm font-medium text-surface-700 dark:text-surface-300">Saldo a Favor</span>
+              </div>
+              <span class="font-mono font-bold text-green-600">${{ customerBalanceConfirm() | number:'1.2-2' }}</span>
+            </div>
+            <div class="flex gap-3">
+              <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all" [class.border-primary]="useBalanceConfirm()" [class.bg-primary/5]="useBalanceConfirm()" [class.border-surface-200]="!useBalanceConfirm()" [class.dark:border-surface-600]="!useBalanceConfirm()">
+                <p-radioButton [value]="true" [ngModel]="useBalanceConfirm()" (ngModelChange)="useBalanceConfirm.set($event)" name="balanceGroup" inputId="useBalance" />
+                <span class="text-sm font-medium">Usar saldo</span>
+              </label>
+              <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all" [class.border-primary]="!useBalanceConfirm()" [class.bg-primary/5]="!useBalanceConfirm()" [class.border-surface-200]="useBalanceConfirm()" [class.dark:border-surface-600]="useBalanceConfirm()">
+                <p-radioButton [value]="false" [ngModel]="useBalanceConfirm()" (ngModelChange)="useBalanceConfirm.set($event)" name="balanceGroup" inputId="noBalance" />
+                <span class="text-sm font-medium">No usar</span>
+              </label>
+            </div>
           </div>
         }
       </div>
 
       @if (useBalanceConfirm()) {
-        <div class="flex justify-between items-center bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-2.5 border border-blue-200 dark:border-blue-800">
-          <span class="text-sm text-blue-700 dark:text-blue-300">Saldo a usar</span>
-          <span class="font-bold font-mono text-green-600">-${{ (customerBalanceConfirm() >= (invoiceToConfirm()?.total ?? 0) ? (invoiceToConfirm()?.total ?? 0) : customerBalanceConfirm()) | number:'1.2-2' }}</span>
+        <div class="flex items-center justify-between px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+          <div class="flex items-center gap-2">
+            <i class="pi pi-check-circle text-green-600"></i>
+            <span class="text-sm font-medium text-green-700 dark:text-green-300">Saldo aplicado</span>
+          </div>
+          <span class="font-mono font-bold text-green-600">-${{ (customerBalanceConfirm() >= (invoiceToConfirm()?.total ?? 0) ? (invoiceToConfirm()?.total ?? 0) : customerBalanceConfirm()) | number:'1.2-2' }}</span>
         </div>
       }
 
-      <div class="space-y-2">
+      <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-semibold">Metodos de Pago</span>
-          <p-button label="Agregar" icon="pi pi-plus" size="small" severity="info" [outlined]="true" (onClick)="addPaymentLine()" [disabled]="remainingToPay() === 0" />
+          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Metodos de Pago</span>
+          @if (remainingToPay() > 0) {
+            <p-button label="Agregar" icon="pi pi-plus" size="small" severity="info" [outlined]="true" (onClick)="addPaymentLine()" />
+          }
         </div>
 
-        @for (line of paymentLines(); track trackByIndex($index); let i = $index) {
-          <div class="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg px-3 py-2">
-            <p-select [options]="paymentMethods()" optionLabel="name" optionValue="id" placeholder="Metodo" styleClass="w-full sm:flex-1" [ngModel]="line.methodId" (ngModelChange)="updatePaymentLine(i, 'methodId', $event)" appendTo="body" />
-            <p-inputNumber [ngModel]="line.amount" (ngModelChange)="updatePaymentLine(i, 'amount', $event)" mode="currency" currency="USD" locale="en-US" [min]="0" [max]="maxPaymentPerLine()" [maxFractionDigits]="2" styleClass="w-full sm:w-32" placeholder="0.00" />
-            <p-button icon="pi pi-trash" size="small" severity="danger" [text]="true" (onClick)="removePaymentLine(i)" styleClass="sm:self-center" />
-          </div>
-        } @empty {
-          <div class="text-center py-4 text-sm text-surface-400 border border-dashed border-surface-300 dark:border-surface-600 rounded-lg">
-            No hay metodos de pago. Agregue uno o use saldo a favor.
-          </div>
-        }
-
-        <div class="flex justify-between items-center pt-2 border-t border-surface-200 dark:border-surface-700">
-          <span class="text-sm font-medium">Total asignado</span>
-          <span class="font-bold font-mono text-base" [class.text-green-600]="totalPayments() === (invoiceToConfirm()?.total ?? 0)" [class.text-red-600]="totalPayments() !== (invoiceToConfirm()?.total ?? 0)">
-            ${{ totalPayments() | number:'1.2-2' }}
-          </span>
+        <div class="space-y-2">
+          @for (line of paymentLines(); track trackByIndex($index); let i = $index) {
+            <div class="grid grid-cols-[1fr_140px_40px] gap-2 items-center p-2 border border-surface-200 dark:border-surface-700 rounded-xl">
+              <div class="min-w-0">
+                <p-select [options]="paymentMethods()" optionLabel="name" optionValue="id" placeholder="Seleccionar metodo" styleClass="w-full" [ngModel]="line.methodId" (ngModelChange)="updatePaymentLine(i, 'methodId', $event)" appendTo="body" />
+              </div>
+              <div>
+                <p-inputNumber [ngModel]="line.amount" (ngModelChange)="updatePaymentLine(i, 'amount', $event)" mode="currency" currency="USD" locale="en-US" [min]="0" [maxFractionDigits]="2" styleClass="w-full" placeholder="0.00" />
+              </div>
+              <div class="flex justify-center">
+                <p-button icon="pi pi-trash" size="small" severity="danger" [text]="true" [rounded]="true" (onClick)="removePaymentLine(i)" />
+              </div>
+            </div>
+          } @empty {
+            <div class="text-center py-6 text-sm text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded-xl">
+              <i class="pi pi-credit-card text-2xl mb-2 block text-surface-300"></i>
+              Agregue un metodo de pago o use saldo a favor
+            </div>
+          }
         </div>
-        @if (remainingToPay() > 0) {
-          <div class="text-xs text-red-500">Restan ${{ remainingToPay() | number:'1.2-2' }} por asignar</div>
-        }
+
+        <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Total asignado</span>
+            <span class="font-mono font-bold text-lg" [class.text-green-600]="totalPayments() === (invoiceToConfirm()?.total ?? 0)" [class.text-red-500]="totalPayments() !== (invoiceToConfirm()?.total ?? 0)">
+              ${{ totalPayments() | number:'1.2-2' }}
+            </span>
+          </div>
+          @if (remainingToPay() > 0) {
+            <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
+              <i class="pi pi-exclamation-circle text-xs"></i>
+              <span class="text-xs font-medium">Restan ${{ remainingToPay() | number:'1.2-2' }} por asignar</span>
+            </div>
+          }
+          @if (totalPayments() > (invoiceToConfirm()?.total ?? 0)) {
+            <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
+              <i class="pi pi-exclamation-circle text-xs"></i>
+              <span class="text-xs font-medium">Excede el total por ${{ (totalPayments() - (invoiceToConfirm()?.total ?? 0)) | number:'1.2-2' }}</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
   } @else {
-    <div class="space-y-4">
-      <div class="bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg p-4 text-sm text-amber-700 dark:text-amber-400">
-        <i class="pi pi-exclamation-triangle mr-2"></i>
-        La factura excede el limite de credito disponible. Ingrese su contrasena para confirmar.
+    <div class="p-5 space-y-5">
+      <div class="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+        <i class="pi pi-exclamation-triangle text-amber-600 text-lg mt-0.5"></i>
+        <div>
+          <div class="font-semibold text-amber-800 dark:text-amber-300 text-sm">Limite de credito excedido</div>
+          <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">La factura excede el credito disponible. Ingrese su contrasena para confirmar.</p>
+        </div>
       </div>
       <div class="space-y-2">
         <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">Contrasena</label>
@@ -416,8 +451,8 @@
     </div>
   }
   <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <p-button label="Cancelar" icon="pi pi-times" (onClick)="confirmDialogVisible.set(false)" severity="secondary" [outlined]="true" />
+    <div class="flex items-center justify-end gap-2 px-5 py-4 bg-surface-50 dark:bg-surface-900/50 border-t border-surface-200 dark:border-surface-700">
+      <p-button label="Cancelar" icon="pi pi-times" (onClick)="confirmDialogVisible.set(false)" severity="secondary" [text]="true" />
       <p-button label="Confirmar" icon="pi pi-check" (onClick)="submitConfirm()" [loading]="isConfirming()" severity="contrast" [disabled]="invoiceToConfirm()?.paymentType === 'CASH' && !allPaymentsValid()" />
     </div>
   </ng-template>
