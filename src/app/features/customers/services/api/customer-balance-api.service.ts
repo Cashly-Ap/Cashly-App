@@ -10,6 +10,10 @@ export interface CreateAdvanceRequest {
   notes?: string;
 }
 
+export interface CreateRefundRequest {
+  amount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class CustomerBalanceApiService {
   private readonly http = inject(HttpClient);
@@ -42,6 +46,16 @@ export class CustomerBalanceApiService {
   ): Observable<CustomerBalanceResponse> {
     return this.http.post<CustomerBalanceResponse>(
       `${this.baseUrl}/${customerId}/balance/advance`,
+      request,
+    );
+  }
+
+  createRefund(
+    customerId: string,
+    request: CreateRefundRequest,
+  ): Observable<CustomerBalanceResponse> {
+    return this.http.post<CustomerBalanceResponse>(
+      `${this.baseUrl}/${customerId}/balance/refund`,
       request,
     );
   }

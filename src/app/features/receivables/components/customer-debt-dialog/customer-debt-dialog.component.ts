@@ -17,7 +17,7 @@ import { PagedResponse } from '@shared/models/interfaces/paged-response.interfac
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
 
-type InvoiceStatusFilter = 'ALL' | 'PENDING' | 'PARTIAL' | 'PAID';
+type InvoiceStatusFilter = 'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
@@ -88,6 +88,9 @@ export class CustomerDebtDialogComponent {
     { label: 'Pendientes', value: 'PENDING' },
     { label: 'Parcial', value: 'PARTIAL' },
     { label: 'Pagados', value: 'PAID' },
+    { label: 'Devueltas', value: 'RETURNED' },
+    { label: 'Parcialmente Devueltas', value: 'PARTIAL_RETURN' },
+    { label: 'Canceladas', value: 'CANCELLED' },
   ];
 
   // Balance section
@@ -105,12 +108,17 @@ export class CustomerDebtDialogComponent {
     { label: 'Usados', value: 'USES' },
   ];
 
-  // Advance dialog
   protected showAdvanceDialog = signal(false);
   protected creatingAdvance = signal(false);
   protected advanceForm: FormGroup = this.fb.group({
     amount: [null, [Validators.required, Validators.min(0.01)]],
     notes: [''],
+  });
+
+  protected showRefundDialog = signal(false);
+  protected creatingRefund = signal(false);
+  protected refundForm: FormGroup = this.fb.group({
+    amount: [null, [Validators.required, Validators.min(0.01)]],
   });
 
   constructor() {
@@ -180,6 +188,8 @@ export class CustomerDebtDialogComponent {
         return 'Pagado';
       case 'PARTIALLY_PAID':
         return 'Pagada parcialmente';
+      case 'FULLY_RETURNED':
+        return 'Devuelta';
       case 'CANCELLED':
         return 'Cancelada';
       default:
@@ -198,6 +208,8 @@ export class CustomerDebtDialogComponent {
       case 'PENDING':
       case 'PENDING_PAYMENT':
         return 'warn';
+      case 'FULLY_RETURNED':
+        return 'info';
       case 'CANCELLED':
         return 'danger';
       default:
@@ -309,6 +321,54 @@ export class CustomerDebtDialogComponent {
         this.creatingAdvance.set(false);
       },
       complete: () => this.creatingAdvance.set(false),
+    });
+  }
+
+  protected onCreateRefund(): void {
+    this.refundForm.reset({ amount: null });
+    this.showRefundDialog.set(true);
+  }
+
+  protected onCancelRefund(): void {
+    this.showRefundDialog.set(false);
+    this.refundForm.reset();
+  }
+
+  protected onRefundVisibleChange(visible: boolean): void {
+    if (!visible) {
+      this.refundForm.reset();
+    }
+  }
+
+  protected submitRefund(): void {
+    if (this.refundForm.invalid) return;
+    const amount = this.refundForm.get('amount')?.value;
+    const customerId = this.customerId();
+    if (!amount || amount <= 0 || !customerId) return;
+
+    this.creatingRefund.set(true);
+    this.balanceApi.createRefund(customerId, { amount }).subscribe({
+      next: (response) => {
+        this.balance.set(response.totalBalance);
+        this.showRefundDialog.set(false);
+        this.service.loadCustomerDebt(customerId).subscribe();
+        this.service.customerDebtChange.next();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Reintegro realizado',
+          detail: `Se reintegraron $${amount.toFixed(2)} al cliente`,
+        });
+        this.loadTransactionsForCurrentFilter();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo realizar el reintegro',
+        });
+        this.creatingRefund.set(false);
+      },
+      complete: () => this.creatingRefund.set(false),
     });
   }
 

@@ -5,7 +5,8 @@ export interface BalanceTransactionResponse {
   amount: number;
   referenceType: string;
   referenceId: string | null;
-  notes: string | null;
+  number: string | null;
+  referenceNumber: string | null;
   createdBy: string;
   createdAt: string;
 }
