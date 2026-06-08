@@ -29,7 +29,18 @@ const MOVEMENT_TYPE_OPTIONS = [
   { label: 'Salida por componente', value: 'COMPONENT_EXIT' },
   { label: 'Transferencia entrada', value: 'TRANSFER_IN' },
   { label: 'Transferencia salida', value: 'TRANSFER_OUT' },
+  { label: 'Entrada por devolución', value: 'RETURN_ENTRY' },
+  { label: 'Entrada por cancelación', value: 'CANCEL_ENTRY' },
+  { label: 'Salida por venta', value: 'SALE_EXIT' },
 ];
+
+const REFERENCE_TYPE_LABELS: Record<string, string> = {
+  ORDER: 'Pedido',
+  INVOICE: 'Factura',
+  RETURN: 'Devolución',
+  TRANSFER: 'Transferencia',
+  MANUAL: 'Manual',
+};
 
 const MOVEMENTS_PAGE_SIZE = 15;
 const STOCK_PAGE_SIZE = 10;
@@ -184,7 +195,15 @@ export class WarehousesDetailsPageComponent implements OnInit {
       COMPONENT_EXIT: `${base} bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300`,
       TRANSFER_IN: `${base} bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300`,
       TRANSFER_OUT: `${base} bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300`,
+      RETURN_ENTRY: `${base} bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300`,
+      CANCEL_ENTRY: `${base} bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300`,
+      SALE_EXIT: `${base} bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300`,
     };
     return map[type] ?? `${base} bg-surface-100 text-surface-700`;
+  }
+
+  getReferenceTypeLabel(type: string | undefined): string {
+    if (!type) return '';
+    return REFERENCE_TYPE_LABELS[type] ?? type;
   }
 }

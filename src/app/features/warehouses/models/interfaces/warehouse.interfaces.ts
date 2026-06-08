@@ -23,6 +23,9 @@ export interface WarehouseMovementItem {
   quantity: number;
   previousStock: number;
   newStock: number;
+  referenceType?: string;
+  referenceId?: string;
+  referenceNumber?: string;
   notes?: string;
   createdAt: string;
 }

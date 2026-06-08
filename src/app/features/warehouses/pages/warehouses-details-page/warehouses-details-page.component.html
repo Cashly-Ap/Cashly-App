@@ -155,6 +155,7 @@
                         <tr class="border-b border-surface-200 dark:border-surface-700">
                           <th class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400">Producto</th>
                           <th class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap">Tipo</th>
+                          <th class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap">Referencia</th>
                           <th class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap">Cantidad</th>
                           <th class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap">Stock anterior</th>
                           <th class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap">Stock nuevo</th>
@@ -172,6 +173,22 @@
                               <span [class]="getMovementTypeBadgeClass(mov.movementType)">
                                 {{ getMovementTypeLabel(mov.movementType) }}
                               </span>
+                            </td>
+                            <td class="px-3 py-3 whitespace-nowrap">
+                              @if (mov.referenceType) {
+                                <div class="text-xs">
+                                  <div class="font-medium text-surface-700 dark:text-surface-300">
+                                    {{ getReferenceTypeLabel(mov.referenceType) }}
+                                  </div>
+                                  @if (mov.referenceNumber) {
+                                    <div class="text-surface-500 dark:text-surface-400 font-mono">
+                                      {{ mov.referenceNumber }}
+                                    </div>
+                                  }
+                                </div>
+                              } @else {
+                                <span class="text-surface-400 dark:text-surface-500 text-xs">—</span>
+                              }
                             </td>
                             <td class="px-3 py-3 text-right font-mono font-medium whitespace-nowrap">{{ mov.quantity | number: '1.0-2' }}</td>
                             <td class="px-3 py-3 text-right font-mono text-surface-500 whitespace-nowrap">{{ mov.previousStock | number: '1.0-2' }}</td>
