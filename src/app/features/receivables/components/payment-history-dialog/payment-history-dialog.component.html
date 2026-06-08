@@ -92,7 +92,7 @@
                 </span>
               </td>
               <td>
-                <span class="text-sm text-surface-600 dark:text-surface-400">{{ payment.paymentMethodName }}</span>
+                <span class="text-sm text-surface-600 dark:text-surface-400">{{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}</span>
               </td>
               <td>
                 <span class="text-sm text-surface-600 dark:text-surface-400">{{ payment.paymentDate | date : 'dd/MM/yyyy' }}</span>
@@ -120,7 +120,7 @@
             </div>
             <div class="flex items-center justify-between pt-2">
               <span class="text-sm text-surface-500">Método</span>
-              <span class="text-sm text-surface-600 dark:text-surface-400">{{ payment.paymentMethodName }}</span>
+              <span class="text-sm text-surface-600 dark:text-surface-400">{{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}</span>
             </div>
           </div>
         }

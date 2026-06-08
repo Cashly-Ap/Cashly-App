@@ -175,7 +175,6 @@
           appendTo="body"
           styleClass="w-full"
           [class.opacity-60]="isFullyCoveredByBalance()"
-        />
           [class.ng-invalid]="form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched"
         />
         @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {

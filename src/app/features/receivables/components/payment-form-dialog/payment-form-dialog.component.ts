@@ -244,7 +244,10 @@ export class PaymentFormDialogComponent implements OnInit {
       };
 
       if (this.mode() === 'single' || this.mode() === 'partial') {
-        request.amount = formValue.amount;
+        const totalBeforeBalance = this.mode() === 'single'
+          ? (this.invoice()?.balance || 0)
+          : this.totalDebt();
+        request.amount = this.useBalance() ? totalBeforeBalance : formValue.amount;
       }
 
       this.submit.emit({ request });

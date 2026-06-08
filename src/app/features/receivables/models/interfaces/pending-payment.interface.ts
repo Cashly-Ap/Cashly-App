@@ -6,6 +6,7 @@ export interface PendingPayment {
   amount: number;
   paymentMethodName: string;
   status: string;
+  source: string;
   paymentDate: string;
   createdAt: string;
   invoiceNumber: string;

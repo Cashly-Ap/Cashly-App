@@ -38,7 +38,7 @@
           <td class="font-mono font-semibold text-green-600 dark:text-green-400">
             {{ payment.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
           </td>
-          <td>{{ payment.paymentMethodName }}</td>
+          <td>{{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}</td>
           <td>{{ payment.paymentDate | date : 'dd/MM/yyyy' }}</td>
           <td>
             @if (payment.status === 'APPLIED') {

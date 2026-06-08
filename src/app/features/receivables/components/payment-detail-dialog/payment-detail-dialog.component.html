@@ -41,7 +41,7 @@
         <div>
           <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">Método de Pago</p>
           <p class="text-surface-900 dark:text-surface-0 font-medium m-0">
-            {{ payment()!.paymentMethodName }}
+            {{ payment()!.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment()!.paymentMethodName }}
           </p>
         </div>
         <div>

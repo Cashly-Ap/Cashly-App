@@ -88,7 +88,7 @@
             {{ payment.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
           </td>
           <td class="text-surface-700 dark:text-surface-300">
-            {{ payment.paymentMethodName }}
+            {{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}
           </td>
           <td class="text-surface-600 dark:text-surface-400 text-sm">
             {{ payment.paymentDate | date : 'dd/MM/yyyy' }}
