@@ -1,0 +1,45 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+  <p-card header="Stock de Almacenes" styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
+    (click)="stockModalVisible.set(true)">
+    <p class="text-surface-600 dark:text-surface-400">
+      Reporte del stock actual por almacén con filtros de categoría y disponibilidad.
+    </p>
+    <div class="flex gap-2 mt-4">
+      <span class="pi pi-file-pdf text-primary text-xl"></span>
+      <span class="pi pi-file-excel text-green-600 text-xl"></span>
+    </div>
+  </p-card>
+
+  <p-card header="Historial de Movimientos" styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
+    (click)="movementsModalVisible.set(true)">
+    <p class="text-surface-600 dark:text-surface-400">
+      Historial de movimientos de stock con filtros por almacén, tipo y rango de fechas.
+    </p>
+    <div class="flex gap-2 mt-4">
+      <span class="pi pi-file-pdf text-primary text-xl"></span>
+      <span class="pi pi-file-excel text-green-600 text-xl"></span>
+    </div>
+  </p-card>
+</div>
+
+<app-stock-pdf-modal
+  [visible]="stockModalVisible()"
+  (visibleChange)="stockModalVisible.set($event)"
+  (onGeneratePdf)="onGenerateStockPdf($event)"
+  (onGenerateExcel)="onGenerateStockExcel($event)"
+/>
+
+<app-movements-pdf-modal
+  [visible]="movementsModalVisible()"
+  (visibleChange)="movementsModalVisible.set($event)"
+  (onGeneratePdf)="onGenerateMovementsPdf($event)"
+  (onGenerateExcel)="onGenerateMovementsExcel($event)"
+/>
+
+<app-pdf-viewer-modal
+  [visible]="pdfViewerVisible()"
+  [pdfUrl]="pdfUrl()"
+  [title]="pdfTitle()"
+  [loading]="pdfLoading()"
+  (visibleChange)="pdfViewerVisible.set($event)"
+/>

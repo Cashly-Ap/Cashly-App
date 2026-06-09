@@ -194,12 +194,14 @@
     [visible]="activeModal() === 'stock'"
     (visibleChange)="$event === false && activeModal.set(null)"
     (onGeneratePdf)="onStockPdf($event)"
+    (onGenerateExcel)="onStockExcel($event)"
   />
 
   <app-movements-pdf-modal
     [visible]="activeModal() === 'movements'"
     (visibleChange)="$event === false && activeModal.set(null)"
     (onGeneratePdf)="onMovementsPdf($event)"
+    (onGenerateExcel)="onMovementsExcel($event)"
   />
 
   <app-order-pdf-modal

@@ -6,6 +6,8 @@ import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceDetails, InvoiceLineDetail } from '@features/invoices/models/interfaces';
+import { CustomerList } from '@features/customers/models/interfaces';
+import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 
 interface AllocationWithStock {
   warehouseName: string;
@@ -24,11 +26,16 @@ interface LineWithStockInfo {
   hasNegativeStock: boolean;
 }
 
+export interface DuplicateConfirmEvent {
+  invoiceId: string;
+  customerId?: string;
+}
+
 @Component({
   selector: 'app-duplicate-invoice-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DialogModule, ButtonModule, TableModule, TooltipModule],
+  imports: [CommonModule, DialogModule, ButtonModule, TableModule, TooltipModule, CustomerPickerDialogComponent],
   templateUrl: './duplicate-invoice-dialog.component.html',
 })
 export class DuplicateInvoiceDialogComponent implements OnChanges {
@@ -37,14 +44,16 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
   readonly visible = input<boolean>(false);
   readonly invoiceId = input<string | null>(null);
 
-  readonly confirmed = output<string>();
+  readonly confirmed = output<DuplicateConfirmEvent>();
   readonly cancelled = output<void>();
 
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineWithStockInfo[]>([]);
-  readonly invoiceInfo = signal<{ number: string; customerName: string } | null>(null);
+  readonly invoiceInfo = signal<{ number: string; customerName: string; customerRif: string | null } | null>(null);
   readonly hasAnyNegativeStock = signal(false);
+  readonly selectedCustomer = signal<CustomerList | null>(null);
+  readonly showCustomerPicker = signal(false);
 
   ngOnChanges(): void {
     if (this.visible() && this.invoiceId()) {
@@ -55,6 +64,8 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
       this.invoiceInfo.set(null);
       this.error.set(null);
       this.hasAnyNegativeStock.set(false);
+      this.selectedCustomer.set(null);
+      this.showCustomerPicker.set(false);
     }
   }
 
@@ -70,6 +81,7 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
         this.invoiceInfo.set({
           number: invoice.invoiceNumber,
           customerName: invoice.customerName,
+          customerRif: invoice.customerRif,
         });
 
         const mappedLines = invoice.lines.map((line) =>
@@ -117,10 +129,27 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
     };
   }
 
+  onCustomerSelected(customer: CustomerList): void {
+    this.selectedCustomer.set(customer);
+    this.showCustomerPicker.set(false);
+  }
+
+  onCustomerPickerCancelled(): void {
+    this.showCustomerPicker.set(false);
+  }
+
+  onClearCustomer(): void {
+    this.selectedCustomer.set(null);
+  }
+
   onConfirm(): void {
     const id = this.invoiceId();
     if (!id || this.hasAnyNegativeStock()) return;
-    this.confirmed.emit(id);
+
+    this.confirmed.emit({
+      invoiceId: id,
+      customerId: this.selectedCustomer()?.id,
+    });
   }
 
   onCancel(): void {

@@ -98,14 +98,14 @@ describe('InvoiceDetailPageComponent', () => {
 
   it('should call duplicate service on dialog confirmed', () => {
     fixture.detectChanges();
-    component.onDuplicateDialogConfirmed('inv-001');
-    expect(mockService.duplicate).toHaveBeenCalledWith('inv-001');
+    component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
+    expect(mockService.duplicate).toHaveBeenCalledWith('inv-001', undefined);
   });
 
   it('should navigate to /facturas on duplicate success', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
-    component.onDuplicateDialogConfirmed('inv-001');
+    component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
     expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
   });
 
@@ -119,7 +119,7 @@ describe('InvoiceDetailPageComponent', () => {
     mockService.duplicate = vi.fn().mockReturnValue(throwError(() => new Error('Fail')));
     fixture.detectChanges();
     const addSpy = vi.spyOn(messageService, 'add');
-    component.onDuplicateDialogConfirmed('inv-001');
+    component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
     expect(addSpy).toHaveBeenCalledWith(
       expect.objectContaining({ severity: 'error' })
     );

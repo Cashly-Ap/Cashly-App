@@ -35,7 +35,9 @@ import { MovementsPdfModalComponent } from '@features/reports/inventory/componen
 import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
+import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
 import { CatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
 import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
@@ -44,6 +46,7 @@ import { InvoicePdfApiService, InvoicesPdfFilters } from '@features/reports/invo
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
 import { QuotePdfApiService, QuotesPdfFilters } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
+import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
 @Component({
@@ -87,7 +90,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private sanitizer = inject(DomSanitizer);
   private catalogPdfApi = inject(CatalogPdfApiService);
   private stockPdfApi = inject(StockPdfApiService);
+  private stockExcelApi = inject(StockExcelApiService);
   private movementsPdfApi = inject(MovementsPdfApiService);
+  private movementsExcelApi = inject(MovementsExcelApiService);
   private orderPdfApi = inject(OrderPdfApiService);
   private invoicePdfApi = inject(InvoicePdfApiService);
   private quotePdfApi = inject(QuotePdfApiService);
@@ -248,6 +253,24 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         const url = URL.createObjectURL(blob);
         this.currentObjectUrl = url;
         this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onStockExcel(filters: StockPdfFilters): void {
+    this.activeModal.set(null);
+    this.stockExcelApi.getExcel(filters).subscribe({
+      next: (blob) => {
+        FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx');
+      },
+    });
+  }
+
+  onMovementsExcel(filters: MovementsPdfFilters): void {
+    this.activeModal.set(null);
+    this.movementsExcelApi.getExcel(filters).subscribe({
+      next: (blob) => {
+        FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx');
       },
     });
   }

@@ -200,8 +200,9 @@ export class InvoiceApiService {
     );
   }
 
-  duplicate(id: string): Observable<InvoiceDetails> {
-    return this.http.post<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/duplicate`, {}).pipe(
+  duplicate(id: string, customerId?: string): Observable<InvoiceDetails> {
+    const body = customerId ? { customerId } : {};
+    return this.http.post<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/duplicate`, body).pipe(
       map((r) => this.toInvoiceDetails(r)),
     );
   }

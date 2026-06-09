@@ -28,6 +28,7 @@ export class StockPdfModalComponent implements OnInit {
   readonly visible = input(false);
   readonly visibleChange = output<boolean>();
   readonly onGeneratePdf = output<StockPdfFilters>();
+  readonly onGenerateExcel = output<StockPdfFilters>();
 
   readonly warehouseId = signal<string | null>(null);
   readonly categoryId = signal<string | null>(null);
@@ -64,12 +65,20 @@ export class StockPdfModalComponent implements OnInit {
     }
   }
 
-  generatePdf(): void {
-    this.onGeneratePdf.emit({
+  private buildFilters(): StockPdfFilters {
+    return {
       warehouseId: this.warehouseId() ?? undefined,
       categoryId: this.categoryId() ?? undefined,
       withStock: this.withStock() ?? undefined,
       lowStock: this.lowStock() ?? undefined,
-    });
+    };
+  }
+
+  generatePdf(): void {
+    this.onGeneratePdf.emit(this.buildFilters());
+  }
+
+  generateExcel(): void {
+    this.onGenerateExcel.emit(this.buildFilters());
   }
 }

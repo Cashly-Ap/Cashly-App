@@ -433,9 +433,9 @@ export class InvoiceListPageComponent implements OnInit {
     this.duplicateDialogVisible.set(true);
   }
 
-  onDuplicateDialogConfirmed(invoiceId: string): void {
+  onDuplicateDialogConfirmed(event: { invoiceId: string; customerId?: string }): void {
     this.duplicateDialogVisible.set(false);
-    this.invoiceService.duplicate(invoiceId).subscribe({
+    this.invoiceService.duplicate(event.invoiceId, event.customerId).subscribe({
       next: () => {
         this.invoiceToDuplicate.set(null);
         this.messageService.add({
@@ -466,8 +466,8 @@ export class InvoiceListPageComponent implements OnInit {
   onDownloadPdf(invoice: InvoiceList): void {
     const config: PdfViewerConfig = {
       url: `/api/reports/invoices/${invoice.id}/pdf`,
-      title: `Factura #${invoice.invoiceNumber}`,
-      fileName: `factura-${invoice.invoiceNumber}.pdf`,
+      title: `Nota #${invoice.invoiceNumber}`,
+      fileName: `nota-${invoice.invoiceNumber}.pdf`,
     };
     this.pdfViewerService.open(config);
   }

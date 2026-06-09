@@ -102,9 +102,9 @@ export class InvoiceDetailPageComponent implements OnInit {
     this.duplicateDialogVisible.set(true);
   }
 
-  onDuplicateDialogConfirmed(invoiceId: string): void {
+  onDuplicateDialogConfirmed(event: { invoiceId: string; customerId?: string }): void {
     this.duplicateDialogVisible.set(false);
-    this.invoiceService.duplicate(invoiceId).subscribe({
+    this.invoiceService.duplicate(event.invoiceId, event.customerId).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',

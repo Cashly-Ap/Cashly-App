@@ -28,6 +28,7 @@ export class MovementsPdfModalComponent implements OnInit {
   readonly visible = input(false);
   readonly visibleChange = output<boolean>();
   readonly onGeneratePdf = output<MovementsPdfFilters>();
+  readonly onGenerateExcel = output<MovementsPdfFilters>();
 
   readonly warehouseId = signal<string | null>(null);
   readonly movementType = signal<string | null>(null);
@@ -55,12 +56,20 @@ export class MovementsPdfModalComponent implements OnInit {
     }
   }
 
-  generatePdf(): void {
-    this.onGeneratePdf.emit({
+  private buildFilters(): MovementsPdfFilters {
+    return {
       warehouseId: this.warehouseId() ?? undefined,
       movementType: this.movementType() ?? undefined,
       from: this.from() || undefined,
       to: this.to() || undefined,
-    });
+    };
+  }
+
+  generatePdf(): void {
+    this.onGeneratePdf.emit(this.buildFilters());
+  }
+
+  generateExcel(): void {
+    this.onGenerateExcel.emit(this.buildFilters());
   }
 }

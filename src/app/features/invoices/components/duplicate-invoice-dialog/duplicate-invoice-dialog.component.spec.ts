@@ -101,6 +101,7 @@ describe('DuplicateInvoiceDialogComponent', () => {
     expect(dialog.invoiceInfo()).toBeNull();
     expect(dialog.error()).toBeNull();
     expect(dialog.hasAnyNegativeStock()).toBe(false);
+    expect(dialog.selectedCustomer()).toBeNull();
   });
 
   it('should not emit confirmed when no invoiceId', () => {
@@ -185,6 +186,7 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
     expect(dialog.invoiceInfo()).toEqual({
       number: 'FAC-001',
       customerName: 'Test Customer',
+      customerRif: 'J-12345678-9',
     });
   });
 
@@ -259,10 +261,17 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
     expect(dialog.hasAnyNegativeStock()).toBe(true);
   });
 
-  it('should emit confirmed with invoiceId when valid', () => {
+  it('should emit confirmed with invoiceId and no customerId when valid', () => {
     dialog.hasAnyNegativeStock.set(false);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith('inv-001');
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ invoiceId: 'inv-001', customerId: undefined });
+  });
+
+  it('should emit confirmed with selectedCustomer when customer was chosen', () => {
+    dialog.selectedCustomer.set({ id: 'new-customer-id', code: 200, alias: 'NewCo', legalName: 'New Customer SA', rif: 'J-22222222-2', type: 'BUSINESS', active: true, portalAccess: false });
+    dialog.hasAnyNegativeStock.set(false);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ invoiceId: 'inv-001', customerId: 'new-customer-id' });
   });
 
   it('should not emit confirmed when has negative stock', () => {

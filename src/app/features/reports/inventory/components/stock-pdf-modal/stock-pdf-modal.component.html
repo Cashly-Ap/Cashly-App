@@ -60,11 +60,20 @@
   </div>
 
   <ng-template pTemplate="footer">
-    <p-button
-      label="Ver PDF"
-      icon="pi pi-file-pdf"
-      (onClick)="generatePdf()"
-      severity="primary"
-    />
+    <div class="flex gap-2 justify-end">
+      <p-button
+        label="Excel"
+        icon="pi pi-file-excel"
+        (onClick)="generateExcel()"
+        severity="success"
+        styleClass="p-button-outlined"
+      />
+      <p-button
+        label="Ver PDF"
+        icon="pi pi-file-pdf"
+        (onClick)="generatePdf()"
+        severity="primary"
+      />
+    </div>
   </ng-template>
 </p-dialog>

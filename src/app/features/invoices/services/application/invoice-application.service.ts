@@ -129,11 +129,11 @@ export class InvoiceApplicationService {
     );
   }
 
-  duplicate(id: string): Observable<InvoiceDetails> {
+  duplicate(id: string, customerId?: string): Observable<InvoiceDetails> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.duplicate(id).pipe(
+    return this.api.duplicate(id, customerId).pipe(
       tap({
         next: (invoice) => {
           const listItem = InvoiceMapper.toList(invoice);

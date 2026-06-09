@@ -252,8 +252,8 @@ describe('InvoiceListPageComponent', () => {
 
     it('should call duplicate service on dialog confirmed', () => {
       fixture.detectChanges();
-      component.onDuplicateDialogConfirmed('inv-001');
-      expect(mockService.duplicate).toHaveBeenCalledWith('inv-001');
+      component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
+      expect(mockService.duplicate).toHaveBeenCalledWith('inv-001', undefined);
     });
 
     it('should close dialog on dismissed', () => {
