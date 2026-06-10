@@ -30,6 +30,14 @@ export class PaymentHistoryDialogComponent {
     this.payments().reduce((sum, p) => sum + p.amount, 0),
   );
 
+  protected approvedCount = computed(() =>
+    this.payments().filter(p => p.status === 'APPROVED').length,
+  );
+
+  protected rejectedCount = computed(() =>
+    this.payments().filter(p => p.status === 'REJECTED').length,
+  );
+
   protected dialogTitle = computed(() => {
     if (this.payments().length > 0) {
       return `Historial de Pagos - ${this.payments()[0].invoiceNumber}`;

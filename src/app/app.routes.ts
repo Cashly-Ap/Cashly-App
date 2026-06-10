@@ -78,6 +78,10 @@ export const routes: Routes = [
     loadChildren: () => import('@features/returns/router').then((m) => m.RETURN_ROUTES),
   },
   {
+    path: 'cash-register',
+    loadChildren: () => import('@features/cash-register/router').then((m) => m.CASH_REGISTER_ROUTES),
+  },
+  {
     path: 'receivables',
     loadChildren: () => import('@features/receivables/router').then((m) => m.RECEIVABLES_ROUTES),
   },

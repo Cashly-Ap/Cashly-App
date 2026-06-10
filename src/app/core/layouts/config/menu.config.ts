@@ -121,6 +121,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           routerLink: '/returns',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
+        {
+          label: 'Caja',
+          icon: 'pi pi-calculator',
+          routerLink: '/cash-register',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
       ],
     },
     {

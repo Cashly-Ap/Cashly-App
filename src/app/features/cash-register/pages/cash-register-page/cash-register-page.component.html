@@ -1,0 +1,269 @@
+<app-main-layout>
+  <div class="min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+      <!-- HEADER -->
+      <div class="text-center mb-6">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
+          <i class="pi pi-calculator text-surface-0 dark:text-surface-900 text-3xl"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Caja</h1>
+        <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">Gestiona la caja del día</p>
+      </div>
+
+      @if (showInitialLoading()) {
+        <app-content-card>
+          <app-loading-spinner message="Cargando caja..." />
+        </app-content-card>
+      }
+
+      @else if (showEmptyState()) {
+        <app-content-card>
+          <app-empty-state
+            icon="pi-calculator"
+            title="No hay caja activa"
+            message="No hay una caja abierta. Inicie una nueva para registrar las operaciones del día."
+            buttonLabel="Abrir Caja"
+            (buttonClick)="onOpenDialogOpen()"
+          />
+        </app-content-card>
+      }
+
+      @else if (closure(); as c) {
+        <!-- STATUS HEADER -->
+        <app-list-container>
+          <div class="px-4 sm:px-6 py-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <p-tag
+                  [value]="getStatusLabel(c.status)"
+                  [severity]="getStatusSeverity(c.status)"
+                  styleClass="text-sm font-medium px-3 py-1"
+                />
+                <div>
+                  <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">Caja</h1>
+                  <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
+                    {{ c.closureDate | date: 'dd/MM/yyyy' }} &middot; Abierto por {{ c.openedByName }}
+                  </p>
+                </div>
+              </div>
+              <div class="flex flex-col sm:items-end gap-1 text-sm">
+                @if (isClosed() || isVerified()) {
+                  <div class="flex items-center gap-2 text-surface-600 dark:text-surface-300">
+                    <i class="pi pi-check-circle text-surface-400"></i>
+                    <span>Cerrado por {{ c.closedByName }} @if (c.closedAt) { &middot; {{ c.closedAt | date: 'dd/MM/yyyy HH:mm' }} }</span>
+                  </div>
+                }
+                @if (isVerified()) {
+                  <div class="flex items-center gap-2 text-green-600 dark:text-green-400 font-medium">
+                    <i class="pi pi-shield"></i>
+                    <span>Verificado por {{ c.verifiedByName }} @if (c.verifiedAt) { &middot; {{ c.verifiedAt | date: 'dd/MM/yyyy HH:mm' }} }</span>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </app-list-container>
+
+        <!-- SUMMARY CARDS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-file text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Total Facturado</span>
+            </div>
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-arrow-right text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Total Ingresado</span>
+            </div>
+            <p class="text-2xl font-bold text-green-600 dark:text-green-400">{{ c.totalRevenue | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-arrow-left text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Total Gastado</span>
+            </div>
+            <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ c.totalExpenses | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-balance-scale text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Balance Total</span>
+            </div>
+            <p class="text-2xl font-bold" [class.text-green-600]="c.balance >= 0" [class.text-red-600]="c.balance < 0">{{ c.balance | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+        </div>
+
+        <!-- LEGACY SUMMARY CARDS (Pagos, Anticipos, Devoluciones, Facturas) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-arrow-right text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Pagos</span>
+            </div>
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalPayments | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.paymentCount }} transacciones</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-arrow-up text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Anticipos</span>
+            </div>
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalAdvances | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.advanceCount }} transacciones</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-arrow-left text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Devoluciones</span>
+            </div>
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalReturns | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.returnCount }} transacciones</p>
+          </div>
+          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
+            <div class="flex items-center gap-3 mb-3">
+              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
+                <i class="pi pi-receipt text-surface-600 dark:text-surface-400"></i>
+              </div>
+              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Facturas</span>
+            </div>
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalInvoices | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.invoiceCount }} transacciones</p>
+          </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="flex flex-wrap items-center gap-3 mt-6">
+          <p-button label="Ver Detalle" icon="pi pi-table" severity="secondary" [outlined]="true" (onClick)="onOpenDetailDialog()" />
+          @if (isOpen()) {
+            <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" [disabled]="!canClose() || loading()" (onClick)="onOpenCloseDialog()" />
+          }
+          @if (isClosed() && isAdmin()) {
+            <p-button label="Verificar Caja" icon="pi pi-shield" severity="success" [disabled]="loading()" (onClick)="onOpenVerifyDialog()" />
+          }
+          @if (isVerified()) {
+            <div class="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl text-sm font-medium">
+              <i class="pi pi-check-circle"></i>
+              <span>Caja verificada — sin acciones pendientes</span>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- OPEN DIALOG -->
+  <p-dialog [visible]="openDialogVisible()" header="Abrir Caja" [modal]="true" [style]="{ width: '450px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onOpenDialogClose()">
+    <form [formGroup]="openForm">
+      <div class="flex flex-col gap-1">
+        <label for="openedByName" class="text-xs font-medium text-surface-500">Abierto por</label>
+        <input id="openedByName" pInputText formControlName="openedByName" class="w-full" style="width:100%" placeholder="Nombre del cajero" />
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-2">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onOpenDialogClose()" />
+        <p-button label="Abrir Caja" icon="pi pi-plus" severity="contrast" [disabled]="openForm.invalid || isSubmitting()" [loading]="isSubmitting()" (onClick)="onOpenSubmit()" />
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- CLOSE DIALOG -->
+  <p-dialog [visible]="closeDialogVisible()" header="Cerrar Caja" [modal]="true" [style]="{ width: '500px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onCloseDialogClose()">
+    <form [formGroup]="closeForm">
+      <div class="flex flex-col gap-4">
+        <div class="flex gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200 dark:border-surface-700">
+          <div class="flex-1">
+            <p class="text-xs text-surface-500 uppercase font-medium mb-1">Balance</p>
+            <p class="text-lg font-bold" [class.text-green-600]="(closure()?.balance ?? 0) >= 0" [class.text-red-600]="(closure()?.balance ?? 0) < 0">{{ (closure()?.balance ?? 0) | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
+          </div>
+        </div>
+        <div>
+          <label for="closedByName" class="text-xs font-medium text-surface-500 block mb-1">Cerrado por <span class="text-red-500">*</span></label>
+          <input id="closedByName" pInputText formControlName="closedByName" style="width:100%" placeholder="Nombre de quien cierra" />
+          @if (closeForm.get('closedByName')?.invalid && closeForm.get('closedByName')?.touched) {
+            <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
+          }
+        </div>
+        <div>
+          <label for="closingNotes" class="text-xs font-medium text-surface-500 block mb-1">Notas de Cierre</label>
+          <textarea id="closingNotes" pInputTextarea formControlName="closingNotes" style="width:100%;resize:none" rows="3" placeholder="Notas opcionales..."></textarea>
+        </div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-2">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCloseDialogClose()" />
+        <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" [disabled]="closeForm.invalid || isSubmitting()" [loading]="isSubmitting()" (onClick)="onCloseSubmit()" />
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- VERIFY DIALOG -->
+  <p-dialog [visible]="verifyDialogVisible()" header="Verificar Caja" [modal]="true" [style]="{ width: '450px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onVerifyDialogClose()">
+    <form [formGroup]="verifyForm">
+      <div class="flex flex-col gap-4">
+        <div class="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-700 dark:text-yellow-300">
+          <i class="pi pi-exclamation-triangle mt-0.5"></i>
+          <p class="m-0">Al verificar la caja, confirmará que los montos reales coinciden con los montos esperados. Esta acción no se puede deshacer.</p>
+        </div>
+        <div>
+          <label for="verifiedByName" class="text-xs font-medium text-surface-500 block mb-1">Verificado por <span class="text-red-500">*</span></label>
+          <input id="verifiedByName" pInputText formControlName="verifiedByName" style="width:100%" placeholder="Nombre del administrador" />
+          @if (verifyForm.get('verifiedByName')?.invalid && verifyForm.get('verifiedByName')?.touched) {
+            <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
+          }
+        </div>
+      </div>
+    </form>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-2">
+        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onVerifyDialogClose()" />
+        <p-button label="Verificar Caja" icon="pi pi-check-circle" severity="success" [disabled]="verifyForm.invalid || isSubmitting()" [loading]="isSubmitting()" (onClick)="onVerifySubmit()" />
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- DETAIL DIALOG -->
+  <p-dialog [visible]="detailDialogVisible()" header="Detalle por Método de Pago" [modal]="true" [style]="{ width: '600px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onDetailDialogClose()">
+    <div class="relative overflow-x-auto">
+      <p-table [value]="details()" styleClass="p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="w-auto"><div class="font-semibold">Método de Pago</div></th>
+            <th class="w-24"><div class="font-semibold text-right">Transacciones</div></th>
+            <th class="w-36"><div class="font-semibold text-right">Monto</div></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+          <tr>
+            <td><div class="font-medium">{{ detail.paymentMethodName }}</div></td>
+            <td><div class="text-right">{{ detail.transactionCount }}</div></td>
+            <td><div class="text-right font-mono">{{ detail.expectedAmount | currency: 'USD' : 'symbol' : '1.2-2' }}</div></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <ng-template pTemplate="footer">
+      <div class="flex justify-end gap-2">
+        <p-button label="Cerrar" severity="secondary" [outlined]="true" (onClick)="onDetailDialogClose()" />
+      </div>
+    </ng-template>
+  </p-dialog>
+</app-main-layout>
