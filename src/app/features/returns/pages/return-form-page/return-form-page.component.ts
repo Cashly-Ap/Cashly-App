@@ -65,7 +65,7 @@ interface ReturnLineFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReturnFormPageComponent implements OnInit {
-  // Expose enum for template access
+  
   readonly ReturnType = ReturnType;
 
   private readonly router = inject(Router);
@@ -77,30 +77,30 @@ export class ReturnFormPageComponent implements OnInit {
 
   readonly isSubmitting = signal<boolean>(false);
 
-  // Customer picker
+  
   readonly showCustomerPicker = signal(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
 
-  // Invoice picker
+  
   readonly showInvoicePicker = signal(false);
   readonly selectedInvoice = signal<InvoiceDetails | null>(null);
 
-  // Return type
+  
   readonly returnType = signal<ReturnType>(ReturnType.MANUAL);
   readonly returnTypeOptions = Object.values(ReturnType).map((t) => ({
     label: RETURN_TYPE_LABELS[t],
     value: t,
   }));
 
-  // Warehouses for auto allocation
+  
   readonly warehouses = signal<{ id: string; name: string }[]>([]);
   readonly autoWarehouseId = signal<string>('');
   readonly warehouseOptions = computed(() =>
     this.warehouses().map((w) => ({ label: w.name, value: w.id })),
   );
 
-  // Return lines
+  
   readonly returnLines = signal<ReturnLineFormData[]>([]);
   readonly totalAmount = computed(() =>
     this.returnLines().reduce((sum, l) => sum + l.quantity * l.unitPrice, 0),
@@ -132,7 +132,7 @@ export class ReturnFormPageComponent implements OnInit {
     });
   }
 
-  // Customer picker
+  
   openCustomerPicker(): void {
     this.showCustomerPicker.set(true);
   }
@@ -142,7 +142,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
     this.showCustomerPicker.set(false);
-    // Reset selected invoice when customer changes
+    
     this.selectedInvoice.set(null);
     this.form.patchValue({ invoiceId: '' });
     this.returnLines.set([]);
@@ -152,7 +152,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.showCustomerPicker.set(false);
   }
 
-  // Invoice picker
+  
   openInvoicePicker(): void {
     if (!this.selectedCustomer()) {
       this.messageService.add({
@@ -186,7 +186,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.showInvoicePicker.set(false);
   }
 
-  // Auto warehouse allocation
+  
   onAutoWarehouseSelected(warehouseId: string): void {
     this.autoWarehouseId.set(warehouseId);
     if (!warehouseId) return;

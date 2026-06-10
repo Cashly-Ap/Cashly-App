@@ -116,12 +116,12 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
   }
 
   searchCustomers(event: AutoCompleteCompleteEvent): void {
-    // TODO: implement customer search via API
+    
     this.filteredCustomers = [];
   }
 
   searchInvoices(event: AutoCompleteCompleteEvent): void {
-    // TODO: implement invoice search via API
+    
     this.filteredInvoices = [];
   }
 

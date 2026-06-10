@@ -238,7 +238,7 @@ export class ProductPickerDialogComponent {
     const productId = this.popoverProductId();
     if (!productId) return;
 
-    // Clamp each allocated value to its available stock
+    
     const allocations = this.popoverAllocations().map((a) => ({
       ...a,
       allocated: Math.min(a.allocated ?? 0, a.available),

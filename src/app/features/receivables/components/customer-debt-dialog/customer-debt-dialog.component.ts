@@ -93,7 +93,7 @@ export class CustomerDebtDialogComponent {
     { label: 'Canceladas', value: 'CANCELLED' },
   ];
 
-  // Balance section
+  
   protected balance = signal<number>(0);
   protected transactions = signal<BalanceTransactionResponse[]>([]);
   protected loadingBalance = signal(false);
@@ -229,7 +229,7 @@ export class CustomerDebtDialogComponent {
     return 'Registrar pago';
   }
 
-  // Balance methods
+  
   protected getBalanceTypeLabel(type: string): string {
     switch (type) {
       case 'ADVANCED': return 'Anticipo';

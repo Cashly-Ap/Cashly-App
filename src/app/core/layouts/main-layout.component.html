@@ -5,7 +5,7 @@
     class="fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 shadow-md"
   >
     <div class="flex items-center justify-between px-4 h-16">
-      <!-- Mobile/Tablet: Hamburger button -->
+      
       <div class="lg:hidden">
         <p-button
           icon="pi pi-bars"
@@ -17,7 +17,7 @@
         />
       </div>
 
-      <!-- Desktop: Logo -->
+      
       <div class="hidden lg:flex items-center">
         <img
           [ngSrc]="logoSrc"
@@ -31,7 +31,7 @@
         />
       </div>
 
-      <!-- Mobile/Tablet: Centered Logo -->
+      
       <div class="lg:hidden flex-1 flex justify-center">
         <img
           [ngSrc]="logoSrc"
@@ -45,7 +45,7 @@
         />
       </div>
 
-      <!-- Desktop: Menu -->
+      
       <div class="hidden lg:flex flex-1 px-8">
         <p-menubar
           [model]="primeMenuItems()"
@@ -53,10 +53,10 @@
         ></p-menubar>
       </div>
 
-      <!-- Right side: Actions -->
+      
       <div class="flex items-center gap-1 lg:gap-4">
         <app-pending-tabs-dropdown />
-        <!-- Desktop only: User menu button -->
+        
         <button
           #userButton
           (click)="toggleUserMenu($event)"
@@ -72,7 +72,7 @@
           </span>
           <i class="pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
         </button>
-        <!-- Desktop only: Theme toggle -->
+        
         <div class="hidden lg:block">
           <app-theme-toggle></app-theme-toggle>
         </div>
@@ -80,7 +80,7 @@
     </div>
   </div>
 
-  <!-- Mobile/Tablet Drawer Menu -->
+  
   <p-drawer
     #mobileDrawer
     [visible]="mobileMenuVisible()"
@@ -108,7 +108,7 @@
 
     <ng-template pTemplate="content">
       <div class="flex flex-col h-full">
-        <!-- User Info -->
+        
         <div class="p-4 border-b border-surface-200 dark:border-surface-700">
           <div class="flex items-center gap-3">
             <p-avatar
@@ -127,14 +127,14 @@
           </div>
         </div>
 
-        <!-- Navigation Menu -->
+        
         <div class="flex-1 overflow-y-auto py-2">
           <p-panelMenu [model]="mobileMenuItems()" styleClass="border-0 bg-transparent mobile-panel-menu" />
         </div>
 
-        <!-- Footer Actions -->
+        
         <div class="border-t border-surface-200 dark:border-surface-700 p-4 space-y-1">
-          <!-- Theme Toggle -->
+          
           <div class="flex items-center justify-between p-3 rounded-lg">
             <div class="flex items-center gap-3">
               <i class="pi pi-palette text-surface-600 dark:text-surface-400"></i>

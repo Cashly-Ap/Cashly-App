@@ -157,7 +157,7 @@ describe('CancelInvoiceDialogComponent - visible', () => {
   });
 
   it.skip('should reset form when visible changes to false', async () => {
-    // Skipped: ECHE when changing host binding after detectChanges
+    
     dialog.form.get('reason')?.setValue('Test reason');
     dialog.form.get('reason')?.markAsTouched();
 

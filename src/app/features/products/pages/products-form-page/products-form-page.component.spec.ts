@@ -369,7 +369,7 @@ describe('ProductsFormPageComponent', () => {
     const addSpy = vi.spyOn(messageService, 'add');
     const navigateSpy = vi.spyOn(router, 'navigate');
 
-    // Trigger error by calling onLoadEntity directly
+    
     component.onLoadEntity('prod-999');
 
     expect(addSpy).toHaveBeenCalledWith({

@@ -172,6 +172,6 @@ describe('StockPdfModalComponent', () => {
     expect(options[2].label).toBe('Secondary (TX)');
   });
 
-  // warehouseOptions tested in the "compute categoryOptions" test above
-  // which creates a fresh fixture with both mocks set before ngOnInit.
+  
+  
 });

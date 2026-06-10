@@ -74,8 +74,8 @@ describe('PdfViewerModalComponent', () => {
   });
 });
 
-// Skipped: tests that bind pdfUrl trigger Angular's built-in
-// sanitizer on the iframe [src] binding, which cannot be mocked in jsdom.
+
+
 describe.skip('PdfViewerModalComponent - visible', () => {
   let hostComponent: HostComponent;
   let component: PdfViewerModalComponent;

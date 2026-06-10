@@ -1,7 +1,7 @@
 <app-main-layout>
   <div class="min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      <!-- HEADER -->
+      
       <div class="text-center mb-6">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
           <i class="pi pi-calculator text-surface-0 dark:text-surface-900 text-3xl"></i>
@@ -29,7 +29,7 @@
       }
 
       @else if (closure(); as c) {
-        <!-- STATUS HEADER -->
+        
         <app-list-container>
           <div class="px-4 sm:px-6 py-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -58,7 +58,7 @@
           </div>
         </app-list-container>
 
-        <!-- SUMMARY CARDS -->
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
             <div class="flex items-center gap-3 mb-3">
@@ -98,7 +98,7 @@
           </div>
         </div>
 
-        <!-- LEGACY SUMMARY CARDS (Pagos, Anticipos, Devoluciones, Facturas) -->
+        
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
           <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
             <div class="flex items-center gap-3 mb-3">
@@ -142,10 +142,10 @@
           </div>
         </div>
 
-        <!-- CHARTS -->
+        
         <app-cash-register-charts [closure]="c" />
 
-        <!-- ACTION BUTTONS -->
+        
         <div class="flex flex-wrap items-center gap-3 mt-6">
           <p-button label="Ver Detalle" icon="pi pi-table" severity="secondary" [outlined]="true" (onClick)="onOpenDetailDialog()" />
           @if (isOpen()) {
@@ -156,7 +156,7 @@
     </div>
   </div>
 
-  <!-- OPEN DIALOG -->
+  
   <p-dialog [visible]="openDialogVisible()" header="Abrir Caja" [modal]="true" [style]="{ width: '450px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onOpenDialogClose()">
     <form [formGroup]="openForm">
       <div class="flex flex-col gap-1">
@@ -172,7 +172,7 @@
     </ng-template>
   </p-dialog>
 
-  <!-- CLOSE DIALOG -->
+  
   <p-dialog [visible]="closeDialogVisible()" header="Cerrar Caja" [modal]="true" [style]="{ width: '500px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onCloseDialogClose()">
     <form [formGroup]="closeForm">
       <div class="flex flex-col gap-4">
@@ -203,7 +203,7 @@
     </ng-template>
   </p-dialog>
 
-  <!-- DETAIL DIALOG -->
+  
   <p-dialog [visible]="detailDialogVisible()" header="Detalle por Método de Pago" [modal]="true" [style]="{ width: '600px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onDetailDialogClose()">
     <div class="relative overflow-x-auto">
       <p-table [value]="details()" styleClass="p-datatable-striped">

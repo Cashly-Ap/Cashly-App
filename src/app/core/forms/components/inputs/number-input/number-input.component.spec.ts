@@ -18,7 +18,7 @@ describe('NumberInputComponent', () => {
     component = fixture.componentInstance;
     control = new FormControl(0);
     
-    // Set required inputs before change detection
+    
     fixture.componentRef.setInput('label', 'Test');
     fixture.componentRef.setInput('control', control);
     fixture.detectChanges();

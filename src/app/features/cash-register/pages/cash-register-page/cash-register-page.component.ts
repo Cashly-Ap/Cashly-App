@@ -69,7 +69,7 @@ export class CashRegisterPageComponent implements OnInit {
   readonly loading = this.service.loading;
   readonly currentUserName = this.service.currentUserName;
 
-  // ── Computed state ──────────────────────────────────────────────
+  
 
   readonly showInitialLoading = computed(
     () => this.service.loading() && this.service.activeClosure() === null,
@@ -86,7 +86,7 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly canClose = computed(() => this.isOpen());
 
-  // ── Dialog visibility ───────────────────────────────────────────
+  
 
   readonly openDialogVisible = signal(false);
   readonly closeDialogVisible = signal(false);
@@ -94,20 +94,20 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly isSubmitting = signal(false);
 
-  // ── Open closure form ───────────────────────────────────────────
+  
 
   readonly openForm = this.fb.group({
     openedByName: ['', Validators.required],
   });
 
-  // ── Close closure form ──────────────────────────────────────────
+  
 
   readonly closeForm = this.fb.group({
     closedByName: ['', Validators.required],
     closingNotes: [''],
   });
 
-  // ── Lifecycle ───────────────────────────────────────────────────
+  
 
   ngOnInit(): void {
     this.service
@@ -116,7 +116,7 @@ export class CashRegisterPageComponent implements OnInit {
       .subscribe();
   }
 
-  // ── Open closure ────────────────────────────────────────────────
+  
 
   onOpenDialogOpen(): void {
     this.openForm.reset({ openedByName: this.currentUserName() });
@@ -147,7 +147,7 @@ export class CashRegisterPageComponent implements OnInit {
     this.openDialogVisible.set(false);
   }
 
-  // ── Close closure ───────────────────────────────────────────────
+  
 
   onOpenCloseDialog(): void {
     this.closeForm.reset({
@@ -186,7 +186,7 @@ export class CashRegisterPageComponent implements OnInit {
     this.closeDialogVisible.set(false);
   }
 
-  // ── Detail Dialog ───────────────────────────────────────────────
+  
 
   onOpenDetailDialog(): void {
     this.detailDialogVisible.set(true);
@@ -196,7 +196,7 @@ export class CashRegisterPageComponent implements OnInit {
     this.detailDialogVisible.set(false);
   }
 
-  // ── Template helpers ────────────────────────────────────────────
+  
 
   getStatusLabel(status: string | undefined): string {
     switch (status) {

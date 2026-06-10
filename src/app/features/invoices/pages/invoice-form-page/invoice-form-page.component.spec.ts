@@ -116,7 +116,7 @@ describe('InvoiceFormPageComponent', () => {
   });
 
   afterEach(() => {
-    // Flush any pending HTTP requests from imported components (e.g., CustomerPickerDialogComponent)
+    
     if (httpMock) {
       httpMock.match(() => true).forEach((req) => req.flush([]));
     }
@@ -375,7 +375,7 @@ describe('InvoiceFormPageComponent', () => {
     });
 
     it.skip('should navigate to /facturas on load failure', async () => {
-      // Skipped: CustomerPickerDialogComponent makes HTTP calls that interfere with test isolation
+      
       (TestBed as TestBedStatic).resetTestingModule();
       configureTestBed('inv-999', throwError(() => new Error('Not found')));
       createComponent();

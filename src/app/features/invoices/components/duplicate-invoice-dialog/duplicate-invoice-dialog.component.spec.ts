@@ -88,7 +88,7 @@ describe('DuplicateInvoiceDialogComponent', () => {
   });
 
   it.skip('should reset state when visible changes to false', async () => {
-    // Skipped: ECHE when changing host binding after detectChanges
+    
     dialog.lines.set([{ productName: 'Test', productCode: 'T1', quantity: 1, allocations: [], hasNegativeStock: false }]);
     hostComponent.visible = true;
     fixture.detectChanges();
@@ -199,7 +199,7 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
   it('should set error on load failure', async () => {
     mockApi.getById = vi.fn().mockReturnValue(throwError(() => new Error('Not found')));
 
-    // Re-create with error-prone API
+    
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HostComponent],
@@ -221,7 +221,7 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
   it('should calculate realAvailable as available - allocated', async () => {
     await fixture.whenStable();
     const line = dialog.lines()[0];
-    expect(line.allocations[0].realAvailable).toBe(35); // 40 - 5
+    expect(line.allocations[0].realAvailable).toBe(35); 
   });
 
   it('should set hasAnyNegativeStock when any allocation would be negative', async () => {
@@ -242,7 +242,7 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
 
     mockApi.getById = vi.fn().mockReturnValue(of(negativeInvoice));
 
-    // Re-create with negative stock API
+    
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HostComponent],

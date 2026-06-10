@@ -34,7 +34,7 @@ export class ConvertToInvoiceDialogComponent {
   readonly creditLoading = signal(false);
 
   readonly creditWarningMessage = computed(() => {
-    if (this.creditLoading()) return undefined; // Still loading — treat as blocking
+    if (this.creditLoading()) return undefined; 
     const status = this.creditStatus();
     if (!status || this.paymentType() !== PaymentType.CREDIT) return null;
 

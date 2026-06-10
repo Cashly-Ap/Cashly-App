@@ -20,18 +20,14 @@ export class OrderPdfApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/reports/orders`;
 
-  /**
-   * Download PDF for a single order by ID
-   */
+  
   downloadOrderPdf(orderId: string): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${orderId}/pdf`, {
       responseType: 'blob',
     });
   }
 
-  /**
-   * Download PDF report for multiple orders
-   */
+  
   downloadOrdersReportPdf(filters: OrdersPdfFilters): Observable<Blob> {
     let params = new HttpParams();
 

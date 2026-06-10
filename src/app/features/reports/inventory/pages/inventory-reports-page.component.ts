@@ -63,7 +63,7 @@ export default class InventoryReportsPageComponent {
         this.stockModalVisible.set(false);
       },
       error: () => {
-        // handled by global error interceptor
+        
       },
     });
   }
@@ -92,7 +92,7 @@ export default class InventoryReportsPageComponent {
         this.movementsModalVisible.set(false);
       },
       error: () => {
-        // handled by global error interceptor
+        
       },
     });
   }

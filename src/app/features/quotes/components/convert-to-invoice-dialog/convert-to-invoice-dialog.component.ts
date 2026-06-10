@@ -129,7 +129,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
         this.hasAnyNegativeStock.set(mappedLines.some((l) => l.hasNegativeStock));
         this.loading.set(false);
 
-        // After loading quote data, fetch credit status if payment type is CREDIT
+        
         if (this.paymentType() === PaymentType.CREDIT) {
           this.loadCreditStatus(quote.customerId);
         }

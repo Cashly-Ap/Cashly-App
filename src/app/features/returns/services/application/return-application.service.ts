@@ -53,7 +53,7 @@ export class ReturnApplicationService {
   }
 
   private enrichReturnData(ret: ReturnDetail): Observable<ReturnDetail> {
-    // Fetch customer details if customerName is missing
+    
     const customer$ = !ret.customerName && ret.customerId
       ? this.customerApi.getById(ret.customerId).pipe(
           map((c) => ({ customerName: c.legalName, customerRif: c.rif })),
@@ -61,7 +61,7 @@ export class ReturnApplicationService {
         )
       : of(null);
 
-    // Fetch product details for lines that lack product info
+    
     const linesNeedingProducts = ret.lines.filter((l) => !l.productName || !l.productCode);
     const productIds = [...new Set(linesNeedingProducts.map((l) => l.productId))];
     const products$ = productIds.length > 0

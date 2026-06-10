@@ -11,7 +11,7 @@
             subtitle="Información, stock e historial de movimientos"
           />
 
-          <!-- Info Card -->
+          
           <app-details-card>
             <app-details-card-header [title]="w.name" [subtitle]="w.state + ' · ' + w.municipality">
               <div actions class="flex gap-3">
@@ -35,7 +35,7 @@
             </div>
           </app-details-card>
 
-          <!-- Stock Card -->
+          
           <app-details-card>
             <app-details-card-header title="Stock Actual">
               <div actions>
@@ -45,7 +45,7 @@
               </div>
             </app-details-card-header>
             <div class="p-4 sm:p-6 flex flex-col gap-4">
-              <!-- Search -->
+              
               <div class="relative">
                 <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm"></i>
                 <input
@@ -84,7 +84,7 @@
                   </table>
                 </div>
 
-                <!-- Stock Pagination -->
+                
                 @if (stockTotalPages() > 1) {
                   <div class="flex items-center justify-between pt-2">
                     <span class="text-xs text-surface-400 dark:text-surface-500">
@@ -112,7 +112,7 @@
             </div>
           </app-details-card>
 
-          <!-- Movements Card -->
+          
           <app-details-card>
             <app-details-card-header title="Historial de Movimientos">
               <div actions>
@@ -128,7 +128,7 @@
 
             @if (showMovements()) {
               <div class="p-4 sm:p-6 flex flex-col gap-4">
-                <!-- Type Filter -->
+                
                 <div class="flex items-center gap-3">
                   <p-select
                     [options]="movementTypeOptions"
@@ -200,7 +200,7 @@
                     </table>
                   </div>
 
-                  <!-- Movements Pagination -->
+                  
                   @if (movementsTotalPages() > 1) {
                     <div class="flex items-center justify-between pt-2">
                       <span class="text-xs text-surface-400 dark:text-surface-500">
