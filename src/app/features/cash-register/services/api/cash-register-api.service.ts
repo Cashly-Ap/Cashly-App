@@ -7,7 +7,6 @@ import {
   CashRegisterResponse,
   OpenRegisterRequest,
   CloseRegisterRequest,
-  VerifyRegisterRequest,
 } from '../../models/interfaces/closure.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -29,16 +28,6 @@ export class CashRegisterApiService {
   ): Observable<CashRegisterResponse> {
     return this.http.post<CashRegisterResponse>(
       `${this.baseUrl}/${id}/close`,
-      request,
-    );
-  }
-
-  verify(
-    id: string,
-    request: VerifyRegisterRequest,
-  ): Observable<CashRegisterResponse> {
-    return this.http.post<CashRegisterResponse>(
-      `${this.baseUrl}/${id}/verify`,
       request,
     );
   }

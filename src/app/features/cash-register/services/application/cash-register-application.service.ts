@@ -21,11 +21,6 @@ export class CashRegisterApplicationService {
   readonly history = signal<CashRegisterResponse[]>([]);
   readonly totalElements = signal(0);
 
-  readonly isAdmin = computed(() => {
-    const user = this.authService.currentUser();
-    return user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
-  });
-
   readonly currentUserName = computed(() => {
     return this.authService.currentUser()?.userName ?? '';
   });
@@ -110,39 +105,6 @@ export class CashRegisterApplicationService {
             severity: 'error',
             summary: 'Error',
             detail: 'Error al cerrar la caja',
-            life: 5000,
-          });
-        },
-      }),
-      catchError(() => of(null)),
-      finalize(() => this.loading.set(false)),
-    );
-  }
-
-  verifyRegister(
-    id: string,
-    verifiedByName: string,
-  ): Observable<CashRegisterResponse | null> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.api.verify(id, { verifiedByName }).pipe(
-      tap({
-        next: (closure) => {
-          this.activeClosure.set(closure);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Caja verificada exitosamente',
-            life: 3000,
-          });
-        },
-        error: () => {
-          this.error.set('Error al verificar la caja');
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al verificar la caja',
             life: 5000,
           });
         },

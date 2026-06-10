@@ -1,16 +1,13 @@
 export interface CashRegisterResponse {
   id: string;
   closureDate: string;
-  status: 'OPEN' | 'CLOSED' | 'VERIFIED';
+  status: 'OPEN' | 'CLOSED';
   openedBy: string;
   openedByName: string;
   openedAt: string;
   closedBy: string | null;
   closedByName: string | null;
   closedAt: string | null;
-  verifiedBy: string | null;
-  verifiedByName: string | null;
-  verifiedAt: string | null;
   totalPayments: number;
   totalAdvances: number;
   totalReturns: number;
@@ -61,6 +58,3 @@ export interface OpenRegisterRequest {
   openedByName: string;
 }
 
-export interface VerifyRegisterRequest {
-  verifiedByName: string;
-}

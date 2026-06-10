@@ -30,6 +30,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
+import { CashRegisterChartsComponent } from '../../components/cash-register-charts/cash-register-charts.component';
 import { CashRegisterApplicationService } from '../../services/application/cash-register-application.service';
 
 @Component({
@@ -55,6 +56,7 @@ import { CashRegisterApplicationService } from '../../services/application/cash-
     InputTextModule,
     TextareaModule,
     TooltipModule,
+    CashRegisterChartsComponent,
   ],
   templateUrl: './cash-register-page.component.html',
 })
@@ -65,7 +67,6 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly activeClosure = this.service.activeClosure;
   readonly loading = this.service.loading;
-  readonly isAdmin = this.service.isAdmin;
   readonly currentUserName = this.service.currentUserName;
 
   // ── Computed state ──────────────────────────────────────────────
@@ -82,16 +83,13 @@ export class CashRegisterPageComponent implements OnInit {
   readonly details = computed(() => this.closure()?.details ?? []);
   readonly isOpen = computed(() => this.closure()?.status === 'OPEN');
   readonly isClosed = computed(() => this.closure()?.status === 'CLOSED');
-  readonly isVerified = computed(() => this.closure()?.status === 'VERIFIED');
 
   readonly canClose = computed(() => this.isOpen());
-  readonly canVerify = computed(() => this.isClosed() && this.isAdmin());
 
   // ── Dialog visibility ───────────────────────────────────────────
 
   readonly openDialogVisible = signal(false);
   readonly closeDialogVisible = signal(false);
-  readonly verifyDialogVisible = signal(false);
   readonly detailDialogVisible = signal(false);
 
   readonly isSubmitting = signal(false);
@@ -107,12 +105,6 @@ export class CashRegisterPageComponent implements OnInit {
   readonly closeForm = this.fb.group({
     closedByName: ['', Validators.required],
     closingNotes: [''],
-  });
-
-  // ── Verify closure form ─────────────────────────────────────────
-
-  readonly verifyForm = this.fb.group({
-    verifiedByName: ['', Validators.required],
   });
 
   // ── Lifecycle ───────────────────────────────────────────────────
@@ -192,39 +184,6 @@ export class CashRegisterPageComponent implements OnInit {
 
   onCloseDialogClose(): void {
     this.closeDialogVisible.set(false);
-  }
-
-  // ── Verify closure ──────────────────────────────────────────────
-
-  onOpenVerifyDialog(): void {
-    this.verifyForm.reset({ verifiedByName: this.currentUserName() });
-    this.verifyDialogVisible.set(true);
-  }
-
-  onVerifySubmit(): void {
-    if (this.verifyForm.invalid) return;
-
-    const id = this.closure()?.id;
-    if (!id) return;
-
-    this.isSubmitting.set(true);
-
-    this.service
-      .verifyRegister(id, this.verifyForm.get('verifiedByName')?.value ?? '')
-      .pipe(
-        finalize(() => this.isSubmitting.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: () => {
-          this.verifyDialogVisible.set(false);
-          this.verifyForm.reset();
-        },
-      });
-  }
-
-  onVerifyDialogClose(): void {
-    this.verifyDialogVisible.set(false);
   }
 
   // ── Detail Dialog ───────────────────────────────────────────────

@@ -47,16 +47,10 @@
                 </div>
               </div>
               <div class="flex flex-col sm:items-end gap-1 text-sm">
-                @if (isClosed() || isVerified()) {
+                @if (isClosed()) {
                   <div class="flex items-center gap-2 text-surface-600 dark:text-surface-300">
                     <i class="pi pi-check-circle text-surface-400"></i>
                     <span>Cerrado por {{ c.closedByName }} @if (c.closedAt) { &middot; {{ c.closedAt | date: 'dd/MM/yyyy HH:mm' }} }</span>
-                  </div>
-                }
-                @if (isVerified()) {
-                  <div class="flex items-center gap-2 text-green-600 dark:text-green-400 font-medium">
-                    <i class="pi pi-shield"></i>
-                    <span>Verificado por {{ c.verifiedByName }} @if (c.verifiedAt) { &middot; {{ c.verifiedAt | date: 'dd/MM/yyyy HH:mm' }} }</span>
                   </div>
                 }
               </div>
@@ -148,20 +142,14 @@
           </div>
         </div>
 
+        <!-- CHARTS -->
+        <app-cash-register-charts [closure]="c" />
+
         <!-- ACTION BUTTONS -->
         <div class="flex flex-wrap items-center gap-3 mt-6">
           <p-button label="Ver Detalle" icon="pi pi-table" severity="secondary" [outlined]="true" (onClick)="onOpenDetailDialog()" />
           @if (isOpen()) {
             <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" [disabled]="!canClose() || loading()" (onClick)="onOpenCloseDialog()" />
-          }
-          @if (isClosed() && isAdmin()) {
-            <p-button label="Verificar Caja" icon="pi pi-shield" severity="success" [disabled]="loading()" (onClick)="onOpenVerifyDialog()" />
-          }
-          @if (isVerified()) {
-            <div class="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-xl text-sm font-medium">
-              <i class="pi pi-check-circle"></i>
-              <span>Caja verificada — sin acciones pendientes</span>
-            </div>
           }
         </div>
       }
@@ -211,31 +199,6 @@
       <div class="flex justify-end gap-2">
         <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCloseDialogClose()" />
         <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" [disabled]="closeForm.invalid || isSubmitting()" [loading]="isSubmitting()" (onClick)="onCloseSubmit()" />
-      </div>
-    </ng-template>
-  </p-dialog>
-
-  <!-- VERIFY DIALOG -->
-  <p-dialog [visible]="verifyDialogVisible()" header="Verificar Caja" [modal]="true" [style]="{ width: '450px' }" [dismissableMask]="true" appendTo="body" (visibleChange)="onVerifyDialogClose()">
-    <form [formGroup]="verifyForm">
-      <div class="flex flex-col gap-4">
-        <div class="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg text-sm text-yellow-700 dark:text-yellow-300">
-          <i class="pi pi-exclamation-triangle mt-0.5"></i>
-          <p class="m-0">Al verificar la caja, confirmará que los montos reales coinciden con los montos esperados. Esta acción no se puede deshacer.</p>
-        </div>
-        <div>
-          <label for="verifiedByName" class="text-xs font-medium text-surface-500 block mb-1">Verificado por <span class="text-red-500">*</span></label>
-          <input id="verifiedByName" pInputText formControlName="verifiedByName" style="width:100%" placeholder="Nombre del administrador" />
-          @if (verifyForm.get('verifiedByName')?.invalid && verifyForm.get('verifiedByName')?.touched) {
-            <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
-          }
-        </div>
-      </div>
-    </form>
-    <ng-template pTemplate="footer">
-      <div class="flex justify-end gap-2">
-        <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onVerifyDialogClose()" />
-        <p-button label="Verificar Caja" icon="pi pi-check-circle" severity="success" [disabled]="verifyForm.invalid || isSubmitting()" [loading]="isSubmitting()" (onClick)="onVerifySubmit()" />
       </div>
     </ng-template>
   </p-dialog>
