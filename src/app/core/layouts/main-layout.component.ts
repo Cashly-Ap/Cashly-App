@@ -45,6 +45,9 @@ import { InvoicePdfModalComponent } from '@features/reports/invoices/components/
 import { InvoicePdfApiService, InvoicesPdfFilters } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
 import { QuotePdfApiService, QuotesPdfFilters } from '@features/reports/quotes/services/api/quote-pdf-api.service';
+import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
+import { CashRegisterReportFilters } from '@features/reports/finance/models/interfaces';
+import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
@@ -75,6 +78,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     OrderPdfModalComponent,
     InvoicePdfModalComponent,
     QuotePdfModalComponent,
+    CashRegisterReportModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -96,6 +100,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private orderPdfApi = inject(OrderPdfApiService);
   private invoicePdfApi = inject(InvoicePdfApiService);
   private quotePdfApi = inject(QuotePdfApiService);
+  private cashRegisterApi = inject(CashRegisterApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
   private currentObjectUrl: string | null = null;
@@ -106,7 +111,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/Parsun.png';
 
-  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | null>(null);
+  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'cashRegister' | null>(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -166,6 +171,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openOrdersPdfModal: () => this.activeModal.set('orders'),
       openInvoicesPdfModal: () => this.activeModal.set('invoices'),
       openQuotesPdfModal: () => this.activeModal.set('quotes'),
+      openCashRegisterModal: () => this.activeModal.set('cashRegister'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
@@ -322,6 +328,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         const url = URL.createObjectURL(blob);
         this.currentObjectUrl = url;
         this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onCashRegisterExcel(filters: CashRegisterReportFilters): void {
+    this.activeModal.set(null);
+    this.cashRegisterApi.exportExcel(filters.dateFrom, filters.dateTo).subscribe({
+      next: (blob) => {
+        FileDownloadHelper.downloadFromBlob(blob, `caja-${filters.dateFrom}-${filters.dateTo}.xlsx`);
       },
     });
   }

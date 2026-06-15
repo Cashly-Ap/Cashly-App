@@ -19,3 +19,8 @@ export interface CollectionsFilters {
   customerId?: string;
   agingFrom?: string;
 }
+
+export interface CashRegisterReportFilters {
+  dateFrom: string;
+  dateTo: string;
+}

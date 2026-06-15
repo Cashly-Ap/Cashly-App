@@ -117,11 +117,14 @@ export class CashRegisterApplicationService {
   loadHistory(
     page: number,
     size: number,
+    dateFrom?: string,
+    dateTo?: string,
+    sort?: string,
   ): Observable<PagedResponse<CashRegisterResponse> | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getHistory(page, size).pipe(
+    return this.api.getHistory(page, size, dateFrom, dateTo, sort).pipe(
       tap({
         next: (res) => {
           this.history.set(res.content ?? []);
@@ -140,6 +143,33 @@ export class CashRegisterApplicationService {
       catchError(() => of(null)),
       finalize(() => this.loading.set(false)),
     );
+  }
+
+  downloadExcel(dateFrom: string, dateTo: string): void {
+    this.api.exportExcel(dateFrom, dateTo).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `cierre-caja-detallado-${dateFrom}_${dateTo}.xlsx`;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Excel descargado exitosamente',
+          life: 3000,
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al descargar el Excel',
+          life: 5000,
+        });
+      },
+    });
   }
 
   clearActiveClosure(): void {

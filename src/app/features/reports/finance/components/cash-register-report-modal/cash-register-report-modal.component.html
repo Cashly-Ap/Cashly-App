@@ -1,0 +1,50 @@
+<p-dialog
+  header="Reporte de Caja - Excel"
+  [modal]="true"
+  [visible]="visible()"
+  (visibleChange)="onHide()"
+  [style]="{ width: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-col gap-4 pt-2">
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde Fecha</label>
+      <p-datepicker
+        [(ngModel)]="dateFrom"
+        dateFormat="yy-mm-dd"
+        placeholder="Seleccione fecha inicial"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta Fecha</label>
+      <p-datepicker
+        [(ngModel)]="dateTo"
+        dateFormat="yy-mm-dd"
+        placeholder="Seleccione fecha final"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        [text]="true"
+        severity="secondary"
+        (onClick)="onHide()"
+      />
+      <p-button
+        label="Exportar Excel"
+        icon="pi pi-file-excel"
+        (onClick)="generateExcel()"
+        [disabled]="!dateFrom() || !dateTo()"
+        severity="success"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

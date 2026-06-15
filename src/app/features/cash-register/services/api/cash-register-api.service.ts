@@ -35,13 +35,29 @@ export class CashRegisterApiService {
   getHistory(
     page: number,
     size: number,
+    dateFrom?: string,
+    dateTo?: string,
+    sort?: string,
   ): Observable<PagedResponse<CashRegisterResponse>> {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('size', size.toString());
+    if (dateFrom) params = params.set('dateFrom', dateFrom);
+    if (dateTo) params = params.set('dateTo', dateTo);
+    if (sort) params = params.set('sort', sort);
     return this.http.get<PagedResponse<CashRegisterResponse>>(
       `${this.baseUrl}/history`,
       { params },
     );
+  }
+
+  exportExcel(dateFrom: string, dateTo: string): Observable<Blob> {
+    const params = new HttpParams()
+      .set('dateFrom', dateFrom)
+      .set('dateTo', dateTo);
+    return this.http.get(`${this.baseUrl}/export`, {
+      params,
+      responseType: 'blob',
+    });
   }
 }
