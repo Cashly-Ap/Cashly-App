@@ -227,6 +227,30 @@
                     tooltipPosition="top"
                     (onClick)="onViewInvoicePaymentHistory(invoice)"
                   />
+                  @if (canReturnInvoice(invoice)) {
+                    <p-button
+                      icon="pi pi-undo"
+                      size="small"
+                      severity="contrast"
+                      [outlined]="true"
+                      [loading]="loadingReturnInvoice()"
+                      pTooltip="Devolución"
+                      tooltipPosition="top"
+                      (onClick)="onViewInvoiceReturns(invoice)"
+                    />
+                  }
+                  @if (canReturnInvoice(invoice)) {
+                    <p-button
+                      icon="pi pi-file-edit"
+                      size="small"
+                      severity="contrast"
+                      [outlined]="true"
+                      [loading]="loadingNoteInvoice()"
+                      pTooltip="Nota"
+                      tooltipPosition="top"
+                      (onClick)="onViewInvoiceNotes(invoice)"
+                    />
+                  }
                   @if (invoice.balance > 0 && !isInvoiceFullyBlocked(invoice)) {
                     <p-button
                       icon="pi pi-dollar"
@@ -340,6 +364,30 @@
                   (onClick)="onViewInvoicePaymentHistory(invoice)"
                   styleClass="flex-shrink-0"
                 />
+                @if (canReturnInvoice(invoice)) {
+                  <p-button
+                    icon="pi pi-undo"
+                    size="small"
+                    severity="contrast"
+                    [outlined]="true"
+                    [loading]="loadingReturnInvoice()"
+                    pTooltip="Devolución"
+                    (onClick)="onViewInvoiceReturns(invoice)"
+                    styleClass="flex-shrink-0"
+                  />
+                }
+                @if (canReturnInvoice(invoice)) {
+                  <p-button
+                    icon="pi pi-file-edit"
+                    size="small"
+                    severity="contrast"
+                    [outlined]="true"
+                    [loading]="loadingNoteInvoice()"
+                    pTooltip="Nota"
+                    (onClick)="onViewInvoiceNotes(invoice)"
+                    styleClass="flex-shrink-0"
+                  />
+                }
                 @if (invoice.balance > 0 && !isInvoiceFullyBlocked(invoice)) {
                   <p-button
                     label="Pagar"
@@ -674,3 +722,18 @@
     </div>
   </ng-template>
 </p-dialog>
+
+@if (selectedInvoiceDetails(); as inv) {
+  <app-return-form-dialog
+    [visible]="showReturnDialog()"
+    [invoice]="inv"
+    (confirmed)="onReturnDialogConfirmed()"
+    (cancelled)="onReturnDialogDismissed()"
+  />
+  <app-note-form-dialog
+    [visible]="showNoteDialog()"
+    [invoice]="inv"
+    (confirmed)="onNoteDialogConfirmed()"
+    (cancelled)="onNoteDialogDismissed()"
+  />
+}

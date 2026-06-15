@@ -16,6 +16,10 @@ import { BalanceTransactionResponse } from '@features/customers/models/interface
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { ReturnFormDialogComponent } from '@features/returns/components/return-form-dialog/return-form-dialog.component';
+import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog';
+import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
+import { InvoiceDetails } from '@features/invoices/models/interfaces';
 
 type InvoiceStatusFilter = 'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
@@ -46,6 +50,8 @@ interface BalanceFilterOption {
     CurrencyPipe,
     DatePipe,
     ToastModule,
+    ReturnFormDialogComponent,
+    NoteFormDialogComponent,
   ],
   providers: [MessageService],
   templateUrl: './customer-debt-dialog.component.html',
@@ -55,6 +61,7 @@ export class CustomerDebtDialogComponent {
   private balanceApi = inject(CustomerBalanceApiService);
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
+  private invoiceApi = inject(InvoiceApiService);
 
   readonly visible = input.required<boolean>();
   readonly customerId = input.required<string>();
@@ -120,6 +127,12 @@ export class CustomerDebtDialogComponent {
   protected refundForm: FormGroup = this.fb.group({
     amount: [null, [Validators.required, Validators.min(0.01)]],
   });
+
+  protected showReturnDialog = signal(false);
+  protected showNoteDialog = signal(false);
+  protected selectedInvoiceDetails = signal<InvoiceDetails | null>(null);
+  protected loadingReturnInvoice = signal(false);
+  protected loadingNoteInvoice = signal(false);
 
   constructor() {
     effect(() => {
@@ -227,6 +240,76 @@ export class CustomerDebtDialogComponent {
 
   protected getPayTooltip(_invoice: CustomerInvoiceDebt): string {
     return 'Registrar pago';
+  }
+
+  protected canReturnInvoice(invoice: CustomerInvoiceDebt): boolean {
+    return invoice.status !== 'CANCELLED' && invoice.status !== 'FULLY_RETURNED';
+  }
+
+  protected onViewInvoiceReturns(invoice: CustomerInvoiceDebt): void {
+    this.loadingReturnInvoice.set(true);
+    this.invoiceApi.getById(invoice.invoiceId).subscribe({
+      next: (details) => {
+        this.selectedInvoiceDetails.set(details);
+        this.showReturnDialog.set(true);
+        this.loadingReturnInvoice.set(false);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los detalles de la factura',
+        });
+        this.loadingReturnInvoice.set(false);
+      },
+    });
+  }
+
+  protected onReturnDialogConfirmed(): void {
+    this.showReturnDialog.set(false);
+    this.selectedInvoiceDetails.set(null);
+    const customerId = this.customerId();
+    if (customerId) {
+      this.loadInvoicesForCurrentFilter();
+    }
+  }
+
+  protected onReturnDialogDismissed(): void {
+    this.showReturnDialog.set(false);
+    this.selectedInvoiceDetails.set(null);
+  }
+
+  protected onViewInvoiceNotes(invoice: CustomerInvoiceDebt): void {
+    this.loadingNoteInvoice.set(true);
+    this.invoiceApi.getById(invoice.invoiceId).subscribe({
+      next: (details) => {
+        this.selectedInvoiceDetails.set(details);
+        this.showNoteDialog.set(true);
+        this.loadingNoteInvoice.set(false);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los detalles de la factura',
+        });
+        this.loadingNoteInvoice.set(false);
+      },
+    });
+  }
+
+  protected onNoteDialogConfirmed(): void {
+    this.showNoteDialog.set(false);
+    this.selectedInvoiceDetails.set(null);
+    const customerId = this.customerId();
+    if (customerId) {
+      this.loadInvoicesForCurrentFilter();
+    }
+  }
+
+  protected onNoteDialogDismissed(): void {
+    this.showNoteDialog.set(false);
+    this.selectedInvoiceDetails.set(null);
   }
 
   

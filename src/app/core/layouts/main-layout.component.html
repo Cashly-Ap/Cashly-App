@@ -222,6 +222,12 @@
     (onGeneratePdf)="onQuotesPdf($event)"
   />
 
+  <app-cash-register-report-modal
+    [visible]="activeModal() === 'cashRegister'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGenerateExcel)="onCashRegisterExcel($event)"
+  />
+
   <app-pdf-viewer-modal
     [visible]="pdfViewerVisible()"
     [pdfUrl]="pdfUrl()"

@@ -7,6 +7,7 @@ export interface MenuCallbacks {
   openOrdersPdfModal: () => void;
   openInvoicesPdfModal: () => void;
   openQuotesPdfModal: () => void;
+  openCashRegisterModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -209,6 +210,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               routerLink: '/receivables',
+            },
+            {
+              label: 'Caja',
+              icon: 'pi pi-calculator',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openCashRegisterModal(),
             },
           ],
         },

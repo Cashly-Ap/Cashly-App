@@ -19,8 +19,6 @@ import {
   TextBadgeComponent,
 } from '@shared/components/ui';
 import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
-import { ReturnFormDialogComponent } from '@features/returns/components/return-form-dialog/return-form-dialog.component';
-import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
@@ -45,8 +43,6 @@ import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enum
     PageHeaderComponent,
     TextBadgeComponent,
     DuplicateInvoiceDialogComponent,
-    ReturnFormDialogComponent,
-    NoteFormDialogComponent,
   ],
   templateUrl: './invoice-detail-page.component.html',
 })
@@ -69,8 +65,6 @@ export class InvoiceDetailPageComponent implements OnInit {
   readonly InvoiceStatus = InvoiceStatus;
 
   readonly duplicateDialogVisible = signal(false);
-  readonly returnDialogVisible = signal(false);
-  readonly noteDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -127,38 +121,6 @@ export class InvoiceDetailPageComponent implements OnInit {
 
   onDuplicateDialogDismissed(): void {
     this.duplicateDialogVisible.set(false);
-  }
-
-  onReturnDialogOpen(): void {
-    this.returnDialogVisible.set(true);
-  }
-
-  onReturnDialogConfirmed(): void {
-    this.returnDialogVisible.set(false);
-    const id = this.invoice()?.id;
-    if (id) {
-      this.invoiceService.loadById(id).subscribe();
-    }
-  }
-
-  onReturnDialogDismissed(): void {
-    this.returnDialogVisible.set(false);
-  }
-
-  onNoteDialogOpen(): void {
-    this.noteDialogVisible.set(true);
-  }
-
-  onNoteDialogConfirmed(): void {
-    this.noteDialogVisible.set(false);
-    const id = this.invoice()?.id;
-    if (id) {
-      this.invoiceService.loadById(id).subscribe();
-    }
-  }
-
-  onNoteDialogDismissed(): void {
-    this.noteDialogVisible.set(false);
   }
 
   getStatusLabel(status: InvoiceStatus): string {
