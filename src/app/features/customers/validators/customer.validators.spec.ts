@@ -21,10 +21,10 @@ describe('CustomerValidators', () => {
       });
     });
 
-    it('should return rifMaxLength when exceeds 20 characters', () => {
+    it('should return rifInvalidFormat when exceeds 20 characters', () => {
       const control = new FormControl('J-12345678-9-EXTRA-LONG');
       expect(CustomerValidators.rif()(control)).toEqual({
-        rifMaxLength: { message: 'El RIF no puede exceder 20 caracteres', maxLength: 20 },
+        rifInvalidFormat: { message: 'Formato de RIF inválido. Ejemplo: J-12345678-9' },
       });
     });
 

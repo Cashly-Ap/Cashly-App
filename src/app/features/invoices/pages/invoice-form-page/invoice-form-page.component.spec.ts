@@ -102,7 +102,7 @@ describe('InvoiceFormPageComponent', () => {
     fixture = TestBed.createComponent(InvoiceFormPageComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
-    messageService = TestBed.inject(MessageService);
+    messageService = fixture.debugElement.injector.get(MessageService);
     httpMock = TestBed.inject(HttpTestingController);
   }
 

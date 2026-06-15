@@ -167,7 +167,7 @@ describe('InvoiceApplicationService', () => {
 
       service.confirm('inv-001').subscribe();
 
-      expect(mockApi.confirm).toHaveBeenCalledWith('inv-001');
+      expect(mockApi.confirm).toHaveBeenCalledWith('inv-001', undefined);
     });
   });
 
@@ -175,7 +175,7 @@ describe('InvoiceApplicationService', () => {
     it('should call api.duplicate and prepend to invoices list', () => {
       service.duplicate('inv-001').subscribe();
 
-      expect(mockApi.duplicate).toHaveBeenCalledWith('inv-001');
+      expect(mockApi.duplicate).toHaveBeenCalledWith('inv-001', undefined);
       expect(service.invoices()[0].id).toBe('inv-001');
     });
   });

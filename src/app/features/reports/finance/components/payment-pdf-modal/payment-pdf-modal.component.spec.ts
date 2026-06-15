@@ -119,6 +119,8 @@ describe('PaymentPdfModalComponent - generatePdf', () => {
   it('should set loading to true while fetching', () => {
     component.generatePdf();
     expect(component.loading()).toBe(true);
+    const req = httpTesting.expectOne('/api/reports/finance/payments/pay-001/pdf');
+    req.flush(new Blob());
   });
 });
 

@@ -1,39 +1,56 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Component } from '@angular/core';
+import { of } from 'rxjs';
 import { ReturnLinesTableComponent } from './return-lines-table.component';
+import { ReturnLineFormData } from '../../models/interfaces';
+import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
+
+@Component({
+  template: `<app-return-lines-table
+    [invoiceLines]="invoiceLines"
+    [(returnLines)]="returnLines"
+  />`,
+  imports: [ReturnLinesTableComponent],
+})
+class HostComponent {
+  invoiceLines = [
+    {
+      id: 'line-1',
+      productId: 'p1',
+      productName: 'Product A',
+      productCode: 'P001',
+      quantity: 5,
+      unitPrice: 20,
+      lineTotal: 100,
+      warehouseAllocations: [],
+      warehouseStocks: [
+        { warehouseId: 'w1', warehouseCode: 'WH1', warehouseName: 'Main', quantity: 10, reserved: 2, available: 8 },
+      ],
+    },
+  ];
+
+  returnLines: ReturnLineFormData[] = [
+    { invoiceLineId: 'line-1', productId: 'p1', productName: 'Product A', quantity: 0, warehouseId: '', unitPrice: 20 },
+  ];
+}
 
 describe('ReturnLinesTableComponent', () => {
   let component: ReturnLinesTableComponent;
-  let fixture: ComponentFixture<ReturnLinesTableComponent>;
+  let fixture: ComponentFixture<HostComponent>;
+  let host: HostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ReturnLinesTableComponent],
+      imports: [HostComponent],
+      providers: [
+        { provide: WarehouseApiService, useValue: { getAllSimple: () => of([]) } },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ReturnLinesTableComponent);
-    component = fixture.componentInstance;
-
-    component.invoiceLines.set([
-      {
-        id: 'line-1',
-        productId: 'p1',
-        productName: 'Product A',
-        productCode: 'P001',
-        quantity: 5,
-        unitPrice: 20,
-        lineTotal: 100,
-        warehouseAllocations: [],
-        warehouseStocks: [
-          { warehouseId: 'w1', warehouseCode: 'WH1', warehouseName: 'Main', quantity: 10, reserved: 2, available: 8 },
-        ],
-      },
-    ]);
-
-    component.returnLines.set([
-      { invoiceLineId: 'line-1', productId: 'p1', productName: 'Product A', quantity: 0, warehouseId: '', unitPrice: 20 },
-    ]);
-
+    fixture = TestBed.createComponent(HostComponent);
+    host = fixture.componentInstance;
     fixture.detectChanges();
+    component = fixture.debugElement.children[0].componentInstance;
   });
 
   it('should create', () => {
@@ -41,9 +58,10 @@ describe('ReturnLinesTableComponent', () => {
   });
 
   it('should calculate total amount', () => {
-    component.returnLines.set([
+    host.returnLines = [
       { invoiceLineId: 'line-1', productId: 'p1', productName: 'Product A', quantity: 2, warehouseId: 'w1', unitPrice: 20 },
-    ]);
+    ];
+    fixture.detectChanges();
     expect(component.totalAmount()).toBe(40);
   });
 

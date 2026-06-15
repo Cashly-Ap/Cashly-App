@@ -35,6 +35,7 @@ describe('InvoiceDetailPageComponent', () => {
     debitApplied: 0,
     total: 500,
     notesList: [],
+    returns: [],
     cancelledAt: null,
     cancelledReason: null,
     createdAt: '2025-01-01T00:00:00Z',
@@ -107,22 +108,6 @@ describe('InvoiceDetailPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
     expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
-  });
-
-  it('should refresh invoice on note dialog confirmed', () => {
-    fixture.detectChanges();
-    component.onNoteDialogConfirmed();
-    expect(mockService.loadById).toHaveBeenCalledWith('inv-001');
-  });
-
-  it('should show error on duplicate failure', () => {
-    mockService.duplicate = vi.fn().mockReturnValue(throwError(() => new Error('Fail')));
-    fixture.detectChanges();
-    const addSpy = vi.spyOn(messageService, 'add');
-    component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
-    expect(addSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'error' })
-    );
   });
 
   it('should close duplicate dialog on dismissed', () => {

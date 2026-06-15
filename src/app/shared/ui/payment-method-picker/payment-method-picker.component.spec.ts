@@ -76,6 +76,7 @@ describe('PaymentMethodPickerComponent', () => {
   });
 
   it('should filter payment methods by search term', () => {
+    fixture.detectChanges();
     component.searchTerm.set('efectivo');
     const filtered = component.filteredPaymentMethods();
     expect(filtered).toHaveLength(1);
@@ -83,6 +84,7 @@ describe('PaymentMethodPickerComponent', () => {
   });
 
   it('should return all payment methods when search term is empty', () => {
+    fixture.detectChanges();
     component.searchTerm.set('');
     const filtered = component.filteredPaymentMethods();
     expect(filtered).toHaveLength(2);

@@ -2,36 +2,43 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Component } from '@angular/core';
 import { CustomerGeneralSectionComponent } from './customer-general-section.component';
 import { CustomerType, PaymentType } from '@features/customers/models/enums';
 
+@Component({
+  template: `<app-customer-general-section [form]="form" />`,
+  imports: [CustomerGeneralSectionComponent, ReactiveFormsModule],
+})
+class HostComponent {
+  fb = new FormBuilder();
+  form = this.fb.group({
+    legalName: ['', Validators.required],
+    rif: ['', Validators.required],
+    alias: ['', Validators.required],
+    type: [CustomerType.BUSINESS, Validators.required],
+    paymentType: [PaymentType.CASH, Validators.required],
+    creditDays: [{ value: 0, disabled: true }],
+    creditLimit: [{ value: 0, disabled: true }],
+    active: [true],
+    notes: [''],
+  });
+}
+
 describe('CustomerGeneralSectionComponent', () => {
-  let fixture: ComponentFixture<CustomerGeneralSectionComponent>;
+  let fixture: ComponentFixture<HostComponent>;
   let component: CustomerGeneralSectionComponent;
-  let fb: FormBuilder;
-  let form: FormGroup;
+  let host: HostComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CustomerGeneralSectionComponent, ReactiveFormsModule, NoopAnimationsModule],
+      imports: [HostComponent, NoopAnimationsModule],
     }).compileComponents();
 
-    fb = TestBed.inject(FormBuilder);
-    form = fb.group({
-      legalName: ['', Validators.required],
-      rif: ['', Validators.required],
-      alias: ['', Validators.required],
-      type: [CustomerType.BUSINESS, Validators.required],
-      paymentType: [PaymentType.CASH, Validators.required],
-      creditDays: [{ value: 0, disabled: true }],
-      creditLimit: [{ value: 0, disabled: true }],
-      active: [true],
-    });
-
-    fixture = TestBed.createComponent(CustomerGeneralSectionComponent);
-    component = fixture.componentInstance;
-    fixture.componentRef.setInput('form', form);
+    fixture = TestBed.createComponent(HostComponent);
+    host = fixture.componentInstance;
     fixture.detectChanges();
+    component = fixture.debugElement.children[0].componentInstance;
   });
 
   it('should create', () => {
@@ -53,14 +60,14 @@ describe('CustomerGeneralSectionComponent', () => {
   });
 
   it('should disable credit fields when payment type is CASH', () => {
-    form.get('paymentType')?.setValue(PaymentType.CASH);
-    expect(form.get('creditDays')?.disabled).toBe(true);
-    expect(form.get('creditLimit')?.disabled).toBe(true);
+    host.form.get('paymentType')?.setValue(PaymentType.CASH);
+    expect(host.form.get('creditDays')?.disabled).toBe(true);
+    expect(host.form.get('creditLimit')?.disabled).toBe(true);
   });
 
   it('should enable credit fields when payment type is CREDIT', () => {
-    form.get('paymentType')?.setValue(PaymentType.CREDIT);
-    expect(form.get('creditDays')?.enabled).toBe(true);
-    expect(form.get('creditLimit')?.enabled).toBe(true);
+    host.form.get('paymentType')?.setValue(PaymentType.CREDIT);
+    expect(host.form.get('creditDays')?.enabled).toBe(true);
+    expect(host.form.get('creditLimit')?.enabled).toBe(true);
   });
 });

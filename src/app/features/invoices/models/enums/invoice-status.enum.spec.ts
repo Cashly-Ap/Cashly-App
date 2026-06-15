@@ -22,8 +22,12 @@ describe('InvoiceStatus', () => {
     expect(InvoiceStatus.CANCELLED).toBe('CANCELLED');
   });
 
-  it('should have 5 values', () => {
-    expect(Object.keys(InvoiceStatus).filter((k) => isNaN(Number(k)))).toHaveLength(5);
+  it('should have FULLY_RETURNED value', () => {
+    expect(InvoiceStatus.FULLY_RETURNED).toBe('FULLY_RETURNED');
+  });
+
+  it('should have 6 values', () => {
+    expect(Object.keys(InvoiceStatus).filter((k) => isNaN(Number(k)))).toHaveLength(6);
   });
 });
 
@@ -46,6 +50,10 @@ describe('INVOICE_STATUS_LABELS', () => {
 
   it('should have label for CANCELLED', () => {
     expect(INVOICE_STATUS_LABELS[InvoiceStatus.CANCELLED]).toBe('Cancelada');
+  });
+
+  it('should have label for FULLY_RETURNED', () => {
+    expect(INVOICE_STATUS_LABELS[InvoiceStatus.FULLY_RETURNED]).toBe('Totalmente Devuelta');
   });
 });
 

@@ -5,7 +5,7 @@ describe('BusinessModule', () => {
     expect(BusinessModule.USERS).toBe('USERS');
     expect(BusinessModule.INVENTORY).toBe('INVENTORY');
     expect(BusinessModule.SALES).toBe('SALES');
-    expect(BusinessModule.FINANCE).toBe('FINANCE');
+    expect(BusinessModule.FINANCE).toBe('FINANCES');
     expect(BusinessModule.PURCHASES).toBe('PURCHASES');
     expect(BusinessModule.CUSTOMER_PORTAL).toBe('CUSTOMER_PORTAL');
     expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');

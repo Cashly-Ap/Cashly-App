@@ -271,7 +271,7 @@ describe('InvoiceListPageComponent', () => {
       expect(mockPdfViewer.open).toHaveBeenCalledWith(
         expect.objectContaining({
           url: '/api/reports/invoices/inv-001/pdf',
-          title: 'Factura #FAC-001',
+          title: 'Nota #FAC-001',
         })
       );
     });
