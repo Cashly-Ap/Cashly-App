@@ -55,11 +55,13 @@ export class ReceivablesApiService {
     );
   }
 
+  private readonly paymentsBaseUrl = `${environment.apiUrl}/payments`;
+
   payInvoice(
     invoiceId: string,
     request: PayInvoiceRequest,
   ): Observable<PaymentResult> {
-    return this.http.post<PaymentResult>(`${this.baseUrl}/invoices/${invoiceId}/pay`, request);
+    return this.http.post<PaymentResult>(`${this.paymentsBaseUrl}/invoices/${invoiceId}/pay`, request);
   }
 
   payAllCustomerDebt(
@@ -67,7 +69,7 @@ export class ReceivablesApiService {
     request: PayCustomerDebtRequest,
   ): Observable<BulkPaymentResult> {
     return this.http.post<BulkPaymentResult>(
-      `${this.baseUrl}/customers/${customerId}/pay-all`,
+      `${this.paymentsBaseUrl}/customers/${customerId}/pay-all`,
       request,
     );
   }
@@ -77,7 +79,7 @@ export class ReceivablesApiService {
     request: PayPartialDebtRequest,
   ): Observable<BulkPaymentResult> {
     return this.http.post<BulkPaymentResult>(
-      `${this.baseUrl}/customers/${customerId}/pay-partial`,
+      `${this.paymentsBaseUrl}/customers/${customerId}/pay-partial`,
       request,
     );
   }
@@ -114,7 +116,7 @@ export class ReceivablesApiService {
   }
 
   getCreditStatus(customerId: string): Observable<CreditStatusResponse> {
-    return this.http.get<CreditStatusResponse>(`${environment.apiUrl}/credit/${customerId}`);
+    return this.http.get<CreditStatusResponse>(`${environment.apiUrl}/customers/${customerId}/credit`);
   }
 
   private buildParams(params?: ReceivablesSearchParams): HttpParams {
