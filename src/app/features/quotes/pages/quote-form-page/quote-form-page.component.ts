@@ -257,7 +257,7 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(QUOTE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/budgets']);
+            this.router.navigate(['/quotes']);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -286,7 +286,7 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(QUOTE_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/budgets']);
+            this.router.navigate(['/quotes']);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -297,6 +297,6 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/budgets']);
+    this.router.navigate(['/quotes']);
   }
 }

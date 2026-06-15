@@ -39,7 +39,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         {
           label: 'Presupuestos',
           icon: 'pi pi-file-edit',
-          routerLink: '/budgets',
+          routerLink: '/quotes',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
