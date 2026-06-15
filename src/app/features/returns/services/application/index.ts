@@ -1,1 +1,1 @@
-export * from './return-application.service';
+export * from '@features/returns/services/application/return-application';

@@ -1,4 +1,4 @@
-import { InvoiceLineCreate } from './invoice-create.interface';
+import { InvoiceLineCreate } from '@features/invoices/models/interfaces/invoice-create';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 export interface InvoiceUpdate {

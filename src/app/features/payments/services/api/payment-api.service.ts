@@ -6,7 +6,7 @@ import {
   PaymentDetail,
   PaymentCreate,
   PaymentUpdate,
-} from '../../models/interfaces';
+} from '@features/payments/models/interfaces';
 
 export interface PaymentFilters {
   dateFrom?: string;

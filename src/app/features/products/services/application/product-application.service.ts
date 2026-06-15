@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { ProductApiService, ProductFilters } from '../api/product-api.service';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '../../models/interfaces';
+import { ProductApiService, ProductFilters } from '@features/products/services/api/product-api';
+import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '@features/products/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit, CustomerWarehouseAccessItem } from '../../models/interfaces';
+import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CustomerFilters {

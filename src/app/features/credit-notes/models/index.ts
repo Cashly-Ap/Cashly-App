@@ -1,1 +1,1 @@
-export * from './interfaces';
+export * from '@features/credit-notes/models/interfaces';

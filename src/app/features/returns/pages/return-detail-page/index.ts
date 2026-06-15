@@ -1,1 +1,1 @@
-export { ReturnDetailPageComponent } from './return-detail-page.component';
+export { ReturnDetailPageComponent } from '@features/returns/pages/return-detail-page/return-detail-page';

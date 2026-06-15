@@ -1,1 +1,1 @@
-export * from './warehouse.interfaces';
+export * from '@features/warehouses/models/interfaces/warehouse';

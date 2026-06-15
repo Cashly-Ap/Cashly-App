@@ -1,1 +1,1 @@
-export * from './note-form-dialog.component';
+export * from '@shared/ui/note-form-dialog/note-form-dialog';

@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ThemeService } from './theme.service';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme';
 
 @Component({
   selector: 'app-theme-toggle',

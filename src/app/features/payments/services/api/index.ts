@@ -1,1 +1,1 @@
-export { PaymentApiService, type PaymentFilters } from './payment-api.service';
+export { PaymentApiService, type PaymentFilters } from '@features/payments/services/api/payment-api';

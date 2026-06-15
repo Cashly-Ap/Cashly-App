@@ -18,7 +18,7 @@ import {
   Subject,
   takeUntil,
 } from 'rxjs';
-import { FormMode } from '../enums/form-mode.enum';
+import { FormMode } from '@core/forms/enums/form-mode';
 import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 

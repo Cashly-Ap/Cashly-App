@@ -7,7 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { CatalogPdfFilters } from '../../models/interfaces';
+import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
 
 @Component({
   selector: 'app-catalog-pdf-modal',

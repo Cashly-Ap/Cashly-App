@@ -1,3 +1,3 @@
-export * from './customer-type.enum';
-export * from './payment-type.enum';
-export * from './balance-type.enum';
+export * from '@features/customers/models/enums/customer-type';
+export * from '@features/customers/models/enums/payment-type';
+export * from '@features/customers/models/enums/balance-type';

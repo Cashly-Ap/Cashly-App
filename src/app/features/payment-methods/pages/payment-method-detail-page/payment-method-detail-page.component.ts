@@ -16,7 +16,7 @@ import {
   PageHeaderComponent,
   StatusBadgeComponent,
 } from '@shared/components/ui';
-import { PaymentMethodApplicationService } from '../../services/application/payment-method-application.service';
+import { PaymentMethodApplicationService } from '@features/payment-methods/services/application/payment-method-application';
 
 @Component({
   selector: 'app-payment-method-detail-page',

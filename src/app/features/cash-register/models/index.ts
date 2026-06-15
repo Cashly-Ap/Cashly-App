@@ -1,1 +1,1 @@
-export * from './interfaces/closure.interface';
+export * from '@features/cash-register/models/interfaces/closure';

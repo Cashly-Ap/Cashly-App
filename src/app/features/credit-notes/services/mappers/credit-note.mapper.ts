@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CreditNoteDetail, CreditNoteList } from '../../models/interfaces';
+import { CreditNoteDetail, CreditNoteList } from '@features/credit-notes/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class CreditNoteMapper {

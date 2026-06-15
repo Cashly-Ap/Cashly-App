@@ -5,9 +5,9 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
-import { ReceivablesApiService } from '../../services/api/receivables-api.service';
-import { PendingPayment } from '../../models/interfaces';
-import { PaymentDetailDialogComponent } from '../payment-detail-dialog/payment-detail-dialog.component';
+import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api';
+import { PendingPayment } from '@features/receivables/models/interfaces';
+import { PaymentDetailDialogComponent } from '@features/receivables/components/payment-detail-dialog/payment-detail-dialog';
 
 function getStatusLabel(status: string): string {
   switch (status) {

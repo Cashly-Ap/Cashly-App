@@ -1,1 +1,1 @@
-export * from './pdf-viewer-modal.component';
+export * from '@features/reports/inventory/components/pdf-viewer-modal/pdf-viewer-modal';

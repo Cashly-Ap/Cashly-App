@@ -12,7 +12,7 @@ import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
-import { CustomerInvoiceDebt, PayInvoiceRequest } from '../../models/interfaces';
+import { CustomerInvoiceDebt, PayInvoiceRequest } from '@features/receivables/models/interfaces';
 
 export type PaymentFormMode = 'single' | 'all' | 'partial';
 

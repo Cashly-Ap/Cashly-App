@@ -1,3 +1,3 @@
-export * from './products-list-page/products-list-page.component';
-export * from './products-form-page/products-form-page.component';
-export * from './products-details-page/products-details-page.component';
+export * from '@features/products/pages/products-list-page/products-list-page';
+export * from '@features/products/pages/products-form-page/products-form-page';
+export * from '@features/products/pages/products-details-page/products-details-page';

@@ -1,1 +1,1 @@
-export * from './warehouse-api.service';
+export * from '@features/warehouses/services/api/warehouse-api';

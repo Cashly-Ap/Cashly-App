@@ -1,4 +1,4 @@
-import { ProductPriceItem } from './product-price-item.interface';
+import { ProductPriceItem } from '@features/products/models/interfaces/product-price-item';
 
 export interface ProductComponentItem {
   id: string;

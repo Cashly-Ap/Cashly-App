@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
-import { CashRegisterReportFilters } from '../../models/interfaces';
+import { CashRegisterReportFilters } from '@features/reports/finance/models/interfaces';
 
 @Component({
   selector: 'app-cash-register-report-modal',

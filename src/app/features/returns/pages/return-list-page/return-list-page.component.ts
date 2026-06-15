@@ -19,9 +19,9 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { ReturnApplicationService } from '../../services/application/return-application.service';
-import { ReturnFilters } from '../../services/api/return-api.service';
-import { ReturnList } from '../../models/interfaces';
+import { ReturnApplicationService } from '@features/returns/services/application/return-application';
+import { ReturnFilters } from '@features/returns/services/api/return-api';
+import { ReturnList } from '@features/returns/models/interfaces';
 
 @Component({
   selector: 'app-return-list-page',

@@ -1,3 +1,3 @@
-export * from './api';
-export * from './mappers';
-export * from './application';
+export * from '@features/returns/services/api';
+export * from '@features/returns/services/mappers';
+export * from '@features/returns/services/application';

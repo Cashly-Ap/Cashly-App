@@ -1,2 +1,2 @@
-export * from './theme-toggle.component';
-export * from './theme.service';
+export * from '@core/theme/components/theme-toggle/theme-toggle';
+export * from '@core/theme/components/theme-toggle/theme';

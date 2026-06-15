@@ -5,7 +5,7 @@ import {
   ReturnList,
   ReturnDetail,
   ReturnCreate,
-} from '../../models/interfaces';
+} from '@features/returns/models/interfaces';
 
 export interface ReturnFilters {
   search?: string;

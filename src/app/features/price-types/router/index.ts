@@ -1,1 +1,1 @@
-export * from './price-type.routes';
+export * from '@features/price-types/router/price-type';

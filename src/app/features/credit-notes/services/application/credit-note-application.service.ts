@@ -1,12 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CreditNoteApiService, CreditNoteFilters } from '../api/credit-note-api.service';
-import { CreditNoteMapper } from '../mappers/credit-note.mapper';
+import { CreditNoteApiService, CreditNoteFilters } from '@features/credit-notes/services/api/credit-note-api';
+import { CreditNoteMapper } from '@features/credit-notes/services/mappers/credit-note';
 import {
   CreditNoteList,
   CreditNoteDetail,
   CreditNoteCreate,
-} from '../../models/interfaces';
+} from '@features/credit-notes/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class CreditNoteApplicationService {

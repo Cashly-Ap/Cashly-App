@@ -1,1 +1,1 @@
-export * from './category.routes';
+export * from '@features/categories/router/category';

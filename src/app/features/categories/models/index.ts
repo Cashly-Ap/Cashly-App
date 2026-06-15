@@ -1,1 +1,1 @@
-export * from './interfaces';
+export * from '@features/categories/models/interfaces';

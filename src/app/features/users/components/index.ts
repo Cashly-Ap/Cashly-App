@@ -1,2 +1,2 @@
-export * from './change-password-dialog/change-password-dialog.component';
-export * from './change-email-dialog/change-email-dialog.component';
+export * from '@features/users/components/change-password-dialog/change-password-dialog';
+export * from '@features/users/components/change-email-dialog/change-email-dialog';

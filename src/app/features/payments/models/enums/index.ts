@@ -1,1 +1,1 @@
-export * from './payment-type.enum';
+export * from '@features/payments/models/enums/payment-type';

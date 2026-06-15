@@ -1,1 +1,1 @@
-export * from './router';
+export * from '@features/debit-notes/router';

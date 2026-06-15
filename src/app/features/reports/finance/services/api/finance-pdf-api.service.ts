@@ -6,7 +6,7 @@ import {
   AccountsReceivableFilters,
   CollectionsFilters,
   PaymentHistoryFilters,
-} from '../../models/interfaces';
+} from '@features/reports/finance/models/interfaces';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { WarehouseApiService, WarehouseFilters } from '../api/warehouse-api.service';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '../../models/interfaces';
+import { WarehouseApiService, WarehouseFilters } from '@features/warehouses/services/api/warehouse-api';
+import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '@features/warehouses/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

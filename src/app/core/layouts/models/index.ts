@@ -1,1 +1,1 @@
-export * from './menu-item.model';
+export * from '@core/layouts/models/menu-item';

@@ -1,12 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, switchMap, forkJoin, of, map, catchError } from 'rxjs';
-import { ReturnApiService, ReturnFilters } from '../api/return-api.service';
-import { ReturnMapper } from '../mappers/return.mapper';
+import { ReturnApiService, ReturnFilters } from '@features/returns/services/api/return-api';
+import { ReturnMapper } from '@features/returns/services/mappers/return';
 import {
   ReturnList,
   ReturnDetail,
   ReturnCreate,
-} from '../../models/interfaces';
+} from '@features/returns/models/interfaces';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 

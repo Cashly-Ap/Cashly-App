@@ -1,3 +1,3 @@
-export * from './invoice-picker-dialog';
-export * from './note-form-dialog';
-export * from './payment-method-picker';
+export * from '@shared/ui/invoice-picker-dialog';
+export * from '@shared/ui/note-form-dialog';
+export * from '@shared/ui/payment-method-picker';

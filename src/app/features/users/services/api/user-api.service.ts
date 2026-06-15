@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserList, UserDetails, UserCreate, UserEdit } from '../../models/interfaces';
-import { BusinessModule } from '../../models/enums';
+import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
+import { BusinessModule } from '@features/users/models/enums';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface UserFilters {

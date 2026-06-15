@@ -5,8 +5,8 @@ import { AuthService } from '@features/auth/services/application/auth-applicatio
 import {
   ReceivablesApiService,
   ReceivablesSearchParams,
-} from '../api/receivables-api.service';
-import { RECEIVABLES_ERROR_MESSAGES } from '../../messages/error-messages';
+} from '@features/receivables/services/api/receivables-api';
+import { RECEIVABLES_ERROR_MESSAGES } from '@features/receivables/messages/error-messages';
 import {
   GlobalDebtSummary,
   CustomerDebtList,
@@ -18,7 +18,7 @@ import {
   PayInvoiceRequest,
   PayCustomerDebtRequest,
   PayPartialDebtRequest,
-} from '../../models/interfaces';
+} from '@features/receivables/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

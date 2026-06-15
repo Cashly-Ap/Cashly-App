@@ -1,1 +1,1 @@
-export * from './invoice-picker-dialog.component';
+export * from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog';

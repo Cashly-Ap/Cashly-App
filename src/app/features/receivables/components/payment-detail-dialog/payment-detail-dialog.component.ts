@@ -3,7 +3,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { PendingPayment } from '../../models/interfaces';
+import { PendingPayment } from '@features/receivables/models/interfaces';
 
 function getPaymentStatusLabel(status: string): string {
   switch (status) {

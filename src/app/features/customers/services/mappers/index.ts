@@ -1,1 +1,1 @@
-export * from './customer.mapper';
+export * from '@features/customers/services/mappers/customer';

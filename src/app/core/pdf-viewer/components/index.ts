@@ -1,1 +1,1 @@
-export * from './pdf-viewer-dialog';
+export * from '@core/pdf-viewer/components/pdf-viewer-dialog';

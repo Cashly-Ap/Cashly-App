@@ -1,1 +1,1 @@
-export * from './pdf-viewer.model';
+export * from '@core/pdf-viewer/models/pdf-viewer';

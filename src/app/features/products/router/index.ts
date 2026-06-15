@@ -1,1 +1,1 @@
-export * from './product.routes';
+export * from '@features/products/router/product';

@@ -1,1 +1,1 @@
-export * from './return.interface';
+export * from '@features/returns/models/interfaces/return';

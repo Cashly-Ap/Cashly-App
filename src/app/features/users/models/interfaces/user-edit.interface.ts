@@ -1,4 +1,4 @@
-import { UserType } from '../enums/user-type.enum';
+import { UserType } from '@features/users/models/enums/user-type';
 
 export interface UserEdit {
   id: string;

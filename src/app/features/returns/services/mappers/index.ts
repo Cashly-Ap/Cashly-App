@@ -1,1 +1,1 @@
-export * from './return.mapper';
+export * from '@features/returns/services/mappers/return';

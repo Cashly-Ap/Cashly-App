@@ -2,7 +2,7 @@ import { Component, input, output, ChangeDetectionStrategy } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { BalanceTransactionResponse } from '../../models/interfaces';
+import { BalanceTransactionResponse } from '@features/customers/models/interfaces';
 
 @Component({
   selector: 'app-balance-transactions-table',

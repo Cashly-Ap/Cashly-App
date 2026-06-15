@@ -15,7 +15,7 @@ import {
   LoadingSpinnerComponent,
   PageHeaderComponent,
 } from '@shared/components/ui';
-import { PaymentApplicationService } from '../../services/application/payment-application.service';
+import { PaymentApplicationService } from '@features/payments/services/application/payment-application';
 
 
 @Component({

@@ -5,7 +5,7 @@ import {
   CreditNoteList,
   CreditNoteDetail,
   CreditNoteCreate,
-} from '../../models/interfaces';
+} from '@features/credit-notes/models/interfaces';
 
 export interface CreditNoteFilters {
   dateFrom?: string;

@@ -15,7 +15,7 @@ import {
   PayCustomerDebtRequest,
   PayPartialDebtRequest,
   CreditStatusResponse,
-} from '../../models/interfaces';
+} from '@features/receivables/models/interfaces';
 
 export interface ReceivablesSearchParams {
   page?: number;

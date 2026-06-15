@@ -1,3 +1,3 @@
-export * from './main-layout.component';
-export * from './config';
-export * from './models';
+export * from '@core/layouts/main-layout';
+export * from '@core/layouts/config';
+export * from '@core/layouts/models';

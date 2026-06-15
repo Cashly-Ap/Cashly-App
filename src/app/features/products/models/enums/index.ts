@@ -1,1 +1,1 @@
-export * from './product-type.enum';
+export * from '@features/products/models/enums/product-type';

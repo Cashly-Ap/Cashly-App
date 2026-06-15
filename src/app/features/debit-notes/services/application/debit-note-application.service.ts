@@ -1,12 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { DebitNoteApiService, DebitNoteFilters } from '../api/debit-note-api.service';
-import { DebitNoteMapper } from '../mappers/debit-note.mapper';
+import { DebitNoteApiService, DebitNoteFilters } from '@features/debit-notes/services/api/debit-note-api';
+import { DebitNoteMapper } from '@features/debit-notes/services/mappers/debit-note';
 import {
   DebitNoteList,
   DebitNoteDetail,
   DebitNoteCreate,
-} from '../../models/interfaces';
+} from '@features/debit-notes/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class DebitNoteApplicationService {

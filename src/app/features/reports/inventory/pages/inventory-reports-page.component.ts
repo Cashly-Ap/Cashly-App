@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { StockPdfModalComponent } from '../components/stock-pdf-modal';
-import { MovementsPdfModalComponent } from '../components/movements-pdf-modal';
-import { PdfViewerModalComponent } from '../components/pdf-viewer-modal';
-import { StockPdfApiService, StockExcelApiService } from '../services/api';
-import { MovementsPdfApiService, MovementsExcelApiService } from '../services/api';
+import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
+import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
+import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
+import { StockPdfApiService, StockExcelApiService } from '@features/reports/inventory/services/api';
+import { MovementsPdfApiService, MovementsExcelApiService } from '@features/reports/inventory/services/api';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
-import type { StockPdfFilters, MovementsPdfFilters } from '../models/interfaces';
+import type { StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 
 @Component({
   selector: 'app-inventory-reports-page',

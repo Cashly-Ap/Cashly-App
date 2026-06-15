@@ -6,7 +6,7 @@ import {
   PaymentMethodDetail,
   PaymentMethodCreate,
   PaymentMethodUpdate,
-} from '../../models/interfaces';
+} from '@features/payment-methods/models/interfaces';
 
 export interface PaymentMethodFilters {
   search?: string;

@@ -1,1 +1,1 @@
-export { PAYMENT_ROUTES } from './payments.routes';
+export { PAYMENT_ROUTES } from '@features/payments/router/payments';

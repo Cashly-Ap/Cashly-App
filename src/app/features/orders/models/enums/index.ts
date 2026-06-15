@@ -1,1 +1,1 @@
-export * from './order-status.enum';
+export * from '@features/orders/models/enums/order-status';

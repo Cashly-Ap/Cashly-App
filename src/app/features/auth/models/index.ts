@@ -1,1 +1,1 @@
-export * from './interfaces';
+export * from '@features/auth/models/interfaces';

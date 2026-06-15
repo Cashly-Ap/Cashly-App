@@ -1,1 +1,1 @@
-export * from './router';
+export * from '@features/credit-notes/router';

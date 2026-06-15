@@ -1,1 +1,1 @@
-export * from './pdf-viewer.service';
+export * from '@core/pdf-viewer/services/pdf-viewer';

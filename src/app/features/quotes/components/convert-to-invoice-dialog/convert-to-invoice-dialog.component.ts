@@ -17,7 +17,7 @@ import { CreditStatusResponse } from '@features/receivables/models/interfaces';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
-import { ConvertToInvoiceRequest } from '../../services/api/quote-api.service';
+import { ConvertToInvoiceRequest } from '@features/quotes/services/api/quote-api';
 
 interface AllocationWithStock {
   warehouseName: string;

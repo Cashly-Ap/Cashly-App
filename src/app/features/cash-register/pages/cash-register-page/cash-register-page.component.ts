@@ -31,7 +31,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { CashRegisterApplicationService } from '../../services/application/cash-register-application.service';
+import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application';
 
 @Component({
   selector: 'app-cash-register-page',

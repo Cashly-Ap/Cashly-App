@@ -1,5 +1,5 @@
-import { OrderProductStockItem } from './order-product.interface';
-import { WarehouseAllocation } from './order-item-allocation.interface';
+import { OrderProductStockItem } from '@features/orders/models/interfaces/order-product';
+import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation';
 
 export interface OrderFormData {
   customerId: string;

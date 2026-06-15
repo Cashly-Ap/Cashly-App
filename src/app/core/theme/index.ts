@@ -1,2 +1,2 @@
-export * from './components';
-export * from './presets';
+export * from '@core/theme/components';
+export * from '@core/theme/presets';

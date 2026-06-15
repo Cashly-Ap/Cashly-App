@@ -1,1 +1,1 @@
-export { ReturnFormPageComponent } from './return-form-page.component';
+export { ReturnFormPageComponent } from '@features/returns/pages/return-form-page/return-form-page';

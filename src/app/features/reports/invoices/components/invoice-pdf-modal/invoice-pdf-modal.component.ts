@@ -13,7 +13,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
-import { InvoicesPdfFilters } from '../../models/interfaces';
+import { InvoicesPdfFilters } from '@features/reports/invoices/models/interfaces';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 

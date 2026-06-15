@@ -8,8 +8,8 @@ import {
   QuoteEdit,
   QuoteProduct,
   QuoteWarehouse,
-} from '../../models/interfaces';
-import { QuoteStatus } from '../../models/enums/quote-status.enum';
+} from '@features/quotes/models/interfaces';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status';
 
 export interface ConvertToInvoiceRequest {
   paymentType: string;

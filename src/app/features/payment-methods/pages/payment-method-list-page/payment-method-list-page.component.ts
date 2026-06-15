@@ -19,9 +19,9 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
-import { PaymentMethodApplicationService } from '../../services/application/payment-method-application.service';
-import { PaymentMethodFilters } from '../../services/api/payment-method-api.service';
-import { PaymentMethodList } from '../../models/interfaces';
+import { PaymentMethodApplicationService } from '@features/payment-methods/services/application/payment-method-application';
+import { PaymentMethodFilters } from '@features/payment-methods/services/api/payment-method-api';
+import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
 
 @Component({
   selector: 'app-payment-method-list-page',

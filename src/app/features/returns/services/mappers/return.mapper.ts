@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReturnDetail, ReturnList } from '../../models/interfaces';
+import { ReturnDetail, ReturnList } from '@features/returns/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class ReturnMapper {

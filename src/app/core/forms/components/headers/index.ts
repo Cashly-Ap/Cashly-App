@@ -1,3 +1,3 @@
-export * from './form-header/form-header.component';
-export * from './form-actions/form-actions.component';
-export * from './section-header/section-header.component';
+export * from '@core/forms/components/headers/form-header/form-header';
+export * from '@core/forms/components/headers/form-actions/form-actions';
+export * from '@core/forms/components/headers/section-header/section-header';

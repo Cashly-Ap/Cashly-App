@@ -1,1 +1,1 @@
-export * from './catalog-pdf-modal.component';
+export * from '@features/reports/inventory/components/catalog-pdf-modal/catalog-pdf-modal';

@@ -1,3 +1,3 @@
-export * from './components';
-export * from './models';
-export * from './services';
+export * from '@core/pdf-viewer/components';
+export * from '@core/pdf-viewer/models';
+export * from '@core/pdf-viewer/services';

@@ -1,4 +1,4 @@
-import { UserResponse } from './user.interface';
+import { UserResponse } from '@features/auth/models/interfaces/user';
 
 export interface AuthenticationResponse {
   accessToken: string;

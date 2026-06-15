@@ -1,5 +1,5 @@
-import { UserType } from '../enums/user-type.enum';
-import { BusinessModule } from '../enums/business-module.enum';
+import { UserType } from '@features/users/models/enums/user-type';
+import { BusinessModule } from '@features/users/models/enums/business-module';
 
 export interface UserDetails {
   id: string;

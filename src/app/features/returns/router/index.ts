@@ -1,1 +1,1 @@
-export { RETURN_ROUTES } from './returns.routes';
+export { RETURN_ROUTES } from '@features/returns/router/returns';

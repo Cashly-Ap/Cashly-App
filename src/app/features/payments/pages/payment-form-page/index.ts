@@ -1,1 +1,1 @@
-export { PaymentFormPageComponent } from './payment-form-page.component';
+export { PaymentFormPageComponent } from '@features/payments/pages/payment-form-page/payment-form-page';

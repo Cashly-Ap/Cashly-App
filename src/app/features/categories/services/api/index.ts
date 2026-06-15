@@ -1,1 +1,1 @@
-export * from './category-api.service';
+export * from '@features/categories/services/api/category-api';

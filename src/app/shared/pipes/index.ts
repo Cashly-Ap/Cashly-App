@@ -1,2 +1,2 @@
-export * from "./currency.pipe";
-export * from "./date-format.pipe";
+export * from '@shared/pipes/currency';
+export * from '@shared/pipes/date-format';

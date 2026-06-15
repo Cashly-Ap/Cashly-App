@@ -13,8 +13,8 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { CreditNoteApplicationService } from '../../services/application/credit-note-application.service';
-import { CreditNoteCreate } from '../../models/interfaces';
+import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application';
+import { CreditNoteCreate } from '@features/credit-notes/models/interfaces';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 
 interface CreditNoteFormData {

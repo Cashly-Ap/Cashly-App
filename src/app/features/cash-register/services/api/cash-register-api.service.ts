@@ -7,7 +7,7 @@ import {
   CashRegisterResponse,
   OpenRegisterRequest,
   CloseRegisterRequest,
-} from '../../models/interfaces/closure.interface';
+} from '@features/cash-register/models/interfaces/closure';
 
 @Injectable({ providedIn: 'root' })
 export class CashRegisterApiService {

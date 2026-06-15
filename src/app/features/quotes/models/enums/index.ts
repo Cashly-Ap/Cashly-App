@@ -1,1 +1,1 @@
-export * from './quote-status.enum';
+export * from '@features/quotes/models/enums/quote-status';

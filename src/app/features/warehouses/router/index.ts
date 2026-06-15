@@ -1,1 +1,1 @@
-export * from './warehouse.routes';
+export * from '@features/warehouses/router/warehouse';

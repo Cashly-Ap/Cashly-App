@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { PriceTypeApiService } from '../api/price-type-api.service';
-import { PriceTypeList, PriceTypeDetails, PriceTypeCreate, PriceTypeUpdate } from '../../models/interfaces';
+import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api';
+import { PriceTypeList, PriceTypeDetails, PriceTypeCreate, PriceTypeUpdate } from '@features/price-types/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PriceTypeApplicationService {

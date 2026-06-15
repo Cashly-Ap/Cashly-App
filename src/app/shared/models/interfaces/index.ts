@@ -1,1 +1,1 @@
-export * from './paged-response.interface';
+export * from '@shared/models/interfaces/paged-response';

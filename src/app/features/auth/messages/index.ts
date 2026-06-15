@@ -1,2 +1,2 @@
-export * from './success-messages';
-export * from './error-messages';
+export * from '@features/auth/messages/success-messages';
+export * from '@features/auth/messages/error-messages';

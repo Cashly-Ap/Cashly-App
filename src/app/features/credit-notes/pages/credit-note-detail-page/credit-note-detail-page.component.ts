@@ -15,7 +15,7 @@ import {
   LoadingSpinnerComponent,
   PageHeaderComponent,
 } from '@shared/components/ui';
-import { CreditNoteApplicationService } from '../../services/application/credit-note-application.service';
+import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application';
 
 @Component({
   selector: 'app-credit-note-detail-page',

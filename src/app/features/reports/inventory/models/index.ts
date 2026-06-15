@@ -1,1 +1,1 @@
-export * from './interfaces';
+export * from '@features/reports/inventory/models/interfaces';

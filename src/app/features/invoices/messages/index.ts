@@ -1,2 +1,2 @@
-export * from './error-messages';
-export * from './success-messages';
+export * from '@features/invoices/messages/error-messages';
+export * from '@features/invoices/messages/success-messages';

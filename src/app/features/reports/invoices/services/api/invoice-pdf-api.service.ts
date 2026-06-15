@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { InvoicesPdfFilters } from '../../models/interfaces';
+import { InvoicesPdfFilters } from '@features/reports/invoices/models/interfaces';
 
 export type { InvoicesPdfFilters };
 

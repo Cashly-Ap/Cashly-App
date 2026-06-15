@@ -1,1 +1,1 @@
-export * from './payment-method-picker.component';
+export * from '@shared/ui/payment-method-picker/payment-method-picker';

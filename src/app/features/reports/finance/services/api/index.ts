@@ -1,1 +1,1 @@
-export * from './finance-pdf-api.service';
+export * from '@features/reports/finance/services/api/finance-pdf-api';

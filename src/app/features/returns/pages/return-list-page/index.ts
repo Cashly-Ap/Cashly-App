@@ -1,1 +1,1 @@
-export { ReturnListPageComponent } from './return-list-page.component';
+export { ReturnListPageComponent } from '@features/returns/pages/return-list-page/return-list-page';

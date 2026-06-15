@@ -4,8 +4,8 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
-import { PendingPayment } from '../../models/interfaces';
-import { PaymentDetailDialogComponent } from '../payment-detail-dialog/payment-detail-dialog.component';
+import { PendingPayment } from '@features/receivables/models/interfaces';
+import { PaymentDetailDialogComponent } from '@features/receivables/components/payment-detail-dialog/payment-detail-dialog';
 
 @Component({
   selector: 'app-pending-payments-tab',

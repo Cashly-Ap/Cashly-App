@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '../../models/interfaces';
+import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '@features/warehouses/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface WarehouseFilters {

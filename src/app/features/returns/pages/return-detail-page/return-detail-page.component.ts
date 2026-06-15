@@ -17,7 +17,7 @@ import {
   PageHeaderComponent,
   TextBadgeComponent,
 } from '@shared/components/ui';
-import { ReturnApplicationService } from '../../services/application/return-application.service';
+import { ReturnApplicationService } from '@features/returns/services/application/return-application';
 
 @Component({
   selector: 'app-return-detail-page',

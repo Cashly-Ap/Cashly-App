@@ -1,3 +1,3 @@
-export * from './warehouses-list-page/warehouses-list-page.component';
-export * from './warehouses-form-page/warehouses-form-page.component';
-export * from './warehouses-details-page/warehouses-details-page.component';
+export * from '@features/warehouses/pages/warehouses-list-page/warehouses-list-page';
+export * from '@features/warehouses/pages/warehouses-form-page/warehouses-form-page';
+export * from '@features/warehouses/pages/warehouses-details-page/warehouses-details-page';

@@ -1,2 +1,2 @@
-export * from './invoice-status.enum';
-export * from './payment-type.enum';
+export * from '@features/invoices/models/enums/invoice-status';
+export * from '@features/invoices/models/enums/payment-type';

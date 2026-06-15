@@ -1,13 +1,13 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { PaymentApiService, PaymentFilters } from '../api/payment-api.service';
-import { PaymentMapper } from '../mappers/payment.mapper';
+import { PaymentApiService, PaymentFilters } from '@features/payments/services/api/payment-api';
+import { PaymentMapper } from '@features/payments/services/mappers/payment';
 import {
   PaymentList,
   PaymentDetail,
   PaymentCreate,
   PaymentUpdate,
-} from '../../models/interfaces';
+} from '@features/payments/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentApplicationService {

@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { MovementsPdfFilters } from '../../models/interfaces';
+import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 
 @Component({
   selector: 'app-movements-pdf-modal',

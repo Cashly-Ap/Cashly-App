@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CategoryList, CategoryDetails, CategoryCreate, CategoryUpdate } from '../../models/interfaces';
+import { CategoryList, CategoryDetails, CategoryCreate, CategoryUpdate } from '@features/categories/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CategoryFilters {

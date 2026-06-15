@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MovementsPdfFilters } from '../../models/interfaces';
+import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class MovementsPdfApiService {

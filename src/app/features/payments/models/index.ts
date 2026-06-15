@@ -1,2 +1,2 @@
-export * from './interfaces';
-export * from './enums';
+export * from '@features/payments/models/interfaces';
+export * from '@features/payments/models/enums';

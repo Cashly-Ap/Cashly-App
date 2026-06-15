@@ -1,1 +1,1 @@
-export * from './stock-pdf-modal.component';
+export * from '@features/reports/inventory/components/stock-pdf-modal/stock-pdf-modal';

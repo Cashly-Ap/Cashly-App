@@ -1,1 +1,1 @@
-export * from './movement-type.enum';
+export * from '@features/warehouses/models/enums/movement-type';

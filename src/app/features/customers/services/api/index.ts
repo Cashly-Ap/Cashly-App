@@ -1,2 +1,2 @@
-export * from './customer-api.service';
-export * from './customer-balance-api.service';
+export * from '@features/customers/services/api/customer-api';
+export * from '@features/customers/services/api/customer-balance-api';

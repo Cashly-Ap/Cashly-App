@@ -5,8 +5,8 @@ import { TableModule } from 'primeng/table';
 
 import { PaginatorModule } from 'primeng/paginator';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ReceivablesApiService } from '../../services/api/receivables-api.service';
-import { PendingPayment } from '../../models/interfaces';
+import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api';
+import { PendingPayment } from '@features/receivables/models/interfaces';
 
 @Component({
   selector: 'app-payment-history-dialog',

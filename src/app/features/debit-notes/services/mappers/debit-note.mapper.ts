@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { DebitNoteDetail, DebitNoteList } from '../../models/interfaces';
+import { DebitNoteDetail, DebitNoteList } from '@features/debit-notes/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class DebitNoteMapper {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { InvoiceDetails } from '../../models/interfaces';
-import { InvoiceList } from '../../models/interfaces';
+import { InvoiceDetails } from '@features/invoices/models/interfaces';
+import { InvoiceList } from '@features/invoices/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceMapper {

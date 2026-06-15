@@ -1,2 +1,2 @@
-export * from './api';
-export * from './application';
+export * from '@features/warehouses/services/api';
+export * from '@features/warehouses/services/application';

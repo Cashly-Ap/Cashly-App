@@ -2,12 +2,12 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, tap, catchError, finalize, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { CashRegisterApiService } from '../api/cash-register-api.service';
+import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   CashRegisterResponse,
   CloseRegisterRequest,
-} from '../../models/interfaces/closure.interface';
+} from '@features/cash-register/models/interfaces/closure';
 
 @Injectable({ providedIn: 'root' })
 export class CashRegisterApplicationService {

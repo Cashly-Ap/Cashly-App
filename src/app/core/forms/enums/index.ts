@@ -1,2 +1,2 @@
-export { FormMode } from './form-mode.enum';
-export { MessageAction } from './message-action.enum';
+export { FormMode } from '@core/forms/enums/form-mode';
+export { MessageAction } from '@core/forms/enums/message-action';

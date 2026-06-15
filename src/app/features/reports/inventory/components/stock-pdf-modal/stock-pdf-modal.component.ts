@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { StockPdfFilters } from '../../models/interfaces';
+import { StockPdfFilters } from '@features/reports/inventory/models/interfaces';
 
 @Component({
   selector: 'app-stock-pdf-modal',

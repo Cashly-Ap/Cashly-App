@@ -1,2 +1,2 @@
-export * from './api/cash-register-api.service';
-export * from './application/cash-register-application.service';
+export * from '@features/cash-register/services/api/cash-register-api';
+export * from '@features/cash-register/services/application/cash-register-application';
