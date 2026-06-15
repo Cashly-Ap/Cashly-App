@@ -5,7 +5,7 @@ import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApiService } from '../../services/api/receivables-api.service';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
+import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { PendingPayment } from '../../models/interfaces';
 
 @Component({

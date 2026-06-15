@@ -10,7 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
+import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
 import { CustomerInvoiceDebt, PayInvoiceRequest } from '../../models/interfaces';
 

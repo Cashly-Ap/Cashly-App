@@ -21,7 +21,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
+import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { ReceivablesSearchParams } from '../../services/api/receivables-api.service';
 import { CustomerDebtList, CustomerInvoiceDebt } from '../../models/interfaces';
 import {

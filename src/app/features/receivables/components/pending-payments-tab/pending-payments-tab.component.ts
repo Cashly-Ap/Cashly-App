@@ -3,7 +3,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
+import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { PendingPayment } from '../../models/interfaces';
 import { PaymentDetailDialogComponent } from '../payment-detail-dialog/payment-detail-dialog.component';
 

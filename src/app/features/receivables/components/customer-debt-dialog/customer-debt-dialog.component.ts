@@ -9,7 +9,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ReceivablesApplicationService } from '../../services/application/receivables-application.service';
+import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { CustomerInvoiceDebt } from '../../models/interfaces';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
 import { BalanceTransactionResponse } from '@features/customers/models/interfaces';
