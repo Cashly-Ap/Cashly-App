@@ -25,7 +25,7 @@ import { PopoverModule } from 'primeng/popover';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
-import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application';
+import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application.service';
 
 @Component({
   selector: 'app-cash-register-history-page',

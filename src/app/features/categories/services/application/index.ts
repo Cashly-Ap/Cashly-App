@@ -1,1 +1,1 @@
-export * from '@features/categories/services/application/category-application';
+export * from '@features/categories/services/application/category-application.service';

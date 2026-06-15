@@ -1,1 +1,1 @@
-export { PaymentApplicationService } from '@features/payments/services/application/payment-application';
+export { PaymentApplicationService } from '@features/payments/services/application/payment-application.service';

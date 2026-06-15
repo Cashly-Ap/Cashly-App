@@ -1,1 +1,1 @@
-export * from '@features/auth/services/application/auth-application';
+export * from '@features/auth/services/application/auth-application.service';

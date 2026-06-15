@@ -1,1 +1,1 @@
-export * from '@features/reports/inventory/router/inventory-reports';
+export * from '@features/reports/inventory/router/inventory-reports.routes';

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, switchMap, forkJoin, of, map, catchError } from 'rxjs';
-import { ReturnApiService, ReturnFilters } from '@features/returns/services/api/return-api';
-import { ReturnMapper } from '@features/returns/services/mappers/return';
+import { ReturnApiService, ReturnFilters } from '@features/returns/services/api/return-api.service';
+import { ReturnMapper } from '@features/returns/services/mappers/return.mapper';
 import {
   ReturnList,
   ReturnDetail,

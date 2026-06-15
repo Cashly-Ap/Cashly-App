@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { PaymentApiService, PaymentFilters } from '@features/payments/services/api/payment-api';
-import { PaymentMapper } from '@features/payments/services/mappers/payment';
+import { PaymentApiService, PaymentFilters } from '@features/payments/services/api/payment-api.service';
+import { PaymentMapper } from '@features/payments/services/mappers/payment.mapper';
 import {
   PaymentList,
   PaymentDetail,

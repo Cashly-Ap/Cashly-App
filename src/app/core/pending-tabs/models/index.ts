@@ -1,1 +1,1 @@
-export * from '@core/pending-tabs/models/pending-tab';
+export * from '@core/pending-tabs/models/pending-tab.interface';

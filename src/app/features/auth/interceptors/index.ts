@@ -1,1 +1,1 @@
-export * from '@features/auth/interceptors/auth';
+export * from '@features/auth/interceptors/auth.interceptor';

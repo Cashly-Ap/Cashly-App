@@ -6,11 +6,11 @@ import { ButtonModule } from 'primeng/button';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
-import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api';
-import { CustomerApiService } from '@features/customers/services/api/customer-api';
+import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerBalanceResponse, BalanceTransactionResponse } from '@features/customers/models/interfaces';
-import { BalanceSummaryCardComponent } from '@features/customers/components/balance-summary-card/balance-summary-card';
-import { BalanceTransactionsTableComponent } from '@features/customers/components/balance-transactions-table/balance-transactions-table';
+import { BalanceSummaryCardComponent } from '@features/customers/components/balance-summary-card/balance-summary-card.component';
+import { BalanceTransactionsTableComponent } from '@features/customers/components/balance-transactions-table/balance-transactions-table.component';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Component({

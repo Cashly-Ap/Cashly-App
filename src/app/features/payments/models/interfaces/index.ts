@@ -1,1 +1,1 @@
-export * from '@features/payments/models/interfaces/payment';
+export * from '@features/payments/models/interfaces/payment.interface';

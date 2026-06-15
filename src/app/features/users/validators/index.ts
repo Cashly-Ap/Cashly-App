@@ -1,1 +1,1 @@
-export * from '@features/users/validators/user';
+export * from '@features/users/validators/user.validators';

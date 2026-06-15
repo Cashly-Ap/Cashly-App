@@ -1,1 +1,1 @@
-export * from '@features/receivables/router/receivables';
+export * from '@features/receivables/router/receivables.routes';

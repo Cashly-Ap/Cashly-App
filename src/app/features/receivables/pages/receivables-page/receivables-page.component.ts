@@ -22,14 +22,14 @@ import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
-import { ReceivablesSearchParams } from '@features/receivables/services/api/receivables-api';
+import { ReceivablesSearchParams } from '@features/receivables/services/api/receivables-api.service';
 import { CustomerDebtList, CustomerInvoiceDebt } from '@features/receivables/models/interfaces';
 import {
   CustomerDebtDialogComponent,
   PaymentFormDialogComponent,
   PaymentHistoryDialogComponent,
 } from '@features/receivables/components';
-import { PaymentSubmitEvent } from '@features/receivables/components/payment-form-dialog/payment-form-dialog';
+import { PaymentSubmitEvent } from '@features/receivables/components/payment-form-dialog/payment-form-dialog.component';
 import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
 
 @Component({

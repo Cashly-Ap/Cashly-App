@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { InvoiceApiService, InvoiceFilters } from '@features/invoices/services/api/invoice-api';
-import { InvoiceMapper } from '@features/invoices/services/mappers/invoice';
+import { InvoiceApiService, InvoiceFilters } from '@features/invoices/services/api/invoice-api.service';
+import { InvoiceMapper } from '@features/invoices/services/mappers/invoice.mapper';
 import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate } from '@features/invoices/models/interfaces';
 
 @Injectable({ providedIn: 'root' })

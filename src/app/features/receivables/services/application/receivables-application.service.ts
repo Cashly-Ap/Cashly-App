@@ -5,7 +5,7 @@ import { AuthService } from '@features/auth/services/application/auth-applicatio
 import {
   ReceivablesApiService,
   ReceivablesSearchParams,
-} from '@features/receivables/services/api/receivables-api';
+} from '@features/receivables/services/api/receivables-api.service';
 import { RECEIVABLES_ERROR_MESSAGES } from '@features/receivables/messages/error-messages';
 import {
   GlobalDebtSummary,

@@ -9,7 +9,7 @@ import { TextInputComponent } from '@core/forms/components/inputs';
 import { AuthValidators } from '@features/auth/validators/auth-validators';
 import { AuthService } from '@features/auth/services/application';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
-import { createPasswordForm } from '@features/auth/pages';
+import { createPasswordForm } from '@features/auth/pages/change-password/change-password-page.config';
 
 @Component({
   selector: 'app-change-password-page',

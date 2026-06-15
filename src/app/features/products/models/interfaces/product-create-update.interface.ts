@@ -1,4 +1,4 @@
-import { ProductPriceFormItem } from '@features/products/models/interfaces/product-price-form-item';
+import { ProductPriceFormItem } from '@features/products/models/interfaces/product-price-form-item.interface';
 
 export interface ProductComponentInput {
   componentProductId: string;

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { UserApiService, UserFilters } from '@features/users/services/api/user-api';
-import { UserMapper } from '@features/users/services/mappers/user';
+import { UserApiService, UserFilters } from '@features/users/services/api/user-api.service';
+import { UserMapper } from '@features/users/services/mappers/user.mapper';
 import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
 import { BusinessModule } from '@features/users/models/enums';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';

@@ -1,1 +1,1 @@
-export * from '@core/forms/base/base-form';
+export * from '@core/forms/base/base-form.component';

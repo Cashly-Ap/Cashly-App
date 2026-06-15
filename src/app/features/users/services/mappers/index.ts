@@ -1,1 +1,1 @@
-export * from '@features/users/services/mappers/user';
+export * from '@features/users/services/mappers/user.mapper';

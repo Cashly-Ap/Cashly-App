@@ -19,8 +19,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { PaymentApplicationService } from '@features/payments/services/application/payment-application';
-import { PaymentFilters } from '@features/payments/services/api/payment-api';
+import { PaymentApplicationService } from '@features/payments/services/application/payment-application.service';
+import { PaymentFilters } from '@features/payments/services/api/payment-api.service';
 import { PaymentList } from '@features/payments/models/interfaces';
 
 

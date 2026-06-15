@@ -8,7 +8,7 @@ import { FormHeaderComponent, FormActionsComponent } from '@core/forms/component
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { AuthService } from '@features/auth/services/application';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
-import { createUserNameForm } from '@features/auth/pages/change-username/change-username-page';
+import { createUserNameForm } from '@features/auth/pages/change-username/change-username-page.config';
 
 @Component({
   selector: 'app-change-username-page',

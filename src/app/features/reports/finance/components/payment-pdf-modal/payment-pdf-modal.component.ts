@@ -9,7 +9,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api';
+import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
 import { MessageService } from 'primeng/api';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 

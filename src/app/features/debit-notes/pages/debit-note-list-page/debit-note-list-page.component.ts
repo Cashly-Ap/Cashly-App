@@ -18,8 +18,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application';
-import { DebitNoteFilters } from '@features/debit-notes/services/api/debit-note-api';
+import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application.service';
+import { DebitNoteFilters } from '@features/debit-notes/services/api/debit-note-api.service';
 import { DebitNoteList } from '@features/debit-notes/models/interfaces';
 
 @Component({

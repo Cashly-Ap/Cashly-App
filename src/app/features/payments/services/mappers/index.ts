@@ -1,1 +1,1 @@
-export { PaymentMapper } from '@features/payments/services/mappers/payment';
+export { PaymentMapper } from '@features/payments/services/mappers/payment.mapper';

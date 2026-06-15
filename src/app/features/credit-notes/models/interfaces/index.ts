@@ -1,1 +1,1 @@
-export * from '@features/credit-notes/models/interfaces/credit-note';
+export * from '@features/credit-notes/models/interfaces/credit-note.interface';

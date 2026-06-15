@@ -12,7 +12,7 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { PaymentMethodApplicationService } from '@features/payment-methods/services/application/payment-method-application';
+import { PaymentMethodApplicationService } from '@features/payment-methods/services/application/payment-method-application.service';
 import { PaymentMethodUpdate } from '@features/payment-methods/models/interfaces';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 

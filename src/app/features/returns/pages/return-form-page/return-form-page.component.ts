@@ -21,10 +21,10 @@ import { FormCardComponent } from '@core/forms/components/cards/form-card/form-c
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog';
-import { ReturnApplicationService } from '@features/returns/services/application/return-application';
+import { ReturnApplicationService } from '@features/returns/services/application/return-application.service';
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
-import { ReturnType, RETURN_TYPE_LABELS } from '@features/returns/models/enums/return-type';
+import { ReturnType, RETURN_TYPE_LABELS } from '@features/returns/models/enums/return-type.enum';
 import { ReturnCreate } from '@features/returns/models/interfaces';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { InvoiceList, InvoiceDetails, InvoiceLineDetail } from '@features/invoices/models/interfaces';

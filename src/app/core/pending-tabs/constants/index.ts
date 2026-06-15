@@ -1,1 +1,1 @@
-export * from '@core/pending-tabs/constants/pending-tabs';
+export * from '@core/pending-tabs/constants/pending-tabs.constants';

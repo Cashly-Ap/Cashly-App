@@ -15,7 +15,7 @@ import {
   LoadingSpinnerComponent,
   PageHeaderComponent,
 } from '@shared/components/ui';
-import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application';
+import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application.service';
 
 @Component({
   selector: 'app-debit-note-detail-page',

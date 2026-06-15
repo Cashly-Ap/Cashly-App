@@ -1,1 +1,1 @@
-export { PaymentDetailPageComponent } from '@features/payments/pages/payment-detail-page/payment-detail-page';
+export { PaymentDetailPageComponent } from '@features/payments/pages/payment-detail-page/payment-detail-page.component';

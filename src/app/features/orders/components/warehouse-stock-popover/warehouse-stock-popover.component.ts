@@ -7,7 +7,7 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry';
+import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 
 @Component({
   selector: 'app-warehouse-stock-popover',

@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CategoryApiService, CategoryFilters } from '@features/categories/services/api/category-api';
+import { CategoryApiService, CategoryFilters } from '@features/categories/services/api/category-api.service';
 import { CategoryList, CategoryDetails, CategoryCreate, CategoryUpdate } from '@features/categories/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 

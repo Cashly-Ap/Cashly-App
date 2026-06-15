@@ -13,7 +13,7 @@ import { CreditStatusResponse } from '@features/receivables/models/interfaces';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
-import { ConvertToInvoiceRequest } from '@features/orders/services/api/order-api';
+import { ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
 
 @Component({
   selector: 'app-convert-to-invoice-dialog',

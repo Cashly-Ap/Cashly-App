@@ -1,1 +1,1 @@
-export * from '@features/returns/models/enums/return-type';
+export * from '@features/returns/models/enums/return-type.enum';

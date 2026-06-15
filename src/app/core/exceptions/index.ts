@@ -1,1 +1,1 @@
-export * from '@core/exceptions/http-error';
+export * from '@core/exceptions/http-error.handler';

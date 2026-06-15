@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CatalogApiService } from '@features/reports/inventory/services/api/catalog-api';
+import { CatalogApiService } from '@features/reports/inventory/services/api/catalog-api.service';
 import { CatalogItem, CatalogFilters } from '@features/reports/inventory/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 

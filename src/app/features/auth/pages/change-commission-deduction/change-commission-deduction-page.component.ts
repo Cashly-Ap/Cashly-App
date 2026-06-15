@@ -8,7 +8,7 @@ import { FormHeaderComponent, FormActionsComponent } from '@core/forms/component
 import { NumberInputComponent } from '@core/forms/components/inputs';
 import { AuthService } from '@features/auth/services/application';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
-import { createCommissionDeductionForm } from '@features/auth/pages/change-commission-deduction/change-commission-deduction-page';
+import { createCommissionDeductionForm } from '@features/auth/pages/change-commission-deduction/change-commission-deduction-page.config';
 
 @Component({
   selector: 'app-change-commission-deduction-page',

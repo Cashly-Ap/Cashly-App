@@ -1,1 +1,1 @@
-export * from '@features/receivables/services/api/receivables-api';
+export * from '@features/receivables/services/api/receivables-api.service';

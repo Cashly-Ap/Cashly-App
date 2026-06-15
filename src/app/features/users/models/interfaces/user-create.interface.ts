@@ -1,4 +1,4 @@
-import { UserType } from '@features/users/models/enums/user-type';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 
 export interface UserCreate {
   email: string;

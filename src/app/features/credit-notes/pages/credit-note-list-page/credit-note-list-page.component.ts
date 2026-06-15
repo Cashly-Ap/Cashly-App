@@ -18,8 +18,8 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application';
-import { CreditNoteFilters } from '@features/credit-notes/services/api/credit-note-api';
+import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application.service';
+import { CreditNoteFilters } from '@features/credit-notes/services/api/credit-note-api.service';
 import { CreditNoteList } from '@features/credit-notes/models/interfaces';
 
 @Component({

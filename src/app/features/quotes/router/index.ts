@@ -1,1 +1,1 @@
-export * from '@features/quotes/router/quotes';
+export * from '@features/quotes/router/quotes.routes';

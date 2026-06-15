@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { OrderList, OrderDetails, OrderCreate, OrderEdit, OrderProduct } from '@features/orders/models/interfaces';
-import { OrderStatus } from '@features/orders/models/enums/order-status';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 export interface ConvertToInvoiceRequest {
   paymentType: string;

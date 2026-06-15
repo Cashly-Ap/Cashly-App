@@ -1,1 +1,1 @@
-export * from '@features/warehouses/services/application/warehouse-application';
+export * from '@features/warehouses/services/application/warehouse-application.service';

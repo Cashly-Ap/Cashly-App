@@ -1,1 +1,1 @@
-export * from '@core/theme/presets/theme';
+export * from '@core/theme/presets/theme.preset';

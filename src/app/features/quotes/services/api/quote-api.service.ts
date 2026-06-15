@@ -9,7 +9,7 @@ import {
   QuoteProduct,
   QuoteWarehouse,
 } from '@features/quotes/models/interfaces';
-import { QuoteStatus } from '@features/quotes/models/enums/quote-status';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 export interface ConvertToInvoiceRequest {
   paymentType: string;

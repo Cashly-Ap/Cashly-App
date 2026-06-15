@@ -1,1 +1,1 @@
-export * from '@core/layouts/config/menu';
+export * from '@core/layouts/config/menu.config';

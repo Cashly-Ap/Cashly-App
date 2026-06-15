@@ -1,2 +1,2 @@
-export * from '@features/customers/router/customer';
-export * from '@features/customers/router/customer-balance';
+export * from '@features/customers/router/customer.routes';
+export * from '@features/customers/router/customer-balance.routes';

@@ -1,1 +1,1 @@
-export * from '@features/orders/router/orders';
+export * from '@features/orders/router/orders.routes';

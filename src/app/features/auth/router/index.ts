@@ -1,1 +1,1 @@
-export * from '@features/auth/router/auth';
+export * from '@features/auth/router/auth.routes';

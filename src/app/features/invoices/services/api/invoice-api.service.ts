@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate, NoteInfo } from '@features/invoices/models/interfaces';
-import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status';
-import { PaymentType } from '@features/invoices/models/enums/payment-type';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 export interface InvoiceFilters {
   search?: string;
