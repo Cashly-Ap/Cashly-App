@@ -11,7 +11,7 @@ import {
 import { providePrimeNG } from 'primeng/config';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { routes } from '@app/app';
+import { routes } from '@app/app.routes';
 import { authInterceptor } from '@features/auth/interceptors';
 import { ParsunPreset } from '@core/theme/presets';
 
