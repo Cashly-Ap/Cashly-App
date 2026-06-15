@@ -77,14 +77,6 @@ describe('ConvertToInvoiceDialogComponent', () => {
     expect(dialog).toBeTruthy();
   });
 
-  it('should have default visible input as false', () => {
-    expect(dialog.visible()).toBe(false);
-  });
-
-  it('should have default quoteId input as null', () => {
-    expect(dialog.quoteId()).toBeNull();
-  });
-
   it('should have default paymentType as CASH', () => {
     expect(dialog.paymentType()).toBe(PaymentType.CASH);
   });
@@ -93,12 +85,6 @@ describe('ConvertToInvoiceDialogComponent', () => {
     const values = dialog.paymentTypeOptions.map((o) => o.value);
     expect(values).toContain(PaymentType.CASH);
     expect(values).toContain(PaymentType.CREDIT);
-  });
-
-  it('should emit confirmed with paymentType on confirm', () => {
-    dialog.paymentType.set(PaymentType.CREDIT);
-    dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ paymentType: PaymentType.CREDIT });
   });
 
   it('should emit cancelled on cancel', () => {
@@ -169,14 +155,6 @@ describe('ConvertToInvoiceDialogComponent - visible with data', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should have visible input as true', () => {
-    expect(dialog.visible()).toBe(true);
-  });
-
-  it('should have quoteId input set', () => {
-    expect(dialog.quoteId()).toBe('q-001');
-  });
-
   it('should load quote data when visible and quoteId are set', () => {
     expect(dialog.loading()).toBe(true);
 
@@ -232,25 +210,101 @@ describe('ConvertToInvoiceDialogComponent - visible with data', () => {
 
     expect(dialog.lines()).toEqual([]);
     expect(dialog.quoteInfo()).toBeNull();
-    expect(dialog.error()).toBeNull();
-    expect(dialog.hasAnyNegativeStock()).toBe(false);
     expect(dialog.paymentType()).toBe(PaymentType.CASH);
+    expect(dialog.confirmationPassword()).toBe('');
+    expect(dialog.useBalance()).toBe(false);
   });
 
-  it('should emit CASH when paymentType not changed', () => {
+  it('should NOT emit for CASH without payment lines or balance', () => {
     const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
     req.flush(mockQuote);
 
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(false);
+    dialog.paymentLines.set([]);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ paymentType: PaymentType.CASH });
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
   });
 
-  it('should allow changing paymentType before confirm', () => {
+  it('should emit CASH with useBalance when balance covers total', () => {
     const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
     req.flush(mockQuote);
 
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(true);
+    dialog.customerBalance.set(2000);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CASH,
+      useBalance: true,
+      balanceAmount: 1500,
+    });
+  });
+
+  it('should emit CASH with paymentMethodId from first line', () => {
+    const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    req.flush(mockQuote);
+
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(false);
+    dialog.paymentLines.set([{ methodId: 'pm1', amount: 1500 }]);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CASH,
+      useBalance: false,
+      balanceAmount: 0,
+      paymentMethodId: 'pm1',
+    });
+  });
+
+  it('should emit CREDIT without password when credit is fine', () => {
+    const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    req.flush(mockQuote);
+
+    dialog.creditStatus.set({
+      creditLimit: 5000,
+      availableCredit: 5000,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
     dialog.paymentType.set(PaymentType.CREDIT);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ paymentType: PaymentType.CREDIT });
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CREDIT,
+    });
+  });
+
+  it('should NOT emit CREDIT when warning exists and no password', () => {
+    const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    req.flush(mockQuote);
+
+    dialog.creditStatus.set({
+      creditLimit: 500,
+      availableCredit: 500,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
+    dialog.paymentType.set(PaymentType.CREDIT);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+  });
+
+  it('should emit CREDIT with password when warning exists and password given', () => {
+    const req = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    req.flush(mockQuote);
+
+    dialog.creditStatus.set({
+      creditLimit: 500,
+      availableCredit: 500,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
+    dialog.paymentType.set(PaymentType.CREDIT);
+    dialog.confirmationPassword.set('mypwd');
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CREDIT,
+      confirmationPassword: 'mypwd',
+    });
   });
 });

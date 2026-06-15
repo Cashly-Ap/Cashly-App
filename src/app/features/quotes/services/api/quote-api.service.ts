@@ -11,6 +11,14 @@ import {
 } from '../../models/interfaces';
 import { QuoteStatus } from '../../models/enums/quote-status.enum';
 
+export interface ConvertToInvoiceRequest {
+  paymentType: string;
+  confirmationPassword?: string;
+  useBalance?: boolean;
+  balanceAmount?: number;
+  paymentMethodId?: string;
+}
+
 export interface QuoteProductFilters {
   customerId: string;
   search?: string;
@@ -174,8 +182,8 @@ export class QuoteApiService {
     return this.http.post<QuoteConvertedToOrderResponse>(`${this.baseUrl}/${id}/convert-to-order`, {});
   }
 
-  convertToInvoice(id: string, paymentType: string): Observable<QuoteConvertedToInvoiceResponse> {
-    return this.http.post<QuoteConvertedToInvoiceResponse>(`${this.baseUrl}/${id}/convert-to-invoice`, { paymentType });
+  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<QuoteConvertedToInvoiceResponse> {
+    return this.http.post<QuoteConvertedToInvoiceResponse>(`${this.baseUrl}/${id}/convert-to-invoice`, request);
   }
 
   private toQuoteDetails(r: QuoteDetailApiResponse): QuoteDetails {

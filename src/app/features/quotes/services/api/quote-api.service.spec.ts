@@ -315,8 +315,9 @@ describe('QuoteApiService', () => {
   });
 
   describe('convertToInvoice()', () => {
-    it('should POST /api/quotes/:id/convert-to-invoice with paymentType', () => {
-      service.convertToInvoice('q-001', 'CASH').subscribe((result) => {
+    it('should POST /api/quotes/:id/convert-to-invoice with request body', () => {
+      const request = { paymentType: 'CASH' };
+      service.convertToInvoice('q-001', request).subscribe((result) => {
         expect(result.quoteId).toBe('q-001');
         expect(result.invoiceId).toBe('inv-001');
       });
@@ -324,6 +325,23 @@ describe('QuoteApiService', () => {
       const req = httpMock.expectOne('/api/quotes/q-001/convert-to-invoice');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ paymentType: 'CASH' });
+      req.flush({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' });
+    });
+
+    it('should include optional fields when provided', () => {
+      const request = {
+        paymentType: 'CREDIT',
+        confirmationPassword: 'secret',
+        useBalance: false,
+      };
+      service.convertToInvoice('q-001', request).subscribe();
+
+      const req = httpMock.expectOne('/api/quotes/q-001/convert-to-invoice');
+      expect(req.request.body).toEqual({
+        paymentType: 'CREDIT',
+        confirmationPassword: 'secret',
+        useBalance: false,
+      });
       req.flush({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' });
     });
   });

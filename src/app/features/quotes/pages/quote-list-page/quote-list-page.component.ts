@@ -22,7 +22,7 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
-import { QuoteFilters } from '@features/quotes/services/api/quote-api.service';
+import { QuoteFilters, ConvertToInvoiceRequest } from '@features/quotes/services/api/quote-api.service';
 import { QuoteStatus, QUOTE_STATUS_LABELS, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
 import { QuoteList } from '@features/quotes/models/interfaces';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
@@ -227,11 +227,11 @@ export class QuoteListPageComponent implements OnInit {
     this.invoiceDialogVisible.set(true);
   }
 
-  onInvoiceDialogConfirmed(paymentType: string): void {
+  onInvoiceDialogConfirmed(request: ConvertToInvoiceRequest): void {
     const quote = this.quoteToConvertToInvoice();
     if (!quote) return;
     this.invoiceDialogVisible.set(false);
-    this.quoteService.convertToInvoice(quote.id, paymentType).subscribe({
+    this.quoteService.convertToInvoice(quote.id, request).subscribe({
       next: () => {
         this.quoteToConvertToInvoice.set(null);
         this.messageService.add({

@@ -328,15 +328,15 @@ describe('QuoteListPageComponent', () => {
     it('should call convertToInvoice service on dialog confirmed', () => {
       fixture.detectChanges();
       component.quoteToConvertToInvoice.set(mockQuotes[0]);
-      component.onInvoiceDialogConfirmed('CASH');
-      expect(mockService.convertToInvoice).toHaveBeenCalledWith('q-001', 'CASH');
+      component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
+      expect(mockService.convertToInvoice).toHaveBeenCalledWith('q-001', { paymentType: 'CASH' });
     });
 
     it('should show success message on convert to invoice success', () => {
       fixture.detectChanges();
       component.quoteToConvertToInvoice.set(mockQuotes[0]);
       const addSpy = vi.spyOn(messageService, 'add');
-      component.onInvoiceDialogConfirmed('CASH');
+      component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
       expect(addSpy).toHaveBeenCalledWith(
         expect.objectContaining({ severity: 'success' })
       );

@@ -260,7 +260,7 @@
   <app-convert-to-invoice-dialog
     [visible]="invoiceDialogVisible()"
     [quoteId]="quoteToConvertToInvoice()?.id ?? null"
-    (confirmed)="onInvoiceDialogConfirmed($event.paymentType)"
+    (confirmed)="onInvoiceDialogConfirmed($event)"
     (cancelled)="onInvoiceDialogDismissed()"
   />
 </app-main-layout>
