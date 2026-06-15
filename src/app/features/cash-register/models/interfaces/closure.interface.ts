@@ -8,16 +8,6 @@ export interface CashRegisterResponse {
   closedBy: string | null;
   closedByName: string | null;
   closedAt: string | null;
-  totalPayments: number;
-  totalAdvances: number;
-  totalReturns: number;
-  totalCreditNotes: number;
-  totalDebitNotes: number;
-  totalInvoices: number;
-  paymentCount: number;
-  advanceCount: number;
-  returnCount: number;
-  invoiceCount: number;
   closingNotes: string | null;
   version: number;
   createdAt: string;

@@ -46,12 +46,11 @@
                   </p>
                 </div>
               </div>
-              <div class="flex flex-col sm:items-end gap-1 text-sm">
-                @if (isClosed()) {
-                  <div class="flex items-center gap-2 text-surface-600 dark:text-surface-300">
-                    <i class="pi pi-check-circle text-surface-400"></i>
-                    <span>Cerrado por {{ c.closedByName }} @if (c.closedAt) { &middot; {{ c.closedAt | date: 'dd/MM/yyyy HH:mm' }} }</span>
-                  </div>
+              <div class="flex items-center gap-2 sm:self-start">
+                <p-button label="Ver Detalle" icon="pi pi-table" severity="secondary" [outlined]="true" size="small" (onClick)="onOpenDetailDialog()" />
+                <p-button label="Historial" icon="pi pi-history" severity="secondary" [outlined]="true" size="small" (onClick)="onViewHistory()" />
+                @if (isOpen()) {
+                  <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" size="small" [disabled]="!canClose() || loading()" (onClick)="onOpenCloseDialog()" />
                 }
               </div>
             </div>
@@ -59,7 +58,7 @@
         </app-list-container>
 
         
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
           <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
@@ -90,67 +89,12 @@
           <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
             <div class="flex items-center gap-3 mb-3">
               <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
-                <i class="pi pi-balance-scale text-surface-600 dark:text-surface-400"></i>
+                <i class="pi pi-chart-bar text-surface-600 dark:text-surface-400"></i>
               </div>
               <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Balance Total</span>
             </div>
             <p class="text-2xl font-bold" [class.text-green-600]="c.balance >= 0" [class.text-red-600]="c.balance < 0">{{ c.balance | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
           </div>
-        </div>
-
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
-                <i class="pi pi-arrow-right text-surface-600 dark:text-surface-400"></i>
-              </div>
-              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Pagos</span>
-            </div>
-            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalPayments | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.paymentCount }} transacciones</p>
-          </div>
-          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
-                <i class="pi pi-arrow-up text-surface-600 dark:text-surface-400"></i>
-              </div>
-              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Anticipos</span>
-            </div>
-            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalAdvances | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.advanceCount }} transacciones</p>
-          </div>
-          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
-                <i class="pi pi-arrow-left text-surface-600 dark:text-surface-400"></i>
-              </div>
-              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Devoluciones</span>
-            </div>
-            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalReturns | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.returnCount }} transacciones</p>
-          </div>
-          <div class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center">
-                <i class="pi pi-receipt text-surface-600 dark:text-surface-400"></i>
-              </div>
-              <span class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide">Facturas</span>
-            </div>
-            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ c.totalInvoices | currency: 'USD' : 'symbol' : '1.2-2' }}</p>
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1">{{ c.invoiceCount }} transacciones</p>
-          </div>
-        </div>
-
-        
-        <app-cash-register-charts [closure]="c" />
-
-        
-        <div class="flex flex-wrap items-center gap-3 mt-6">
-          <p-button label="Ver Detalle" icon="pi pi-table" severity="secondary" [outlined]="true" (onClick)="onOpenDetailDialog()" />
-          @if (isOpen()) {
-            <p-button label="Cerrar Caja" icon="pi pi-lock" severity="contrast" [disabled]="!canClose() || loading()" (onClick)="onOpenCloseDialog()" />
-          }
         </div>
       }
     </div>

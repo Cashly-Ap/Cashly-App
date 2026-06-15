@@ -8,6 +8,7 @@ import {
   DestroyRef,
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -30,7 +31,6 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { TooltipModule } from 'primeng/tooltip';
-import { CashRegisterChartsComponent } from '../../components/cash-register-charts/cash-register-charts.component';
 import { CashRegisterApplicationService } from '../../services/application/cash-register-application.service';
 
 @Component({
@@ -43,6 +43,7 @@ import { CashRegisterApplicationService } from '../../services/application/cash-
     ReactiveFormsModule,
     CurrencyPipe,
     DatePipe,
+    RouterModule,
     MainLayoutComponent,
     ContentCardComponent,
     ListContainerComponent,
@@ -56,13 +57,13 @@ import { CashRegisterApplicationService } from '../../services/application/cash-
     InputTextModule,
     TextareaModule,
     TooltipModule,
-    CashRegisterChartsComponent,
   ],
   templateUrl: './cash-register-page.component.html',
 })
 export class CashRegisterPageComponent implements OnInit {
   private readonly service = inject(CashRegisterApplicationService);
   private readonly fb = inject(FormBuilder);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly activeClosure = this.service.activeClosure;
@@ -197,6 +198,10 @@ export class CashRegisterPageComponent implements OnInit {
   }
 
   
+
+  onViewHistory(): void {
+    this.router.navigate(['/cash-register/history']);
+  }
 
   getStatusLabel(status: string | undefined): string {
     switch (status) {
