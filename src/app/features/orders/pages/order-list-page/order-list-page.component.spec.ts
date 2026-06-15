@@ -280,6 +280,23 @@ describe('OrderListPageComponent', () => {
       expect(component.invoiceDialogVisible()).toBe(false);
       expect(component.orderToInvoice()).toBeNull();
     });
+
+    it('should call convertToInvoice service on dialog confirmed', () => {
+      fixture.detectChanges();
+      component.orderToInvoice.set(mockOrders[0]);
+      component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
+      expect(mockService.convertToInvoice).toHaveBeenCalledWith('ord-001', { paymentType: 'CASH' });
+    });
+
+    it('should show success message on convert to invoice success', () => {
+      fixture.detectChanges();
+      component.orderToInvoice.set(mockOrders[0]);
+      const addSpy = vi.spyOn(messageService, 'add');
+      component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
+      expect(addSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ severity: 'success' })
+      );
+    });
   });
 
   describe('PDF download', () => {

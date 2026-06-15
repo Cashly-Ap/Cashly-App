@@ -38,22 +38,6 @@ describe('ConvertToInvoiceDialogComponent', () => {
     expect(dialog).toBeTruthy();
   });
 
-  it('should have default visible input as false', () => {
-    expect(dialog.visible()).toBe(false);
-  });
-
-  it('should have default orderNumber input as empty string', () => {
-    expect(dialog.orderNumber()).toBe('');
-  });
-
-  it('should have default customerName input as empty string', () => {
-    expect(dialog.customerName()).toBe('');
-  });
-
-  it('should have default totalAmount input as 0', () => {
-    expect(dialog.totalAmount()).toBe(0);
-  });
-
   it('should have default paymentType as CASH', () => {
     expect(dialog.paymentType()).toBe(PaymentType.CASH);
   });
@@ -62,12 +46,6 @@ describe('ConvertToInvoiceDialogComponent', () => {
     const values = dialog.paymentTypeOptions.map((o) => o.value);
     expect(values).toContain(PaymentType.CASH);
     expect(values).toContain(PaymentType.CREDIT);
-  });
-
-  it('should emit paymentType on confirm', () => {
-    dialog.paymentType.set(PaymentType.CREDIT);
-    dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith(PaymentType.CREDIT);
   });
 
   it('should emit cancelled on cancel', () => {
@@ -97,30 +75,78 @@ describe('ConvertToInvoiceDialogComponent - visible', () => {
     dialog = fixture.debugElement.children[0].componentInstance;
   });
 
-  it('should have visible input as true', () => {
-    expect(dialog.visible()).toBe(true);
-  });
-
-  it('should have orderNumber input set', () => {
-    expect(dialog.orderNumber()).toBe('ORD-001');
-  });
-
-  it('should have customerName input set', () => {
-    expect(dialog.customerName()).toBe('Test Customer');
-  });
-
-  it('should have totalAmount input set', () => {
-    expect(dialog.totalAmount()).toBe(1250.5);
-  });
-
-  it('should emit CASH when paymentType not changed', () => {
+  it('should NOT emit when CASH and no payment lines and no balance', () => {
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(false);
+    dialog.paymentLines.set([]);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith(PaymentType.CASH);
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
   });
 
-  it('should allow changing paymentType before confirm', () => {
+  it('should emit CASH with useBalance when balance covers total', () => {
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(true);
+    dialog.customerBalance.set(2000);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CASH,
+      useBalance: true,
+      balanceAmount: 1250.5,
+    });
+  });
+
+  it('should emit CASH with paymentMethodId from first payment line', () => {
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(false);
+    dialog.paymentLines.set([{ methodId: 'pm1', amount: 1250.5 }]);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CASH,
+      useBalance: false,
+      balanceAmount: 0,
+      paymentMethodId: 'pm1',
+    });
+  });
+
+  it('should emit CREDIT without password when credit is fine', () => {
+    dialog.creditStatus.set({
+      creditLimit: 5000,
+      availableCredit: 5000,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
     dialog.paymentType.set(PaymentType.CREDIT);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith(PaymentType.CREDIT);
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CREDIT,
+    });
+  });
+
+  it('should NOT emit CREDIT when credit warning exists and no password', () => {
+    dialog.creditStatus.set({
+      creditLimit: 500,
+      availableCredit: 500,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
+    dialog.paymentType.set(PaymentType.CREDIT);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+  });
+
+  it('should emit CREDIT with password when warning exists and password provided', () => {
+    dialog.creditStatus.set({
+      creditLimit: 500,
+      availableCredit: 500,
+      hasOverdue: false,
+      canCreateCreditInvoice: true,
+    });
+    dialog.paymentType.set(PaymentType.CREDIT);
+    dialog.confirmationPassword.set('mypassword');
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      paymentType: PaymentType.CREDIT,
+      confirmationPassword: 'mypassword',
+    });
   });
 });

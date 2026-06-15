@@ -4,6 +4,14 @@ import { Observable, map } from 'rxjs';
 import { OrderList, OrderDetails, OrderCreate, OrderEdit, OrderProduct } from '../../models/interfaces';
 import { OrderStatus } from '../../models/enums/order-status.enum';
 
+export interface ConvertToInvoiceRequest {
+  paymentType: string;
+  confirmationPassword?: string;
+  useBalance?: boolean;
+  balanceAmount?: number;
+  paymentMethodId?: string;
+}
+
 export interface OrderProductFilters {
   customerId: string;
   search?: string;
@@ -151,8 +159,8 @@ export class OrderApiService {
     );
   }
 
-  convertToInvoice(id: string, paymentType: string): Observable<void> {
-    return this.http.post<void>(`${this.baseUrl}/${id}/convert-to-invoice`, { paymentType });
+  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/${id}/convert-to-invoice`, request);
   }
 
   cancel(id: string, reason: string): Observable<OrderDetails> {

@@ -150,17 +150,18 @@ describe('OrderApplicationService', () => {
   });
 
   describe('convertToInvoice()', () => {
-    it('should call api.convertToInvoice with id and paymentType', () => {
-      service.convertToInvoice('ord-001', 'CASH').subscribe();
+    it('should call api.convertToInvoice with id and request', () => {
+      const request = { paymentType: 'CASH' };
+      service.convertToInvoice('ord-001', request).subscribe();
 
-      expect(mockApi.convertToInvoice).toHaveBeenCalledWith('ord-001', 'CASH');
+      expect(mockApi.convertToInvoice).toHaveBeenCalledWith('ord-001', request);
       expect(service.loading()).toBe(false);
     });
 
     it('should set error on failure', () => {
       mockApi.convertToInvoice = vi.fn().mockReturnValue(throwError(() => new Error('Convert failed')));
 
-      service.convertToInvoice('ord-001', 'CASH').subscribe({ error: () => {} });
+      service.convertToInvoice('ord-001', { paymentType: 'CASH' }).subscribe({ error: () => {} });
 
       expect(service.error()).toBe('Convert failed');
     });

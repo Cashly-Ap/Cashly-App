@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { OrderApiService, OrderFilters } from '../api/order-api.service';
+import { OrderApiService, OrderFilters, ConvertToInvoiceRequest } from '../api/order-api.service';
 import { OrderMapper } from '../mappers/order.mapper';
 import { OrderList, OrderDetails, OrderCreate, OrderEdit } from '../../models/interfaces';
 
@@ -110,11 +110,11 @@ export class OrderApplicationService {
     );
   }
 
-  convertToInvoice(id: string, paymentType: string): Observable<void> {
+  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<void> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.convertToInvoice(id, paymentType).pipe(
+    return this.api.convertToInvoice(id, request).pipe(
       tap({
         error: (err: Error) => this.error.set(err.message),
       }),

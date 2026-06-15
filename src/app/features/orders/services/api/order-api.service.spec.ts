@@ -263,12 +263,28 @@ describe('OrderApiService', () => {
   });
 
   describe('convertToInvoice()', () => {
-    it('should POST /api/orders/:id/convert-to-invoice with paymentType', () => {
-      service.convertToInvoice('ord-001', 'CASH').subscribe();
+    it('should POST /api/orders/:id/convert-to-invoice with request body', () => {
+      const request = { paymentType: 'CASH' };
+      service.convertToInvoice('ord-001', request).subscribe();
 
       const req = httpMock.expectOne('/api/orders/ord-001/convert-to-invoice');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ paymentType: 'CASH' });
+      req.flush(null, { status: 204, statusText: 'No Content' });
+    });
+
+    it('should include optional fields when provided', () => {
+      const request = {
+        paymentType: 'CREDIT',
+        confirmationPassword: 'secret',
+      };
+      service.convertToInvoice('ord-001', request).subscribe();
+
+      const req = httpMock.expectOne('/api/orders/ord-001/convert-to-invoice');
+      expect(req.request.body).toEqual({
+        paymentType: 'CREDIT',
+        confirmationPassword: 'secret',
+      });
       req.flush(null, { status: 204, statusText: 'No Content' });
     });
   });

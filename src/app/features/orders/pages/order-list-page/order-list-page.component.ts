@@ -22,7 +22,7 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
-import { OrderFilters } from '@features/orders/services/api/order-api.service';
+import { OrderFilters, ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { OrderStatus, ORDER_STATUS_LABELS, getOrderStatusLabel } from '@features/orders/models/enums/order-status.enum';
 import { OrderList } from '@features/orders/models/interfaces';
@@ -253,11 +253,11 @@ export class OrderListPageComponent implements OnInit {
     this.invoiceDialogVisible.set(true);
   }
 
-  onInvoiceDialogConfirmed(paymentType: string): void {
+  onInvoiceDialogConfirmed(request: ConvertToInvoiceRequest): void {
     const order = this.orderToInvoice();
     if (!order) return;
     this.invoiceDialogVisible.set(false);
-    this.orderService.convertToInvoice(order.id, paymentType).subscribe({
+    this.orderService.convertToInvoice(order.id, request).subscribe({
       next: () => {
         this.orderToInvoice.set(null);
         this.messageService.add({
