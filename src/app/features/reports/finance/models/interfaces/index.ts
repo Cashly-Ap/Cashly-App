@@ -20,7 +20,10 @@ export interface CollectionsFilters {
   agingFrom?: string;
 }
 
+export type ReportType = 'SIMPLE' | 'DETAILED' | 'GROUPED';
+
 export interface CashRegisterReportFilters {
   dateFrom: string;
   dateTo: string;
+  type: ReportType;
 }

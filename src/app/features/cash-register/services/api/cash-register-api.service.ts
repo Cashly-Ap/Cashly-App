@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+import { ReportType } from '@features/reports/finance/models/interfaces';
 import {
   CashRegisterResponse,
   OpenRegisterRequest,
@@ -51,10 +52,11 @@ export class CashRegisterApiService {
     );
   }
 
-  exportExcel(dateFrom: string, dateTo: string): Observable<Blob> {
+  exportExcel(dateFrom: string, dateTo: string, type: ReportType = 'DETAILED'): Observable<Blob> {
     const params = new HttpParams()
       .set('dateFrom', dateFrom)
-      .set('dateTo', dateTo);
+      .set('dateTo', dateTo)
+      .set('type', type);
     return this.http.get(`${this.baseUrl}/export`, {
       params,
       responseType: 'blob',

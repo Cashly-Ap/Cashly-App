@@ -9,6 +9,16 @@
 >
   <div class="flex flex-col gap-4 pt-2">
     <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Reporte</label>
+      <p-selectButton
+        [options]="typeOptions"
+        [(ngModel)]="reportType"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+      />
+    </div>
+    <div class="flex flex-col gap-1">
       <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde Fecha</label>
       <p-datepicker
         [(ngModel)]="dateFrom"

@@ -334,9 +334,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   onCashRegisterExcel(filters: CashRegisterReportFilters): void {
     this.activeModal.set(null);
-    this.cashRegisterApi.exportExcel(filters.dateFrom, filters.dateTo).subscribe({
+    const fileName = `caja-${filters.dateFrom}-${filters.dateTo}-${filters.type.toLowerCase()}.xlsx`;
+    this.cashRegisterApi.exportExcel(filters.dateFrom, filters.dateTo, filters.type).subscribe({
       next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, `caja-${filters.dateFrom}-${filters.dateTo}.xlsx`);
+        FileDownloadHelper.downloadFromBlob(blob, fileName);
       },
     });
   }

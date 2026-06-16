@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
-import { CashRegisterReportFilters } from '@features/reports/finance/models/interfaces';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { CashRegisterReportFilters, ReportType } from '@features/reports/finance/models/interfaces';
 
 @Component({
   selector: 'app-cash-register-report-modal',
@@ -16,6 +17,7 @@ import { CashRegisterReportFilters } from '@features/reports/finance/models/inte
     DialogModule,
     ButtonModule,
     DatePickerModule,
+    SelectButtonModule,
   ],
   templateUrl: './cash-register-report-modal.component.html',
 })
@@ -26,6 +28,13 @@ export class CashRegisterReportModalComponent {
 
   readonly dateFrom = signal<Date | null>(null);
   readonly dateTo = signal<Date | null>(null);
+  readonly reportType = signal<ReportType>('DETAILED');
+
+  readonly typeOptions = [
+    { label: 'Simple', value: 'SIMPLE' as ReportType },
+    { label: 'Detallado', value: 'DETAILED' as ReportType },
+    { label: 'Por Cliente', value: 'GROUPED' as ReportType },
+  ];
 
   onHide(): void {
     this.visibleChange.emit(false);
@@ -39,6 +48,7 @@ export class CashRegisterReportModalComponent {
     this.onGenerateExcel.emit({
       dateFrom: formatDate(from),
       dateTo: formatDate(to),
+      type: this.reportType(),
     });
   }
 }
