@@ -210,6 +210,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   private resetAll(): void {
     this.creditStatus.set(null);
     this.creditLoading.set(false);
+    this.isConfirming.set(false);
     this.paymentType.set(PaymentType.CASH);
     this.resetPaymentData();
   }
