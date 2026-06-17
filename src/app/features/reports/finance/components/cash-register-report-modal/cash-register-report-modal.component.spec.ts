@@ -62,6 +62,7 @@ describe('CashRegisterReportModalComponent', () => {
     expect(hostComponent.onGenerateExcel).toHaveBeenCalledWith({
       dateFrom: '2025-06-15',
       dateTo: '2025-06-20',
+      type: 'DETAILED',
     });
   });
 
@@ -92,6 +93,7 @@ describe('CashRegisterReportModalComponent', () => {
     expect(hostComponent.onGenerateExcel).toHaveBeenCalledWith({
       dateFrom: '2025-01-01',
       dateTo: '2025-12-31',
+      type: 'DETAILED',
     });
   });
 });
