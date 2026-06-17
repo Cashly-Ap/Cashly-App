@@ -7,6 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { WarehousesListPageComponent } from './warehouses-list-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { ProductApplicationService } from '@features/products/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { WarehouseList, WarehouseStockItem, WarehouseDetails } from '@features/warehouses/models/interfaces';
 import { ProductDetails } from '@features/products/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
@@ -82,6 +83,7 @@ describe('WarehousesListPageComponent', () => {
         FormBuilder,
         { provide: WarehouseApplicationService, useValue: mockService },
         { provide: ProductApplicationService, useValue: mockProductService },
+        { provide: CategoryApplicationService, useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) } },
         ConfirmationService,
         MessageService,
         ...pdfMocks,

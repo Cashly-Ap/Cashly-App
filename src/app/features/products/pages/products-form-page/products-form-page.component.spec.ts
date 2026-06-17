@@ -8,6 +8,7 @@ import { ProductsFormPageComponent } from './products-form-page.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { ProductPhotoService } from '@features/products/services/api';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { ProductDetails } from '@features/products/models/interfaces';
 import { PendingTabsService } from '@core/pending-tabs';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
@@ -114,6 +115,7 @@ describe('ProductsFormPageComponent', () => {
         { provide: ProductPhotoService, useValue: mockPhotoService },
         { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
         { provide: PendingTabsService, useValue: mockPendingTabsService },
+        { provide: CategoryApplicationService, useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) } },
         MessageService,
         ...pdfMocks,
       ],
