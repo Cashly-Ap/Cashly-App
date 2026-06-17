@@ -130,6 +130,12 @@
                           <i [class]="getSortIcon('openedByName')" class="text-xs"></i>
                         </div>
                       </th>
+                      <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('totalInvoiced')">
+                        <div class="font-semibold inline-flex items-center gap-1 justify-end">
+                          Facturado
+                          <i [class]="getSortIcon('totalInvoiced')" class="text-xs"></i>
+                        </div>
+                      </th>
                       <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('totalRevenue')">
                         <div class="font-semibold inline-flex items-center gap-1 justify-end">
                           Ingresos
@@ -167,6 +173,11 @@
                         @if (register.closedByName) {
                           <span class="text-xs text-surface-400 ml-1">/ {{ register.closedByName }}</span>
                         }
+                      </td>
+                      <td class="text-right">
+                        <span class="text-sm font-medium text-sky-600 dark:text-sky-400">
+                          {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
                       </td>
                       <td class="text-right">
                         <span class="text-sm font-medium text-green-600 dark:text-green-400">
