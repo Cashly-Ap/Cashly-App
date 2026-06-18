@@ -33,7 +33,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       ],
     },
     {
-      label: 'Compras',
+      label: 'Gestión Comercial',
       icon: 'pi pi-briefcase',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
       children: [
@@ -161,7 +161,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ],
         },
         {
-          label: 'Compras',
+          label: 'Gestión Comercial',
           icon: 'pi pi-briefcase',
           children: [
             {
