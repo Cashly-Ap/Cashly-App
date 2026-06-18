@@ -7,6 +7,7 @@ export interface MenuCallbacks {
   openOrdersPdfModal: () => void;
   openInvoicesPdfModal: () => void;
   openQuotesPdfModal: () => void;
+  openAccountsReceivablePdfModal: () => void;
   openCashRegisterModal: () => void;
 }
 
@@ -209,7 +210,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               label: 'Cuentas por Cobrar PDF',
               icon: 'pi pi-file-pdf',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              routerLink: '/receivables',
+              command: () => callbacks.openAccountsReceivablePdfModal(),
             },
             {
               label: 'Caja',

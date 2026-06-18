@@ -46,7 +46,9 @@ import { InvoicePdfApiService, InvoicesPdfFilters } from '@features/reports/invo
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
 import { QuotePdfApiService, QuotesPdfFilters } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
-import { CashRegisterReportFilters } from '@features/reports/finance/models/interfaces';
+import { AccountsReceivablePdfModalComponent } from '@features/reports/finance/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
+import { CashRegisterReportFilters, AccountsReceivableFilters } from '@features/reports/finance/models/interfaces';
+import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
@@ -79,6 +81,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     InvoicePdfModalComponent,
     QuotePdfModalComponent,
     CashRegisterReportModalComponent,
+    AccountsReceivablePdfModalComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -100,6 +103,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private orderPdfApi = inject(OrderPdfApiService);
   private invoicePdfApi = inject(InvoicePdfApiService);
   private quotePdfApi = inject(QuotePdfApiService);
+  private financePdfApi = inject(FinancePdfApiService);
   private cashRegisterApi = inject(CashRegisterApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
@@ -111,7 +115,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/Parsun.png';
 
-  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'cashRegister' | null>(null);
+  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'accountsReceivable' | 'cashRegister' | null>(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -171,6 +175,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openOrdersPdfModal: () => this.activeModal.set('orders'),
       openInvoicesPdfModal: () => this.activeModal.set('invoices'),
       openQuotesPdfModal: () => this.activeModal.set('quotes'),
+      openAccountsReceivablePdfModal: () => this.activeModal.set('accountsReceivable'),
       openCashRegisterModal: () => this.activeModal.set('cashRegister'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
@@ -321,6 +326,23 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.pdfTitle.set('Reporte de Presupuestos');
     this.pdfViewerVisible.set(true);
     this.quotePdfApi.downloadQuotesReportPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onAccountsReceivablePdf(filters: AccountsReceivableFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Cuentas por Cobrar');
+    this.pdfViewerVisible.set(true);
+    this.financePdfApi.getAccountsReceivablePdf(filters).pipe(
       finalize(() => this.loadingPdf.set(false))
     ).subscribe({
       next: (blob) => {

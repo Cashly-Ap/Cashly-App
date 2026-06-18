@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
-import { InputTextModule } from 'primeng/inputtext';
+import { DatePickerModule } from 'primeng/datepicker';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 
@@ -18,7 +18,7 @@ import { MovementsPdfFilters } from '@features/reports/inventory/models/interfac
     DialogModule,
     ButtonModule,
     SelectModule,
-    InputTextModule,
+    DatePickerModule,
   ],
   templateUrl: './movements-pdf-modal.component.html',
 })
@@ -32,8 +32,8 @@ export class MovementsPdfModalComponent implements OnInit {
 
   readonly warehouseId = signal<string | null>(null);
   readonly movementType = signal<string | null>(null);
-  readonly from = signal<string>('');
-  readonly to = signal<string>('');
+  readonly from = signal<Date | null>(null);
+  readonly to = signal<Date | null>(null);
 
   readonly movementTypeOptions = [
     { value: null, label: 'Todos los tipos' },
@@ -60,8 +60,8 @@ export class MovementsPdfModalComponent implements OnInit {
     return {
       warehouseId: this.warehouseId() ?? undefined,
       movementType: this.movementType() ?? undefined,
-      from: this.from() || undefined,
-      to: this.to() || undefined,
+      from: this.from() ? formatDate(this.from()!) : undefined,
+      to: this.to() ? formatDate(this.to()!) : undefined,
     };
   }
 
@@ -72,4 +72,11 @@ export class MovementsPdfModalComponent implements OnInit {
   generateExcel(): void {
     this.onGenerateExcel.emit(this.buildFilters());
   }
+}
+
+function formatDate(d: Date): string {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

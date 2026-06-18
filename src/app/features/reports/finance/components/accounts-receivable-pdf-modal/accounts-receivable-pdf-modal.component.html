@@ -1,0 +1,55 @@
+<p-dialog
+  header="Cuentas por Cobrar - PDF"
+  [modal]="true"
+  [visible]="visible()"
+  (visibleChange)="onHide()"
+  [style]="{ width: '450px' }"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label for="customer" class="text-sm font-medium">Cliente</label>
+      <p-select
+        id="customer"
+        [options]="customerOptions()"
+        [(ngModel)]="customerId"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Todos los clientes"
+        [filter]="true"
+        filterPlaceholder="Buscar cliente"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p-checkbox
+        id="overdueOnly"
+        [(ngModel)]="overdueOnly"
+        [binary]="true"
+        inputId="overdueOnly"
+      />
+      <label for="overdueOnly" class="text-sm font-medium cursor-pointer">
+        Solo vencidos
+      </label>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancelar"
+        [text]="true"
+        severity="secondary"
+        (onClick)="onHide()"
+      />
+      <p-button
+        label="Generar PDF"
+        icon="pi pi-file-pdf"
+        (onClick)="generatePdf()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

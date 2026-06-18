@@ -62,12 +62,12 @@ describe('MovementsPdfModalComponent', () => {
     expect(component.movementType()).toBeNull();
   });
 
-  it('should have default from signal as empty string', () => {
-    expect(component.from()).toBe('');
+  it('should have default from signal as null', () => {
+    expect(component.from()).toBeNull();
   });
 
-  it('should have default to signal as empty string', () => {
-    expect(component.to()).toBe('');
+  it('should have default to signal as null', () => {
+    expect(component.to()).toBeNull();
   });
 
   it('should have movementTypeOptions with all types', () => {
@@ -137,8 +137,8 @@ describe('MovementsPdfModalComponent - visible', () => {
   it('should emit onGeneratePdf with filter values on generatePdf', () => {
     component.warehouseId.set('wh-1');
     component.movementType.set('ENTRY');
-    component.from.set('2025-01-01');
-    component.to.set('2025-12-31');
+    component.from.set(new Date(2025, 0, 1));
+    component.to.set(new Date(2025, 11, 31));
 
     component.generatePdf();
 

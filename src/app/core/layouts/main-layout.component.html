@@ -222,6 +222,12 @@
     (onGeneratePdf)="onQuotesPdf($event)"
   />
 
+  <app-accounts-receivable-pdf-modal
+    [visible]="activeModal() === 'accountsReceivable'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onAccountsReceivablePdf($event)"
+  />
+
   <app-cash-register-report-modal
     [visible]="activeModal() === 'cashRegister'"
     (visibleChange)="$event === false && activeModal.set(null)"
