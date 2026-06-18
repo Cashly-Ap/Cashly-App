@@ -1,4 +1,5 @@
 import { MenuItem } from '@core/layouts/models';
+import { BusinessModule } from '@features/users/models/enums';
 
 export interface MenuCallbacks {
   openCatalogModal: () => void;
@@ -29,6 +30,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           icon: 'pi pi-user',
           routerLink: '/users',
           allowedRoles: ['SUPER_ADMIN'],
+          requiredModule: BusinessModule.USERS,
         },
       ],
     },
@@ -36,6 +38,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       label: 'Gestión Comercial',
       icon: 'pi pi-briefcase',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.SALES,
       children: [
         {
           label: 'Presupuestos',
@@ -61,6 +64,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       label: 'Inventario',
       icon: 'pi pi-box',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.INVENTORY,
       children: [
         {
           label: 'Categorías',
@@ -92,6 +96,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       label: 'Finanzas',
       icon: 'pi pi-dollar',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.FINANCE,
       children: [
         {
           label: 'Métodos de Pago',
@@ -135,10 +140,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       label: 'Reportes',
       icon: 'pi pi-chart-bar',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.DOCUMENT_ADMIN,
       children: [
         {
           label: 'Almacén',
           icon: 'pi pi-box',
+          requiredModule: BusinessModule.INVENTORY,
           children: [
             {
               label: 'Catálogo PDF',
@@ -163,6 +170,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         {
           label: 'Gestión Comercial',
           icon: 'pi pi-briefcase',
+          requiredModule: BusinessModule.SALES,
           children: [
             {
               label: 'Presupuestos',
@@ -205,6 +213,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         {
           label: 'Finanzas',
           icon: 'pi pi-dollar',
+          requiredModule: BusinessModule.FINANCE,
           children: [
             {
               label: 'Cuentas por Cobrar PDF',

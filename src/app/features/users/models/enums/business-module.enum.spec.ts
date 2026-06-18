@@ -18,13 +18,13 @@ describe('BusinessModule', () => {
 
 describe('BUSINESS_MODULE_LABELS', () => {
   it('should map each module to its label', () => {
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('Gestión de Usuarios y Roles');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('Gestión de Inventario (Inventario 360°)');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('Gestión Comercial (Ventas)');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas y Cuentas por Cobrar');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('Módulo de Compras');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('Gestión de Usuarios');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('Inventario');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('Gestión Comercial');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('Compras');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.CUSTOMER_PORTAL]).toBe('Portal Web de Clientes');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('Administrador Documental Global');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('Reportes');
   });
 
   it('should have labels for all enum values', () => {

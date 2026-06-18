@@ -9,11 +9,11 @@ export enum BusinessModule {
 }
 
 export const BUSINESS_MODULE_LABELS: Record<BusinessModule, string> = {
-  [BusinessModule.USERS]: 'Gestión de Usuarios y Roles',
-  [BusinessModule.INVENTORY]: 'Gestión de Inventario (Inventario 360°)',
-  [BusinessModule.SALES]: 'Gestión Comercial (Ventas)',
-  [BusinessModule.FINANCE]: 'Finanzas y Cuentas por Cobrar',
-  [BusinessModule.PURCHASES]: 'Módulo de Compras',
+  [BusinessModule.USERS]: 'Gestión de Usuarios',
+  [BusinessModule.INVENTORY]: 'Inventario',
+  [BusinessModule.SALES]: 'Gestión Comercial',
+  [BusinessModule.FINANCE]: 'Finanzas',
+  [BusinessModule.PURCHASES]: 'Compras',
   [BusinessModule.CUSTOMER_PORTAL]: 'Portal Web de Clientes',
-  [BusinessModule.DOCUMENT_ADMIN]: 'Administrador Documental Global',
+  [BusinessModule.DOCUMENT_ADMIN]: 'Reportes',
 };
