@@ -133,6 +133,13 @@ export class CustomersDetailsPageComponent implements OnInit {
     });
   }
 
+  onViewBalance(): void {
+    const id = this.customer()?.id;
+    if (id) {
+      this.router.navigate(['/customers', id, 'balance']);
+    }
+  }
+
   onEdit(): void {
     const id = this.customer()?.id;
     if (id) {

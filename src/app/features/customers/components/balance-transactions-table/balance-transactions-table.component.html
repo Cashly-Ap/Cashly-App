@@ -18,7 +18,6 @@
       </th>
       <th pSortableColumn="type" class="w-28">Tipo</th>
       <th pSortableColumn="amount" class="w-28 text-right">Monto</th>
-      <th class="w-36">Saldo Antes / Después</th>
       <th class="w-36">Número</th>
       <th class="w-36">Referencia</th>
     </tr>
@@ -37,11 +36,6 @@
       <td class="text-right font-medium" [class.text-green-600]="tx.amount >= 0" [class.text-red-600]="tx.amount < 0">
         {{ tx.amount | currency:'USD':'symbol':'1.2-2' }}
       </td>
-      <td class="text-sm text-surface-600 dark:text-surface-400">
-        <span class="font-mono">{{ tx.balanceBefore | number:'1.2-2' }}</span>
-        <i class="pi pi-arrow-right text-xs mx-1"></i>
-        <span class="font-mono">{{ tx.balanceAfter | number:'1.2-2' }}</span>
-      </td>
       <td class="text-sm font-mono text-surface-700 dark:text-surface-300">
         {{ tx.number ?? '-' }}
       </td>
@@ -53,7 +47,7 @@
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="7" class="text-center py-12 text-surface-400 dark:text-surface-500">
+      <td colspan="5" class="text-center py-12 text-surface-400 dark:text-surface-500">
         No se encontraron movimientos
       </td>
     </tr>

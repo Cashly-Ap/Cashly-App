@@ -111,6 +111,17 @@
           </app-details-card>
 
           <app-details-card>
+            <app-details-card-header title="Saldo del Cliente">
+              <div actions>
+                <p-button label="Ver Saldo" icon="pi pi-wallet" severity="contrast" (onClick)="onViewBalance()" styleClass="w-full sm:w-auto text-sm" />
+              </div>
+            </app-details-card-header>
+            <div class="p-4 sm:p-6">
+              <p class="text-sm text-surface-500 dark:text-surface-400">Consulta el saldo disponible, anticipos y movimientos del cliente.</p>
+            </div>
+          </app-details-card>
+
+          <app-details-card>
             <app-details-card-header title="Almacenes con Acceso" />
             <div class="p-4 sm:p-6">
               @if (warehouseAccessLoading()) {

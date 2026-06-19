@@ -40,6 +40,15 @@ export const CUSTOMER_ROUTES: Routes = [
           ),
         title: 'Editar Cliente',
       },
+      {
+        path: ':id/balance',
+        loadComponent: () =>
+          import('../pages/customer-balance-page/customer-balance-page.component').then(
+            (m) => m.CustomerBalancePageComponent,
+          ),
+        data: { module: BusinessModule.FINANCE },
+        title: 'Saldo del Cliente',
+      },
     ],
   },
 ];

@@ -4,7 +4,7 @@ import { BusinessModule } from '@features/users/models/enums';
 
 export const customerBalanceRoutes: Routes = [
   {
-    path: '',
+    path: ':id/balance',
     loadComponent: () =>
       import('../pages/customer-balance-page/customer-balance-page.component').then(
         (m) => m.CustomerBalancePageComponent,
