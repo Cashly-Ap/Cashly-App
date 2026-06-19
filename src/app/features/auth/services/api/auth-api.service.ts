@@ -50,7 +50,9 @@ export class AuthApiService {
   }
 
   changePassword(request: ChangePasswordRequest): Observable<void> {
-    return this.http.patch<void>(`${this.baseUrl}${AUTH_API_ROUTES.CHANGE_PASSWORD}`, request);
+    return this.http.patch<void>(`${this.baseUrl}${AUTH_API_ROUTES.CHANGE_PASSWORD}`, {
+      password: request.newPassword,
+    });
   }
 
   changeCommissionDeduction(request: ChangeCommissionDeductionRequest): Observable<UserResponse> {
