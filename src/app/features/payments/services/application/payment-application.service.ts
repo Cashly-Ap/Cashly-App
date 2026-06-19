@@ -64,6 +64,29 @@ export class PaymentApplicationService {
     );
   }
 
+  payInvoice(invoiceId: string, data: {
+    paymentMethodId: string;
+    referenceNumber?: string;
+    paymentDate: string;
+    amount: number;
+    useBalance?: boolean;
+    balanceAmount?: number;
+  }): Observable<PaymentDetail> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.payInvoice(invoiceId, data).pipe(
+      tap({
+        next: (payment) => {
+          const listItem = PaymentMapper.toList(payment);
+          this.payments.update((current) => [listItem, ...current]);
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
   updatePayment(id: string, data: PaymentUpdate): Observable<PaymentDetail> {
     this.loading.set(true);
     this.error.set(null);

@@ -71,6 +71,19 @@ export class PaymentApiService {
       .pipe(map((r) => this.toPaymentDetail(r)));
   }
 
+  payInvoice(invoiceId: string, data: {
+    paymentMethodId: string;
+    referenceNumber?: string;
+    paymentDate: string;
+    amount: number;
+    useBalance?: boolean;
+    balanceAmount?: number;
+  }): Observable<PaymentDetail> {
+    return this.http
+      .post<PaymentDetailApiResponse>(`${this.baseUrl}/invoices/${invoiceId}/pay`, data)
+      .pipe(map((r) => this.toPaymentDetail(r)));
+  }
+
   update(id: string, data: PaymentUpdate): Observable<PaymentDetail> {
     return this.http
       .put<PaymentDetailApiResponse>(`${this.baseUrl}/${id}`, data)

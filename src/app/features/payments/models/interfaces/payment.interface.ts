@@ -28,13 +28,19 @@ export interface PaymentDetail {
 
 export interface PaymentCreate {
   customerId: string;
-  invoiceId: string;
+  status: string;
   amount: number;
-  reference?: string;
+  paymentMethodId: string;
+  referenceNumber?: string;
+  paymentDate: string;
+  notes?: string;
 }
 
 export interface PaymentUpdate {
   id: string;
   amount?: number;
-  reference?: string;
+  referenceNumber?: string;
+  paymentMethodId?: string;
+  paymentDate?: string;
+  notes?: string;
 }

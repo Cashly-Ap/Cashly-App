@@ -70,15 +70,48 @@
 
           <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
             <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Método de pago <span class="text-red-500">*</span>
+            </label>
+            <p-select
+              formControlName="paymentMethodId"
+              [options]="paymentMethods()"
+              optionLabel="name"
+              optionValue="id"
+              placeholder="Seleccionar método de pago..."
+              class="w-full"
+              styleClass="w-full"
+            />
+            @if (form.get('paymentMethodId')?.errors?.['required'] && form.get('paymentMethodId')?.touched) {
+              <small class="text-red-500 text-xs">El método de pago es requerido</small>
+            }
+          </div>
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Fecha de pago <span class="text-red-500">*</span>
+            </label>
+            <p-datePicker
+              formControlName="paymentDate"
+              dateFormat="dd/mm/yy"
+              placeholder="Seleccionar fecha..."
+              styleClass="w-full"
+            />
+            @if (form.get('paymentDate')?.errors?.['required'] && form.get('paymentDate')?.touched) {
+              <small class="text-red-500 text-xs">La fecha de pago es requerida</small>
+            }
+          </div>
+
+          <div class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2">
+            <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
               Referencia
             </label>
             <input
               pInputText
-              formControlName="reference"
+              formControlName="referenceNumber"
               placeholder="Número de referencia o descripción"
               class="w-full"
             />
-            @if (form.get('reference')?.errors?.['maxlength'] && form.get('reference')?.touched) {
+            @if (form.get('referenceNumber')?.errors?.['maxlength'] && form.get('referenceNumber')?.touched) {
               <small class="text-red-500 text-xs">La referencia no puede superar los 100 caracteres</small>
             }
           </div>
