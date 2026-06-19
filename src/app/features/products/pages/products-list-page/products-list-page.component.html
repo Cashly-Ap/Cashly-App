@@ -136,6 +136,12 @@
                 <p-table [value]="products()" [customSort]="true" (sortFunction)="onSort($event)" styleClass="p-datatable-striped">
                   <ng-template pTemplate="header">
                     <tr>
+                      <th pSortableColumn="code" class="w-auto hidden lg:table-cell">
+                        <div class="flex items-center gap-2 font-semibold">
+                          Código
+                          <p-sortIcon field="code" />
+                        </div>
+                      </th>
                       <th pSortableColumn="name" class="w-auto">
                         <div class="flex items-center gap-2 font-semibold">
                           Nombre
@@ -174,6 +180,9 @@
                   </ng-template>
                   <ng-template pTemplate="body" let-product>
                     <tr class="transition-colors duration-150">
+                      <td class="hidden lg:table-cell">
+                        <div class="font-mono text-sm text-surface-600 dark:text-surface-400">{{ product.code }}</div>
+                      </td>
                       <td>
                         <div class="font-medium">{{ product.name }}</div>
                       </td>
@@ -193,7 +202,9 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(product)" pTooltip="Ver" />
                           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(product)" pTooltip="Editar" />
-                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(product)" pTooltip="Eliminar" />
+                          @if (product.deletable) {
+                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(product)" pTooltip="Eliminar" />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -251,6 +262,7 @@
                   <div class="flex justify-between items-start mb-3">
                     <div class="flex-1">
                       <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">{{ product.name }}</h3>
+                      <p class="text-xs font-mono text-surface-500 dark:text-surface-400 mb-1">{{ product.code }}</p>
                       <p class="text-sm text-surface-600 dark:text-surface-400 mb-2">{{ product.categoryName }}</p>
                       <div class="flex flex-wrap gap-2 items-center">
                         <app-text-badge [label]="product.composite ? 'Compuesto' : 'Simple'" variant="label" />
@@ -264,7 +276,9 @@
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(product)" />
                     <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(product)" />
-                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(product)" />
+                    @if (product.deletable) {
+                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(product)" />
+                    }
                   </div>
                 </div>
               }

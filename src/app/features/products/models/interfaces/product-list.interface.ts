@@ -14,4 +14,5 @@ export interface ProductList {
   basePrice?: number;
   productPrices: ProductPriceListItem[];
   stockTotal?: number;
+  deletable: boolean;
 }

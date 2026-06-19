@@ -120,8 +120,8 @@ export class ProductsListPageComponent implements OnInit {
       if (types.length > 0) {
         this.selectedPriceTypeId.set(types[0].id);
       }
+      this.loadWithFilters();
     });
-    this.loadWithFilters();
   }
 
   getPriceForProduct(product: ProductList): number {
@@ -233,7 +233,7 @@ export class ProductsListPageComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Error al eliminar el producto. Puede tener stock asociado.',
+              detail: 'No se puede eliminar el producto porque tiene movimientos o documentos asociados.',
               life: 5000,
             });
           },
