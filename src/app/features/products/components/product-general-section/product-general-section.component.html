@@ -11,6 +11,13 @@
   </div>
 
   <app-text-input
+    label="Código"
+    placeholder="Código del producto (opcional)"
+    containerClass="md:col-span-2"
+    [control]="asFormControl('code')"
+  />
+
+  <app-text-input
     label="Nombre"
     placeholder="Nombre del producto"
     errorMessage="El nombre es requerido"

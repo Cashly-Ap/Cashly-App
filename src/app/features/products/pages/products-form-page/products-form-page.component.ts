@@ -23,6 +23,7 @@ import { PriceTypeList } from '@features/price-types/models/interfaces';
 import { switchMap, of, combineLatest, filter, take } from 'rxjs';
 
 interface ProductFormData {
+  code: string;
   name: string;
   categoryId: string | null;
   description: string;
@@ -104,6 +105,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
   createForm(): FormGroup {
     return this.fb.group({
+      code: ['', [Validators.maxLength(50)]],
       name: ['', [Validators.required, Validators.maxLength(150)]],
       categoryId: [null, [Validators.required]],
       description: ['', [Validators.maxLength(500)]],
@@ -187,6 +189,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
 
   protected override restoreFormData(data: ProductFormData): void {
     this.form.patchValue({
+      code: data.code,
       name: data.name,
       categoryId: data.categoryId,
       description: data.description,
@@ -228,6 +231,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       next: ([product, types]) => {
         this.isComposite.set(product.composite);
         this.form.patchValue({
+          code: product.code,
           name: product.name,
           categoryId: product.categoryId,
           description: product.description ?? '',
@@ -267,6 +271,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       : [];
 
     const payload = {
+      code: value.code?.trim() || undefined,
       name: value.name,
       categoryId: value.categoryId!,
       description: value.description || undefined,

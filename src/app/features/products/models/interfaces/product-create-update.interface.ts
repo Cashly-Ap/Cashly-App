@@ -6,6 +6,7 @@ export interface ProductComponentInput {
 }
 
 export interface ProductCreate {
+  code?: string;
   name: string;
   categoryId: string;
   description?: string;
