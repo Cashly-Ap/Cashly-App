@@ -1,0 +1,94 @@
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MainLayoutComponent } from '@core/layouts/main-layout.component';
+import { ButtonModule } from 'primeng/button';
+import {
+  DetailsCardComponent,
+  DetailsCardHeaderComponent,
+  DetailsInfoFieldComponent,
+  DetailsInfoGridComponent,
+} from '@shared/components/details';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { MessageService } from 'primeng/api';
+import { SupplierApplicationService } from '@features/suppliers/services/application';
+import { SupplierDetails } from '@features/suppliers/models/interfaces';
+import { getSupplierTypeLabel } from '@features/suppliers/models/enums';
+
+@Component({
+  selector: 'app-suppliers-details-page',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MainLayoutComponent,
+    ButtonModule,
+    DetailsCardComponent,
+    DetailsCardHeaderComponent,
+    DetailsInfoFieldComponent,
+    DetailsInfoGridComponent,
+    LoadingSpinnerComponent,
+    PageHeaderComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
+  ],
+  templateUrl: './suppliers-details-page.component.html',
+
+})
+export class SuppliersDetailsPageComponent implements OnInit {
+  private service = inject(SupplierApplicationService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
+
+  supplier = signal<SupplierDetails | null>(null);
+  loading = signal(false);
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadSupplier(id);
+    }
+  }
+
+  private loadSupplier(id: string): void {
+    this.loading.set(true);
+    this.service.loadById(id).subscribe({
+      next: (supplier) => {
+        this.supplier.set(supplier);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el proveedor. Es posible que no exista.',
+          life: 5000,
+        });
+        this.router.navigate(['/suppliers']);
+      },
+    });
+  }
+
+  onEdit(): void {
+    const id = this.supplier()?.id;
+    if (id) {
+      this.router.navigate(['/suppliers', id, 'edit']);
+    }
+  }
+
+  onBack(): void {
+    this.router.navigate(['/suppliers']);
+  }
+
+  getTypeLabel(type: string): string {
+    return getSupplierTypeLabel(type as Parameters<typeof getSupplierTypeLabel>[0]);
+  }
+
+  getAddressLocation(state: string | undefined, municipality: string | undefined, postalCode: string | undefined): string {
+    return [state, municipality, postalCode].filter((v): v is string => !!v).join(' · ');
+  }
+}

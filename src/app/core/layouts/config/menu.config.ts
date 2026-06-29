@@ -90,6 +90,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           routerLink: '/warehouses',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
+        {
+          label: 'Proveedores',
+          icon: 'pi pi-truck',
+          routerLink: '/suppliers',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
       ],
     },
     {

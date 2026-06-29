@@ -1,0 +1,45 @@
+import { Routes } from '@angular/router';
+import { authGuard, modulePermissionGuard } from '@features/auth/guards';
+import { BusinessModule } from '@features/users/models/enums';
+
+export const SUPPLIER_ROUTES: Routes = [
+  {
+    path: '',
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.PURCHASES },
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('../pages/suppliers-list-page/suppliers-list-page.component').then(
+            (m) => m.SuppliersListPageComponent,
+          ),
+        title: 'Proveedores',
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import('../pages/suppliers-form-page/suppliers-form-page.component').then(
+            (m) => m.SuppliersFormPageComponent,
+          ),
+        title: 'Nuevo Proveedor',
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import('../pages/suppliers-details-page/suppliers-details-page.component').then(
+            (m) => m.SuppliersDetailsPageComponent,
+          ),
+        title: 'Detalles del Proveedor',
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () =>
+          import('../pages/suppliers-form-page/suppliers-form-page.component').then(
+            (m) => m.SuppliersFormPageComponent,
+          ),
+        title: 'Editar Proveedor',
+      },
+    ],
+  },
+];

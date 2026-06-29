@@ -1,0 +1,98 @@
+<div class="p-6">
+  <app-list-section
+    title="Direcciones"
+    icon="pi-map-marker"
+    [isEmpty]="addressesArray.length === 0"
+    emptyIcon="pi-map-marker"
+    emptyMessage="No hay direcciones registradas. Agregue al menos una."
+    addButtonLabel="Agregar Dirección"
+    (add)="addAddress()"
+  >
+    @for (addr of addressesArray.controls; track $index) {
+      <div [formGroup]="addressGroup($index)" class="p-3 mt-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950">
+        <div class="flex gap-2 items-start">
+          <input
+            pInputText
+            formControlName="address"
+            placeholder="Av. Principal, Edificio Acme, Piso 5"
+            class="flex-1 min-w-0"
+            [ngClass]="{ 'ng-invalid ng-dirty': addressGroup($index).get('address')?.invalid && addressGroup($index).get('address')?.touched }"
+          />
+          <p-button
+            icon="pi pi-trash"
+            severity="secondary"
+            size="small"
+            [text]="true"
+            [rounded]="true"
+            (onClick)="removeAddress($index)"
+            styleClass="flex-shrink-0"
+          />
+        </div>
+        @if (addressGroup($index).get('address')?.invalid && addressGroup($index).get('address')?.touched) {
+          <small class="block mt-1.5 text-red-500 text-xs">
+            La dirección es requerida (máximo 500 caracteres)
+          </small>
+        }
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-surface-500 dark:text-surface-400">Estado</label>
+            <p-select
+              formControlName="state"
+              [options]="stateOptions"
+              placeholder="Seleccione el estado"
+              [filter]="true"
+              filterPlaceholder="Buscar estado..."
+              styleClass="w-full"
+              (onChange)="onStateChange($index)"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-surface-500 dark:text-surface-400">Municipio</label>
+            <p-select
+              formControlName="municipality"
+              [options]="municipalityOptions($index)"
+              placeholder="Seleccione el municipio"
+              [filter]="true"
+              filterPlaceholder="Buscar municipio..."
+              styleClass="w-full"
+              [disabled]="!addressGroup($index).get('state')?.value"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-surface-500 dark:text-surface-400">Código Postal</label>
+            <input pInputText formControlName="postalCode" placeholder="Ej: 1060" class="w-full" />
+          </div>
+        </div>
+        <div class="flex gap-6 mt-3">
+          <div class="flex items-center gap-2">
+            <p-checkbox
+              formControlName="billing"
+              [binary]="true"
+              inputId="billing-{{ $index }}"
+              (onChange)="onBillingChange($index)"
+            />
+            <label [for]="'billing-' + $index" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+              Dirección de Facturación
+            </label>
+          </div>
+          <div class="flex items-center gap-2">
+            <p-checkbox
+              formControlName="active"
+              [binary]="true"
+              inputId="addrActive-{{ $index }}"
+            />
+            <label [for]="'addrActive-' + $index" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+              Activa
+            </label>
+          </div>
+        </div>
+      </div>
+    }
+  </app-list-section>
+  @if (addressesArray.invalid && addressesArray.touched) {
+    <small class="flex items-center gap-1 mt-2 text-red-500 text-xs">
+      <i class="pi pi-exclamation-circle text-xs"></i>
+      Debe agregar al menos una dirección
+    </small>
+  }
+</div>
