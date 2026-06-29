@@ -32,13 +32,6 @@
                     (onClick)="onEdit()"
                     styleClass="w-full sm:w-auto"
                   />
-                  <p-button
-                    label="Confirmar Compra"
-                    icon="pi pi-check"
-                    severity="success"
-                    (onClick)="onConfirm()"
-                    styleClass="w-full sm:w-auto"
-                  />
                 }
                 @if (currentPurchase.status === PurchaseStatus.CONFIRMED) {
                   <p-button

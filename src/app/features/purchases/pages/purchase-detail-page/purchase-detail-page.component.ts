@@ -84,25 +84,6 @@ export class PurchaseDetailPageComponent implements OnInit {
     if (id) this.router.navigate(['/purchases', id, 'edit']);
   }
 
-  onConfirm(): void {
-    const purchase = this.purchase();
-    if (!purchase) return;
-    this.purchaseService.confirm(purchase.id).subscribe({
-      next: () => {
-        this.messageService.add(PURCHASE_SUCCESS_MESSAGES.confirmed);
-        this.purchaseService.loadById(purchase.id).subscribe();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al confirmar la compra. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
   openCancelDialog(): void {
     this.cancelDialogVisible.set(true);
   }

@@ -1,0 +1,310 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '56rem', maxHeight: '90vh' }"
+  [breakpoints]="{ '960px': '95vw' }"
+  (onShow)="onDialogShow()"
+  (onHide)="onHide()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-100 dark:bg-surface-800 shrink-0">
+        <i class="pi pi-box text-surface-600 dark:text-surface-300 text-lg"></i>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Seleccionar Productos</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">Busque y seleccione los productos para agregar a la compra</span>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4 pt-1">
+    <div class="flex items-center gap-2">
+      <!-- Search input -->
+      <div class="relative flex-1">
+        <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"></i>
+        <input
+          pInputText
+          type="text"
+          [ngModel]="search()"
+          (ngModelChange)="onSearchChange($event)"
+          placeholder="Buscar por código o nombre..."
+          class="w-full pl-9 text-sm"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors shrink-0"
+        [class.border-surface-900]="activeFilterCount() > 0"
+        [class.bg-surface-900]="activeFilterCount() > 0"
+        [class.text-white]="activeFilterCount() > 0"
+        [class.dark:border-surface-0]="activeFilterCount() > 0"
+        [class.dark:bg-surface-0]="activeFilterCount() > 0"
+        [class.dark:text-surface-900]="activeFilterCount() > 0"
+        [class.border-surface-200]="activeFilterCount() === 0"
+        [class.dark:border-surface-700]="activeFilterCount() === 0"
+        [class.text-surface-500]="activeFilterCount() === 0"
+        [class.hover:bg-surface-100]="activeFilterCount() === 0"
+        [class.dark:hover:bg-surface-800]="activeFilterCount() === 0"
+        (click)="toggleFilterPanel($event)"
+      >
+        <i class="pi pi-filter text-sm"></i>
+        @if (activeFilterCount() > 0) {
+          <span class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 text-[10px] font-bold flex items-center justify-center border border-surface-900 dark:border-surface-0">
+            {{ activeFilterCount() }}
+          </span>
+        }
+      </button>
+
+      <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
+        {{ totalElements() }} {{ totalElements() === 1 ? 'producto' : 'productos' }}
+      </span>
+    </div>
+
+    <!-- Desktop table -->
+    <div class="hidden sm:block rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700">
+            <th class="px-4 py-2.5 w-10"></th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28">
+              Código
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">
+              Nombre
+            </th>
+            <th class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-32">
+              Categoría
+            </th>
+            <th class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24">
+              Costo
+            </th>
+            <th class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24">
+              Cantidad
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr class="border-b border-surface-100 dark:border-surface-800">
+                <td class="px-4 py-3" colspan="6">
+                  <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-full"></div>
+                </td>
+              </tr>
+            }
+          } @else if (visibleProducts().length === 0) {
+            <tr>
+              <td colspan="6" class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+                <i class="pi pi-search text-2xl block mb-2"></i>
+                No se encontraron productos
+              </td>
+            </tr>
+          } @else {
+            @for (product of visibleProducts(); track product.id) {
+              <tr
+                class="border-b border-surface-100 dark:border-surface-800 transition-colors cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800"
+                [class.bg-primary-50]="isSelected(product.id)"
+                [class.dark:bg-primary-950]="isSelected(product.id)"
+                (click)="toggleSelection(product)"
+              >
+                <td class="px-4 py-3">
+                  <div
+                    class="w-4 h-4 rounded border-2 flex items-center justify-center transition-colors"
+                    [class.border-primary-500]="isSelected(product.id)"
+                    [class.bg-primary-500]="isSelected(product.id)"
+                    [class.border-surface-300]="!isSelected(product.id)"
+                    [class.dark:border-surface-600]="!isSelected(product.id)"
+                  >
+                    @if (isSelected(product.id)) {
+                      <i class="pi pi-check text-white" style="font-size: 0.6rem"></i>
+                    }
+                  </div>
+                </td>
+                <td class="px-4 py-3">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300">
+                    {{ product.code }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
+                  {{ product.name }}
+                </td>
+                <td class="px-4 py-3 text-sm text-surface-600 dark:text-surface-400">
+                  {{ product.categoryName }}
+                </td>
+                <td class="px-4 py-3 text-right">
+                  <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
+                    ${{ product.purchasePrice | number: '1.2-2' }}
+                  </span>
+                </td>
+                <td class="px-4 py-3" (click)="$event.stopPropagation()">
+                  @if (isSelected(product.id)) {
+                    <div class="flex items-center justify-end gap-1">
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center w-6 h-6 rounded border border-surface-200 dark:border-surface-700 text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors text-xs font-medium"
+                        (click)="updateSelectionQuantity(product.id, getSelectedQuantity(product.id) - 1)"
+                      >
+                        -
+                      </button>
+                      <input
+                        pInputText
+                        type="number"
+                        [ngModel]="getSelectedQuantity(product.id)"
+                        (ngModelChange)="updateSelectionQuantity(product.id, $event ?? 1)"
+                        class="w-16 text-center text-sm font-mono"
+                        min="1"
+                      />
+                      <button
+                        type="button"
+                        class="inline-flex items-center justify-center w-6 h-6 rounded border border-surface-200 dark:border-surface-700 text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors text-xs font-medium"
+                        (click)="updateSelectionQuantity(product.id, getSelectedQuantity(product.id) + 1)"
+                      >
+                        +
+                      </button>
+                    </div>
+                  } @else {
+                    <span class="block text-right text-xs text-surface-400">—</span>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mobile card layout -->
+    <div class="flex flex-col gap-2 sm:hidden">
+      @if (loading()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <div class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 border border-surface-200 dark:border-surface-700">
+            <div class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-3/4 mb-2"></div>
+            <div class="h-3 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-1/2"></div>
+          </div>
+        }
+      } @else if (visibleProducts().length === 0) {
+        <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+          <i class="pi pi-search text-2xl block mb-2"></i>
+          No se encontraron productos
+        </div>
+      } @else {
+        @for (product of visibleProducts(); track product.id) {
+          <div
+            class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 border transition-colors cursor-pointer"
+            [class.border-primary-400]="isSelected(product.id)"
+            [class.dark:border-primary-500]="isSelected(product.id)"
+            [class.border-surface-200]="!isSelected(product.id)"
+            [class.dark:border-surface-700]="!isSelected(product.id)"
+            (click)="toggleSelection(product)"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3 min-w-0">
+                <div
+                  class="mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors"
+                  [class.border-primary-500]="isSelected(product.id)"
+                  [class.bg-primary-500]="isSelected(product.id)"
+                  [class.border-surface-300]="!isSelected(product.id)"
+                  [class.dark:border-surface-600]="!isSelected(product.id)"
+                >
+                  @if (isSelected(product.id)) {
+                    <i class="pi pi-check text-white" style="font-size: 0.6rem"></i>
+                  }
+                </div>
+                <div class="min-w-0">
+                  <p class="font-bold text-base text-surface-900 dark:text-surface-0 truncate">{{ product.name }}</p>
+                  <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">{{ product.categoryName }}</p>
+                </div>
+              </div>
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-medium bg-surface-100 dark:bg-surface-700 text-surface-700 dark:text-surface-300 shrink-0">
+                {{ product.code }}
+              </span>
+            </div>
+            <div class="border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 flex items-center justify-between">
+              <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
+                ${{ product.purchasePrice | number: '1.2-2' }}
+              </span>
+              @if (isSelected(product.id)) {
+                <div class="flex items-center gap-1" (click)="$event.stopPropagation()">
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-6 h-6 rounded border border-surface-200 dark:border-surface-700 text-surface-500 text-xs font-medium"
+                    (click)="updateSelectionQuantity(product.id, getSelectedQuantity(product.id) - 1)"
+                  >
+                    -
+                  </button>
+                  <input
+                    pInputText
+                    type="number"
+                    [ngModel]="getSelectedQuantity(product.id)"
+                    (ngModelChange)="updateSelectionQuantity(product.id, $event ?? 1)"
+                    class="w-14 text-center text-sm font-mono"
+                    min="1"
+                  />
+                  <button
+                    type="button"
+                    class="inline-flex items-center justify-center w-6 h-6 rounded border border-surface-200 dark:border-surface-700 text-surface-500 text-xs font-medium"
+                    (click)="updateSelectionQuantity(product.id, getSelectedQuantity(product.id) + 1)"
+                  >
+                    +
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <div class="flex gap-1">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === 0"
+            (click)="onPagePrev()"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === totalPages() - 1"
+            (click)="onPageNext()"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex items-center justify-between pt-1">
+      <span class="text-xs text-surface-500 dark:text-surface-400">
+        @if (selectedCount() > 0) {
+          {{ selectedCount() }} {{ selectedCount() === 1 ? 'producto seleccionado' : 'productos seleccionados' }}
+        }
+      </span>
+      <div class="flex flex-col sm:flex-row gap-2">
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          [outlined]="true"
+          severity="secondary"
+          (onClick)="onCancel()"
+        />
+        <p-button
+          label="Agregar"
+          icon="pi pi-plus"
+          [disabled]="selectedCount() === 0"
+          (onClick)="onAdd()"
+        />
+      </div>
+    </div>
+  </ng-template>
+</p-dialog>

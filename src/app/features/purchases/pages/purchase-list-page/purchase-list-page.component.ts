@@ -20,6 +20,7 @@ import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-sta
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { CancelPurchaseDialogComponent } from '@features/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
+import { ConfirmPurchaseDialogComponent } from '@features/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
 import { PurchaseFilters } from '@features/purchases/services/api/purchase-api.service';
 import { PurchaseStatus, PURCHASE_STATUS_LABELS, getPurchaseStatusLabel } from '@features/purchases/models/enums/purchase-status.enum';
@@ -51,6 +52,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
     ListContainerComponent,
     TextBadgeComponent,
     CancelPurchaseDialogComponent,
+    ConfirmPurchaseDialogComponent,
   ],
   templateUrl: './purchase-list-page.component.html',
   providers: [ConfirmationService],
@@ -70,6 +72,9 @@ export class PurchaseListPageComponent implements OnInit {
   readonly first = signal(0);
   readonly rows = signal(10);
   readonly filterStatus = signal('DRAFT');
+
+  readonly confirmDialogVisible = signal(false);
+  readonly purchaseToConfirm = signal<PurchaseList | null>(null);
 
   readonly cancelDialogVisible = signal(false);
   readonly purchaseToCancel = signal<PurchaseList | null>(null);
@@ -177,12 +182,20 @@ export class PurchaseListPageComponent implements OnInit {
   }
 
   onConfirm(purchase: PurchaseList): void {
-    this.purchaseService.confirm(purchase.id).subscribe({
+    this.purchaseToConfirm.set(purchase);
+    this.confirmDialogVisible.set(true);
+  }
+
+  onConfirmDialogConfirmed(purchaseId: string): void {
+    this.confirmDialogVisible.set(false);
+    this.purchaseService.confirm(purchaseId).subscribe({
       next: () => {
+        this.purchaseToConfirm.set(null);
         this.messageService.add(PURCHASE_SUCCESS_MESSAGES.confirmed);
         this.loadWithFilters();
       },
       error: () => {
+        this.purchaseToConfirm.set(null);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
@@ -191,6 +204,11 @@ export class PurchaseListPageComponent implements OnInit {
         });
       },
     });
+  }
+
+  onConfirmDialogDismissed(): void {
+    this.confirmDialogVisible.set(false);
+    this.purchaseToConfirm.set(null);
   }
 
   onCancelPurchase(purchase: PurchaseList): void {

@@ -6,10 +6,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { PurchaseLineFormData } from '@features/purchases/models/interfaces';
 import { ProductList } from '@features/products/models/interfaces';
-import { ProductPickerDialogComponent } from '@features/orders/components/product-picker-dialog/product-picker-dialog.component';
+import { PurchaseProductPickerDialogComponent } from '@features/purchases/components/purchase-product-picker-dialog/purchase-product-picker-dialog.component';
 import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
 import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
@@ -17,7 +16,7 @@ import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock
 @Component({
   selector: 'app-purchase-items-table',
   standalone: true,
-  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, TooltipModule, PopoverModule, EmptyStateComponent, ProductPickerDialogComponent, WarehouseStockPopoverComponent],
+  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, TooltipModule, PopoverModule, EmptyStateComponent, PurchaseProductPickerDialogComponent, WarehouseStockPopoverComponent],
   templateUrl: './purchase-items-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -53,7 +52,7 @@ export class PurchaseItemsTableComponent {
     this.pickerVisible.set(true);
   }
 
-  onProductsAdded(newItems: OrderItemFormData[]): void {
+  onProductsAdded(newItems: PurchaseLineFormData[]): void {
     const current = this.items();
     const merged = [...current];
 
@@ -62,15 +61,7 @@ export class PurchaseItemsTableComponent {
       if (existingIndex >= 0) {
         merged[existingIndex] = { ...merged[existingIndex] };
       } else {
-        merged.push({
-          productId: incoming.productId,
-          productCode: incoming.productCode,
-          productName: incoming.productName,
-          quantity: incoming.quantity,
-          unitCost: incoming.unitPrice,
-          stock: incoming.stock,
-          warehouseAllocations: incoming.warehouseAllocations,
-        });
+        merged.push({ ...incoming });
       }
     }
 

@@ -261,4 +261,10 @@
     (confirmed)="onCancelDialogConfirmed($event)"
     (cancelled)="onCancelDialogDismissed()"
   />
+  <app-confirm-purchase-dialog
+    [visible]="confirmDialogVisible()"
+    [purchaseId]="purchaseToConfirm()?.id ?? null"
+    (confirmed)="onConfirmDialogConfirmed($event)"
+    (cancelled)="onConfirmDialogDismissed()"
+  />
 </app-main-layout>

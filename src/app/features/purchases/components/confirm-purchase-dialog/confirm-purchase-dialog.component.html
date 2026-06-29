@@ -1,0 +1,175 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '52rem', maxHeight: '90vh' }"
+  [breakpoints]="{ '960px': '95vw' }"
+  (onShow)="onDialogShow()"
+  (onHide)="onHide()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-green-100 dark:bg-green-950 shrink-0">
+        <i class="pi pi-check-circle text-green-600 dark:text-green-400 text-lg"></i>
+      </div>
+      <div class="flex flex-col">
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Confirmar Compra</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">Revise los detalles antes de confirmar la compra</span>
+      </div>
+    </div>
+  </ng-template>
+
+  @if (loading()) {
+    <div class="flex flex-col items-center justify-center py-12 gap-3">
+      <i class="pi pi-spin pi-spinner text-3xl text-surface-400"></i>
+      <span class="text-sm text-surface-500">Cargando detalles de la compra...</span>
+    </div>
+  } @else if (error(); as errMsg) {
+    <div class="flex flex-col items-center justify-center py-12 gap-3">
+      <i class="pi pi-exclamation-triangle text-3xl text-red-400"></i>
+      <span class="text-sm text-red-500">{{ errMsg }}</span>
+    </div>
+  } @else if (purchase(); as p) {
+    <div class="flex flex-col gap-5">
+      <!-- Purchase summary -->
+      <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-surface-500 dark:text-surface-400 font-medium uppercase tracking-wide">Compra</span>
+            <span class="text-sm font-mono font-semibold text-surface-900 dark:text-surface-0">#{{ p.purchaseNumber }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-surface-500 dark:text-surface-400 font-medium uppercase tracking-wide">Proveedor</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ p.supplierName }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-surface-500 dark:text-surface-400 font-medium uppercase tracking-wide">RIF</span>
+            <span class="text-sm font-mono text-surface-900 dark:text-surface-0">{{ p.supplierRif }}</span>
+          </div>
+          <div class="flex flex-col gap-0.5">
+            <span class="text-xs text-surface-500 dark:text-surface-400 font-medium uppercase tracking-wide">Fecha</span>
+            <span class="text-sm text-surface-900 dark:text-surface-0">{{ p.createdAt | date: 'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status info -->
+      <div class="flex flex-col gap-2">
+        <div class="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-3 flex items-start gap-3">
+          <i class="pi pi-info-circle text-amber-600 dark:text-amber-400 text-lg mt-0.5 shrink-0"></i>
+          <div class="text-sm text-amber-800 dark:text-amber-200">
+            <p class="font-medium mb-1">¿Está seguro de confirmar esta compra?</p>
+            <p class="text-amber-700 dark:text-amber-300">Al confirmar, se generarán los movimientos de inventario y no podrá editar la compra.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products table with warehouse stock -->
+      @if (p.lines && p.lines.length > 0) {
+        <div>
+          <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
+            Productos ({{ p.lines.length }})
+          </h4>
+          <div class="rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700">
+                  <th class="px-3 py-2 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">Producto</th>
+                  <th class="px-3 py-2 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">Cantidad</th>
+                  <th class="px-3 py-2 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">Costo Unit.</th>
+                  <th class="px-3 py-2 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">Subtotal</th>
+                  <th class="px-3 py-2 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide">Almacén</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of p.lines; track line.id) {
+                  @if (line.allocations.length > 0) {
+                    @for (alloc of line.allocations; track alloc.warehouseId; let first = $first) {
+                      <tr class="border-b border-surface-100 dark:border-surface-800">
+                        @if (first) {
+                          <td class="px-3 py-2.5" [attr.rowspan]="line.allocations.length">
+                            <div class="flex flex-col gap-0.5">
+                              <span class="font-medium text-surface-900 dark:text-surface-0">{{ line.productName }}</span>
+                              <span class="font-mono text-xs text-surface-500">{{ line.productCode }}</span>
+                            </div>
+                          </td>
+                          <td class="px-3 py-2.5 text-right font-mono" [attr.rowspan]="line.allocations.length">
+                            {{ line.quantity | number: '1.0-3' }}
+                          </td>
+                          <td class="px-3 py-2.5 text-right font-mono" [attr.rowspan]="line.allocations.length">
+                            ${{ line.unitCost | number: '1.2-2' }}
+                          </td>
+                          <td class="px-3 py-2.5 text-right font-mono font-semibold" [attr.rowspan]="line.allocations.length">
+                            ${{ line.subtotal | number: '1.2-2' }}
+                          </td>
+                        }
+                        <td class="px-3 py-2.5">
+                          <div class="flex items-center gap-2">
+                            <i class="pi pi-warehouse text-xs text-surface-400"></i>
+                            <span class="text-surface-700 dark:text-surface-300">{{ alloc.warehouseName }}</span>
+                            <span class="font-mono text-xs text-surface-500">({{ alloc.allocatedQuantity | number: '1.0-3' }})</span>
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  } @else {
+                    <tr class="border-b border-surface-100 dark:border-surface-800">
+                      <td class="px-3 py-2.5">
+                        <div class="flex flex-col gap-0.5">
+                          <span class="font-medium text-surface-900 dark:text-surface-0">{{ line.productName }}</span>
+                          <span class="font-mono text-xs text-surface-500">{{ line.productCode }}</span>
+                        </div>
+                      </td>
+                      <td class="px-3 py-2.5 text-right font-mono">{{ line.quantity | number: '1.0-3' }}</td>
+                      <td class="px-3 py-2.5 text-right font-mono">${{ line.unitCost | number: '1.2-2' }}</td>
+                      <td class="px-3 py-2.5 text-right font-mono font-semibold">${{ line.subtotal | number: '1.2-2' }}</td>
+                      <td class="px-3 py-2.5 text-surface-400 text-xs">Sin asignación</td>
+                    </tr>
+                  }
+                }
+              </tbody>
+              <tfoot>
+                <tr class="bg-surface-50 dark:bg-surface-800">
+                  <td colspan="3" class="px-3 py-3 text-right text-sm font-semibold text-surface-700 dark:text-surface-300">
+                    Total:
+                  </td>
+                  <td class="px-3 py-3 text-right font-mono font-bold text-base text-surface-900 dark:text-surface-0">
+                    ${{ p.subtotal | number: '1.2-2' }}
+                  </td>
+                  <td></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    @if (!loading() && !error() && purchase()) {
+      <div class="flex gap-2 justify-end">
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          [outlined]="true"
+          severity="secondary"
+          [disabled]="confirming()"
+          (onClick)="onCancel()"
+        />
+        <p-button
+          label="Confirmar Compra"
+          icon="pi pi-check"
+          severity="success"
+          [loading]="confirming()"
+          (onClick)="onConfirm()"
+        />
+      </div>
+    }
+    @if (error()) {
+      <div class="flex justify-end">
+        <p-button label="Cerrar" severity="secondary" (onClick)="onCancel()" />
+      </div>
+    }
+  </ng-template>
+</p-dialog>

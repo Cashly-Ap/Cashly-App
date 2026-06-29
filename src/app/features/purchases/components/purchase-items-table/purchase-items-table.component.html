@@ -16,9 +16,8 @@
     }
   </div>
 
-  <app-product-picker-dialog
+  <app-purchase-product-picker-dialog
     [visible]="pickerVisible()"
-    [customerId]="''"
     [excludedProductIds]="excludedProductIds()"
     (productsAdded)="onProductsAdded($event)"
     (cancelled)="onPickerCancelled()"
