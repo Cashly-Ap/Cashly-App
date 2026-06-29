@@ -263,7 +263,7 @@ export class PurchaseProductPickerDialogComponent {
         available: si.available,
       })),
       quantity: s.quantity,
-      unitCost: s.unitCost,
+      unitCost: s.product.purchasePrice,
       warehouseAllocations: s.allocations.map((a) => ({
         warehouseId: a.warehouseId,
         warehouseCode: a.warehouseCode,

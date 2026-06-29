@@ -7,6 +7,7 @@ export interface PurchaseProduct {
   active: boolean;
   stock: number;
   stockItems: PurchaseProductStockItem[];
+  purchasePrice: number;
 }
 
 export interface PurchaseProductStockItem {
