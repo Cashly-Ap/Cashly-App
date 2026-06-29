@@ -1,0 +1,204 @@
+<div class="p-4 md:p-6">
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
+    <h3 class="text-base font-medium text-surface-800 dark:text-surface-200 flex items-center gap-2">
+      <i class="pi pi-list text-surface-500"></i>
+      Líneas de Compra
+    </h3>
+    @if (!readonly()) {
+      <p-button
+        label="Agregar Producto"
+        icon="pi pi-plus"
+        severity="secondary"
+        [outlined]="true"
+        styleClass="w-full sm:w-auto"
+        (onClick)="openPicker()"
+      />
+    }
+  </div>
+
+  <app-product-picker-dialog
+    [visible]="pickerVisible()"
+    [customerId]="''"
+    [excludedProductIds]="excludedProductIds()"
+    (productsAdded)="onProductsAdded($event)"
+    (cancelled)="onPickerCancelled()"
+  />
+
+  @if (items().length > 0) {
+    <div class="space-y-2">
+      @for (item of items(); track item.productId; let itemIdx = $index) {
+        <div class="border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-950">
+          @if (!readonly()) {
+            <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 text-xs font-medium shrink-0">
+                {{ itemIdx + 1 }}
+              </span>
+
+              <div class="flex-1 min-w-[200px]">
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
+                  {{ resolveProductName(item.productId) }}
+                </span>
+                @if (item.stock && item.stock.length > 0) {
+                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
+                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
+                    @if (getItemTotalReserved(item) > 0) {
+                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
+                    }
+                  </span>
+                }
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <span class="font-mono text-sm font-medium"
+                  [class.text-surface-900]="!isItemOverAllocated(item)"
+                  [class.dark:text-surface-100]="!isItemOverAllocated(item)"
+                  [class.text-red-600]="isItemOverAllocated(item)"
+                  [class.dark:text-red-400]="isItemOverAllocated(item)">
+                  {{ item.quantity | number: '1.0-3' }}
+                </span>
+                <button
+                  type="button"
+                  class="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs transition-colors shrink-0"
+                  [class.text-green-700]="item.quantity > 0"
+                  [class.dark:text-green-400]="item.quantity > 0"
+                  [class.bg-green-50]="item.quantity > 0"
+                  [class.dark:bg-green-950]="item.quantity > 0"
+                  [class.hover:bg-green-100]="item.quantity > 0"
+                  [class.dark:hover:bg-green-900]="item.quantity > 0"
+                  [class.text-surface-500]="item.quantity === 0"
+                  [class.dark:text-surface-400]="item.quantity === 0"
+                  [class.hover:bg-surface-100]="item.quantity === 0"
+                  [class.dark:hover:bg-surface-800]="item.quantity === 0"
+                  pTooltip="Distribuir stock por almacén"
+                  tooltipPosition="top"
+                  (click)="openAllocationPopover($event, itemIdx)"
+                >
+                  <i class="pi pi-warehouse text-sm"></i>
+                </button>
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
+                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+
+              <p-button
+                icon="pi pi-trash"
+                severity="secondary"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                pTooltip="Eliminar línea"
+                class="shrink-0"
+                (onClick)="removeItem(itemIdx)"
+              />
+            </div>
+          } @else {
+            <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
+              <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400 text-xs font-medium shrink-0">
+                {{ itemIdx + 1 }}
+              </span>
+              <div class="flex-1 min-w-0">
+                <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
+                  {{ resolveProductName(item.productId) }}
+                </span>
+                @if (item.stock && item.stock.length > 0) {
+                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
+                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
+                    @if (getItemTotalReserved(item) > 0) {
+                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
+                    }
+                  </span>
+                }
+              </div>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.quantity | number: '1.0-3' }}
+                </span>
+              </div>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
+                  {{ item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+              <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
+                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                </span>
+              </div>
+              @if (item.warehouseAllocations.length > 0) {
+                <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
+                <div class="flex items-center gap-1 shrink-0 text-xs text-surface-500 dark:text-surface-400">
+                  <i class="pi pi-warehouse text-xs"></i>
+                  <span>{{ item.warehouseAllocations.length }} almacén(es)</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <div class="flex justify-end p-3 sm:p-4 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800">
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-surface-600 dark:text-surface-400">Total Compra:</span>
+          <span class="font-mono font-semibold text-lg text-surface-900 dark:text-surface-100">
+            {{ total() | number: '1.2-2' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <app-empty-state
+      icon="pi-shopping-cart"
+      title="Sin líneas de compra"
+      message="Agrega productos a la compra"
+    >
+      @if (!readonly()) {
+        <div class="flex justify-center mt-4">
+          <p-button
+            label="Agregar Producto"
+            icon="pi pi-plus"
+            severity="secondary"
+            styleClass="w-full sm:w-auto"
+            (onClick)="openPicker()"
+          />
+        </div>
+      }
+    </app-empty-state>
+  }
+</div>
+
+<p-popover #allocationPopover appendTo="body" (onHide)="activeItemIdx.set(null)">
+  <app-warehouse-stock-popover
+    [entries]="popoverAllocations()"
+    [total]="allocationTotal()"
+    confirmLabel="Confirmar"
+    emptyMessage="Sin almacenes disponibles para este producto"
+    (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
+    (confirm)="confirmAllocations()"
+  />
+</p-popover>

@@ -96,6 +96,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           routerLink: '/suppliers',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
+        {
+          label: 'Compras',
+          icon: 'pi pi-shopping-cart',
+          routerLink: '/purchases',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
       ],
     },
     {
