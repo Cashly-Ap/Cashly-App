@@ -20,6 +20,7 @@ export class WarehouseStockPopoverComponent {
   readonly entries = input<WarehouseStockEntry[]>([]);
   readonly total = input<number>(0);
   readonly confirmLabel = input<string>('Guardar');
+  readonly showStockDetails = input<boolean>(true);
   readonly emptyMessage = input<string>('Sin almacenes disponibles');
 
   readonly allocationChange = output<{ index: number; value: number }>();

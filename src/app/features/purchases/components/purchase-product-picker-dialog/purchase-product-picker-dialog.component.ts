@@ -291,7 +291,7 @@ export class PurchaseProductPickerDialogComponent {
       warehouseCode: s.warehouseCode,
       quantity: s.quantity,
       reserved: s.reserved,
-      available: s.available,
+      available: 999999,
       allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : 0,
     }));
   }

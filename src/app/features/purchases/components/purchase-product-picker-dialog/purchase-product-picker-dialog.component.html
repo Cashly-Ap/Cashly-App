@@ -293,7 +293,8 @@
   <app-warehouse-stock-popover
     [entries]="popoverAllocations()"
     confirmLabel="Guardar"
-    emptyMessage="Sin stock asignado en almacenes"
+    emptyMessage="Seleccione la cantidad por almacén"
+    [showStockDetails]="false"
     (allocationChange)="updateAllocation($event.index, $event.value)"
     (confirm)="saveAllocation()"
   />
