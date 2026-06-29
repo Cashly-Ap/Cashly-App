@@ -151,7 +151,7 @@ export class PurchaseProductPickerDialogComponent {
   }
 
   canSelectProduct(product: PurchaseProduct): boolean {
-    return product.stockItems && product.stockItems.length > 0;
+    return product.active;
   }
 
   toggleSelection(product: PurchaseProduct): void {
@@ -201,7 +201,7 @@ export class PurchaseProductPickerDialogComponent {
   saveAllocation(): void {
     const productId = this.popoverProductId();
     if (!productId) return;
-    const allocations = this.popoverAllocations().map((a) => ({ ...a, allocated: Math.min(a.allocated ?? 0, a.available) }));
+    const allocations = this.popoverAllocations().map((a) => ({ ...a, allocated: a.allocated ?? 0 }));
     const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
     const map = new Map(this.selections());
     const existing = map.get(productId);
@@ -292,7 +292,7 @@ export class PurchaseProductPickerDialogComponent {
       quantity: s.quantity,
       reserved: s.reserved,
       available: s.available,
-      allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : s.available,
+      allocated: existingMap.size > 0 ? (existingMap.get(s.warehouseId) ?? 0) : 0,
     }));
   }
 
