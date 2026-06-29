@@ -6,6 +6,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui';
+import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { PurchaseLineFormData } from '@features/purchases/models/interfaces';
 import { ProductList } from '@features/products/models/interfaces';
 import { ProductPickerDialogComponent } from '@features/orders/components/product-picker-dialog/product-picker-dialog.component';
@@ -52,7 +53,7 @@ export class PurchaseItemsTableComponent {
     this.pickerVisible.set(true);
   }
 
-  onProductsAdded(newItems: PurchaseLineFormData[]): void {
+  onProductsAdded(newItems: OrderItemFormData[]): void {
     const current = this.items();
     const merged = [...current];
 
@@ -61,7 +62,15 @@ export class PurchaseItemsTableComponent {
       if (existingIndex >= 0) {
         merged[existingIndex] = { ...merged[existingIndex] };
       } else {
-        merged.push({ ...incoming });
+        merged.push({
+          productId: incoming.productId,
+          productCode: incoming.productCode,
+          productName: incoming.productName,
+          quantity: incoming.quantity,
+          unitCost: incoming.unitPrice,
+          stock: incoming.stock,
+          warehouseAllocations: incoming.warehouseAllocations,
+        });
       }
     }
 
