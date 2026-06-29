@@ -6,7 +6,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
+import { PurchaseLineFormData } from '@features/purchases/models/interfaces';
 import { ProductList } from '@features/products/models/interfaces';
 import { ProductPickerDialogComponent } from '@features/orders/components/product-picker-dialog/product-picker-dialog.component';
 import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
@@ -23,10 +23,10 @@ import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock
 export class PurchaseItemsTableComponent {
   @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
 
-  readonly items = input<OrderItemFormData[]>([]);
+  readonly items = input<PurchaseLineFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly readonly = input<boolean>(false);
-  readonly itemsChange = output<OrderItemFormData[]>();
+  readonly itemsChange = output<PurchaseLineFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
   readonly activeItemIdx = signal<number | null>(null);
@@ -35,7 +35,7 @@ export class PurchaseItemsTableComponent {
   readonly excludedProductIds = computed(() => new Set(this.items().map((i) => i.productId)));
 
   readonly total = computed(() =>
-    this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
+    this.items().reduce((sum, i) => sum + i.quantity * i.unitCost, 0),
   );
 
   readonly activeItemQuantity = computed<number>(() => {
@@ -52,7 +52,7 @@ export class PurchaseItemsTableComponent {
     this.pickerVisible.set(true);
   }
 
-  onProductsAdded(newItems: OrderItemFormData[]): void {
+  onProductsAdded(newItems: PurchaseLineFormData[]): void {
     const current = this.items();
     const merged = [...current];
 
@@ -169,15 +169,15 @@ export class PurchaseItemsTableComponent {
     return product?.stockTotal ?? null;
   }
 
-  getItemTotalReserved(item: OrderItemFormData): number {
+  getItemTotalReserved(item: PurchaseLineFormData): number {
     return (item.stock ?? []).reduce((sum, s) => sum + (s.reserved ?? 0), 0);
   }
 
-  getItemTotalAvailable(item: OrderItemFormData): number {
+  getItemTotalAvailable(item: PurchaseLineFormData): number {
     return (item.stock ?? []).reduce((sum, s) => sum + (s.available ?? 0), 0);
   }
 
-  isItemOverAllocated(item: OrderItemFormData): boolean {
+  isItemOverAllocated(item: PurchaseLineFormData): boolean {
     const totalAvailable = this.getItemTotalAvailable(item);
     return item.quantity > totalAvailable && totalAvailable > 0;
   }

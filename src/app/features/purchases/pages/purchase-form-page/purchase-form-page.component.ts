@@ -22,8 +22,7 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
 import { PurchaseItemsTableComponent } from '@features/purchases/components/purchase-items-table/purchase-items-table.component';
-import { PurchaseFormData } from '@features/purchases/models/interfaces';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
+import { PurchaseFormData, PurchaseLineFormData } from '@features/purchases/models/interfaces';
 import { SupplierList } from '@features/suppliers/models/interfaces';
 import { SupplierPickerDialogComponent } from '@features/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
@@ -75,10 +74,10 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     supplierId: 'Proveedor',
   };
 
-  readonly items = signal<OrderItemFormData[]>([]);
+  readonly items = signal<PurchaseLineFormData[]>([]);
 
   readonly total = computed(() =>
-    this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
+    this.items().reduce((sum, i) => sum + i.quantity * i.unitCost, 0),
   );
 
   readonly form = this.fb.group({
@@ -181,7 +180,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
               productCode: line.productCode,
               productName: line.productName,
               quantity: line.quantity,
-              unitPrice: line.unitCost,
+              unitCost: line.unitCost,
               stock: [],
               warehouseAllocations: line.allocations.map((a) => ({
                 warehouseId: a.warehouseId,
@@ -213,7 +212,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     this.pickerVisible.set(false);
   }
 
-  onItemsChange(updated: OrderItemFormData[]): void {
+  onItemsChange(updated: PurchaseLineFormData[]): void {
     this.items.set(updated);
     this.scheduleAutoSave();
   }
@@ -240,7 +239,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           lines: this.items().map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
-            unitCost: i.unitPrice,
+            unitCost: i.unitCost,
             warehouseAllocations: i.warehouseAllocations
               .filter((a) => a.allocated > 0)
               .map((a) => ({
@@ -269,7 +268,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           lines: this.items().map((i) => ({
             productId: i.productId,
             quantity: i.quantity,
-            unitCost: i.unitPrice,
+            unitCost: i.unitCost,
             warehouseAllocations: i.warehouseAllocations
               .filter((a) => a.allocated > 0)
               .map((a) => ({

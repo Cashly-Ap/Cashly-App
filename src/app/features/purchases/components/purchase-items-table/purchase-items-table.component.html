@@ -85,7 +85,7 @@
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitPrice | number: '1.2-2' }}
+                  {{ item.unitCost | number: '1.2-2' }}
                 </span>
               </div>
 
@@ -94,7 +94,7 @@
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
                 <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
-                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                  {{ item.quantity * item.unitCost | number: '1.2-2' }}
                 </span>
               </div>
 
@@ -140,14 +140,14 @@
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitPrice | number: '1.2-2' }}
+                  {{ item.unitCost | number: '1.2-2' }}
                 </span>
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
                 <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100">
-                  {{ item.quantity * item.unitPrice | number: '1.2-2' }}
+                  {{ item.quantity * item.unitCost | number: '1.2-2' }}
                 </span>
               </div>
               @if (item.warehouseAllocations.length > 0) {
