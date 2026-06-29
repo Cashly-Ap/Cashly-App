@@ -4,8 +4,16 @@ export interface PurchaseProduct {
   name: string;
   categoryId: string;
   categoryName: string;
-  composite: boolean;
   active: boolean;
-  photo: string | null;
-  purchasePrice: number;
+  stock: number;
+  stockItems: PurchaseProductStockItem[];
+}
+
+export interface PurchaseProductStockItem {
+  warehouseId: string;
+  warehouseCode: string;
+  warehouseName: string;
+  quantity: number;
+  reserved: number;
+  available: number;
 }
