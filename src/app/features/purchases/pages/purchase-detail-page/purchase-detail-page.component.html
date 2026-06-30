@@ -33,27 +33,6 @@
                     styleClass="w-full sm:w-auto"
                   />
                 }
-                @if (currentPurchase.status === PurchaseStatus.CONFIRMED) {
-                  <p-button
-                    label="Cancelar Compra"
-                    icon="pi pi-ban"
-                    severity="danger"
-                    (onClick)="openCancelDialog()"
-                    styleClass="w-full sm:w-auto"
-                  />
-                }
-                @if (currentPurchase.status === PurchaseStatus.CANCELLED) {
-                  <span class="flex items-center gap-2 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 px-3 py-2 rounded-lg">
-                    <i class="pi pi-ban"></i>
-                    <span>Compra cancelada</span>
-                  </span>
-                }
-                @if (currentPurchase.status === PurchaseStatus.CONFIRMED) {
-                  <span class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg">
-                    <i class="pi pi-check-circle"></i>
-                    <span>Compra confirmada</span>
-                  </span>
-                }
               </div>
             </app-details-card-header>
 
@@ -159,10 +138,3 @@
     </div>
   </div>
 </app-main-layout>
-
-<app-cancel-purchase-dialog
-  [visible]="cancelDialogVisible()"
-  [purchaseNumber]="purchase()?.purchaseNumber ?? null"
-  (confirmed)="onCancelDialogConfirmed($event)"
-  (cancelled)="onCancelDialogDismissed()"
-/>

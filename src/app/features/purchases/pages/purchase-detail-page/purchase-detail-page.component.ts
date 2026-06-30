@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
@@ -19,9 +19,7 @@ import {
   TextBadgeComponent,
 } from '@shared/components/ui';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
-import { CancelPurchaseDialogComponent } from '@features/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
 import { PurchaseStatus, getPurchaseStatusLabel } from '@features/purchases/models/enums/purchase-status.enum';
-import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
 
 @Component({
   selector: 'app-purchase-detail-page',
@@ -42,7 +40,6 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
-    CancelPurchaseDialogComponent,
   ],
   templateUrl: './purchase-detail-page.component.html',
 })
@@ -56,7 +53,6 @@ export class PurchaseDetailPageComponent implements OnInit {
   readonly loading = this.purchaseService.loading;
 
   readonly PurchaseStatus = PurchaseStatus;
-  readonly cancelDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -82,34 +78,6 @@ export class PurchaseDetailPageComponent implements OnInit {
   onEdit(): void {
     const id = this.purchase()?.id;
     if (id) this.router.navigate(['/purchases', id, 'edit']);
-  }
-
-  openCancelDialog(): void {
-    this.cancelDialogVisible.set(true);
-  }
-
-  onCancelDialogConfirmed(request: { reason: string; notes: string }): void {
-    const purchase = this.purchase();
-    if (!purchase) return;
-    this.cancelDialogVisible.set(false);
-    this.purchaseService.cancel(purchase.id, request).subscribe({
-      next: () => {
-        this.messageService.add(PURCHASE_SUCCESS_MESSAGES.cancelled);
-        this.purchaseService.loadById(purchase.id).subscribe();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cancelar la compra. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onCancelDialogDismissed(): void {
-    this.cancelDialogVisible.set(false);
   }
 
   getStatusLabel(status: PurchaseStatus): string {
