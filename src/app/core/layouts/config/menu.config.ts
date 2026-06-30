@@ -10,6 +10,7 @@ export interface MenuCallbacks {
   openQuotesPdfModal: () => void;
   openAccountsReceivablePdfModal: () => void;
   openCashRegisterModal: () => void;
+  openPurchasesPdfModal: () => void;
 }
 
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
@@ -176,6 +177,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-arrow-right-arrow-left',
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               command: () => callbacks.openMovementsModal(),
+            },
+            {
+              label: 'Reporte de Compras PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openPurchasesPdfModal(),
             },
           ],
         },
