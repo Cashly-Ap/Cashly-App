@@ -8,8 +8,8 @@ describe('Customer Routes', () => {
     expect(CUSTOMER_ROUTES[0].children).toBeDefined();
   });
 
-  it('should have 4 child routes', () => {
-    expect(CUSTOMER_ROUTES[0].children).toHaveLength(4);
+  it('should have 5 child routes', () => {
+    expect(CUSTOMER_ROUTES[0].children).toHaveLength(5);
   });
 
   it('should have auth guards on parent route', () => {

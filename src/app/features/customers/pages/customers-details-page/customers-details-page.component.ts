@@ -17,6 +17,8 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/users/models/enums';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerDetails, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
@@ -49,6 +51,7 @@ export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
   private customerApi = inject(CustomerApiService);
   private priceTypeService = inject(PriceTypeApplicationService);
+  private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
@@ -65,6 +68,13 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
   warehouseAccessLoading = signal(false);
+
+  showBalance = computed(() => {
+    const currentCustomer = this.customer();
+    const hasFinancePermission = this.authService.hasModulePermission(BusinessModule.FINANCE);
+    const hasBalanceTracking = (currentCustomer?.creditLimit ?? 0) > 0;
+    return hasFinancePermission && hasBalanceTracking;
+  });
 
   passwordError = computed(() => {
     const value = this.newPassword();
