@@ -14,7 +14,7 @@ export const PAYMENT_ROUTES: Routes = [
           import('../pages/payment-list-page/payment-list-page.component').then(
             (m) => m.PaymentListPageComponent,
           ),
-        title: 'Payments',
+        title: 'Pagos',
       },
       {
         path: 'new',
@@ -22,7 +22,7 @@ export const PAYMENT_ROUTES: Routes = [
           import('../pages/payment-form-page/payment-form-page.component').then(
             (m) => m.PaymentFormPageComponent,
           ),
-        title: 'New Payment',
+        title: 'Nuevo Pago',
       },
       {
         path: ':id',
@@ -30,7 +30,7 @@ export const PAYMENT_ROUTES: Routes = [
           import('../pages/payment-detail-page/payment-detail-page.component').then(
             (m) => m.PaymentDetailPageComponent,
           ),
-        title: 'Payment Detail',
+        title: 'Detalle de Pago',
       },
       {
         path: ':id/edit',
@@ -38,7 +38,7 @@ export const PAYMENT_ROUTES: Routes = [
           import('../pages/payment-form-page/payment-form-page.component').then(
             (m) => m.PaymentFormPageComponent,
           ),
-        title: 'Edit Payment',
+        title: 'Editar Pago',
       },
     ],
   },

@@ -14,7 +14,7 @@ export const CREDIT_NOTE_ROUTES: Routes = [
           import('../pages/credit-note-list-page/credit-note-list-page.component').then(
             (m) => m.CreditNoteListPageComponent,
           ),
-        title: 'Credit Notes',
+        title: 'Notas de Crédito',
       },
       {
         path: 'new',
@@ -22,7 +22,7 @@ export const CREDIT_NOTE_ROUTES: Routes = [
           import('../pages/credit-note-form-page/credit-note-form-page.component').then(
             (m) => m.CreditNoteFormPageComponent,
           ),
-        title: 'New Credit Note',
+        title: 'Nueva Nota de Crédito',
       },
       {
         path: ':id',
@@ -30,7 +30,7 @@ export const CREDIT_NOTE_ROUTES: Routes = [
           import('../pages/credit-note-detail-page/credit-note-detail-page.component').then(
             (m) => m.CreditNoteDetailPageComponent,
           ),
-        title: 'Credit Note Detail',
+        title: 'Detalle de Nota de Crédito',
       },
     ],
   },

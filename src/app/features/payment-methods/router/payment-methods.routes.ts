@@ -14,7 +14,7 @@ export const PAYMENT_METHOD_ROUTES: Routes = [
           import('../pages/payment-method-list-page/payment-method-list-page.component').then(
             (m) => m.PaymentMethodListPageComponent,
           ),
-        title: 'Payment Methods',
+        title: 'Métodos de Pago',
       },
       {
         path: 'new',
@@ -22,7 +22,7 @@ export const PAYMENT_METHOD_ROUTES: Routes = [
           import('../pages/payment-method-form-page/payment-method-form-page.component').then(
             (m) => m.PaymentMethodFormPageComponent,
           ),
-        title: 'New Payment Method',
+        title: 'Nuevo Método de Pago',
       },
       {
         path: ':id',
@@ -30,7 +30,7 @@ export const PAYMENT_METHOD_ROUTES: Routes = [
           import('../pages/payment-method-detail-page/payment-method-detail-page.component').then(
             (m) => m.PaymentMethodDetailPageComponent,
           ),
-        title: 'Payment Method Detail',
+        title: 'Detalle de Método de Pago',
       },
       {
         path: ':id/edit',
@@ -38,7 +38,7 @@ export const PAYMENT_METHOD_ROUTES: Routes = [
           import('../pages/payment-method-form-page/payment-method-form-page.component').then(
             (m) => m.PaymentMethodFormPageComponent,
           ),
-        title: 'Edit Payment Method',
+        title: 'Editar Método de Pago',
       },
     ],
   },

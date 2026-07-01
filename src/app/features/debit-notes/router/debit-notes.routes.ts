@@ -14,7 +14,7 @@ export const DEBIT_NOTE_ROUTES: Routes = [
           import('../pages/debit-note-list-page/debit-note-list-page.component').then(
             (m) => m.DebitNoteListPageComponent,
           ),
-        title: 'Debit Notes',
+        title: 'Notas de Débito',
       },
       {
         path: 'new',
@@ -22,7 +22,7 @@ export const DEBIT_NOTE_ROUTES: Routes = [
           import('../pages/debit-note-form-page/debit-note-form-page.component').then(
             (m) => m.DebitNoteFormPageComponent,
           ),
-        title: 'New Debit Note',
+        title: 'Nueva Nota de Débito',
       },
       {
         path: ':id',
@@ -30,7 +30,7 @@ export const DEBIT_NOTE_ROUTES: Routes = [
           import('../pages/debit-note-detail-page/debit-note-detail-page.component').then(
             (m) => m.DebitNoteDetailPageComponent,
           ),
-        title: 'Debit Note Detail',
+        title: 'Detalle de Nota de Débito',
       },
     ],
   },
