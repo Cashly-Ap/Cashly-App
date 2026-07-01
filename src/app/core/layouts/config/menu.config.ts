@@ -91,6 +91,14 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           routerLink: '/warehouses',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
+      ],
+    },
+    {
+      label: 'Compras',
+      icon: 'pi pi-shopping-cart',
+      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.PURCHASES,
+      children: [
         {
           label: 'Proveedores',
           icon: 'pi pi-truck',
@@ -178,6 +186,13 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
               command: () => callbacks.openMovementsModal(),
             },
+          ],
+        },
+        {
+          label: 'Compras',
+          icon: 'pi pi-shopping-cart',
+          requiredModule: BusinessModule.PURCHASES,
+          children: [
             {
               label: 'Reporte de Compras PDF',
               icon: 'pi pi-file-pdf',
