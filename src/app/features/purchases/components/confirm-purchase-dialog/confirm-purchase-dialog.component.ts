@@ -6,8 +6,6 @@ import { TableModule } from 'primeng/table';
 import { PurchaseApiService } from '@features/purchases/services/api/purchase-api.service';
 import { PurchaseDetails } from '@features/purchases/models/interfaces';
 import { PurchaseStatus } from '@features/purchases/models/enums/purchase-status.enum';
-import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-
 @Component({
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
@@ -18,7 +16,6 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
     TableModule,
     DatePipe,
     DecimalPipe,
-    TextBadgeComponent,
   ],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
@@ -68,9 +65,7 @@ export class ConfirmPurchaseDialogComponent {
   }
 
   onHide(): void {
-    if (!this.confirming()) {
-      this.reset();
-    }
+    this.reset();
   }
 
   reset(): void {

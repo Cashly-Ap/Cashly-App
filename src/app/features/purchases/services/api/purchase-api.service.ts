@@ -137,7 +137,7 @@ export class PurchaseApiService {
   }
 
   confirm(id: string): Observable<PurchaseDetails> {
-    return this.http.post<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
+    return this.http.put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
       map((r) => this.toPurchaseDetails(r)),
     );
   }
