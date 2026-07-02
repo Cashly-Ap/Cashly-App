@@ -39,6 +39,7 @@ const REFERENCE_TYPE_LABELS: Record<string, string> = {
   INVOICE: 'Factura',
   RETURN: 'Devolución',
   TRANSFER: 'Transferencia',
+  PURCHASE: 'Compra',
   MANUAL: 'Manual',
 };
 
@@ -206,4 +207,19 @@ export class WarehousesDetailsPageComponent implements OnInit {
     if (!type) return '';
     return REFERENCE_TYPE_LABELS[type] ?? type;
   }
+
+  getReferenceTypeBadgeClass(type: string | undefined): string {
+    if (!type) return '';
+    const base = 'px-2 py-0.5 rounded text-xs font-medium';
+    const map: Record<string, string> = {
+      ORDER: `${base} bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-300`,
+      INVOICE: `${base} bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300`,
+      RETURN: `${base} bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-300`,
+      TRANSFER: `${base} bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300`,
+      PURCHASE: `${base} bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300`,
+      MANUAL: `${base} bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-300`,
+    };
+    return map[type] ?? `${base} bg-surface-100 text-surface-700`;
+  }
+
 }
