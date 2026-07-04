@@ -16,9 +16,7 @@ export interface ProductDetails {
   categoryName: string;
   composite: boolean;
   photo: string | null;
-  basePrice?: number;
   purchasePrice?: number;
-  profitMargin?: number;
   description?: string;
   active: boolean;
   stockTotal?: number;

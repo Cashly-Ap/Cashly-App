@@ -45,12 +45,12 @@ describe('ProductList interface', () => {
       categoryName: 'Motors',
       composite: false,
       active: true,
-      basePrice: 150,
+      purchasePrice: 100,
       productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
       stockTotal: 50,
     };
 
-    expect(product.basePrice).toBe(150);
+    expect(product.purchasePrice).toBe(100);
     expect(product.productPrices).toHaveLength(1);
     expect(product.stockTotal).toBe(50);
   });

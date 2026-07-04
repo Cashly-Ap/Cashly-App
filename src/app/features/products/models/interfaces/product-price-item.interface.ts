@@ -3,4 +3,5 @@ export interface ProductPriceItem {
   priceTypeId: string;
   priceTypeName: string;
   price: number;
+  profitMargin?: number;
 }

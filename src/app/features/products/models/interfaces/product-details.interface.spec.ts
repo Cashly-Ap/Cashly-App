@@ -63,9 +63,7 @@ describe('ProductDetails interface', () => {
       categoryName: 'Motors',
       composite: false,
       photo: 'https://example.com/photo.jpg',
-      basePrice: 150,
       purchasePrice: 100,
-      profitMargin: 33.33,
       description: 'A test product',
       active: true,
       stockTotal: 50,
@@ -76,9 +74,7 @@ describe('ProductDetails interface', () => {
     };
 
     expect(product.photo).toBe('https://example.com/photo.jpg');
-    expect(product.basePrice).toBe(150);
     expect(product.purchasePrice).toBe(100);
-    expect(product.profitMargin).toBe(33.33);
     expect(product.description).toBe('A test product');
     expect(product.stockTotal).toBe(50);
   });

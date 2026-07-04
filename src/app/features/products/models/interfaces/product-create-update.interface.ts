@@ -11,9 +11,7 @@ export interface ProductCreate {
   categoryId: string;
   description?: string;
   composite: boolean;
-  basePrice?: number;
   purchasePrice?: number;
-  profitMargin?: number;
   components?: ProductComponentInput[];
   productPrices: ProductPriceFormItem[];
 }
@@ -22,9 +20,7 @@ export interface ProductUpdate {
   name: string;
   categoryId: string;
   description?: string;
-  basePrice?: number;
   purchasePrice?: number;
-  profitMargin?: number;
   components?: ProductComponentInput[];
   productPrices: ProductPriceFormItem[];
 }

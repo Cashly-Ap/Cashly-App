@@ -27,14 +27,12 @@ describe('ProductApplicationService', () => {
     categoryName: 'Test Category',
     composite: false,
     photo: null,
-    basePrice: 100,
     purchasePrice: 60,
-    profitMargin: 40,
     description: 'Test description',
     active: true,
     stockTotal: 50,
     components: [],
-    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', price: 100 }],
+    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 100, profitMargin: 40 }],
     createdAt: '2025-01-15T10:30:00Z',
     updatedAt: '2025-01-15T10:30:00Z',
   };
@@ -47,7 +45,7 @@ describe('ProductApplicationService', () => {
     categoryName: 'Test Category',
     composite: false,
     active: true,
-    basePrice: 100,
+    purchasePrice: 60,
     productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
     stockTotal: 50,
   };
@@ -199,7 +197,7 @@ describe('ProductApplicationService', () => {
         name: 'New Product',
         categoryId: 'cat-001',
         composite: false,
-        productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 30 }],
       };
 
       service.create(createData).subscribe();
@@ -214,7 +212,7 @@ describe('ProductApplicationService', () => {
         name: 'New Product',
         categoryId: 'cat-001',
         composite: false,
-        productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 30 }],
       };
 
       service.create(createData).subscribe({
@@ -238,7 +236,7 @@ describe('ProductApplicationService', () => {
       const updateData: ProductUpdate = {
         name: 'Updated Product',
         categoryId: 'cat-001',
-        productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 30 }],
       };
 
       service.update('prod-001', updateData).subscribe(() => {
@@ -260,7 +258,7 @@ describe('ProductApplicationService', () => {
       const updateData: ProductUpdate = {
         name: 'Updated Product',
         categoryId: 'cat-001',
-        productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 30 }],
       };
 
       service.update('prod-001', updateData).subscribe(() => {
@@ -274,7 +272,7 @@ describe('ProductApplicationService', () => {
       const updateData: ProductUpdate = {
         name: 'Updated Product',
         categoryId: 'cat-001',
-        productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 30 }],
       };
 
       service.update('prod-001', updateData).subscribe({

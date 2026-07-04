@@ -11,7 +11,7 @@ export interface ProductList {
   categoryName: string;
   composite: boolean;
   active: boolean;
-  basePrice?: number;
+  purchasePrice?: number;
   productPrices: ProductPriceListItem[];
   stockTotal?: number;
   deletable: boolean;

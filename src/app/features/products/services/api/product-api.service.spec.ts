@@ -19,7 +19,7 @@ describe('ProductApiService', () => {
       categoryName: 'Test Category',
       composite: false,
       active: true,
-      basePrice: 100,
+      purchasePrice: 60,
       productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
       stockTotal: 50,
     },
@@ -33,14 +33,12 @@ describe('ProductApiService', () => {
     categoryName: 'Test Category',
     composite: false,
     photo: null,
-    basePrice: 100,
     purchasePrice: 60,
-    profitMargin: 40,
     description: 'Test description',
     active: true,
     stockTotal: 50,
     components: [],
-    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', price: 100 }],
+    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 100, profitMargin: 40 }],
     createdAt: '2025-01-15T10:30:00Z',
     updatedAt: '2025-01-15T10:30:00Z',
   };
@@ -171,10 +169,8 @@ describe('ProductApiService', () => {
         categoryId: 'cat-001',
         description: 'New description',
         composite: false,
-        basePrice: 150,
         purchasePrice: 80,
-        profitMargin: 46.67,
-        productPrices: [{ priceTypeId: 'pt-001', price: 150 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 150, profitMargin: 46.67 }],
       };
 
       service.create(createData).subscribe((result) => {
@@ -194,10 +190,8 @@ describe('ProductApiService', () => {
         name: 'Updated Product',
         categoryId: 'cat-001',
         description: 'Updated description',
-        basePrice: 200,
         purchasePrice: 100,
-        profitMargin: 50,
-        productPrices: [{ priceTypeId: 'pt-001', price: 200 }],
+        productPrices: [{ priceTypeId: 'pt-001', price: 200, profitMargin: 50 }],
       };
 
       service.update('prod-001', updateData).subscribe((result) => {

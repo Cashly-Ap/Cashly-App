@@ -6,6 +6,7 @@ describe('ProductPriceFormItem interface', () => {
     const item: ProductPriceFormItem = {
       priceTypeId: 'pt-001',
       price: 100.5,
+      profitMargin: 30,
     };
 
     expect(item.priceTypeId).toBe('pt-001');

@@ -39,17 +39,13 @@ describe('ProductCreate interface', () => {
       categoryId: 'cat-001',
       composite: true,
       description: 'A new composite product',
-      basePrice: 150,
       purchasePrice: 100,
-      profitMargin: 33.33,
       components: [{ componentProductId: 'prod-002', quantity: 2 }],
-      productPrices: [{ priceTypeId: 'pt-001', price: 100 }],
+      productPrices: [{ priceTypeId: 'pt-001', price: 100, profitMargin: 33.33 }],
     };
 
     expect(product.description).toBe('A new composite product');
-    expect(product.basePrice).toBe(150);
     expect(product.purchasePrice).toBe(100);
-    expect(product.profitMargin).toBe(33.33);
     expect(product.components).toHaveLength(1);
     expect(product.productPrices).toHaveLength(1);
   });
@@ -73,17 +69,13 @@ describe('ProductUpdate interface', () => {
       name: 'Updated Product',
       categoryId: 'cat-001',
       description: 'Updated description',
-      basePrice: 200,
       purchasePrice: 120,
-      profitMargin: 40,
       components: [{ componentProductId: 'prod-003', quantity: 1 }],
-      productPrices: [{ priceTypeId: 'pt-001', price: 150 }],
+      productPrices: [{ priceTypeId: 'pt-001', price: 150, profitMargin: 40 }],
     };
 
     expect(product.description).toBe('Updated description');
-    expect(product.basePrice).toBe(200);
     expect(product.purchasePrice).toBe(120);
-    expect(product.profitMargin).toBe(40);
     expect(product.components).toHaveLength(1);
     expect(product.productPrices).toHaveLength(1);
   });
