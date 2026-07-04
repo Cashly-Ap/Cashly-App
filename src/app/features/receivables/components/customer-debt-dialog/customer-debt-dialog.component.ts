@@ -8,6 +8,8 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { CustomerInvoiceDebt } from '@features/receivables/models/interfaces';
@@ -46,6 +48,8 @@ interface BalanceFilterOption {
     TooltipModule,
     InputNumberModule,
     InputTextModule,
+    SelectModule,
+    FormsModule,
     ReactiveFormsModule,
     CurrencyPipe,
     DatePipe,
