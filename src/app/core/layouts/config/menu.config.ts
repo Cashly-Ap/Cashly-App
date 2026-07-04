@@ -214,22 +214,41 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ],
         },
         {
-          label: 'Catálogo PDF',
-          icon: 'pi pi-book',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-          command: () => callbacks.openCatalogModal(),
-        },
-        {
-          label: 'Stock PDF',
-          icon: 'pi pi-warehouse',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-          command: () => callbacks.openStockModal(),
-        },
-        {
-          label: 'Movimientos PDF',
-          icon: 'pi pi-arrow-right-arrow-left',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-          command: () => callbacks.openMovementsModal(),
+          label: 'Inventario',
+          icon: 'pi pi-box',
+          requiredModule: BusinessModule.INVENTORY,
+          children: [
+            {
+              label: 'Almacenes',
+              icon: 'pi pi-database',
+              children: [
+                {
+                  label: 'Stock PDF',
+                  icon: 'pi pi-warehouse',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openStockModal(),
+                },
+                {
+                  label: 'Movimientos PDF',
+                  icon: 'pi pi-arrow-right-arrow-left',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openMovementsModal(),
+                },
+              ],
+            },
+            {
+              label: 'Productos',
+              icon: 'pi pi-box',
+              children: [
+                {
+                  label: 'Catálogo PDF',
+                  icon: 'pi pi-book',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openCatalogModal(),
+                },
+              ],
+            },
+          ],
         },
         {
           label: 'Compras',
@@ -237,10 +256,16 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           requiredModule: BusinessModule.PURCHASES,
           children: [
             {
-              label: 'Reporte de Compras PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openPurchasesPdfModal(),
+              label: 'Compras',
+              icon: 'pi pi-shopping-cart',
+              children: [
+                {
+                  label: 'Reporte de Compras PDF',
+                  icon: 'pi pi-file-pdf',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openPurchasesPdfModal(),
+                },
+              ],
             },
           ],
         },
@@ -250,16 +275,28 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           requiredModule: BusinessModule.FINANCE,
           children: [
             {
-              label: 'Cuentas por Cobrar PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openAccountsReceivablePdfModal(),
-            },
-            {
               label: 'Caja',
               icon: 'pi pi-calculator',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openCashRegisterModal(),
+              children: [
+                {
+                  label: 'Reporte de Caja',
+                  icon: 'pi pi-file-excel',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openCashRegisterModal(),
+                },
+              ],
+            },
+            {
+              label: 'Cuentas por Cobrar',
+              icon: 'pi pi-money-bill',
+              children: [
+                {
+                  label: 'Cuentas por Cobrar PDF',
+                  icon: 'pi pi-file-pdf',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openAccountsReceivablePdfModal(),
+                },
+              ],
             },
           ],
         },
