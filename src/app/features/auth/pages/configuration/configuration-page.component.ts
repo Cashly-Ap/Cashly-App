@@ -1,9 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
 import { AvatarModule } from 'primeng/avatar';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { AuthService } from '@features/auth/services';
@@ -15,9 +12,6 @@ import { UserType } from '@features/auth/models';
   imports: [
     CommonModule,
     MainLayoutComponent,
-    CardModule,
-    ButtonModule,
-    DividerModule,
     AvatarModule,
   ],
   templateUrl: './configuration-page.component.html',
@@ -37,7 +31,7 @@ export class ConfigurationPageComponent {
     const labels: Record<UserType, string> = {
       OPERATOR: 'Operador',
       ADMIN: 'Administrador',
-      SUPER_ADMIN: 'Super Admin',
+      SUPER_ADMIN: 'Super Administrador',
     };
     return labels[type] ?? type;
   }

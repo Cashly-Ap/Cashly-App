@@ -1,76 +1,76 @@
 <app-main-layout>
   <div class="flex justify-center px-4 py-8">
-    <div class="w-full max-w-2xl">
-      <div class="text-center mb-8">
-        <h1
-          class="text-3xl font-bold text-surface-900 dark:text-surface-0 mb-2"
-        >
-          Configuración de Cuenta
-        </h1>
-      </div>
-      <p-card styleClass="border border-surface-200 dark:border-surface-700">
-        @if (currentUser()) {
-          <div class="flex flex-col items-center mb-6">
+    <div class="w-full max-w-2xl flex flex-col gap-6">
+      <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+        Configuración de Cuenta
+      </h1>
+
+      @if (currentUser(); as user) {
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 overflow-hidden">
+          <div class="flex items-start gap-4 p-6">
             <p-avatar
               [label]="getInitials()"
               size="xlarge"
-              [style]="{
-                'background-color': '#2196F3',
-                color: '#ffffff',
-                'font-size': '2rem',
-              }"
-              styleClass="mb-4"
+              [style]="{ 'background-color': '#2196F3', color: '#ffffff', 'font-size': '2rem' }"
+              styleClass="shrink-0"
             />
-            <h2
-              class="text-2xl font-semibold text-surface-900 dark:text-surface-0 mb-1"
-            >
-              {{ currentUser()!.userName }}
-            </h2>
-            <p class="text-surface-600 dark:text-surface-400 mb-1">
-              {{ currentUser()!.email }}
-            </p>
-            <p class="text-surface-500 dark:text-surface-400 text-sm mb-4">
-              Miembro desde {{ currentUser()!.createdAt | date: "mediumDate" }}
-            </p>
-            <div class="flex gap-2">
-              <span
-                class="px-3 py-1 rounded-full text-sm font-semibold"
-                [ngClass]="
-                  currentUser()!.active
-                    ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300'
-                    : 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300'
-                "
-              >
-                {{ currentUser()!.active ? "Activo" : "Inactivo" }}
-              </span>
-              <span
-                class="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-              >
-                {{ getUserTypeLabel(currentUser()!.type) }}
-              </span>
+            <div class="flex flex-col gap-1 min-w-0">
+              <h2 class="text-xl font-semibold text-surface-900 dark:text-surface-0 truncate">{{ user.userName }}</h2>
+              <p class="text-sm text-surface-500 dark:text-surface-400">{{ user.email }}</p>
+              <p class="text-xs text-surface-400 dark:text-surface-500">
+                Miembro desde {{ user.createdAt | date: 'dd/MM/yyyy' }}
+              </p>
+              <div class="flex gap-2 mt-2">
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  [ngClass]="user.active
+                    ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300'
+                    : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300'">
+                  {{ user.active ? 'Activo' : 'Inactivo' }}
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300">
+                  {{ getUserTypeLabel(user.type) }}
+                </span>
+              </div>
             </div>
           </div>
-          <p-divider />
-          <div class="flex flex-col gap-3 mt-6">
-            <p-button
-              label="Cambiar Nombre de Usuario"
-              icon="pi pi-user-edit"
-              severity="secondary"
-              [outlined]="true"
-              styleClass="w-full justify-center"
-              (onClick)="onEditName()"
-            />
-            <p-button
-              label="Cambiar Contraseña"
-              icon="pi pi-key"
-              severity="secondary"
-              [outlined]="true"
-              styleClass="w-full justify-center"
-              (onClick)="onChangePassword()"
-            />
+
+          <div class="border-t border-surface-100 dark:border-surface-800">
+            <button
+              (click)="onEditName()"
+              class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
+            >
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-100 dark:bg-surface-800 shrink-0">
+                  <i class="pi pi-user-edit text-surface-600 dark:text-surface-300 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-surface-900 dark:text-surface-0">Cambiar Nombre de Usuario</p>
+                  <p class="text-xs text-surface-500 dark:text-surface-400">Actualiza cómo apareces en el sistema</p>
+                </div>
+              </div>
+              <i class="pi pi-chevron-right text-surface-400 text-sm"></i>
+            </button>
           </div>
-        }
-      </p-card>
+
+          <div class="border-t border-surface-100 dark:border-surface-800">
+            <button
+              (click)="onChangePassword()"
+              class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
+            >
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-100 dark:bg-surface-800 shrink-0">
+                  <i class="pi pi-key text-surface-600 dark:text-surface-300 text-sm"></i>
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-surface-900 dark:text-surface-0">Cambiar Contraseña</p>
+                  <p class="text-xs text-surface-500 dark:text-surface-400">Mantén tu cuenta segura</p>
+                </div>
+              </div>
+              <i class="pi pi-chevron-right text-surface-400 text-sm"></i>
+            </button>
+          </div>
+        </div>
+      }
     </div>
   </div>
 </app-main-layout>
