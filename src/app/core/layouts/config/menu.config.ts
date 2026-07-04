@@ -171,44 +171,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       requiredModule: BusinessModule.DOCUMENT_ADMIN,
       children: [
         {
-          label: 'Almacén',
-          icon: 'pi pi-box',
-          requiredModule: BusinessModule.INVENTORY,
-          children: [
-            {
-              label: 'Catálogo PDF',
-              icon: 'pi pi-book',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openCatalogModal(),
-            },
-            {
-              label: 'Stock PDF',
-              icon: 'pi pi-warehouse',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openStockModal(),
-            },
-            {
-              label: 'Movimientos PDF',
-              icon: 'pi pi-arrow-right-arrow-left',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openMovementsModal(),
-            },
-          ],
-        },
-        {
-          label: 'Compras',
-          icon: 'pi pi-shopping-cart',
-          requiredModule: BusinessModule.PURCHASES,
-          children: [
-            {
-              label: 'Reporte de Compras PDF',
-              icon: 'pi pi-file-pdf',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openPurchasesPdfModal(),
-            },
-          ],
-        },
-        {
           label: 'Gestión Comercial',
           icon: 'pi pi-briefcase',
           requiredModule: BusinessModule.SALES,
@@ -248,6 +210,44 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
                   command: () => callbacks.openInvoicesPdfModal(),
                 },
               ],
+            },
+          ],
+        },
+        {
+          label: 'Almacén',
+          icon: 'pi pi-box',
+          requiredModule: BusinessModule.INVENTORY,
+          children: [
+            {
+              label: 'Catálogo PDF',
+              icon: 'pi pi-book',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openCatalogModal(),
+            },
+            {
+              label: 'Stock PDF',
+              icon: 'pi pi-warehouse',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openStockModal(),
+            },
+            {
+              label: 'Movimientos PDF',
+              icon: 'pi pi-arrow-right-arrow-left',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openMovementsModal(),
+            },
+          ],
+        },
+        {
+          label: 'Compras',
+          icon: 'pi pi-shopping-cart',
+          requiredModule: BusinessModule.PURCHASES,
+          children: [
+            {
+              label: 'Reporte de Compras PDF',
+              icon: 'pi pi-file-pdf',
+              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+              command: () => callbacks.openPurchasesPdfModal(),
             },
           ],
         },
