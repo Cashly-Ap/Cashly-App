@@ -9,6 +9,7 @@ import {
   withInterceptors,
 } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { routes } from '@app/app.routes';
@@ -32,6 +33,7 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    provideCharts(withDefaultRegisterables()),
     MessageService,
     ConfirmationService,
     DialogService,

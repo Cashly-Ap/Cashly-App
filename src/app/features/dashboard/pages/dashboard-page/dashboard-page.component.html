@@ -1,0 +1,114 @@
+<app-main-layout>
+  <div class="p-4 md:p-6 max-w-7xl mx-auto">
+    <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-0 mb-6">Dashboard</h1>
+
+    @if (summary()) {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Ventas del Mes</span>
+            <div class="w-9 h-9 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <i class="pi pi-dollar text-blue-600 dark:text-blue-400 text-sm"></i>
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">${{ summary()!.monthlySales | number:'1.2-2' }}</p>
+        </div>
+
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Pedidos Pendientes</span>
+            <div class="w-9 h-9 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <i class="pi pi-shopping-cart text-amber-600 dark:text-amber-400 text-sm"></i>
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ summary()!.pendingOrders }}</p>
+        </div>
+
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Por Cobrar</span>
+            <div class="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+              <i class="pi pi-exclamation-triangle text-red-600 dark:text-red-400 text-sm"></i>
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">${{ summary()!.overdueReceivables | number:'1.2-2' }}</p>
+        </div>
+
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Stock Bajo</span>
+            <div class="w-9 h-9 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <i class="pi pi-box text-green-600 dark:text-green-400 text-sm"></i>
+            </div>
+          </div>
+          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">{{ summary()!.lowStockProducts }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Ventas Últimos 6 Meses</h3>
+          @if (salesChartData().labels?.length) {
+            <canvas baseChart [type]="barChartType" [data]="salesChartData()" [options]="salesChartOptions"></canvas>
+          } @else {
+            <p class="text-sm text-surface-400 py-8 text-center">Sin datos de ventas</p>
+          }
+        </div>
+
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Top 5 Productos</h3>
+          @if (productsChartData().labels?.length) {
+            <canvas baseChart [type]="horizontalBarChartType" [data]="productsChartData()" [options]="productsChartOptions"></canvas>
+          } @else {
+            <p class="text-sm text-surface-400 py-8 text-center">Sin datos de productos</p>
+          }
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Top 5 Clientes</h3>
+          @if (customersChartData().labels?.length) {
+            <canvas baseChart [type]="horizontalBarChartType" [data]="customersChartData()" [options]="customersChartOptions"></canvas>
+          } @else {
+            <p class="text-sm text-surface-400 py-8 text-center">Sin datos de clientes</p>
+          }
+        </div>
+
+        <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
+          <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Actividad Reciente</h3>
+          @if (recentActivity().length) {
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-surface-100 dark:border-surface-800">
+                    <th class="text-left py-2 text-xs text-surface-500 uppercase">Tipo</th>
+                    <th class="text-left py-2 text-xs text-surface-500 uppercase">Número</th>
+                    <th class="text-left py-2 text-xs text-surface-500 uppercase">Cliente</th>
+                    <th class="text-right py-2 text-xs text-surface-500 uppercase">Monto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (item of recentActivity(); track item.id) {
+                    <tr class="border-b border-surface-50 dark:border-surface-800">
+                      <td class="py-2">
+                        <span class="text-xs px-2 py-0.5 rounded-full" [class.bg-blue-100]="item.type==='invoice'" [class.text-blue-700]="item.type==='invoice'" [class.bg-purple-100]="item.type==='order'" [class.text-purple-700]="item.type==='order'">
+                          {{ activityLabel(item.type) }}
+                        </span>
+                      </td>
+                      <td class="py-2 text-surface-900 dark:text-surface-0 font-mono text-xs">{{ item.number }}</td>
+                      <td class="py-2 text-surface-600 dark:text-surface-400 text-xs truncate max-w-32">{{ item.customer }}</td>
+                      <td class="py-2 text-right text-surface-900 dark:text-surface-0 font-medium text-xs">${{ item.amount | number:'1.2-2' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          } @else {
+            <p class="text-sm text-surface-400 py-8 text-center">Sin actividad reciente</p>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</app-main-layout>
