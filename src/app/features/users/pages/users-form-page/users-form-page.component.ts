@@ -81,7 +81,11 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    const messages = [...invalid];
+    if (this.selectedModules().length === 0) {
+      messages.push('Módulos (mínimo 1)');
+    }
+    this.submitTooltip.set(messages.length ? `Campos requeridos: ${messages.join(', ')}` : '');
   }
 
   showChangePasswordDialog = signal(false);
@@ -157,87 +161,98 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   }
 
   override onSubmit(): void {
-    if (this.form.valid) {
-      const formValue = this.form.getRawValue();
-
-      if (this.isEditMode() && this.entityId()) {
-        const editData = {
-          id: this.entityId()!,
-          email: formValue.email,
-          userName: formValue.userName,
-          role: formValue.role,
-          active: formValue.active,
-        };
-
-        const updateUser$ = this.service.updateUser(this.entityId()!, editData);
-        const updatePermissions$ = this.authService.isSuperAdmin()
-          ? this.service.updateModulePermissions(this.entityId()!, this.selectedModules())
-          : of(null);
-
-        forkJoin([updateUser$, updatePermissions$]).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario actualizado exitosamente',
-              life: 3000,
-            });
-            this.router.navigate(['/users']);
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar el usuario. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      } else {
-        const createData = {
-          email: formValue.email,
-          password: formValue.password,
-          userName: formValue.userName,
-          role: formValue.role,
-          active: formValue.active,
-        };
-
-        this.service.createUser(createData).pipe(
-          switchMap((createdUser) => {
-            if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
-              return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
-            }
-            return of(null);
-          }),
-        ).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario creado exitosamente',
-              life: 3000,
-            });
-            this.router.navigate(['/users']);
-          },
-          error: (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      }
-    } else {
+    if (!this.form.valid) {
       this.form.markAllAsTouched();
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
         detail: 'Por favor, complete todos los campos requeridos correctamente',
         life: 5000,
+      });
+      return;
+    }
+
+    if (this.selectedModules().length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debe seleccionar al menos un módulo para el usuario',
+        life: 5000,
+      });
+      return;
+    }
+
+    const formValue = this.form.getRawValue();
+
+    if (this.isEditMode() && this.entityId()) {
+      const editData = {
+        id: this.entityId()!,
+        email: formValue.email,
+        userName: formValue.userName,
+        role: formValue.role,
+        active: formValue.active,
+      };
+
+      const updateUser$ = this.service.updateUser(this.entityId()!, editData);
+      const updatePermissions$ = this.authService.isSuperAdmin()
+        ? this.service.updateModulePermissions(this.entityId()!, this.selectedModules())
+        : of(null);
+
+      forkJoin([updateUser$, updatePermissions$]).subscribe({
+        next: () => {
+          this.markAsSubmitted();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Usuario actualizado exitosamente',
+            life: 3000,
+          });
+          this.router.navigate(['/users']);
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al actualizar el usuario. Por favor, intente nuevamente.',
+            life: 5000,
+          });
+        },
+      });
+    } else {
+      const createData = {
+        email: formValue.email,
+        password: formValue.password,
+        userName: formValue.userName,
+        role: formValue.role,
+        active: formValue.active,
+      };
+
+      this.service.createUser(createData).pipe(
+        switchMap((createdUser) => {
+          if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
+            return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
+          }
+          return of(null);
+        }),
+      ).subscribe({
+        next: () => {
+          this.markAsSubmitted();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Usuario creado exitosamente',
+            life: 3000,
+          });
+          this.router.navigate(['/users']);
+        },
+        error: (err) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
+            life: 5000,
+          });
+        },
       });
     }
   }
@@ -248,6 +263,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         ? current.filter((m) => m !== module)
         : [...current, module],
     );
+    this.updateSubmitTooltip();
   }
 
   isModuleSelected(module: BusinessModule): boolean {
