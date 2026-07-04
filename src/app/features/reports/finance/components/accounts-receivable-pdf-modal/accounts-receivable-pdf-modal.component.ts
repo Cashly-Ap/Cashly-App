@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal, input, output, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -27,7 +27,7 @@ interface SelectOption {
   ],
   templateUrl: './accounts-receivable-pdf-modal.component.html',
 })
-export class AccountsReceivablePdfModalComponent implements OnInit {
+export class AccountsReceivablePdfModalComponent {
   private readonly customerApi = inject(CustomerApiService);
 
   readonly visible = input(false);
@@ -38,8 +38,11 @@ export class AccountsReceivablePdfModalComponent implements OnInit {
   readonly overdueOnly = signal(false);
 
   readonly customerOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los clientes' }]);
+  private customersLoaded = false;
 
-  ngOnInit(): void {
+  loadCustomers(): void {
+    if (this.customersLoaded) return;
+    this.customersLoaded = true;
     this.customerApi.getAll({ size: 1000 }).subscribe((response) => {
       this.customerOptions.set([
         { value: null, label: 'Todos los clientes' },

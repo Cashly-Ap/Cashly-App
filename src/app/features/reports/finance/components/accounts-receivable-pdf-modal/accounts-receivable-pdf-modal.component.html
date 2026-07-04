@@ -3,6 +3,7 @@
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
+  (onShow)="loadCustomers()"
   [style]="{ width: '450px' }"
   [draggable]="false"
   [resizable]="false"
