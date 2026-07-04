@@ -214,29 +214,22 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ],
         },
         {
-          label: 'Almacén',
-          icon: 'pi pi-box',
-          requiredModule: BusinessModule.INVENTORY,
-          children: [
-            {
-              label: 'Catálogo PDF',
-              icon: 'pi pi-book',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openCatalogModal(),
-            },
-            {
-              label: 'Stock PDF',
-              icon: 'pi pi-warehouse',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openStockModal(),
-            },
-            {
-              label: 'Movimientos PDF',
-              icon: 'pi pi-arrow-right-arrow-left',
-              allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-              command: () => callbacks.openMovementsModal(),
-            },
-          ],
+          label: 'Catálogo PDF',
+          icon: 'pi pi-book',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+          command: () => callbacks.openCatalogModal(),
+        },
+        {
+          label: 'Stock PDF',
+          icon: 'pi pi-warehouse',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+          command: () => callbacks.openStockModal(),
+        },
+        {
+          label: 'Movimientos PDF',
+          icon: 'pi pi-arrow-right-arrow-left',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+          command: () => callbacks.openMovementsModal(),
         },
         {
           label: 'Compras',
