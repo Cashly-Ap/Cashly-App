@@ -6,7 +6,7 @@
   >
     <div class="flex items-center justify-between px-4 h-16">
       
-      <div class="lg:hidden">
+      <div class="xl:hidden">
         <p-button
           icon="pi pi-bars"
           [text]="true"
@@ -18,7 +18,7 @@
       </div>
 
       
-      <div class="hidden lg:flex items-center">
+      <div class="hidden xl:flex items-center">
         <img
           [ngSrc]="logoSrc"
           alt="Logo Parsun"
@@ -32,7 +32,7 @@
       </div>
 
       
-      <div class="lg:hidden flex-1 flex justify-center">
+      <div class="xl:hidden flex-1 flex justify-center">
         <img
           [ngSrc]="logoSrc"
           alt="Logo Parsun"
@@ -46,7 +46,7 @@
       </div>
 
       
-      <div class="hidden lg:flex flex-1 px-8">
+      <div class="hidden xl:flex flex-1 px-8">
         <p-menubar
           [model]="primeMenuItems()"
           styleClass="border-0 bg-transparent"
@@ -60,7 +60,7 @@
         <button
           #userButton
           (click)="toggleUserMenu($event)"
-          class="hidden lg:flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
+          class="hidden xl:flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
         >
           <p-avatar
             [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
@@ -73,7 +73,7 @@
           <i class="pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
         </button>
         
-        <div class="hidden lg:block">
+        <div class="hidden xl:block">
           <app-theme-toggle></app-theme-toggle>
         </div>
       </div>
