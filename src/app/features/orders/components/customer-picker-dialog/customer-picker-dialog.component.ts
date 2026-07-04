@@ -112,10 +112,9 @@ export class CustomerPickerDialogComponent {
   private load(page: number): void {
     this.loading.set(true);
     this.customerApi
-      .getAll({
+      .getForPicker({
         search: this.search() || undefined,
         type: this.filterType() ?? undefined,
-        active: true,
         page,
         size: PAGE_SIZE,
       })

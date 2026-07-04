@@ -17,6 +17,13 @@ export interface CustomerFilters {
   orderDir?: 'asc' | 'desc';
 }
 
+export interface CustomerPickerFilters {
+  search?: string;
+  type?: string;
+  page?: number;
+  size?: number;
+}
+
 export interface CustomerCreatedResponse {
   id: string;
 }
@@ -39,6 +46,15 @@ export class CustomerApiService {
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http.get<PagedResponse<CustomerList>>(this.baseUrl, { params });
+  }
+
+  getForPicker(filters?: CustomerPickerFilters): Observable<PagedResponse<CustomerList>> {
+    let params = new HttpParams();
+    if (filters?.search) params = params.set('search', filters.search);
+    if (filters?.type) params = params.set('type', filters.type);
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    return this.http.get<PagedResponse<CustomerList>>(`${this.baseUrl}/picker`, { params });
   }
 
   getById(id: string): Observable<CustomerDetails> {
