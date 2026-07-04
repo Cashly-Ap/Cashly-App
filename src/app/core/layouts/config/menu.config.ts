@@ -3,6 +3,7 @@ import { BusinessModule } from '@features/users/models/enums';
 
 export interface MenuCallbacks {
   openCatalogModal: () => void;
+  openCommercialCatalogModal: () => void;
   openStockModal: () => void;
   openMovementsModal: () => void;
   openOrdersPdfModal: () => void;
@@ -241,10 +242,16 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               icon: 'pi pi-box',
               children: [
                 {
-                  label: 'Catálogo PDF',
-                  icon: 'pi pi-book',
+                  label: 'Reporte de Productos PDF',
+                  icon: 'pi pi-table',
                   allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
                   command: () => callbacks.openCatalogModal(),
+                },
+                {
+                  label: 'Catálogo Comercial PDF',
+                  icon: 'pi pi-book',
+                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+                  command: () => callbacks.openCommercialCatalogModal(),
                 },
               ],
             },

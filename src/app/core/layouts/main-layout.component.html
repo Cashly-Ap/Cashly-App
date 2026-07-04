@@ -162,6 +162,12 @@
     (onGeneratePdf)="onCatalogPdf($event)"
   />
 
+  <app-commercial-catalog-pdf-modal
+    [visible]="activeModal() === 'commercialCatalog'"
+    (visibleChange)="$event === false && activeModal.set(null)"
+    (onGeneratePdf)="onCommercialCatalogPdf($event)"
+  />
+
   <app-stock-pdf-modal
     [visible]="activeModal() === 'stock'"
     (visibleChange)="$event === false && activeModal.set(null)"

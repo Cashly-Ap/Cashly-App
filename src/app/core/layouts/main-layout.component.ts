@@ -30,15 +30,17 @@ import { UserType } from '@features/auth/models';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
+import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal';
 import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
 import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
 import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
+import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
-import { CatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { CatalogPdfFilters, CommercialCatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
 import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
@@ -76,6 +78,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     DrawerModule,
     PanelMenuModule,
     CatalogPdfModalComponent,
+    CommercialCatalogPdfModalComponent,
     StockPdfModalComponent,
     MovementsPdfModalComponent,
     PdfViewerModalComponent,
@@ -99,6 +102,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private sanitizer = inject(DomSanitizer);
   private catalogPdfApi = inject(CatalogPdfApiService);
+  private commercialCatalogPdfApi = inject(CommercialCatalogPdfApiService);
   private stockPdfApi = inject(StockPdfApiService);
   private stockExcelApi = inject(StockExcelApiService);
   private movementsPdfApi = inject(MovementsPdfApiService);
@@ -119,7 +123,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/Parsun.png';
 
-  readonly activeModal = signal<'catalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'purchases' | 'accountsReceivable' | 'cashRegister' | null>(null);
+  readonly activeModal = signal<'catalog' | 'commercialCatalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'purchases' | 'accountsReceivable' | 'cashRegister' | null>(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -174,6 +178,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const role = (user?.role || user?.type) as UserType;
     const callbacks = {
       openCatalogModal: () => this.activeModal.set('catalog'),
+      openCommercialCatalogModal: () => this.activeModal.set('commercialCatalog'),
       openStockModal: () => this.activeModal.set('stock'),
       openMovementsModal: () => this.activeModal.set('movements'),
       openOrdersPdfModal: () => this.activeModal.set('orders'),
@@ -225,9 +230,26 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   onCatalogPdf(filters: CatalogPdfFilters): void {
     this.activeModal.set(null);
     this.loadingPdf.set(true);
-    this.pdfTitle.set('Catálogo de Productos');
+    this.pdfTitle.set('Reporte de Productos');
     this.pdfViewerVisible.set(true);
     this.catalogPdfApi.downloadPdf(filters).pipe(
+      finalize(() => this.loadingPdf.set(false))
+    ).subscribe({
+      next: (blob) => {
+        this.revokeCurrentUrl();
+        const url = URL.createObjectURL(blob);
+        this.currentObjectUrl = url;
+        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+      },
+    });
+  }
+
+  onCommercialCatalogPdf(filters: CommercialCatalogPdfFilters): void {
+    this.activeModal.set(null);
+    this.loadingPdf.set(true);
+    this.pdfTitle.set('Catálogo Comercial');
+    this.pdfViewerVisible.set(true);
+    this.commercialCatalogPdfApi.downloadPdf(filters).pipe(
       finalize(() => this.loadingPdf.set(false))
     ).subscribe({
       next: (blob) => {
