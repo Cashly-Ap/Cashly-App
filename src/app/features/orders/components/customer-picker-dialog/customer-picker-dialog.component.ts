@@ -33,6 +33,7 @@ export class CustomerPickerDialogComponent {
   private readonly customerApi = inject(CustomerApiService);
 
   readonly visible = input<boolean>(false);
+  readonly hasExistingItems = input<boolean>(false);
   readonly customerSelected = output<CustomerList>();
   readonly cancelled = output<void>();
 

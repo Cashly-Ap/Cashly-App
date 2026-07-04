@@ -223,6 +223,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.selectedCustomer.set(customer);
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
+    this.items.set([]);
     this.pickerVisible.set(false);
     this.scheduleAutoSave();
     this.loadCreditStatus(customer.id);
