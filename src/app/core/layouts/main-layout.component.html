@@ -18,35 +18,7 @@
       </div>
 
       
-      <div class="hidden lg:flex items-center">
-        <img
-          [ngSrc]="logoSrc"
-          alt="Logo Parsun"
-          width="87"
-          height="40"
-          priority
-          style="width: auto"
-          class="h-10 object-contain cursor-pointer"
-          [routerLink]="['/dashboard']"
-        />
-      </div>
-
-      
-      <div class="lg:hidden flex-1 flex justify-center">
-        <img
-          [ngSrc]="logoSrc"
-          alt="Logo Parsun"
-          width="70"
-          height="32"
-          priority
-          style="width: auto"
-          class="h-8 object-contain cursor-pointer"
-          [routerLink]="['/dashboard']"
-        />
-      </div>
-
-      
-      <div class="hidden lg:flex flex-1 px-8">
+      <div class="hidden lg:flex flex-1 px-4">
         <p-menubar
           [model]="primeMenuItems()"
           styleClass="border-0 bg-transparent"
