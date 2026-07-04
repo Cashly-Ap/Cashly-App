@@ -142,7 +142,7 @@
                 <p-select [options]="paymentMethods()" optionLabel="name" optionValue="id" placeholder="Seleccionar m&eacute;todo" styleClass="w-full" [ngModel]="line.methodId" (ngModelChange)="updatePaymentLine(i, 'methodId', $event)" appendTo="body" />
               </div>
               <div>
-                <p-inputNumber [ngModel]="line.amount" (ngModelChange)="updatePaymentLine(i, 'amount', $event)" mode="currency" currency="USD" locale="en-US" [min]="0" [maxFractionDigits]="2" styleClass="w-full" placeholder="0.00" />
+                <p-inputNumber [ngModel]="line.amount" (ngModelChange)="updatePaymentLine(i, 'amount', $event)" mode="currency" currency="USD" locale="en-US" [min]="0" [maxFractionDigits]="2" fluid placeholder="0.00" />
               </div>
               <div class="flex justify-center">
                 <p-button icon="pi pi-trash" size="small" severity="danger" [text]="true" [rounded]="true" (onClick)="removePaymentLine(i)" />

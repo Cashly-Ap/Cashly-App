@@ -57,8 +57,7 @@
               currency="VES"
               locale="es-VE"
               placeholder="0.00"
-              class="w-full"
-              inputStyleClass="w-full"
+              fluid
             />
             @if (form.get('amount')?.errors?.['required'] && form.get('amount')?.touched) {
               <small class="text-red-500 text-xs">El monto es requerido</small>

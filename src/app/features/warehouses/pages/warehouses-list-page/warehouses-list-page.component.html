@@ -279,7 +279,7 @@
               </div>
               <div class="flex flex-col gap-1">
                 <label class="text-sm font-medium">Cantidad <span class="text-red-500">*</span></label>
-                <p-inputnumber formControlName="quantity" [min]="0.01" [minFractionDigits]="0" [maxFractionDigits]="2" styleClass="w-full" />
+                <p-inputnumber formControlName="quantity" [min]="0.01" [minFractionDigits]="0" [maxFractionDigits]="2" fluid />
                 @if (line.get('quantity')?.errors?.['required'] && line.get('quantity')?.touched) {
                   <small class="text-red-500 text-xs">La cantidad es requerida</small>
                 }
@@ -289,7 +289,7 @@
               </div>
               <div class="flex flex-col gap-1">
                 <label class="text-sm font-medium">Precio Unitario</label>
-                <p-inputnumber formControlName="unitPrice" [min]="0" [minFractionDigits]="2" [maxFractionDigits]="2" mode="currency" currency="USD" locale="es-VE" styleClass="w-full" placeholder="0.00" />
+                <p-inputnumber formControlName="unitPrice" [min]="0" [minFractionDigits]="2" [maxFractionDigits]="2" mode="currency" currency="USD" locale="es-VE" fluid placeholder="0.00" />
               </div>
               <div class="flex flex-col gap-1 justify-end">
                 <label class="text-sm font-medium text-surface-500">Stock actual → resultante</label>
@@ -398,7 +398,7 @@
               </div>
               <div class="flex flex-col gap-1">
                 <label class="text-sm font-medium">Cantidad <span class="text-red-500">*</span></label>
-                <p-inputnumber formControlName="quantity" [min]="0.01" [minFractionDigits]="0" [maxFractionDigits]="2" styleClass="w-full" />
+                <p-inputnumber formControlName="quantity" [min]="0.01" [minFractionDigits]="0" [maxFractionDigits]="2" fluid />
                 @if (line.get('quantity')?.errors?.['required'] && line.get('quantity')?.touched) {
                   <small class="text-red-500 text-xs">La cantidad es requerida</small>
                 }

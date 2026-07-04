@@ -99,7 +99,7 @@
             [min]="0.01"
             [max]="maxAmount()"
             [maxFractionDigits]="2"
-            styleClass="w-full"
+            fluid
             [class.ng-invalid]="form.get('amount')?.invalid && form.get('amount')?.touched"
             [class.opacity-60]="isFullyCoveredByBalance()"
           />
