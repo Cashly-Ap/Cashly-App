@@ -33,11 +33,9 @@ describe('ProductsDetailsPageComponent', () => {
     photo: null,
     active: true,
     description: 'Test description',
-    basePrice: 100,
     purchasePrice: 80,
-    profitMargin: 20,
     components: [],
-    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 120 }],
+    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 120, profitMargin: 20 }],
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-01T00:00:00Z',
   };

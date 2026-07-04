@@ -33,7 +33,7 @@ describe('ProductsListPageComponent', () => {
     categoryName: 'Test Category',
     composite: false,
     active: true,
-    basePrice: 100,
+    purchasePrice: 60,
     productPrices: [{ priceTypeId: 'pt-001', price: 120 }],
     stockTotal: 50,
   };
@@ -184,16 +184,16 @@ describe('ProductsListPageComponent', () => {
     expect(price).toBe(120);
   });
 
-  it('should return 0 when no price type selected', () => {
+  it('should return purchasePrice when no price type selected', () => {
     component.selectedPriceTypeId.set(null);
     const price = component.getPriceForProduct(mockProduct);
-    expect(price).toBe(0);
+    expect(price).toBe(60);
   });
 
-  it('should return 0 when product has no matching price', () => {
+  it('should return purchasePrice when product has no matching price', () => {
     component.selectedPriceTypeId.set('nonexistent');
     const price = component.getPriceForProduct(mockProduct);
-    expect(price).toBe(0);
+    expect(price).toBe(60);
   });
 
   it('should call loadWithFilters on onSearch', () => {

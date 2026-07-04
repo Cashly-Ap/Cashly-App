@@ -38,9 +38,7 @@ describe('ProductsFormPageComponent', () => {
     photo: null,
     active: true,
     description: 'Test description',
-    basePrice: 100,
     purchasePrice: 80,
-    profitMargin: 20,
     components: [],
     productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 120 }],
     createdAt: '2025-01-01T00:00:00Z',
@@ -162,9 +160,7 @@ describe('ProductsFormPageComponent', () => {
     expect(component.form.contains('description')).toBe(true);
     expect(component.form.contains('active')).toBe(true);
     expect(component.form.contains('composite')).toBe(true);
-    expect(component.form.contains('basePrice')).toBe(true);
     expect(component.form.contains('purchasePrice')).toBe(true);
-    expect(component.form.contains('profitMargin')).toBe(true);
     expect(component.form.contains('photo')).toBe(true);
     expect(component.form.contains('components')).toBe(true);
     expect(component.form.contains('productPrices')).toBe(true);
@@ -184,18 +180,10 @@ describe('ProductsFormPageComponent', () => {
     expect(catControl?.hasError('required')).toBe(true);
   });
 
-  it('should have basePrice with min 0', () => {
-    const priceControl = component.form.get('basePrice');
+  it('should have purchasePrice with min 0', () => {
+    const priceControl = component.form.get('purchasePrice');
     priceControl?.setValue(-1);
     expect(priceControl?.hasError('min')).toBe(true);
-  });
-
-  it('should have profitMargin with min 0 and max 100', () => {
-    const marginControl = component.form.get('profitMargin');
-    marginControl?.setValue(-1);
-    expect(marginControl?.hasError('min')).toBe(true);
-    marginControl?.setValue(101);
-    expect(marginControl?.hasError('max')).toBe(true);
   });
 
   it('should set submitTooltip when form is invalid', () => {
@@ -321,12 +309,12 @@ describe('ProductsFormPageComponent', () => {
   });
 
   it('should return pending tab title from formData name', () => {
-    const title = component['getPendingTabTitle']({ name: 'My Product', categoryId: 'cat-001', description: '', active: true, composite: false, basePrice: null, purchasePrice: null, profitMargin: null, photo: null, components: [], productPrices: [] });
+    const title = component['getPendingTabTitle']({ name: 'My Product', categoryId: 'cat-001', description: '', active: true, composite: false, purchasePrice: null, photo: null, components: [], productPrices: [] });
     expect(title).toBe('My Product');
   });
 
   it('should return default pending tab title when name is empty', () => {
-    const title = component['getPendingTabTitle']({ name: '', categoryId: 'cat-001', description: '', active: true, composite: false, basePrice: null, purchasePrice: null, profitMargin: null, photo: null, components: [], productPrices: [] });
+    const title = component['getPendingTabTitle']({ name: '', categoryId: 'cat-001', description: '', active: true, composite: false, purchasePrice: null, photo: null, components: [], productPrices: [] });
     expect(title).toContain('Nuevo');
   });
 
@@ -337,9 +325,7 @@ describe('ProductsFormPageComponent', () => {
       description: 'Restored desc',
       active: false,
       composite: true,
-      basePrice: 50,
       purchasePrice: 40,
-      profitMargin: 25,
       photo: null,
       components: [],
       productPrices: [],

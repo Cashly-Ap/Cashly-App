@@ -29,14 +29,13 @@ class HostComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
+      code: [''],
       name: [''],
       categoryId: [null],
       description: [''],
       active: [true],
       composite: [false],
-      basePrice: [null],
       purchasePrice: [null],
-      profitMargin: [null],
       photo: [null],
       components: this.fb.array([]),
       productPrices: this.fb.array([]),
