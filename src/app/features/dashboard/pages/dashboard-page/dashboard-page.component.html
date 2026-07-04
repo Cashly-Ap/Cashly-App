@@ -58,7 +58,9 @@
         <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
           <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Top 5 Productos</h3>
           @if (productsChartData().labels?.length) {
-            <canvas baseChart [type]="horizontalBarChartType" [data]="productsChartData()" [options]="productsChartOptions"></canvas>
+            <div style="height: 260px">
+              <canvas baseChart [type]="horizontalBarChartType" [data]="productsChartData()" [options]="productsChartOptions"></canvas>
+            </div>
           } @else {
             <p class="text-sm text-surface-400 py-8 text-center">Sin datos de productos</p>
           }
@@ -69,7 +71,9 @@
         <div class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 p-5">
           <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-4">Top 5 Clientes</h3>
           @if (customersChartData().labels?.length) {
-            <canvas baseChart [type]="horizontalBarChartType" [data]="customersChartData()" [options]="customersChartOptions"></canvas>
+            <div style="height: 260px">
+              <canvas baseChart [type]="horizontalBarChartType" [data]="customersChartData()" [options]="customersChartOptions"></canvas>
+            </div>
           } @else {
             <p class="text-sm text-surface-400 py-8 text-center">Sin datos de clientes</p>
           }

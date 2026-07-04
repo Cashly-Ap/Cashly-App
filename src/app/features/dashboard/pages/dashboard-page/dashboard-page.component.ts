@@ -36,16 +36,24 @@ export class DashboardPageComponent implements OnInit {
   productsChartOptions: ChartConfiguration['options'] = {
     indexAxis: 'y',
     responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
-    scales: { x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+      y: { ticks: { font: { size: 11 } } },
+    },
   };
 
   customersChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
   customersChartOptions: ChartConfiguration['options'] = {
     indexAxis: 'y',
     responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
-    scales: { x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+      y: { ticks: { font: { size: 11 } } },
+    },
   };
 
   ngOnInit(): void {
@@ -54,7 +62,7 @@ export class DashboardPageComponent implements OnInit {
     this.api.getMonthlySales().subscribe((data) => {
       this.monthlySales.set(data);
       this.salesChartData.set({
-        labels: data.map((d) => d.month),
+        labels: data.map((d) => this.formatMonth(d.month)),
         datasets: [{ data: data.map((d) => d.total), backgroundColor: '#2196F3', borderRadius: 6 }],
       });
     });
@@ -84,5 +92,12 @@ export class DashboardPageComponent implements OnInit {
   activityLabel(type: string): string {
     const labels: Record<string, string> = { invoice: 'Factura', order: 'Pedido' };
     return labels[type] ?? type;
+  }
+
+  private formatMonth(month: string): string {
+    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const [year, m] = month.split('-');
+    const monthIndex = parseInt(m, 10) - 1;
+    return months[monthIndex] + ' ' + year;
   }
 }
