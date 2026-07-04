@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard, homeRedirectGuard } from '@features/auth/guards';
+import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/users/models/enums';
 
 export const routes: Routes = [
   {
@@ -12,6 +14,12 @@ export const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () => import('@features/auth/router').then((m) => m.AUTH_ROUTES),
+  },
+  {
+    path: 'dashboard',
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.DASHBOARD },
+    loadComponent: () => import('@features/dashboard/pages/dashboard-page/dashboard-page.component').then((m) => m.DashboardPageComponent),
   },
   {
     path: 'users',

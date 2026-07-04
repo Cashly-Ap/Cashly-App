@@ -16,6 +16,13 @@ export interface MenuCallbacks {
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
   return [
     {
+      label: 'Dashboard',
+      icon: 'pi pi-chart-line',
+      routerLink: '/dashboard',
+      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+      requiredModule: BusinessModule.DASHBOARD,
+    },
+    {
       label: 'Gestión de Usuarios',
       icon: 'pi pi-users',
       allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],

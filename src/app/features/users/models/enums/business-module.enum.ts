@@ -6,6 +6,7 @@ export enum BusinessModule {
   PURCHASES = 'PURCHASES',
   CUSTOMER_PORTAL = 'CUSTOMER_PORTAL',
   DOCUMENT_ADMIN = 'DOCUMENT_ADMIN',
+  DASHBOARD = 'DASHBOARD',
 }
 
 export const BUSINESS_MODULE_LABELS: Record<BusinessModule, string> = {
@@ -16,4 +17,5 @@ export const BUSINESS_MODULE_LABELS: Record<BusinessModule, string> = {
   [BusinessModule.PURCHASES]: 'Compras',
   [BusinessModule.CUSTOMER_PORTAL]: 'Portal Web de Clientes',
   [BusinessModule.DOCUMENT_ADMIN]: 'Reportes',
+  [BusinessModule.DASHBOARD]: 'Dashboard',
 };
