@@ -177,7 +177,7 @@ export class OrderApiService {
     if (filters.withStock !== undefined) params = params.set('withStock', String(filters.withStock));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
-    return this.http.get<PageResponse<OrderProduct>>(`${this.baseUrl}/products`, { params });
+    return this.http.get<PageResponse<OrderProduct>>('/api/products', { params });
   }
 
   private toOrderDetails(r: OrderDetailApiResponse): OrderDetails {

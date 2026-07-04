@@ -170,7 +170,7 @@ export class QuoteApiService {
     if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
-    return this.http.get<PageResponse<QuoteProduct>>(`${this.baseUrl}/products`, { params });
+    return this.http.get<PageResponse<QuoteProduct>>('/api/products', { params });
   }
 
   getWarehousesForQuote(customerId: string): Observable<QuoteWarehouse[]> {
