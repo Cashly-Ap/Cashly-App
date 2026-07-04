@@ -126,8 +126,8 @@ export class ProductsListPageComponent implements OnInit {
 
   getPriceForProduct(product: ProductList): number {
     const selected = this.selectedPriceTypeId();
-    if (!selected) return 0;
-    return product.productPrices.find((pp) => pp.priceTypeId === selected)?.price ?? 0;
+    if (!selected) return product.purchasePrice ?? 0;
+    return product.productPrices.find((pp) => pp.priceTypeId === selected)?.price ?? product.purchasePrice ?? 0;
   }
 
   onSearch(value: string): void {

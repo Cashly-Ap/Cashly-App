@@ -58,18 +58,20 @@ export class ProductPricesSectionComponent {
     this.collapsed.update((v) => !v);
   }
 
+  getProfitMarginControl(index: number): FormControl {
+    return (this.pricesControls()[index] as FormGroup).get('profitMargin') as FormControl;
+  }
+
   calculateAll(): void {
-    const basePrice = this.form().get('basePrice')?.value as number | null;
-    const profitMargin = this.form().get('profitMargin')?.value as number | null;
-
-    if (basePrice == null || profitMargin == null) return;
-
-    const calculatedPrice = basePrice * (1 + profitMargin / 100);
+    const purchasePrice = this.form().get('purchasePrice')?.value as number | null;
+    if (purchasePrice == null) return;
 
     this.pricesArray.controls.forEach((control) => {
-      (control as FormGroup).get('price')?.setValue(
-        Math.round(calculatedPrice * 100) / 100,
-      );
+      const group = control as FormGroup;
+      const profitMargin = group.get('profitMargin')?.value as number | null;
+      if (profitMargin == null) return;
+      const calculatedPrice = purchasePrice * (1 + profitMargin / 100);
+      group.get('price')?.setValue(Math.round(calculatedPrice * 100) / 100);
     });
   }
 }

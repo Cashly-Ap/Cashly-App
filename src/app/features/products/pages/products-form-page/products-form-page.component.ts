@@ -29,12 +29,10 @@ interface ProductFormData {
   description: string;
   active: boolean;
   composite: boolean;
-  basePrice: number | null;
   purchasePrice: number | null;
-  profitMargin: number | null;
   photo: File | null;
   components: { componentProductId: string | null; quantity: number }[];
-  productPrices: { priceTypeId: string; price: number }[];
+  productPrices: { priceTypeId: string; price: number; profitMargin: number | null }[];
 }
 
 @Component({
@@ -111,9 +109,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       description: ['', [Validators.maxLength(500)]],
       active: [true],
       composite: [false],
-      basePrice: [null, [Validators.min(0)]],
       purchasePrice: [null, [Validators.min(0)]],
-      profitMargin: [null, [Validators.min(0), Validators.max(100)]],
       photo: [null],
       components: this.fb.array([]),
       productPrices: this.fb.array([]),
@@ -127,6 +123,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       this.pricesArray.push(this.fb.group({
         priceTypeId: [pt.id],
         price: [existing?.price ?? 0, [Validators.required, Validators.min(0)]],
+        profitMargin: [existing?.profitMargin ?? null, [Validators.min(0), Validators.max(100)]],
       }));
     });
   }
@@ -195,9 +192,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       description: data.description,
       active: data.active,
       composite: data.composite,
-      basePrice: data.basePrice,
       purchasePrice: data.purchasePrice,
-      profitMargin: data.profitMargin,
     });
     if (data.components?.length) {
       while (this.componentsArray.length) this.componentsArray.removeAt(0);
@@ -237,9 +232,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
           description: product.description ?? '',
           active: product.active,
           composite: product.composite,
-          basePrice: product.basePrice ?? null,
           purchasePrice: product.purchasePrice ?? null,
-          profitMargin: product.profitMargin ?? null,
         });
         while (this.componentsArray.length) this.componentsArray.removeAt(0);
         product.components.forEach((c) => {
@@ -277,11 +270,13 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       description: value.description || undefined,
       active: value.active,
       composite: value.composite,
-      basePrice: value.basePrice ?? undefined,
       purchasePrice: value.purchasePrice ?? undefined,
-      profitMargin: value.profitMargin ?? undefined,
       components,
-      productPrices: value.productPrices,
+      productPrices: value.productPrices.map(p => ({
+        priceTypeId: p.priceTypeId,
+        price: p.price,
+        profitMargin: p.profitMargin ?? null,
+      })),
     };
 
     if (this.isEditMode() && this.entityId()) {

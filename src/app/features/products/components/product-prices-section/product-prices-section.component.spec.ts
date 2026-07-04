@@ -16,11 +16,10 @@ class HostComponent {
 
   constructor(private fb: FormBuilder) {
     this.form = this.fb.group({
-      basePrice: [100],
-      profitMargin: [20],
+      purchasePrice: [1000],
       productPrices: this.fb.array([
-        this.fb.group({ priceTypeId: ['pt-001'], price: [120] }),
-        this.fb.group({ priceTypeId: ['pt-002'], price: [150] }),
+        this.fb.group({ priceTypeId: ['pt-001'], price: [1200], profitMargin: [20] }),
+        this.fb.group({ priceTypeId: ['pt-002'], price: [1100], profitMargin: [10] }),
       ]),
     });
   }
@@ -92,7 +91,7 @@ describe('ProductPricesSectionComponent', () => {
   it('should return price control for index', () => {
     const control = sectionComponent.getPriceControl(0);
     expect(control).toBeDefined();
-    expect(control.value).toBe(120);
+    expect(control.value).toBe(1200);
   });
 
   it('should toggle collapsed state', () => {
@@ -102,16 +101,17 @@ describe('ProductPricesSectionComponent', () => {
     expect(sectionComponent.collapsed()).toBe(false);
   });
 
-  it('should calculate all prices from basePrice and profitMargin', () => {
+  it('should calculate all prices from purchasePrice and individual profitMargins', () => {
     sectionComponent.calculateAll();
     const pricesArray = sectionComponent.pricesArray;
-    const calculatedPrice = Math.round(100 * (1 + 20 / 100) * 100) / 100;
-    expect(pricesArray.at(0).get('price')?.value).toBe(calculatedPrice);
-    expect(pricesArray.at(1).get('price')?.value).toBe(calculatedPrice);
+    // purchasePrice 1000, Base profitMargin 20 => 1200
+    expect(pricesArray.at(0).get('price')?.value).toBe(1200);
+    // purchasePrice 1000, Mayor profitMargin 10 => 1100
+    expect(pricesArray.at(1).get('price')?.value).toBe(1100);
   });
 
-  it('should not calculate when basePrice is null', () => {
-    hostComponent.form.get('basePrice')?.setValue(null);
+  it('should not calculate when purchasePrice is null', () => {
+    hostComponent.form.get('purchasePrice')?.setValue(null);
     fixture.detectChanges();
     const pricesArray = sectionComponent.pricesArray;
     const originalPrice0 = pricesArray.at(0).get('price')?.value;
@@ -119,13 +119,15 @@ describe('ProductPricesSectionComponent', () => {
     expect(pricesArray.at(0).get('price')?.value).toBe(originalPrice0);
   });
 
-  it('should not calculate when profitMargin is null', () => {
-    hostComponent.form.get('profitMargin')?.setValue(null);
-    fixture.detectChanges();
+  it('should skip prices with null profitMargin', () => {
     const pricesArray = sectionComponent.pricesArray;
+    pricesArray.at(0).get('profitMargin')?.setValue(null);
+    fixture.detectChanges();
     const originalPrice0 = pricesArray.at(0).get('price')?.value;
+    const originalPrice1 = pricesArray.at(1).get('price')?.value;
     sectionComponent.calculateAll();
     expect(pricesArray.at(0).get('price')?.value).toBe(originalPrice0);
+    expect(pricesArray.at(1).get('price')?.value).toBe(1100);
   });
 
   it('should access pricesArray getter', () => {
@@ -136,7 +138,7 @@ describe('ProductPricesSectionComponent', () => {
   it('should update pricesControls when prices array changes', () => {
     const pricesArray = sectionComponent.pricesArray;
     const initialLength = sectionComponent.pricesControls().length;
-    pricesArray.push(hostComponent['fb'].group({ priceTypeId: ['pt-003'], price: [200] }));
+    pricesArray.push(hostComponent['fb'].group({ priceTypeId: ['pt-003'], price: [200], profitMargin: [15] }));
     fixture.detectChanges();
     expect(sectionComponent.pricesControls().length).toBe(initialLength + 1);
   });
