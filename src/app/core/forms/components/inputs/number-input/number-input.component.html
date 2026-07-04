@@ -11,6 +11,7 @@
   <div class="w-full">
     <p-inputNumber
       [formControl]="control()"
+      [name]="label()"
       [min]="min()"
       [max]="max()"
       [mode]="mode() ?? 'decimal'"
@@ -23,8 +24,8 @@
       buttonLayout="horizontal"
       incrementButtonIcon="pi pi-plus"
       decrementButtonIcon="pi pi-minus"
-      inputStyleClass="w-full text-left"
-      styleClass="w-full"
+      fluid
+      inputStyleClass="text-left"
       (onInput)="onInput($event)"
     />
   </div>

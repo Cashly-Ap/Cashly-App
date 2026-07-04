@@ -22,5 +22,7 @@ export class SelectInputComponent {
   disabled = input<boolean>(false);
   showClear = input<boolean>(false);
 
-  internalControl = computed(() => this.control() || new FormControl());
+  private readonly fallbackControl = new FormControl();
+
+  internalControl = computed(() => this.control() || this.fallbackControl);
 }

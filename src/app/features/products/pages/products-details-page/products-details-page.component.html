@@ -21,9 +21,7 @@
                 <app-details-info-field label="Nombre" [value]="p.name" />
                 <app-details-info-field label="Categoría" [value]="p.categoryName" />
                 <app-details-info-field label="Tipo" type="badge"><app-text-badge [label]="p.composite ? 'Compuesto' : 'Simple'" variant="label" /></app-details-info-field>
-                <app-details-info-field label="Precio Base" [value]="p.basePrice != null ? ((p.basePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
                 <app-details-info-field label="Precio de Compra" [value]="p.purchasePrice != null ? ((p.purchasePrice | currency: 'USD' : 'symbol' : '1.2-2') || '') : '—'" />
-                <app-details-info-field label="Margen de Ganancia" [value]="p.profitMargin != null ? ((p.profitMargin | number: '1.2-2') + '%') : '—'" />
                 <app-details-info-field label="Stock Total" [value]="totalStock().toString()" />
                 <app-details-info-field label="Estado" type="badge">
                   <app-status-badge [active]="p.active" />
@@ -38,30 +36,23 @@
           <app-details-card>
             <app-details-card-header title="Precios por Tipo" />
             <div class="p-4 sm:p-6">
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead>
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th class="text-left py-2 font-semibold">Tipo de Precio</th>
-                      <th class="text-right py-2 font-semibold">Precio</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (pp of p.productPrices; track pp.priceTypeId) {
-                      <tr class="border-b border-surface-100 dark:border-surface-800">
-                        <td class="py-2">{{ pp.priceTypeName }}</td>
-                        <td class="py-2 text-right font-medium">{{ pp.price | currency: 'USD' : 'symbol' : '1.2-2' }}</td>
-                      </tr>
-                    } @empty {
-                      <tr>
-                        <td colspan="2" class="py-6 text-center text-sm text-surface-400 dark:text-surface-500">
-                          Sin precios configurados
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
+              @if (p.productPrices.length > 0) {
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  @for (pp of p.productPrices; track pp.priceTypeId) {
+                    <div class="rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-900 p-4 flex flex-col gap-2">
+                      <span class="text-sm font-semibold text-surface-700 dark:text-surface-300">{{ pp.priceTypeName }}</span>
+                      <span class="text-2xl font-bold text-surface-900 dark:text-surface-100">{{ pp.price | currency: 'USD' : 'symbol' : '1.2-2' }}</span>
+                      <span class="text-xs text-surface-500 dark:text-surface-400">
+                        Margen: {{ pp.profitMargin != null ? pp.profitMargin + '%' : '—' }}
+                      </span>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <p class="py-6 text-center text-sm text-surface-400 dark:text-surface-500">
+                  Sin precios configurados
+                </p>
+              }
             </div>
           </app-details-card>
 

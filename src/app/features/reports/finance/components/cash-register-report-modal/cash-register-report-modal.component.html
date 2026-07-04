@@ -12,7 +12,8 @@
       <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Reporte</label>
       <p-selectButton
         [options]="typeOptions"
-        [(ngModel)]="reportType"
+        [ngModel]="reportType()"
+        (ngModelChange)="reportType.set($event)"
         optionLabel="label"
         optionValue="value"
         styleClass="w-full"

@@ -43,16 +43,6 @@
   />
 
   <app-number-input
-    label="Precio Base"
-    icon="pi-dollar"
-    placeholder="0.00"
-    prefix="$"
-    [minFractionDigits]="2"
-    [maxFractionDigits]="2"
-    [control]="asFormControl('basePrice')"
-  />
-
-  <app-number-input
     label="Precio de Compra"
     icon="pi-dollar"
     placeholder="0.00"
@@ -60,18 +50,6 @@
     [minFractionDigits]="2"
     [maxFractionDigits]="2"
     [control]="asFormControl('purchasePrice')"
-  />
-
-  <app-number-input
-    label="Margen de Ganancia (%)"
-    icon="pi-percentage"
-    placeholder="0"
-    [min]="0"
-    [max]="100"
-    [minFractionDigits]="0"
-    [maxFractionDigits]="2"
-    suffix=" %"
-    [control]="asFormControl('profitMargin')"
   />
 
   <div class="md:col-span-2">
@@ -95,7 +73,7 @@
         <p class="font-medium text-surface-800 dark:text-surface-200">Producto Activo</p>
         <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">Permite que este producto esté disponible para su uso en el sistema</p>
       </div>
-      <p-toggleswitch [formControl]="asFormControl('active')" />
+      <p-toggleswitch [formControl]="asFormControl('active')" name="active" />
     </div>
   }
 </app-tab-content>
