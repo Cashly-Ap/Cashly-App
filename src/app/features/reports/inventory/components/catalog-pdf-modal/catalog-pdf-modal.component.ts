@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
@@ -20,10 +21,11 @@ import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces
     ButtonModule,
     InputTextModule,
     SelectModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './catalog-pdf-modal.component.html',
 })
-export class CatalogPdfModalComponent implements OnInit {
+export class CatalogPdfModalComponent {
   private readonly categoryService = inject(CategoryApplicationService);
   private readonly warehouseService = inject(WarehouseApplicationService);
 
@@ -35,6 +37,7 @@ export class CatalogPdfModalComponent implements OnInit {
   readonly categoryId = signal<string | null>(null);
   readonly warehouseId = signal<string | null>(null);
   readonly withStock = signal<boolean | null>(null);
+  readonly loading = signal(false);
 
   readonly stockOptions = [
     { value: null, label: 'Todos' },
@@ -52,13 +55,22 @@ export class CatalogPdfModalComponent implements OnInit {
     ...this.warehouseService.simpleWarehouses().map((w) => ({ value: w.id, label: `${w.name} (${w.state})` })),
   ]);
 
-  ngOnInit(): void {
-    if (this.categoryService.categories().length === 0) {
-      this.categoryService.loadAll({ size: 1000 }).subscribe();
+  loadFilters(): void {
+    const needsCategories = this.categoryService.categories().length === 0;
+    const needsWarehouses = this.warehouseService.simpleWarehouses().length === 0;
+    if (!needsCategories && !needsWarehouses) return;
+    this.loading.set(true);
+
+    if (needsCategories) {
+      this.categoryService.loadAll({ size: 1000 }).subscribe(() => this.checkLoadingDone());
     }
-    if (this.warehouseService.simpleWarehouses().length === 0) {
-      this.warehouseService.loadSimpleWarehouses().subscribe();
+    if (needsWarehouses) {
+      this.warehouseService.loadSimpleWarehouses().subscribe(() => this.checkLoadingDone());
     }
+  }
+
+  private checkLoadingDone(): void {
+    this.loading.set(false);
   }
 
   onHide(): void {

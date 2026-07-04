@@ -3,10 +3,16 @@
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
+  (onShow)="loadFilters()"
   [style]="{ width: '500px' }"
   [draggable]="false"
   [resizable]="false"
 >
+  @if (loading()) {
+    <div class="flex justify-center py-10">
+      <p-progressSpinner strokeWidth="4" styleClass="w-10 h-10" />
+    </div>
+  } @else {
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
       <label for="mode" class="text-sm font-medium">Modo de Reporte</label>
@@ -93,6 +99,7 @@
       />
     </div>
   </div>
+  }
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">

@@ -1,10 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
 
@@ -19,10 +20,11 @@ import { MovementsPdfFilters } from '@features/reports/inventory/models/interfac
     ButtonModule,
     SelectModule,
     DatePickerModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './movements-pdf-modal.component.html',
 })
-export class MovementsPdfModalComponent implements OnInit {
+export class MovementsPdfModalComponent {
   private readonly warehouseService = inject(WarehouseApplicationService);
 
   readonly visible = input(false);
@@ -34,6 +36,7 @@ export class MovementsPdfModalComponent implements OnInit {
   readonly movementType = signal<string | null>(null);
   readonly from = signal<Date | null>(null);
   readonly to = signal<Date | null>(null);
+  readonly loading = signal(false);
 
   readonly movementTypeOptions = [
     { value: null, label: 'Todos los tipos' },
@@ -50,10 +53,10 @@ export class MovementsPdfModalComponent implements OnInit {
     ...this.warehouseService.simpleWarehouses().map((w) => ({ value: w.id, label: `${w.name} (${w.state})` })),
   ]);
 
-  ngOnInit(): void {
-    if (this.warehouseService.simpleWarehouses().length === 0) {
-      this.warehouseService.loadSimpleWarehouses().subscribe();
-    }
+  loadFilters(): void {
+    if (this.warehouseService.simpleWarehouses().length > 0) return;
+    this.loading.set(true);
+    this.warehouseService.loadSimpleWarehouses().subscribe(() => this.loading.set(false));
   }
 
   private buildFilters(): MovementsPdfFilters {

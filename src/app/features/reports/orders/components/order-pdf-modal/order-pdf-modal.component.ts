@@ -3,7 +3,6 @@ import {
   Component,
   inject,
   signal,
-  OnInit,
   input,
   output,
 } from '@angular/core';
@@ -13,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
@@ -33,10 +33,11 @@ interface SelectOption {
     ButtonModule,
     SelectModule,
     DatePickerModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './order-pdf-modal.component.html',
 })
-export class OrderPdfModalComponent implements OnInit {
+export class OrderPdfModalComponent {
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
@@ -50,6 +51,9 @@ export class OrderPdfModalComponent implements OnInit {
   readonly productId = signal<string | null>(null);
   readonly categoryId = signal<string | null>(null);
   readonly mode = signal<'SIMPLE' | 'DETAILED'>('SIMPLE');
+
+  readonly loading = signal(false);
+  private filtersLoaded = false;
 
   readonly statusOptions: SelectOption[] = [
     { value: null, label: 'Todos los estados' },
@@ -67,7 +71,11 @@ export class OrderPdfModalComponent implements OnInit {
   readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
   readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
 
-  ngOnInit(): void {
+  loadFilters(): void {
+    if (this.filtersLoaded) return;
+    this.filtersLoaded = true;
+    this.loading.set(true);
+
     this.productApi.getAllSimple().subscribe((products) => {
       this.productOptions.set([
         { value: null, label: 'Todos los productos' },
@@ -80,6 +88,7 @@ export class OrderPdfModalComponent implements OnInit {
         { value: null, label: 'Todas las categorías' },
         ...(response.content ?? []).map((c) => ({ value: c.id, label: c.name })),
       ]);
+      this.loading.set(false);
     });
   }
 

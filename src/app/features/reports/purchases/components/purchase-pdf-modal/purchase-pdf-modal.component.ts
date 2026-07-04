@@ -5,7 +5,6 @@ import {
   signal,
   input,
   output,
-  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,6 +12,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 import { SupplierApiService } from '@features/suppliers/services/api/supplier-api.service';
@@ -43,10 +43,11 @@ interface SelectOption {
     ButtonModule,
     SelectModule,
     DatePickerModule,
+    ProgressSpinnerModule,
   ],
   templateUrl: './purchase-pdf-modal.component.html',
 })
-export class PurchasePdfModalComponent implements OnInit {
+export class PurchasePdfModalComponent {
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);
   private readonly supplierApi = inject(SupplierApiService);
@@ -62,6 +63,9 @@ export class PurchasePdfModalComponent implements OnInit {
   readonly productId = signal<string | null>(null);
   readonly categoryId = signal<string | null>(null);
   readonly mode = signal<'SIMPLE' | 'DETAILED'>('SIMPLE');
+
+  readonly loading = signal(false);
+  private filtersLoaded = false;
 
   readonly statusOptions: SelectOption[] = [
     { value: null, label: 'Todos los estados' },
@@ -79,7 +83,11 @@ export class PurchasePdfModalComponent implements OnInit {
   readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
   readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
 
-  ngOnInit(): void {
+  loadFilters(): void {
+    if (this.filtersLoaded) return;
+    this.filtersLoaded = true;
+    this.loading.set(true);
+
     this.supplierApi.getAll({ size: 1000 }).subscribe((response) => {
       this.supplierOptions.set([
         { value: null, label: 'Todos los proveedores' },
@@ -99,6 +107,7 @@ export class PurchasePdfModalComponent implements OnInit {
         { value: null, label: 'Todas las categorías' },
         ...(response.content ?? []).map((c) => ({ value: c.id, label: c.name })),
       ]);
+      this.loading.set(false);
     });
   }
 
