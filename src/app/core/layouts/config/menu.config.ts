@@ -75,27 +75,27 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       requiredModule: BusinessModule.INVENTORY,
       children: [
         {
-          label: 'Categorías',
-          icon: 'pi pi-tags',
-          routerLink: '/categories',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
           label: 'Tipos de Precios',
           icon: 'pi pi-tag',
           routerLink: '/price-types',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
-          label: 'Productos',
-          icon: 'pi pi-box',
-          routerLink: '/products',
+          label: 'Categorías',
+          icon: 'pi pi-tags',
+          routerLink: '/categories',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
           label: 'Almacenes',
           icon: 'pi pi-database',
           routerLink: '/warehouses',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Productos',
+          icon: 'pi pi-box',
+          routerLink: '/products',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
       ],
@@ -127,15 +127,21 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       requiredModule: BusinessModule.FINANCE,
       children: [
         {
-          label: 'Métodos de Pago',
-          icon: 'pi pi-credit-card',
-          routerLink: '/payment-methods',
+          label: 'Caja',
+          icon: 'pi pi-calculator',
+          routerLink: '/cash-register',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
           label: 'Cuentas por Cobrar',
           icon: 'pi pi-money-bill',
           routerLink: '/receivables',
+          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
+        },
+        {
+          label: 'Métodos de Pago',
+          icon: 'pi pi-credit-card',
+          routerLink: '/payment-methods',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
@@ -148,12 +154,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           label: 'Notas de Débito',
           icon: 'pi pi-minus-circle',
           routerLink: '/debit-notes',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Caja',
-          icon: 'pi pi-calculator',
-          routerLink: '/cash-register',
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
