@@ -35,6 +35,7 @@ export class SupplierMapper {
       rif: details.rif,
       type: details.type,
       active: details.active,
+      hasPurchases: false,
     };
   }
 

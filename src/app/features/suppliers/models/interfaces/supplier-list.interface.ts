@@ -8,4 +8,5 @@ export interface SupplierList {
   rif: string;
   type: SupplierType;
   active: boolean;
+  hasPurchases: boolean;
 }
