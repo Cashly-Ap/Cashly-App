@@ -12,6 +12,8 @@ import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
+import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { CustomerInvoiceDebt, PayInvoiceRequest } from '@features/receivables/models/interfaces';
 
 export type PaymentFormMode = 'single' | 'all' | 'partial';
@@ -219,8 +221,13 @@ export class PaymentFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.setupAmountClamp();
-    this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(catchError(() => of([]))).subscribe(res => {
-      const methods = res.map(pm => ({ label: pm.name, value: pm.id }));
+    this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(
+      catchError(() => {
+        const empty: PagedResponse<PaymentMethodList> = { content: [], totalElements: 0, totalPages: 0, size: 0, number: 0, first: true, last: true, empty: true };
+        return of(empty);
+      })
+    ).subscribe(res => {
+      const methods = res.content.map(pm => ({ label: pm.name, value: pm.id }));
       this.paymentMethods.set(methods);
       if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
         this.form.patchValue({ paymentMethodId: methods[0].value });

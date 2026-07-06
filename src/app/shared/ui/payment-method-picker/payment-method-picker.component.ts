@@ -42,7 +42,7 @@ export class PaymentMethodPickerComponent implements OnInit {
     this.loading.set(true);
     this.paymentMethodApi.getAll({ active: true }).subscribe({
       next: (items) => {
-        this.paymentMethods.set(items);
+        this.paymentMethods.set(items.content);
         this.loading.set(false);
       },
       error: () => this.loading.set(false),

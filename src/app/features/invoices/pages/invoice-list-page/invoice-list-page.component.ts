@@ -324,7 +324,7 @@ export class InvoiceListPageComponent implements OnInit {
         error: () => this.customerBalanceConfirm.set(0),
       });
       this.paymentMethodApi.getAll({ active: true }).subscribe({
-        next: (methods) => this.paymentMethods.set(methods),
+        next: (methods) => this.paymentMethods.set(methods.content),
         error: () => this.paymentMethods.set([]),
       });
     }

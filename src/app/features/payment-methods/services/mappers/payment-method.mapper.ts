@@ -10,6 +10,7 @@ export class PaymentMethodMapper {
       name: detail.name,
       description: detail.description,
       isActive: detail.isActive,
+      hasAssociatedRecords: detail.hasAssociatedRecords,
       createdAt: detail.createdAt,
     };
   }

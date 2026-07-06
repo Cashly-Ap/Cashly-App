@@ -8,6 +8,7 @@ import {
   PaymentMethodCreate,
   PaymentMethodUpdate,
 } from '@features/payment-methods/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentMethodApplicationService {
@@ -19,15 +20,15 @@ export class PaymentMethodApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadPaymentMethods(filters?: PaymentMethodFilters): Observable<PaymentMethodList[]> {
+  loadPaymentMethods(filters?: PaymentMethodFilters): Observable<PagedResponse<PaymentMethodList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.paymentMethods.set(items);
-          this.totalElements.set(items.length);
+        next: (res) => {
+          this.paymentMethods.set(res.content ?? []);
+          this.totalElements.set(res.totalElements ?? 0);
         },
         error: (err: Error) => this.error.set(err.message),
       }),

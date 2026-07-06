@@ -7,6 +7,7 @@ import {
   PaymentMethodCreate,
   PaymentMethodUpdate,
 } from '@features/payment-methods/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface PaymentMethodFilters {
   search?: string;
@@ -23,6 +24,7 @@ interface PaymentMethodListApiResponse {
   name: string;
   description: string | null;
   isActive: boolean;
+  hasAssociatedRecords: boolean;
   createdAt: string;
 }
 
@@ -32,6 +34,7 @@ interface PaymentMethodDetailApiResponse {
   name: string;
   description: string | null;
   isActive: boolean;
+  hasAssociatedRecords: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,7 +44,7 @@ export class PaymentMethodApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/payment-methods';
 
-  getAll(filters?: PaymentMethodFilters): Observable<PaymentMethodList[]> {
+  getAll(filters?: PaymentMethodFilters): Observable<PagedResponse<PaymentMethodList>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
@@ -50,8 +53,11 @@ export class PaymentMethodApiService {
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
-      .get<PaymentMethodListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toPaymentMethodList(r))));
+      .get<PagedResponse<PaymentMethodListApiResponse>>(this.baseUrl, { params })
+      .pipe(map((res) => ({
+        ...res,
+        content: res.content.map((r) => this.toPaymentMethodList(r)),
+      })));
   }
 
   getById(id: string): Observable<PaymentMethodDetail> {
@@ -89,6 +95,7 @@ export class PaymentMethodApiService {
       name: r.name,
       description: r.description,
       isActive: r.isActive,
+      hasAssociatedRecords: r.hasAssociatedRecords,
       createdAt: r.createdAt,
     };
   }
@@ -100,6 +107,7 @@ export class PaymentMethodApiService {
       name: r.name,
       description: r.description,
       isActive: r.isActive,
+      hasAssociatedRecords: r.hasAssociatedRecords,
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
     };

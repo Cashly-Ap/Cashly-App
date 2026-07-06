@@ -4,6 +4,7 @@ export interface PaymentMethodList {
   name: string;
   description: string | null;
   isActive: boolean;
+  hasAssociatedRecords: boolean;
   createdAt: string;
 }
 
@@ -13,6 +14,7 @@ export interface PaymentMethodDetail {
   name: string;
   description: string | null;
   isActive: boolean;
+  hasAssociatedRecords: boolean;
   createdAt: string;
   updatedAt: string;
 }

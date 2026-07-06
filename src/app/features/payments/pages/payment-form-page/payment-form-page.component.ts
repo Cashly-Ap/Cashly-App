@@ -88,7 +88,7 @@ export class PaymentFormPageComponent extends BaseFormComponent<PaymentFormData>
     this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
     this.updateSubmitTooltip();
     this.paymentMethodApi.getAll({ active: true }).subscribe({
-      next: (methods) => this.paymentMethods.set(methods),
+      next: (methods) => this.paymentMethods.set(methods.content),
       error: () => this.paymentMethods.set([]),
     });
   }

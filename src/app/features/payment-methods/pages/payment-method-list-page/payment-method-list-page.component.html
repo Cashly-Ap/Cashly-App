@@ -152,7 +152,9 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="info" (onClick)="onDetail(paymentMethod)" pTooltip="Ver detalle" />
                           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(paymentMethod)" pTooltip="Editar" />
-                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(paymentMethod)" pTooltip="Eliminar" />
+                          @if (!paymentMethod.hasAssociatedRecords) {
+                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(paymentMethod)" pTooltip="Eliminar" />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -216,7 +218,9 @@
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="info" (onClick)="onDetail(paymentMethod)" />
                     <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(paymentMethod)" />
-                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(paymentMethod)" />
+                    @if (!paymentMethod.hasAssociatedRecords) {
+                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(paymentMethod)" />
+                    }
                   </div>
                 </div>
               }
