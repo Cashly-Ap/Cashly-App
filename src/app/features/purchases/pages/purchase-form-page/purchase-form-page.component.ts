@@ -181,7 +181,14 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
               productName: line.productName,
               quantity: line.quantity,
               unitCost: line.unitCost,
-              stock: [],
+              stock: (line.stockItems ?? []).map((s) => ({
+                warehouseId: s.warehouseId,
+                warehouseName: s.warehouseName,
+                warehouseCode: s.warehouseCode,
+                quantity: s.quantity,
+                reserved: s.reserved,
+                available: s.available,
+              })),
               warehouseAllocations: line.allocations.map((a) => ({
                 warehouseId: a.warehouseId,
                 warehouseCode: a.warehouseCode ?? '',
@@ -244,7 +251,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
               .filter((a) => a.allocated > 0)
               .map((a) => ({
                 warehouseId: a.warehouseId,
-                allocatedQuantity: a.allocated,
+                quantity: a.allocated,
               })),
           })),
         })
@@ -273,7 +280,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
               .filter((a) => a.allocated > 0)
               .map((a) => ({
                 warehouseId: a.warehouseId,
-                allocatedQuantity: a.allocated,
+                quantity: a.allocated,
               })),
           })),
         })

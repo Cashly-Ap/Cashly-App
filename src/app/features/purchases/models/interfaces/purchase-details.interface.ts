@@ -7,6 +7,15 @@ export interface PurchaseAllocationDetail {
   allocatedQuantity: number;
 }
 
+export interface PurchaseStockItemDetail {
+  warehouseId: string;
+  warehouseCode: string;
+  warehouseName: string;
+  quantity: number;
+  reserved: number;
+  available: number;
+}
+
 export interface PurchaseLineDetail {
   id: string;
   productId: string;
@@ -16,6 +25,7 @@ export interface PurchaseLineDetail {
   unitCost: number;
   subtotal: number;
   allocations: PurchaseAllocationDetail[];
+  stockItems: PurchaseStockItemDetail[];
 }
 
 export interface PurchaseDetails {

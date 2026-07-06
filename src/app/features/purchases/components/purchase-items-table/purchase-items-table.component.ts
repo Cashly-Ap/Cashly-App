@@ -103,7 +103,7 @@ export class PurchaseItemsTableComponent {
             warehouseName: s.warehouseName,
             quantity: s.quantity,
             reserved: s.reserved,
-            available: s.available,
+            available: 999999,
             allocated: existingMap.get(s.warehouseId) ?? 0,
           };
         })
@@ -113,7 +113,7 @@ export class PurchaseItemsTableComponent {
           warehouseName: a.warehouseName,
           quantity: a.available,
           reserved: 0,
-          available: a.available,
+          available: 999999,
           allocated: a.allocated,
         }));
 
@@ -162,23 +162,5 @@ export class PurchaseItemsTableComponent {
     return product ? `${product.code} — ${product.name}` : productId;
   }
 
-  resolveProductStock(productId: string): number | null {
-    const item = this.items().find((i) => i.productId === productId);
-    if (item?.stock) return item.stock.reduce((sum, s) => sum + s.quantity, 0);
-    const product = this.products().find((p) => p.id === productId);
-    return product?.stockTotal ?? null;
-  }
 
-  getItemTotalReserved(item: PurchaseLineFormData): number {
-    return (item.stock ?? []).reduce((sum, s) => sum + (s.reserved ?? 0), 0);
-  }
-
-  getItemTotalAvailable(item: PurchaseLineFormData): number {
-    return (item.stock ?? []).reduce((sum, s) => sum + (s.available ?? 0), 0);
-  }
-
-  isItemOverAllocated(item: PurchaseLineFormData): boolean {
-    const totalAvailable = this.getItemTotalAvailable(item);
-    return item.quantity > totalAvailable && totalAvailable > 0;
-  }
 }

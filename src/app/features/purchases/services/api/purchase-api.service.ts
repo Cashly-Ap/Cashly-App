@@ -79,6 +79,14 @@ interface PurchaseDetailApiResponse {
       warehouseCode?: string;
       allocatedQuantity: number;
     }[];
+    stockItems: {
+      warehouseId: string;
+      warehouseCode: string;
+      warehouseName: string;
+      quantity: number;
+      reserved: number;
+      available: number;
+    }[];
   }[];
 }
 
@@ -187,6 +195,14 @@ export class PurchaseApiService {
           warehouseName: a.warehouseName,
           warehouseCode: a.warehouseCode ?? '',
           allocatedQuantity: a.allocatedQuantity,
+        })),
+        stockItems: (l.stockItems ?? []).map((s) => ({
+          warehouseId: s.warehouseId,
+          warehouseCode: s.warehouseCode,
+          warehouseName: s.warehouseName,
+          quantity: s.quantity,
+          reserved: s.reserved,
+          available: s.available,
         })),
       })),
       createdAt: r.createdAt,

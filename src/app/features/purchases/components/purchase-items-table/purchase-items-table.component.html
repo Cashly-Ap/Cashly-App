@@ -37,25 +37,13 @@
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
                   {{ resolveProductName(item.productId) }}
                 </span>
-                @if (item.stock && item.stock.length > 0) {
-                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
-                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
-                    @if (getItemTotalReserved(item) > 0) {
-                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
-                    }
-                  </span>
-                }
               </div>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
                 <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
-                <span class="font-mono text-sm font-medium"
-                  [class.text-surface-900]="!isItemOverAllocated(item)"
-                  [class.dark:text-surface-100]="!isItemOverAllocated(item)"
-                  [class.text-red-600]="isItemOverAllocated(item)"
-                  [class.dark:text-red-400]="isItemOverAllocated(item)">
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
                   {{ item.quantity | number: '1.0-3' }}
                 </span>
                 <button
@@ -119,14 +107,6 @@
                 <span class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate block leading-snug">
                   {{ resolveProductName(item.productId) }}
                 </span>
-                @if (item.stock && item.stock.length > 0) {
-                  <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
-                    disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
-                    @if (getItemTotalReserved(item) > 0) {
-                      <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span>
-                    }
-                  </span>
-                }
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
@@ -197,6 +177,7 @@
     [total]="allocationTotal()"
     confirmLabel="Confirmar"
     emptyMessage="Sin almacenes disponibles para este producto"
+    [showStockDetails]="false"
     (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
     (confirm)="confirmAllocations()"
   />
