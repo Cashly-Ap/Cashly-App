@@ -10,7 +10,7 @@ describe('CategoryApiService', () => {
   let httpMock: HttpTestingController;
 
   const mockList: CategoryList[] = [
-    { id: 1, name: 'Electrónica', description: 'Dispositivos electrónicos', active: true, productCount: 5 },
+    { id: 1, name: 'Electrónica', description: 'Dispositivos electrónicos', active: true, productCount: 5, deletable: false },
   ];
 
   const mockDetails: CategoryDetails = {

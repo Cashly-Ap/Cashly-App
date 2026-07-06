@@ -193,14 +193,16 @@
                             (onClick)="onEdit(user)"
                             pTooltip="Editar"
                           />
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(user)"
-                            pTooltip="Eliminar"
-                          />
+                          @if (user.deletable) {
+                            <p-button
+                              icon="pi pi-trash"
+                              [text]="true"
+                              [rounded]="true"
+                              severity="danger"
+                              (onClick)="onDelete(user)"
+                              pTooltip="Eliminar"
+                            />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -274,13 +276,15 @@
                       severity="info"
                       (onClick)="onEdit(user)"
                     />
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(user)"
-                    />
+                    @if (user.deletable) {
+                      <p-button
+                        icon="pi pi-trash"
+                        [text]="true"
+                        [rounded]="true"
+                        severity="danger"
+                        (onClick)="onDelete(user)"
+                      />
+                    }
                   </div>
                 </div>
               }

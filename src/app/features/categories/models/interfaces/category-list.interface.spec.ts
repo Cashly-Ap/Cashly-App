@@ -8,12 +8,14 @@ describe('CategoryList interface', () => {
       name: 'Motors',
       active: true,
       productCount: 10,
+      deletable: false,
     };
 
     expect(category.id).toBe('cat-001');
     expect(category.name).toBe('Motors');
     expect(category.active).toBe(true);
     expect(category.productCount).toBe(10);
+    expect(category.deletable).toBe(false);
   });
 
   it('should allow optional description', () => {
@@ -23,6 +25,7 @@ describe('CategoryList interface', () => {
       description: 'Outboard motors',
       active: true,
       productCount: 10,
+      deletable: false,
     };
     expect(withDesc.description).toBe('Outboard motors');
 
@@ -31,6 +34,7 @@ describe('CategoryList interface', () => {
       name: 'Motors',
       active: true,
       productCount: 10,
+      deletable: false,
     };
     expect(withoutDesc.description).toBeUndefined();
   });

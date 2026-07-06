@@ -4,6 +4,7 @@ export interface WarehouseList {
   state: string;
   municipality: string;
   active: boolean;
+  deletable: boolean;
 }
 
 export interface WarehouseStockItem {

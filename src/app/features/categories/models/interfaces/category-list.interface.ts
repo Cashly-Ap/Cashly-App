@@ -4,4 +4,5 @@ export interface CategoryList {
   description?: string;
   active: boolean;
   productCount: number;
+  deletable: boolean;
 }

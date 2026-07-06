@@ -9,4 +9,5 @@ export interface CustomerList {
   type: CustomerType;
   active: boolean;
   portalAccess: boolean;
+  deletable: boolean;
 }

@@ -56,6 +56,7 @@ export class CategoryApplicationService {
             description: category.description,
             active: category.active,
             productCount: category.productCount,
+            deletable: category.productCount === 0,
           };
           this.categories.update((current) => [...current, listItem]);
         },
@@ -78,6 +79,7 @@ export class CategoryApplicationService {
             description: category.description,
             active: category.active,
             productCount: category.productCount,
+            deletable: category.productCount === 0,
           };
           this.categories.update((current) => current.map((c) => (c.id === id ? listItem : c)));
           if (this.currentCategory()?.id === id) {

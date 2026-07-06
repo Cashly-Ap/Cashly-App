@@ -49,7 +49,7 @@ export class PriceTypeApplicationService {
     return this.api.create(data).pipe(
       tap({
         next: (type) => {
-          const listItem: PriceTypeList = { id: type.id, name: type.name, active: type.active };
+          const listItem: PriceTypeList = { id: type.id, name: type.name, active: type.active, deletable: true };
           this.priceTypes.update((current) => [...current, listItem]);
         },
         error: (err: Error) => this.error.set(err.message),
@@ -65,7 +65,7 @@ export class PriceTypeApplicationService {
     return this.api.update(id, data).pipe(
       tap({
         next: (type) => {
-          const listItem: PriceTypeList = { id: type.id, name: type.name, active: type.active };
+          const listItem: PriceTypeList = { id: type.id, name: type.name, active: type.active, deletable: true };
           this.priceTypes.update((current) => current.map((t) => (t.id === id ? listItem : t)));
           if (this.selectedPriceType()?.id === id) {
             this.selectedPriceType.set(type);

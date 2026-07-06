@@ -28,6 +28,7 @@ describe('CategoriesListPageComponent', () => {
     description: 'Electronic products',
     active: true,
     productCount: 10,
+    deletable: false,
   };
 
   beforeEach(async () => {

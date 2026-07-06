@@ -10,4 +10,5 @@ export interface UserList {
   emailVerified: boolean;
   createdAt: string;
   modulePermissions: BusinessModule[];
+  deletable: boolean;
 }

@@ -93,7 +93,9 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(priceType)" pTooltip="Ver" />
                           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(priceType)" pTooltip="Editar" />
-                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" pTooltip="Eliminar" />
+                          @if (priceType.deletable) {
+                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" pTooltip="Eliminar" />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -138,7 +140,9 @@
                   <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(priceType)" />
                     <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(priceType)" />
-                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" />
+                    @if (priceType.deletable) {
+                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" />
+                    }
                   </div>
                 </div>
               }

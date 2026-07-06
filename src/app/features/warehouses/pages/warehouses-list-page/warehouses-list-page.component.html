@@ -146,7 +146,9 @@
                           <p-button icon="pi pi-arrow-circle-up" [text]="true" [rounded]="true" severity="danger" (onClick)="onOpenExit(warehouse)" pTooltip="Registrar Salida" />
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(warehouse)" pTooltip="Ver" />
                           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(warehouse)" pTooltip="Editar" />
-                          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(warehouse)" pTooltip="Eliminar" />
+                          @if (warehouse.deletable) {
+                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(warehouse)" pTooltip="Eliminar" />
+                          }
                         </div>
                       </td>
                     </tr>
@@ -209,7 +211,9 @@
                     <p-button icon="pi pi-arrow-circle-up" [text]="true" [rounded]="true" severity="danger" (onClick)="onOpenExit(warehouse)" pTooltip="Salida" />
                     <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(warehouse)" />
                     <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(warehouse)" />
-                    <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(warehouse)" />
+                    @if (warehouse.deletable) {
+                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(warehouse)" />
+                    }
                   </div>
                 </div>
               }
