@@ -82,6 +82,7 @@ describe('MovementsPdfModalComponent', () => {
   });
 
   it('should call loadSimpleWarehouses when warehouses are empty on init', () => {
+    component.loadFilters();
     expect(mockWarehouseService.loadSimpleWarehouses).toHaveBeenCalled();
   });
 

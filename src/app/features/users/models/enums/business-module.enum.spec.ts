@@ -11,8 +11,8 @@ describe('BusinessModule', () => {
     expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');
   });
 
-  it('should have exactly 7 enum values', () => {
-    expect(Object.keys(BusinessModule).length).toBe(7);
+  it('should have exactly 8 enum values', () => {
+    expect(Object.keys(BusinessModule).length).toBe(8);
   });
 });
 

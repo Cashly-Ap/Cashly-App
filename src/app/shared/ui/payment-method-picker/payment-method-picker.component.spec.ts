@@ -32,7 +32,7 @@ describe('PaymentMethodPickerComponent', () => {
 
   beforeEach(async () => {
     mockApiService = {
-      getAll: vi.fn().mockReturnValue(of(mockPaymentMethods)),
+      getAll: vi.fn().mockReturnValue(of({ content: mockPaymentMethods })),
     };
 
     await TestBed.configureTestingModule({

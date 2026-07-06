@@ -89,10 +89,12 @@ describe('CatalogPdfModalComponent', () => {
   });
 
   it('should call loadAll when categories are empty on init', () => {
+    component.loadFilters();
     expect(mockCategoryService.loadAll).toHaveBeenCalledWith({ size: 1000 });
   });
 
   it('should call loadSimpleWarehouses when warehouses are empty on init', () => {
+    component.loadFilters();
     expect(mockWarehouseService.loadSimpleWarehouses).toHaveBeenCalled();
   });
 

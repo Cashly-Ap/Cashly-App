@@ -3,16 +3,16 @@ import { REPORTS_ROUTES } from './reports.routes';
 import { INVENTORY_REPORTS_ROUTES } from '@features/reports/inventory/router';
 
 describe('Reports Routes', () => {
-  it('should have 1 top-level route', () => {
-    expect(REPORTS_ROUTES).toHaveLength(1);
+  it('should have 2 top-level routes', () => {
+    expect(REPORTS_ROUTES).toHaveLength(2);
   });
 
   it('should have inventory as child route', () => {
-    expect(REPORTS_ROUTES[0].path).toBe('inventory');
+    expect(REPORTS_ROUTES[1].path).toBe('inventory');
   });
 
   it('should use lazy loading for inventory module', () => {
-    expect(REPORTS_ROUTES[0].loadChildren).toBeDefined();
+    expect(REPORTS_ROUTES[1].loadChildren).toBeDefined();
   });
 
   it('should reference INVENTORY_REPORTS_ROUTES', () => {

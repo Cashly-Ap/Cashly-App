@@ -51,7 +51,7 @@ describe('CustomerPickerDialogComponent', () => {
 
   beforeEach(() => {
     mockCustomerApi = {
-      getAll: vi.fn().mockReturnValue(of(mockPageResponse)),
+      getForPicker: vi.fn().mockReturnValue(of(mockPageResponse)),
     };
 
     TestBed.configureTestingModule({
@@ -159,7 +159,7 @@ describe('CustomerPickerDialogComponent - visible', () => {
 
   beforeEach(() => {
     mockCustomerApi = {
-      getAll: vi.fn().mockReturnValue(of(mockPageResponse)),
+      getForPicker: vi.fn().mockReturnValue(of(mockPageResponse)),
     };
 
     TestBed.configureTestingModule({
@@ -176,11 +176,10 @@ describe('CustomerPickerDialogComponent - visible', () => {
   });
 
   it('should load customers on dialog show', () => {
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 0,
         size: 10,
-        active: true,
       }),
     );
   });
@@ -207,7 +206,7 @@ describe('CustomerPickerDialogComponent - visible', () => {
   });
 
   it('should set loading to false on error', async () => {
-    mockCustomerApi.getAll = vi.fn().mockReturnValue(throwError(() => new Error('Failed')));
+    mockCustomerApi.getForPicker = vi.fn().mockReturnValue(throwError(() => new Error('Failed')));
 
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -228,7 +227,7 @@ describe('CustomerPickerDialogComponent - visible', () => {
 
   it('should only load once on multiple dialog shows', () => {
     dialog.onDialogShow();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledTimes(1);
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledTimes(1);
   });
 
   it('should reset search and page on dialog show', () => {
@@ -255,7 +254,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
 
   beforeEach(() => {
     mockCustomerApi = {
-      getAll: vi.fn().mockReturnValue(of(mockPageResponse)),
+      getForPicker: vi.fn().mockReturnValue(of(mockPageResponse)),
     };
 
     TestBed.configureTestingModule({
@@ -274,7 +273,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
   it('should load page 0 on search change', () => {
     dialog.onSearchChange('test');
     expect(dialog.search()).toBe('test');
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({ search: 'test', page: 0 }),
     );
   });
@@ -282,7 +281,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
   it('should load previous page', () => {
     dialog.currentPage.set(2);
     dialog.onPagePrev();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({ page: 1 }),
     );
   });
@@ -290,14 +289,14 @@ describe('CustomerPickerDialogComponent - interactions', () => {
   it('should not load previous page when on first page', () => {
     dialog.currentPage.set(0);
     dialog.onPagePrev();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledTimes(1);
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledTimes(1);
   });
 
   it('should load next page', () => {
     dialog.totalPages.set(3);
     dialog.currentPage.set(0);
     dialog.onPageNext();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({ page: 1 }),
     );
   });
@@ -306,13 +305,13 @@ describe('CustomerPickerDialogComponent - interactions', () => {
     dialog.totalPages.set(3);
     dialog.currentPage.set(2);
     dialog.onPageNext();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledTimes(1);
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledTimes(1);
   });
 
   it('should load with type filter when selectType is called', () => {
     dialog.selectType(CustomerType.INDIVIDUAL);
     expect(dialog.filterType()).toBe(CustomerType.INDIVIDUAL);
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({ type: CustomerType.INDIVIDUAL, page: 0 }),
     );
   });
@@ -321,7 +320,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
     dialog.filterType.set(CustomerType.BUSINESS);
     dialog.clearFilters();
     expect(dialog.filterType()).toBeNull();
-    expect(mockCustomerApi.getAll).toHaveBeenCalledWith(
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
       expect.objectContaining({ type: undefined, page: 0 }),
     );
   });

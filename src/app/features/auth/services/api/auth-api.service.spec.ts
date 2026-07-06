@@ -226,7 +226,7 @@ describe('AuthApiService', () => {
 
       const req = httpMock.expectOne(`${baseUrl}/auth/change-password`);
       expect(req.request.method).toBe('PATCH');
-      expect(req.request.body).toEqual(request);
+      expect(req.request.body).toEqual({ password: 'NewSecurePass456!' });
       req.flush(null, { status: 204, statusText: 'No Content' });
     });
 

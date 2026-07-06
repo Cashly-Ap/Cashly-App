@@ -84,7 +84,7 @@ describe('ConfigurationPageComponent', () => {
   });
 
   it('should return correct label for SUPER_ADMIN user type', () => {
-    expect(component.getUserTypeLabel('SUPER_ADMIN')).toBe('Super Admin');
+    expect(component.getUserTypeLabel('SUPER_ADMIN')).toBe('Super Administrador');
   });
 
   it('should return the input for unknown user type', () => {

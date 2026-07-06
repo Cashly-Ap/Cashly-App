@@ -17,6 +17,20 @@ class HostComponent {
   onGeneratePdf = vi.fn();
 }
 
+const PRODUCTS_WITH_DATA = {
+  content: [
+    { id: 'prod-1', name: 'Product A' },
+    { id: 'prod-2', name: 'Product B' },
+  ],
+};
+
+const CATEGORIES_WITH_DATA = {
+  content: [
+    { id: 'cat-1', name: 'Category A' },
+    { id: 'cat-2', name: 'Category B' },
+  ],
+};
+
 function setup(overrides: { visible?: boolean } = {}) {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
@@ -30,53 +44,19 @@ function setup(overrides: { visible?: boolean } = {}) {
   const hostComponent = fixture.componentInstance;
   const httpTesting = TestBed.inject(HttpTestingController);
 
-  hostComponent.visible = overrides.visible ?? false;
+  const showVisible = overrides.visible ?? false;
+  hostComponent.visible = showVisible;
   fixture.detectChanges();
 
-  const component = fixture.debugElement.children[0].componentInstance;
+  const component = fixture.debugElement.children[0].componentInstance as QuotePdfModalComponent;
 
-  const productReq = httpTesting.expectOne(req => req.url.includes('/api/products'));
-  productReq.flush({ content: [] });
+  if (showVisible) {
+    const productReq = httpTesting.expectOne(req => req.url.includes('/api/products'));
+    productReq.flush(PRODUCTS_WITH_DATA);
 
-  const categoryReq = httpTesting.expectOne(req => req.url.includes('/api/categories'));
-  categoryReq.flush({ content: [] });
-
-  return { fixture, hostComponent, component, httpTesting };
-}
-
-function setupWithData(overrides: { visible?: boolean } = {}) {
-  TestBed.resetTestingModule();
-  TestBed.configureTestingModule({
-    imports: [HostComponent],
-    schemas: [NO_ERRORS_SCHEMA],
-    providers: [provideHttpClient(), provideHttpClientTesting()],
-  });
-  TestBed.compileComponents();
-
-  const fixture = TestBed.createComponent(HostComponent);
-  const hostComponent = fixture.componentInstance;
-  const httpTesting = TestBed.inject(HttpTestingController);
-
-  hostComponent.visible = overrides.visible ?? false;
-  fixture.detectChanges();
-
-  const component = fixture.debugElement.children[0].componentInstance;
-
-  const productReq = httpTesting.expectOne(req => req.url.includes('/api/products'));
-  productReq.flush({
-    content: [
-      { id: 'prod-1', name: 'Product A' },
-      { id: 'prod-2', name: 'Product B' },
-    ],
-  });
-
-  const categoryReq = httpTesting.expectOne(req => req.url.includes('/api/categories'));
-  categoryReq.flush({
-    content: [
-      { id: 'cat-1', name: 'Category A' },
-      { id: 'cat-2', name: 'Category B' },
-    ],
-  });
+    const categoryReq = httpTesting.expectOne(req => req.url.includes('/api/categories'));
+    categoryReq.flush(CATEGORIES_WITH_DATA);
+  }
 
   return { fixture, hostComponent, component, httpTesting };
 }
@@ -144,19 +124,24 @@ describe('QuotePdfModalComponent', () => {
     expect(component.modeOptions[1].value).toBe('DETAILED');
   });
 
-  it('should load products and categories on init', () => {
+  it('should have default productOptions with "Todos los productos"', () => {
+    expect(component.productOptions()).toHaveLength(1);
     expect(component.productOptions()[0].label).toBe('Todos los productos');
+  });
+
+  it('should have default categoryOptions with "Todas las categorías"', () => {
+    expect(component.categoryOptions()).toHaveLength(1);
     expect(component.categoryOptions()[0].label).toBe('Todas las categorías');
   });
 });
 
-describe('QuotePdfModalComponent - visible', () => {
+describe('QuotePdfModalComponent - with data', () => {
   let hostComponent: HostComponent;
   let component: QuotePdfModalComponent;
   let httpTesting: HttpTestingController;
 
   beforeEach(() => {
-    const result = setupWithData({ visible: true });
+    const result = setup({ visible: true });
     hostComponent = result.hostComponent;
     component = result.component;
     httpTesting = result.httpTesting;

@@ -44,6 +44,7 @@ describe('CustomerMapper', () => {
         type: CustomerType.BUSINESS,
         active: true,
         portalAccess: false,
+        deletable: true,
       });
     });
   });

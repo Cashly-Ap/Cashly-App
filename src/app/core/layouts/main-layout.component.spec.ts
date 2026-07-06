@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 import { MainLayoutComponent } from './main-layout.component';
@@ -8,6 +9,22 @@ import { AuthService } from '@features/auth/services';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { MessageService } from 'primeng/api';
 import { PdfViewerService } from '@core/pdf-viewer/services';
+import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
+import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
+import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
+import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
+import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
+import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
+import { InvoicePdfApiService } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
+import { PurchasePdfApiService } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
+import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
+import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
+
+function createPdfApiMock() {
+  return { downloadPdf: vi.fn(), getPdf: vi.fn(), getExcel: vi.fn(), exportExcel: vi.fn(), downloadOrdersReportPdf: vi.fn(), downloadInvoicesReportPdf: vi.fn(), downloadQuotesReportPdf: vi.fn(), downloadPurchasesReportPdf: vi.fn(), getAccountsReceivablePdf: vi.fn() };
+}
 
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
@@ -16,6 +33,7 @@ describe('MainLayoutComponent', () => {
     currentUser: ReturnType<typeof signal>;
     clearAuthState: ReturnType<typeof vi.fn>;
     getUserType: ReturnType<typeof vi.fn>;
+    hasModulePermission: ReturnType<typeof vi.fn>;
   };
   let themeServiceMock: { isDarkMode: ReturnType<typeof signal<boolean>> };
   let routerMock: {
@@ -28,6 +46,7 @@ describe('MainLayoutComponent', () => {
   let pdfViewerServiceMock: {
     open: ReturnType<typeof vi.fn>;
   };
+  let sanitizerMock: { bypassSecurityTrustResourceUrl: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
     authServiceMock = {
@@ -42,6 +61,7 @@ describe('MainLayoutComponent', () => {
       }),
       clearAuthState: vi.fn(),
       getUserType: vi.fn().mockReturnValue('ADMIN'),
+      hasModulePermission: vi.fn().mockReturnValue(true),
     };
 
     themeServiceMock = {
@@ -60,6 +80,12 @@ describe('MainLayoutComponent', () => {
       open: vi.fn(),
     };
 
+    sanitizerMock = {
+      bypassSecurityTrustResourceUrl: vi.fn().mockReturnValue('safe-url'),
+    };
+
+    const pdfApiMock = createPdfApiMock();
+
     await TestBed.configureTestingModule({
       imports: [MainLayoutComponent],
       providers: [
@@ -67,6 +93,19 @@ describe('MainLayoutComponent', () => {
         { provide: ThemeService, useValue: themeServiceMock },
         { provide: Router, useValue: routerMock },
         { provide: PdfViewerService, useValue: pdfViewerServiceMock },
+        { provide: DomSanitizer, useValue: sanitizerMock },
+        { provide: CatalogPdfApiService, useValue: pdfApiMock },
+        { provide: CommercialCatalogPdfApiService, useValue: pdfApiMock },
+        { provide: StockPdfApiService, useValue: pdfApiMock },
+        { provide: StockExcelApiService, useValue: pdfApiMock },
+        { provide: MovementsPdfApiService, useValue: pdfApiMock },
+        { provide: MovementsExcelApiService, useValue: pdfApiMock },
+        { provide: OrderPdfApiService, useValue: pdfApiMock },
+        { provide: InvoicePdfApiService, useValue: pdfApiMock },
+        { provide: QuotePdfApiService, useValue: pdfApiMock },
+        { provide: PurchasePdfApiService, useValue: pdfApiMock },
+        { provide: FinancePdfApiService, useValue: pdfApiMock },
+        { provide: CashRegisterApiService, useValue: pdfApiMock },
         {
           provide: ActivatedRoute,
           useValue: {

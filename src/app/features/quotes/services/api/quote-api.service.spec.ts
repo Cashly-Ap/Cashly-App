@@ -241,7 +241,7 @@ describe('QuoteApiService', () => {
   });
 
   describe('getProductsForQuote()', () => {
-    it('should GET /api/quotes/products with customerId', () => {
+    it('should GET /api/products with customerId', () => {
       const filters: QuoteProductFilters = { customerId: 'c1' };
 
       service.getProductsForQuote(filters).subscribe((result) => {
@@ -249,39 +249,39 @@ describe('QuoteApiService', () => {
         expect(result.totalElements).toBe(1);
       });
 
-      const req = httpMock.expectOne((r) => r.url === '/api/quotes/products' && r.method === 'GET');
+      const req = httpMock.expectOne((r) => r.url === '/api/products' && r.method === 'GET');
       expect(req.request.params.get('customerId')).toBe('c1');
       req.flush(mockProducts);
     });
 
-    it('should GET /api/quotes/products with search and pagination', () => {
+    it('should GET /api/products with search and pagination', () => {
       const filters: QuoteProductFilters = { customerId: 'c1', search: 'Motor', page: 0, size: 10 };
 
       service.getProductsForQuote(filters).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/quotes/products' && r.method === 'GET');
+      const req = httpMock.expectOne((r) => r.url === '/api/products' && r.method === 'GET');
       expect(req.request.params.get('search')).toBe('Motor');
       expect(req.request.params.get('page')).toBe('0');
       expect(req.request.params.get('size')).toBe('10');
       req.flush(mockProducts);
     });
 
-    it('should GET /api/quotes/products with composite flag', () => {
+    it('should GET /api/products with composite flag', () => {
       const filters: QuoteProductFilters = { customerId: 'c1', composite: false };
 
       service.getProductsForQuote(filters).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/quotes/products' && r.method === 'GET');
+      const req = httpMock.expectOne((r) => r.url === '/api/products' && r.method === 'GET');
       expect(req.request.params.get('composite')).toBe('false');
       req.flush(mockProducts);
     });
 
-    it('should GET /api/quotes/products with categoryId', () => {
+    it('should GET /api/products with categoryId', () => {
       const filters: QuoteProductFilters = { customerId: 'c1', categoryId: 'cat-001' };
 
       service.getProductsForQuote(filters).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/quotes/products' && r.method === 'GET');
+      const req = httpMock.expectOne((r) => r.url === '/api/products' && r.method === 'GET');
       expect(req.request.params.get('categoryId')).toBe('cat-001');
       req.flush(mockProducts);
     });
