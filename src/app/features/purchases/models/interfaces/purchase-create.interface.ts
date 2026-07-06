@@ -1,6 +1,6 @@
 export interface PurchaseLineAllocationCreate {
   warehouseId: string;
-  allocatedQuantity: number;
+  quantity: number;
 }
 
 export interface PurchaseLineCreate {
