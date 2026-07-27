@@ -34,7 +34,7 @@ export class LoginPageComponent {
   private messageService = inject(MessageService);
   protected authService = inject(AuthService);
 
-  logoSrc = computed(() => '/Parsun.png');
+  logoSrc = computed(() => '/logo.png');
 
   form = this.fb.group({
     email: ['', AuthValidators.email],

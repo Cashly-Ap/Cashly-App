@@ -121,7 +121,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   currentUser = this.authService.currentUser;
 
-  logoSrc = '/Parsun.png';
+  logoSrc = '/logo.png';
 
   readonly activeModal = signal<'catalog' | 'commercialCatalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'purchases' | 'accountsReceivable' | 'cashRegister' | null>(null);
   readonly pdfViewerVisible = signal(false);
