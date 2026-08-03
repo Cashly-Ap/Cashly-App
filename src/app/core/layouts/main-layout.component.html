@@ -18,15 +18,15 @@
       </div>
 
       
-      <div class="hidden xl:flex flex-1 px-4">
+      <div class="hidden xl:flex flex-1 min-w-0 px-2 2xl:px-4">
         <p-menubar
           [model]="primeMenuItems()"
-          styleClass="border-0 bg-transparent"
+          styleClass="border-0 bg-transparent main-menubar"
         ></p-menubar>
       </div>
 
       
-      <div class="flex items-center gap-1 xl:gap-4">
+      <div class="flex items-center gap-1 xl:gap-2 2xl:gap-4">
         <app-pending-tabs-dropdown />
         
         <button
@@ -39,10 +39,10 @@
             shape="circle"
             size="normal"
           />
-          <span class="font-bold text-surface-900 dark:text-surface-100">
+          <span class="hidden 2xl:inline font-bold text-surface-900 dark:text-surface-100">
             {{ currentUser()?.userName || 'Usuario' }}
           </span>
-          <i class="pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
+          <i class="hidden! 2xl:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
         </button>
         
         <div class="hidden xl:block">
