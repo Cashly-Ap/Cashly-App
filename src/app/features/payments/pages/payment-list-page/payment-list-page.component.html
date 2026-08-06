@@ -141,7 +141,7 @@
                         <div class="font-medium">{{ payment.amount | number:'1.2-2' }}</div>
                       </td>
                       <td>
-                        <div class="text-sm">{{ payment.createdByName }}</div>
+                        <div class="text-sm">{{ payment.createdByName || 'Portal' }}</div>
                       </td>
                       <td>
                         <div class="flex gap-1 justify-center">
@@ -201,7 +201,7 @@
                         {{ payment.amount | number:'1.2-2' }}
                       </p>
                       <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">
-                        {{ payment.createdByName }}
+                        {{ payment.createdByName || 'Portal' }}
                       </p>
                     </div>
                   </div>
