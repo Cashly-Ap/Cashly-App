@@ -1,0 +1,142 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [style]="{ width: '900px' }"
+  [closable]="true"
+  [dismissableMask]="true"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-950 shrink-0">
+        <i class="pi pi-warehouse text-blue-600 dark:text-blue-400 text-lg"></i>
+      </div>
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Asignar Almacenes</span>
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-4">
+    @if (loading()) {
+      <div class="flex items-center justify-center py-8">
+        <i class="pi pi-spin pi-spinner text-2xl text-surface-400"></i>
+        <span class="ml-3 text-surface-500">Cargando datos del presupuesto...</span>
+      </div>
+    }
+
+    @if (error(); as err) {
+      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
+        {{ err }}
+      </div>
+    }
+
+    @if (quoteInfo(); as info) {
+      <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
+        <div class="flex items-center gap-2 mb-1">
+          <i class="pi pi-file-edit text-surface-400"></i>
+          <span class="font-semibold text-sm">Presupuesto #{{ info.number }}</span>
+        </div>
+        <p class="text-sm text-surface-500 ml-6">{{ info.customerName }}</p>
+        <p class="text-sm text-surface-500 ml-6 font-medium">{{ info.subtotal | number: '1.2-2' }}</p>
+        <p class="text-xs text-surface-400 ml-6 mt-1">
+          <i class="pi pi-info-circle mr-1"></i>
+          Asigne la cantidad de cada producto por almac&eacute;n. La suma por l&iacute;nea debe ser igual a la cantidad solicitada.
+        </p>
+      </div>
+
+      <p-table [value]="lines()" styleClass="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Producto</th>
+            <th class="w-20 text-center">Cant.</th>
+            <th>Almac&eacute;n</th>
+            <th class="w-28 text-center">Asigna</th>
+            <th class="w-28 text-center">Stock Disp.</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-line>
+          <ng-container>
+            @for (wh of line.warehouses; track wh.warehouseId; let first = $first) {
+              <tr>
+                @if (first) {
+                  <td [attr.rowspan]="line.warehouses.length" class="align-top">
+                    <div class="flex flex-col gap-1">
+                      <span class="font-medium text-sm">{{ line.productName }}</span>
+                      <span class="font-mono text-xs text-surface-400">{{ line.productCode }}</span>
+                    </div>
+                  </td>
+                  <td [attr.rowspan]="line.warehouses.length" class="text-center align-top">
+                    <span class="font-mono text-sm">{{ line.quantity }}</span>
+                  </td>
+                }
+                <td>
+                  <span class="text-sm">{{ wh.warehouseName }}</span>
+                </td>
+                <td class="text-center">
+                  <p-inputNumber
+                    [(ngModel)]="wh.assigned"
+                    [min]="0"
+                    [max]="line.quantity"
+                    [showButtons]="true"
+                    [step]="1"
+                    inputId="assign-input"
+                    styleClass="w-full"
+                    (onInput)="onAssignedChange(line)"
+                  />
+                </td>
+                <td class="text-center">
+                  <span class="font-mono text-sm">{{ wh.available }}</span>
+                  @if (wh.assigned > wh.available) {
+                    <i
+                      class="pi pi-exclamation-triangle text-red-500 ml-1"
+                      pTooltip="Stock insuficiente: disponible {{ wh.available }}, asignando {{ wh.assigned }}"
+                    ></i>
+                  }
+                </td>
+              </tr>
+            }
+            <tr>
+              <td [attr.colspan]="2" class="text-right font-medium">Asignado / Total:</td>
+              <td colspan="3">
+                <span
+                  class="font-mono text-sm"
+                  [class.font-bold]="line.complete"
+                  [class.text-green-600]="line.complete"
+                  [class.text-red-500]="!line.complete"
+                >
+                  {{ line.totalAssigned }} / {{ line.quantity }}
+                </span>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-template>
+      </p-table>
+
+      @if (!canConfirm()) {
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 flex items-start gap-3">
+          <i class="pi pi-exclamation-circle text-yellow-500 mt-0.5"></i>
+          <div class="text-sm text-yellow-700 dark:text-yellow-300">
+            <span class="font-semibold">Asignaci&oacute;n incompleta.</span>
+            Cada l&iacute;nea debe tener su cantidad total distribuida entre los almacenes.
+          </div>
+        </div>
+      }
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        label="Guardar Asignaci&oacute;n"
+        icon="pi pi-check"
+        severity="success"
+        [disabled]="loading() || !canConfirm() || !quoteInfo()"
+        (onClick)="onConfirm()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

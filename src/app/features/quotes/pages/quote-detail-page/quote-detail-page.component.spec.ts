@@ -54,6 +54,7 @@ describe('QuoteDetailPageComponent', () => {
   beforeEach(() => {
     mockService = {
       loadById: vi.fn().mockReturnValue(of(mockQuote)),
+      assignWarehouses: vi.fn().mockReturnValue(of(mockQuote)),
       currentQuote: signal(mockQuote),
       loading: signal(false),
       quotes: signal([]),
@@ -112,6 +113,7 @@ describe('QuoteDetailPageComponent', () => {
   it('should get status label', () => {
     fixture.detectChanges();
     expect(component.getStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
+    expect(component.getStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
     expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
     expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('Convertido a Factura');
     expect(component.getStatusLabel(QuoteStatus.CANCELLED)).toBe('Cancelado');
@@ -120,9 +122,54 @@ describe('QuoteDetailPageComponent', () => {
   it('should get status variant', () => {
     fixture.detectChanges();
     expect(component.getStatusVariant(QuoteStatus.DRAFT)).toBe('label');
+    expect(component.getStatusVariant(QuoteStatus.CUSTOMER_DRAFT)).toBe('warning');
     expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_ORDER)).toBe('success');
     expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('success');
     expect(component.getStatusVariant(QuoteStatus.CANCELLED)).toBe('danger');
+  });
+
+  it('should open assign warehouses dialog', () => {
+    fixture.detectChanges();
+    component.onAssignWarehouses();
+    expect(component.assignDialogVisible()).toBe(true);
+  });
+
+  it('should close assign warehouses dialog on dismissed', () => {
+    fixture.detectChanges();
+    component.assignDialogVisible.set(true);
+    component.onAssignWarehousesDismissed();
+    expect(component.assignDialogVisible()).toBe(false);
+  });
+
+  it('should call assignWarehouses service on dialog confirmed', () => {
+    fixture.detectChanges();
+    const request = {
+      lines: [
+        {
+          lineId: 'line-001',
+          allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+        },
+      ],
+    };
+    component.onAssignWarehousesConfirmed(request);
+    expect(mockService.assignWarehouses).toHaveBeenCalledWith('q-001', request);
+    expect(component.assignDialogVisible()).toBe(false);
+  });
+
+  it('should show success message on assign warehouses success', () => {
+    fixture.detectChanges();
+    const addSpy = vi.spyOn(messageService, 'add');
+    component.onAssignWarehousesConfirmed({
+      lines: [
+        {
+          lineId: 'line-001',
+          allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+        },
+      ],
+    });
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ severity: 'success' })
+    );
   });
 
   it('should expose QuoteStatus enum', () => {

@@ -26,6 +26,8 @@ export class QuoteMapper {
       status: details.status,
       subtotal: details.subtotal,
       expiryDate: '',
+      createdBy: details.createdBy,
+      createdByName: details.createdByName,
       createdAt: details.createdAt,
     };
   }

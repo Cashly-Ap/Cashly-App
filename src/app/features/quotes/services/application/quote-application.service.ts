@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, map } from 'rxjs';
-import { QuoteApiService, QuoteFilters, ConvertToInvoiceRequest } from '@features/quotes/services/api/quote-api.service';
+import { QuoteApiService, QuoteFilters, ConvertToInvoiceRequest, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
 import { QuoteMapper } from '@features/quotes/services/mappers/quote.mapper';
 import { QuoteList, QuoteDetails, QuoteCreate, QuoteEdit } from '@features/quotes/models/interfaces';
 
@@ -142,5 +142,24 @@ export class QuoteApplicationService {
 
   getWarehousesForQuote(customerId: string) {
     return this.api.getWarehousesForQuote(customerId);
+  }
+
+  assignWarehouses(id: string, request: AssignQuoteWarehousesRequest): Observable<QuoteDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.assignWarehouses(id, request).pipe(
+      tap({
+        next: (quote) => {
+          const listItem = QuoteMapper.toList(quote);
+          this.quotes.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.set(quote);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
   }
 }

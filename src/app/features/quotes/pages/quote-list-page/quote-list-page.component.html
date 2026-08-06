@@ -131,6 +131,9 @@
                       <th pSortableColumn="subtotal" class="w-32 text-right">
                         <div class="font-semibold">Total <p-sortIcon field="subtotal" /></div>
                       </th>
+                      <th class="w-36 hidden lg:table-cell">
+                        <div class="font-semibold">Creado por</div>
+                      </th>
                       <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
                         <div class="font-semibold">Fecha <p-sortIcon field="createdAt" /></div>
                       </th>
@@ -154,6 +157,9 @@
                         <span class="text-sm font-medium">{{ quote.subtotal | number: '1.2-2' }}</span>
                       </td>
                       <td class="hidden lg:table-cell">
+                        <div class="text-sm text-surface-500">{{ quote.createdByName || 'Portal' }}</div>
+                      </td>
+                      <td class="hidden lg:table-cell">
                         <div class="text-sm text-surface-500">{{ quote.createdAt | date: 'dd/MM/yyyy' }}</div>
                       </td>
                       <td>
@@ -165,6 +171,9 @@
                             <p-button icon="pi pi-shopping-cart" [text]="true" [rounded]="true" severity="contrast" (onClick)="onConvertToOrder(quote)" pTooltip="Convertir a Pedido" />
                             <p-button icon="pi pi-file" [text]="true" [rounded]="true" severity="success" (onClick)="onConvertToInvoice(quote)" pTooltip="Convertir a Factura" />
                             <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(quote)" pTooltip="Eliminar" />
+                          }
+                          @if (quote.status === 'CUSTOMER_DRAFT') {
+                            <p-button icon="pi pi-warehouse" [text]="true" [rounded]="true" severity="warn" (onClick)="onAssignWarehouses(quote)" pTooltip="Asignar Almacenes" />
                           }
                         </div>
                       </td>
@@ -215,8 +224,9 @@
                         {{ quote.customerName }}
                       </h3>
                       <p class="text-sm font-medium mb-2">{{ quote.subtotal | number: '1.2-2' }}</p>
-                      <div class="flex flex-wrap gap-2">
+                      <div class="flex flex-wrap gap-2 items-center">
                         <app-text-badge [label]="getStatusLabel(quote.status)" [variant]="getStatusVariant(quote.status)" />
+                        <span class="text-xs text-surface-400">Creado por {{ quote.createdByName || 'Portal' }}</span>
                       </div>
                     </div>
                     <div class="text-xs text-surface-400 ml-2">{{ quote.createdAt | date: 'dd/MM/yyyy' }}</div>
@@ -229,6 +239,9 @@
                         <p-button icon="pi pi-shopping-cart" [text]="true" [rounded]="true" severity="contrast" (onClick)="onConvertToOrder(quote)" />
                         <p-button icon="pi pi-file" [text]="true" [rounded]="true" severity="success" (onClick)="onConvertToInvoice(quote)" />
                         <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(quote)" />
+                      }
+                      @if (quote.status === 'CUSTOMER_DRAFT') {
+                        <p-button icon="pi pi-warehouse" [text]="true" [rounded]="true" severity="warn" (onClick)="onAssignWarehouses(quote)" />
                       }
                     </div>
                 </div>
@@ -262,5 +275,11 @@
     [quoteId]="quoteToConvertToInvoice()?.id ?? null"
     (confirmed)="onInvoiceDialogConfirmed($event)"
     (cancelled)="onInvoiceDialogDismissed()"
+  />
+  <app-assign-warehouses-dialog
+    [visible]="assignDialogVisible()"
+    [quoteId]="quoteToAssignWarehouses()?.id ?? null"
+    (confirmed)="onAssignWarehousesConfirmed($event)"
+    (cancelled)="onAssignWarehousesDismissed()"
   />
 </app-main-layout>

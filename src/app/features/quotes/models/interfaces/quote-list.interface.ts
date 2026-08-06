@@ -8,5 +8,7 @@ export interface QuoteList {
   status: QuoteStatus;
   subtotal: number;
   expiryDate: string;
+  createdBy: string | null;
+  createdByName: string | null;
   createdAt: string;
 }

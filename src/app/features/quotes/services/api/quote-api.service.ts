@@ -19,6 +19,16 @@ export interface ConvertToInvoiceRequest {
   paymentMethodId?: string;
 }
 
+export interface AssignQuoteWarehousesRequest {
+  lines: {
+    lineId: string;
+    allocations: {
+      warehouseId: string;
+      allocatedQuantity: number;
+    }[];
+  }[];
+}
+
 export interface QuoteProductFilters {
   customerId: string;
   search?: string;
@@ -55,6 +65,8 @@ interface QuoteListApiResponse {
   status: string;
   expiryDate: string;
   subtotal: number;
+  createdBy: string | null;
+  createdByName: string | null;
   createdAt: string;
 }
 
@@ -137,6 +149,8 @@ export class QuoteApiService {
       status: r.status as QuoteStatus,
       subtotal: r.subtotal,
       expiryDate: r.expiryDate,
+      createdBy: r.createdBy ?? null,
+      createdByName: r.createdByName ?? null,
       createdAt: r.createdAt,
     };
   }
@@ -176,6 +190,12 @@ export class QuoteApiService {
   getWarehousesForQuote(customerId: string): Observable<QuoteWarehouse[]> {
     const params = new HttpParams().set('customerId', customerId);
     return this.http.get<QuoteWarehouse[]>(`${this.baseUrl}/warehouses`, { params });
+  }
+
+  assignWarehouses(id: string, request: AssignQuoteWarehousesRequest): Observable<QuoteDetails> {
+    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request).pipe(
+      map((r) => this.toQuoteDetails(r)),
+    );
   }
 
   convertToOrder(id: string): Observable<QuoteConvertedToOrderResponse> {

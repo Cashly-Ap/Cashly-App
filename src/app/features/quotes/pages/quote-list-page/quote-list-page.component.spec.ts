@@ -29,6 +29,8 @@ describe('QuoteListPageComponent', () => {
       status: QuoteStatus.DRAFT,
       subtotal: 500,
       expiryDate: '2025-12-31',
+      createdBy: 'user-001',
+      createdByName: 'John Doe',
       createdAt: '2025-01-01T00:00:00Z',
     },
     {
@@ -39,6 +41,8 @@ describe('QuoteListPageComponent', () => {
       status: QuoteStatus.CONVERTED_TO_ORDER,
       subtotal: 1000,
       expiryDate: '2025-12-31',
+      createdBy: null,
+      createdByName: null,
       createdAt: '2025-01-02T00:00:00Z',
     },
   ];
@@ -56,6 +60,7 @@ describe('QuoteListPageComponent', () => {
       delete: vi.fn().mockReturnValue(of(undefined)),
       convertToOrder: vi.fn().mockReturnValue(of({})),
       convertToInvoice: vi.fn().mockReturnValue(of({})),
+      assignWarehouses: vi.fn().mockReturnValue(of({})),
       quotes: signal(mockQuotes),
       currentQuote: signal(null),
       loading: signal(false),
@@ -274,6 +279,7 @@ describe('QuoteListPageComponent', () => {
         delete: vi.fn().mockReturnValue(of(undefined)),
         convertToOrder: vi.fn().mockReturnValue(throwError(() => new Error('Fail'))),
         convertToInvoice: vi.fn().mockReturnValue(of({})),
+        assignWarehouses: vi.fn().mockReturnValue(of({})),
         quotes: signal(mockQuotes),
         currentQuote: signal(null),
         loading: signal(false),
@@ -343,6 +349,55 @@ describe('QuoteListPageComponent', () => {
     });
   });
 
+  describe('assign warehouses dialog', () => {
+    it('should open assign warehouses dialog', () => {
+      fixture.detectChanges();
+      component.onAssignWarehouses(mockQuotes[0]);
+      expect(component.assignDialogVisible()).toBe(true);
+      expect(component.quoteToAssignWarehouses()).toEqual(mockQuotes[0]);
+    });
+
+    it('should close dialog on dismissed', () => {
+      fixture.detectChanges();
+      component.assignDialogVisible.set(true);
+      component.onAssignWarehousesDismissed();
+      expect(component.assignDialogVisible()).toBe(false);
+      expect(component.quoteToAssignWarehouses()).toBeNull();
+    });
+
+    it('should call assignWarehouses service on dialog confirmed', () => {
+      fixture.detectChanges();
+      component.quoteToAssignWarehouses.set(mockQuotes[0]);
+      const request = {
+        lines: [
+          {
+            lineId: 'line-001',
+            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
+        ],
+      };
+      component.onAssignWarehousesConfirmed(request);
+      expect(mockService.assignWarehouses).toHaveBeenCalledWith('q-001', request);
+    });
+
+    it('should show success message on assign warehouses success', () => {
+      fixture.detectChanges();
+      component.quoteToAssignWarehouses.set(mockQuotes[0]);
+      const addSpy = vi.spyOn(messageService, 'add');
+      component.onAssignWarehousesConfirmed({
+        lines: [
+          {
+            lineId: 'line-001',
+            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
+        ],
+      });
+      expect(addSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ severity: 'success' })
+      );
+    });
+  });
+
   describe('PDF download', () => {
     it('should open PDF viewer', () => {
       fixture.detectChanges();
@@ -361,6 +416,7 @@ describe('QuoteListPageComponent', () => {
     it('should get status label', () => {
       fixture.detectChanges();
       expect(component.getStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
+      expect(component.getStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
       expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
       expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('Convertido a Factura');
       expect(component.getStatusLabel(QuoteStatus.CANCELLED)).toBe('Cancelado');
@@ -369,6 +425,7 @@ describe('QuoteListPageComponent', () => {
     it('should get status variant', () => {
       fixture.detectChanges();
       expect(component.getStatusVariant(QuoteStatus.DRAFT)).toBe('label');
+      expect(component.getStatusVariant(QuoteStatus.CUSTOMER_DRAFT)).toBe('warning');
       expect(component.getStatusVariant(QuoteStatus.CANCELLED)).toBe('danger');
       expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_ORDER)).toBe('success');
       expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('success');
@@ -381,6 +438,13 @@ describe('QuoteListPageComponent', () => {
       expect(component.statusOptions.length).toBeGreaterThan(0);
       expect(component.statusOptions[0].label).toBe('Borrador');
       expect(component.statusOptions[0].value).toBe('DRAFT');
+    });
+
+    it('should include CUSTOMER_DRAFT in status options', () => {
+      fixture.detectChanges();
+      const customerDraft = component.statusOptions.find((o) => o.value === QuoteStatus.CUSTOMER_DRAFT);
+      expect(customerDraft).toBeDefined();
+      expect(customerDraft?.label).toBe('Borrador de Cliente');
     });
   });
 });

@@ -33,6 +33,15 @@
                     styleClass="w-full sm:w-auto"
                   />
                 }
+                @if (currentQuote.status === QuoteStatus.CUSTOMER_DRAFT) {
+                  <p-button
+                    label="Asignar Almacenes"
+                    icon="pi pi-warehouse"
+                    severity="warn"
+                    (onClick)="onAssignWarehouses()"
+                    styleClass="w-full sm:w-auto"
+                  />
+                }
                 @if (currentQuote.status === QuoteStatus.CONVERTED_TO_ORDER) {
                   <span class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg">
                     <i class="pi pi-check-circle"></i>
@@ -155,4 +164,10 @@
       }
     </div>
   </div>
+  <app-assign-warehouses-dialog
+    [visible]="assignDialogVisible()"
+    [quoteId]="quote()?.id ?? null"
+    (confirmed)="onAssignWarehousesConfirmed($event)"
+    (cancelled)="onAssignWarehousesDismissed()"
+  />
 </app-main-layout>

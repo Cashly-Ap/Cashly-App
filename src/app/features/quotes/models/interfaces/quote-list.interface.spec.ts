@@ -12,6 +12,8 @@ describe('QuoteList interface', () => {
       status: QuoteStatus.DRAFT,
       subtotal: 500,
       expiryDate: '2025-12-31',
+      createdBy: 'user-001',
+      createdByName: 'John Doe',
       createdAt: '2025-01-01T00:00:00Z',
     };
 
@@ -22,6 +24,8 @@ describe('QuoteList interface', () => {
     expect(obj.status).toBe(QuoteStatus.DRAFT);
     expect(obj.subtotal).toBe(500);
     expect(obj.expiryDate).toBe('2025-12-31');
+    expect(obj.createdBy).toBe('user-001');
+    expect(obj.createdByName).toBe('John Doe');
     expect(obj.createdAt).toBe('2025-01-01T00:00:00Z');
   });
 
@@ -34,9 +38,12 @@ describe('QuoteList interface', () => {
       status: QuoteStatus.CONVERTED_TO_ORDER,
       subtotal: 1000,
       expiryDate: '2025-06-30',
+      createdBy: null,
+      createdByName: null,
       createdAt: '2025-02-01T00:00:00Z',
     };
 
     expect(obj.status).toBe(QuoteStatus.CONVERTED_TO_ORDER);
+    expect(obj.createdByName).toBeNull();
   });
 });

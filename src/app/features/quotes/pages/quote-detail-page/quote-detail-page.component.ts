@@ -20,6 +20,9 @@ import {
 } from '@shared/components/ui';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
+import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
+import { AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
+import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-quote-detail-page',
@@ -40,6 +43,7 @@ import { QuoteStatus, getQuoteStatusLabel } from '@features/quotes/models/enums/
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
+    AssignWarehousesDialogComponent,
   ],
   templateUrl: './quote-detail-page.component.html',
 })
@@ -51,6 +55,8 @@ export class QuoteDetailPageComponent implements OnInit {
 
   readonly quote = this.quoteService.currentQuote;
   readonly loading = this.quoteService.loading;
+
+  readonly assignDialogVisible = signal(false);
 
   readonly QuoteStatus = QuoteStatus;
 
@@ -84,9 +90,42 @@ export class QuoteDetailPageComponent implements OnInit {
     return getQuoteStatusLabel(status);
   }
 
-  getStatusVariant(status: QuoteStatus): 'success' | 'danger' | 'label' {
-    const variants: Record<QuoteStatus, 'success' | 'danger' | 'label'> = {
+  onAssignWarehouses(): void {
+    this.assignDialogVisible.set(true);
+  }
+
+  onAssignWarehousesConfirmed(request: AssignQuoteWarehousesRequest): void {
+    const id = this.quote()?.id;
+    if (!id) return;
+    this.assignDialogVisible.set(false);
+    this.quoteService.assignWarehouses(id, request).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Almacenes asignados al presupuesto.',
+          life: 3000,
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al asignar almacenes. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onAssignWarehousesDismissed(): void {
+    this.assignDialogVisible.set(false);
+  }
+
+  getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
+    const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
       [QuoteStatus.DRAFT]: 'label',
+      [QuoteStatus.CUSTOMER_DRAFT]: 'warning',
       [QuoteStatus.CANCELLED]: 'danger',
       [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
       [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',

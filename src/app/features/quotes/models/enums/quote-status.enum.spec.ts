@@ -6,6 +6,10 @@ describe('QuoteStatus', () => {
     expect(QuoteStatus.DRAFT).toBe('DRAFT');
   });
 
+  it('should have CUSTOMER_DRAFT value', () => {
+    expect(QuoteStatus.CUSTOMER_DRAFT).toBe('CUSTOMER_DRAFT');
+  });
+
   it('should have CONVERTED_TO_ORDER value', () => {
     expect(QuoteStatus.CONVERTED_TO_ORDER).toBe('CONVERTED_TO_ORDER');
   });
@@ -18,14 +22,18 @@ describe('QuoteStatus', () => {
     expect(QuoteStatus.CANCELLED).toBe('CANCELLED');
   });
 
-  it('should have 4 values', () => {
-    expect(Object.keys(QuoteStatus).filter((k) => isNaN(Number(k)))).toHaveLength(4);
+  it('should have 5 values', () => {
+    expect(Object.keys(QuoteStatus).filter((k) => isNaN(Number(k)))).toHaveLength(5);
   });
 });
 
 describe('QUOTE_STATUS_LABELS', () => {
   it('should have label for DRAFT', () => {
     expect(QUOTE_STATUS_LABELS[QuoteStatus.DRAFT]).toBe('Borrador');
+  });
+
+  it('should have label for CUSTOMER_DRAFT', () => {
+    expect(QUOTE_STATUS_LABELS[QuoteStatus.CUSTOMER_DRAFT]).toBe('Borrador de Cliente');
   });
 
   it('should have label for CONVERTED_TO_ORDER', () => {
@@ -44,6 +52,7 @@ describe('QUOTE_STATUS_LABELS', () => {
 describe('getQuoteStatusLabel', () => {
   it('should return label for valid status', () => {
     expect(getQuoteStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
+    expect(getQuoteStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
     expect(getQuoteStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
     expect(getQuoteStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('Convertido a Factura');
     expect(getQuoteStatusLabel(QuoteStatus.CANCELLED)).toBe('Cancelado');

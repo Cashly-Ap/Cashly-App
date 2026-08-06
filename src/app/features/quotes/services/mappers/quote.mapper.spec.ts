@@ -42,6 +42,8 @@ describe('QuoteMapper', () => {
       expect(result.status).toBe(QuoteStatus.DRAFT);
       expect(result.subtotal).toBe(500);
       expect(result.expiryDate).toBe('');
+      expect(result.createdBy).toBe('user-001');
+      expect(result.createdByName).toBe('John Doe');
       expect(result.createdAt).toBe('2025-01-01T00:00:00Z');
     });
 

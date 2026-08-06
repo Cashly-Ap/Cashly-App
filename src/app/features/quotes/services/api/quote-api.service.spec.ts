@@ -18,6 +18,8 @@ describe('QuoteApiService', () => {
       status: 'DRAFT',
       subtotal: 500,
       expiryDate: '2025-12-31',
+      createdBy: 'user-001',
+      createdByName: 'John Doe',
       createdAt: '2025-01-01T00:00:00Z',
     },
   ];
@@ -106,6 +108,7 @@ describe('QuoteApiService', () => {
         expect(result).toHaveLength(1);
         expect(result[0].id).toBe('q-001');
         expect(result[0].status).toBe(QuoteStatus.DRAFT);
+        expect(result[0].createdByName).toBe('John Doe');
       });
 
       const req = httpMock.expectOne('/api/quotes');
@@ -297,6 +300,29 @@ describe('QuoteApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/quotes/warehouses' && r.method === 'GET');
       expect(req.request.params.get('customerId')).toBe('c1');
       req.flush(mockWarehouses);
+    });
+  });
+
+  describe('assignWarehouses()', () => {
+    it('should PUT /api/quotes/:id/allocations with request body', () => {
+      const request = {
+        lines: [
+          {
+            lineId: 'line-001',
+            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
+        ],
+      };
+      service.assignWarehouses('q-001', request).subscribe((result) => {
+        expect(result.id).toBe('q-001');
+        expect(result.status).toBe(QuoteStatus.DRAFT);
+        expect(result.lines[0].allocations).toHaveLength(1);
+      });
+
+      const req = httpMock.expectOne('/api/quotes/q-001/allocations');
+      expect(req.request.method).toBe('PUT');
+      expect(req.request.body).toEqual(request);
+      req.flush(mockDetails);
     });
   });
 

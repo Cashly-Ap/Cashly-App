@@ -49,6 +49,7 @@ describe('QuoteApplicationService', () => {
       convertToInvoice: vi.fn().mockReturnValue(of({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' })),
       getProductsForQuote: vi.fn().mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
       getWarehousesForQuote: vi.fn().mockReturnValue(of([])),
+      assignWarehouses: vi.fn().mockReturnValue(of(mockQuote)),
     };
 
     TestBed.configureTestingModule({
@@ -212,6 +213,49 @@ describe('QuoteApplicationService', () => {
       service.getWarehousesForQuote('c1').subscribe();
 
       expect(mockApi.getWarehousesForQuote).toHaveBeenCalledWith('c1');
+    });
+  });
+
+  describe('assignWarehouses()', () => {
+    it('should call api.assignWarehouses with id and request', () => {
+      const request = {
+        lines: [
+          {
+            lineId: 'line-001',
+            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
+        ],
+      };
+      service.assignWarehouses('q-001', request).subscribe();
+
+      expect(mockApi.assignWarehouses).toHaveBeenCalledWith('q-001', request);
+      expect(service.loading()).toBe(false);
+    });
+
+    it('should update quotes list and currentQuote on success', () => {
+      const request = {
+        lines: [
+          {
+            lineId: 'line-001',
+            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
+        ],
+      };
+      service.quotes.set(mockList);
+      service.currentQuote.set(mockQuote);
+
+      service.assignWarehouses('q-001', request).subscribe();
+
+      expect(service.quotes()[0].status).toBe(QuoteStatus.DRAFT);
+      expect(service.currentQuote()?.id).toBe('q-001');
+    });
+
+    it('should set error on failure', () => {
+      mockApi.assignWarehouses = vi.fn().mockReturnValue(throwError(() => new Error('Assign failed')));
+
+      service.assignWarehouses('q-001', { lines: [] }).subscribe({ error: () => {} });
+
+      expect(service.error()).toBe('Assign failed');
     });
   });
 });

@@ -21,8 +21,9 @@ import { ListContainerComponent } from '@shared/components/list/list-container/l
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
+import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
-import { QuoteFilters, ConvertToInvoiceRequest } from '@features/quotes/services/api/quote-api.service';
+import { QuoteFilters, ConvertToInvoiceRequest, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
 import { QuoteStatus, QUOTE_STATUS_LABELS, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
 import { QuoteList } from '@features/quotes/models/interfaces';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
@@ -52,6 +53,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     TextBadgeComponent,
     ConvertToOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
+    AssignWarehousesDialogComponent,
   ],
   templateUrl: './quote-list-page.component.html',
   providers: [ConfirmationService],
@@ -77,6 +79,9 @@ export class QuoteListPageComponent implements OnInit {
 
   readonly invoiceDialogVisible = signal(false);
   readonly quoteToConvertToInvoice = signal<QuoteList | null>(null);
+
+  readonly assignDialogVisible = signal(false);
+  readonly quoteToAssignWarehouses = signal<QuoteList | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -259,6 +264,43 @@ export class QuoteListPageComponent implements OnInit {
     this.quoteToConvertToInvoice.set(null);
   }
 
+  onAssignWarehouses(quote: QuoteList): void {
+    this.quoteToAssignWarehouses.set(quote);
+    this.assignDialogVisible.set(true);
+  }
+
+  onAssignWarehousesConfirmed(request: AssignQuoteWarehousesRequest): void {
+    const quote = this.quoteToAssignWarehouses();
+    if (!quote) return;
+    this.assignDialogVisible.set(false);
+    this.quoteService.assignWarehouses(quote.id, request).subscribe({
+      next: () => {
+        this.quoteToAssignWarehouses.set(null);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Presupuesto #${quote.quoteNumber} con almacenes asignados.`,
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.quoteToAssignWarehouses.set(null);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al asignar almacenes. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onAssignWarehousesDismissed(): void {
+    this.assignDialogVisible.set(false);
+    this.quoteToAssignWarehouses.set(null);
+  }
+
   onDownloadPdf(quote: QuoteList): void {
     const config: PdfViewerConfig = {
       url: `/api/reports/quotes/${quote.id}/pdf`,
@@ -272,9 +314,10 @@ export class QuoteListPageComponent implements OnInit {
     return getQuoteStatusLabel(status);
   }
 
-  getStatusVariant(status: QuoteStatus): 'success' | 'danger' | 'label' {
-    const variants: Record<QuoteStatus, 'success' | 'danger' | 'label'> = {
+  getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
+    const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
       [QuoteStatus.DRAFT]: 'label',
+      [QuoteStatus.CUSTOMER_DRAFT]: 'warning',
       [QuoteStatus.CANCELLED]: 'danger',
       [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
       [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',
