@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { QuoteApiService, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/quotes/models/interfaces';
@@ -31,7 +32,7 @@ interface LineAssignmentState {
 @Component({
   selector: 'app-assign-warehouses-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, TooltipModule],
+  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, InputTextModule, TooltipModule],
   templateUrl: './assign-warehouses-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -130,13 +131,10 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   }
 
   onAssignedChange(line: LineAssignmentState): void {
-    this.lines.update((current) =>
-      current.map((l) => {
-        if (l.lineId !== line.lineId) return l;
-        const total = l.warehouses.reduce((sum, w) => sum + (w.assigned || 0), 0);
-        return { ...l, totalAssigned: total, complete: Math.abs(total - l.quantity) < 0.0001 };
-      }),
-    );
+    const total = line.warehouses.reduce((sum, w) => sum + (w.assigned || 0), 0);
+    line.totalAssigned = total;
+    line.complete = Math.abs(total - line.quantity) < 0.0001;
+    this.lines.set([...this.lines()]);
   }
 
   onConfirm(): void {

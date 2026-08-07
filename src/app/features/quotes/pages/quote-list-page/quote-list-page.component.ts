@@ -72,7 +72,7 @@ export class QuoteListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly filterStatus = signal('DRAFT');
+  readonly filterStatus = signal('');
 
   readonly orderDialogVisible = signal(false);
   readonly quoteToConvertToOrder = signal<QuoteList | null>(null);
@@ -87,6 +87,7 @@ export class QuoteListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
+    { label: 'Todos (Borradores)', value: '' },
     { label: 'Borrador', value: 'DRAFT' },
     ...Object.values(QuoteStatus)
       .filter((s) => s !== QuoteStatus.DRAFT && s !== QuoteStatus.CANCELLED)
@@ -95,7 +96,7 @@ export class QuoteListPageComponent implements OnInit {
 
   readonly activeFilterCount = computed(() => {
     let count = 0;
-    if (this.filterStatus() && this.filterStatus() !== 'DRAFT') count++;
+    if (this.filterStatus()) count++;
     return count;
   });
 
