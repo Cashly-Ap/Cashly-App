@@ -163,7 +163,7 @@
                           <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(order)" pTooltip="Descargar PDF" />
                           @if (order.status === 'DRAFT' || order.status === 'CUSTOMER_DRAFT') {
                             @if (order.status === 'CUSTOMER_DRAFT') {
-                              <p-button icon="pi pi-warehouse" [text]="true" [rounded]="true" severity="warn" (onClick)="onEdit(order)" pTooltip="Asignar Almacenes" />
+                              <p-button icon="pi pi-warehouse" [text]="true" [rounded]="true" severity="warn" (onClick)="onAssignWarehouses(order)" pTooltip="Asignar Almacenes" />
                             }
                             <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(order)" pTooltip="Editar" />
                             <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
@@ -275,5 +275,13 @@
     [customerId]="orderToInvoice()?.customerId ?? ''"
     (confirmed)="onInvoiceDialogConfirmed($event)"
     (cancelled)="onInvoiceDialogDismissed()"
+  />
+  <app-assign-warehouses-dialog
+    [visible]="assignDialogVisible()"
+    [orderId]="orderToAssign()?.id ?? null"
+    (confirmed)="onAssignConfirmed($event)"
+    (convertToInvoice)="onAssignToInvoice($event)"
+    (finished)="onAssignFinished()"
+    (cancelled)="onAssignDismissed()"
   />
 </app-main-layout>

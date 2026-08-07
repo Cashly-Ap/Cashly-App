@@ -21,6 +21,7 @@ import { ListContainerComponent } from '@shared/components/list/list-container/l
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
+import { AssignWarehousesDialogComponent } from '@features/orders/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderFilters, ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
@@ -53,6 +54,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     TextBadgeComponent,
     CancelOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
+    AssignWarehousesDialogComponent,
   ],
   templateUrl: './order-list-page.component.html',
   providers: [ConfirmationService],
@@ -79,6 +81,9 @@ export class OrderListPageComponent implements OnInit {
 
   readonly invoiceDialogVisible = signal(false);
   readonly orderToInvoice = signal<OrderList | null>(null);
+
+  readonly assignDialogVisible = signal(false);
+  readonly orderToAssign = signal<OrderList | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -247,6 +252,55 @@ export class OrderListPageComponent implements OnInit {
   onCancelDialogDismissed(): void {
     this.cancelDialogVisible.set(false);
     this.orderToCancel.set(null);
+  }
+
+  onAssignWarehouses(order: OrderList): void {
+    this.orderToAssign.set(order);
+    this.assignDialogVisible.set(true);
+  }
+
+  onAssignConfirmed(orderId: string): void {
+    this.assignDialogVisible.set(false);
+    this.orderService.confirm(orderId).subscribe({
+      next: () => {
+        this.orderToAssign.set(null);
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido confirmado y stock descontado', life: 3000 });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.orderToAssign.set(null);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar el pedido', life: 5000 });
+      },
+    });
+  }
+
+  onAssignToInvoice(orderId: string): void {
+    this.assignDialogVisible.set(false);
+    const order = this.orderToAssign();
+    if (!order) return;
+    this.orderService.convertToInvoice(orderId, { paymentType: 'CASH' }).subscribe({
+      next: () => {
+        this.orderToAssign.set(null);
+        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido convertido a factura exitosamente', life: 3000 });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.orderToAssign.set(null);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al convertir a factura', life: 5000 });
+      },
+    });
+  }
+
+  onAssignFinished(): void {
+    this.assignDialogVisible.set(false);
+    this.orderToAssign.set(null);
+    this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacenes asignados correctamente', life: 3000 });
+    this.loadWithFilters();
+  }
+
+  onAssignDismissed(): void {
+    this.assignDialogVisible.set(false);
+    this.orderToAssign.set(null);
   }
 
   onConvertToInvoice(order: OrderList): void {
