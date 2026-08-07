@@ -12,6 +12,16 @@ export interface ConvertToInvoiceRequest {
   paymentMethodId?: string;
 }
 
+export interface AssignOrderWarehousesRequest {
+  lines: {
+    lineId: string;
+    allocations: {
+      warehouseId: string;
+      allocatedQuantity: number;
+    }[];
+  }[];
+}
+
 export interface OrderProductFilters {
   customerId: string;
   search?: string;
@@ -165,6 +175,12 @@ export class OrderApiService {
 
   cancel(id: string, reason: string): Observable<OrderDetails> {
     return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
+      map((r) => this.toOrderDetails(r)),
+    );
+  }
+
+  assignWarehouses(id: string, request: AssignOrderWarehousesRequest): Observable<OrderDetails> {
+    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request).pipe(
       map((r) => this.toOrderDetails(r)),
     );
   }

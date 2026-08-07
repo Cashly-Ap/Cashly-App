@@ -25,6 +25,15 @@
                   styleClass="w-full sm:w-auto"
                 />
                 @if (currentOrder.status === OrderStatus.DRAFT || currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
+                  @if (currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
+                    <p-button
+                      label="Asignar Almacenes"
+                      icon="pi pi-warehouse"
+                      severity="warn"
+                      (onClick)="onEdit()"
+                      styleClass="w-full sm:w-auto"
+                    />
+                  }
                   <p-button
                     label="Editar"
                     icon="pi pi-pencil"
