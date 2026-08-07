@@ -24,7 +24,7 @@
                   (onClick)="onBack()"
                   styleClass="w-full sm:w-auto"
                 />
-                @if (currentOrder.status === OrderStatus.DRAFT) {
+                @if (currentOrder.status === OrderStatus.DRAFT || currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
                   <p-button
                     label="Editar"
                     icon="pi pi-pencil"

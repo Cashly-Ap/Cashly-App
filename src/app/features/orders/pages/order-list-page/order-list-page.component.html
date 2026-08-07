@@ -161,7 +161,7 @@
                         <div class="flex gap-1 justify-center">
                           <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(order)" pTooltip="Ver" />
                           <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(order)" pTooltip="Descargar PDF" />
-                          @if (order.status === 'DRAFT') {
+                          @if (order.status === 'DRAFT' || order.status === 'CUSTOMER_DRAFT') {
                             <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(order)" pTooltip="Editar" />
                             <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirm(order)" pTooltip="Confirmar" />
                             <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(order)" pTooltip="Eliminar" />

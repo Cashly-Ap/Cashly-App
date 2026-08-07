@@ -301,6 +301,7 @@ export class OrderListPageComponent implements OnInit {
   getStatusVariant(status: OrderStatus): 'success' | 'danger' | 'info' | 'label' {
     const variants: Record<OrderStatus, 'success' | 'danger' | 'info' | 'label'> = {
       [OrderStatus.DRAFT]: 'label',
+      [OrderStatus.CUSTOMER_DRAFT]: 'label',
       [OrderStatus.CONFIRMED]: 'info',
       [OrderStatus.CANCELLED]: 'danger',
       [OrderStatus.INVOICED]: 'success',
