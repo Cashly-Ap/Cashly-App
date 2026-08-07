@@ -84,8 +84,9 @@ export class OrderListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
-    { label: 'Todos los estados', value: '' },
+    { label: 'Todos los borradores', value: '' },
     ...Object.values(OrderStatus).map((s) => ({ label: ORDER_STATUS_LABELS[s], value: s })),
+    { label: 'Todos', value: 'ALL' },
   ];
 
   readonly activeFilterCount = computed(() => (this.filterStatus() ? 1 : 0));
