@@ -82,6 +82,8 @@ interface OrderDetailApiResponse {
   cancelledReason: string | null;
   createdAt: string;
   updatedAt: string;
+  creditLimit?: number;
+  availableCredit?: number;
   lines: {
     id: string;
     productId: string;
@@ -206,6 +208,8 @@ export class OrderApiService {
       status: r.status as OrderStatus,
       notes: r.notes,
       totalAmount: r.subtotal,
+      creditLimit: r.creditLimit,
+      availableCredit: r.availableCredit,
       items: r.lines.map((l) => ({
         id: l.id,
         productId: l.productId,

@@ -46,7 +46,7 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly orderId = input<string | null>(null);
 
   readonly confirmed = output<string>();
-  readonly convertToInvoice = output<string>();
+  readonly convertToInvoice = output<{ orderId: string; paymentType: string; confirmationPassword?: string }>();
   readonly finished = output<void>();
   readonly cancelled = output<void>();
 
@@ -54,8 +54,20 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineState[]>([]);
-  readonly orderInfo = signal<{ number: string; customerName: string; subtotal: number; isCustomerDraft: boolean } | null>(null);
+  readonly orderInfo = signal<{ number: string; customerName: string; subtotal: number; isCustomerDraft: boolean; creditLimit?: number; availableCredit?: number } | null>(null);
+  readonly hasCredit = computed(() => {
+    const info = this.orderInfo();
+    return info?.creditLimit != null && info.creditLimit > 0;
+  });
+
+  readonly exceedsCredit = computed(() => {
+    const info = this.orderInfo();
+    if (!this.hasCredit()) return false;
+    return info!.subtotal > (info!.availableCredit ?? 0);
+  });
   readonly conversionOption = signal<ConversionOption>('none');
+  readonly paymentType = signal<string>('CASH');
+  readonly confirmationPassword = signal('');
 
   readonly canConfirm = computed(() => {
     const all = this.lines();
@@ -88,7 +100,12 @@ export class AssignWarehousesDialogComponent implements OnChanges {
           customerName: order.customerAlias,
           subtotal: order.totalAmount,
           isCustomerDraft: order.status === 'CUSTOMER_DRAFT',
+          creditLimit: order.creditLimit,
+          availableCredit: order.availableCredit,
         });
+        if (!order.creditLimit || order.creditLimit <= 0) {
+          this.paymentType.set('CASH');
+        }
         this.lines.set(this.buildLines(order));
         this.loading.set(false);
       },
@@ -159,7 +176,7 @@ export class AssignWarehousesDialogComponent implements OnChanges {
         if (option === 'confirm') {
           this.confirmed.emit(id);
         } else if (option === 'invoice') {
-          this.convertToInvoice.emit(id);
+          this.convertToInvoice.emit({ orderId: id, paymentType: this.paymentType(), confirmationPassword: this.confirmationPassword() || undefined });
         } else {
           this.finished.emit();
         }

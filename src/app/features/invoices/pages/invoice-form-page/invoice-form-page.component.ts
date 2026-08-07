@@ -101,10 +101,22 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   private readonly FIELD_LABELS: Record<string, string> = { customerId: 'Cliente', paymentType: 'Tipo de Pago' };
 
-  readonly paymentTypeOptions = Object.values(PaymentType).map((pt) => ({
-    label: PAYMENT_TYPE_LABELS[pt],
-    value: pt,
-  }));
+  readonly paymentTypeOptions = computed(() => {
+    const options = Object.values(PaymentType).map((pt) => ({
+      label: PAYMENT_TYPE_LABELS[pt],
+      value: pt,
+    }));
+    const status = this.creditStatus();
+    if (!status?.canCreateCreditInvoice) {
+      return options.filter(o => o.value !== PaymentType.CREDIT);
+    }
+    return options;
+  });
+
+  readonly hasCreditEnabled = computed(() => {
+    const status = this.creditStatus();
+    return (status?.creditLimit ?? 0) > 0 && (status?.canCreateCreditInvoice ?? false);
+  });
 
   readonly items = signal<OrderItemFormData[]>([]);
 
@@ -225,9 +237,10 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.form.patchValue({ customerId: customer.id });
     this.items.set([]);
     this.pickerVisible.set(false);
+    this.form.patchValue({ paymentType: PaymentType.CASH });
     this.scheduleAutoSave();
     this.loadCreditStatus(customer.id);
-    if (this.form.get('paymentType')?.value === PaymentType.CASH) this.loadCustomerBalance(customer.id);
+    this.loadCustomerBalance(customer.id);
   }
 
   onPickerCancelled(): void { this.pickerVisible.set(false); }

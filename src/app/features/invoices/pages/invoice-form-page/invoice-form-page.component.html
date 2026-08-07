@@ -50,7 +50,11 @@
 
             <div class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
               <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Tipo de Pago *</label>
-              <p-select formControlName="paymentType" [options]="paymentTypeOptions" optionLabel="label" optionValue="value" styleClass="w-full" />
+              @if (hasCreditEnabled()) {
+                <p-select formControlName="paymentType" [options]="paymentTypeOptions()" optionLabel="label" optionValue="value" styleClass="w-full" />
+              } @else {
+                <input pInputText value="Contado" readonly class="w-full text-sm bg-surface-100 dark:bg-surface-800" />
+              }
             </div>
 
             @if (creditWarningMessage(); as warning) {

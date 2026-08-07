@@ -274,15 +274,23 @@ export class OrderListPageComponent implements OnInit {
     });
   }
 
-  onAssignToInvoice(orderId: string): void {
+  onAssignToInvoice(event: { orderId: string; paymentType: string; confirmationPassword?: string }): void {
     this.assignDialogVisible.set(false);
     const order = this.orderToAssign();
     if (!order) return;
-    // First confirm to deduct stock, then open invoice dialog
-    this.orderService.confirm(orderId).subscribe({
+    this.orderService.confirm(event.orderId).subscribe({
       next: () => {
-        this.orderToInvoice.set(order);
-        this.invoiceDialogVisible.set(true);
+        this.orderService.convertToInvoice(event.orderId, { paymentType: event.paymentType, confirmationPassword: event.confirmationPassword }).subscribe({
+          next: () => {
+            this.orderToAssign.set(null);
+            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido convertido a factura exitosamente', life: 3000 });
+            this.loadWithFilters();
+          },
+          error: () => {
+            this.orderToAssign.set(null);
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al convertir a factura', life: 5000 });
+          },
+        });
       },
       error: () => {
         this.orderToAssign.set(null);

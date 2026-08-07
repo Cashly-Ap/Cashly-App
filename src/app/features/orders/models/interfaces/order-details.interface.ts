@@ -36,6 +36,8 @@ export interface OrderDetails {
   status: OrderStatus;
   notes: string | null;
   totalAmount: number;
+  creditLimit?: number;
+  availableCredit?: number;
   items: OrderItemDetail[];
   createdAt: string;
   updatedAt: string;
