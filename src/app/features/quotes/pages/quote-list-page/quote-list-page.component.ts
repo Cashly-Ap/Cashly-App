@@ -272,32 +272,52 @@ export class QuoteListPageComponent implements OnInit {
 
   onConvertToOrderFromAssign(quoteId: string): void {
     this.assignDialogVisible.set(false);
-    const quote = this.quoteToAssignWarehouses();
-    if (!quote) return;
-    this.quoteToConvertToOrder.set(quote);
-    this.orderDialogVisible.set(true);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Almacenes asignados',
-      detail: `Presupuesto #${quote.quoteNumber}: almacenes asignados. Seleccione fecha para el pedido.`,
-      life: 5000,
+    this.quoteToAssignWarehouses.set(null);
+    this.quoteService.convertToOrder(quoteId).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Almacenes asignados y convertido a pedido.',
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err?.error?.message || 'Error al convertir a pedido.',
+          life: 5000,
+        });
+        this.loadWithFilters();
+      },
     });
-    this.loadWithFilters();
   }
 
   onConvertToInvoiceFromAssign(quoteId: string): void {
     this.assignDialogVisible.set(false);
-    const quote = this.quoteToAssignWarehouses();
-    if (!quote) return;
-    this.quoteToConvertToInvoice.set(quote);
-    this.invoiceDialogVisible.set(true);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Almacenes asignados',
-      detail: `Presupuesto #${quote.quoteNumber}: almacenes asignados. Seleccione método de pago para la factura.`,
-      life: 5000,
+    this.quoteToAssignWarehouses.set(null);
+    this.quoteService.convertToInvoice(quoteId, { paymentType: 'CASH' }).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Almacenes asignados y convertido a factura.',
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err?.error?.message || 'Error al convertir a factura.',
+          life: 5000,
+        });
+        this.loadWithFilters();
+      },
     });
-    this.loadWithFilters();
   }
 
   onAssignFinished(): void {
