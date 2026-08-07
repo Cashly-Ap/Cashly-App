@@ -167,7 +167,9 @@
   <app-assign-warehouses-dialog
     [visible]="assignDialogVisible()"
     [quoteId]="quote()?.id ?? null"
-    (confirmed)="onAssignWarehousesConfirmed($event)"
+    (convertToOrder)="onConvertToOrderFromAssign($event)"
+    (convertToInvoice)="onConvertToInvoiceFromAssign($event)"
+    (finished)="onAssignFinished()"
     (cancelled)="onAssignWarehousesDismissed()"
   />
 </app-main-layout>

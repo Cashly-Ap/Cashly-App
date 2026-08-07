@@ -94,27 +94,33 @@ export class QuoteDetailPageComponent implements OnInit {
     this.assignDialogVisible.set(true);
   }
 
-  onAssignWarehousesConfirmed(request: AssignQuoteWarehousesRequest): void {
-    const id = this.quote()?.id;
-    if (!id) return;
+  onConvertToOrderFromAssign(_quoteId: string): void {
     this.assignDialogVisible.set(false);
-    this.quoteService.assignWarehouses(id, request).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Almacenes asignados al presupuesto.',
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al asignar almacenes. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Almacenes asignados',
+      detail: 'Presupuesto listo. Use la lista de presupuestos para convertir a pedido.',
+      life: 5000,
+    });
+  }
+
+  onConvertToInvoiceFromAssign(_quoteId: string): void {
+    this.assignDialogVisible.set(false);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Almacenes asignados',
+      detail: 'Presupuesto listo. Use la lista de presupuestos para convertir a factura.',
+      life: 5000,
+    });
+  }
+
+  onAssignFinished(): void {
+    this.assignDialogVisible.set(false);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: 'Almacenes asignados al presupuesto.',
+      life: 3000,
     });
   }
 

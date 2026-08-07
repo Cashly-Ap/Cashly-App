@@ -7,8 +7,11 @@ import { TableModule } from 'primeng/table';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { RadioButtonModule } from 'primeng/radiobutton';
 import { QuoteApiService, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/quotes/models/interfaces';
+
+type ConversionOption = 'none' | 'order' | 'invoice';
 
 interface WarehouseAssignmentState {
   warehouseId: string;
@@ -32,7 +35,7 @@ interface LineAssignmentState {
 @Component({
   selector: 'app-assign-warehouses-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, InputTextModule, TooltipModule],
+  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, InputTextModule, TooltipModule, RadioButtonModule],
   templateUrl: './assign-warehouses-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -42,13 +45,17 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly visible = input<boolean>(false);
   readonly quoteId = input<string | null>(null);
 
-  readonly confirmed = output<AssignQuoteWarehousesRequest>();
+  readonly convertToOrder = output<string>();
+  readonly convertToInvoice = output<string>();
+  readonly finished = output<void>();
   readonly cancelled = output<void>();
 
   readonly loading = signal(false);
+  readonly saving = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineAssignmentState[]>([]);
-  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(null);
+  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number; isCustomerDraft: boolean } | null>(null);
+  readonly conversionOption = signal<ConversionOption>('none');
 
   readonly canConfirm = computed(() => {
     const all = this.lines();
@@ -57,6 +64,7 @@ export class AssignWarehousesDialogComponent implements OnChanges {
 
   ngOnChanges(): void {
     if (this.visible() && this.quoteId()) {
+      this.conversionOption.set('none');
       this.loadQuoteData();
     }
     if (!this.visible()) {
@@ -81,6 +89,7 @@ export class AssignWarehousesDialogComponent implements OnChanges {
               number: quote.quoteNumber,
               customerName: quote.customerName,
               subtotal: quote.subtotal,
+              isCustomerDraft: quote.status === 'CUSTOMER_DRAFT',
             });
             this.lines.set(this.buildLines(quote, warehouses.map((w) => ({ id: w.id, name: w.name }))));
             this.loading.set(false);
@@ -139,6 +148,9 @@ export class AssignWarehousesDialogComponent implements OnChanges {
 
   onConfirm(): void {
     if (!this.canConfirm()) return;
+    const id = this.quoteId();
+    if (!id) return;
+
     const request: AssignQuoteWarehousesRequest = {
       lines: this.lines().map((l) => ({
         lineId: l.lineId,
@@ -147,7 +159,25 @@ export class AssignWarehousesDialogComponent implements OnChanges {
           .map((w) => ({ warehouseId: w.warehouseId, allocatedQuantity: w.assigned || 0 })),
       })),
     };
-    this.confirmed.emit(request);
+
+    this.saving.set(true);
+    this.api.assignWarehouses(id, request).subscribe({
+      next: () => {
+        this.saving.set(false);
+        const option = this.conversionOption();
+        if (option === 'order') {
+          this.convertToOrder.emit(id);
+        } else if (option === 'invoice') {
+          this.convertToInvoice.emit(id);
+        } else {
+          this.finished.emit();
+        }
+      },
+      error: (err) => {
+        this.saving.set(false);
+        this.error.set(err?.error?.message || err?.message || 'Error al asignar almacenes');
+      },
+    });
   }
 
   onCancel(): void {

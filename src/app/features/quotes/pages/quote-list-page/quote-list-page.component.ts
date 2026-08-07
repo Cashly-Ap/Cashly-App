@@ -270,31 +270,49 @@ export class QuoteListPageComponent implements OnInit {
     this.assignDialogVisible.set(true);
   }
 
-  onAssignWarehousesConfirmed(request: AssignQuoteWarehousesRequest): void {
+  onConvertToOrderFromAssign(quoteId: string): void {
+    this.assignDialogVisible.set(false);
     const quote = this.quoteToAssignWarehouses();
     if (!quote) return;
-    this.assignDialogVisible.set(false);
-    this.quoteService.assignWarehouses(quote.id, request).subscribe({
-      next: () => {
-        this.quoteToAssignWarehouses.set(null);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: `Presupuesto #${quote.quoteNumber} con almacenes asignados.`,
-          life: 3000,
-        });
-        this.loadWithFilters();
-      },
-      error: () => {
-        this.quoteToAssignWarehouses.set(null);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al asignar almacenes. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
+    this.quoteToConvertToOrder.set(quote);
+    this.orderDialogVisible.set(true);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Almacenes asignados',
+      detail: `Presupuesto #${quote.quoteNumber}: almacenes asignados. Seleccione fecha para el pedido.`,
+      life: 5000,
     });
+    this.loadWithFilters();
+  }
+
+  onConvertToInvoiceFromAssign(quoteId: string): void {
+    this.assignDialogVisible.set(false);
+    const quote = this.quoteToAssignWarehouses();
+    if (!quote) return;
+    this.quoteToConvertToInvoice.set(quote);
+    this.invoiceDialogVisible.set(true);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Almacenes asignados',
+      detail: `Presupuesto #${quote.quoteNumber}: almacenes asignados. Seleccione método de pago para la factura.`,
+      life: 5000,
+    });
+    this.loadWithFilters();
+  }
+
+  onAssignFinished(): void {
+    const quote = this.quoteToAssignWarehouses();
+    this.assignDialogVisible.set(false);
+    this.quoteToAssignWarehouses.set(null);
+    if (quote) {
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: `Presupuesto #${quote.quoteNumber} con almacenes asignados.`,
+        life: 3000,
+      });
+    }
+    this.loadWithFilters();
   }
 
   onAssignWarehousesDismissed(): void {
