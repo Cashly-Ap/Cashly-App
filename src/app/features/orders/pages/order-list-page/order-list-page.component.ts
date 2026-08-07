@@ -278,15 +278,15 @@ export class OrderListPageComponent implements OnInit {
     this.assignDialogVisible.set(false);
     const order = this.orderToAssign();
     if (!order) return;
-    this.orderService.convertToInvoice(orderId, { paymentType: 'CASH' }).subscribe({
+    // First confirm to deduct stock, then open invoice dialog
+    this.orderService.confirm(orderId).subscribe({
       next: () => {
-        this.orderToAssign.set(null);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido convertido a factura exitosamente', life: 3000 });
-        this.loadWithFilters();
+        this.orderToInvoice.set(order);
+        this.invoiceDialogVisible.set(true);
       },
       error: () => {
         this.orderToAssign.set(null);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al convertir a factura', life: 5000 });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar el pedido', life: 5000 });
       },
     });
   }
