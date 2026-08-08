@@ -25,6 +25,13 @@ import { CustomerDetails, CustomerWarehouseAccessItem } from '@features/customer
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_MAX_LENGTH = 100;
+const UPPERCASE_PATTERN = /[A-Z]/;
+const LOWERCASE_PATTERN = /[a-z]/;
+const DIGIT_PATTERN = /[0-9]/;
+const SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+
 @Component({
   selector: 'app-customers-details-page',
   standalone: true,
@@ -79,10 +86,13 @@ export class CustomersDetailsPageComponent implements OnInit {
   passwordError = computed(() => {
     const value = this.newPassword();
     if (!value) return 'La contraseña es requerida';
-    if (value.length < 8) return 'La contraseña debe tener al menos 8 caracteres';
-    if (!/[A-Z]/.test(value)) return 'La contraseña debe contener: letra mayúscula';
-    if (!/[a-z]/.test(value)) return 'La contraseña debe contener: letra minúscula';
-    if (!/[0-9]/.test(value)) return 'La contraseña debe contener: número';
+    if (value === this.customer()?.rif) return '';
+    if (value.length < PASSWORD_MIN_LENGTH) return `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`;
+    if (value.length > PASSWORD_MAX_LENGTH) return `La contraseña no puede exceder ${PASSWORD_MAX_LENGTH} caracteres`;
+    if (!UPPERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra mayúscula';
+    if (!LOWERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra minúscula';
+    if (!DIGIT_PATTERN.test(value)) return 'La contraseña debe contener: número';
+    if (!SPECIAL_CHAR_PATTERN.test(value)) return 'La contraseña debe contener: carácter especial';
     return '';
   });
 

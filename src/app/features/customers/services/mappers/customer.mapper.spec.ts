@@ -93,9 +93,11 @@ describe('CustomerMapper', () => {
   });
 
   describe('toCreateRequest()', () => {
+    const warehouseIds = ['wh-001', 'wh-002'];
+
     it('should map form model to create request', () => {
       const form = mapper.toFormModel(mockDetails);
-      const result = mapper.toCreateRequest(form);
+      const result = mapper.toCreateRequest(form, warehouseIds);
 
       expect(result.legalName).toBe('Acme Corporation C.A.');
       expect(result.type).toBe(CustomerType.BUSINESS);
@@ -106,23 +108,30 @@ describe('CustomerMapper', () => {
       expect(result.active).toBe(true);
     });
 
+    it('should include warehouse ids in create request', () => {
+      const form = mapper.toFormModel(mockDetails);
+      const result = mapper.toCreateRequest(form, warehouseIds);
+
+      expect(result.warehouseIds).toEqual(['wh-001', 'wh-002']);
+    });
+
     it('should strip ids from emails', () => {
       const form = mapper.toFormModel(mockDetails);
-      const result = mapper.toCreateRequest(form);
+      const result = mapper.toCreateRequest(form, warehouseIds);
 
       expect(result.emails).toEqual([{ email: 'contact@acme.com' }, { email: 'sales@acme.com' }]);
     });
 
     it('should strip ids from phones', () => {
       const form = mapper.toFormModel(mockDetails);
-      const result = mapper.toCreateRequest(form);
+      const result = mapper.toCreateRequest(form, warehouseIds);
 
       expect(result.phones).toEqual([{ phone: '0212-1234567' }]);
     });
 
     it('should strip ids from addresses', () => {
       const form = mapper.toFormModel(mockDetails);
-      const result = mapper.toCreateRequest(form);
+      const result = mapper.toCreateRequest(form, warehouseIds);
 
       expect(result.addresses).toEqual([{ address: 'Av. Principal, Edificio Acme', billing: true, active: true }]);
     });

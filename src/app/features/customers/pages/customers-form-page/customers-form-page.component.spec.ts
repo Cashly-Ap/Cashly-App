@@ -8,6 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomersFormPageComponent } from './customers-form-page.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerDetails } from '@features/customers/models/interfaces';
 
@@ -107,5 +108,46 @@ describe('CustomersFormPageComponent', () => {
     expect(addSpy).toHaveBeenCalledWith(
       expect.objectContaining({ severity: 'warn' }),
     );
+  });
+
+  it('should show warning and not create when no warehouses assigned', () => {
+    const messageService = fixture.debugElement.injector.get(MessageService);
+    const addSpy = vi.spyOn(messageService, 'add');
+    const createSpy = vi.spyOn(mockService, 'create');
+
+    component.form.get('legalName')?.setValue('Acme Corp');
+    component.form.get('rif')?.setValue('J-12345678-9');
+    component.form.get('priceTypeId')?.setValue('pt-001');
+    (component.form.get('addresses') as any).at(0).get('address')?.setValue('Av. Principal');
+    component.warehouseAccess.set([]);
+
+    expect(component.form.valid).toBe(true);
+    component.onSubmit();
+
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ severity: 'warn', detail: 'Debe asignar al menos un almacén antes de crear el cliente' }),
+    );
+    expect(createSpy).not.toHaveBeenCalled();
+  });
+
+  it('should include warehouse ids in create request and not grant separately', () => {
+    const createSpy = vi.spyOn(mockService, 'create');
+    const apiService = TestBed.inject(CustomerApiService);
+    const grantSpy = vi.spyOn(apiService, 'grantWarehouseAccess');
+
+    component.form.get('legalName')?.setValue('Acme Corp');
+    component.form.get('rif')?.setValue('J-12345678-9');
+    component.form.get('priceTypeId')?.setValue('pt-001');
+    (component.form.get('addresses') as any).at(0).get('address')?.setValue('Av. Principal');
+    component.warehouseAccess.set([
+      { id: '', customerId: '', warehouseId: 'wh-001', warehouseName: 'Almacén 1' },
+    ]);
+
+    component.onSubmit();
+
+    expect(createSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ warehouseIds: ['wh-001'] }),
+    );
+    expect(grantSpy).not.toHaveBeenCalled();
   });
 });

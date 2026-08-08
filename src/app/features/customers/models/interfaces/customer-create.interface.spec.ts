@@ -69,6 +69,7 @@ describe('CustomerCreate interface', () => {
       emails: [],
       phones: [],
       addresses: [],
+      warehouseIds: [],
     };
 
     expect(customer.legalName).toBe('Test Customer C.A.');
@@ -81,6 +82,7 @@ describe('CustomerCreate interface', () => {
     expect(customer.emails).toEqual([]);
     expect(customer.phones).toEqual([]);
     expect(customer.addresses).toEqual([]);
+    expect(customer.warehouseIds).toEqual([]);
   });
 
   it('should allow optional fields', () => {
@@ -96,11 +98,13 @@ describe('CustomerCreate interface', () => {
       emails: [],
       phones: [],
       addresses: [],
+      warehouseIds: ['wh-001', 'wh-002'],
       notes: 'New customer',
       priceTypeId: 'pt-001',
     };
 
     expect(customer.portalAccess).toBe(true);
+    expect(customer.warehouseIds).toEqual(['wh-001', 'wh-002']);
     expect(customer.notes).toBe('New customer');
     expect(customer.priceTypeId).toBe('pt-001');
   });

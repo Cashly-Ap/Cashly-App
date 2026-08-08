@@ -5,7 +5,6 @@ import { Observable, forkJoin, of } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
@@ -63,7 +62,6 @@ interface CustomerFormData {
     FormsModule,
     MainLayoutComponent,
     TabsModule,
-    ToggleSwitchModule,
     InputTextModule,
     ButtonModule,
     SelectModule,
@@ -134,6 +132,9 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
+    if (this.warehouseAccess().length === 0) {
+      invalid.push('Almacenes');
+    }
     this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
   }
 
@@ -315,27 +316,23 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
           },
         });
       } else {
-        const createData = this.mapper.toCreateRequest(formModel);
+        const warehouseIds = this.warehouseAccess().map((w) => w.warehouseId);
+        if (warehouseIds.length === 0) {
+          this.messageService.add({
+            severity: 'warn',
+            summary: 'Advertencia',
+            detail: 'Debe asignar al menos un almacén antes de crear el cliente',
+            life: 5000,
+          });
+          return;
+        }
+
+        const createData = this.mapper.toCreateRequest(formModel, warehouseIds);
         this.service.create(createData).subscribe({
           next: (created) => {
-            const warehouseIds = this.warehouseAccess().map((w) => w.warehouseId);
-            const grants$: Observable<unknown> =
-              warehouseIds.length > 0
-                ? forkJoin(warehouseIds.map((id) => this.customerApi.grantWarehouseAccess(created.id, id)))
-                : of(null);
-
-            grants$.subscribe({
-              next: () => {
-                this.markAsSubmitted();
-                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente creado exitosamente', life: 3000 });
-                this.router.navigate(['/customers']);
-              },
-              error: () => {
-                this.markAsSubmitted();
-                this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Cliente creado, pero hubo un error al asignar los almacenes', life: 5000 });
-                this.router.navigate(['/customers']);
-              },
-            });
+            this.markAsSubmitted();
+            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente creado exitosamente', life: 3000 });
+            this.router.navigate(['/customers']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({
@@ -379,10 +376,12 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       { id: '', customerId: this.entityId() ?? '', warehouseId, warehouseName: option.label },
     ]);
     this.selectedWarehouseId.set(null);
+    this.updateSubmitTooltip();
   }
 
   onRevokeWarehouse(warehouseId: string): void {
     this.warehouseAccess.update((list) => list.filter((w) => w.warehouseId !== warehouseId));
+    this.updateSubmitTooltip();
   }
 
   private createEmailControl() {

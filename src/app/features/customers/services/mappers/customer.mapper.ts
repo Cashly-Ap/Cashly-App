@@ -73,7 +73,7 @@ export class CustomerMapper {
     };
   }
 
-  toCreateRequest(form: CustomerFormModel): CustomerCreate {
+  toCreateRequest(form: CustomerFormModel, warehouseIds: string[]): CustomerCreate {
     return {
       legalName: form.legalName,
       type: form.type as CustomerCreate['type'],
@@ -93,6 +93,7 @@ export class CustomerMapper {
         municipality: a.municipality,
         postalCode: a.postalCode,
       })),
+      warehouseIds,
       notes: form.notes || undefined,
       priceTypeId: form.priceTypeId || undefined,
     };

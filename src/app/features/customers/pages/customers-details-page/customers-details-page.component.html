@@ -15,6 +15,7 @@
             <app-details-card-header [title]="currentCustomer.legalName" [subtitle]="currentCustomer.alias">
               <div actions class="flex gap-3">
                 <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" styleClass="w-full sm:w-auto" />
+                <p-button label="Cambiar Contraseña" icon="pi pi-key" [outlined]="true" (onClick)="showPasswordDialog.set(true)" styleClass="w-full sm:w-auto" />
                 <p-button label="Editar" icon="pi pi-pencil" severity="contrast" (onClick)="onEdit()" styleClass="w-full sm:w-auto" />
               </div>
             </app-details-card-header>
@@ -26,6 +27,7 @@
                 <app-details-info-field label="RIF" [value]="currentCustomer.rif" />
                 <app-details-info-field label="Tipo" type="badge"><app-text-badge [label]="getTypeLabel(currentCustomer.type)" variant="label" /></app-details-info-field>
                 <app-details-info-field label="Estado" type="badge"><app-status-badge [active]="currentCustomer.active" /></app-details-info-field>
+                <app-details-info-field label="Acceso al Portal" type="badge"><app-status-badge [active]="currentCustomer.portalAccess" activeLabel="Habilitado" inactiveLabel="Deshabilitado" /></app-details-info-field>
                 <app-details-info-field label="Días de Crédito" [value]="currentCustomer.creditDays + ' días'" />
                 <app-details-info-field label="Límite de Crédito" [value]="(currentCustomer.creditLimit | number: '1.2-2') ?? ''" />
                 <app-details-info-field label="Lista de Precio" [value]="priceTypeName() ?? 'Sin asignar'" />
@@ -97,16 +99,6 @@
                   </div>
                 </div>
               }
-            </div>
-          </app-details-card>
-
-          <app-details-card>
-            <app-details-card-header title="Portal del Cliente" />
-            <div class="p-4 sm:p-6">
-              <div class="flex items-center justify-between">
-                <span class="text-sm font-medium">Acceso al portal</span>
-                <app-status-badge [active]="currentCustomer.portalAccess" activeLabel="Habilitado" inactiveLabel="Deshabilitado" />
-              </div>
             </div>
           </app-details-card>
 
