@@ -7,6 +7,7 @@
   [totalRecords]="totalRecords()"
   [rowsPerPageOptions]="[10, 20, 50]"
   [lazy]="true"
+  paginatorDropdownAppendTo="body"
   (onPage)="pageChanged.emit($event)"
   dataKey="id"
   styleClass="w-full"
@@ -16,7 +17,7 @@
       <th pSortableColumn="createdAt" class="w-40">
         <div class="flex items-center gap-2">Fecha <p-sortIcon field="createdAt" /></div>
       </th>
-      <th pSortableColumn="type" class="w-28">Tipo</th>
+      <th pSortableColumn="type" class="w-32">Tipo</th>
       <th pSortableColumn="amount" class="w-28 text-right">Monto</th>
       <th class="w-36">Número</th>
       <th class="w-36">Referencia</th>
@@ -30,7 +31,7 @@
       </td>
       <td>
         <span [class]="typeBadgeClass(tx.type)">
-          {{ tx.type }}
+          {{ translateType(tx.type) }}
         </span>
       </td>
       <td class="text-right font-medium" [class.text-green-600]="tx.amount >= 0" [class.text-red-600]="tx.amount < 0">

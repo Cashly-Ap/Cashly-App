@@ -15,8 +15,16 @@
             <app-details-card-header [title]="currentCustomer.legalName" [subtitle]="currentCustomer.alias">
               <div actions class="flex gap-3">
                 <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" styleClass="w-full sm:w-auto" />
-                <p-button label="Cambiar Contraseña" icon="pi pi-key" [outlined]="true" (onClick)="showPasswordDialog.set(true)" styleClass="w-full sm:w-auto" />
-                <p-button label="Editar" icon="pi pi-pencil" severity="contrast" (onClick)="onEdit()" styleClass="w-full sm:w-auto" />
+                <p-button label="Acciones" icon="pi pi-ellipsis-v" severity="contrast" (click)="actionsPopover.toggle($event)" styleClass="w-full sm:w-auto" />
+                <p-popover #actionsPopover>
+                  <div class="flex flex-col gap-1 p-1 min-w-44">
+                    <p-button label="Editar" icon="pi pi-pencil" [link]="true" (click)="actionsPopover.hide(); onEdit()" styleClass="w-full justify-start text-left text-sm" />
+                    @if (showBalance()) {
+                      <p-button label="Ver Saldo" icon="pi pi-wallet" [link]="true" (click)="actionsPopover.hide(); onViewBalance()" styleClass="w-full justify-start text-left text-sm" />
+                    }
+                    <p-button label="Cambiar Contraseña" icon="pi pi-key" [link]="true" (click)="actionsPopover.hide(); showPasswordDialog.set(true)" styleClass="w-full justify-start text-left text-sm" />
+                  </div>
+                </p-popover>
               </div>
             </app-details-card-header>
             <div class="p-4 sm:p-6">
@@ -43,77 +51,79 @@
           </app-details-card>
 
           <app-details-card>
-            <app-details-card-header title="Correos Electrónicos" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentCustomer.emails.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin correos registrados</p>
-              }
-              @for (email of currentCustomer.emails; track email.id) {
-                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <i class="pi pi-envelope text-surface-400 text-sm"></i>
-                  <span class="text-sm">{{ email.email }}</span>
-                </div>
-              }
-            </div>
-          </app-details-card>
+            <app-details-card-header title="Contacto" />
+            <div class="p-4 sm:p-6 flex flex-col gap-6">
+              <!-- Emails -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-envelope text-surface-400"></i>
+                  Correos Electrónicos
+                </h3>
+                @if (currentCustomer.emails.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin correos registrados</p>
+                }
+                @for (email of currentCustomer.emails; track email.id) {
+                  <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <i class="pi pi-envelope text-surface-400 text-sm"></i>
+                    <span class="text-sm">{{ email.email }}</span>
+                  </div>
+                }
+              </section>
 
-          <app-details-card>
-            <app-details-card-header title="Teléfonos" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentCustomer.phones.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin teléfonos registrados</p>
-              }
-              @for (phone of currentCustomer.phones; track phone.id) {
-                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <i class="pi pi-phone text-surface-400 text-sm"></i>
-                  <span class="text-sm">{{ phone.phone }}</span>
-                </div>
-              }
-            </div>
-          </app-details-card>
+              <hr class="border-surface-200 dark:border-surface-700" />
 
-          <app-details-card>
-            <app-details-card-header title="Direcciones" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentCustomer.addresses.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin direcciones registradas</p>
-              }
-              @for (address of currentCustomer.addresses; track address.id) {
-                <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <div class="flex items-start gap-2">
-                    <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
-                    <div class="flex-1">
-                      <p class="text-sm">{{ address.address }}</p>
-                      @if (address.state || address.municipality || address.postalCode) {
-                        <p class="text-xs text-surface-500 mt-1">{{ getAddressLocation(address.state, address.municipality, address.postalCode) }}</p>
-                      }
-                      <div class="flex gap-2 mt-1">
-                        @if (address.billing) {
-                          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Facturación</span>
+              <!-- Phones -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-phone text-surface-400"></i>
+                  Teléfonos
+                </h3>
+                @if (currentCustomer.phones.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin teléfonos registrados</p>
+                }
+                @for (phone of currentCustomer.phones; track phone.id) {
+                  <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <i class="pi pi-phone text-surface-400 text-sm"></i>
+                    <span class="text-sm">{{ phone.phone }}</span>
+                  </div>
+                }
+              </section>
+
+              <hr class="border-surface-200 dark:border-surface-700" />
+
+              <!-- Addresses -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-map-marker text-surface-400"></i>
+                  Direcciones
+                </h3>
+                @if (currentCustomer.addresses.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin direcciones registradas</p>
+                }
+                @for (address of currentCustomer.addresses; track address.id) {
+                  <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <div class="flex items-start gap-2">
+                      <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
+                      <div class="flex-1">
+                        <p class="text-sm">{{ address.address }}</p>
+                        @if (address.state || address.municipality || address.postalCode) {
+                          <p class="text-xs text-surface-500 mt-1">{{ getAddressLocation(address.state, address.municipality, address.postalCode) }}</p>
                         }
-                        <span class="px-2 py-0.5 text-xs font-semibold rounded" [ngClass]="{ 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active, 'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active }">
-                          {{ address.active ? 'Activa' : 'Inactiva' }}
-                        </span>
+                        <div class="flex gap-2 mt-1">
+                          @if (address.billing) {
+                            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Facturación</span>
+                          }
+                          <span class="px-2 py-0.5 text-xs font-semibold rounded" [ngClass]="{ 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active, 'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active }">
+                            {{ address.active ? 'Activa' : 'Inactiva' }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
+                }
+              </section>
             </div>
           </app-details-card>
-
-          @if (showBalance()) {
-            <app-details-card>
-              <app-details-card-header title="Saldo del Cliente">
-                <div actions>
-                  <p-button label="Ver Saldo" icon="pi pi-wallet" severity="contrast" (onClick)="onViewBalance()" styleClass="w-full sm:w-auto text-sm" />
-                </div>
-              </app-details-card-header>
-              <div class="p-4 sm:p-6">
-                <p class="text-sm text-surface-500 dark:text-surface-400">Consulta el saldo disponible, anticipos y movimientos del cliente.</p>
-              </div>
-            </app-details-card>
-          }
 
           <app-details-card>
             <app-details-card-header title="Almacenes con Acceso" />

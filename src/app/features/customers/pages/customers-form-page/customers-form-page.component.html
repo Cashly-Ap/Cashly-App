@@ -10,14 +10,10 @@
               General
             </p-tab>
             <p-tab value="1">
-              <i class="pi pi-phone mr-2"></i>
-              Contacto
+              <i class="pi pi-address-book mr-2"></i>
+              Contacto y Direcciones
             </p-tab>
             <p-tab value="2">
-              <i class="pi pi-map-marker mr-2"></i>
-              Direcciones
-            </p-tab>
-            <p-tab value="3">
               <i class="pi pi-warehouse mr-2"></i>
               Almacenes
             </p-tab>
@@ -29,11 +25,9 @@
             </p-tabpanel>
             <p-tabpanel value="1">
               <app-customer-contact-section [form]="form" />
-            </p-tabpanel>
-            <p-tabpanel value="2">
               <app-customer-addresses-section [form]="form" />
             </p-tabpanel>
-            <p-tabpanel value="3">
+            <p-tabpanel value="2">
                 <div class="p-6 flex flex-col gap-4">
                   <p class="font-medium text-surface-800 dark:text-surface-200">Almacenes con Acceso</p>
 

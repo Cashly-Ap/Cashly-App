@@ -6,6 +6,7 @@ import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { Popover } from 'primeng/popover';
 import {
   DetailsCardComponent,
   DetailsCardHeaderComponent,
@@ -42,6 +43,7 @@ const SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     ButtonModule,
     DialogModule,
     InputTextModule,
+    Popover,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

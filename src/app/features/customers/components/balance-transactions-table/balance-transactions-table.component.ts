@@ -1,14 +1,22 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
-import { ButtonModule } from 'primeng/button';
 import { BalanceTransactionResponse } from '@features/customers/models/interfaces';
+
+const TYPE_TRANSLATIONS: Record<string, string> = {
+  ADVANCED: 'Anticipo',
+  RETURNS: 'Devolución',
+  PAYMENTS: 'Pago',
+  INVOICES: 'Factura',
+  REFUND: 'Reembolso',
+  CREDIT_NOTE: 'Nota de Crédito',
+};
 
 @Component({
   selector: 'app-balance-transactions-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TableModule, ButtonModule],
+  imports: [CommonModule, TableModule],
   templateUrl: './balance-transactions-table.component.html',
 })
 export class BalanceTransactionsTableComponent {
@@ -19,6 +27,10 @@ export class BalanceTransactionsTableComponent {
   readonly first = input(0);
 
   readonly pageChanged = output<{ first: number; rows: number }>();
+
+  translateType(type: string): string {
+    return TYPE_TRANSLATIONS[type] ?? type;
+  }
 
   typeBadgeClass(type: string): string {
     const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';

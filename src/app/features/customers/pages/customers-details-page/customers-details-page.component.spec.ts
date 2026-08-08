@@ -112,9 +112,9 @@ describe('CustomersDetailsPageComponent', () => {
     expect(component.customer()).not.toBeNull();
   });
 
-  it('should show password button regardless of portal access', () => {
+  it('should show actions dropdown button', () => {
     fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('p-button[label="Cambiar Contraseña"]');
+    const button = fixture.nativeElement.querySelector('p-button[label="Acciones"]');
     expect(button).not.toBeNull();
   });
 
