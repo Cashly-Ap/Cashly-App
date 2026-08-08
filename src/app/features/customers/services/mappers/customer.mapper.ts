@@ -40,7 +40,7 @@ export class CustomerMapper {
       type: details.type,
       active: details.active,
       portalAccess: details.portalAccess ?? false,
-      deletable: true,
+      deletable: details.deletable,
     };
   }
 

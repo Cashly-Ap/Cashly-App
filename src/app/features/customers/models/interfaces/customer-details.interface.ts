@@ -40,4 +40,5 @@ export interface CustomerDetails {
   addresses: CustomerAddress[];
   notes?: string;
   priceTypeId?: string;
+  deletable: boolean;
 }
