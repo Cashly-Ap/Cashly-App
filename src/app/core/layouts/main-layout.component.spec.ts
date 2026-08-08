@@ -147,8 +147,8 @@ describe('MainLayoutComponent', () => {
   });
 
   describe('logoSrc', () => {
-    it('should be a fixed string pointing to Parsun.png', () => {
-      expect(component.logoSrc).toBe('/Parsun.png');
+    it('should be a fixed string pointing to logo.png', () => {
+      expect(component.logoSrc).toBe('/logo.png');
     });
   });
 

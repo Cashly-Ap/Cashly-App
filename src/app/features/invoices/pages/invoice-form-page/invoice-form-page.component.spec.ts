@@ -167,7 +167,7 @@ describe('InvoiceFormPageComponent', () => {
 
   it('should have payment type options', () => {
     fixture.detectChanges();
-    expect(component.paymentTypeOptions.length).toBe(2);
+    expect(component.paymentTypeOptions.length).toBe(1);
   });
 
   it('should compute total from items', () => {

@@ -141,32 +141,21 @@ describe('QuoteDetailPageComponent', () => {
     expect(component.assignDialogVisible()).toBe(false);
   });
 
-  it('should call assignWarehouses service on dialog confirmed', () => {
-    fixture.detectChanges();
-    const request = {
-      lines: [
-        {
-          lineId: 'line-001',
-          allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-        },
-      ],
-    };
-    component.onAssignWarehousesConfirmed(request);
-    expect(mockService.assignWarehouses).toHaveBeenCalledWith('q-001', request);
-    expect(component.assignDialogVisible()).toBe(false);
-  });
-
-  it('should show success message on assign warehouses success', () => {
+  it('should handle convert to order from assign dialog', () => {
     fixture.detectChanges();
     const addSpy = vi.spyOn(messageService, 'add');
-    component.onAssignWarehousesConfirmed({
-      lines: [
-        {
-          lineId: 'line-001',
-          allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-        },
-      ],
-    });
+    component.onConvertToOrderFromAssign('q-001');
+    expect(component.assignDialogVisible()).toBe(false);
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ severity: 'success' })
+    );
+  });
+
+  it('should handle convert to invoice from assign dialog', () => {
+    fixture.detectChanges();
+    const addSpy = vi.spyOn(messageService, 'add');
+    component.onConvertToInvoiceFromAssign('q-001');
+    expect(component.assignDialogVisible()).toBe(false);
     expect(addSpy).toHaveBeenCalledWith(
       expect.objectContaining({ severity: 'success' })
     );

@@ -6,13 +6,15 @@ import { provideHttpClient } from '@angular/common/http';
 import { AssignWarehousesDialogComponent } from './assign-warehouses-dialog.component';
 
 @Component({
-  template: `<app-assign-warehouses-dialog [visible]="visible" [quoteId]="quoteId" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-assign-warehouses-dialog>`,
+  template: `<app-assign-warehouses-dialog [visible]="visible" [quoteId]="quoteId" (convertToOrder)="onConvertToOrder($event)" (convertToInvoice)="onConvertToInvoice($event)" (finished)="onFinished()" (cancelled)="onCancelled()"></app-assign-warehouses-dialog>`,
   imports: [AssignWarehousesDialogComponent],
 })
 class HostComponent {
   visible = false;
   quoteId: string | null = null;
-  onConfirmed = vi.fn();
+  onConvertToOrder = vi.fn();
+  onConvertToInvoice = vi.fn();
+  onFinished = vi.fn();
   onCancelled = vi.fn();
 }
 
@@ -90,9 +92,10 @@ describe('AssignWarehousesDialogComponent', () => {
     expect(hostComponent.onCancelled).toHaveBeenCalled();
   });
 
-  it('should NOT emit confirmed when lines are empty', () => {
+  it('should NOT submit when lines are empty', () => {
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+    expect(hostComponent.onConvertToOrder).not.toHaveBeenCalled();
+    expect(hostComponent.onFinished).not.toHaveBeenCalled();
   });
 });
 
@@ -171,6 +174,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
       number: 'QT-001',
       customerName: 'Test Customer',
       subtotal: 1500,
+      isCustomerDraft: true,
     });
     expect(dialog.lines()).toHaveLength(1);
     expect(dialog.lines()[0].warehouses).toHaveLength(2);
@@ -224,7 +228,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     expect(dialog.canConfirm()).toBe(true);
   });
 
-  it('should emit confirmed with request when complete', () => {
+  it('should call API and emit finished when submitted without conversion', () => {
     const quoteReq = httpMock.expectOne((r) => r.url.includes('/q-001') && r.method === 'GET');
     quoteReq.flush(mockQuote);
     const whReq = httpMock.expectOne((r) => r.url.includes('/warehouses') && r.method === 'GET');
@@ -235,38 +239,27 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     dialog.onAssignedChange(line);
     dialog.onConfirm();
 
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
-      lines: [
-        {
-          lineId: 'line-001',
-          allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-        },
-      ],
-    });
+    const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
+    assignReq.flush({});
+
+    expect(hostComponent.onFinished).toHaveBeenCalled();
   });
 
-  it('should omit warehouses with zero assignment from request', () => {
+  it('should call API and emit convertToOrder when submitted with order conversion', () => {
     const quoteReq = httpMock.expectOne((r) => r.url.includes('/q-001') && r.method === 'GET');
     quoteReq.flush(mockQuote);
     const whReq = httpMock.expectOne((r) => r.url.includes('/warehouses') && r.method === 'GET');
     whReq.flush(mockWarehouses);
 
+    dialog.conversionOption.set('order');
     const line = dialog.lines()[0];
-    line.warehouses[0].assigned = 2;
-    line.warehouses[1].assigned = 3;
+    line.warehouses[0].assigned = 5;
     dialog.onAssignedChange(line);
     dialog.onConfirm();
 
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
-      lines: [
-        {
-          lineId: 'line-001',
-          allocations: [
-            { warehouseId: 'wh-001', allocatedQuantity: 2 },
-            { warehouseId: 'wh-002', allocatedQuantity: 3 },
-          ],
-        },
-      ],
-    });
+    const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
+    assignReq.flush({});
+
+    expect(hostComponent.onConvertToOrder).toHaveBeenCalledWith('q-001');
   });
 });

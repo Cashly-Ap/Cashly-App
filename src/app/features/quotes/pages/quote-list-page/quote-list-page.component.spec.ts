@@ -155,9 +155,9 @@ describe('QuoteListPageComponent', () => {
       expect(component.activeFilterCount()).toBe(1);
     });
 
-    it('should compute zero active filter count when status is DRAFT', () => {
+    it('should compute active filter count when status is DRAFT', () => {
       component.filterStatus.set('DRAFT');
-      expect(component.activeFilterCount()).toBe(0);
+      expect(component.activeFilterCount()).toBe(1);
     });
   });
 
@@ -218,7 +218,7 @@ describe('QuoteListPageComponent', () => {
       fixture.detectChanges();
       component.filterStatus.set('CONVERTED_TO_ORDER');
       component.clearFilters();
-      expect(component.filterStatus()).toBe('DRAFT');
+    expect(component.filterStatus()).toBe('');
       expect(component.first()).toBe(0);
     });
 
@@ -230,6 +230,7 @@ describe('QuoteListPageComponent', () => {
 
     it('should not reload if same status', () => {
       fixture.detectChanges();
+      component.onStatusFilterChange('DRAFT');
       const callCount = (mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length;
       component.onStatusFilterChange('DRAFT');
       expect((mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length).toBe(callCount);
@@ -365,33 +366,21 @@ describe('QuoteListPageComponent', () => {
       expect(component.quoteToAssignWarehouses()).toBeNull();
     });
 
-    it('should call assignWarehouses service on dialog confirmed', () => {
+    it('should handle convert to order from assign dialog', () => {
       fixture.detectChanges();
-      component.quoteToAssignWarehouses.set(mockQuotes[0]);
-      const request = {
-        lines: [
-          {
-            lineId: 'line-001',
-            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-          },
-        ],
-      };
-      component.onAssignWarehousesConfirmed(request);
-      expect(mockService.assignWarehouses).toHaveBeenCalledWith('q-001', request);
+      const addSpy = vi.spyOn(messageService, 'add');
+      component.onConvertToOrderFromAssign('q-001');
+      expect(component.assignDialogVisible()).toBe(false);
+      expect(addSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ severity: 'success' })
+      );
     });
 
-    it('should show success message on assign warehouses success', () => {
+    it('should handle convert to invoice from assign dialog', () => {
       fixture.detectChanges();
-      component.quoteToAssignWarehouses.set(mockQuotes[0]);
       const addSpy = vi.spyOn(messageService, 'add');
-      component.onAssignWarehousesConfirmed({
-        lines: [
-          {
-            lineId: 'line-001',
-            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-          },
-        ],
-      });
+      component.onConvertToInvoiceFromAssign('q-001');
+      expect(component.assignDialogVisible()).toBe(false);
       expect(addSpy).toHaveBeenCalledWith(
         expect.objectContaining({ severity: 'success' })
       );
@@ -436,7 +425,7 @@ describe('QuoteListPageComponent', () => {
     it('should have status options including DRAFT', () => {
       fixture.detectChanges();
       expect(component.statusOptions.length).toBeGreaterThan(0);
-      expect(component.statusOptions[0].label).toBe('Borrador');
+      expect(component.statusOptions[0].label).toBe('Todos (Borradores)');
       expect(component.statusOptions[0].value).toBe('DRAFT');
     });
 

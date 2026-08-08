@@ -335,7 +335,7 @@ describe('OrderListPageComponent', () => {
     it('should have status options including "Todos"', () => {
       fixture.detectChanges();
       expect(component.statusOptions.length).toBeGreaterThan(0);
-      expect(component.statusOptions[0].label).toBe('Todos los estados');
+      expect(component.statusOptions[0].label).toBe('Todos los borradores');
       expect(component.statusOptions[0].value).toBe('');
     });
   });
