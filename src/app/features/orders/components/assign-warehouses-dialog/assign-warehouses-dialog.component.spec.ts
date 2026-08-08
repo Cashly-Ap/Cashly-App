@@ -159,7 +159,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     line.warehouses[0].assigned = 5;
     dialog.onAssignedChange(line);
     dialog.onSubmit();
-    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush({});
+    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush(apiOrderResponse);
     expect(hostComponent.onConfirmed).toHaveBeenCalledWith('q-001');
   });
 
@@ -169,7 +169,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     line.warehouses[0].assigned = 5;
     dialog.onAssignedChange(line);
     dialog.onSubmit();
-    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush({});
+    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush(apiOrderResponse);
     expect(hostComponent.onFinished).toHaveBeenCalled();
   });
 });

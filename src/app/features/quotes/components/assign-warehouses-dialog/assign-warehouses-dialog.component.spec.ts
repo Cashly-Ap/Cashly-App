@@ -240,7 +240,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     dialog.onConfirm();
 
     const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
-    assignReq.flush({});
+    assignReq.flush(mockQuote);
 
     expect(hostComponent.onFinished).toHaveBeenCalled();
   });
@@ -258,7 +258,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     dialog.onConfirm();
 
     const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
-    assignReq.flush({});
+    assignReq.flush(mockQuote);
 
     expect(hostComponent.onConvertToOrder).toHaveBeenCalledWith('q-001');
   });

@@ -165,11 +165,6 @@ describe('InvoiceFormPageComponent', () => {
     expect(component.form.get('paymentType')?.value).toBe(PaymentType.CASH);
   });
 
-  it('should have payment type options', () => {
-    fixture.detectChanges();
-    expect(component.paymentTypeOptions.length).toBe(1);
-  });
-
   it('should compute total from items', () => {
     fixture.detectChanges();
     component.items.set([

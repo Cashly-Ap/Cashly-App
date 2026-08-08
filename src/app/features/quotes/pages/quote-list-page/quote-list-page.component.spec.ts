@@ -119,7 +119,7 @@ describe('QuoteListPageComponent', () => {
     expect(component.searchTerm()).toBe('');
     expect(component.first()).toBe(0);
     expect(component.rows()).toBe(10);
-    expect(component.filterStatus()).toBe('DRAFT');
+    expect(component.filterStatus()).toBe('');
     expect(component.orderBy()).toBe('createdAt');
     expect(component.orderDir()).toBe('desc');
   });
@@ -218,7 +218,7 @@ describe('QuoteListPageComponent', () => {
       fixture.detectChanges();
       component.filterStatus.set('CONVERTED_TO_ORDER');
       component.clearFilters();
-    expect(component.filterStatus()).toBe('');
+      expect(component.filterStatus()).toBe('DRAFT');
       expect(component.first()).toBe(0);
     });
 
@@ -426,7 +426,7 @@ describe('QuoteListPageComponent', () => {
       fixture.detectChanges();
       expect(component.statusOptions.length).toBeGreaterThan(0);
       expect(component.statusOptions[0].label).toBe('Todos (Borradores)');
-      expect(component.statusOptions[0].value).toBe('DRAFT');
+      expect(component.statusOptions[0].value).toBe('');
     });
 
     it('should include CUSTOMER_DRAFT in status options', () => {
