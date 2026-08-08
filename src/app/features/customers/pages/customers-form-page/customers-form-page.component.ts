@@ -274,6 +274,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         addresses: formValue.addresses.map((a) => ({ id: '', customerId: '', ...a })),
         notes: formValue.notes || undefined,
         priceTypeId: formValue.priceTypeId || undefined,
+        deletable: true,
       });
 
       if (this.isEditMode() && this.entityId()) {
