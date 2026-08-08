@@ -10,12 +10,8 @@
               General
             </p-tab>
             <p-tab value="1">
-              <i class="pi pi-phone mr-2"></i>
-              Contacto
-            </p-tab>
-            <p-tab value="2">
-              <i class="pi pi-map-marker mr-2"></i>
-              Direcciones
+              <i class="pi pi-address-book mr-2"></i>
+              Contacto y Direcciones
             </p-tab>
           </p-tablist>
 
@@ -25,8 +21,6 @@
             </p-tabpanel>
             <p-tabpanel value="1">
               <app-supplier-contact-section [form]="form" />
-            </p-tabpanel>
-            <p-tabpanel value="2">
               <app-supplier-addresses-section [form]="form" />
             </p-tabpanel>
           </p-tabpanels>

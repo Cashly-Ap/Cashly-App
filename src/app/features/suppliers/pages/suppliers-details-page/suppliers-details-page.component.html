@@ -38,62 +38,77 @@
           </app-details-card>
 
           <app-details-card>
-            <app-details-card-header title="Correos Electrónicos" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentSupplier.emails.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin correos registrados</p>
-              }
-              @for (email of currentSupplier.emails; track email.id) {
-                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <i class="pi pi-envelope text-surface-400 text-sm"></i>
-                  <span class="text-sm">{{ email.email }}</span>
-                </div>
-              }
-            </div>
-          </app-details-card>
+            <app-details-card-header title="Contacto" />
+            <div class="p-4 sm:p-6 flex flex-col gap-6">
+              <!-- Emails -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-envelope text-surface-400"></i>
+                  Correos Electrónicos
+                </h3>
+                @if (currentSupplier.emails.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin correos registrados</p>
+                }
+                @for (email of currentSupplier.emails; track email.id) {
+                  <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <i class="pi pi-envelope text-surface-400 text-sm"></i>
+                    <span class="text-sm">{{ email.email }}</span>
+                  </div>
+                }
+              </section>
 
-          <app-details-card>
-            <app-details-card-header title="Teléfonos" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentSupplier.phones.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin teléfonos registrados</p>
-              }
-              @for (phone of currentSupplier.phones; track phone.id) {
-                <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <i class="pi pi-phone text-surface-400 text-sm"></i>
-                  <span class="text-sm">{{ phone.phone }}</span>
-                </div>
-              }
-            </div>
-          </app-details-card>
+              <hr class="border-surface-200 dark:border-surface-700" />
 
-          <app-details-card>
-            <app-details-card-header title="Direcciones" />
-            <div class="p-4 sm:p-6 flex flex-col gap-3">
-              @if (currentSupplier.addresses.length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin direcciones registradas</p>
-              }
-              @for (address of currentSupplier.addresses; track address.id) {
-                <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
-                  <div class="flex items-start gap-2">
-                    <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
-                    <div class="flex-1">
-                      <p class="text-sm">{{ address.address }}</p>
-                      @if (address.state || address.municipality || address.postalCode) {
-                        <p class="text-xs text-surface-500 mt-1">{{ getAddressLocation(address.state, address.municipality, address.postalCode) }}</p>
-                      }
-                      <div class="flex gap-2 mt-1">
-                        @if (address.billing) {
-                          <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Facturación</span>
+              <!-- Phones -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-phone text-surface-400"></i>
+                  Teléfonos
+                </h3>
+                @if (currentSupplier.phones.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin teléfonos registrados</p>
+                }
+                @for (phone of currentSupplier.phones; track phone.id) {
+                  <div class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <i class="pi pi-phone text-surface-400 text-sm"></i>
+                    <span class="text-sm">{{ phone.phone }}</span>
+                  </div>
+                }
+              </section>
+
+              <hr class="border-surface-200 dark:border-surface-700" />
+
+              <!-- Addresses -->
+              <section>
+                <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2">
+                  <i class="pi pi-map-marker text-surface-400"></i>
+                  Direcciones
+                </h3>
+                @if (currentSupplier.addresses.length === 0) {
+                  <p class="text-sm text-surface-400 dark:text-surface-500 py-2">Sin direcciones registradas</p>
+                }
+                @for (address of currentSupplier.addresses; track address.id) {
+                  <div class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700">
+                    <div class="flex items-start gap-2">
+                      <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
+                      <div class="flex-1">
+                        <p class="text-sm">{{ address.address }}</p>
+                        @if (address.state || address.municipality || address.postalCode) {
+                          <p class="text-xs text-surface-500 mt-1">{{ getAddressLocation(address.state, address.municipality, address.postalCode) }}</p>
                         }
-                        <span class="px-2 py-0.5 text-xs font-semibold rounded" [ngClass]="{ 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active, 'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active }">
-                          {{ address.active ? 'Activa' : 'Inactiva' }}
-                        </span>
+                        <div class="flex gap-2 mt-1">
+                          @if (address.billing) {
+                            <span class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300">Facturación</span>
+                          }
+                          <span class="px-2 py-0.5 text-xs font-semibold rounded" [ngClass]="{ 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300': address.active, 'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active }">
+                            {{ address.active ? 'Activa' : 'Inactiva' }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              }
+                }
+              </section>
             </div>
           </app-details-card>
 
