@@ -5,34 +5,27 @@ import {
   ViewChild,
   OnInit,
   OnDestroy,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Popover, PopoverModule } from 'primeng/popover';
-import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { TooltipModule } from 'primeng/tooltip';
 import {
   NotificationApiService,
   AppNotification,
 } from '../../services/api/notification-api.service';
-import { interval, Subject, switchMap, takeUntil, startWith } from 'rxjs';
+import { NotificationWebSocketService } from '../../services/websocket/notification-websocket.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [
-    CommonModule,
-    ButtonModule,
-    PopoverModule,
-    OverlayBadgeModule,
-    TooltipModule,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, ButtonModule, PopoverModule, TooltipModule],
   templateUrl: './notification-bell.component.html',
 })
 export class NotificationBellComponent implements OnInit, OnDestroy {
   private readonly api = inject(NotificationApiService);
+  private readonly wsService = inject(NotificationWebSocketService);
   private readonly destroy$ = new Subject<void>();
 
   @ViewChild('panel') panel!: Popover;
@@ -42,13 +35,16 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   readonly loading = signal(false);
 
   ngOnInit(): void {
-    interval(30000)
-      .pipe(
-        startWith(0),
-        takeUntil(this.destroy$),
-        switchMap(() => this.api.getUnreadCount())
-      )
-      .subscribe((res) => this.unreadCount.set(res.count));
+    this.wsService.connect();
+
+    this.wsService.notification$.pipe(takeUntil(this.destroy$)).subscribe((notification) => {
+      this.unreadCount.update((c) => c + 1);
+      this.notifications.update((list) => [notification, ...list]);
+    });
+
+    this.api.getUnreadCount().subscribe((res) => {
+      this.unreadCount.set(res.count);
+    });
   }
 
   ngOnDestroy(): void {
@@ -58,7 +54,9 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
 
   togglePanel(event: Event): void {
     this.panel.toggle(event);
-    this.loadNotifications();
+    if (this.notifications().length === 0) {
+      this.loadNotifications();
+    }
   }
 
   loadNotifications(): void {
@@ -73,22 +71,32 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   }
 
   markAsRead(notification: AppNotification): void {
-    this.api.markAsRead(notification.id).subscribe(() => {
-      this.unreadCount.update((c) => Math.max(0, c - 1));
-      this.loadNotifications();
-    });
+    this.notifications.update((list) => list.filter((n) => n.id !== notification.id));
+    this.unreadCount.update((c) => Math.max(0, c - 1));
+    this.api.markAsRead(notification.id).subscribe();
   }
 
   markAllAsRead(): void {
     this.api.markAllAsRead().subscribe(() => {
       this.unreadCount.set(0);
-      this.loadNotifications();
+      this.notifications.set([]);
+    });
+  }
+
+  clearAll(): void {
+    this.api.markAllAsRead().subscribe(() => {
+      this.unreadCount.set(0);
+      this.notifications.set([]);
     });
   }
 
   timeAgo(date: string): string {
-    const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
-    if (seconds < 60) return 'Ahora';
+    const now = Date.now();
+    const then = new Date(date + 'Z').getTime();
+    const seconds = Math.floor((now - then) / 1000);
+
+    if (seconds < 10) return 'Ahora';
+    if (seconds < 60) return `${seconds}s`;
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m`;
     const hours = Math.floor(minutes / 60);

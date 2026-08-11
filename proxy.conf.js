@@ -12,6 +12,12 @@ const PROXY_CONFIG = {
         }
       });
     }
+  },
+  "/ws": {
+    target: "ws://parsun-api-app:8080",
+    ws: true,
+    secure: false,
+    changeOrigin: true,
   }
 };
 
