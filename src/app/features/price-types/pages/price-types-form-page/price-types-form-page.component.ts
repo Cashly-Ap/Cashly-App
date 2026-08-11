@@ -1,7 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { MessageService } from 'primeng/api';
@@ -26,7 +25,6 @@ interface PriceTypeFormData {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MainLayoutComponent,
     InputTextModule,
     ToggleSwitchModule,
     FormContainerComponent,

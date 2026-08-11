@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -30,7 +29,6 @@ import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
   imports: [
     CommonModule,
     FormsModule,
-    MainLayoutComponent,
     TableModule,
     ButtonModule,
     InputTextModule,

@@ -13,7 +13,6 @@ import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
 import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
@@ -36,7 +35,6 @@ import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages';
     ButtonModule,
     TextareaModule,
     DatePickerModule,
-    MainLayoutComponent,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,

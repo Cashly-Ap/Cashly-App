@@ -1,7 +1,6 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -51,7 +50,6 @@ interface SupplierFormData {
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    MainLayoutComponent,
     TabsModule,
     ToggleSwitchModule,
     InputTextModule,

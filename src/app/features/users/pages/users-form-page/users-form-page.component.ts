@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TabsModule } from 'primeng/tabs';
@@ -37,7 +36,6 @@ interface UserFormData {
   imports: [
     ReactiveFormsModule,
     FormsModule,
-    MainLayoutComponent,
     ButtonModule,
     CheckboxModule,
     TabsModule,

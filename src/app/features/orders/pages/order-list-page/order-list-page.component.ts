@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } 
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,7 +35,6 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   imports: [
     CommonModule,
     FormsModule,
-    MainLayoutComponent,
     ButtonModule,
     TableModule,
     InputTextModule,

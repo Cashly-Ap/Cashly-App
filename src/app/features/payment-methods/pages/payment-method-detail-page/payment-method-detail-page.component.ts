@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -24,7 +23,6 @@ import { PaymentMethodApplicationService } from '@features/payment-methods/servi
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
-    MainLayoutComponent,
     ButtonModule,
     ConfirmDialogModule,
     DetailsCardComponent,

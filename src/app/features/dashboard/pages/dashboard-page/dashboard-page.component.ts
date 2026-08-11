@@ -1,6 +1,5 @@
 import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { DashboardApiService, DashboardSummary, MonthlySales, TopItem, RecentActivity } from '@features/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
@@ -9,7 +8,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DecimalPipe, DatePipe, MainLayoutComponent, BaseChartDirective],
+  imports: [CommonModule, DecimalPipe, BaseChartDirective],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {

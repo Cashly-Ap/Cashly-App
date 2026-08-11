@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import {
   DetailsCardComponent,
@@ -24,7 +23,6 @@ import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@feat
   standalone: true,
   imports: [
     CommonModule,
-    MainLayoutComponent,
     ButtonModule,
     DetailsCardComponent,
     DetailsCardHeaderComponent,

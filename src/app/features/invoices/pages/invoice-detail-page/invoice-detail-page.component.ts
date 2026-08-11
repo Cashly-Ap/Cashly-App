@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
@@ -30,7 +29,6 @@ import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enum
   imports: [
     DatePipe,
     DecimalPipe,
-    MainLayoutComponent,
     ButtonModule,
     TableModule,
     DetailsCardComponent,

@@ -3,7 +3,6 @@ import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { of, catchError } from 'rxjs';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -36,7 +35,6 @@ import { ProductDetails } from '@features/products/models/interfaces';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MainLayoutComponent,
     TableModule,
     ButtonModule,
     InputTextModule,

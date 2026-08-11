@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -24,7 +23,6 @@ import { DebitNoteApplicationService } from '@features/debit-notes/services/appl
   imports: [
     DatePipe,
     DecimalPipe,
-    MainLayoutComponent,
     ButtonModule,
     ConfirmDialogModule,
     DetailsCardComponent,

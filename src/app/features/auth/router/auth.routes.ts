@@ -8,6 +8,14 @@ export const AUTH_ROUTES: Routes = [
       import('@features/auth/pages').then((m) => m.LoginPageComponent),
   },
   {
+    path: '',
+    redirectTo: 'login',
+    pathMatch: 'full',
+  },
+];
+
+export const AUTHENTICATED_AUTH_ROUTES: Routes = [
+  {
     path: 'configuration',
     loadComponent: () =>
       import('@features/auth/pages').then((m) => m.ConfigurationPageComponent),
@@ -25,10 +33,4 @@ export const AUTH_ROUTES: Routes = [
       import('@features/auth/pages').then((m) => m.ChangeUsernamePageComponent),
     canActivate: [authGuard],
   },
-  {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
 ];
-

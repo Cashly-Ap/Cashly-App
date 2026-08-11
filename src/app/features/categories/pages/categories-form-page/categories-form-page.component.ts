@@ -1,7 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -28,7 +27,6 @@ interface CategoryFormData {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MainLayoutComponent,
     InputTextModule,
     TextareaModule,
     ToggleSwitchModule,

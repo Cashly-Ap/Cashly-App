@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -34,7 +33,6 @@ import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/cust
   imports: [
     CommonModule,
     FormsModule,
-    MainLayoutComponent,
     TableModule,
     ButtonModule,
     InputTextModule,

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -53,7 +52,6 @@ const STOCK_PAGE_SIZE = 10;
   imports: [
     CommonModule,
     FormsModule,
-    MainLayoutComponent,
     ButtonModule,
     InputTextModule,
     SelectModule,

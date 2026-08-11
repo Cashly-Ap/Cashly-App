@@ -159,6 +159,8 @@ export const routes: Routes = [
 
 Angular 21 standalone components with modern syntax:
 
+Authenticated feature pages render inside a persistent `MainLayoutComponent` route shell. Feature templates contain only page content and must not wrap themselves in `<app-main-layout>`. This keeps the menu, notification connection, pending tabs, and shared overlays alive while child routes change. Heavy report dialogs in the shell use `@defer` and load only when a report action opens them.
+
 ```typescript
 import { Component, input, output } from "@angular/core";
 import { CommonModule } from "@angular/common";
@@ -590,4 +592,3 @@ export class CustomerListComponent {
 ---
 
 [← Back to Environment Variables](ENVIRONMENT.md) | [Next: Deployment →](DEPLOYMENT.md)
-

@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { FormContainerComponent, FormCardComponent } from '@core/forms/components/cards';
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
 import { TextInputComponent } from '@core/forms/components/inputs';
@@ -15,7 +14,6 @@ import { createUserNameForm } from '@features/auth/pages/change-username/change-
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MainLayoutComponent,
     FormContainerComponent,
     FormCardComponent,
     FormHeaderComponent,

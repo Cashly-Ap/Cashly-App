@@ -1,5 +1,4 @@
 <p-toast />
-<app-main-layout>
   <app-form-container>
     <app-form-header
       [title]="isEditMode() ? 'Editar Factura' : 'Nueva Factura'"
@@ -83,6 +82,5 @@
       </app-form-card>
     </form>
   </app-form-container>
-</app-main-layout>
 
 <app-customer-picker-dialog [visible]="pickerVisible()" [hasExistingItems]="items().length > 0" (customerSelected)="onCustomerSelected($event)" (cancelled)="onPickerCancelled()" />

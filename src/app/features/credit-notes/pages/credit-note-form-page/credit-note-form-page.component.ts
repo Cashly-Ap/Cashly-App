@@ -1,7 +1,6 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
@@ -44,7 +43,6 @@ interface InvoiceOption {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MainLayoutComponent,
     InputTextModule,
     InputNumberModule,
     TextareaModule,

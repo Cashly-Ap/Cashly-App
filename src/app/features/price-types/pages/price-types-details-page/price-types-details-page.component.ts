@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import {
@@ -22,7 +21,6 @@ import { PriceTypeDetails } from '@features/price-types/models/interfaces';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    MainLayoutComponent,
     ButtonModule,
     DetailsCardComponent,
     DetailsCardHeaderComponent,

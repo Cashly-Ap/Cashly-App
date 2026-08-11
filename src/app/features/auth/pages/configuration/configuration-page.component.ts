@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { AuthService } from '@features/auth/services';
 import { UserType } from '@features/auth/models';
 
@@ -11,7 +10,6 @@ import { UserType } from '@features/auth/models';
   standalone: true,
   imports: [
     CommonModule,
-    MainLayoutComponent,
     AvatarModule,
   ],
   templateUrl: './configuration-page.component.html',

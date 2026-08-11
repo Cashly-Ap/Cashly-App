@@ -157,7 +157,8 @@
     </div>
   </p-popover>
 
-  <app-catalog-pdf-modal
+  @defer (when activeModal() !== null || pdfViewerVisible()) {
+    <app-catalog-pdf-modal
     [visible]="activeModal() === 'catalog'"
     (visibleChange)="$event === false && activeModal.set(null)"
     (onGeneratePdf)="onCatalogPdf($event)"
@@ -219,20 +220,19 @@
     (onGenerateExcel)="onCashRegisterExcel($event)"
   />
 
-  <app-pdf-viewer-modal
-    [visible]="pdfViewerVisible()"
-    [pdfUrl]="pdfUrl()"
-    [title]="pdfTitle()"
-    [loading]="loadingPdf()"
-    (visibleChange)="$event === false && closePdfViewer()"
-  />
+    <app-pdf-viewer-modal
+      [visible]="pdfViewerVisible()"
+      [pdfUrl]="pdfUrl()"
+      [title]="pdfTitle()"
+      [loading]="loadingPdf()"
+      (visibleChange)="$event === false && closePdfViewer()"
+    />
+  }
 
   <main
     class="pt-16 min-h-screen bg-gradient-to-br from-app-bg-primary via-app-bg-primary-via to-app-bg-primary-to"
    >
-    <ng-content />
+    <router-outlet />
   </main>
 
 </div>
-
-

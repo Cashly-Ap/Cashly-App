@@ -10,7 +10,6 @@ import {
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -43,7 +42,6 @@ import { ActivatedRoute, Router } from '@angular/router';
     CommonModule,
     FormsModule,
     CurrencyPipe,
-    MainLayoutComponent,
     TableModule,
     ButtonModule,
     TagModule,

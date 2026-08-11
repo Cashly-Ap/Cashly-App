@@ -18,7 +18,6 @@ import {
 } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -44,7 +43,6 @@ import { CashRegisterApplicationService } from '@features/cash-register/services
     CurrencyPipe,
     DatePipe,
     RouterModule,
-    MainLayoutComponent,
     ContentCardComponent,
     ListContainerComponent,
     LoadingSpinnerComponent,

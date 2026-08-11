@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
@@ -18,7 +17,6 @@ import { PagedResponse } from '@shared/models/interfaces/paged-response.interfac
   standalone: true,
   imports: [
     CommonModule,
-    MainLayoutComponent,
     PageHeaderComponent,
     LoadingSpinnerComponent,
     ButtonModule,

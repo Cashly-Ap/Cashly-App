@@ -2,7 +2,6 @@ import { Component, inject, OnInit, signal, ChangeDetectionStrategy, Injector } 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { ButtonModule } from 'primeng/button';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
@@ -42,7 +41,6 @@ interface ProductFormData {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MainLayoutComponent,
     ButtonModule,
     TabsModule,
     FormContainerComponent,

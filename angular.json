@@ -66,7 +66,7 @@
             },
             "development": {
               "buildTarget": "Parsun:build:development",
-              "prebundle": false
+              "prebundle": true
             }
           },
           "defaultConfiguration": "development"

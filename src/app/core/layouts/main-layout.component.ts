@@ -11,7 +11,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Router, RouterLink, RouterModule, NavigationStart } from '@angular/router';
+import { Router, RouterOutlet, NavigationStart } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -71,8 +71,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     MenubarModule,
     Ripple,
     AvatarModule,
-    RouterLink,
-    RouterModule,
+    RouterOutlet,
     ThemeToggleComponent,
     Popover,
     PendingTabsDropdownComponent,

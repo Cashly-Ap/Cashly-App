@@ -2,7 +2,6 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
 import { Observable, forkJoin, of } from 'rxjs';
-import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { TabsModule } from 'primeng/tabs';
 import { MessageService } from 'primeng/api';
 import { InputTextModule } from 'primeng/inputtext';
@@ -60,7 +59,6 @@ interface CustomerFormData {
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    MainLayoutComponent,
     TabsModule,
     InputTextModule,
     ButtonModule,
