@@ -2,7 +2,7 @@
   <div class="min-h-screen">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
 
-      <div class="text-center mb-8">
+      <div class="text-center mb-4">
         <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
           <i class="pi pi-wallet text-surface-0 dark:text-surface-900 text-3xl"></i>
         </div>
@@ -70,6 +70,14 @@
           }
         </div>
       }
+
+      <p-tabs [(value)]="activeTab" styleClass="mt-4">
+        <p-tablist>
+          <p-tab value="customers">Clientes con Deuda</p-tab>
+          <p-tab value="pending">Pagos en Validación</p-tab>
+        </p-tablist>
+        <p-tabpanels>
+          <p-tabpanel value="customers">
 
       <div class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-md border border-surface-200 dark:border-surface-700 overflow-hidden">
         <div class="p-6">
@@ -332,6 +340,13 @@
           (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
         />
       </div>
+
+          </p-tabpanel>
+          <p-tabpanel value="pending">
+            <app-pending-payments-tab />
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
 
     </div>
   </div>

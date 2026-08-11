@@ -29,6 +29,7 @@ import { AuthService } from '@features/auth/services';
 import { UserType } from '@features/auth/models';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
+import { NotificationBellComponent } from '@core/notifications/components/notification-bell/notification-bell.component';
 import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
 import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal';
 import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
@@ -75,6 +76,7 @@ export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' 
     ThemeToggleComponent,
     Popover,
     PendingTabsDropdownComponent,
+    NotificationBellComponent,
     DrawerModule,
     PanelMenuModule,
     CatalogPdfModalComponent,

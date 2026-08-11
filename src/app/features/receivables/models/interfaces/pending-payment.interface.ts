@@ -11,4 +11,7 @@ export interface PendingPayment {
   createdAt: string;
   invoiceNumber: string;
   voucherPath: string | null;
+  referenceNumber?: string;
+  notes?: string;
+  createdByName?: string;
 }

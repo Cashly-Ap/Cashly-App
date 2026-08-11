@@ -18,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
+import { TabsModule } from 'primeng/tabs';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
@@ -29,6 +30,7 @@ import {
   PaymentFormDialogComponent,
   PaymentHistoryDialogComponent,
 } from '@features/receivables/components';
+import { PendingPaymentsTabComponent } from '@features/receivables/components/pending-payments-tab/pending-payments-tab.component';
 import { PaymentSubmitEvent } from '@features/receivables/components/payment-form-dialog/payment-form-dialog.component';
 import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
 
@@ -48,11 +50,13 @@ import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
     IconFieldModule,
     InputIconModule,
     TooltipModule,
+    TabsModule,
     PaginatorModule,
     SkeletonModule,
     CustomerDebtDialogComponent,
     PaymentFormDialogComponent,
     PaymentHistoryDialogComponent,
+    PendingPaymentsTabComponent,
   ],
   templateUrl: './receivables-page.component.html',
 })
@@ -78,6 +82,8 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly paymentCustomerName = signal('');
   readonly paymentTotalDebt = signal(0);
   readonly paymentSubmitting = signal(false);
+
+  readonly activeTab = signal<string>('customers');
 
   readonly paymentHistoryVisible = signal(false);
   readonly paymentHistoryCustomerId = signal('');

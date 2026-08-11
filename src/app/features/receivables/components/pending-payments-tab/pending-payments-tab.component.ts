@@ -1,42 +1,41 @@
-import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ReceivablesApplicationService } from '@app/features/receivables/services/application/receivables-application.service';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { TooltipModule } from 'primeng/tooltip';
+import { MessageService } from 'primeng/api';
+import { Subject, takeUntil } from 'rxjs';
+import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/receivables/models/interfaces';
-import { PaymentDetailDialogComponent } from '@features/receivables/components/payment-detail-dialog/payment-detail-dialog.component';
 
 @Component({
   selector: 'app-pending-payments-tab',
   standalone: true,
-  imports: [
-    TableModule,
-    ButtonModule,
-    CurrencyPipe,
-    DatePipe,
-    PaymentDetailDialogComponent,
-  ],
+  imports: [CommonModule, CurrencyPipe, DatePipe, FormsModule, TableModule, ButtonModule, TagModule, DialogModule, InputTextModule, TextareaModule, TooltipModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pending-payments-tab.component.html',
 })
 export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
-  protected service = inject(ReceivablesApplicationService);
+  private readonly api = inject(ReceivablesApiService);
+  private readonly messageService = inject(MessageService);
   private readonly destroy$ = new Subject<void>();
 
-  protected payments = signal<PendingPayment[]>([]);
-  protected loading = signal(false);
+  readonly payments = signal<PendingPayment[]>([]);
+  readonly loading = signal(false);
 
-  protected detailVisible = signal(false);
-  protected selectedPayment = signal<PendingPayment | null>(null);
-
-  constructor() {
-    this.service.customerDebtChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.loadPayments());
-  }
+  readonly approveDialogVisible = signal(false);
+  readonly rejectDialogVisible = signal(false);
+  readonly selectedPayment = signal<PendingPayment | null>(null);
+  readonly reason = signal('');
+  readonly submitting = signal(false);
 
   ngOnInit(): void {
-    this.loadPayments();
+    this.load();
   }
 
   ngOnDestroy(): void {
@@ -44,28 +43,62 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  protected loadPayments(): void {
+  load(): void {
     this.loading.set(true);
-    this.service.loadPendingPayments({ page: 0, size: 50 }).subscribe({
-      next: () => {
-        this.payments.set(this.service.pendingPayments());
-        this.loading.set(false);
-      },
-      error: () => {
-        this.payments.set([]);
-        this.loading.set(false);
-      },
-    });
+    this.api.listPendingPayments()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => { this.payments.set(data); this.loading.set(false); },
+        error: () => this.loading.set(false),
+      });
   }
 
-  protected onViewDetail(payment: PendingPayment): void {
+  openApprove(payment: PendingPayment): void {
     this.selectedPayment.set(payment);
-    this.detailVisible.set(true);
+    this.reason.set('');
+    this.approveDialogVisible.set(true);
   }
 
-  protected onCloseDetail(): void {
-    this.detailVisible.set(false);
-    this.selectedPayment.set(null);
+  openReject(payment: PendingPayment): void {
+    this.selectedPayment.set(payment);
+    this.reason.set('');
+    this.rejectDialogVisible.set(true);
   }
 
+  submitApprove(): void {
+    if (!this.selectedPayment() || !this.reason().trim()) return;
+    this.submitting.set(true);
+    this.api.approvePayment(this.selectedPayment()!.id, this.reason().trim())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.approveDialogVisible.set(false);
+          this.messageService.add({ severity: 'success', summary: 'Pago aprobado', detail: 'El pago ha sido verificado y aprobado.' });
+          this.load();
+        },
+        error: () => { this.submitting.set(false); this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo aprobar el pago.' }); },
+      });
+  }
+
+  submitReject(): void {
+    if (!this.selectedPayment() || !this.reason().trim()) return;
+    this.submitting.set(true);
+    this.api.rejectPayment(this.selectedPayment()!.id, this.reason().trim())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.submitting.set(false);
+          this.rejectDialogVisible.set(false);
+          this.messageService.add({ severity: 'warn', summary: 'Pago rechazado', detail: 'El pago ha sido rechazado.' });
+          this.load();
+        },
+        error: () => { this.submitting.set(false); this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo rechazar el pago.' }); },
+      });
+  }
+
+  formatCustomer(payment: PendingPayment): string {
+    if (payment.customerName) return payment.customerName;
+    return payment.createdByName || 'Portal';
+  }
 }

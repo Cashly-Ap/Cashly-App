@@ -98,6 +98,18 @@ export class ReceivablesApiService {
     });
   }
 
+  listPendingPayments(): Observable<PendingPayment[]> {
+    return this.http.get<PendingPayment[]>(`${this.paymentsBaseUrl}?status=PENDING`);
+  }
+
+  approvePayment(id: string, reason: string): Observable<any> {
+    return this.http.post(`${this.paymentsBaseUrl}/${id}/approve`, { reason });
+  }
+
+  rejectPayment(id: string, reason: string): Observable<any> {
+    return this.http.post(`${this.paymentsBaseUrl}/${id}/reject`, { reason });
+  }
+
 
 
   getCustomerPaymentHistory(
