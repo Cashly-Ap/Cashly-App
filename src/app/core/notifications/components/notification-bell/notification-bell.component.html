@@ -1,51 +1,48 @@
-<p-overlayBadge [value]="unreadCount()" severity="danger" [hidden]="unreadCount() === 0">
+<p-overlayBadge [value]="unreadCount()" severity="danger">
   <p-button
     icon="pi pi-bell"
     [text]="true"
     [rounded]="true"
     severity="secondary"
-    (click)="bellPopover.toggle($event)"
-    (onClick)="loadNotifications()"
+    (onClick)="togglePanel($event)"
     pTooltip="Notificaciones"
   />
 </p-overlayBadge>
 
-<p-popover #bellPopover [style]="{ width: '380px', maxHeight: '500px' }">
-  <ng-template pTemplate="content">
-    <div class="flex flex-col">
-      <div class="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700">
-        <span class="font-semibold text-sm">Notificaciones</span>
-        @if (unreadCount() > 0) {
-          <p-button label="Marcar todo leído" [text]="true" size="small" (onClick)="markAllAsRead()" />
-        }
-      </div>
-      <div class="overflow-y-auto max-h-[400px]">
-        @if (loading()) {
-          <div class="flex items-center justify-center py-8">
-            <i class="pi pi-spin pi-spinner text-surface-400"></i>
-          </div>
-        } @else if (notifications().length === 0) {
-          <div class="flex flex-col items-center justify-center py-8 text-surface-400">
-            <i class="pi pi-bell-slash text-3xl mb-2"></i>
-            <span class="text-sm">No hay notificaciones</span>
-          </div>
-        } @else {
-          @for (n of notifications(); track n.id) {
-            <div
-              class="flex items-start gap-3 px-4 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 cursor-pointer border-b border-surface-100 dark:border-surface-800 last:border-b-0"
-              [class.opacity-60]="n.isRead"
-              (click)="markAsRead(n)"
-            >
-              <div class="w-2 h-2 rounded-full mt-2 shrink-0" [class.bg-primary]="!n.isRead" [class.bg-transparent]="n.isRead"></div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate">{{ n.title }}</p>
-                <p class="text-xs text-surface-500 mt-0.5 line-clamp-2">{{ n.message }}</p>
-                <p class="text-xs text-surface-400 mt-1">{{ timeAgo(n.createdAt) }}</p>
-              </div>
-            </div>
-          }
-        }
-      </div>
+<p-popover #panel [style]="{ width: '380px' }">
+  <div class="flex flex-col">
+    <div class="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700">
+      <span class="font-semibold text-sm">Notificaciones</span>
+      @if (unreadCount() > 0) {
+        <p-button label="Marcar todo leído" [text]="true" size="small" (onClick)="markAllAsRead()" />
+      }
     </div>
-  </ng-template>
+    <div class="overflow-y-auto max-h-[400px]">
+      @if (loading()) {
+        <div class="flex items-center justify-center py-8">
+          <i class="pi pi-spin pi-spinner text-surface-400"></i>
+        </div>
+      } @else if (notifications().length === 0) {
+        <div class="flex flex-col items-center justify-center py-8 text-surface-400">
+          <i class="pi pi-bell-slash text-3xl mb-2"></i>
+          <span class="text-sm">No hay notificaciones</span>
+        </div>
+      } @else {
+        @for (n of notifications(); track n.id) {
+          <div
+            class="flex items-start gap-3 px-4 py-3 hover:bg-surface-50 dark:hover:bg-surface-800 cursor-pointer border-b border-surface-100 dark:border-surface-800 last:border-b-0"
+            [class.opacity-60]="n.isRead"
+            (click)="markAsRead(n)"
+          >
+            <div class="w-2 h-2 rounded-full mt-2 shrink-0" [class.bg-primary]="!n.isRead" [class.bg-transparent]="n.isRead"></div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-surface-900 dark:text-surface-100 truncate">{{ n.title }}</p>
+              <p class="text-xs text-surface-500 mt-0.5 line-clamp-2">{{ n.message }}</p>
+              <p class="text-xs text-surface-400 mt-1">{{ timeAgo(n.createdAt) }}</p>
+            </div>
+          </div>
+        }
+      }
+    </div>
+  </div>
 </p-popover>

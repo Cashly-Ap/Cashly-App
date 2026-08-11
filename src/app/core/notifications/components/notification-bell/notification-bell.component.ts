@@ -2,6 +2,7 @@ import {
   Component,
   inject,
   signal,
+  ViewChild,
   OnInit,
   OnDestroy,
   ChangeDetectionStrategy,
@@ -9,7 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { BadgeModule } from 'primeng/badge';
-import { PopoverModule } from 'primeng/popover';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { TooltipModule } from 'primeng/tooltip';
 import {
@@ -36,6 +37,8 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   private readonly api = inject(NotificationApiService);
   private readonly destroy$ = new Subject<void>();
 
+  @ViewChild('panel') panel!: Popover;
+
   readonly unreadCount = signal(0);
   readonly notifications = signal<AppNotification[]>([]);
   readonly loading = signal(false);
@@ -53,6 +56,11 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  togglePanel(event: Event): void {
+    this.panel.toggle(event);
+    this.loadNotifications();
   }
 
   loadNotifications(): void {
