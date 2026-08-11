@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
-import { BadgeModule } from 'primeng/badge';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { OverlayBadgeModule } from 'primeng/overlaybadge';
 import { TooltipModule } from 'primeng/tooltip';
@@ -25,7 +24,6 @@ import { interval, Subject, switchMap, takeUntil, startWith } from 'rxjs';
   imports: [
     CommonModule,
     ButtonModule,
-    BadgeModule,
     PopoverModule,
     OverlayBadgeModule,
     TooltipModule,
