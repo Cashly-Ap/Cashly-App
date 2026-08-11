@@ -140,12 +140,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
         },
         {
-          label: 'Pagos',
-          icon: 'pi pi-credit-card',
-          routerLink: '/payments',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
           label: 'Métodos de Pago',
           icon: 'pi pi-credit-card',
           routerLink: '/payment-methods',

@@ -33,6 +33,7 @@ import {
 import { PendingPaymentsTabComponent } from '@features/receivables/components/pending-payments-tab/pending-payments-tab.component';
 import { PaymentSubmitEvent } from '@features/receivables/components/payment-form-dialog/payment-form-dialog.component';
 import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-receivables-page',
@@ -63,6 +64,8 @@ import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
 export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly service = inject(ReceivablesApplicationService);
   private readonly pdfViewerService = inject(PdfViewerService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   private readonly destroy$ = new Subject<void>();
   private readonly searchSubject = new Subject<string>();
@@ -84,6 +87,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly paymentSubmitting = signal(false);
 
   readonly activeTab = signal<string>('customers');
+  readonly focusPaymentId = signal<string | null>(null);
 
   readonly paymentHistoryVisible = signal(false);
   readonly paymentHistoryCustomerId = signal('');
@@ -108,6 +112,17 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        const requestedTab = params.get('tab');
+        const focusPaymentId = params.get('focus');
+        if (requestedTab === 'pending' || focusPaymentId) {
+          this.activeTab.set('pending');
+        }
+        this.focusPaymentId.set(focusPaymentId);
+      });
+
     this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
     this.loadCustomers();
 
@@ -125,6 +140,17 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
         this.first.set(0);
         this.loadCustomers();
       });
+  }
+
+  onPaymentFocusHandled(paymentId: string): void {
+    if (this.focusPaymentId() !== paymentId) return;
+    this.focusPaymentId.set(null);
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { focus: null },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   ngOnDestroy(): void {

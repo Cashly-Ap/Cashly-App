@@ -659,7 +659,9 @@ export const RECEIVABLES_ROUTES: Routes = [
 ];
 ```
 
-**Note**: All receivables functionality lives in a single route (`/receivables`). There are no sub-routes — the tabs and dialogs handle all navigation.
+**Note**: All receivables functionality lives in a single route (`/receivables`). There are no sub-routes — the tabs and dialogs handle all navigation. The former `/payments`, `/payments/:id`, and `/payments/:id/edit` frontend routes were removed; payment management is consolidated here.
+
+Payment notifications use `/receivables?tab=pending&focus={paymentId}`. This activates **Pagos en Validación**, opens the matching approval dialog, and then removes `focus` from the URL to prevent reopening it on refresh.
 
 ---
 

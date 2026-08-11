@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy, OnInit, OnDestroy, effect, input, output } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
@@ -27,12 +27,27 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
 
   readonly payments = signal<PendingPayment[]>([]);
   readonly loading = signal(false);
+  readonly focusPaymentId = input<string | null>(null);
+  readonly focusHandled = output<string>();
 
   readonly approveDialogVisible = signal(false);
   readonly rejectDialogVisible = signal(false);
   readonly selectedPayment = signal<PendingPayment | null>(null);
   readonly reason = signal('');
   readonly submitting = signal(false);
+  private readonly handledFocusId = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const focusId = this.focusPaymentId();
+      if (!focusId || focusId === this.handledFocusId()) return;
+      const payment = this.payments().find((item) => item.id === focusId);
+      if (!payment) return;
+      this.handledFocusId.set(focusId);
+      this.openApprove(payment);
+      this.focusHandled.emit(focusId);
+    });
+  }
 
   ngOnInit(): void {
     this.load();

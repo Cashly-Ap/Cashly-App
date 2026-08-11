@@ -74,10 +74,6 @@ export const routes: Routes = [
     loadChildren: () => import('@features/payment-methods/router').then((m) => m.PAYMENT_METHOD_ROUTES),
   },
   {
-    path: 'payments',
-    loadChildren: () => import('@features/payments/router').then((m) => m.PAYMENT_ROUTES),
-  },
-  {
     path: 'credit-notes',
     loadChildren: () => import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
   },

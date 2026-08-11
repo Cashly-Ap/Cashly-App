@@ -15,6 +15,7 @@ import {
   AppNotification,
 } from '../../services/api/notification-api.service';
 import { NotificationWebSocketService } from '../../services/websocket/notification-websocket.service';
+import { NotificationDestinationResolver } from '../../services/navigation/notification-destination.resolver';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -26,6 +27,7 @@ import { Subject, takeUntil } from 'rxjs';
 export class NotificationBellComponent implements OnInit, OnDestroy {
   private readonly api = inject(NotificationApiService);
   private readonly wsService = inject(NotificationWebSocketService);
+  private readonly destinationResolver = inject(NotificationDestinationResolver);
   private readonly destroy$ = new Subject<void>();
 
   @ViewChild('panel') panel!: Popover;
@@ -70,11 +72,27 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     });
   }
 
-  markAsRead(notification: AppNotification): void {
+  openNotification(notification: AppNotification): void {
+    this.panel.hide();
+    void this.destinationResolver.navigate(notification.referenceType, notification.referenceId);
+  }
+
+  markNotificationAsRead(notification: AppNotification): void {
     this.notifications.update((list) => list.filter((n) => n.id !== notification.id));
     this.unreadCount.update((c) => Math.max(0, c - 1));
-    this.api.markAsRead(notification.id).subscribe();
+    this.api.markAsRead(notification.id).subscribe({ error: () => undefined });
   }
+
+  notificationActionLabel(notification: AppNotification): string {
+    const labels: Record<string, string> = {
+      PAYMENT: 'Ver pago',
+      QUOTE: 'Ver presupuesto',
+      ORDER: 'Ver pedido',
+    };
+    return labels[notification.referenceType ?? ''] ?? 'Ir allí';
+  }
+
+  onNotificationCardClick(): void {}
 
   markAllAsRead(): void {
     this.api.markAllAsRead().subscribe(() => {

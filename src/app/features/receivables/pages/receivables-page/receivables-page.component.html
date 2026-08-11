@@ -343,7 +343,10 @@
 
           </p-tabpanel>
           <p-tabpanel value="pending">
-            <app-pending-payments-tab />
+            <app-pending-payments-tab
+              [focusPaymentId]="focusPaymentId()"
+              (focusHandled)="onPaymentFocusHandled($event)"
+            />
           </p-tabpanel>
         </p-tabpanels>
       </p-tabs>
@@ -380,5 +383,4 @@
   [invoiceId]="paymentHistoryInvoiceId()"
   (close)="onClosePaymentHistoryDialog()"
 />
-
 
