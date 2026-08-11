@@ -16,6 +16,8 @@ describe('CustomerMapper', () => {
     creditDays: 30,
     creditLimit: 50000,
     active: true,
+    portalAccess: false,
+    deletable: true,
     createdAt: '2025-01-15T10:30:00Z',
     emails: [
       { id: 'email-001', customerId: 'uuid-001', email: 'contact@acme.com' },
