@@ -106,7 +106,7 @@ describe('DuplicateInvoiceDialogComponent', () => {
     expect(dialog.invoiceId()).toBeNull();
   });
 
-  it.skip('should reset state when visible changes to false', async () => {
+  it('should reset state when visible changes to false', async () => {
     dialog.lines.set([
       {
         productName: 'Test',
@@ -116,12 +116,7 @@ describe('DuplicateInvoiceDialogComponent', () => {
         hasNegativeStock: false,
       },
     ]);
-    hostComponent.visible = true;
-    fixture.detectChanges();
-    await fixture.whenStable();
-    hostComponent.visible = false;
-    fixture.detectChanges();
-    await fixture.whenStable();
+    dialog.ngOnChanges();
 
     expect(dialog.lines()).toEqual([]);
     expect(dialog.invoiceInfo()).toBeNull();

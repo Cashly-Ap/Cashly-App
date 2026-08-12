@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { MainLayoutComponent } from './main-layout.component';
 import { AuthService } from '@features/auth/services';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
@@ -21,6 +21,8 @@ import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-
 import { PurchasePdfApiService } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
 import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
+import { NotificationApiService } from '@core/notifications/services/api/notification-api.service';
+import { NotificationWebSocketService } from '@core/notifications/services/websocket/notification-websocket.service';
 
 function createPdfApiMock() {
   return {
@@ -95,6 +97,16 @@ describe('MainLayoutComponent', () => {
     };
 
     const pdfApiMock = createPdfApiMock();
+    const notificationApiMock = {
+      getUnreadCount: vi.fn().mockReturnValue(of({ count: 0 })),
+      list: vi.fn().mockReturnValue(of([])),
+      markAsRead: vi.fn().mockReturnValue(of(undefined)),
+      markAllAsRead: vi.fn().mockReturnValue(of(undefined)),
+    };
+    const notificationWebSocketMock = {
+      notification$: EMPTY,
+      connect: vi.fn(),
+    };
 
     await TestBed.configureTestingModule({
       imports: [MainLayoutComponent],
@@ -116,6 +128,8 @@ describe('MainLayoutComponent', () => {
         { provide: PurchasePdfApiService, useValue: pdfApiMock },
         { provide: FinancePdfApiService, useValue: pdfApiMock },
         { provide: CashRegisterApiService, useValue: pdfApiMock },
+        { provide: NotificationApiService, useValue: notificationApiMock },
+        { provide: NotificationWebSocketService, useValue: notificationWebSocketMock },
         {
           provide: ActivatedRoute,
           useValue: {

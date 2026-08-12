@@ -192,9 +192,9 @@ describe('WarehouseApplicationService', () => {
         municipality: 'Valencia',
       };
 
-      service.create(createData).subscribe(() => {
-        expect(service.loading()).toBe(false);
-      });
+      service.create(createData).subscribe();
+
+      expect(service.loading()).toBe(false);
     });
 
     it('should set error on create failure', () => {

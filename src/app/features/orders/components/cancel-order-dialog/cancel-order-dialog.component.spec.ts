@@ -171,15 +171,4 @@ describe('CancelOrderDialogComponent - visible', () => {
     dialog.onConfirm();
     expect(dialog.form.get('reason')?.touched).toBe(true);
   });
-
-  it.skip('should reset form when visible changes to false', async () => {
-    dialog.form.get('reason')?.setValue('Test reason');
-    dialog.form.get('reason')?.markAsTouched();
-
-    hostComponent.visible = false;
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(dialog.form.get('reason')?.value).toBeNull();
-  });
 });

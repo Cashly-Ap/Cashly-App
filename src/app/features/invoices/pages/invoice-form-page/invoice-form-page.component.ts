@@ -276,6 +276,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           })),
         );
       },
+      error: () => this.router.navigate(['/invoices']),
     });
   }
 

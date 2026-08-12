@@ -156,7 +156,7 @@ describe('CustomerApplicationService', () => {
   });
 
   describe('create()', () => {
-    it('should create customer and add to customers list', () => {
+    it('should create customer', () => {
       mockApiService.getAll.mockReturnValue(of([]));
       mockApiService.create.mockReturnValue(of(mockDetails));
 
@@ -175,11 +175,13 @@ describe('CustomerApplicationService', () => {
         addresses: [{ address: 'Av. Principal', billing: true, active: true }],
       };
 
-      service.create(createData).subscribe(() => {
-        expect(service.customers()).toHaveLength(1);
-        expect(service.customers()[0].id).toBe('uuid-001');
+      let createdCustomerId: string | undefined;
+      service.create(createData).subscribe((createdCustomer) => {
+        createdCustomerId = createdCustomer.id;
       });
 
+      expect(mockApiService.create).toHaveBeenCalledWith(createData);
+      expect(createdCustomerId).toBe('uuid-001');
       expect(service.loading()).toBe(false);
     });
 

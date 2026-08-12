@@ -501,7 +501,7 @@ describe('InvoiceFormPageComponent', () => {
       expect(component.invoiceNumber()).toBe('FAC-001');
     });
 
-    it.skip('should navigate to /facturas on load failure', async () => {
+    it('should navigate to /facturas on load failure', async () => {
       (TestBed as TestBedStatic).resetTestingModule();
       configureTestBed(
         'inv-999',

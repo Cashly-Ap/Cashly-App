@@ -100,6 +100,14 @@ describe('CancelInvoiceDialogComponent', () => {
     dialog.form.get('reason')?.setValue('x'.repeat(501));
     expect(dialog.reasonTooLong).toBe(true);
   });
+
+  it('should reset form when visible is false via ngOnChanges', () => {
+    dialog.form.get('reason')?.setValue('Test reason');
+    dialog.form.get('reason')?.markAsTouched();
+    dialog.ngOnChanges();
+    expect(dialog.form.get('reason')?.value).toBeNull();
+    expect(dialog.form.get('reason')?.touched).toBe(false);
+  });
 });
 
 describe('CancelInvoiceDialogComponent - visible', () => {
@@ -159,16 +167,5 @@ describe('CancelInvoiceDialogComponent - visible', () => {
       invoiceId: 'inv-001',
       reason: 'Trimmed reason',
     });
-  });
-
-  it.skip('should reset form when visible changes to false', async () => {
-    dialog.form.get('reason')?.setValue('Test reason');
-    dialog.form.get('reason')?.markAsTouched();
-
-    hostComponent.visible = false;
-    fixture.detectChanges();
-    await fixture.whenStable();
-
-    expect(dialog.form.get('reason')?.value).toBeNull();
   });
 });

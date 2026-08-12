@@ -4,10 +4,6 @@ import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { PdfViewerModalComponent } from './pdf-viewer-modal.component';
 
-const mockSanitizer = {
-  bypassSecurityTrustResourceUrl: vi.fn((url: string) => url as SafeResourceUrl),
-};
-
 @Component({
   template: `<app-pdf-viewer-modal
     [visible]="visible"
@@ -20,27 +16,34 @@ const mockSanitizer = {
 })
 class HostComponent {
   visible = false;
-  pdfUrl: string | null = null;
+  pdfUrl: SafeResourceUrl | null = null;
   title = '';
   loading = false;
   onVisibleChange = vi.fn();
 }
 
 function setup(
-  overrides: { visible?: boolean; pdfUrl?: string | null; title?: string; loading?: boolean } = {},
+  overrides: {
+    visible?: boolean;
+    pdfUrl?: string | SafeResourceUrl | null;
+    title?: string;
+    loading?: boolean;
+  } = {},
 ) {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     imports: [HostComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    providers: [{ provide: DomSanitizer, useValue: mockSanitizer }],
   });
   TestBed.compileComponents();
 
   const fixture = TestBed.createComponent(HostComponent);
   const hostComponent = fixture.componentInstance;
   hostComponent.visible = overrides.visible ?? false;
-  hostComponent.pdfUrl = overrides.pdfUrl ?? null;
+  hostComponent.pdfUrl =
+    typeof overrides.pdfUrl === 'string'
+      ? TestBed.inject(DomSanitizer).bypassSecurityTrustResourceUrl(overrides.pdfUrl)
+      : (overrides.pdfUrl ?? null);
   hostComponent.title = overrides.title ?? '';
   hostComponent.loading = overrides.loading ?? false;
   fixture.detectChanges();
@@ -80,7 +83,7 @@ describe('PdfViewerModalComponent', () => {
   });
 });
 
-describe.skip('PdfViewerModalComponent - visible', () => {
+describe('PdfViewerModalComponent - visible', () => {
   let hostComponent: HostComponent;
   let component: PdfViewerModalComponent;
 
@@ -100,7 +103,7 @@ describe.skip('PdfViewerModalComponent - visible', () => {
   });
 
   it('should have pdfUrl input set', () => {
-    expect(component.pdfUrl()).toBe('blob:test-url');
+    expect(component.pdfUrl()).toBe(hostComponent.pdfUrl);
   });
 
   it('should have title input set', () => {
