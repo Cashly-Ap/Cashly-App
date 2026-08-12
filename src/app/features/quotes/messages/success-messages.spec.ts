@@ -26,14 +26,18 @@ describe('QUOTE_SUCCESS_MESSAGES', () => {
   it('should have convertedToOrder message with correct severity and detail', () => {
     expect(QUOTE_SUCCESS_MESSAGES.convertedToOrder.severity).toBe('success');
     expect(QUOTE_SUCCESS_MESSAGES.convertedToOrder.summary).toBe('Éxito');
-    expect(QUOTE_SUCCESS_MESSAGES.convertedToOrder.detail).toBe('Presupuesto convertido a pedido exitosamente');
+    expect(QUOTE_SUCCESS_MESSAGES.convertedToOrder.detail).toBe(
+      'Presupuesto convertido a pedido exitosamente',
+    );
     expect(QUOTE_SUCCESS_MESSAGES.convertedToOrder.life).toBe(3000);
   });
 
   it('should have convertedToInvoice message with correct severity and detail', () => {
     expect(QUOTE_SUCCESS_MESSAGES.convertedToInvoice.severity).toBe('success');
     expect(QUOTE_SUCCESS_MESSAGES.convertedToInvoice.summary).toBe('Éxito');
-    expect(QUOTE_SUCCESS_MESSAGES.convertedToInvoice.detail).toBe('Presupuesto convertido a factura exitosamente');
+    expect(QUOTE_SUCCESS_MESSAGES.convertedToInvoice.detail).toBe(
+      'Presupuesto convertido a factura exitosamente',
+    );
     expect(QUOTE_SUCCESS_MESSAGES.convertedToInvoice.life).toBe(3000);
   });
 

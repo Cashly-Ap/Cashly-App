@@ -1,6 +1,12 @@
 import { Component, input, inject, signal, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormArray, FormControl, AbstractControl } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormArray,
+  FormControl,
+  AbstractControl,
+} from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ButtonModule } from 'primeng/button';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
@@ -9,12 +15,7 @@ import { PriceTypeApplicationService } from '@features/price-types/services/appl
   selector: 'app-product-prices-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    InputNumberModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, InputNumberModule, ButtonModule],
   templateUrl: './product-prices-section.component.html',
 })
 export class ProductPricesSectionComponent {

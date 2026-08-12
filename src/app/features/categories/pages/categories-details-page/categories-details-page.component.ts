@@ -31,7 +31,6 @@ import { CategoryDetails } from '@features/categories/models/interfaces';
     StatusBadgeComponent,
   ],
   templateUrl: './categories-details-page.component.html',
-
 })
 export class CategoriesDetailsPageComponent implements OnInit {
   private service = inject(CategoryApplicationService);
@@ -58,7 +57,12 @@ export class CategoriesDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar la categoría.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar la categoría.',
+          life: 5000,
+        });
         this.router.navigate(['/categories']);
       },
     });

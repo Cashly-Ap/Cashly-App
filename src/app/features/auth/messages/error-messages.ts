@@ -9,7 +9,8 @@ export const AUTH_HTTP_ERRORS: Record<number, string> = {
   504: 'El servidor tardó demasiado en responder. Intenta más tarde.',
 };
 
-export const AUTH_DEFAULT_ERROR_MESSAGE = 'Ocurrió un error inesperado. Por favor, intenta nuevamente.';
+export const AUTH_DEFAULT_ERROR_MESSAGE =
+  'Ocurrió un error inesperado. Por favor, intenta nuevamente.';
 
 export const AUTH_ERROR_MESSAGES = {
   changePassword: {

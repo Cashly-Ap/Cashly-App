@@ -18,7 +18,10 @@ import {
   TextBadgeComponent,
 } from '@shared/components/ui';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
-import { PurchaseStatus, getPurchaseStatusLabel } from '@features/purchases/models/enums/purchase-status.enum';
+import {
+  PurchaseStatus,
+  getPurchaseStatusLabel,
+} from '@features/purchases/models/enums/purchase-status.enum';
 
 @Component({
   selector: 'app-purchase-detail-page',

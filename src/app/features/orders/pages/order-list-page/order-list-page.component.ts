@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,9 +29,16 @@ import { CancelOrderDialogComponent } from '@features/orders/components/cancel-o
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { AssignWarehousesDialogComponent } from '@features/orders/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
-import { OrderFilters, ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
+import {
+  OrderFilters,
+  ConvertToInvoiceRequest,
+} from '@features/orders/services/api/order-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { OrderStatus, ORDER_STATUS_LABELS, getOrderStatusLabel } from '@features/orders/models/enums/order-status.enum';
+import {
+  OrderStatus,
+  ORDER_STATUS_LABELS,
+  getOrderStatusLabel,
+} from '@features/orders/models/enums/order-status.enum';
 import { OrderList } from '@features/orders/models/interfaces';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
@@ -94,12 +108,21 @@ export class OrderListPageComponent implements OnInit {
 
   readonly activeFilterCount = computed(() => (this.filterStatus() ? 1 : 0));
 
-  readonly showInitialLoading = computed(() => this.loading() && (this.orders()?.length ?? 0) === 0);
+  readonly showInitialLoading = computed(
+    () => this.loading() && (this.orders()?.length ?? 0) === 0,
+  );
   readonly isEmptyDatabase = computed(
-    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm(),
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
   );
   readonly hasFilteredResults = computed(
-    () => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()),
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
 
   ngOnInit(): void {
@@ -262,37 +285,71 @@ export class OrderListPageComponent implements OnInit {
     this.orderService.confirm(orderId).subscribe({
       next: () => {
         this.orderToAssign.set(null);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido confirmado y stock descontado', life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Pedido confirmado y stock descontado',
+          life: 3000,
+        });
         this.loadWithFilters();
       },
       error: () => {
         this.orderToAssign.set(null);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar el pedido', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al confirmar el pedido',
+          life: 5000,
+        });
       },
     });
   }
 
-  onAssignToInvoice(event: { orderId: string; paymentType: string; confirmationPassword?: string }): void {
+  onAssignToInvoice(event: {
+    orderId: string;
+    paymentType: string;
+    confirmationPassword?: string;
+  }): void {
     this.assignDialogVisible.set(false);
     const order = this.orderToAssign();
     if (!order) return;
     this.orderService.confirm(event.orderId).subscribe({
       next: () => {
-        this.orderService.convertToInvoice(event.orderId, { paymentType: event.paymentType, confirmationPassword: event.confirmationPassword }).subscribe({
-          next: () => {
-            this.orderToAssign.set(null);
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pedido convertido a factura exitosamente', life: 3000 });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.orderToAssign.set(null);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al convertir a factura', life: 5000 });
-          },
-        });
+        this.orderService
+          .convertToInvoice(event.orderId, {
+            paymentType: event.paymentType,
+            confirmationPassword: event.confirmationPassword,
+          })
+          .subscribe({
+            next: () => {
+              this.orderToAssign.set(null);
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Pedido convertido a factura exitosamente',
+                life: 3000,
+              });
+              this.loadWithFilters();
+            },
+            error: () => {
+              this.orderToAssign.set(null);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al convertir a factura',
+                life: 5000,
+              });
+            },
+          });
       },
       error: () => {
         this.orderToAssign.set(null);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al confirmar el pedido', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al confirmar el pedido',
+          life: 5000,
+        });
       },
     });
   }
@@ -300,7 +357,12 @@ export class OrderListPageComponent implements OnInit {
   onAssignFinished(): void {
     this.assignDialogVisible.set(false);
     this.orderToAssign.set(null);
-    this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacenes asignados correctamente', life: 3000 });
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: 'Almacenes asignados correctamente',
+      life: 3000,
+    });
     this.loadWithFilters();
   }
 

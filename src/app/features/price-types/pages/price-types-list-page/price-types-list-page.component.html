@@ -1,154 +1,217 @@
-  <div class="min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
-          <i class="pi pi-tag text-surface-0 dark:text-surface-900 text-3xl"></i>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Tipos de Precios</h1>
-        <p class="text-sm sm:text-base">Gestiona los tipos de precio</p>
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <div class="text-center mb-6">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg"
+      >
+        <i class="pi pi-tag text-surface-0 dark:text-surface-900 text-3xl"></i>
       </div>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2">Tipos de Precios</h1>
+      <p class="text-sm sm:text-base">Gestiona los tipos de precio</p>
+    </div>
 
-      @if (showInitialLoading()) {
-        <app-content-card>
-          <app-loading-spinner message="Cargando tipos de precio..." />
-        </app-content-card>
-      } @else if (isEmptyDatabase()) {
-        <app-content-card>
-          <app-empty-state
-            icon="pi-tag"
-            title="No hay tipos de precio registrados"
-            message="Crea el primer tipo de precio para comenzar."
-            buttonLabel="Nuevo Tipo de Precio"
-            (buttonClick)="onCreate()"
-          />
-        </app-content-card>
-      } @else {
-        <app-list-container>
-          <div class="px-4 sm:px-6 py-4">
-            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
-              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                  #searchInput
-                  pInputText
-                  type="text"
-                  [value]="searchTerm()"
-                  (input)="onSearch(searchInput.value)"
-                  placeholder="Buscar tipo de precio..."
-                  class="w-full"
-                />
-              </p-iconField>
-              <p-button
-                label="Nuevo Tipo de Precio"
-                icon="pi pi-plus"
-                (onClick)="onCreate()"
-                severity="contrast"
-                styleClass="font-medium w-full sm:w-auto"
+    @if (showInitialLoading()) {
+      <app-content-card>
+        <app-loading-spinner message="Cargando tipos de precio..." />
+      </app-content-card>
+    } @else if (isEmptyDatabase()) {
+      <app-content-card>
+        <app-empty-state
+          icon="pi-tag"
+          title="No hay tipos de precio registrados"
+          message="Crea el primer tipo de precio para comenzar."
+          buttonLabel="Nuevo Tipo de Precio"
+          (buttonClick)="onCreate()"
+        />
+      </app-content-card>
+    } @else {
+      <app-list-container>
+        <div class="px-4 sm:px-6 py-4">
+          <div
+            class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+          >
+            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
+              <p-inputIcon styleClass="pi pi-search" />
+              <input
+                #searchInput
+                pInputText
+                type="text"
+                [value]="searchTerm()"
+                (input)="onSearch(searchInput.value)"
+                placeholder="Buscar tipo de precio..."
+                class="w-full"
               />
-            </div>
+            </p-iconField>
+            <p-button
+              label="Nuevo Tipo de Precio"
+              icon="pi pi-plus"
+              (onClick)="onCreate()"
+              severity="contrast"
+              styleClass="font-medium w-full sm:w-auto"
+            />
           </div>
-        </app-list-container>
+        </div>
+      </app-list-container>
 
-        <app-list-container class="mt-4 hidden md:block">
-          <div class="relative">
-            @if (isLoading()) {
-              <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl">
-                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
-              </div>
-            }
-            @if (hasFilteredResults()) {
-              <app-empty-state
-                icon="pi-search"
-                title="No se encontraron resultados"
-                message="No hay tipos de precio que coincidan con tu búsqueda."
-                buttonLabel="Nuevo Tipo de Precio"
-                (buttonClick)="onCreate()"
-              />
-            } @else {
-              <div class="overflow-x-auto rounded-t-2xl">
-                <p-table [value]="filteredPriceTypes()" styleClass="p-datatable-striped" [customSort]="true" (sortFunction)="onSort($event)">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th pSortableColumn="name" class="w-auto">
-                        <div class="font-semibold">Nombre <p-sortIcon field="name" /></div>
-                      </th>
-                      <th class="w-24">
-                        <div class="font-semibold">Estado</div>
-                      </th>
-                      <th class="w-36">
-                        <div class="font-semibold text-center">Acciones</div>
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-priceType>
-                    <tr class="transition-colors duration-150">
-                      <td>
-                        <div class="font-medium">{{ priceType.name }}</div>
-                      </td>
-                      <td>
-                        <app-status-badge [active]="priceType.active" activeLabel="Activo" inactiveLabel="Inactivo" />
-                      </td>
-                      <td>
-                        <div class="flex gap-1 justify-center">
-                          <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(priceType)" pTooltip="Ver" />
-                          <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(priceType)" pTooltip="Editar" />
-                          @if (priceType.deletable) {
-                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" pTooltip="Eliminar" />
-                          }
-                        </div>
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            }
-          </div>
-        </app-list-container>
-
-        
-        <div class="md:hidden mt-6 relative">
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
           @if (isLoading()) {
-            <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]">
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
               <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
             </div>
           }
           @if (hasFilteredResults()) {
-            <app-content-card>
-              <app-empty-state
-                icon="pi-search"
-                title="No se encontraron resultados"
-                message="No hay tipos de precio que coincidan con tu búsqueda."
-                buttonLabel="Nuevo Tipo de Precio"
-                (buttonClick)="onCreate()"
-              />
-            </app-content-card>
+            <app-empty-state
+              icon="pi-search"
+              title="No se encontraron resultados"
+              message="No hay tipos de precio que coincidan con tu búsqueda."
+              buttonLabel="Nuevo Tipo de Precio"
+              (buttonClick)="onCreate()"
+            />
           } @else {
-            <div class="flex flex-col gap-4">
-              @for (priceType of filteredPriceTypes(); track priceType.id) {
-                <div class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 shadow-md border border-surface-200 dark:border-surface-700">
-                  <div class="flex justify-between items-start mb-3">
-                    <div class="flex-1">
-                      <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-2">
-                        {{ priceType.name }}
-                      </h3>
-                      <div class="flex gap-2">
-                        <app-status-badge [active]="priceType.active" activeLabel="Activo" inactiveLabel="Inactivo" />
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="filteredPriceTypes()"
+                styleClass="p-datatable-striped"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="name" class="w-auto">
+                      <div class="font-semibold">Nombre <p-sortIcon field="name" /></div>
+                    </th>
+                    <th class="w-24">
+                      <div class="font-semibold">Estado</div>
+                    </th>
+                    <th class="w-36">
+                      <div class="font-semibold text-center">Acciones</div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-priceType>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <div class="font-medium">{{ priceType.name }}</div>
+                    </td>
+                    <td>
+                      <app-status-badge
+                        [active]="priceType.active"
+                        activeLabel="Activo"
+                        inactiveLabel="Inactivo"
+                      />
+                    </td>
+                    <td>
+                      <div class="flex gap-1 justify-center">
+                        <p-button
+                          icon="pi pi-eye"
+                          [text]="true"
+                          [rounded]="true"
+                          severity="secondary"
+                          (onClick)="onView(priceType)"
+                          pTooltip="Ver"
+                        />
+                        <p-button
+                          icon="pi pi-pencil"
+                          [text]="true"
+                          [rounded]="true"
+                          severity="info"
+                          (onClick)="onEdit(priceType)"
+                          pTooltip="Editar"
+                        />
+                        @if (priceType.deletable) {
+                          <p-button
+                            icon="pi pi-trash"
+                            [text]="true"
+                            [rounded]="true"
+                            severity="danger"
+                            (onClick)="onDelete(priceType)"
+                            pTooltip="Eliminar"
+                          />
+                        }
                       </div>
-                    </div>
-                  </div>
-                  <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
-                    <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(priceType)" />
-                    <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(priceType)" />
-                    @if (priceType.deletable) {
-                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(priceType)" />
-                    }
-                  </div>
-                </div>
-              }
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
             </div>
           }
         </div>
-      }
-    </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (isLoading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-content-card>
+            <app-empty-state
+              icon="pi-search"
+              title="No se encontraron resultados"
+              message="No hay tipos de precio que coincidan con tu búsqueda."
+              buttonLabel="Nuevo Tipo de Precio"
+              (buttonClick)="onCreate()"
+            />
+          </app-content-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (priceType of filteredPriceTypes(); track priceType.id) {
+              <div
+                class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 shadow-md border border-surface-200 dark:border-surface-700"
+              >
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-2">
+                      {{ priceType.name }}
+                    </h3>
+                    <div class="flex gap-2">
+                      <app-status-badge
+                        [active]="priceType.active"
+                        activeLabel="Activo"
+                        inactiveLabel="Inactivo"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <p-button
+                    icon="pi pi-eye"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="secondary"
+                    (onClick)="onView(priceType)"
+                  />
+                  <p-button
+                    icon="pi pi-pencil"
+                    [text]="true"
+                    [rounded]="true"
+                    severity="info"
+                    (onClick)="onEdit(priceType)"
+                  />
+                  @if (priceType.deletable) {
+                    <p-button
+                      icon="pi pi-trash"
+                      [text]="true"
+                      [rounded]="true"
+                      severity="danger"
+                      (onClick)="onDelete(priceType)"
+                    />
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
   </div>
-  <p-confirmDialog styleClass="max-w-md" />
+</div>
+<p-confirmDialog styleClass="max-w-md" />

@@ -6,7 +6,12 @@ import {
   CancelPurchaseRequest,
 } from '@features/purchases/services/api/purchase-api.service';
 import { PurchaseMapper } from '@features/purchases/services/mappers/purchase.mapper';
-import { PurchaseList, PurchaseDetails, PurchaseCreate, PurchaseEdit } from '@features/purchases/models/interfaces';
+import {
+  PurchaseList,
+  PurchaseDetails,
+  PurchaseCreate,
+  PurchaseEdit,
+} from '@features/purchases/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseApplicationService {

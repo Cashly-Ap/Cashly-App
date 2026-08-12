@@ -39,7 +39,9 @@ describe('CatalogPdfApiService', () => {
     it('should GET with search filter', () => {
       service.downloadPdf({ search: 'motor' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('search')).toBe('motor');
       req.flush(mockBlob);
     });
@@ -47,7 +49,9 @@ describe('CatalogPdfApiService', () => {
     it('should GET with categoryId filter', () => {
       service.downloadPdf({ categoryId: 'cat-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('categoryId')).toBe('cat-001');
       req.flush(mockBlob);
     });
@@ -55,7 +59,9 @@ describe('CatalogPdfApiService', () => {
     it('should GET with warehouseId filter', () => {
       service.downloadPdf({ warehouseId: 'wh-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('warehouseId')).toBe('wh-001');
       req.flush(mockBlob);
     });
@@ -63,20 +69,26 @@ describe('CatalogPdfApiService', () => {
     it('should GET with withStock flag', () => {
       service.downloadPdf({ withStock: true }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('withStock')).toBe('true');
       req.flush(mockBlob);
     });
 
     it('should GET with all filters combined', () => {
-      service.downloadPdf({
-        search: 'generator',
-        categoryId: 'cat-002',
-        warehouseId: 'wh-002',
-        withStock: false,
-      }).subscribe();
+      service
+        .downloadPdf({
+          search: 'generator',
+          categoryId: 'cat-002',
+          warehouseId: 'wh-002',
+          withStock: false,
+        })
+        .subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('search')).toBe('generator');
       expect(req.request.params.get('categoryId')).toBe('cat-002');
       expect(req.request.params.get('warehouseId')).toBe('wh-002');

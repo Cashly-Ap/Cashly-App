@@ -12,9 +12,7 @@ describe('InvoiceUpdate interface', () => {
           productId: 'p1',
           quantity: 10,
           unitPrice: 150,
-          warehouseAllocations: [
-            { warehouseId: 'wh-001', allocated: 10 },
-          ],
+          warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 10 }],
         },
       ],
     };

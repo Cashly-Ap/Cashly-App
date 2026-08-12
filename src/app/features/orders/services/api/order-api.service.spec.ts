@@ -206,7 +206,12 @@ describe('OrderApiService', () => {
         customerId: 'c1',
         notes: 'Test',
         lines: [
-          { productId: 'p1', quantity: 5, unitPrice: 100, warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 5 }] },
+          {
+            productId: 'p1',
+            quantity: 5,
+            unitPrice: 100,
+            warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 5 }],
+          },
         ],
       };
 

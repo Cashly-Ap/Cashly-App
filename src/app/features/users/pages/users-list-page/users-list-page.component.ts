@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -90,8 +97,19 @@ export class UsersListPageComponent implements OnInit {
   ];
 
   showInitialLoading = computed(() => this.loading() && (this.users()?.length ?? 0) === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
+  );
 
   ngOnInit(): void {
     this.loadWithFilters();

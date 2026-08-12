@@ -6,7 +6,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { AssignWarehousesDialogComponent } from './assign-warehouses-dialog.component';
 
 @Component({
-  template: `<app-assign-warehouses-dialog [visible]="visible" [quoteId]="quoteId" (convertToOrder)="onConvertToOrder($event)" (convertToInvoice)="onConvertToInvoice($event)" (finished)="onFinished()" (cancelled)="onCancelled()"></app-assign-warehouses-dialog>`,
+  template: `<app-assign-warehouses-dialog
+    [visible]="visible"
+    [quoteId]="quoteId"
+    (convertToOrder)="onConvertToOrder($event)"
+    (convertToInvoice)="onConvertToInvoice($event)"
+    (finished)="onFinished()"
+    (cancelled)="onCancelled()"
+  ></app-assign-warehouses-dialog>`,
   imports: [AssignWarehousesDialogComponent],
 })
 class HostComponent {
@@ -45,9 +52,7 @@ describe('AssignWarehousesDialogComponent', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -126,9 +131,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -239,7 +242,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     dialog.onAssignedChange(line);
     dialog.onConfirm();
 
-    const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
+    const assignReq = httpMock.expectOne(
+      (r) => r.url.includes('/allocations') && r.method === 'PUT',
+    );
     assignReq.flush(mockQuote);
 
     expect(hostComponent.onFinished).toHaveBeenCalled();
@@ -257,7 +262,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     dialog.onAssignedChange(line);
     dialog.onConfirm();
 
-    const assignReq = httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT');
+    const assignReq = httpMock.expectOne(
+      (r) => r.url.includes('/allocations') && r.method === 'PUT',
+    );
     assignReq.flush(mockQuote);
 
     expect(hostComponent.onConvertToOrder).toHaveBeenCalledWith('q-001');

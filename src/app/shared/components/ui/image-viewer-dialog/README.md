@@ -42,11 +42,7 @@ import { ImageViewerDialogComponent } from '@shared/components/ui';
   standalone: true,
   imports: [ImageViewerDialogComponent],
   template: `
-    <p-button
-      label="Ver Justificante"
-      icon="pi pi-image"
-      (onClick)="showImage()"
-    />
+    <p-button label="Ver Justificante" icon="pi pi-image" (onClick)="showImage()" />
 
     <app-image-viewer-dialog
       [visible]="imageVisible()"
@@ -76,27 +72,27 @@ export class PaymentDetailsComponent {
 
 ### Propiedades (Inputs)
 
-| Propiedad | Tipo | Requerido | Default | Descripción |
-|-----------|------|-----------|---------|-------------|
-| `visible` | `boolean` | ✅ Sí | - | Controla la visibilidad del modal |
-| `imageUrl` | `string \| null` | ✅ Sí | - | URL de la imagen a mostrar |
-| `title` | `string` | ❌ No | `'Visualizar Imagen'` | Título del modal |
-| `downloadable` | `boolean` | ❌ No | `true` | Habilita el botón de descarga |
-| `downloadFilename` | `string \| undefined` | ❌ No | `undefined` | Nombre personalizado para la descarga |
+| Propiedad          | Tipo                  | Requerido | Default               | Descripción                           |
+| ------------------ | --------------------- | --------- | --------------------- | ------------------------------------- |
+| `visible`          | `boolean`             | ✅ Sí     | -                     | Controla la visibilidad del modal     |
+| `imageUrl`         | `string \| null`      | ✅ Sí     | -                     | URL de la imagen a mostrar            |
+| `title`            | `string`              | ❌ No     | `'Visualizar Imagen'` | Título del modal                      |
+| `downloadable`     | `boolean`             | ❌ No     | `true`                | Habilita el botón de descarga         |
+| `downloadFilename` | `string \| undefined` | ❌ No     | `undefined`           | Nombre personalizado para la descarga |
 
 ### Eventos (Outputs)
 
-| Evento | Tipo | Descripción |
-|--------|------|-------------|
+| Evento          | Tipo      | Descripción                        |
+| --------------- | --------- | ---------------------------------- |
 | `visibleChange` | `boolean` | Se emite cuando el modal se cierra |
 
 ### Métodos Públicos
 
-| Método | Descripción |
-|--------|-------------|
-| `zoomIn()` | Aumenta el zoom en 25% (máx 300%) |
-| `zoomOut()` | Disminuye el zoom en 25% (mín 50%) |
-| `resetZoom()` | Restablece el zoom a 100% |
+| Método         | Descripción                                 |
+| -------------- | ------------------------------------------- |
+| `zoomIn()`     | Aumenta el zoom en 25% (máx 300%)           |
+| `zoomOut()`    | Disminuye el zoom en 25% (mín 50%)          |
+| `resetZoom()`  | Restablece el zoom a 100%                   |
 | `onDownload()` | Descarga la imagen con nombre personalizado |
 
 ## 🎯 Casos de Uso
@@ -255,11 +251,11 @@ export class PaymentFormComponent {
 
 ## 🔍 Controles de Zoom
 
-| Botón | Icono | Acción | Límite |
-|-------|-------|--------|--------|
-| Alejar | `pi-search-minus` | Reduce zoom 25% | Mínimo 50% |
-| Acercar | `pi-search-plus` | Aumenta zoom 25% | Máximo 300% |
-| Restablecer | `pi-replay` | Vuelve a 100% | - |
+| Botón       | Icono             | Acción           | Límite      |
+| ----------- | ----------------- | ---------------- | ----------- |
+| Alejar      | `pi-search-minus` | Reduce zoom 25%  | Mínimo 50%  |
+| Acercar     | `pi-search-plus`  | Aumenta zoom 25% | Máximo 300% |
+| Restablecer | `pi-replay`       | Vuelve a 100%    | -           |
 
 **Nota**: Los botones se deshabilitan automáticamente al alcanzar los límites.
 

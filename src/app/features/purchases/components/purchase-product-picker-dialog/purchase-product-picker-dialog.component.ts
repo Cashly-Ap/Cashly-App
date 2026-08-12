@@ -47,7 +47,18 @@ interface ProductSelection {
   selector: 'app-purchase-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule, WarehouseStockPopoverComponent],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    InputNumberModule,
+    TooltipModule,
+    PopoverModule,
+    DecimalPipe,
+    SelectModule,
+    WarehouseStockPopoverComponent,
+  ],
   templateUrl: './purchase-product-picker-dialog.component.html',
 })
 export class PurchaseProductPickerDialogComponent {
@@ -182,7 +193,9 @@ export class PurchaseProductPickerDialogComponent {
       return;
     }
     const existing = this.selections().get(product.id);
-    const existingMap = new Map((existing?.allocations ?? []).map((a) => [a.warehouseId, a.allocated]));
+    const existingMap = new Map(
+      (existing?.allocations ?? []).map((a) => [a.warehouseId, a.allocated]),
+    );
     this.popoverProductId.set(product.id);
     this.popoverAllocations.set(this.buildAllocations(product.stockItems ?? [], existingMap));
     this.stockPopover.show(event);
@@ -194,14 +207,19 @@ export class PurchaseProductPickerDialogComponent {
   }
 
   updateAllocation(index: number, value: number): void {
-    const updated = this.popoverAllocations().map((a, i) => (i === index ? { ...a, allocated: value } : a));
+    const updated = this.popoverAllocations().map((a, i) =>
+      i === index ? { ...a, allocated: value } : a,
+    );
     this.popoverAllocations.set(updated);
   }
 
   saveAllocation(): void {
     const productId = this.popoverProductId();
     if (!productId) return;
-    const allocations = this.popoverAllocations().map((a) => ({ ...a, allocated: a.allocated ?? 0 }));
+    const allocations = this.popoverAllocations().map((a) => ({
+      ...a,
+      allocated: a.allocated ?? 0,
+    }));
     const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
     const map = new Map(this.selections());
     const existing = map.get(productId);
@@ -283,7 +301,10 @@ export class PurchaseProductPickerDialogComponent {
     this.resetSelectionState();
   }
 
-  private buildAllocations(stockItems: PurchaseProduct['stockItems'], existingMap: Map<string, number>): WarehouseStockEntry[] {
+  private buildAllocations(
+    stockItems: PurchaseProduct['stockItems'],
+    existingMap: Map<string, number>,
+  ): WarehouseStockEntry[] {
     if (!stockItems) return [];
     return stockItems.map((s) => ({
       warehouseId: s.warehouseId,
@@ -299,21 +320,23 @@ export class PurchaseProductPickerDialogComponent {
   private load(page: number): void {
     this.loading.set(true);
     this.popoverProductId.set(null);
-    this.purchaseApi.getProductsForPurchase({
-      search: this.search() || undefined,
-      categoryId: this.filterCategoryId() ?? undefined,
-      page,
-      size: PAGE_SIZE,
-    }).subscribe({
-      next: (response) => {
-        this.products.set(response.content);
-        this.totalElements.set(response.totalElements);
-        this.totalPages.set(response.totalPages);
-        this.currentPage.set(response.number);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.purchaseApi
+      .getProductsForPurchase({
+        search: this.search() || undefined,
+        categoryId: this.filterCategoryId() ?? undefined,
+        page,
+        size: PAGE_SIZE,
+      })
+      .subscribe({
+        next: (response) => {
+          this.products.set(response.content);
+          this.totalElements.set(response.totalElements);
+          this.totalPages.set(response.totalPages);
+          this.currentPage.set(response.number);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   private loadCategories(): void {

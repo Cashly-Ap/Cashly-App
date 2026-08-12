@@ -40,10 +40,23 @@ describe('OrderDetailPageComponent', () => {
         unitPrice: 100,
         subtotal: 500,
         warehouseAllocations: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],

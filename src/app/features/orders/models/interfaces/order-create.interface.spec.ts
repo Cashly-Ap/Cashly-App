@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderCreate, OrderItemCreate, WarehouseAllocationCreate } from './order-create.interface';
+import type {
+  OrderCreate,
+  OrderItemCreate,
+  WarehouseAllocationCreate,
+} from './order-create.interface';
 
 describe('WarehouseAllocationCreate interface', () => {
   it('should have all required properties', () => {

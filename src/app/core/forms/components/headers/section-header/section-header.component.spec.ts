@@ -4,17 +4,14 @@ import { SectionHeaderComponent } from './section-header.component';
 import { Component } from '@angular/core';
 
 @Component({
-  template: `
-    <app-section-header [title]="'Test Header'"> </app-section-header>
-  `,
+  template: ` <app-section-header [title]="'Test Header'"> </app-section-header> `,
   imports: [SectionHeaderComponent],
 })
 class TestHostComponent {}
 
 @Component({
   template: `
-    <app-section-header [title]="'Header with Icon'" [icon]="'pi-user'">
-    </app-section-header>
+    <app-section-header [title]="'Header with Icon'" [icon]="'pi-user'"> </app-section-header>
   `,
   imports: [SectionHeaderComponent],
 })

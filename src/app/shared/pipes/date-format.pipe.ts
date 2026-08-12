@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from "@angular/core";
-import { DateUtils } from "@shared/utils/date.utils";
+import { Pipe, PipeTransform } from '@angular/core';
+import { DateUtils } from '@shared/utils/date.utils';
 
 @Pipe({
-  name: "appDateFormat",
+  name: 'appDateFormat',
   standalone: true,
 })
 export class DateFormatPipe implements PipeTransform {

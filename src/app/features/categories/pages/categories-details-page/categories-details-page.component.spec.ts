@@ -41,7 +41,9 @@ describe('CategoriesDetailsPageComponent', () => {
 
   function configureTestBed(id: string | null = 'cat-001', loadByIdValue: any = of(mockCategory)) {
     mockService = {
-      loadAll: vi.fn().mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, size: 10, number: 0 })),
+      loadAll: vi
+        .fn()
+        .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, size: 10, number: 0 })),
       loadById: vi.fn().mockReturnValue(loadByIdValue),
       create: vi.fn().mockReturnValue(of(mockCategory)),
       update: vi.fn().mockReturnValue(of(mockCategory)),
@@ -112,7 +114,10 @@ describe('CategoriesDetailsPageComponent', () => {
 
   it('should show error message and navigate on load failure', () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('cat-999', throwError(() => new Error('Not found')));
+    configureTestBed(
+      'cat-999',
+      throwError(() => new Error('Not found')),
+    );
     createComponent();
 
     const addSpy = vi.spyOn(messageService, 'add');

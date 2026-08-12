@@ -89,6 +89,7 @@ src/app/features/notifications/
 **Purpose**: Displays all notifications for the authenticated user with filtering options.
 
 **Features**:
+
 - PrimeNG DataTable with notifications
 - Filter by read/unread status
 - Filter by notification type
@@ -109,6 +110,7 @@ src/app/features/notifications/
 **Purpose**: Shows unread count badge and opens notification panel.
 
 **Features**:
+
 - Bell icon with unread count badge
 - Click to open notifications panel
 - Polls for unread count periodically
@@ -119,6 +121,7 @@ src/app/features/notifications/
 **Purpose**: Overlay panel showing recent notifications.
 
 **Features**:
+
 - Shows last 10 notifications
 - Quick actions (mark as read, delete)
 - "View all" link to full page
@@ -130,6 +133,7 @@ src/app/features/notifications/
 **Purpose**: Individual notification display.
 
 **Features**:
+
 - Icon based on notification type
 - Title and message display
 - Time ago format (e.g., "2 hours ago")
@@ -150,14 +154,14 @@ src/app/features/notifications/
 
 ```typescript
 export interface NotificationList {
-  id: string;                        // UUID identifier
-  type: NotificationType;            // Notification type
-  title: string;                     // Short title
-  message: string;                   // Notification message
-  referenceId: string | null;        // Related entity UUID
+  id: string; // UUID identifier
+  type: NotificationType; // Notification type
+  title: string; // Short title
+  message: string; // Notification message
+  referenceId: string | null; // Related entity UUID
   referenceType: ReferenceType | null; // Related entity type
-  read: boolean;                     // Read status
-  createdAt: string;                 // ISO timestamp
+  read: boolean; // Read status
+  createdAt: string; // ISO timestamp
 }
 ```
 
@@ -173,15 +177,15 @@ export interface NotificationList {
 
 ```typescript
 export interface NotificationDetail {
-  id: string;                        // UUID identifier
-  type: NotificationType;            // Notification type
-  title: string;                     // Short title
-  message: string;                   // Notification message
-  referenceId: string | null;        // Related entity UUID
+  id: string; // UUID identifier
+  type: NotificationType; // Notification type
+  title: string; // Short title
+  message: string; // Notification message
+  referenceId: string | null; // Related entity UUID
   referenceType: ReferenceType | null; // Related entity type
-  read: boolean;                     // Read status
-  readAt: string | null;             // ISO timestamp when read
-  createdAt: string;                 // ISO timestamp
+  read: boolean; // Read status
+  readAt: string | null; // ISO timestamp when read
+  createdAt: string; // ISO timestamp
 }
 ```
 
@@ -197,7 +201,7 @@ export interface NotificationDetail {
 
 ```typescript
 export interface UnreadCount {
-  unreadCount: number;  // Count of unread notifications
+  unreadCount: number; // Count of unread notifications
 }
 ```
 
@@ -213,8 +217,8 @@ export interface UnreadCount {
 
 ```typescript
 export interface MarkAllAsReadResult {
-  markedAsRead: number;   // Count of notifications marked
-  timestamp: string;      // ISO timestamp of operation
+  markedAsRead: number; // Count of notifications marked
+  timestamp: string; // ISO timestamp of operation
 }
 ```
 
@@ -226,13 +230,13 @@ export interface MarkAllAsReadResult {
 
 ```typescript
 export enum NotificationType {
-  ORDER_CREATED = 'ORDER_CREATED',                       // MERCHANT created a new order
-  INVOICE_CREATED = 'INVOICE_CREATED',                   // Order converted to invoice
+  ORDER_CREATED = 'ORDER_CREATED', // MERCHANT created a new order
+  INVOICE_CREATED = 'INVOICE_CREATED', // Order converted to invoice
   INVOICE_READY_FOR_DELIVERY = 'INVOICE_READY_FOR_DELIVERY', // Invoice ready for dispatcher
-  INVOICE_DELIVERED = 'INVOICE_DELIVERED',               // Invoice delivered to customer
+  INVOICE_DELIVERED = 'INVOICE_DELIVERED', // Invoice delivered to customer
   PAYMENT_PENDING_APPROVAL = 'PAYMENT_PENDING_APPROVAL', // MERCHANT payment needs validation
-  INVOICE_OVERDUE = 'INVOICE_OVERDUE',                   // Invoice past due date
-  CREDIT_LIMIT_EXCEEDED = 'CREDIT_LIMIT_EXCEEDED',       // Customer over credit limit
+  INVOICE_OVERDUE = 'INVOICE_OVERDUE', // Invoice past due date
+  CREDIT_LIMIT_EXCEEDED = 'CREDIT_LIMIT_EXCEEDED', // Customer over credit limit
 }
 
 export interface NotificationTypeOption {
@@ -243,20 +247,65 @@ export interface NotificationTypeOption {
 }
 
 export const NOTIFICATION_TYPES: readonly NotificationTypeOption[] = [
-  { label: 'Nuevo Pedido', value: NotificationType.ORDER_CREATED, icon: 'pi pi-shopping-cart', severity: 'info' },
-  { label: 'Factura Creada', value: NotificationType.INVOICE_CREATED, icon: 'pi pi-file', severity: 'info' },
-  { label: 'Lista para Entrega', value: NotificationType.INVOICE_READY_FOR_DELIVERY, icon: 'pi pi-truck', severity: 'info' },
-  { label: 'Factura Entregada', value: NotificationType.INVOICE_DELIVERED, icon: 'pi pi-check-circle', severity: 'success' },
-  { label: 'Pago Pendiente', value: NotificationType.PAYMENT_PENDING_APPROVAL, icon: 'pi pi-clock', severity: 'warn' },
-  { label: 'Factura Vencida', value: NotificationType.INVOICE_OVERDUE, icon: 'pi pi-exclamation-triangle', severity: 'danger' },
-  { label: 'Limite de Credito', value: NotificationType.CREDIT_LIMIT_EXCEEDED, icon: 'pi pi-ban', severity: 'danger' },
+  {
+    label: 'Nuevo Pedido',
+    value: NotificationType.ORDER_CREATED,
+    icon: 'pi pi-shopping-cart',
+    severity: 'info',
+  },
+  {
+    label: 'Factura Creada',
+    value: NotificationType.INVOICE_CREATED,
+    icon: 'pi pi-file',
+    severity: 'info',
+  },
+  {
+    label: 'Lista para Entrega',
+    value: NotificationType.INVOICE_READY_FOR_DELIVERY,
+    icon: 'pi pi-truck',
+    severity: 'info',
+  },
+  {
+    label: 'Factura Entregada',
+    value: NotificationType.INVOICE_DELIVERED,
+    icon: 'pi pi-check-circle',
+    severity: 'success',
+  },
+  {
+    label: 'Pago Pendiente',
+    value: NotificationType.PAYMENT_PENDING_APPROVAL,
+    icon: 'pi pi-clock',
+    severity: 'warn',
+  },
+  {
+    label: 'Factura Vencida',
+    value: NotificationType.INVOICE_OVERDUE,
+    icon: 'pi pi-exclamation-triangle',
+    severity: 'danger',
+  },
+  {
+    label: 'Limite de Credito',
+    value: NotificationType.CREDIT_LIMIT_EXCEEDED,
+    icon: 'pi pi-ban',
+    severity: 'danger',
+  },
 ] as const;
 
-export const NOTIFICATION_TYPE_CONFIG: Record<NotificationType, NotificationTypeOption> = 
-  NOTIFICATION_TYPES.reduce((acc, type) => ({ ...acc, [type.value]: type }), {} as Record<NotificationType, NotificationTypeOption>);
+export const NOTIFICATION_TYPE_CONFIG: Record<NotificationType, NotificationTypeOption> =
+  NOTIFICATION_TYPES.reduce(
+    (acc, type) => ({ ...acc, [type.value]: type }),
+    {} as Record<NotificationType, NotificationTypeOption>,
+  );
 
 export function getNotificationTypeConfig(type: NotificationType): NotificationTypeOption {
-  return NOTIFICATION_TYPE_CONFIG[type] || { label: type, value: type, icon: 'pi pi-bell', severity: 'info' };
+  return (
+    NOTIFICATION_TYPE_CONFIG[type] || {
+      label: type,
+      value: type,
+      icon: 'pi pi-bell',
+      severity: 'info',
+    }
+  );
 }
 ```
 
@@ -295,14 +344,14 @@ All endpoints use: `/api/notifications`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/notifications | - | `Page<NotificationList>` | Notifications list |
-| GET | /api/notifications/unread-count | - | `UnreadCount` | Badge count |
-| GET | /api/notifications/:id | - | `NotificationDetail` | Detail view |
-| PUT | /api/notifications/:id/read | - | `NotificationDetail` | Mark as read |
-| PUT | /api/notifications/read-all | - | `MarkAllAsReadResult` | Mark all read |
-| DELETE | /api/notifications/:id | - | void (204) | Delete notification |
+| HTTP Method | Endpoint                        | Request Interface | Response Interface       | Frontend Usage      |
+| ----------- | ------------------------------- | ----------------- | ------------------------ | ------------------- |
+| GET         | /api/notifications              | -                 | `Page<NotificationList>` | Notifications list  |
+| GET         | /api/notifications/unread-count | -                 | `UnreadCount`            | Badge count         |
+| GET         | /api/notifications/:id          | -                 | `NotificationDetail`     | Detail view         |
+| PUT         | /api/notifications/:id/read     | -                 | `NotificationDetail`     | Mark as read        |
+| PUT         | /api/notifications/read-all     | -                 | `MarkAllAsReadResult`    | Mark all read       |
+| DELETE      | /api/notifications/:id          | -                 | void (204)               | Delete notification |
 
 ---
 
@@ -313,6 +362,7 @@ All endpoints use: `/api/notifications`
 **Roles**: All authenticated users
 
 **Query Parameters**:
+
 - `read` (boolean): Filter by read status (null = all)
 - `type` (string): Filter by notification type
 - `page` (number): Page number (default: 0)
@@ -322,6 +372,7 @@ All endpoints use: `/api/notifications`
 **Frontend Interface**: `Page<NotificationList>`
 
 **Example Response**:
+
 ```json
 {
   "content": [
@@ -364,6 +415,7 @@ All endpoints use: `/api/notifications`
 **Frontend Interface**: `UnreadCount`
 
 **Example Response**:
+
 ```json
 {
   "unreadCount": 5
@@ -381,6 +433,7 @@ All endpoints use: `/api/notifications`
 **Frontend Interface**: `NotificationDetail`
 
 **Example Response**:
+
 ```json
 {
   "id": "notification-001-uuid",
@@ -396,6 +449,7 @@ All endpoints use: `/api/notifications`
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: Accessing another user's notification
 - `404 Not Found`: Notification not found
@@ -411,6 +465,7 @@ All endpoints use: `/api/notifications`
 **Frontend Interface**: `NotificationDetail`
 
 **Example Response**:
+
 ```json
 {
   "id": "notification-001-uuid",
@@ -436,6 +491,7 @@ All endpoints use: `/api/notifications`
 **Frontend Interface**: `MarkAllAsReadResult`
 
 **Example Response**:
+
 ```json
 {
   "markedAsRead": 5,
@@ -454,6 +510,7 @@ All endpoints use: `/api/notifications`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: Accessing another user's notification
 - `404 Not Found`: Notification not found
@@ -464,27 +521,27 @@ All endpoints use: `/api/notifications`
 
 ### Notification Routing by Role
 
-| Notification Type | Trigger | Recipients |
-|-------------------|---------|------------|
-| `ORDER_CREATED` | MERCHANT creates an order | ADMIN, USER |
-| `INVOICE_CREATED` | Order converted to invoice | ADMIN, USER |
-| `INVOICE_READY_FOR_DELIVERY` | Invoice created (PENDING status) | DISPATCHER |
-| `INVOICE_DELIVERED` | Dispatcher marks delivered | ADMIN, USER |
-| `PAYMENT_PENDING_APPROVAL` | MERCHANT registers payment | ADMIN, USER |
-| `INVOICE_OVERDUE` | Scheduled job (daily) | ADMIN, USER |
-| `CREDIT_LIMIT_EXCEEDED` | During order/invoice creation | ADMIN, USER |
+| Notification Type            | Trigger                          | Recipients  |
+| ---------------------------- | -------------------------------- | ----------- |
+| `ORDER_CREATED`              | MERCHANT creates an order        | ADMIN, USER |
+| `INVOICE_CREATED`            | Order converted to invoice       | ADMIN, USER |
+| `INVOICE_READY_FOR_DELIVERY` | Invoice created (PENDING status) | DISPATCHER  |
+| `INVOICE_DELIVERED`          | Dispatcher marks delivered       | ADMIN, USER |
+| `PAYMENT_PENDING_APPROVAL`   | MERCHANT registers payment       | ADMIN, USER |
+| `INVOICE_OVERDUE`            | Scheduled job (daily)            | ADMIN, USER |
+| `CREDIT_LIMIT_EXCEEDED`      | During order/invoice creation    | ADMIN, USER |
 
 ### Message Templates (Spanish)
 
-| Type | Title | Message Template |
-|------|-------|------------------|
-| `ORDER_CREATED` | Nuevo Pedido | `{merchantName} (MERCHANT) ha creado el pedido {orderNumber} para {customerName}` |
-| `INVOICE_CREATED` | Factura Creada | `Se ha creado la factura {invoiceNumber} para {customerName} (Total: ${subtotal})` |
-| `INVOICE_READY_FOR_DELIVERY` | Factura Lista para Entrega | `Factura {invoiceNumber} lista para entregar a {customerName} - {customerAddress}` |
-| `INVOICE_DELIVERED` | Factura Entregada | `La factura {invoiceNumber} ha sido entregada a {customerName} por {dispatcherName}` |
-| `PAYMENT_PENDING_APPROVAL` | Pago Pendiente de Validacion | `{merchantName} (MERCHANT) registro un pago de ${amount} para factura {invoiceNumber} ({paymentMethod})` |
-| `INVOICE_OVERDUE` | Factura Vencida | `La factura {invoiceNumber} de {customerName} esta vencida hace {daysOverdue} dias (Saldo: ${balance})` |
-| `CREDIT_LIMIT_EXCEEDED` | Limite de Credito Excedido | `Cliente {customerName} excede su limite de credito (${excessAmount}). Deuda actual: ${currentDebt}, Limite: ${creditLimit}` |
+| Type                         | Title                        | Message Template                                                                                                             |
+| ---------------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `ORDER_CREATED`              | Nuevo Pedido                 | `{merchantName} (MERCHANT) ha creado el pedido {orderNumber} para {customerName}`                                            |
+| `INVOICE_CREATED`            | Factura Creada               | `Se ha creado la factura {invoiceNumber} para {customerName} (Total: ${subtotal})`                                           |
+| `INVOICE_READY_FOR_DELIVERY` | Factura Lista para Entrega   | `Factura {invoiceNumber} lista para entregar a {customerName} - {customerAddress}`                                           |
+| `INVOICE_DELIVERED`          | Factura Entregada            | `La factura {invoiceNumber} ha sido entregada a {customerName} por {dispatcherName}`                                         |
+| `PAYMENT_PENDING_APPROVAL`   | Pago Pendiente de Validacion | `{merchantName} (MERCHANT) registro un pago de ${amount} para factura {invoiceNumber} ({paymentMethod})`                     |
+| `INVOICE_OVERDUE`            | Factura Vencida              | `La factura {invoiceNumber} de {customerName} esta vencida hace {daysOverdue} dias (Saldo: ${balance})`                      |
+| `CREDIT_LIMIT_EXCEEDED`      | Limite de Credito Excedido   | `Cliente {customerName} excede su limite de credito (${excessAmount}). Deuda actual: ${currentDebt}, Limite: ${creditLimit}` |
 
 ---
 
@@ -583,15 +640,15 @@ export class NotificationsApplicationService implements OnDestroy {
   loadNotifications(params: SearchParams): Observable<Page<NotificationList>> {
     this.loading.set(true);
     return this.api.getNotifications(params).pipe(
-      tap(page => this.notifications.set(page.content)),
-      finalize(() => this.loading.set(false))
+      tap((page) => this.notifications.set(page.content)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadUnreadCount(): Observable<UnreadCount> {
-    return this.api.getUnreadCount().pipe(
-      tap(result => this.unreadCount.set(result.unreadCount))
-    );
+    return this.api
+      .getUnreadCount()
+      .pipe(tap((result) => this.unreadCount.set(result.unreadCount)));
   }
 
   markAsRead(id: string): Observable<NotificationDetail> {
@@ -599,31 +656,29 @@ export class NotificationsApplicationService implements OnDestroy {
       tap(() => {
         // Update local state
         const current = this.notifications();
-        const updated = current.map(n => 
-          n.id === id ? { ...n, read: true } : n
-        );
+        const updated = current.map((n) => (n.id === id ? { ...n, read: true } : n));
         this.notifications.set(updated);
-        
+
         // Decrement unread count
         const count = this.unreadCount();
         if (count > 0) {
           this.unreadCount.set(count - 1);
         }
-      })
+      }),
     );
   }
 
   markAllAsRead(): Observable<MarkAllAsReadResult> {
     return this.api.markAllAsRead().pipe(
-      tap(result => {
+      tap((result) => {
         // Update all notifications as read
         const current = this.notifications();
-        const updated = current.map(n => ({ ...n, read: true }));
+        const updated = current.map((n) => ({ ...n, read: true }));
         this.notifications.set(updated);
-        
+
         // Reset unread count
         this.unreadCount.set(0);
-      })
+      }),
     );
   }
 
@@ -632,10 +687,10 @@ export class NotificationsApplicationService implements OnDestroy {
       tap(() => {
         // Remove from local state
         const current = this.notifications();
-        const notification = current.find(n => n.id === id);
-        const updated = current.filter(n => n.id !== id);
+        const notification = current.find((n) => n.id === id);
+        const updated = current.filter((n) => n.id !== id);
         this.notifications.set(updated);
-        
+
         // Update unread count if needed
         if (notification && !notification.read) {
           const count = this.unreadCount();
@@ -643,7 +698,7 @@ export class NotificationsApplicationService implements OnDestroy {
             this.unreadCount.set(count - 1);
           }
         }
-      })
+      }),
     );
   }
 
@@ -653,11 +708,11 @@ export class NotificationsApplicationService implements OnDestroy {
       if (!notification.read) {
         this.markAsRead(notification.id).subscribe();
       }
-      
+
       // Navigate to related entity
       const route = getReferenceRoute(
-        notification.referenceType as ReferenceType, 
-        notification.referenceId
+        notification.referenceType as ReferenceType,
+        notification.referenceId,
       );
       this.router.navigate([route]);
     }
@@ -668,10 +723,10 @@ export class NotificationsApplicationService implements OnDestroy {
     if (this.pollingSubscription) {
       return; // Already polling
     }
-    
-    this.pollingSubscription = interval(this.POLLING_INTERVAL).pipe(
-      switchMap(() => this.loadUnreadCount())
-    ).subscribe();
+
+    this.pollingSubscription = interval(this.POLLING_INTERVAL)
+      .pipe(switchMap(() => this.loadUnreadCount()))
+      .subscribe();
   }
 
   stopPolling(): void {
@@ -700,8 +755,9 @@ export const NOTIFICATIONS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/notifications-page/notifications-page.component')
-        .then(m => m.NotificationsPageComponent),
+      import('../pages/notifications-page/notifications-page.component').then(
+        (m) => m.NotificationsPageComponent,
+      ),
     title: 'Notificaciones',
     canActivate: [authGuard],
   },
@@ -739,23 +795,18 @@ export const NOTIFICATIONS_ERROR_MESSAGES = {
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [
-    CommonModule,
-    BadgeModule,
-    ButtonModule,
-    OverlayPanelModule,
-  ],
+  imports: [CommonModule, BadgeModule, ButtonModule, OverlayPanelModule],
   template: `
-    <p-button 
-      [icon]="'pi pi-bell'" 
+    <p-button
+      [icon]="'pi pi-bell'"
       [badge]="unreadCount() > 0 ? unreadCount().toString() : ''"
       badgeSeverity="danger"
       [text]="true"
       (onClick)="panel.toggle($event)"
     />
-    
+
     <p-overlayPanel #panel [style]="{ width: '400px' }">
-      <app-notification-list-panel 
+      <app-notification-list-panel
         [notifications]="recentNotifications()"
         (markAllAsRead)="onMarkAllAsRead()"
         (viewAll)="onViewAll()"
@@ -769,15 +820,13 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   readonly unreadCount = this.service.unreadCount;
-  readonly recentNotifications = computed(() => 
-    this.service.notifications().slice(0, 10)
-  );
+  readonly recentNotifications = computed(() => this.service.notifications().slice(0, 10));
 
   ngOnInit(): void {
     // Initial load
     this.service.loadUnreadCount().subscribe();
     this.service.loadNotifications({ page: 0, size: 10 }).subscribe();
-    
+
     // Start polling
     this.service.startPolling();
   }
@@ -810,11 +859,7 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   standalone: true,
   imports: [CommonModule, ButtonModule],
   template: `
-    <div 
-      class="notification-item" 
-      [class.unread]="!notification().read"
-      (click)="onClick()"
-    >
+    <div class="notification-item" [class.unread]="!notification().read" (click)="onClick()">
       <div class="notification-icon">
         <i [class]="getIcon()"></i>
       </div>
@@ -824,12 +869,7 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
         <div class="notification-time">{{ getTimeAgo() }}</div>
       </div>
       <div class="notification-actions">
-        <p-button 
-          icon="pi pi-trash" 
-          [text]="true" 
-          severity="danger"
-          (onClick)="onDelete($event)"
-        />
+        <p-button icon="pi pi-trash" [text]="true" severity="danger" (onClick)="onDelete($event)" />
       </div>
     </div>
   `,
@@ -866,7 +906,7 @@ export class NotificationItemComponent {
     if (diffMins < 60) return `Hace ${diffMins} minuto${diffMins > 1 ? 's' : ''}`;
     if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
     if (diffDays < 7) return `Hace ${diffDays} dia${diffDays > 1 ? 's' : ''}`;
-    
+
     return date.toLocaleDateString('es-VE');
   }
 }

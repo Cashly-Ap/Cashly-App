@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -17,11 +10,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   selector: 'app-payment-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    DialogModule,
-    ButtonModule,
-  ],
+  imports: [CommonModule, DialogModule, ButtonModule],
   templateUrl: './payment-pdf-modal.component.html',
 })
 export class PaymentPdfModalComponent {

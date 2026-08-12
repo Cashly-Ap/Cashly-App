@@ -47,4 +47,3 @@ export interface CloseRegisterRequest {
 export interface OpenRegisterRequest {
   openedByName: string;
 }
-

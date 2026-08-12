@@ -1,5 +1,11 @@
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+  FormsModule,
+} from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -43,16 +49,18 @@ export interface PaymentMethodOption {
     CurrencyPipe,
   ],
   templateUrl: './payment-form-dialog.component.html',
-  styles: [`
-    ::ng-deep .payment-form-dialog .p-select,
-    ::ng-deep .payment-form-dialog .p-inputnumber {
-      width: 100% !important;
-    }
-    ::ng-deep .payment-form-dialog .p-select .p-select-label,
-    ::ng-deep .payment-form-dialog .p-inputnumber .p-inputnumber-input {
-      width: 100% !important;
-    }
-  `],
+  styles: [
+    `
+      ::ng-deep .payment-form-dialog .p-select,
+      ::ng-deep .payment-form-dialog .p-inputnumber {
+        width: 100% !important;
+      }
+      ::ng-deep .payment-form-dialog .p-select .p-select-label,
+      ::ng-deep .payment-form-dialog .p-inputnumber .p-inputnumber-input {
+        width: 100% !important;
+      }
+    `,
+  ],
 })
 export class PaymentFormDialogComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -93,12 +101,12 @@ export class PaymentFormDialogComponent implements OnInit {
   protected balanceApplied = computed(() => {
     if (!this.useBalance()) return 0;
     const balance = this.customerBalance();
-    const total = this.mode() === 'single' ? (this.invoice()?.balance || 0) : this.totalDebt();
+    const total = this.mode() === 'single' ? this.invoice()?.balance || 0 : this.totalDebt();
     return Math.min(balance, total);
   });
 
   protected remainingAfterBalance = computed(() => {
-    const total = this.mode() === 'single' ? (this.invoice()?.balance || 0) : this.totalDebt();
+    const total = this.mode() === 'single' ? this.invoice()?.balance || 0 : this.totalDebt();
     return Math.max(0, total - this.balanceApplied());
   });
 
@@ -142,10 +150,10 @@ export class PaymentFormDialogComponent implements OnInit {
         const currentMode = this.mode();
         const inv = this.invoice();
         const balance = this.customerBalance();
-        const total = currentMode === 'single' ? (inv?.balance || 0) : this.totalDebt();
+        const total = currentMode === 'single' ? inv?.balance || 0 : this.totalDebt();
         const defaultAmount =
           currentMode === 'single'
-            ? (inv?.balance || 0)
+            ? inv?.balance || 0
             : currentMode === 'partial'
               ? this.totalDebt()
               : 0;
@@ -209,7 +217,7 @@ export class PaymentFormDialogComponent implements OnInit {
         const inv = this.invoice();
         const defaultAmount =
           currentMode === 'single'
-            ? (inv?.balance || 0)
+            ? inv?.balance || 0
             : currentMode === 'partial'
               ? this.totalDebt()
               : 0;
@@ -221,18 +229,30 @@ export class PaymentFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.setupAmountClamp();
-    this.paymentMethodApi.getAll({ active: true, size: 100 }).pipe(
-      catchError(() => {
-        const empty: PagedResponse<PaymentMethodList> = { content: [], totalElements: 0, totalPages: 0, size: 0, number: 0, first: true, last: true, empty: true };
-        return of(empty);
-      })
-    ).subscribe(res => {
-      const methods = res.content.map(pm => ({ label: pm.name, value: pm.id }));
-      this.paymentMethods.set(methods);
-      if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
-        this.form.patchValue({ paymentMethodId: methods[0].value });
-      }
-    });
+    this.paymentMethodApi
+      .getAll({ active: true, size: 100 })
+      .pipe(
+        catchError(() => {
+          const empty: PagedResponse<PaymentMethodList> = {
+            content: [],
+            totalElements: 0,
+            totalPages: 0,
+            size: 0,
+            number: 0,
+            first: true,
+            last: true,
+            empty: true,
+          };
+          return of(empty);
+        }),
+      )
+      .subscribe((res) => {
+        const methods = res.content.map((pm) => ({ label: pm.name, value: pm.id }));
+        this.paymentMethods.set(methods);
+        if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
+          this.form.patchValue({ paymentMethodId: methods[0].value });
+        }
+      });
   }
 
   protected onSubmit(): void {
@@ -251,9 +271,8 @@ export class PaymentFormDialogComponent implements OnInit {
       };
 
       if (this.mode() === 'single' || this.mode() === 'partial') {
-        const totalBeforeBalance = this.mode() === 'single'
-          ? (this.invoice()?.balance || 0)
-          : this.totalDebt();
+        const totalBeforeBalance =
+          this.mode() === 'single' ? this.invoice()?.balance || 0 : this.totalDebt();
         request.amount = this.useBalance() ? totalBeforeBalance : formValue.amount;
       }
 
@@ -280,7 +299,7 @@ export class PaymentFormDialogComponent implements OnInit {
     const inv = this.invoice();
     const defaultAmount =
       this.mode() === 'single'
-        ? (inv?.balance || 0)
+        ? inv?.balance || 0
         : this.mode() === 'partial'
           ? this.maxAmount()
           : 0;
@@ -303,7 +322,7 @@ export class PaymentFormDialogComponent implements OnInit {
     const amountCtrl = this.form.get('amount');
     if (!amountCtrl) return;
 
-    amountCtrl.valueChanges.subscribe(value => {
+    amountCtrl.valueChanges.subscribe((value) => {
       if (!this.showAmountField()) return;
       const max = this.maxAmount();
       if (value != null && max > 0 && value > max) {

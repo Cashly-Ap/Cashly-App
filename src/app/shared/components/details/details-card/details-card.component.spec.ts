@@ -6,9 +6,7 @@ import { Component } from '@angular/core';
 @Component({
   standalone: true,
   imports: [DetailsCardComponent],
-  template: `<app-details-card
-    ><div class="test-content">Test Content</div></app-details-card
-  >`,
+  template: `<app-details-card><div class="test-content">Test Content</div></app-details-card>`,
 })
 class TestHostComponent {}
 

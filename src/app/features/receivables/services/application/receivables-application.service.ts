@@ -156,10 +156,7 @@ export class ReceivablesApplicationService {
     );
   }
 
-  payInvoice(
-    invoiceId: string,
-    request: PayInvoiceRequest,
-  ): Observable<PaymentResult | null> {
+  payInvoice(invoiceId: string, request: PayInvoiceRequest): Observable<PaymentResult | null> {
     this.loading.set(true);
     this.error.set(null);
 
@@ -368,5 +365,4 @@ export class ReceivablesApplicationService {
   clearError(): void {
     this.error.set(null);
   }
-
 }

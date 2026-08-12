@@ -5,7 +5,14 @@ import { ConvertToInvoiceDialogComponent } from './convert-to-invoice-dialog.com
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({
-  template: `<app-convert-to-invoice-dialog [visible]="visible" [orderNumber]="orderNumber" [customerName]="customerName" [totalAmount]="totalAmount" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-convert-to-invoice-dialog>`,
+  template: `<app-convert-to-invoice-dialog
+    [visible]="visible"
+    [orderNumber]="orderNumber"
+    [customerName]="customerName"
+    [totalAmount]="totalAmount"
+    (confirmed)="onConfirmed($event)"
+    (cancelled)="onCancelled()"
+  ></app-convert-to-invoice-dialog>`,
   imports: [ConvertToInvoiceDialogComponent],
 })
 class HostComponent {

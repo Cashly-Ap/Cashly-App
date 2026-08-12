@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnChanges, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +17,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { OrderApiService, AssignOrderWarehousesRequest } from '@features/orders/services/api/order-api.service';
+import {
+  OrderApiService,
+  AssignOrderWarehousesRequest,
+} from '@features/orders/services/api/order-api.service';
 import { OrderDetails } from '@features/orders/models/interfaces';
 
 type ConversionOption = 'none' | 'confirm' | 'invoice';
@@ -35,7 +47,18 @@ interface LineState {
 @Component({
   selector: 'app-assign-warehouses-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, InputTextModule, TooltipModule, RadioButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DecimalPipe,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    InputNumberModule,
+    InputTextModule,
+    TooltipModule,
+    RadioButtonModule,
+  ],
   templateUrl: './assign-warehouses-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,7 +69,11 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly orderId = input<string | null>(null);
 
   readonly confirmed = output<string>();
-  readonly convertToInvoice = output<{ orderId: string; paymentType: string; confirmationPassword?: string }>();
+  readonly convertToInvoice = output<{
+    orderId: string;
+    paymentType: string;
+    confirmationPassword?: string;
+  }>();
   readonly finished = output<void>();
   readonly cancelled = output<void>();
 
@@ -54,7 +81,14 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineState[]>([]);
-  readonly orderInfo = signal<{ number: string; customerName: string; subtotal: number; isCustomerDraft: boolean; creditLimit?: number; availableCredit?: number } | null>(null);
+  readonly orderInfo = signal<{
+    number: string;
+    customerName: string;
+    subtotal: number;
+    isCustomerDraft: boolean;
+    creditLimit?: number;
+    availableCredit?: number;
+  } | null>(null);
   readonly hasCredit = computed(() => {
     const info = this.orderInfo();
     return info?.creditLimit != null && info.creditLimit > 0;
@@ -176,7 +210,11 @@ export class AssignWarehousesDialogComponent implements OnChanges {
         if (option === 'confirm') {
           this.confirmed.emit(id);
         } else if (option === 'invoice') {
-          this.convertToInvoice.emit({ orderId: id, paymentType: this.paymentType(), confirmationPassword: this.confirmationPassword() || undefined });
+          this.convertToInvoice.emit({
+            orderId: id,
+            paymentType: this.paymentType(),
+            confirmationPassword: this.confirmationPassword() || undefined,
+          });
         } else {
           this.finished.emit();
         }

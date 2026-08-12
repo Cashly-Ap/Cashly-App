@@ -1,12 +1,12 @@
-import "zone.js";
-import "zone.js/testing";
-import { getTestBed } from "@angular/core/testing";
+import 'zone.js';
+import 'zone.js/testing';
+import { getTestBed } from '@angular/core/testing';
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting,
-} from "@angular/platform-browser-dynamic/testing";
+} from '@angular/platform-browser-dynamic/testing';
 
-Object.defineProperty(window, "matchMedia", {
+Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: (query: string) => ({
     matches: false,
@@ -24,11 +24,11 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
-if (typeof URL.createObjectURL === "undefined") {
-  URL.createObjectURL = () => "blob:mock-url";
+if (typeof URL.createObjectURL === 'undefined') {
+  URL.createObjectURL = () => 'blob:mock-url';
 }
 
-if (typeof URL.revokeObjectURL === "undefined") {
+if (typeof URL.revokeObjectURL === 'undefined') {
   URL.revokeObjectURL = () => {};
 }
 
@@ -52,24 +52,19 @@ const localStorageMock = (() => {
   };
 })();
 
-Object.defineProperty(window, "localStorage", {
+Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
   writable: true,
 });
-Object.defineProperty(global, "localStorage", {
+Object.defineProperty(global, 'localStorage', {
   value: localStorageMock,
   writable: true,
 });
 
 const testBed = getTestBed();
 if (!testBed.platform) {
-  testBed.initTestEnvironment(
-    BrowserDynamicTestingModule,
-    platformBrowserDynamicTesting(),
-    {
-      errorOnUnknownElements: false,
-      errorOnUnknownProperties: false,
-    },
-  );
+  testBed.initTestEnvironment(BrowserDynamicTestingModule, platformBrowserDynamicTesting(), {
+    errorOnUnknownElements: false,
+    errorOnUnknownProperties: false,
+  });
 }
-

@@ -1,6 +1,9 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-  <p-card header="Stock de Almacenes" styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
-    (click)="stockModalVisible.set(true)">
+  <p-card
+    header="Stock de Almacenes"
+    styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
+    (click)="stockModalVisible.set(true)"
+  >
     <p class="text-surface-600 dark:text-surface-400">
       Reporte del stock actual por almacén con filtros de categoría y disponibilidad.
     </p>
@@ -10,8 +13,11 @@
     </div>
   </p-card>
 
-  <p-card header="Historial de Movimientos" styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
-    (click)="movementsModalVisible.set(true)">
+  <p-card
+    header="Historial de Movimientos"
+    styleClass="h-full cursor-pointer hover:shadow-lg transition-shadow"
+    (click)="movementsModalVisible.set(true)"
+  >
     <p class="text-surface-600 dark:text-surface-400">
       Historial de movimientos de stock con filtros por almacén, tipo y rango de fechas.
     </p>

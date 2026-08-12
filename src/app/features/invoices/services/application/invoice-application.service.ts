@@ -1,8 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { InvoiceApiService, InvoiceFilters } from '@features/invoices/services/api/invoice-api.service';
+import {
+  InvoiceApiService,
+  InvoiceFilters,
+} from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceMapper } from '@features/invoices/services/mappers/invoice.mapper';
-import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate } from '@features/invoices/models/interfaces';
+import {
+  InvoiceList,
+  InvoiceDetails,
+  InvoiceCreate,
+  InvoiceUpdate,
+} from '@features/invoices/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class InvoiceApplicationService {
@@ -110,7 +118,15 @@ export class InvoiceApplicationService {
     );
   }
 
-  confirm(id: string, data?: { confirmationPassword?: string; useBalance?: boolean; balanceAmount?: number; paymentMethodId?: string }): Observable<InvoiceDetails> {
+  confirm(
+    id: string,
+    data?: {
+      confirmationPassword?: string;
+      useBalance?: boolean;
+      balanceAmount?: number;
+      paymentMethodId?: string;
+    },
+  ): Observable<InvoiceDetails> {
     this.loading.set(true);
     this.error.set(null);
 

@@ -34,11 +34,17 @@ export class AuthApiService {
   }
 
   login(request: LoginRequest): Observable<AuthenticationResponse> {
-    return this.http.post<AuthenticationResponse>(`${this.baseUrl}${AUTH_API_ROUTES.LOGIN}`, request);
+    return this.http.post<AuthenticationResponse>(
+      `${this.baseUrl}${AUTH_API_ROUTES.LOGIN}`,
+      request,
+    );
   }
 
   refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {
-    return this.http.post<AuthenticationResponse>(`${this.baseUrl}${AUTH_API_ROUTES.REFRESH}`, request);
+    return this.http.post<AuthenticationResponse>(
+      `${this.baseUrl}${AUTH_API_ROUTES.REFRESH}`,
+      request,
+    );
   }
 
   logout(request: LogoutRequest): Observable<void> {
@@ -46,7 +52,10 @@ export class AuthApiService {
   }
 
   changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
-    return this.http.patch<UserResponse>(`${this.baseUrl}${AUTH_API_ROUTES.CHANGE_USERNAME}`, request);
+    return this.http.patch<UserResponse>(
+      `${this.baseUrl}${AUTH_API_ROUTES.CHANGE_USERNAME}`,
+      request,
+    );
   }
 
   changePassword(request: ChangePasswordRequest): Observable<void> {

@@ -2,7 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { CustomerBalanceResponse, BalanceTransactionResponse } from '@features/customers/models/interfaces';
+import {
+  CustomerBalanceResponse,
+  BalanceTransactionResponse,
+} from '@features/customers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CreateAdvanceRequest {
@@ -20,9 +23,7 @@ export class CustomerBalanceApiService {
   private readonly baseUrl = `${environment.apiUrl}/customers`;
 
   getBalance(customerId: string): Observable<CustomerBalanceResponse> {
-    return this.http.get<CustomerBalanceResponse>(
-      `${this.baseUrl}/${customerId}/balance`,
-    );
+    return this.http.get<CustomerBalanceResponse>(`${this.baseUrl}/${customerId}/balance`);
   }
 
   getTransactions(
@@ -30,9 +31,7 @@ export class CustomerBalanceApiService {
     page = 0,
     size = 10,
   ): Observable<PagedResponse<BalanceTransactionResponse>> {
-    const params = new HttpParams()
-      .set('page', String(page))
-      .set('size', String(size));
+    const params = new HttpParams().set('page', String(page)).set('size', String(size));
 
     return this.http.get<PagedResponse<BalanceTransactionResponse>>(
       `${this.baseUrl}/${customerId}/balance/transactions`,

@@ -85,6 +85,7 @@ src/app/features/differentials/
 **Purpose**: Displays all differentials in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Filter by active status
 - Pagination
@@ -102,6 +103,7 @@ src/app/features/differentials/
 **Purpose**: Create new differential or edit existing one.
 
 **Features**:
+
 - Simple form layout (no tabs needed)
 - Percentage input with range validation
 - Active status toggle
@@ -117,6 +119,7 @@ src/app/features/differentials/
 **Purpose**: Display complete differential information in read-only mode.
 
 **Features**:
+
 - Complete differential data display
 - Visual representation of percentage effect
 - Example price calculations
@@ -136,9 +139,9 @@ src/app/features/differentials/
 
 ```typescript
 export interface DifferentialList {
-  id: number;              // Differential ID
-  percentage: number;      // Percentage value (-100 to +100)
-  active: boolean;         // Active status
+  id: number; // Differential ID
+  percentage: number; // Percentage value (-100 to +100)
+  active: boolean; // Active status
 }
 ```
 
@@ -154,11 +157,11 @@ export interface DifferentialList {
 
 ```typescript
 export interface DifferentialDetails {
-  id: number;              // Differential ID
-  percentage: number;      // Percentage value (-100 to +100)
-  active: boolean;         // Active status
-  createdAt: string;       // ISO date string
-  updatedAt: string;       // ISO date string
+  id: number; // Differential ID
+  percentage: number; // Percentage value (-100 to +100)
+  active: boolean; // Active status
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 ```
 
@@ -174,7 +177,7 @@ export interface DifferentialDetails {
 
 ```typescript
 export interface DifferentialEdit {
-  percentage: number;      // -100 to +100
+  percentage: number; // -100 to +100
   active: boolean;
 }
 ```
@@ -191,8 +194,8 @@ export interface DifferentialEdit {
 
 ```typescript
 export interface DifferentialCreate {
-  percentage: number;      // Required, -100 to +100
-  active: boolean;         // Required
+  percentage: number; // Required, -100 to +100
+  active: boolean; // Required
 }
 ```
 
@@ -208,13 +211,13 @@ All endpoints use: `/api/differentials`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/differentials | - | `DifferentialList[]` | List page |
-| GET | /api/differentials/:id | - | `DifferentialDetails` | Details/Edit page |
-| POST | /api/differentials | `DifferentialCreate` | `DifferentialDetails` | Create form |
-| PUT | /api/differentials/:id | `DifferentialEdit` | `DifferentialDetails` | Edit form |
-| DELETE | /api/differentials/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint               | Request Interface    | Response Interface    | Frontend Usage    |
+| ----------- | ---------------------- | -------------------- | --------------------- | ----------------- |
+| GET         | /api/differentials     | -                    | `DifferentialList[]`  | List page         |
+| GET         | /api/differentials/:id | -                    | `DifferentialDetails` | Details/Edit page |
+| POST        | /api/differentials     | `DifferentialCreate` | `DifferentialDetails` | Create form       |
+| PUT         | /api/differentials/:id | `DifferentialEdit`   | `DifferentialDetails` | Edit form         |
+| DELETE      | /api/differentials/:id | -                    | void (204)            | Delete action     |
 
 ---
 
@@ -225,24 +228,26 @@ All endpoints use: `/api/differentials`
 **Frontend Interface**: `DifferentialList[]`
 
 **Query Parameters**:
+
 - `active` (boolean): Filter by active status
 
 **Example Response**:
+
 ```json
 [
   {
     "id": 1,
-    "percentage": 10.00,
+    "percentage": 10.0,
     "active": true
   },
   {
     "id": 2,
-    "percentage": -15.00,
+    "percentage": -15.0,
     "active": true
   },
   {
     "id": 3,
-    "percentage": 25.00,
+    "percentage": 25.0,
     "active": false
   }
 ]
@@ -257,10 +262,11 @@ All endpoints use: `/api/differentials`
 **Frontend Interface**: `DifferentialDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": 1,
-  "percentage": 10.00,
+  "percentage": 10.0,
   "active": true,
   "createdAt": "2025-12-17T10:00:00",
   "updatedAt": "2025-12-17T11:30:00"
@@ -276,17 +282,19 @@ All endpoints use: `/api/differentials`
 **Frontend Interface**: `DifferentialCreate` (request), `DifferentialDetails` (response)
 
 **Example Request** (Price Increase):
+
 ```json
 {
-  "percentage": 10.00,
+  "percentage": 10.0,
   "active": true
 }
 ```
 
 **Example Request** (Discount):
+
 ```json
 {
-  "percentage": -15.00,
+  "percentage": -15.0,
   "active": true
 }
 ```
@@ -302,9 +310,10 @@ All endpoints use: `/api/differentials`
 **Frontend Interface**: `DifferentialEdit` (request), `DifferentialDetails` (response)
 
 **Example Request**:
+
 ```json
 {
-  "percentage": 20.00,
+  "percentage": 20.0,
   "active": false
 }
 ```
@@ -323,10 +332,10 @@ All endpoints use: `/api/differentials`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `percentage` | number | Yes | -100 to +100, scale 2 | "Percentage must be between -100 and 100" |
-| `active` | boolean | Yes | - | - |
+| Field        | Type    | Required | Rules                 | Error Message                             |
+| ------------ | ------- | -------- | --------------------- | ----------------------------------------- |
+| `percentage` | number  | Yes      | -100 to +100, scale 2 | "Percentage must be between -100 and 100" |
+| `active`     | boolean | Yes      | -                     | -                                         |
 
 ### Custom Validators
 
@@ -338,17 +347,17 @@ export class DifferentialValidators {
   static percentageRange(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === undefined) return null;
-      
+
       const value = Number(control.value);
-      
+
       if (isNaN(value)) {
         return { invalidPercentage: 'Percentage must be a number' };
       }
-      
+
       if (value < -100 || value > 100) {
         return { percentageOutOfRange: 'Percentage must be between -100 and 100' };
       }
-      
+
       return null;
     };
   }
@@ -435,31 +444,27 @@ export class DifferentialApplicationService {
   loadAll(params?: { active?: boolean }): Observable<DifferentialList[]> {
     this.loading.set(true);
     return this.api.getAll(params).pipe(
-      tap(differentials => this.differentials.set(differentials)),
-      finalize(() => this.loading.set(false))
+      tap((differentials) => this.differentials.set(differentials)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: number): Observable<DifferentialDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(differential => this.currentDifferential.set(differential)),
-      finalize(() => this.loading.set(false))
+      tap((differential) => this.currentDifferential.set(differential)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   create(data: DifferentialCreate): Observable<DifferentialDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: number, data: DifferentialEdit): Observable<DifferentialDetails> {
     this.loading.set(true);
-    return this.api.update(id, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   delete(id: number): Observable<void> {
@@ -471,7 +476,7 @@ export class DifferentialApplicationService {
    * Formula: finalPrice = salePrice × (1 + percentage/100)
    */
   calculateFinalPrice(salePrice: number, percentage: number): number {
-    const multiplier = 1 + (percentage / 100);
+    const multiplier = 1 + percentage / 100;
     return Math.round(salePrice * multiplier * 100) / 100; // Round to 2 decimals
   }
 }
@@ -535,6 +540,7 @@ export class DifferentialMapper {
 **Formula**: `finalPrice = salePrice × (1 + percentage/100)`
 
 **Examples**:
+
 - salePrice = $100, percentage = +10 → finalPrice = $110
 - salePrice = $100, percentage = -15 → finalPrice = $85
 - salePrice = $200, percentage = +25 → finalPrice = $250
@@ -554,29 +560,33 @@ export const DIFFERENTIAL_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/differentials-list-page/differentials-list-page.component')
-        .then(m => m.DifferentialsListPageComponent),
+      import('../pages/differentials-list-page/differentials-list-page.component').then(
+        (m) => m.DifferentialsListPageComponent,
+      ),
     title: 'Diferenciales',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/differentials-form-page/differentials-form-page.component')
-        .then(m => m.DifferentialsFormPageComponent),
+      import('../pages/differentials-form-page/differentials-form-page.component').then(
+        (m) => m.DifferentialsFormPageComponent,
+      ),
     title: 'Nuevo Diferencial',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/differentials-details-page/differentials-details-page.component')
-        .then(m => m.DifferentialsDetailsPageComponent),
+      import('../pages/differentials-details-page/differentials-details-page.component').then(
+        (m) => m.DifferentialsDetailsPageComponent,
+      ),
     title: 'Detalles del Diferencial',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/differentials-form-page/differentials-form-page.component')
-        .then(m => m.DifferentialsFormPageComponent),
+      import('../pages/differentials-form-page/differentials-form-page.component').then(
+        (m) => m.DifferentialsFormPageComponent,
+      ),
     title: 'Editar Diferencial',
     canDeactivate: [pendingChangesGuard],
   },
@@ -641,6 +651,7 @@ export const DIFFERENTIAL_ROUTES: Routes = [
 ### Usage Examples
 
 #### 10% Price Increase
+
 ```
 Differential: percentage = 10.00, active = true
 Product base price: $100.00
@@ -649,6 +660,7 @@ Final price: $110.00
 ```
 
 #### 15% Discount
+
 ```
 Differential: percentage = -15.00, active = true
 Product base price: $200.00
@@ -657,6 +669,7 @@ Final price: $170.00
 ```
 
 #### 50% Discount
+
 ```
 Differential: percentage = -50.00, active = true
 Product base price: $80.00

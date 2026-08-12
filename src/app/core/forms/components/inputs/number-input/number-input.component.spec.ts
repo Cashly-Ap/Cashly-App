@@ -17,8 +17,7 @@ describe('NumberInputComponent', () => {
     fixture = TestBed.createComponent(NumberInputComponent);
     component = fixture.componentInstance;
     control = new FormControl(0);
-    
-    
+
     fixture.componentRef.setInput('label', 'Test');
     fixture.componentRef.setInput('control', control);
     fixture.detectChanges();

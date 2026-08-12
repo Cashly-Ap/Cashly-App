@@ -58,10 +58,24 @@ describe('InvoiceApiService', () => {
         unitPrice: 100,
         lineTotal: 500,
         warehouseAllocations: [
-          { id: 'alloc-001', warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            id: 'alloc-001',
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],
@@ -85,8 +99,20 @@ describe('InvoiceApiService', () => {
     debitApplied: 50,
     total: 850,
     notesList: [
-      { id: 'n1', type: 'CREDIT', amount: 200, reason: 'Discount', applicationDate: '2026-05-28T10:00:00Z' },
-      { id: 'n2', type: 'DEBIT', amount: 50, reason: 'Charge', applicationDate: '2026-05-28T11:00:00Z' },
+      {
+        id: 'n1',
+        type: 'CREDIT',
+        amount: 200,
+        reason: 'Discount',
+        applicationDate: '2026-05-28T10:00:00Z',
+      },
+      {
+        id: 'n2',
+        type: 'DEBIT',
+        amount: 50,
+        reason: 'Charge',
+        applicationDate: '2026-05-28T11:00:00Z',
+      },
     ],
     cancelledAt: null,
     cancelledReason: null,
@@ -227,7 +253,12 @@ describe('InvoiceApiService', () => {
         paymentType: PaymentType.CASH,
         notes: 'Test',
         lines: [
-          { productId: 'p1', quantity: 5, unitPrice: 100, warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 5 }] },
+          {
+            productId: 'p1',
+            quantity: 5,
+            unitPrice: 100,
+            warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 5 }],
+          },
         ],
       };
 

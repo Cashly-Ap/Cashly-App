@@ -9,7 +9,13 @@ import { OrderProduct } from '@features/orders/models/interfaces';
 import { CategoryList } from '@features/categories/models/interfaces';
 
 @Component({
-  template: `<app-product-picker-dialog [visible]="visible" [customerId]="customerId" [excludedProductIds]="excludedProductIds" (productsAdded)="onProductsAdded($event)" (cancelled)="onCancelled()"></app-product-picker-dialog>`,
+  template: `<app-product-picker-dialog
+    [visible]="visible"
+    [customerId]="customerId"
+    [excludedProductIds]="excludedProductIds"
+    (productsAdded)="onProductsAdded($event)"
+    (cancelled)="onCancelled()"
+  ></app-product-picker-dialog>`,
   imports: [ProductPickerDialogComponent],
 })
 class HostComponent {
@@ -36,8 +42,22 @@ describe('ProductPickerDialogComponent', () => {
       customerPrice: 100,
       totalStock: 50,
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', quantity: 30, reserved: 5, available: 25 },
-        { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'Warehouse 2', quantity: 20, reserved: 0, available: 20 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'Warehouse 1',
+          quantity: 30,
+          reserved: 5,
+          available: 25,
+        },
+        {
+          warehouseId: 'wh2',
+          warehouseCode: 'WH2',
+          warehouseName: 'Warehouse 2',
+          quantity: 20,
+          reserved: 0,
+          available: 20,
+        },
       ],
     },
   ];
@@ -216,14 +236,19 @@ describe('ProductPickerDialogComponent - visible', () => {
       customerPrice: 100,
       totalStock: 50,
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', quantity: 30, reserved: 5, available: 25 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'Warehouse 1',
+          quantity: 30,
+          reserved: 5,
+          available: 25,
+        },
       ],
     },
   ];
 
-  const mockCategories: CategoryList[] = [
-    { id: 'cat1', name: 'Category A', active: true },
-  ];
+  const mockCategories: CategoryList[] = [{ id: 'cat1', name: 'Category A', active: true }];
 
   const mockProductPage = {
     content: mockProducts,
@@ -293,7 +318,9 @@ describe('ProductPickerDialogComponent - visible', () => {
   });
 
   it('should set loading to false on product load error', async () => {
-    mockOrderApi.getProductsForOrder = vi.fn().mockReturnValue(throwError(() => new Error('Failed')));
+    mockOrderApi.getProductsForOrder = vi
+      .fn()
+      .mockReturnValue(throwError(() => new Error('Failed')));
 
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
@@ -357,7 +384,14 @@ describe('ProductPickerDialogComponent - selection', () => {
       customerPrice: 100,
       totalStock: 50,
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', quantity: 30, reserved: 5, available: 25 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'Warehouse 1',
+          quantity: 30,
+          reserved: 5,
+          available: 25,
+        },
       ],
     },
     {
@@ -368,7 +402,14 @@ describe('ProductPickerDialogComponent - selection', () => {
       customerPrice: 200,
       totalStock: 0,
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', quantity: 0, reserved: 0, available: 0 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'Warehouse 1',
+          quantity: 0,
+          reserved: 0,
+          available: 0,
+        },
       ],
     },
   ];

@@ -1,86 +1,191 @@
 <p-toast />
-  <app-form-container>
-    <app-form-header
-      [title]="isEditMode() ? 'Editar Factura' : 'Nueva Factura'"
-      [subtitle]="isEditMode() ? 'Modifica los datos de la factura' : 'Complete la información de la factura'"
-    />
-    <form [formGroup]="form" (ngSubmit)="submit()">
-      <app-form-card>
-        <div class="p-4 md:p-6">
-          <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
-            <i class="pi pi-info-circle text-surface-500"></i>
-            Información de la Factura
-          </h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Cliente *</label>
-              @if (selectedCustomerLabel(); as customer) {
-                <div class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
-                  <div class="flex flex-col min-w-0">
-                    <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
-                    <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
-                  </div>
-                  @if (!isEditMode()) {
-                    <button type="button" class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors" (click)="openPicker()">Cambiar</button>
-                  }
+<app-form-container>
+  <app-form-header
+    [title]="isEditMode() ? 'Editar Factura' : 'Nueva Factura'"
+    [subtitle]="
+      isEditMode() ? 'Modifica los datos de la factura' : 'Complete la información de la factura'
+    "
+  />
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <app-form-card>
+      <div class="p-4 md:p-6">
+        <h3
+          class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
+        >
+          <i class="pi pi-info-circle text-surface-500"></i>
+          Información de la Factura
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >Cliente *</label
+            >
+            @if (selectedCustomerLabel(); as customer) {
+              <div
+                class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700"
+              >
+                <div class="flex flex-col min-w-0">
+                  <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{
+                    customer.alias
+                  }}</span>
+                  <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{
+                    customer.legalName
+                  }}</span>
                 </div>
-                @if (creditInfo(); as info) {
-                  <div class="flex flex-wrap gap-3 mt-2 px-3 py-2 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-xs">
-                    <span class="text-surface-600 dark:text-surface-400">Limite: <strong class="text-surface-900 dark:text-surface-0">${{ info.creditLimit | number:'1.2-2' }}</strong></span>
-                    <span class="text-surface-600 dark:text-surface-400">Saldo a favor: <strong class="text-green-600">${{ info.customerBalance | number:'1.2-2' }}</strong></span>
-                    <span class="text-surface-600 dark:text-surface-400">Credito disponible: <strong class="text-surface-900 dark:text-surface-0">${{ info.availableCredit | number:'1.2-2' }}</strong></span>
-                  </div>
+                @if (!isEditMode()) {
+                  <button
+                    type="button"
+                    class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                    (click)="openPicker()"
+                  >
+                    Cambiar
+                  </button>
                 }
-              } @else {
-                <button type="button" class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 text-surface-400 text-sm transition-colors" (click)="openPicker()">
-                  <i class="pi pi-search text-sm"></i>
-                  Buscar y seleccionar cliente...
-                </button>
-              }
-              @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
-                <small class="flex items-center gap-1 text-red-500 text-xs mt-1.5"><i class="pi pi-exclamation-circle text-xs"></i> El cliente es requerido</small>
-              }
-            </div>
-
-            <div class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Notas <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span></label>
-              <textarea pTextarea formControlName="notes" rows="3" class="w-full" placeholder="Notas o instrucciones adicionales..."></textarea>
-            </div>
-
-            <div class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-              <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Tipo de Pago *</label>
-              @if (hasCreditEnabled()) {
-                <p-select formControlName="paymentType" [options]="paymentTypeOptions()" optionLabel="label" optionValue="value" styleClass="w-full" />
-              } @else {
-                <input pInputText value="Contado" readonly class="w-full text-sm bg-surface-100 dark:bg-surface-800" />
-              }
-            </div>
-
-            @if (creditWarningMessage(); as warning) {
-              <div class="col-span-full rounded-xl p-4 border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20">
-                <div class="flex items-start gap-3">
-                  <i class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"></i>
-                  <div>
-                    <span class="font-semibold text-sm text-amber-800 dark:text-amber-300">Advertencia de Credito</span>
-                    <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed mt-1">{{ warning.message }}</p>
-                    <div class="flex flex-wrap gap-4 mt-1 text-xs text-amber-600 dark:text-amber-400">
-                      <span>Limite: <strong>${{ warning.creditLimit | number:'1.2-2' }}</strong></span>
-                      <span>Disponible: <strong>${{ warning.availableCredit | number:'1.2-2' }}</strong></span>
-                      <span>Total: <strong>${{ warning.invoiceTotal | number:'1.2-2' }}</strong></span>
-                    </div>
-                    <p class="text-xs text-amber-600 dark:text-amber-400 mt-1"><i class="pi pi-info-circle mr-1"></i>La factura se creara como borrador. Al confirmarla debera ingresar su contrasena.</p>
-                  </div>
-                </div>
               </div>
+              @if (creditInfo(); as info) {
+                <div
+                  class="flex flex-wrap gap-3 mt-2 px-3 py-2 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-xs"
+                >
+                  <span class="text-surface-600 dark:text-surface-400"
+                    >Limite:
+                    <strong class="text-surface-900 dark:text-surface-0"
+                      >${{ info.creditLimit | number: '1.2-2' }}</strong
+                    ></span
+                  >
+                  <span class="text-surface-600 dark:text-surface-400"
+                    >Saldo a favor:
+                    <strong class="text-green-600"
+                      >${{ info.customerBalance | number: '1.2-2' }}</strong
+                    ></span
+                  >
+                  <span class="text-surface-600 dark:text-surface-400"
+                    >Credito disponible:
+                    <strong class="text-surface-900 dark:text-surface-0"
+                      >${{ info.availableCredit | number: '1.2-2' }}</strong
+                    ></span
+                  >
+                </div>
+              }
+            } @else {
+              <button
+                type="button"
+                class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 text-surface-400 text-sm transition-colors"
+                (click)="openPicker()"
+              >
+                <i class="pi pi-search text-sm"></i>
+                Buscar y seleccionar cliente...
+              </button>
+            }
+            @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+              <small class="flex items-center gap-1 text-red-500 text-xs mt-1.5"
+                ><i class="pi pi-exclamation-circle text-xs"></i> El cliente es requerido</small
+              >
             }
           </div>
-        </div>
-        <div class="border-t border-surface-200 dark:border-surface-800">
-          <app-order-items-table context="invoice" [items]="items()" [customerId]="selectedCustomerId()" [readonly]="false" (itemsChange)="onItemsChange($event)" />
-        </div>
-        <app-form-actions submitLabel="Guardar" cancelLabel="Cancelar" [loading]="isSubmitting()" [disabled]="form.invalid" [tooltipMessage]="submitTooltip()" (cancel)="cancel()" />
-      </app-form-card>
-    </form>
-  </app-form-container>
 
-<app-customer-picker-dialog [visible]="pickerVisible()" [hasExistingItems]="items().length > 0" (customerSelected)="onCustomerSelected($event)" (cancelled)="onPickerCancelled()" />
+          <div
+            class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >Notas
+              <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span></label
+            >
+            <textarea
+              pTextarea
+              formControlName="notes"
+              rows="3"
+              class="w-full"
+              placeholder="Notas o instrucciones adicionales..."
+            ></textarea>
+          </div>
+
+          <div
+            class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >Tipo de Pago *</label
+            >
+            @if (hasCreditEnabled()) {
+              <p-select
+                formControlName="paymentType"
+                [options]="paymentTypeOptions()"
+                optionLabel="label"
+                optionValue="value"
+                styleClass="w-full"
+              />
+            } @else {
+              <input
+                pInputText
+                value="Contado"
+                readonly
+                class="w-full text-sm bg-surface-100 dark:bg-surface-800"
+              />
+            }
+          </div>
+
+          @if (creditWarningMessage(); as warning) {
+            <div
+              class="col-span-full rounded-xl p-4 border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20"
+            >
+              <div class="flex items-start gap-3">
+                <i
+                  class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"
+                ></i>
+                <div>
+                  <span class="font-semibold text-sm text-amber-800 dark:text-amber-300"
+                    >Advertencia de Credito</span
+                  >
+                  <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed mt-1">
+                    {{ warning.message }}
+                  </p>
+                  <div class="flex flex-wrap gap-4 mt-1 text-xs text-amber-600 dark:text-amber-400">
+                    <span
+                      >Limite: <strong>${{ warning.creditLimit | number: '1.2-2' }}</strong></span
+                    >
+                    <span
+                      >Disponible:
+                      <strong>${{ warning.availableCredit | number: '1.2-2' }}</strong></span
+                    >
+                    <span
+                      >Total: <strong>${{ warning.invoiceTotal | number: '1.2-2' }}</strong></span
+                    >
+                  </div>
+                  <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                    <i class="pi pi-info-circle mr-1"></i>La factura se creara como borrador. Al
+                    confirmarla debera ingresar su contrasena.
+                  </p>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+      <div class="border-t border-surface-200 dark:border-surface-800">
+        <app-order-items-table
+          context="invoice"
+          [items]="items()"
+          [customerId]="selectedCustomerId()"
+          [readonly]="false"
+          (itemsChange)="onItemsChange($event)"
+        />
+      </div>
+      <app-form-actions
+        submitLabel="Guardar"
+        cancelLabel="Cancelar"
+        [loading]="isSubmitting()"
+        [disabled]="form.invalid"
+        [tooltipMessage]="submitTooltip()"
+        (cancel)="cancel()"
+      />
+    </app-form-card>
+  </form>
+</app-form-container>
+
+<app-customer-picker-dialog
+  [visible]="pickerVisible()"
+  [hasExistingItems]="items().length > 0"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onPickerCancelled()"
+/>

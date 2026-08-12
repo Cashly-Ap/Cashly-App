@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
+import {
+  CustomerList,
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+  CustomerWarehouseAccessItem,
+} from '@features/customers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CustomerFilters {
@@ -38,7 +44,8 @@ export class CustomerApiService {
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.type) params = params.set('type', filters.type);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
-    if (filters?.portalAccess !== undefined) params = params.set('portalAccess', String(filters.portalAccess));
+    if (filters?.portalAccess !== undefined)
+      params = params.set('portalAccess', String(filters.portalAccess));
     if (filters?.state) params = params.set('state', filters.state);
     if (filters?.municipality) params = params.set('municipality', filters.municipality);
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
@@ -82,7 +89,10 @@ export class CustomerApiService {
   }
 
   grantWarehouseAccess(id: string, warehouseId: string): Observable<CustomerWarehouseAccessItem> {
-    return this.http.post<CustomerWarehouseAccessItem>(`${this.baseUrl}/${id}/warehouses/${warehouseId}`, {});
+    return this.http.post<CustomerWarehouseAccessItem>(
+      `${this.baseUrl}/${id}/warehouses/${warehouseId}`,
+      {},
+    );
   }
 
   revokeWarehouseAccess(id: string, warehouseId: string): Observable<void> {

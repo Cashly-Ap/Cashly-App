@@ -1,5 +1,7 @@
 <div class="p-4 md:p-6">
-  <h3 class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2">
+  <h3
+    class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
+  >
     <i class="pi pi-list text-surface-500"></i>
     Líneas de Devolución
   </h3>
@@ -30,15 +32,22 @@
           <tr class="border-b border-surface-100 dark:border-surface-800">
             <td class="py-2">
               <div class="font-medium">{{ line.productName }}</div>
-              <div class="text-xs text-surface-400">Máx: {{ getMaxQuantity(idx) }} | Cant: {{ line.quantity || 0 }}</div>
+              <div class="text-xs text-surface-400">
+                Máx: {{ getMaxQuantity(idx) }} | Cant: {{ line.quantity || 0 }}
+              </div>
             </td>
             <td class="text-center py-2">
-              <button type="button" (click)="openAllocationPopover($event, idx)" class="w-9 h-9 rounded-lg bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 flex items-center justify-center transition-colors mx-auto" pTooltip="Distribuir por almacenes">
+              <button
+                type="button"
+                (click)="openAllocationPopover($event, idx)"
+                class="w-9 h-9 rounded-lg bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 flex items-center justify-center transition-colors mx-auto"
+                pTooltip="Distribuir por almacenes"
+              >
                 <i class="pi pi-warehouse text-sm text-surface-600 dark:text-surface-300"></i>
               </button>
             </td>
             <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-            <td class="text-right py-2 font-medium">{{ (line.unitPrice) | number: '1.2-2' }}</td>
+            <td class="text-right py-2 font-medium">{{ line.unitPrice | number: '1.2-2' }}</td>
           </tr>
         }
       </tbody>

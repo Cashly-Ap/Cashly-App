@@ -7,9 +7,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('');
       const validators = AuthValidators.email;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBeGreaterThan(0);
       expect(errors[0]).toHaveProperty('required');
@@ -19,9 +17,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('invalid-email');
       const validators = AuthValidators.email;
 
-      const emailValidator = validators.find((v) =>
-        v.toString().includes('email'),
-      );
+      const emailValidator = validators.find((v) => v.toString().includes('email'));
       const error = emailValidator ? emailValidator(control) : null;
 
       expect(error).toHaveProperty('email');
@@ -31,9 +27,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('test@example.com');
       const validators = AuthValidators.email;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBe(0);
     });
@@ -44,9 +38,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('');
       const validators = AuthValidators.password;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBeGreaterThan(0);
     });
@@ -55,9 +47,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('Short1!');
       const validators = AuthValidators.password;
 
-      const minLengthValidator = validators.find((v) =>
-        v.toString().includes('minLength'),
-      );
+      const minLengthValidator = validators.find((v) => v.toString().includes('minLength'));
       const error = minLengthValidator ? minLengthValidator(control) : null;
 
       expect(error).toHaveProperty('minlength');
@@ -94,9 +84,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('Password123');
       const validators = AuthValidators.password;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBe(0);
     });
@@ -107,9 +95,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('');
       const validators = AuthValidators.loginPassword;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBe(1);
       expect(errors[0]).toHaveProperty('required');
@@ -119,9 +105,7 @@ describe('AuthValidators', () => {
       const control = new FormControl('weak');
       const validators = AuthValidators.loginPassword;
 
-      const errors = validators
-        .map((v) => v(control))
-        .filter((e) => e !== null);
+      const errors = validators.map((v) => v(control)).filter((e) => e !== null);
 
       expect(errors.length).toBe(0);
     });

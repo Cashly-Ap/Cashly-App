@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnChanges, input, output, signal, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  input,
+  output,
+  signal,
+  inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -35,7 +43,14 @@ export interface DuplicateConfirmEvent {
   selector: 'app-duplicate-invoice-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DialogModule, ButtonModule, TableModule, TooltipModule, CustomerPickerDialogComponent],
+  imports: [
+    CommonModule,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    TooltipModule,
+    CustomerPickerDialogComponent,
+  ],
   templateUrl: './duplicate-invoice-dialog.component.html',
 })
 export class DuplicateInvoiceDialogComponent implements OnChanges {
@@ -50,7 +65,11 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineWithStockInfo[]>([]);
-  readonly invoiceInfo = signal<{ number: string; customerName: string; customerRif: string | null } | null>(null);
+  readonly invoiceInfo = signal<{
+    number: string;
+    customerName: string;
+    customerRif: string | null;
+  } | null>(null);
   readonly hasAnyNegativeStock = signal(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly showCustomerPicker = signal(false);
@@ -84,16 +103,16 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
           customerRif: invoice.customerRif,
         });
 
-        const mappedLines = invoice.lines.map((line) =>
-          this.mapLineWithStock(line)
-        );
+        const mappedLines = invoice.lines.map((line) => this.mapLineWithStock(line));
 
         this.lines.set(mappedLines);
         this.hasAnyNegativeStock.set(mappedLines.some((l) => l.hasNegativeStock));
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message || err?.message || 'Error al cargar datos de la factura');
+        this.error.set(
+          err?.error?.message || err?.message || 'Error al cargar datos de la factura',
+        );
         this.loading.set(false);
       },
     });
@@ -101,9 +120,7 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
 
   private mapLineWithStock(line: InvoiceLineDetail): LineWithStockInfo {
     const allocations: AllocationWithStock[] = line.warehouseAllocations.map((wa) => {
-      const stockInfo = line.warehouseStocks?.find(
-        (ws) => ws.warehouseId === wa.warehouseId
-      );
+      const stockInfo = line.warehouseStocks?.find((ws) => ws.warehouseId === wa.warehouseId);
 
       const inflatedAvailable = stockInfo?.available ?? 0;
       const realAvailable = inflatedAvailable - wa.allocated;

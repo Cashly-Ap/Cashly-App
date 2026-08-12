@@ -84,9 +84,7 @@ describe('QuoteApiService', () => {
     number: 0,
   };
 
-  const mockWarehouses = [
-    { id: 'wh-001', name: 'Central Warehouse', address: '123 Main St' },
-  ];
+  const mockWarehouses = [{ id: 'wh-001', name: 'Central Warehouse', address: '123 Main St' }];
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -200,7 +198,12 @@ describe('QuoteApiService', () => {
         customerId: 'c1',
         notes: 'Test',
         lines: [
-          { productId: 'p1', quantity: 5, unitPrice: 100, warehouseAllocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }] },
+          {
+            productId: 'p1',
+            quantity: 5,
+            unitPrice: 100,
+            warehouseAllocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
+          },
         ],
       };
 
@@ -297,7 +300,9 @@ describe('QuoteApiService', () => {
         expect(result[0].id).toBe('wh-001');
       });
 
-      const req = httpMock.expectOne((r) => r.url === '/api/quotes/warehouses' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/quotes/warehouses' && r.method === 'GET',
+      );
       expect(req.request.params.get('customerId')).toBe('c1');
       req.flush(mockWarehouses);
     });
@@ -336,7 +341,12 @@ describe('QuoteApiService', () => {
       const req = httpMock.expectOne('/api/quotes/q-001/convert-to-order');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({});
-      req.flush({ quoteId: 'q-001', quoteNumber: 'QT-001', orderId: 'ord-001', orderNumber: 'ORD-001' });
+      req.flush({
+        quoteId: 'q-001',
+        quoteNumber: 'QT-001',
+        orderId: 'ord-001',
+        orderNumber: 'ORD-001',
+      });
     });
   });
 
@@ -351,7 +361,12 @@ describe('QuoteApiService', () => {
       const req = httpMock.expectOne('/api/quotes/q-001/convert-to-invoice');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual({ paymentType: 'CASH' });
-      req.flush({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' });
+      req.flush({
+        quoteId: 'q-001',
+        quoteNumber: 'QT-001',
+        invoiceId: 'inv-001',
+        invoiceNumber: 'FAC-001',
+      });
     });
 
     it('should include optional fields when provided', () => {
@@ -368,7 +383,12 @@ describe('QuoteApiService', () => {
         confirmationPassword: 'secret',
         useBalance: false,
       });
-      req.flush({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' });
+      req.flush({
+        quoteId: 'q-001',
+        quoteNumber: 'QT-001',
+        invoiceId: 'inv-001',
+        invoiceNumber: 'FAC-001',
+      });
     });
   });
 });

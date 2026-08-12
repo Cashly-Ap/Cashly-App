@@ -13,43 +13,43 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 
 ## Module Routes
 
-| Route | Component | Guards | Module Permission |
-|-------|-----------|--------|-------------------|
-| `/customers` | CustomersListPageComponent | `authGuard` + `modulePermissionGuard` | `SALES` |
-| `/customers/new` | CustomersFormPageComponent | Same | `SALES` |
-| `/customers/:id` | CustomersDetailsPageComponent | Same | `SALES` |
-| `/customers/:id/edit` | CustomersFormPageComponent | Same + `pendingChangesGuard` | `SALES` |
-| `/customers/:id/balance` | CustomerBalancePageComponent | Same | `FINANCE` |
+| Route                    | Component                     | Guards                                | Module Permission |
+| ------------------------ | ----------------------------- | ------------------------------------- | ----------------- |
+| `/customers`             | CustomersListPageComponent    | `authGuard` + `modulePermissionGuard` | `SALES`           |
+| `/customers/new`         | CustomersFormPageComponent    | Same                                  | `SALES`           |
+| `/customers/:id`         | CustomersDetailsPageComponent | Same                                  | `SALES`           |
+| `/customers/:id/edit`    | CustomersFormPageComponent    | Same + `pendingChangesGuard`          | `SALES`           |
+| `/customers/:id/balance` | CustomerBalancePageComponent  | Same                                  | `FINANCE`         |
 
 ## Seed Users for Testing
 
-| Email | Password | Role | Permissions |
-|-------|----------|------|-------------|
-| `gabriel@gmail.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules |
-| `superadmin@parsun.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules |
-| `admin@parsun.com` | `49510561Gabriel.` | ADMIN | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
-| `operator@parsun.com` | `49510561Gabriel.` | OPERATOR | INVENTORY, SALES, PURCHASES |
-| `sales@parsun.com` | `49510561Gabriel.` | OPERATOR | SALES |
+| Email                   | Password           | Role        | Permissions                                                  |
+| ----------------------- | ------------------ | ----------- | ------------------------------------------------------------ |
+| `gabriel@gmail.com`     | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
+| `superadmin@parsun.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
+| `admin@parsun.com`      | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
+| `operator@parsun.com`   | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
+| `sales@parsun.com`      | `49510561Gabriel.` | OPERATOR    | SALES                                                        |
 
 ## API Endpoints Reference
 
-| Method | Endpoint | Auth Required | Min Role |
-|--------|----------|---------------|----------|
-| GET | `/api/customers?search=&type=&active=&page=&size=&orderBy=&orderDir=` | SALES | OPERATOR |
-| GET | `/api/customers/:id` | SALES | OPERATOR |
-| POST | `/api/customers` | SALES | OPERATOR |
-| PUT | `/api/customers/:id` | SALES | OPERATOR |
-| DELETE | `/api/customers/:id` | SALES | ADMIN |
-| PUT | `/api/customers/:id/portal-password` | SALES | ADMIN |
-| GET | `/api/customers/:id/balance` | FINANCES | OPERATOR |
-| GET | `/api/customers/:id/balance/transactions?page=&size=` | FINANCES | OPERATOR |
-| POST | `/api/customers/:id/balance/advance` | FINANCES | OPERATOR |
-| POST | `/api/customers/:id/balance/refund` | FINANCES | OPERATOR |
-| GET | `/api/customers/:id/credit` | FINANCES | OPERATOR |
-| GET | `/api/customers/credit/overdue` | FINANCES | OPERATOR |
-| GET | `/api/customers/:id/warehouses` | INVENTORY | OPERATOR |
-| POST | `/api/customers/:id/warehouses/:warehouseId` | INVENTORY | ADMIN |
-| DELETE | `/api/customers/:id/warehouses/:warehouseId` | INVENTORY | ADMIN |
+| Method | Endpoint                                                              | Auth Required | Min Role |
+| ------ | --------------------------------------------------------------------- | ------------- | -------- |
+| GET    | `/api/customers?search=&type=&active=&page=&size=&orderBy=&orderDir=` | SALES         | OPERATOR |
+| GET    | `/api/customers/:id`                                                  | SALES         | OPERATOR |
+| POST   | `/api/customers`                                                      | SALES         | OPERATOR |
+| PUT    | `/api/customers/:id`                                                  | SALES         | OPERATOR |
+| DELETE | `/api/customers/:id`                                                  | SALES         | ADMIN    |
+| PUT    | `/api/customers/:id/portal-password`                                  | SALES         | ADMIN    |
+| GET    | `/api/customers/:id/balance`                                          | FINANCES      | OPERATOR |
+| GET    | `/api/customers/:id/balance/transactions?page=&size=`                 | FINANCES      | OPERATOR |
+| POST   | `/api/customers/:id/balance/advance`                                  | FINANCES      | OPERATOR |
+| POST   | `/api/customers/:id/balance/refund`                                   | FINANCES      | OPERATOR |
+| GET    | `/api/customers/:id/credit`                                           | FINANCES      | OPERATOR |
+| GET    | `/api/customers/credit/overdue`                                       | FINANCES      | OPERATOR |
+| GET    | `/api/customers/:id/warehouses`                                       | INVENTORY     | OPERATOR |
+| POST   | `/api/customers/:id/warehouses/:warehouseId`                          | INVENTORY     | ADMIN    |
+| DELETE | `/api/customers/:id/warehouses/:warehouseId`                          | INVENTORY     | ADMIN    |
 
 ---
 
@@ -624,43 +624,43 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 
 ## Coverage Matrix
 
-| Functionality | Tests covering it | Priority |
-|--------------|-------------------|----------|
-| List customers | CUSTOMER-001, CUSTOMER-030 | CRITICAL |
-| Empty state | CUSTOMER-002 | HIGH |
-| Pagination | CUSTOMER-003 | MEDIUM |
-| Sorting | CUSTOMER-004 | LOW |
-| Type filter | CUSTOMER-005 | MEDIUM |
-| Active filter | CUSTOMER-006 | MEDIUM |
-| Search | CUSTOMER-007 | HIGH |
-| Create customer | CUSTOMER-008, CUSTOMER-032, CUSTOMER-033, CUSTOMER-040 | CRITICAL |
-| Create validation | CUSTOMER-009, CUSTOMER-011, CUSTOMER-012, CUSTOMER-034, CUSTOMER-035, CUSTOMER-036 | HIGH |
-| Duplicate RIF | CUSTOMER-010 | HIGH |
-| View details | CUSTOMER-013 | HIGH |
-| Edit customer | CUSTOMER-014, CUSTOMER-015 | HIGH |
-| Delete customer | CUSTOMER-016, CUSTOMER-017 | CRITICAL |
-| Route protection | CUSTOMER-018, CUSTOMER-019 | CRITICAL |
-| Permission enforcement | CUSTOMER-020, CUSTOMER-021, CUSTOMER-039, CUSTOMER-044 | CRITICAL |
-| Portal password | CUSTOMER-022, CUSTOMER-023 | HIGH |
-| 404 handling | CUSTOMER-024, CUSTOMER-043 | MEDIUM |
-| Customer balance | CUSTOMER-025, CUSTOMER-026, CUSTOMER-027, CUSTOMER-045 | HIGH |
-| Balance validation | CUSTOMER-028, CUSTOMER-029 | MEDIUM |
-| Filter reset | CUSTOMER-031 | LOW |
-| Form UX | CUSTOMER-037, CUSTOMER-038, CUSTOMER-042 | MEDIUM |
-| Warehouse access | CUSTOMER-041 | MEDIUM |
+| Functionality          | Tests covering it                                                                  | Priority |
+| ---------------------- | ---------------------------------------------------------------------------------- | -------- |
+| List customers         | CUSTOMER-001, CUSTOMER-030                                                         | CRITICAL |
+| Empty state            | CUSTOMER-002                                                                       | HIGH     |
+| Pagination             | CUSTOMER-003                                                                       | MEDIUM   |
+| Sorting                | CUSTOMER-004                                                                       | LOW      |
+| Type filter            | CUSTOMER-005                                                                       | MEDIUM   |
+| Active filter          | CUSTOMER-006                                                                       | MEDIUM   |
+| Search                 | CUSTOMER-007                                                                       | HIGH     |
+| Create customer        | CUSTOMER-008, CUSTOMER-032, CUSTOMER-033, CUSTOMER-040                             | CRITICAL |
+| Create validation      | CUSTOMER-009, CUSTOMER-011, CUSTOMER-012, CUSTOMER-034, CUSTOMER-035, CUSTOMER-036 | HIGH     |
+| Duplicate RIF          | CUSTOMER-010                                                                       | HIGH     |
+| View details           | CUSTOMER-013                                                                       | HIGH     |
+| Edit customer          | CUSTOMER-014, CUSTOMER-015                                                         | HIGH     |
+| Delete customer        | CUSTOMER-016, CUSTOMER-017                                                         | CRITICAL |
+| Route protection       | CUSTOMER-018, CUSTOMER-019                                                         | CRITICAL |
+| Permission enforcement | CUSTOMER-020, CUSTOMER-021, CUSTOMER-039, CUSTOMER-044                             | CRITICAL |
+| Portal password        | CUSTOMER-022, CUSTOMER-023                                                         | HIGH     |
+| 404 handling           | CUSTOMER-024, CUSTOMER-043                                                         | MEDIUM   |
+| Customer balance       | CUSTOMER-025, CUSTOMER-026, CUSTOMER-027, CUSTOMER-045                             | HIGH     |
+| Balance validation     | CUSTOMER-028, CUSTOMER-029                                                         | MEDIUM   |
+| Filter reset           | CUSTOMER-031                                                                       | LOW      |
+| Form UX                | CUSTOMER-037, CUSTOMER-038, CUSTOMER-042                                           | MEDIUM   |
+| Warehouse access       | CUSTOMER-041                                                                       | MEDIUM   |
 
 ---
 
 ## Execution Results
 
-*To be filled after test execution.*
+_To be filled after test execution._
 
-| Metric | Value |
-|--------|-------|
-| Planned Tests | 45 |
-| Executed Tests | |
-| ✅ PASS | |
-| ❌ FAIL | |
-| ⚠️ WARNING | |
-| 🔲 NOT EXECUTED | |
-| Issues Found | |
+| Metric          | Value |
+| --------------- | ----- |
+| Planned Tests   | 45    |
+| Executed Tests  |       |
+| ✅ PASS         |       |
+| ❌ FAIL         |       |
+| ⚠️ WARNING      |       |
+| 🔲 NOT EXECUTED |       |
+| Issues Found    |       |

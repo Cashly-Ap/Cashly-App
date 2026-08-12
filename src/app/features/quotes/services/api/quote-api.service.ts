@@ -156,21 +156,21 @@ export class QuoteApiService {
   }
 
   getById(id: string): Observable<QuoteDetails> {
-    return this.http.get<QuoteDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
+    return this.http
+      .get<QuoteDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toQuoteDetails(r)));
   }
 
   create(data: QuoteCreate): Observable<QuoteDetails> {
-    return this.http.post<QuoteDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
+    return this.http
+      .post<QuoteDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toQuoteDetails(r)));
   }
 
   update(id: string, data: QuoteEdit): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}`, data).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
+    return this.http
+      .put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}`, data)
+      .pipe(map((r) => this.toQuoteDetails(r)));
   }
 
   delete(id: string): Observable<void> {
@@ -181,7 +181,8 @@ export class QuoteApiService {
     let params = new HttpParams().set('customerId', filters.customerId);
     if (filters.search) params = params.set('search', filters.search);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
-    if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
+    if (filters.composite !== undefined)
+      params = params.set('composite', String(filters.composite));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
     return this.http.get<PageResponse<QuoteProduct>>('/api/products', { params });
@@ -193,17 +194,26 @@ export class QuoteApiService {
   }
 
   assignWarehouses(id: string, request: AssignQuoteWarehousesRequest): Observable<QuoteDetails> {
-    return this.http.put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request).pipe(
-      map((r) => this.toQuoteDetails(r)),
-    );
+    return this.http
+      .put<QuoteDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request)
+      .pipe(map((r) => this.toQuoteDetails(r)));
   }
 
   convertToOrder(id: string): Observable<QuoteConvertedToOrderResponse> {
-    return this.http.post<QuoteConvertedToOrderResponse>(`${this.baseUrl}/${id}/convert-to-order`, {});
+    return this.http.post<QuoteConvertedToOrderResponse>(
+      `${this.baseUrl}/${id}/convert-to-order`,
+      {},
+    );
   }
 
-  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<QuoteConvertedToInvoiceResponse> {
-    return this.http.post<QuoteConvertedToInvoiceResponse>(`${this.baseUrl}/${id}/convert-to-invoice`, request);
+  convertToInvoice(
+    id: string,
+    request: ConvertToInvoiceRequest,
+  ): Observable<QuoteConvertedToInvoiceResponse> {
+    return this.http.post<QuoteConvertedToInvoiceResponse>(
+      `${this.baseUrl}/${id}/convert-to-invoice`,
+      request,
+    );
   }
 
   private toQuoteDetails(r: QuoteDetailApiResponse): QuoteDetails {

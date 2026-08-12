@@ -123,21 +123,21 @@ export class PurchaseApiService {
   }
 
   getById(id: string): Observable<PurchaseDetails> {
-    return this.http.get<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toPurchaseDetails(r)),
-    );
+    return this.http
+      .get<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 
   create(data: PurchaseCreate): Observable<PurchaseDetails> {
-    return this.http.post<PurchaseDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toPurchaseDetails(r)),
-    );
+    return this.http
+      .post<PurchaseDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 
   update(id: string, data: PurchaseEdit): Observable<PurchaseDetails> {
-    return this.http.put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}`, data).pipe(
-      map((r) => this.toPurchaseDetails(r)),
-    );
+    return this.http
+      .put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}`, data)
+      .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 
   delete(id: string): Observable<void> {
@@ -145,22 +145,25 @@ export class PurchaseApiService {
   }
 
   confirm(id: string): Observable<PurchaseDetails> {
-    return this.http.put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
-      map((r) => this.toPurchaseDetails(r)),
-    );
+    return this.http
+      .put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {})
+      .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 
   cancel(id: string, request: CancelPurchaseRequest): Observable<PurchaseDetails> {
-    return this.http.post<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, request).pipe(
-      map((r) => this.toPurchaseDetails(r)),
-    );
+    return this.http
+      .post<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, request)
+      .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 
-  getProductsForPurchase(filters: PurchaseProductFilters): Observable<PageResponse<PurchaseProduct>> {
+  getProductsForPurchase(
+    filters: PurchaseProductFilters,
+  ): Observable<PageResponse<PurchaseProduct>> {
     let params = new HttpParams();
     if (filters.search) params = params.set('search', filters.search);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
-    if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
+    if (filters.composite !== undefined)
+      params = params.set('composite', String(filters.composite));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
     return this.http.get<PageResponse<PurchaseProduct>>(`${this.baseUrl}/products`, { params });

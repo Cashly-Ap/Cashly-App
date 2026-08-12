@@ -1,45 +1,44 @@
-  <div class="min-h-screen">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      @if (loading()) {
-        <app-loading-spinner />
-      } @else {
-        <div class="flex flex-col gap-6">
-          <div class="flex items-center justify-between">
-            <app-page-header
-              title="Saldo del Cliente"
-              subtitle="Resumen de saldo y movimientos"
-            />
-            <p-button
-              label="Volver"
-              icon="pi pi-arrow-left"
-              [outlined]="true"
-              severity="secondary"
-              (onClick)="onBack()"
-            />
-          </div>
-
-          <app-balance-summary-card
-            [customerBalance]="balance()"
-            [customerName]="customerName()"
-            [customerAlias]="customerAlias()"
+<div class="min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    @if (loading()) {
+      <app-loading-spinner />
+    } @else {
+      <div class="flex flex-col gap-6">
+        <div class="flex items-center justify-between">
+          <app-page-header title="Saldo del Cliente" subtitle="Resumen de saldo y movimientos" />
+          <p-button
+            label="Volver"
+            icon="pi pi-arrow-left"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="onBack()"
           />
+        </div>
 
-          <div class="bg-white dark:bg-surface-900 rounded-xl shadow-2xl border border-surface-100 dark:border-surface-800 overflow-hidden">
-            <div class="p-4 sm:p-6">
-              <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-4">
-                Historial de Movimientos
-              </h2>
-              <app-balance-transactions-table
-                [transactions]="transactions()"
-                [loading]="transactionsLoading()"
-                [totalRecords]="totalRecords()"
-                [rows]="pageSize()"
-                [first]="page() * pageSize()"
-                (pageChanged)="onPageChange($event)"
-              />
-            </div>
+        <app-balance-summary-card
+          [customerBalance]="balance()"
+          [customerName]="customerName()"
+          [customerAlias]="customerAlias()"
+        />
+
+        <div
+          class="bg-white dark:bg-surface-900 rounded-xl shadow-2xl border border-surface-100 dark:border-surface-800 overflow-hidden"
+        >
+          <div class="p-4 sm:p-6">
+            <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-4">
+              Historial de Movimientos
+            </h2>
+            <app-balance-transactions-table
+              [transactions]="transactions()"
+              [loading]="transactionsLoading()"
+              [totalRecords]="totalRecords()"
+              [rows]="pageSize()"
+              [first]="page() * pageSize()"
+              (pageChanged)="onPageChange($event)"
+            />
           </div>
         </div>
-      }
-    </div>
+      </div>
+    }
   </div>
+</div>

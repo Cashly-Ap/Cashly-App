@@ -5,6 +5,7 @@
 The Invoices module manages sales invoices (facturas) in the invoicing system. Invoices can be created directly (standalone) or generated from an existing Order. Each invoice contains invoice lines with product details, applies differential pricing, manages stock deduction, and tracks payments with due dates.
 
 **Key Concepts**:
+
 - **Customer Required**: Every invoice MUST have a customer associated
 - **Merchant Optional**: Invoices MAY have a merchant associated (inherited from Order or set directly)
 - **Two Creation Paths**: Can be created standalone OR converted from an Order
@@ -28,13 +29,13 @@ The Invoices module manages sales invoices (facturas) in the invoicing system. I
 type InvoiceStatus = 'PENDING' | 'DELIVERED' | 'PARTIALLY_PAID' | 'PAID' | 'CANCELLED';
 ```
 
-| Status | Description | Can Be Delivered | Can Receive Payment | Can Be Cancelled |
-|--------|-------------|------------------|---------------------|------------------|
-| PENDING | Created, awaiting delivery | ✅ Yes | ❌ No | ✅ Yes |
-| DELIVERED | Delivered to customer | ❌ No | ✅ Yes | ❌ No |
-| PARTIALLY_PAID | Partially paid | ❌ No | ✅ Yes | ❌ No |
-| PAID | Fully paid | ❌ No | ❌ No | ❌ No |
-| CANCELLED | Cancelled | ❌ No | ❌ No | ❌ No |
+| Status         | Description                | Can Be Delivered | Can Receive Payment | Can Be Cancelled |
+| -------------- | -------------------------- | ---------------- | ------------------- | ---------------- |
+| PENDING        | Created, awaiting delivery | ✅ Yes           | ❌ No               | ✅ Yes           |
+| DELIVERED      | Delivered to customer      | ❌ No            | ✅ Yes              | ❌ No            |
+| PARTIALLY_PAID | Partially paid             | ❌ No            | ✅ Yes              | ❌ No            |
+| PAID           | Fully paid                 | ❌ No            | ❌ No               | ❌ No            |
+| CANCELLED      | Cancelled                  | ❌ No            | ❌ No               | ❌ No            |
 
 ### Status Transitions
 
@@ -67,18 +68,22 @@ PARTIALLY_PAID ──► PAID (final payment)
 ## Invoice Creation Paths
 
 ### Path 1: From Order (Convert)
+
 ```
 Order (PENDING) --> [convert-to-invoice] --> Invoice (PENDING)
 ```
+
 - Inherits: customerId, merchantId, lines, notes
 - Stock deducted at conversion time
 - Order status changes to INVOICED
 - **This happens in the Orders module, not here**
 
 ### Path 2: Direct Creation (Standalone)
+
 ```
 [Create Invoice API] --> Invoice (PENDING)
 ```
+
 - Requires: customerId, lines
 - Optional: merchantId, creditDays, notes
 - Stock deducted at creation time
@@ -144,19 +149,19 @@ src/app/features/invoices/
 
 ### Endpoint Summary
 
-| Method | Endpoint | Description | Roles |
-|--------|----------|-------------|-------|
-| POST | /api/invoices | Create direct invoice | USER, ADMIN |
-| GET | /api/invoices | List invoices with filters | USER, ADMIN, MERCHANT |
-| GET | /api/invoices/{id} | Get invoice by ID | USER, ADMIN, MERCHANT |
-| PUT | /api/invoices/{id}/deliver | Mark as delivered | USER, ADMIN, DISPATCHER |
-| POST | /api/invoices/{id}/payments | Register payment (direct) | USER, ADMIN |
-| PUT | /api/invoices/{id}/cancel | Cancel invoice | USER, ADMIN |
-| GET | /api/invoices/{id}/pdf | Download PDF | USER, ADMIN, MERCHANT |
-| GET | /api/invoices/overdue | List overdue invoices (query filter) | USER, ADMIN |
-| GET | /api/invoices/due-soon | List invoices due soon | USER, ADMIN, MERCHANT |
-| GET | /api/invoices/with-debt | List invoices with balance > 0 | USER, ADMIN, MERCHANT |
-| POST | /api/invoices/process-overdue | Batch: trigger overdue check | ADMIN |
+| Method | Endpoint                      | Description                          | Roles                   |
+| ------ | ----------------------------- | ------------------------------------ | ----------------------- |
+| POST   | /api/invoices                 | Create direct invoice                | USER, ADMIN             |
+| GET    | /api/invoices                 | List invoices with filters           | USER, ADMIN, MERCHANT   |
+| GET    | /api/invoices/{id}            | Get invoice by ID                    | USER, ADMIN, MERCHANT   |
+| PUT    | /api/invoices/{id}/deliver    | Mark as delivered                    | USER, ADMIN, DISPATCHER |
+| POST   | /api/invoices/{id}/payments   | Register payment (direct)            | USER, ADMIN             |
+| PUT    | /api/invoices/{id}/cancel     | Cancel invoice                       | USER, ADMIN             |
+| GET    | /api/invoices/{id}/pdf        | Download PDF                         | USER, ADMIN, MERCHANT   |
+| GET    | /api/invoices/overdue         | List overdue invoices (query filter) | USER, ADMIN             |
+| GET    | /api/invoices/due-soon        | List invoices due soon               | USER, ADMIN, MERCHANT   |
+| GET    | /api/invoices/with-debt       | List invoices with balance > 0       | USER, ADMIN, MERCHANT   |
+| POST   | /api/invoices/process-overdue | Batch: trigger overdue check         | ADMIN                   |
 
 ---
 
@@ -167,35 +172,37 @@ src/app/features/invoices/
 **Roles**: USER, ADMIN
 
 **Request Body**:
+
 ```typescript
 interface CreateInvoiceRequest {
-  customerId: string;           // UUID - REQUIRED
-  merchantId?: string;          // UUID - Optional
-  creditDays?: number;          // 0-365 - Optional (uses customer.creditDays if not sent)
-  dueDate?: string;             // YYYY-MM-DD - Optional (calculated if not sent)
-  currency?: string;            // USD, EUR, VES - Optional (default: USD)
-  notes?: string;               // Max 1000 chars - Optional
-  lines: InvoiceLineRequest[];  // At least 1 line REQUIRED
+  customerId: string; // UUID - REQUIRED
+  merchantId?: string; // UUID - Optional
+  creditDays?: number; // 0-365 - Optional (uses customer.creditDays if not sent)
+  dueDate?: string; // YYYY-MM-DD - Optional (calculated if not sent)
+  currency?: string; // USD, EUR, VES - Optional (default: USD)
+  notes?: string; // Max 1000 chars - Optional
+  lines: InvoiceLineRequest[]; // At least 1 line REQUIRED
 }
 
 interface InvoiceLineRequest {
-  productId: string;     // UUID - REQUIRED
-  quantity: number;      // > 0 - REQUIRED
-  warehouseId?: number;  // Optional - for stock deduction; differential pricing is applied automatically
+  productId: string; // UUID - REQUIRED
+  quantity: number; // > 0 - REQUIRED
+  warehouseId?: number; // Optional - for stock deduction; differential pricing is applied automatically
 }
 ```
 
 **Response (201 Created)**:
+
 ```typescript
 interface InvoiceCreateResponse {
   id: string;
-  invoiceNumber: string;        // e.g., "INV-2026-00001"
+  invoiceNumber: string; // e.g., "INV-2026-00001"
   customerId: string;
   customerName: string;
   merchantId: string | null;
   status: 'PENDING';
-  issueDate: string;            // "2026-01-13"
-  dueDate: string;              // "2026-02-12"
+  issueDate: string; // "2026-01-13"
+  dueDate: string; // "2026-02-12"
   creditDays: number;
   subtotal: number;
   lineCount: number;
@@ -204,6 +211,7 @@ interface InvoiceCreateResponse {
 ```
 
 **Errors**:
+
 - 400 - Invalid data
 - 404 - Customer not found
 - 422 - Insufficient stock
@@ -218,20 +226,21 @@ interface InvoiceCreateResponse {
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| search | string | - | Search by invoice number or customer name |
-| status | string | - | Filter by status: PENDING, DELIVERED, PARTIALLY_PAID, PAID, CANCELLED |
-| customerId | UUID | - | Filter by customer |
-| merchantId | UUID | - | Filter by merchant (ignored for MERCHANT role) |
-| fromDate | date | - | Issue date from (YYYY-MM-DD) |
-| toDate | date | - | Issue date to |
-| overdue | boolean | false | Filter overdue invoices (dueDate < today AND status IN (DELIVERED, PARTIALLY_PAID)) |
-| page | number | 0 | Page number |
-| size | number | 20 | Page size |
-| sort | string | createdAt,desc | Sort field and direction |
+| Parameter  | Type    | Default        | Description                                                                         |
+| ---------- | ------- | -------------- | ----------------------------------------------------------------------------------- |
+| search     | string  | -              | Search by invoice number or customer name                                           |
+| status     | string  | -              | Filter by status: PENDING, DELIVERED, PARTIALLY_PAID, PAID, CANCELLED               |
+| customerId | UUID    | -              | Filter by customer                                                                  |
+| merchantId | UUID    | -              | Filter by merchant (ignored for MERCHANT role)                                      |
+| fromDate   | date    | -              | Issue date from (YYYY-MM-DD)                                                        |
+| toDate     | date    | -              | Issue date to                                                                       |
+| overdue    | boolean | false          | Filter overdue invoices (dueDate < today AND status IN (DELIVERED, PARTIALLY_PAID)) |
+| page       | number  | 0              | Page number                                                                         |
+| size       | number  | 20             | Page size                                                                           |
+| sort       | string  | createdAt,desc | Sort field and direction                                                            |
 
 **Response (200 OK)**:
+
 ```typescript
 interface Page<InvoiceListResponse> {
   content: InvoiceListResponse[];
@@ -269,6 +278,7 @@ interface InvoiceListResponse {
 **Roles**: USER, ADMIN (any), MERCHANT (only their own)
 
 **Response (200 OK)**:
+
 ```typescript
 interface InvoiceDetailResponse {
   id: string;
@@ -323,7 +333,7 @@ interface InvoicePaymentResponse {
   id: string;
   amount: number;
   paymentDate: string;
-  paymentMethod: string;  // CASH, TRANSFER, CHECK, CARD, OTHER
+  paymentMethod: string; // CASH, TRANSFER, CHECK, CARD, OTHER
   reference: string | null;
   createdAt: string;
 }
@@ -333,13 +343,14 @@ interface PaymentScheduleResponse {
   installmentNumber: number;
   amount: number;
   dueDate: string;
-  status: string;         // PENDING, PAID, OVERDUE
+  status: string; // PENDING, PAID, OVERDUE
   paidAmount: number;
   paidAt: string | null;
 }
 ```
 
 **Errors**:
+
 - 404 - Invoice not found
 - 403 - MERCHANT trying to view another merchant's invoice
 
@@ -352,16 +363,18 @@ interface PaymentScheduleResponse {
 **Roles**: USER, ADMIN, DISPATCHER
 
 **Request Body** (optional):
+
 ```typescript
 interface DeliverInvoiceRequest {
-  dispatcherId?: string;       // UUID - Optional dispatcher reference
-  deliveryProofUrl?: string;   // URL of delivery proof file - Optional
+  dispatcherId?: string; // UUID - Optional dispatcher reference
+  deliveryProofUrl?: string; // URL of delivery proof file - Optional
 }
 ```
 
 **Response (200 OK)**: `InvoiceDetailResponse` with `status: 'DELIVERED'`
 
 **Errors**:
+
 - 404 - Invoice not found
 - 409 - Invoice is not in PENDING status
 
@@ -374,16 +387,18 @@ interface DeliverInvoiceRequest {
 **Roles**: USER, ADMIN
 
 **Request Body**:
+
 ```typescript
 interface RegisterPaymentRequest {
-  amount: number;          // > 0, <= balance - REQUIRED
-  paymentDate: string;     // "YYYY-MM-DD" - REQUIRED
-  paymentMethod: string;   // CASH, TRANSFER, CHECK, CARD, OTHER - REQUIRED
-  reference?: string;      // Max 100 chars - Optional
+  amount: number; // > 0, <= balance - REQUIRED
+  paymentDate: string; // "YYYY-MM-DD" - REQUIRED
+  paymentMethod: string; // CASH, TRANSFER, CHECK, CARD, OTHER - REQUIRED
+  reference?: string; // Max 100 chars - Optional
 }
 ```
 
 **Response (201 Created)**:
+
 ```typescript
 interface InvoicePaymentResponse {
   id: string;
@@ -396,11 +411,13 @@ interface InvoicePaymentResponse {
 ```
 
 **Errors**:
+
 - 404 - Invoice not found
 - 409 - Invoice cancelled or already paid
 - 422 - Amount exceeds balance
 
 **Notes**:
+
 - If payment completes balance → status changes to PAID
 - If partial payment → status changes to PARTIAL
 - If invoice has merchant → Collection record is generated
@@ -414,19 +431,22 @@ interface InvoicePaymentResponse {
 **Roles**: USER, ADMIN
 
 **Request Body**:
+
 ```typescript
 interface CancelInvoiceRequest {
-  reason: string;  // REQUIRED, max 500 chars
+  reason: string; // REQUIRED, max 500 chars
 }
 ```
 
 **Response (200 OK)**: `InvoiceDetailResponse` with `status: 'CANCELLED'`, `cancelledAt`, and `cancelledReason` populated.
 
 **Errors**:
+
 - 404 - Invoice not found
 - 409 - Invoice not in PENDING status or has payments
 
 **Notes**:
+
 - Only PENDING invoices can be cancelled
 - Invoices with registered payments CANNOT be cancelled
 - Stock is restored to warehouse if it was deducted
@@ -440,6 +460,7 @@ interface CancelInvoiceRequest {
 **Roles**: USER, ADMIN, MERCHANT (only their own)
 
 **Response (200 OK)**:
+
 - Content-Type: application/pdf
 - Content-Disposition: attachment; filename="invoice-{id}.pdf"
 - Body: Binary PDF file
@@ -456,13 +477,13 @@ interface CancelInvoiceRequest {
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| customerId | UUID | - | Filter by customer |
-| merchantId | UUID | - | Filter by merchant |
-| page | number | 0 | Page number |
-| size | number | 20 | Page size |
-| sort | string | dueDate,asc | Sort |
+| Parameter  | Type   | Default     | Description        |
+| ---------- | ------ | ----------- | ------------------ |
+| customerId | UUID   | -           | Filter by customer |
+| merchantId | UUID   | -           | Filter by merchant |
+| page       | number | 0           | Page number        |
+| size       | number | 20          | Page size          |
+| sort       | string | dueDate,asc | Sort               |
 
 **Response**: Same as GET /api/invoices
 
@@ -476,23 +497,25 @@ interface CancelInvoiceRequest {
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| days | number | 7 | Days ahead (1-90) |
-| customerId | UUID | - | Filter by customer |
-| merchantId | UUID | - | Filter by merchant |
-| page | number | 0 | Page number |
-| size | number | 20 | Page size |
-| sort | string | dueDate,asc | Sort |
+| Parameter  | Type   | Default     | Description        |
+| ---------- | ------ | ----------- | ------------------ |
+| days       | number | 7           | Days ahead (1-90)  |
+| customerId | UUID   | -           | Filter by customer |
+| merchantId | UUID   | -           | Filter by merchant |
+| page       | number | 0           | Page number        |
+| size       | number | 20          | Page size          |
+| sort       | string | dueDate,asc | Sort               |
 
 **Response (200 OK)**:
+
 ```typescript
 interface DueSoonInvoiceResponse extends InvoiceListResponse {
-  daysUntilDue: number;  // Days until due
+  daysUntilDue: number; // Days until due
 }
 ```
 
 **Use Cases**:
+
 - days=7 → See what's due this week
 - days=3 → See urgent (next 3 days)
 - days=30 → Monthly planning
@@ -508,6 +531,7 @@ interface DueSoonInvoiceResponse extends InvoiceListResponse {
 **Request Body**: None
 
 **Response (200 OK)**:
+
 ```typescript
 interface ProcessOverdueResponse {
   processedAt: string;
@@ -524,11 +548,12 @@ interface OverdueInvoiceMarkedResponse {
   dueDate: string;
   daysOverdue: number;
   balance: number;
-  previousStatus: string;  // PENDING or PARTIAL
+  previousStatus: string; // PENDING or PARTIAL
 }
 ```
 
 **Notes**:
+
 - Only ADMIN can execute this endpoint
 - Runs automatically every day at midnight (CRON job)
 - Idempotent: running multiple times doesn't affect already marked invoices
@@ -633,15 +658,15 @@ export interface InvoiceDetails {
 export interface InvoiceLineCreate {
   productId: string;
   quantity: number;
-  warehouseId?: number;  // Optional - differential pricing is applied automatically
+  warehouseId?: number; // Optional - differential pricing is applied automatically
 }
 
 export interface InvoiceCreate {
   customerId: string;
   merchantId?: string;
   creditDays?: number;
-  dueDate?: string;       // YYYY-MM-DD
-  currency?: string;      // USD, EUR, VES (default: USD)
+  dueDate?: string; // YYYY-MM-DD
+  currency?: string; // USD, EUR, VES (default: USD)
   notes?: string;
   lines: InvoiceLineCreate[];
 }
@@ -705,11 +730,11 @@ export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
 
 ```typescript
 const statusColors = {
-  PENDING: { bg: '#FFF3CD', text: '#856404' },          // Yellow - Awaiting delivery
-  DELIVERED: { bg: '#D1ECF1', text: '#0C5460' },        // Cyan - Delivered, ready for payment
-  PARTIALLY_PAID: { bg: '#CCE5FF', text: '#004085' },   // Blue - Has partial payments
-  PAID: { bg: '#D4EDDA', text: '#155724' },             // Green - Fully paid
-  CANCELLED: { bg: '#E2E3E5', text: '#383D41' }         // Gray - Cancelled
+  PENDING: { bg: '#FFF3CD', text: '#856404' }, // Yellow - Awaiting delivery
+  DELIVERED: { bg: '#D1ECF1', text: '#0C5460' }, // Cyan - Delivered, ready for payment
+  PARTIALLY_PAID: { bg: '#CCE5FF', text: '#004085' }, // Blue - Has partial payments
+  PAID: { bg: '#D4EDDA', text: '#155724' }, // Green - Fully paid
+  CANCELLED: { bg: '#E2E3E5', text: '#383D41' }, // Gray - Cancelled
 };
 ```
 
@@ -717,18 +742,18 @@ const statusColors = {
 
 ## Role Permissions
 
-| Endpoint | USER | ADMIN | MERCHANT | DISPATCHER |
-|----------|------|-------|----------|------------|
-| Create invoice | ✅ | ✅ | ❌ | ❌ |
-| List invoices | ✅ All | ✅ All | ✅ Only theirs | ❌ |
-| View invoice | ✅ | ✅ | ✅ Only theirs | ❌ |
-| Deliver invoice | ✅ | ✅ | ❌ | ✅ |
-| Register payment (direct) | ✅ | ✅ | ❌ | ❌ |
-| Cancel invoice | ✅ | ✅ | ❌ | ❌ |
-| Download PDF | ✅ | ✅ | ✅ Only theirs | ❌ |
-| View overdue (query) | ✅ | ✅ | ❌ | ❌ |
-| View due soon | ✅ | ✅ | ✅ Only theirs | ❌ |
-| Batch process overdue | ❌ | ✅ | ❌ | ❌ |
+| Endpoint                  | USER   | ADMIN  | MERCHANT       | DISPATCHER |
+| ------------------------- | ------ | ------ | -------------- | ---------- |
+| Create invoice            | ✅     | ✅     | ❌             | ❌         |
+| List invoices             | ✅ All | ✅ All | ✅ Only theirs | ❌         |
+| View invoice              | ✅     | ✅     | ✅ Only theirs | ❌         |
+| Deliver invoice           | ✅     | ✅     | ❌             | ✅         |
+| Register payment (direct) | ✅     | ✅     | ❌             | ❌         |
+| Cancel invoice            | ✅     | ✅     | ❌             | ❌         |
+| Download PDF              | ✅     | ✅     | ✅ Only theirs | ❌         |
+| View overdue (query)      | ✅     | ✅     | ❌             | ❌         |
+| View due soon             | ✅     | ✅     | ✅ Only theirs | ❌         |
+| Batch process overdue     | ❌     | ✅     | ❌             | ❌         |
 
 ---
 
@@ -739,6 +764,7 @@ const statusColors = {
 **Route**: `/invoices`
 
 **Features**:
+
 - PrimeNG DataTable with server-side sorting and pagination
 - Search by invoice number, customer name (debounced 400ms)
 - Filter by status (including DELIVERED), customer, merchant, date range, overdue only
@@ -751,6 +777,7 @@ const statusColors = {
 **Route**: `/invoices/new` (Create), `/invoices/:id/edit` (Edit PENDING only)
 
 **Features**:
+
 - Tab-based layout (General, Lines, Payment Plan)
 - Customer selection (required)
 - Merchant selection (optional)
@@ -766,6 +793,7 @@ const statusColors = {
 **Route**: `/invoices/:id`
 
 **Features**:
+
 - Complete invoice data display
 - Customer and merchant information
 - Invoice lines table with differential pricing
@@ -783,12 +811,12 @@ const statusColors = {
 
 The "Ver Justificante" (View Delivery Justification) button should be:
 
-| Condition | Button State | Reason |
-|-----------|--------------|--------|
-| Status = PENDING | **Disabled** | Invoice not delivered yet |
-| Status = CANCELLED | **Disabled** | Invoice was cancelled before delivery |
-| Status = DELIVERED, PARTIAL, PAID, OVERDUE | **Enabled** | Invoice has been delivered |
-| `deliveryJustification` is null | **Hidden** | No justification available (edge case) |
+| Condition                                  | Button State | Reason                                 |
+| ------------------------------------------ | ------------ | -------------------------------------- |
+| Status = PENDING                           | **Disabled** | Invoice not delivered yet              |
+| Status = CANCELLED                         | **Disabled** | Invoice was cancelled before delivery  |
+| Status = DELIVERED, PARTIAL, PAID, OVERDUE | **Enabled**  | Invoice has been delivered             |
+| `deliveryJustification` is null            | **Hidden**   | No justification available (edge case) |
 
 **Button Implementation**:
 
@@ -797,15 +825,15 @@ The "Ver Justificante" (View Delivery Justification) button should be:
 canViewJustification = computed(() => {
   const invoice = this.invoice();
   if (!invoice) return false;
-  
+
   const deliveredStatuses = [
     InvoiceStatus.DELIVERED,
     InvoiceStatus.PARTIAL,
     InvoiceStatus.PAID,
     InvoiceStatus.OVERDUE,
   ];
-  
-  return deliveredStatuses.includes(invoice.status) && 
+
+  return deliveredStatuses.includes(invoice.status) &&
          invoice.deliveryJustification !== null;
 });
 
@@ -813,7 +841,7 @@ canViewJustification = computed(() => {
 onViewJustification(): void {
   const invoice = this.invoice();
   if (!invoice?.deliveryJustification) return;
-  
+
   this.dialogService.open(DeliveryJustificationDialogComponent, {
     header: 'Justificante de Entrega',
     width: '500px',
@@ -843,136 +871,76 @@ onViewJustification(): void {
 
 When invoice is delivered, show a card/section with:
 
-```html
+````html
 @if (invoice().deliveredAt) {
-  <p-card header="Información de Entrega">
-    <div class="grid">
-      <div class="col-12 md:col-4">
-        <label class="font-semibold">Fecha de Entrega</label>
-        <p>{{ invoice().deliveredAt | date:'dd/MM/yyyy HH:mm' }}</p>
-      </div>
-      <div class="col-12 md:col-4">
-        <label class="font-semibold">Entregado por</label>
-        <p>{{ invoice().deliveredBy?.name }} (Código: {{ invoice().deliveredBy?.code }})</p>
-      </div>
-      <div class="col-12 md:col-4">
-        <p-button
-          label="Ver Justificante"
-          icon="pi pi-file-check"
-          [disabled]="!canViewJustification()"
-          (onClick)="onViewJustification()"
-          severity="info"
-        />
-      </div>
+<p-card header="Información de Entrega">
+  <div class="grid">
+    <div class="col-12 md:col-4">
+      <label class="font-semibold">Fecha de Entrega</label>
+      <p>{{ invoice().deliveredAt | date:'dd/MM/yyyy HH:mm' }}</p>
     </div>
-  </p-card>
-}
-
----
-
-## Business Rules
-
-### Invoice Creation
-
-1. Customer is REQUIRED
-2. Merchant is OPTIONAL
-3. At least one invoice line is required
-4. `creditDays` defaults to `Customer.creditDays` if not provided (0-365)
-5. `dueDate = issueDate + creditDays`
-6. Invoice number is auto-generated (INV-YYYY-NNNNN)
-7. Stock is deducted if warehouseId is provided on lines
-8. Invoice is created with status PENDING
-
-### Delivery Rules
-
-1. Only PENDING invoices can be marked as DELIVERED
-2. Justification is REQUIRED when marking as delivered
-3. Delivery is typically done by a DISPATCHER (but USER/ADMIN can also do it)
-4. Delivery records: timestamp, dispatcher info, justification note
-5. Once delivered, status changes to DELIVERED
-6. DELIVERED invoices cannot be cancelled
-
-### Payment Rules
-
-1. **Only DELIVERED or PARTIALLY_PAID invoices can receive payments**
-2. **PENDING invoices CANNOT receive payments** (must be delivered first)
-3. Payment amount must be > 0
-4. Payment amount cannot exceed balance
-5. Partial payment changes status to PARTIALLY_PAID
-6. Final payment (balance = 0) changes status to PAID
-7. If invoice has merchant → Collection record is generated
-
-### Cancellation Rules
-
-1. Only PENDING invoices can be cancelled
-2. DELIVERED invoices cannot be cancelled (already delivered to customer)
-3. Invoices with any payments cannot be cancelled
-4. Cancellation restores stock to warehouse
-5. Reason is required
-
-### Overdue Rules
-
-1. OVERDUE only applies to DELIVERED or PARTIAL invoices past due date
-2. PENDING invoices cannot become OVERDUE (not delivered yet)
-
----
-
-## Routes Configuration
-
-```typescript
-export const INVOICE_ROUTES: Routes = [
-  {
-    path: '',
-    loadComponent: () =>
-      import('../pages/invoices-list-page/invoices-list-page.component')
-        .then(m => m.InvoicesListPageComponent),
-    title: 'Facturas',
-  },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('../pages/invoices-form-page/invoices-form-page.component')
-        .then(m => m.InvoicesFormPageComponent),
-    title: 'Nueva Factura',
-    canDeactivate: [pendingChangesGuard],
-  },
-  {
-    path: ':id',
-    loadComponent: () =>
-      import('../pages/invoices-details-page/invoices-details-page.component')
-        .then(m => m.InvoicesDetailsPageComponent),
-    title: 'Detalles de Factura',
-  },
-  {
-    path: ':id/edit',
-    loadComponent: () =>
-      import('../pages/invoices-form-page/invoices-form-page.component')
-        .then(m => m.InvoicesFormPageComponent),
-    title: 'Editar Factura',
-    canDeactivate: [pendingChangesGuard],
-  },
-];
-```
+    <div class="col-12 md:col-4">
+      <label class="font-semibold">Entregado por</label>
+      <p>{{ invoice().deliveredBy?.name }} (Código: {{ invoice().deliveredBy?.code }})</p>
+    </div>
+    <div class="col-12 md:col-4">
+      <p-button
+        label="Ver Justificante"
+        icon="pi pi-file-check"
+        [disabled]="!canViewJustification()"
+        (onClick)="onViewJustification()"
+        severity="info"
+      />
+    </div>
+  </div>
+</p-card>
+} --- ## Business Rules ### Invoice Creation 1. Customer is REQUIRED 2. Merchant is OPTIONAL 3. At
+least one invoice line is required 4. `creditDays` defaults to `Customer.creditDays` if not provided
+(0-365) 5. `dueDate = issueDate + creditDays` 6. Invoice number is auto-generated (INV-YYYY-NNNNN)
+7. Stock is deducted if warehouseId is provided on lines 8. Invoice is created with status PENDING
+### Delivery Rules 1. Only PENDING invoices can be marked as DELIVERED 2. Justification is REQUIRED
+when marking as delivered 3. Delivery is typically done by a DISPATCHER (but USER/ADMIN can also do
+it) 4. Delivery records: timestamp, dispatcher info, justification note 5. Once delivered, status
+changes to DELIVERED 6. DELIVERED invoices cannot be cancelled ### Payment Rules 1. **Only DELIVERED
+or PARTIALLY_PAID invoices can receive payments** 2. **PENDING invoices CANNOT receive payments**
+(must be delivered first) 3. Payment amount must be > 0 4. Payment amount cannot exceed balance 5.
+Partial payment changes status to PARTIALLY_PAID 6. Final payment (balance = 0) changes status to
+PAID 7. If invoice has merchant → Collection record is generated ### Cancellation Rules 1. Only
+PENDING invoices can be cancelled 2. DELIVERED invoices cannot be cancelled (already delivered to
+customer) 3. Invoices with any payments cannot be cancelled 4. Cancellation restores stock to
+warehouse 5. Reason is required ### Overdue Rules 1. OVERDUE only applies to DELIVERED or PARTIAL
+invoices past due date 2. PENDING invoices cannot become OVERDUE (not delivered yet) --- ## Routes
+Configuration ```typescript export const INVOICE_ROUTES: Routes = [ { path: '', loadComponent: () =>
+import('../pages/invoices-list-page/invoices-list-page.component') .then(m =>
+m.InvoicesListPageComponent), title: 'Facturas', }, { path: 'new', loadComponent: () =>
+import('../pages/invoices-form-page/invoices-form-page.component') .then(m =>
+m.InvoicesFormPageComponent), title: 'Nueva Factura', canDeactivate: [pendingChangesGuard], }, {
+path: ':id', loadComponent: () =>
+import('../pages/invoices-details-page/invoices-details-page.component') .then(m =>
+m.InvoicesDetailsPageComponent), title: 'Detalles de Factura', }, { path: ':id/edit', loadComponent:
+() => import('../pages/invoices-form-page/invoices-form-page.component') .then(m =>
+m.InvoicesFormPageComponent), title: 'Editar Factura', canDeactivate: [pendingChangesGuard], }, ];
+````
 
 ---
 
 ## Validation Rules
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `customerId` | UUID | Yes | Must exist | "El cliente es requerido" |
-| `merchantId` | UUID | No | Must exist if provided | "Comercial no encontrado" |
-| `creditDays` | number | No | 0-365 | "Los días de crédito deben estar entre 0 y 365" |
-| `notes` | string | No | Max 1000 chars | "Las notas deben tener máximo 1000 caracteres" |
-| `lines` | array | Yes | At least 1 line | "Se requiere al menos una línea de factura" |
-| `productId` | UUID | Yes | Must exist | "El producto es requerido" |
-| `quantity` | number | Yes | > 0 | "La cantidad debe ser mayor a cero" |
-| `unitPrice` | number | Yes | >= 0 | "El precio debe ser mayor o igual a cero" |
-| `amount` (payment) | number | Yes | > 0, <= balance | "El monto debe ser mayor a cero y menor o igual al saldo" |
-| `paymentDate` | date | Yes | Valid date | "La fecha de pago es requerida" |
-| `paymentMethod` | enum | Yes | Valid method | "El método de pago es requerido" |
-| `reference` | string | No | Max 100 chars | "La referencia debe tener máximo 100 caracteres" |
-| `cancelReason` | string | Yes | Max 500 chars | "El motivo es requerido" |
+| Field              | Type   | Required | Rules                  | Error Message                                             |
+| ------------------ | ------ | -------- | ---------------------- | --------------------------------------------------------- |
+| `customerId`       | UUID   | Yes      | Must exist             | "El cliente es requerido"                                 |
+| `merchantId`       | UUID   | No       | Must exist if provided | "Comercial no encontrado"                                 |
+| `creditDays`       | number | No       | 0-365                  | "Los días de crédito deben estar entre 0 y 365"           |
+| `notes`            | string | No       | Max 1000 chars         | "Las notas deben tener máximo 1000 caracteres"            |
+| `lines`            | array  | Yes      | At least 1 line        | "Se requiere al menos una línea de factura"               |
+| `productId`        | UUID   | Yes      | Must exist             | "El producto es requerido"                                |
+| `quantity`         | number | Yes      | > 0                    | "La cantidad debe ser mayor a cero"                       |
+| `unitPrice`        | number | Yes      | >= 0                   | "El precio debe ser mayor o igual a cero"                 |
+| `amount` (payment) | number | Yes      | > 0, <= balance        | "El monto debe ser mayor a cero y menor o igual al saldo" |
+| `paymentDate`      | date   | Yes      | Valid date             | "La fecha de pago es requerida"                           |
+| `paymentMethod`    | enum   | Yes      | Valid method           | "El método de pago es requerido"                          |
+| `reference`        | string | No       | Max 100 chars          | "La referencia debe tener máximo 100 caracteres"          |
+| `cancelReason`     | string | Yes      | Max 500 chars          | "El motivo es requerido"                                  |
 
 ---
 
@@ -1049,7 +1017,7 @@ export class DeliveryJustificationDialogComponent {
   <div>
     <label class="font-semibold text-color-secondary">Entregado por</label>
     <p class="mt-1 text-lg">
-      {{ data.deliveredBy.name }} 
+      {{ data.deliveredBy.name }}
       <span class="text-color-secondary">(Código: {{ data.deliveredBy.code }})</span>
     </p>
   </div>
@@ -1062,12 +1030,7 @@ export class DeliveryJustificationDialogComponent {
   </div>
 
   <div class="flex justify-content-end mt-2">
-    <p-button
-      label="Cerrar"
-      icon="pi pi-times"
-      (onClick)="onClose()"
-      severity="secondary"
-    />
+    <p-button label="Cerrar" icon="pi pi-times" (onClick)="onClose()" severity="secondary" />
   </div>
 </div>
 ```

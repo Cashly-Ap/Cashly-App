@@ -10,10 +10,7 @@ import {
   DetailsInfoFieldComponent,
   DetailsInfoGridComponent,
 } from '@shared/components/details';
-import {
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
-} from '@shared/components/ui';
+import { LoadingSpinnerComponent, PageHeaderComponent } from '@shared/components/ui';
 import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application.service';
 
 @Component({

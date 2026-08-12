@@ -69,7 +69,9 @@ interface InvoiceLineFormData {
     >
       <div class="flex flex-col gap-4 py-2">
         <!-- Customer -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
           <p class="text-sm text-surface-600 dark:text-surface-400">
             <span class="font-semibold text-surface-800 dark:text-surface-200">Cliente:</span>
             {{ invoice().customerName }} — {{ invoice().customerRif }}
@@ -77,8 +79,12 @@ interface InvoiceLineFormData {
         </div>
 
         <!-- Type -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Tipo de Devolución *</label>
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
+          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+            >Tipo de Devolución *</label
+          >
           <p-select
             [options]="returnTypeOptions"
             [ngModel]="selectedReturnType()"
@@ -91,8 +97,12 @@ interface InvoiceLineFormData {
         </div>
 
         <!-- Reason -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Motivo *</label>
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
+          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+            >Motivo *</label
+          >
           <textarea
             pTextarea
             [ngModel]="reason()"
@@ -111,8 +121,12 @@ interface InvoiceLineFormData {
             (returnLinesChange)="onLinesChange($event)"
           />
         } @else {
-          <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Almacén de destino *</label>
+          <div
+            class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >Almacén de destino *</label
+            >
             <p-select
               [options]="warehouseOptions()"
               [ngModel]="autoWarehouseId()"
@@ -124,7 +138,8 @@ interface InvoiceLineFormData {
               appendTo="body"
             />
             <p class="text-xs text-surface-400 dark:text-surface-500 mt-1.5">
-              Al seleccionar el almacén se cargarán todas las líneas con la cantidad máxima de la factura.
+              Al seleccionar el almacén se cargarán todas las líneas con la cantidad máxima de la
+              factura.
             </p>
 
             @if (returnLines().length > 0) {
@@ -144,14 +159,18 @@ interface InvoiceLineFormData {
                         <td class="py-2">{{ line.productName }}</td>
                         <td class="text-right py-2">{{ line.quantity }}</td>
                         <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-                        <td class="text-right py-2 font-medium">{{ (line.quantity * line.unitPrice) | number: '1.2-2' }}</td>
+                        <td class="text-right py-2 font-medium">
+                          {{ line.quantity * line.unitPrice | number: '1.2-2' }}
+                        </td>
                       </tr>
                     }
                   </tbody>
                   <tfoot>
                     <tr class="border-t border-surface-200 dark:border-surface-700">
                       <td colspan="3" class="text-right py-3 font-semibold">Total:</td>
-                      <td class="text-right py-3 font-bold">{{ totalAmount() | number: '1.2-2' }}</td>
+                      <td class="text-right py-3 font-bold">
+                        {{ totalAmount() | number: '1.2-2' }}
+                      </td>
                     </tr>
                   </tfoot>
                 </table>
@@ -163,7 +182,12 @@ interface InvoiceLineFormData {
 
       <ng-template pTemplate="footer">
         <div class="flex gap-2 justify-end">
-          <p-button label="Cancelar" [outlined]="true" severity="secondary" (onClick)="onCancel()" />
+          <p-button
+            label="Cancelar"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="onCancel()"
+          />
           <p-button
             label="Guardar Devolución"
             icon="pi pi-check"

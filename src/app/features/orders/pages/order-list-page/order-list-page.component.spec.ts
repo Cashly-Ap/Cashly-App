@@ -71,7 +71,12 @@ describe('OrderListPageComponent', () => {
       imports: [OrderListPageComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: OrderApplicationService, useValue: mockService },
         { provide: OrderPdfApiService, useValue: mockPdfApi },
         { provide: PdfViewerService, useValue: mockPdfViewer },
@@ -293,9 +298,7 @@ describe('OrderListPageComponent', () => {
       component.orderToInvoice.set(mockOrders[0]);
       const addSpy = vi.spyOn(messageService, 'add');
       component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
   });
 
@@ -308,7 +311,7 @@ describe('OrderListPageComponent', () => {
           url: '/api/reports/orders/ord-001/pdf',
           title: 'Pedido #ORD-001',
           fileName: 'pedido-ORD-001.pdf',
-        })
+        }),
       );
     });
   });

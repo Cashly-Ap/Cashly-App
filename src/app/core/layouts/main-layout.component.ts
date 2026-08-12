@@ -41,23 +41,54 @@ import { StockPdfApiService } from '@features/reports/inventory/services/api/sto
 import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
-import { CatalogPdfFilters, CommercialCatalogPdfFilters, StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
+import {
+  CatalogPdfFilters,
+  CommercialCatalogPdfFilters,
+  StockPdfFilters,
+  MovementsPdfFilters,
+} from '@features/reports/inventory/models/interfaces';
 import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
-import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
+import {
+  OrderPdfApiService,
+  OrdersPdfFilters,
+} from '@features/reports/orders/services/api/order-pdf-api.service';
 import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
-import { InvoicePdfApiService, InvoicesPdfFilters } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import {
+  InvoicePdfApiService,
+  InvoicesPdfFilters,
+} from '@features/reports/invoices/services/api/invoice-pdf-api.service';
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
-import { QuotePdfApiService, QuotesPdfFilters } from '@features/reports/quotes/services/api/quote-pdf-api.service';
+import {
+  QuotePdfApiService,
+  QuotesPdfFilters,
+} from '@features/reports/quotes/services/api/quote-pdf-api.service';
 import { PurchasePdfModalComponent } from '@features/reports/purchases/components/purchase-pdf-modal/purchase-pdf-modal.component';
-import { PurchasePdfApiService, PurchasesPdfFilters } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
+import {
+  PurchasePdfApiService,
+  PurchasesPdfFilters,
+} from '@features/reports/purchases/services/api/purchase-pdf-api.service';
 import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
 import { AccountsReceivablePdfModalComponent } from '@features/reports/finance/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
-import { CashRegisterReportFilters, AccountsReceivableFilters } from '@features/reports/finance/models/interfaces';
+import {
+  CashRegisterReportFilters,
+  AccountsReceivableFilters,
+} from '@features/reports/finance/models/interfaces';
 import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
-export type ContentMaxWidth = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
+export type ContentMaxWidth =
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+  | '7xl'
+  | 'full'
+  | 'none';
 
 @Component({
   selector: 'app-main-layout',
@@ -124,7 +155,19 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   logoSrc = '/logo.png';
 
-  readonly activeModal = signal<'catalog' | 'commercialCatalog' | 'stock' | 'movements' | 'orders' | 'invoices' | 'quotes' | 'purchases' | 'accountsReceivable' | 'cashRegister' | null>(null);
+  readonly activeModal = signal<
+    | 'catalog'
+    | 'commercialCatalog'
+    | 'stock'
+    | 'movements'
+    | 'orders'
+    | 'invoices'
+    | 'quotes'
+    | 'purchases'
+    | 'accountsReceivable'
+    | 'cashRegister'
+    | null
+  >(null);
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -196,7 +239,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return items
       .filter((item) => {
         if (item.allowedRoles && !item.allowedRoles.includes(userType)) return false;
-        if (item.requiredModule && !this.authService.hasModulePermission(item.requiredModule)) return false;
+        if (item.requiredModule && !this.authService.hasModulePermission(item.requiredModule))
+          return false;
         return true;
       })
       .map((item) => {
@@ -233,16 +277,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Reporte de Productos');
     this.pdfViewerVisible.set(true);
-    this.catalogPdfApi.downloadPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.catalogPdfApi
+      .downloadPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onCommercialCatalogPdf(filters: CommercialCatalogPdfFilters): void {
@@ -250,16 +295,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Catálogo Comercial');
     this.pdfViewerVisible.set(true);
-    this.commercialCatalogPdfApi.downloadPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.commercialCatalogPdfApi
+      .downloadPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onStockPdf(filters: StockPdfFilters): void {
@@ -267,16 +313,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Stock de Almacenes');
     this.pdfViewerVisible.set(true);
-    this.stockPdfApi.getPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.stockPdfApi
+      .getPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onMovementsPdf(filters: MovementsPdfFilters): void {
@@ -284,16 +331,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Historial de Movimientos');
     this.pdfViewerVisible.set(true);
-    this.movementsPdfApi.getPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.movementsPdfApi
+      .getPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onStockExcel(filters: StockPdfFilters): void {
@@ -319,16 +367,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Reporte de Pedidos');
     this.pdfViewerVisible.set(true);
-    this.orderPdfApi.downloadOrdersReportPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.orderPdfApi
+      .downloadOrdersReportPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onInvoicesPdf(filters: InvoicesPdfFilters): void {
@@ -336,16 +385,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Reporte de Facturas');
     this.pdfViewerVisible.set(true);
-    this.invoicePdfApi.downloadInvoicesReportPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.invoicePdfApi
+      .downloadInvoicesReportPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onQuotesPdf(filters: QuotesPdfFilters): void {
@@ -353,16 +403,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Reporte de Presupuestos');
     this.pdfViewerVisible.set(true);
-    this.quotePdfApi.downloadQuotesReportPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.quotePdfApi
+      .downloadQuotesReportPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onPurchasesPdf(filters: PurchasesPdfFilters): void {
@@ -370,16 +421,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Reporte de Compras');
     this.pdfViewerVisible.set(true);
-    this.purchasePdfApi.downloadPurchasesReportPdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.purchasePdfApi
+      .downloadPurchasesReportPdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onAccountsReceivablePdf(filters: AccountsReceivableFilters): void {
@@ -387,16 +439,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.loadingPdf.set(true);
     this.pdfTitle.set('Cuentas por Cobrar');
     this.pdfViewerVisible.set(true);
-    this.financePdfApi.getAccountsReceivablePdf(filters).pipe(
-      finalize(() => this.loadingPdf.set(false))
-    ).subscribe({
-      next: (blob) => {
-        this.revokeCurrentUrl();
-        const url = URL.createObjectURL(blob);
-        this.currentObjectUrl = url;
-        this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-      },
-    });
+    this.financePdfApi
+      .getAccountsReceivablePdf(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   onCashRegisterExcel(filters: CashRegisterReportFilters): void {

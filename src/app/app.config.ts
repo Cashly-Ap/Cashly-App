@@ -1,13 +1,6 @@
-import {
-  ApplicationConfig,
-  provideZonelessChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import {
-  provideHttpClient,
-  withFetch,
-  withInterceptors,
-} from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { providePrimeNG } from 'primeng/config';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { MessageService, ConfirmationService } from 'primeng/api';

@@ -13,123 +13,114 @@
       <p-progressSpinner strokeWidth="4" styleClass="w-10 h-10" />
     </div>
   } @else {
-  <div class="flex flex-col gap-4">
-    <div class="flex flex-col gap-2">
-      <label for="mode" class="text-sm font-medium">Modo de Reporte</label>
-      <p-select
-        id="mode"
-        [options]="modeOptions"
-        [(ngModel)]="mode"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
+    <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
-        <label for="dateFrom" class="text-sm font-medium">Desde</label>
-        <p-datepicker
-          id="dateFrom"
-          [(ngModel)]="dateFrom"
-          dateFormat="yy-mm-dd"
-          placeholder="Fecha inicial"
+        <label for="mode" class="text-sm font-medium">Modo de Reporte</label>
+        <p-select
+          id="mode"
+          [options]="modeOptions"
+          [(ngModel)]="mode"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="dateFrom" class="text-sm font-medium">Desde</label>
+          <p-datepicker
+            id="dateFrom"
+            [(ngModel)]="dateFrom"
+            dateFormat="yy-mm-dd"
+            placeholder="Fecha inicial"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="dateTo" class="text-sm font-medium">Hasta</label>
+          <p-datepicker
+            id="dateTo"
+            [(ngModel)]="dateTo"
+            dateFormat="yy-mm-dd"
+            placeholder="Fecha final"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="supplier" class="text-sm font-medium">Proveedor</label>
+        <p-select
+          id="supplier"
+          [options]="supplierOptions()"
+          [(ngModel)]="supplierId"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todos los proveedores"
+          [filter]="true"
+          filterPlaceholder="Buscar proveedor"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="dateTo" class="text-sm font-medium">Hasta</label>
-        <p-datepicker
-          id="dateTo"
-          [(ngModel)]="dateTo"
-          dateFormat="yy-mm-dd"
-          placeholder="Fecha final"
+        <label for="status" class="text-sm font-medium">Estado de la Compra</label>
+        <p-select
+          id="status"
+          [options]="statusOptions"
+          [(ngModel)]="status"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todos los estados"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="product" class="text-sm font-medium">Producto</label>
+        <p-select
+          id="product"
+          [options]="productOptions()"
+          [(ngModel)]="productId"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todos los productos"
+          [filter]="true"
+          filterPlaceholder="Buscar producto"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="category" class="text-sm font-medium">Categoría</label>
+        <p-select
+          id="category"
+          [options]="categoryOptions()"
+          [(ngModel)]="categoryId"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Todas las categorías"
+          [filter]="true"
+          filterPlaceholder="Buscar categoría"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
     </div>
-
-    <div class="flex flex-col gap-2">
-      <label for="supplier" class="text-sm font-medium">Proveedor</label>
-      <p-select
-        id="supplier"
-        [options]="supplierOptions()"
-        [(ngModel)]="supplierId"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Todos los proveedores"
-        [filter]="true"
-        filterPlaceholder="Buscar proveedor"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <label for="status" class="text-sm font-medium">Estado de la Compra</label>
-      <p-select
-        id="status"
-        [options]="statusOptions"
-        [(ngModel)]="status"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Todos los estados"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <label for="product" class="text-sm font-medium">Producto</label>
-      <p-select
-        id="product"
-        [options]="productOptions()"
-        [(ngModel)]="productId"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Todos los productos"
-        [filter]="true"
-        filterPlaceholder="Buscar producto"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-
-    <div class="flex flex-col gap-2">
-      <label for="category" class="text-sm font-medium">Categoría</label>
-      <p-select
-        id="category"
-        [options]="categoryOptions()"
-        [(ngModel)]="categoryId"
-        optionLabel="label"
-        optionValue="value"
-        placeholder="Todas las categorías"
-        [filter]="true"
-        filterPlaceholder="Buscar categoría"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-  </div>
   }
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <p-button
-        label="Cancelar"
-        [text]="true"
-        severity="secondary"
-        (onClick)="onHide()"
-      />
-      <p-button
-        label="Generar PDF"
-        icon="pi pi-file-pdf"
-        (onClick)="generatePdf()"
-      />
+      <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
+      <p-button label="Generar PDF" icon="pi pi-file-pdf" (onClick)="generatePdf()" />
     </div>
   </ng-template>
 </p-dialog>

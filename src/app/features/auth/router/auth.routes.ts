@@ -4,8 +4,7 @@ import { authGuard } from '@features/auth/guards';
 export const AUTH_ROUTES: Routes = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('@features/auth/pages').then((m) => m.LoginPageComponent),
+    loadComponent: () => import('@features/auth/pages').then((m) => m.LoginPageComponent),
   },
   {
     path: '',
@@ -17,20 +16,17 @@ export const AUTH_ROUTES: Routes = [
 export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
     path: 'configuration',
-    loadComponent: () =>
-      import('@features/auth/pages').then((m) => m.ConfigurationPageComponent),
+    loadComponent: () => import('@features/auth/pages').then((m) => m.ConfigurationPageComponent),
     canActivate: [authGuard],
   },
   {
     path: 'change-password',
-    loadComponent: () =>
-      import('@features/auth/pages').then((m) => m.ChangePasswordPageComponent),
+    loadComponent: () => import('@features/auth/pages').then((m) => m.ChangePasswordPageComponent),
     canActivate: [authGuard],
   },
   {
     path: 'change-username',
-    loadComponent: () =>
-      import('@features/auth/pages').then((m) => m.ChangeUsernamePageComponent),
+    loadComponent: () => import('@features/auth/pages').then((m) => m.ChangeUsernamePageComponent),
     canActivate: [authGuard],
   },
 ];

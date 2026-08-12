@@ -85,7 +85,11 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
   }
 
   protected override restoreFormData(data: PaymentMethodFormData): void {
-    this.form.patchValue({ name: data.name, description: data.description, isActive: data.isActive });
+    this.form.patchValue({
+      name: data.name,
+      description: data.description,
+      isActive: data.isActive,
+    });
   }
 
   protected override onLoadEntity(id: string): void {

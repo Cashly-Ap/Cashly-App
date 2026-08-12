@@ -71,7 +71,12 @@ describe('InvoiceListPageComponent', () => {
       imports: [InvoiceListPageComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: InvoiceApplicationService, useValue: mockService },
         ConfirmationService,
         MessageService,
@@ -272,7 +277,7 @@ describe('InvoiceListPageComponent', () => {
         expect.objectContaining({
           url: '/api/reports/invoices/inv-001/pdf',
           title: 'Nota #FAC-001',
-        })
+        }),
       );
     });
   });

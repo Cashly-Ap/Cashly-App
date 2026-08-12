@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnChanges, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -45,7 +53,9 @@ export class ConvertToOrderDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineWithStockInfo[]>([]);
-  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(null);
+  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(
+    null,
+  );
   readonly hasAnyNegativeStock = signal(false);
 
   ngOnChanges(): void {
@@ -82,7 +92,9 @@ export class ConvertToOrderDialogComponent implements OnChanges {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message || err?.message || 'Error al cargar datos del presupuesto');
+        this.error.set(
+          err?.error?.message || err?.message || 'Error al cargar datos del presupuesto',
+        );
         this.loading.set(false);
       },
     });

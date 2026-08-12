@@ -1,8 +1,17 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { CustomerApiService, CustomerFilters, CustomerCreatedResponse } from '@features/customers/services/api/customer-api.service';
+import {
+  CustomerApiService,
+  CustomerFilters,
+  CustomerCreatedResponse,
+} from '@features/customers/services/api/customer-api.service';
 import { CustomerMapper } from '@features/customers/services/mappers/customer.mapper';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '@features/customers/models/interfaces';
+import {
+  CustomerList,
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+} from '@features/customers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

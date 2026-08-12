@@ -21,8 +21,7 @@ export class HttpErrorHandler {
       } else if (error.status === 500) {
         detail = 'Error del servidor. Por favor, intente nuevamente más tarde.';
       } else if (error.status === 0) {
-        detail =
-          'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+        detail = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
       }
     } else if (error instanceof Error) {
       detail = error.message;
@@ -51,8 +50,7 @@ export class HttpErrorHandler {
       } else if (error.status === 500) {
         detail = 'Error del servidor. Por favor, intente nuevamente más tarde.';
       } else if (error.status === 0) {
-        detail =
-          'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+        detail = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
       }
     } else if (error instanceof Error) {
       detail = error.message;
@@ -73,12 +71,13 @@ export class HttpErrorHandler {
       if (error.status === 404) {
         detail = `${entityName} no encontrado o ya fue eliminado`;
       } else if (error.status === 409) {
-        detail = error.error?.message || `No se puede eliminar ${entityName} porque tiene registros asociados`;
+        detail =
+          error.error?.message ||
+          `No se puede eliminar ${entityName} porque tiene registros asociados`;
       } else if (error.status === 500) {
         detail = 'Error del servidor. Por favor, intente nuevamente más tarde.';
       } else if (error.status === 0) {
-        detail =
-          'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+        detail = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
       }
     } else if (error instanceof Error) {
       detail = error.message;
@@ -101,8 +100,7 @@ export class HttpErrorHandler {
       } else if (error.status === 500) {
         detail = 'Error del servidor. Por favor, intente nuevamente más tarde.';
       } else if (error.status === 0) {
-        detail =
-          'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+        detail = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
       }
     } else if (error instanceof Error) {
       detail = error.message;
@@ -116,11 +114,7 @@ export class HttpErrorHandler {
     };
   }
 
-  static createSuccessMessage(
-    summary: string,
-    detail: string,
-    life: number = 3000,
-  ): ErrorMessage {
+  static createSuccessMessage(summary: string, detail: string, life: number = 3000): ErrorMessage {
     return {
       severity: 'success',
       summary,
@@ -129,11 +123,7 @@ export class HttpErrorHandler {
     };
   }
 
-  static createWarningMessage(
-    summary: string,
-    detail: string,
-    life: number = 3000,
-  ): ErrorMessage {
+  static createWarningMessage(summary: string, detail: string, life: number = 3000): ErrorMessage {
     return {
       severity: 'warn',
       summary,
@@ -142,11 +132,7 @@ export class HttpErrorHandler {
     };
   }
 
-  static createInfoMessage(
-    summary: string,
-    detail: string,
-    life: number = 3000,
-  ): ErrorMessage {
+  static createInfoMessage(summary: string, detail: string, life: number = 3000): ErrorMessage {
     return {
       severity: 'info',
       summary,

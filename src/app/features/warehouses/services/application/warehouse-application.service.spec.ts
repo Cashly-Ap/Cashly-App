@@ -358,7 +358,20 @@ describe('WarehouseApplicationService', () => {
   describe('getMovements()', () => {
     it('should delegate to api.getMovements', () => {
       const mockMovements: PagedResponse<WarehouseMovementItem> = {
-        content: [{ id: 'm1', warehouseId: 'wh-001', productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', movementType: 'ENTRY', quantity: 10, previousStock: 40, newStock: 50, createdAt: '2025-01-15T10:30:00Z' }],
+        content: [
+          {
+            id: 'm1',
+            warehouseId: 'wh-001',
+            productId: 'p1',
+            productCode: 'MOT-10',
+            productName: 'Motor 10HP',
+            movementType: 'ENTRY',
+            quantity: 10,
+            previousStock: 40,
+            newStock: 50,
+            createdAt: '2025-01-15T10:30:00Z',
+          },
+        ],
         totalElements: 1,
         totalPages: 1,
         size: 10,

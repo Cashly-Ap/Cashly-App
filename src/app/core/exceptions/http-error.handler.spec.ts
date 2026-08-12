@@ -64,8 +64,7 @@ describe('HttpErrorHandler', () => {
       expect(result).toEqual({
         severity: 'error',
         summary: 'Error al crear el cliente',
-        detail:
-          'No se pudo conectar con el servidor. Verifique su conexión a internet.',
+        detail: 'No se pudo conectar con el servidor. Verifique su conexión a internet.',
         life: 5000,
       });
     });
@@ -77,9 +76,7 @@ describe('HttpErrorHandler', () => {
 
       expect(result.severity).toBe('error');
       expect(result.summary).toBe('Error al crear el producto');
-      expect(result.detail).toContain(
-        'Ha ocurrido un error al crear el producto',
-      );
+      expect(result.detail).toContain('Ha ocurrido un error al crear el producto');
     });
   });
 
@@ -117,9 +114,7 @@ describe('HttpErrorHandler', () => {
 
       const result = HttpErrorHandler.handleUpdateError(error, 'el cliente');
 
-      expect(result.detail).toBe(
-        'Error del servidor. Por favor, intente nuevamente más tarde.',
-      );
+      expect(result.detail).toBe('Error del servidor. Por favor, intente nuevamente más tarde.');
     });
 
     it('should handle network error', () => {
@@ -162,9 +157,7 @@ describe('HttpErrorHandler', () => {
 
       const result = HttpErrorHandler.handleDeleteError(error, 'el cliente');
 
-      expect(result.detail).toBe(
-        'Error del servidor. Por favor, intente nuevamente más tarde.',
-      );
+      expect(result.detail).toBe('Error del servidor. Por favor, intente nuevamente más tarde.');
     });
 
     it('should handle network error', () => {
@@ -197,9 +190,7 @@ describe('HttpErrorHandler', () => {
 
       const result = HttpErrorHandler.handleLoadError(error, 'el cliente');
 
-      expect(result.detail).toBe(
-        'Error del servidor. Por favor, intente nuevamente más tarde.',
-      );
+      expect(result.detail).toBe('Error del servidor. Por favor, intente nuevamente más tarde.');
     });
 
     it('should handle network error', () => {
@@ -219,18 +210,13 @@ describe('HttpErrorHandler', () => {
 
       expect(result.severity).toBe('error');
       expect(result.summary).toBe('Error al cargar los datos');
-      expect(result.detail).toContain(
-        'Ha ocurrido un error al cargar los datos',
-      );
+      expect(result.detail).toContain('Ha ocurrido un error al cargar los datos');
     });
   });
 
   describe('createSuccessMessage', () => {
     it('should create success message with default life', () => {
-      const result = HttpErrorHandler.createSuccessMessage(
-        'Success',
-        'Operation completed',
-      );
+      const result = HttpErrorHandler.createSuccessMessage('Success', 'Operation completed');
 
       expect(result).toEqual({
         severity: 'success',
@@ -241,11 +227,7 @@ describe('HttpErrorHandler', () => {
     });
 
     it('should create success message with custom life', () => {
-      const result = HttpErrorHandler.createSuccessMessage(
-        'Success',
-        'Operation completed',
-        5000,
-      );
+      const result = HttpErrorHandler.createSuccessMessage('Success', 'Operation completed', 5000);
 
       expect(result.life).toBe(5000);
     });
@@ -253,10 +235,7 @@ describe('HttpErrorHandler', () => {
 
   describe('createWarningMessage', () => {
     it('should create warning message with default life', () => {
-      const result = HttpErrorHandler.createWarningMessage(
-        'Warning',
-        'Be careful',
-      );
+      const result = HttpErrorHandler.createWarningMessage('Warning', 'Be careful');
 
       expect(result).toEqual({
         severity: 'warn',
@@ -267,11 +246,7 @@ describe('HttpErrorHandler', () => {
     });
 
     it('should create warning message with custom life', () => {
-      const result = HttpErrorHandler.createWarningMessage(
-        'Warning',
-        'Be careful',
-        4000,
-      );
+      const result = HttpErrorHandler.createWarningMessage('Warning', 'Be careful', 4000);
 
       expect(result.life).toBe(4000);
     });
@@ -279,10 +254,7 @@ describe('HttpErrorHandler', () => {
 
   describe('createInfoMessage', () => {
     it('should create info message with default life', () => {
-      const result = HttpErrorHandler.createInfoMessage(
-        'Info',
-        'Just so you know',
-      );
+      const result = HttpErrorHandler.createInfoMessage('Info', 'Just so you know');
 
       expect(result).toEqual({
         severity: 'info',
@@ -293,11 +265,7 @@ describe('HttpErrorHandler', () => {
     });
 
     it('should create info message with custom life', () => {
-      const result = HttpErrorHandler.createInfoMessage(
-        'Info',
-        'Just so you know',
-        6000,
-      );
+      const result = HttpErrorHandler.createInfoMessage('Info', 'Just so you know', 6000);
 
       expect(result.life).toBe(6000);
     });

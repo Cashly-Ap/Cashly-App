@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  computed,
+} from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -10,13 +18,7 @@ import { PurchaseStatus } from '@features/purchases/models/enums/purchase-status
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DialogModule,
-    ButtonModule,
-    TableModule,
-    DatePipe,
-    DecimalPipe,
-  ],
+  imports: [DialogModule, ButtonModule, TableModule, DatePipe, DecimalPipe],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
 export class ConfirmPurchaseDialogComponent {

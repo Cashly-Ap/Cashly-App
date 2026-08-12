@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { PaymentMethodDetail, PaymentMethodList } from '@features/payment-methods/models/interfaces';
+import {
+  PaymentMethodDetail,
+  PaymentMethodList,
+} from '@features/payment-methods/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class PaymentMethodMapper {

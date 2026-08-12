@@ -1,7 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { SupplierList, SupplierDetails, SupplierCreate, SupplierEdit } from '@features/suppliers/models/interfaces';
+import {
+  SupplierList,
+  SupplierDetails,
+  SupplierCreate,
+  SupplierEdit,
+} from '@features/suppliers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface SupplierFilters {

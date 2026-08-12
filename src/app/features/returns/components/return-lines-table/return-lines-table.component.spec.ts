@@ -24,13 +24,28 @@ class HostComponent {
       returnedQuantity: 0,
       warehouseAllocations: [],
       warehouseStocks: [
-        { warehouseId: 'w1', warehouseCode: 'WH1', warehouseName: 'Main', quantity: 10, reserved: 2, available: 8 },
+        {
+          warehouseId: 'w1',
+          warehouseCode: 'WH1',
+          warehouseName: 'Main',
+          quantity: 10,
+          reserved: 2,
+          available: 8,
+        },
       ],
     },
   ];
 
   returnLines: ReturnLineFormData[] = [
-    { invoiceLineId: 'line-1', productId: 'p1', productName: 'Product A', quantity: 0, warehouseId: '', unitPrice: 20, warehouseAllocations: [] },
+    {
+      invoiceLineId: 'line-1',
+      productId: 'p1',
+      productName: 'Product A',
+      quantity: 0,
+      warehouseId: '',
+      unitPrice: 20,
+      warehouseAllocations: [],
+    },
   ];
 }
 
@@ -42,7 +57,10 @@ describe('ReturnLinesTableComponent', () => {
     await TestBed.configureTestingModule({
       imports: [HostComponent],
       providers: [
-        { provide: WarehouseApiService, useValue: { getAllSimple: () => of([{ id: 'w1', name: 'Main' }]) } },
+        {
+          provide: WarehouseApiService,
+          useValue: { getAllSimple: () => of([{ id: 'w1', name: 'Main' }]) },
+        },
       ],
     }).compileComponents();
 
@@ -64,7 +82,15 @@ describe('ReturnLinesTableComponent', () => {
   it('should compute total amount when quantities change', () => {
     // Simulate a returnLine with quantity
     const updatedLines: ReturnLineFormData[] = [
-      { invoiceLineId: 'line-1', productId: 'p1', productName: 'Product A', quantity: 2, warehouseId: 'w1', unitPrice: 20, warehouseAllocations: [{ warehouseId: 'w1', allocated: 2 }] },
+      {
+        invoiceLineId: 'line-1',
+        productId: 'p1',
+        productName: 'Product A',
+        quantity: 2,
+        warehouseId: 'w1',
+        unitPrice: 20,
+        warehouseAllocations: [{ warehouseId: 'w1', allocated: 2 }],
+      },
     ];
     component.returnLinesChange.emit(updatedLines);
 

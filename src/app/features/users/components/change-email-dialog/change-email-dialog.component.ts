@@ -1,5 +1,12 @@
 import { Component, inject, input, output, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormBuilder,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TextInputComponent } from '@core/forms/components';
@@ -32,8 +39,12 @@ export class ChangeEmailDialogComponent implements OnInit {
 
   form!: FormGroup;
 
-  get emailControl() { return this.form.get('email') as import('@angular/forms').FormControl; }
-  get confirmEmailControl() { return this.form.get('confirmEmail') as import('@angular/forms').FormControl; }
+  get emailControl() {
+    return this.form.get('email') as import('@angular/forms').FormControl;
+  }
+  get confirmEmailControl() {
+    return this.form.get('confirmEmail') as import('@angular/forms').FormControl;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group(
@@ -41,7 +52,7 @@ export class ChangeEmailDialogComponent implements OnInit {
         email: ['', [Validators.required, Validators.email]],
         confirmEmail: ['', [Validators.required, Validators.email]],
       },
-      { validators: emailsMatch }
+      { validators: emailsMatch },
     );
   }
 

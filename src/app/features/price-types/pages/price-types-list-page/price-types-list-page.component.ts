@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -61,8 +68,12 @@ export class PriceTypesListPageComponent implements OnInit {
   });
 
   showInitialLoading = computed(() => this.isLoading() && this.priceTypes().length === 0);
-  isEmptyDatabase = computed(() => !this.isLoading() && this.priceTypes().length === 0 && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.isLoading() && this.filteredPriceTypes().length === 0 && !!this.searchTerm());
+  isEmptyDatabase = computed(
+    () => !this.isLoading() && this.priceTypes().length === 0 && !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () => !this.isLoading() && this.filteredPriceTypes().length === 0 && !!this.searchTerm(),
+  );
 
   ngOnInit(): void {
     this.service.loadAll(this.orderBy(), this.orderDir()).subscribe();

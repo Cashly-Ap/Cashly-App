@@ -9,7 +9,9 @@
 >
   <div class="flex flex-col gap-4 pt-2">
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Reporte</label>
+      <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+        >Tipo de Reporte</label
+      >
       <p-selectButton
         [options]="typeOptions"
         [ngModel]="reportType()"
@@ -43,12 +45,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button
-        label="Cancelar"
-        [text]="true"
-        severity="secondary"
-        (onClick)="onHide()"
-      />
+      <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
       <p-button
         label="Exportar Excel"
         icon="pi pi-file-excel"

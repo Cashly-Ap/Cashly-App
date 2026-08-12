@@ -69,7 +69,12 @@ describe('WarehousesDetailsPageComponent', () => {
     { provide: QuotePdfApiService, useValue: { downloadQuotesReportPdf: vi.fn() } },
   ];
 
-  function configureTestBed(id: string | null = 'wh-001', loadByIdValue: any = of(mockWarehouse), getMovementsValue: any = of(mockMovements), getStockValue: any = of(mockWarehouse.stock)) {
+  function configureTestBed(
+    id: string | null = 'wh-001',
+    loadByIdValue: any = of(mockWarehouse),
+    getMovementsValue: any = of(mockMovements),
+    getStockValue: any = of(mockWarehouse.stock),
+  ) {
     mockService = {
       loadById: vi.fn().mockReturnValue(loadByIdValue),
       getStock: vi.fn().mockReturnValue(getStockValue),
@@ -145,7 +150,10 @@ describe('WarehousesDetailsPageComponent', () => {
 
   it('should show error message and navigate on load failure', () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('wh-999', throwError(() => new Error('Not found')));
+    configureTestBed(
+      'wh-999',
+      throwError(() => new Error('Not found')),
+    );
     createComponent();
 
     const addSpy = vi.spyOn(messageService, 'add');
@@ -258,7 +266,11 @@ describe('WarehousesDetailsPageComponent', () => {
 
     it('should show error message on movements load failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('wh-001', of(mockWarehouse), throwError(() => new Error('Fail')));
+      configureTestBed(
+        'wh-001',
+        of(mockWarehouse),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       component.warehouse.set(mockWarehouse);
 

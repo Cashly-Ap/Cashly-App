@@ -1,11 +1,4 @@
-import {
-  Component,
-  inject,
-  signal,
-  ViewChild,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Popover, PopoverModule } from 'primeng/popover';

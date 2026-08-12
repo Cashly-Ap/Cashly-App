@@ -1,23 +1,28 @@
-<p-dialog
-  [visible]="visible()"
-  [modal]="true"
-  [closable]="false"
-  [style]="{ width: '28rem' }"
->
+<p-dialog [visible]="visible()" [modal]="true" [closable]="false" [style]="{ width: '28rem' }">
   <ng-template pTemplate="header">
     <div class="flex items-center gap-3">
-      <div class="flex items-center justify-center w-9 h-9 rounded-full bg-red-100 dark:bg-red-950 shrink-0">
+      <div
+        class="flex items-center justify-center w-9 h-9 rounded-full bg-red-100 dark:bg-red-950 shrink-0"
+      >
         <i class="pi pi-times-circle text-red-600 dark:text-red-400 text-lg"></i>
       </div>
-      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">Cancelar Factura</span>
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
+        >Cancelar Factura</span
+      >
     </div>
   </ng-template>
 
   <div class="flex flex-col gap-4 pt-1">
     <p class="text-sm text-surface-600 dark:text-surface-300 leading-relaxed">
       Está a punto de cancelar la factura
-      <span class="font-semibold text-surface-900 dark:text-surface-0">#{{ invoice()?.invoiceNumber }}</span>
-      de <span class="font-semibold text-surface-900 dark:text-surface-0">{{ invoice()?.customerName }}</span>.
+      <span class="font-semibold text-surface-900 dark:text-surface-0"
+        >#{{ invoice()?.invoiceNumber }}</span
+      >
+      de
+      <span class="font-semibold text-surface-900 dark:text-surface-0">{{
+        invoice()?.customerName
+      }}</span
+      >.
     </p>
 
     <form [formGroup]="form" class="flex flex-col gap-1">
@@ -48,12 +53,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end pt-1">
-      <p-button
-        label="Volver"
-        [outlined]="true"
-        severity="secondary"
-        (onClick)="onCancel()"
-      />
+      <p-button label="Volver" [outlined]="true" severity="secondary" (onClick)="onCancel()" />
       <p-button
         label="Cancelar Factura"
         icon="pi pi-times"

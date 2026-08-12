@@ -1,6 +1,12 @@
 import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { DashboardApiService, DashboardSummary, MonthlySales, TopItem, RecentActivity } from '@features/dashboard/services/api/dashboard-api.service';
+import {
+  DashboardApiService,
+  DashboardSummary,
+  MonthlySales,
+  TopItem,
+  RecentActivity,
+} from '@features/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 
@@ -28,7 +34,9 @@ export class DashboardPageComponent implements OnInit {
   salesChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: { legend: { display: false } },
-    scales: { y: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+    },
   };
 
   productsChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
@@ -94,7 +102,20 @@ export class DashboardPageComponent implements OnInit {
   }
 
   private formatMonth(month: string): string {
-    const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const months = [
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
+    ];
     const [year, m] = month.split('-');
     const monthIndex = parseInt(m, 10) - 1;
     return months[monthIndex] + ' ' + year;

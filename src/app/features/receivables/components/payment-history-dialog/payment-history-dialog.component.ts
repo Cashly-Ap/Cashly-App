@@ -26,16 +26,14 @@ export class PaymentHistoryDialogComponent {
   protected payments = signal<PendingPayment[]>([]);
   protected loading = signal(false);
 
-  protected totalAmount = computed(() =>
-    this.payments().reduce((sum, p) => sum + p.amount, 0),
+  protected totalAmount = computed(() => this.payments().reduce((sum, p) => sum + p.amount, 0));
+
+  protected approvedCount = computed(
+    () => this.payments().filter((p) => p.status === 'APPROVED').length,
   );
 
-  protected approvedCount = computed(() =>
-    this.payments().filter(p => p.status === 'APPROVED').length,
-  );
-
-  protected rejectedCount = computed(() =>
-    this.payments().filter(p => p.status === 'REJECTED').length,
+  protected rejectedCount = computed(
+    () => this.payments().filter((p) => p.status === 'REJECTED').length,
   );
 
   protected dialogTitle = computed(() => {

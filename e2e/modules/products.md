@@ -11,9 +11,9 @@
 
 ## Test Execution Log
 
-| Date | Tests Executed | Pass | Fail | Blocked |
-|------|---------------|------|------|---------|
-| 2026-07-01 | PROD-001→PROD-014, PROD-016→PROD-018, PROD-021→PROD-023, PROD-025, PROD-032→PROD-035 | 24 | 0 | 0 |
+| Date       | Tests Executed                                                                       | Pass | Fail | Blocked |
+| ---------- | ------------------------------------------------------------------------------------ | ---- | ---- | ------- |
+| 2026-07-01 | PROD-001→PROD-014, PROD-016→PROD-018, PROD-021→PROD-023, PROD-025, PROD-032→PROD-035 | 24   | 0    | 0       |
 
 ---
 
@@ -24,6 +24,7 @@
 ### SETUP
 
 #### PROD-001 — Route loads correctly
+
 - **Severity**: CRITICAL
 - **URL**: `/products`
 - **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@parsun.com)
@@ -35,6 +36,7 @@
 - **Result**: ✅ PASS — 0 console errors. Title "Productos" visible. "Gestiona el catálogo de productos" subtitle present.
 
 #### PROD-002 — Empty state (no products)
+
 - **Severity**: MEDIUM
 - **Prerequisites**: No products exist (unlikely with seed data)
 - **URL**: `/products`
@@ -45,6 +47,7 @@
 - **Result**: ⏭️ SKIP — Seed data always present in development. Cannot test empty state without DB reset.
 
 #### PROD-003 — Permission denied for non-INVENTORY user
+
 - **Severity**: CRITICAL
 - **Prerequisites**: Logged in as sales@parsun.com (only SALES module)
 - **URL**: `/products`
@@ -53,6 +56,7 @@
 - **Expected**: User is redirected away from `/products` (to `/customers` or `/`). `GET /api/products` is never called.
 
 #### PROD-004 — Seed data loads 25 products
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -66,6 +70,7 @@
 ### LISTING
 
 #### PROD-005 — List displays products from API
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -75,6 +80,7 @@
 - **Result**: ✅ PASS — 7 columns confirmed: Código, Nombre, Categoría, Tipo, Precio (with dropdown), Estado, Acciones.
 
 #### PROD-006 — List shows correct columns
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -83,6 +89,7 @@
 - **Result**: ✅ PASS — All 7 headers present. Sort icons visible on Código, Nombre, Categoría, Tipo. Precio column has dropdown selector.
 
 #### PROD-007 — Pagination works
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -92,6 +99,7 @@
 - **Result**: ✅ PASS — 3 pagination pages. Page 2 loads correctly. Rows per page selector visible (10 items).
 
 #### PROD-008 — Sort by Nombre
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -101,6 +109,7 @@
 - **Result**: ✅ PASS — Click Nombre sorts asc (Lubricantes → Seguridad), click again sorts desc (Seguridad → Plomería). 0 errors.
 
 #### PROD-009 — Sort by Código
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -109,6 +118,7 @@
 - **Result**: ✅ PASS — Asc first 3: ELEC-001, ELEC-002, ELEC-003. Desc first 3: TEST-FULL-001, SEGUR-003, SEGUR-002. Both directions work.
 
 #### PROD-010 — Sort by Categoría
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -117,6 +127,7 @@
 - **Result**: ✅ PASS — First 3 after sort asc: Lubricantes, Insumos de Oficina, Electrónica (alphabetical).
 
 #### PROD-011 — Search by name
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -126,6 +137,7 @@
 - **Result**: ✅ PASS — Searched "taladro" → 1 result "Taladro percutor 13mm" (HERR-001). 0 errors.
 
 #### PROD-012 — Search by code
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -134,6 +146,7 @@
 - **Result**: ✅ PASS — Search "HERR-001" returns 1 result: "Taladro percutor 13mm". Paginator shows "1 de 1".
 
 #### PROD-013 — Filter by category
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -144,6 +157,7 @@
 - **Result**: ✅ PASS — Filter popover opens with 3 fields: Categoría (combobox), Tipo (combobox: Activos/Inactivos). Electrónica filter works.
 
 #### PROD-014 — Filter by type (Simple/Compuesto)
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -154,6 +168,7 @@
 - **Result**: ✅ PASS — Filter popover has 3 selects: Categoría (Todas las categorías), Tipo (Todos/Simples/Compuestos), Estado (Activos/Inactivos). Selecting "Compuestos" shows 6 results + badge "1" on filter button. Applied automatically (no explicit "Aplicar" button).
 
 #### PROD-015 — Filter by status (Activos/Inactivos)
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -164,6 +179,7 @@
 - **Result**: 🔲 PENDING — No inactive products in seed data to verify.
 
 #### PROD-016 — Clear all filters
+
 - **Severity**: LOW
 - **URL**: `/products`
 - **Steps**:
@@ -173,6 +189,7 @@
 - **Result**: ✅ PASS — Click "Limpiar" in filter dialog. List restores to 28 products. Filter badge removed.
 
 #### PROD-017 — Price type selector changes price column
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -182,6 +199,7 @@
 - **Result**: ✅ PASS — 3 options: Precio Base, Precio Mayor, Precio Especial. After selecting Mayor: Aceite = $4.50 (was $5.00), Bolígrafos = $3.60 (was $4.00), Breaker = $13.50 (was $15.00) — all ~90% as expected.
 
 #### PROD-018 — Composite product shows "Compuesto" badge
+
 - **Severity**: LOW
 - **URL**: `/products`
 - **Steps**:
@@ -190,6 +208,7 @@
 - **Result**: ✅ PASS — All composite products show "Compuesto" in Tipo column. All simple products show "Simple". Badge distinct.
 
 #### PROD-019 — Inactive product shows "Inactivo" badge
+
 - **Severity**: LOW
 - **URL**: `/products`
 - **Steps**:
@@ -198,6 +217,7 @@
 - **Result**: 🔲 PENDING — No inactive products in seed data. Need to toggle one to test.
 
 #### PROD-020 — Pagination page size change
+
 - **Severity**: LOW
 - **URL**: `/products`
 - **Steps**:
@@ -209,6 +229,7 @@
 ### CREATE
 
 #### PROD-021 — Navigate to create form
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -217,6 +238,7 @@
 - **Result**: ✅ PASS — Navigate to `/products/new`. Title "Nuevo Producto". Fields: Foto, Código, Nombre*, Categoría*, Tipo, Precios, Descripción.
 
 #### PROD-022 — Create simple product with required fields only
+
 - **Severity**: CRITICAL
 - **URL**: `/products/new`
 - **Steps**:
@@ -228,6 +250,7 @@
 - **Result**: ✅ PASS — Created "Producto Test Automatizado" (named differently during test). Redirected to list. 0 errors.
 
 #### PROD-023 — Create product with all fields
+
 - **Severity**: HIGH
 - **URL**: `/products/new`
 - **Steps**:
@@ -244,6 +267,7 @@
 - **Result**: ✅ PASS — Created "Producto Full Test" with custom code "TEST-FULL-001". Description saved. Redirect to list.
 
 #### PROD-024 — Create product with custom code
+
 - **Severity**: MEDIUM
 - **URL**: `/products/new`
 - **Steps**:
@@ -254,6 +278,7 @@
 - **Result**: ✅ PASS — Tested via PROD-023 (created "TEST-FULL-001"). Code saved and visible in list.
 
 #### PROD-025 — Create composite product with components
+
 - **Severity**: HIGH
 - **URL**: `/products/new`
 - **Steps**:
@@ -269,6 +294,7 @@
 - **Result**: ✅ PASS — Set Tipo=Compuesto, tab "Composición" appeared. Added "Aceite motor 20W50" + "Bolígrafos caja x12" as components. "Crear Producto" disabled until all components filled. Created with code PRD-00002 "Kit Test Automatizado".
 
 #### PROD-026 — Validate required fields on create
+
 - **Severity**: HIGH
 - **URL**: `/products/new`
 - **Steps**:
@@ -276,6 +302,7 @@
 - **Expected**: Validation errors shown for: Nombre, Categoría. `POST /api/products` is NOT called.
 
 #### PROD-027 — Validate name max length
+
 - **Severity**: MEDIUM
 - **URL**: `/products/new`
 - **Steps**:
@@ -283,6 +310,7 @@
 - **Expected**: Frontend validation blocks (maxLength 150). Or backend returns 400.
 
 #### PROD-028 — Validate duplicate code
+
 - **Severity**: MEDIUM
 - **URL**: `/products/new`
 - **Steps**:
@@ -292,6 +320,7 @@
 - **Expected**: `POST /api/products` returns 409. Error shown: "Product with code already exists".
 
 #### PROD-029 — Validate negative prices
+
 - **Severity**: MEDIUM
 - **URL**: `/products/new`
 - **Steps**:
@@ -299,6 +328,7 @@
 - **Expected**: Frontend validation prevents negative values. `@DecimalMin(0.0)` on backend.
 
 #### PROD-030 — Validate profit margin range
+
 - **Severity**: LOW
 - **URL**: `/products/new`
 - **Steps**:
@@ -306,6 +336,7 @@
 - **Expected**: Frontend validation max(100). Backend `@DecimalMax(100.0)`.
 
 #### PROD-031 — Cancel create returns to list
+
 - **Severity**: LOW
 - **URL**: `/products/new`
 - **Steps**:
@@ -317,6 +348,7 @@
 ### DETAILS
 
 #### PROD-032 — View product details
+
 - **Severity**: HIGH
 - **Prerequisites**: Product exists
 - **URL**: `/products/{id}`
@@ -326,6 +358,7 @@
 - **Result**: ✅ PASS — Viewed Taladro percutor (HERR-001). All fields present: Código, Nombre, Categoría (Herramientas), Tipo (Simple), Precio Base ($120.00), Precio Compra ($85.00), Margen (29.17%), Stock (45), Estado (Activo), fechas, descripción. 0 errors.
 
 #### PROD-033 — Details shows prices by type
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}`
 - **Steps**:
@@ -334,6 +367,7 @@
 - **Result**: ✅ PASS — 3 price types shown: Precio Base ($120.00), Precio Especial ($98.40), Precio Mayor ($108.00). All different values.
 
 #### PROD-034 — Details shows stock by warehouse
+
 - **Severity**: MEDIUM
 - **URL**: `/products/{id}`
 - **Steps**:
@@ -342,6 +376,7 @@
 - **Result**: ✅ PASS — 2 warehouses: Almacén Principal Caracas (30), Almacén Valencia (15). Both with last movement dates. For products with no stock: "Sin stock registrado en almacenes".
 
 #### PROD-035 — Details shows components (for composite products)
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}` (where id = Kit Instalacion Electrica)
 - **Steps**:
@@ -350,6 +385,7 @@
 - **Result**: ✅ PASS — Viewed Kit EPP Completo (KIT-SEGUR-01). "Componentes" section shows 3 components: Casco de seguridad (1), Guantes de nitrilo (2), Lentes de seguridad (1). 0 errors.
 
 #### PROD-036 — Details hides components section for simple products
+
 - **Severity**: MEDIUM
 - **URL**: `/products/{id}` (where id = a simple product)
 - **Steps**:
@@ -357,6 +393,7 @@
 - **Expected**: No "Componentes" section visible.
 
 #### PROD-037 — Navigate from details to edit
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}`
 - **Steps**:
@@ -364,6 +401,7 @@
 - **Expected**: Navigates to `/products/{id}/edit`. Form pre-filled with existing values.
 
 #### PROD-038 — Details shows photo if present
+
 - **Severity**: LOW
 - **Prerequisites**: Product with photo
 - **URL**: `/products/{id}`
@@ -376,6 +414,7 @@
 ### EDIT
 
 #### PROD-039 — Edit product name
+
 - **Severity**: CRITICAL
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -384,6 +423,7 @@
 - **Expected**: `PUT /api/products/{id}` returns 200. List shows updated name. (Revert after test.)
 
 #### PROD-040 — Edit prices
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -393,6 +433,7 @@
 - **Expected**: Prices updated. Detail shows new prices.
 
 #### PROD-041 — Toggle active/inactive
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -401,6 +442,7 @@
 - **Expected**: Product shows as inactive in list. Estado column shows "Inactivo". Can be reactivated.
 
 #### PROD-042 — Convert simple to composite
+
 - **Severity**: HIGH
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -411,6 +453,7 @@
 - **Expected**: `PUT` returns 200. Product now composite with components.
 
 #### PROD-043 — Edit with duplicate code
+
 - **Severity**: MEDIUM
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -418,6 +461,7 @@
 - **Expected**: `PUT` returns 409 "Product with code already exists".
 
 #### PROD-044 — Cancel edit returns to list
+
 - **Severity**: LOW
 - **URL**: `/products/{id}/edit`
 - **Steps**:
@@ -429,6 +473,7 @@
 ### DELETE
 
 #### PROD-045 — Delete product (ADMIN)
+
 - **Severity**: HIGH
 - **Prerequisites**: Logged in as admin, product has `deletable: true`
 - **URL**: `/products`
@@ -439,6 +484,7 @@
 - **Expected**: `DELETE /api/products/{id}` returns 204. Product removed from list. Success toast.
 
 #### PROD-046 — Delete button hidden when product has references
+
 - **Severity**: HIGH
 - **URL**: `/products`
 - **Steps**:
@@ -446,6 +492,7 @@
 - **Expected**: Delete button NOT visible. `deletable` is false.
 
 #### PROD-047 — Cancel delete dialog
+
 - **Severity**: LOW
 - **URL**: `/products`
 - **Steps**:
@@ -458,6 +505,7 @@
 ### PERMISSIONS & ERROR HANDLING
 
 #### PROD-048 — 404 for non-existent product
+
 - **Severity**: MEDIUM
 - **URL**: `/products/00000000-0000-0000-0000-000000000000`
 - **Steps**:
@@ -465,6 +513,7 @@
 - **Expected**: `GET /api/products/{id}` returns 404. User redirected to list with error.
 
 #### PROD-049 — OPERATOR can view but not create/edit
+
 - **Severity**: HIGH
 - **Prerequisites**: Logged in as operator@parsun.com
 - **URL**: `/products`
@@ -475,6 +524,7 @@
 - **Expected**: List loads successfully. Create/edit buttons are hidden or disabled. Direct navigation to `/products/new` shows error or redirects.
 
 #### PROD-050 — Session timeout / 401 handling
+
 - **Severity**: MEDIUM
 - **URL**: `/products`
 - **Steps**:
@@ -487,6 +537,7 @@
 ### MOBILE / RESPONSIVE
 
 #### PROD-051 — Mobile list view (card layout)
+
 - **Severity**: MEDIUM
 - **Prerequisites**: Viewport < 768px
 - **URL**: `/products`
@@ -496,6 +547,7 @@
 - **Expected**: Table converts to card layout. Search and filters accessible. Pagination works.
 
 #### PROD-052 — Mobile form view
+
 - **Severity**: MEDIUM
 - **Prerequisites**: Viewport < 768px
 - **URL**: `/products/new`
@@ -544,30 +596,34 @@
 | KIT-PLOM-01 | Kit Plomería Básica 5m | Tubería PVC (3), Codo PVC (2), Llave paso (1) |
 
 ### Test Products Created
-| Code | Name | Type | Category | Notes |
-|------|------|------|----------|-------|
-| (auto) | Producto Test Automatizado | Simple | Electrónica | Created during PROD-022 |
-| TEST-FULL-001 | Producto Full Test | Simple | Electrónica | Created during PROD-023 |
-| PRD-00002 | Kit Test Automatizado | Compuesto | Alimentos | Created during PROD-025 |
+
+| Code          | Name                       | Type      | Category    | Notes                   |
+| ------------- | -------------------------- | --------- | ----------- | ----------------------- |
+| (auto)        | Producto Test Automatizado | Simple    | Electrónica | Created during PROD-022 |
+| TEST-FULL-001 | Producto Full Test         | Simple    | Electrónica | Created during PROD-023 |
+| PRD-00002     | Kit Test Automatizado      | Compuesto | Alimentos   | Created during PROD-025 |
 
 ### Price Types
-| Name | Description | Factor |
-|------|-------------|--------|
-| Precio Base | List price for all customers | 100% |
-| Precio Mayor | Volume purchase price | 90% (-10%) |
-| Precio Especial | Contract price | 82% (-18%) |
+
+| Name            | Description                  | Factor     |
+| --------------- | ---------------------------- | ---------- |
+| Precio Base     | List price for all customers | 100%       |
+| Precio Mayor    | Volume purchase price        | 90% (-10%) |
+| Precio Especial | Contract price               | 82% (-18%) |
 
 ### Warehouses (4)
-| Name | Location |
-|------|----------|
-| Almacén Caracas | Caracas (high stock) |
-| Almacén Maracaibo | Maracaibo (medium stock) |
-| Almacén Valencia | Valencia (low stock) |
+
+| Name                 | Location                 |
+| -------------------- | ------------------------ |
+| Almacén Caracas      | Caracas (high stock)     |
+| Almacén Maracaibo    | Maracaibo (medium stock) |
+| Almacén Valencia     | Valencia (low stock)     |
 | Almacén Barquisimeto | Barquisimeto (selective) |
 
 ### Product Permissions
-| Role | List | View | Create | Edit | Delete |
-|------|------|------|--------|------|--------|
-| ADMIN | ✅ | ✅ | ✅ | ✅ | ✅ |
-| OPERATOR | ✅ | ✅ | ❌ | ❌ | ❌ |
-| SALES | ❌ | ❌ | ❌ | ❌ | ❌ |
+
+| Role     | List | View | Create | Edit | Delete |
+| -------- | ---- | ---- | ------ | ---- | ------ |
+| ADMIN    | ✅   | ✅   | ✅     | ✅   | ✅     |
+| OPERATOR | ✅   | ✅   | ❌     | ❌   | ❌     |
+| SALES    | ❌   | ❌   | ❌     | ❌   | ❌     |

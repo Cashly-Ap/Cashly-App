@@ -13,26 +13,32 @@ The Lexand application uses **Vitest** as the testing framework. Vitest is a bla
 Vitest is configured in `vitest.config.ts`:
 
 ```typescript
-import { defineConfig } from "vitest/config";
-import angular from "@analogjs/vite-plugin-angular";
+import { defineConfig } from 'vitest/config';
+import angular from '@analogjs/vite-plugin-angular';
 
 export default defineConfig({
   plugins: [angular()],
   test: {
     globals: true,
-    environment: "jsdom",
-    setupFiles: ["src/test-setup.ts"],
-    include: ["src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
+    environment: 'jsdom',
+    setupFiles: ['src/test-setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     coverage: {
-      provider: "v8",
-      reporter: ["text", "json", "html", "lcov"],
-      exclude: ["node_modules/", "src/test-setup.ts", "**/*.spec.ts", "**/*.test.ts", "**/index.ts"],
+      provider: 'v8',
+      reporter: ['text', 'json', 'html', 'lcov'],
+      exclude: [
+        'node_modules/',
+        'src/test-setup.ts',
+        '**/*.spec.ts',
+        '**/*.test.ts',
+        '**/index.ts',
+      ],
     },
   },
   resolve: {
     alias: {
-      "@app": "/src/app",
-      "@env": "/src/environments",
+      '@app': '/src/app',
+      '@env': '/src/environments',
     },
   },
 });
@@ -105,12 +111,12 @@ bun test --run --coverage
 Example of a component test:
 
 ```typescript
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { CustomersComponent } from "./customers.component";
-import { CustomerService } from "./customer.service";
-import { of } from "rxjs";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CustomersComponent } from './customers.component';
+import { CustomerService } from './customer.service';
+import { of } from 'rxjs';
 
-describe("CustomersComponent", () => {
+describe('CustomersComponent', () => {
   let component: CustomersComponent;
   let fixture: ComponentFixture<CustomersComponent>;
   let customerService: CustomerService;
@@ -133,14 +139,14 @@ describe("CustomersComponent", () => {
     customerService = TestBed.inject(CustomerService);
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should load customers on init", () => {
+  it('should load customers on init', () => {
     const mockCustomers = [
-      { id: 1, name: "Customer 1" },
-      { id: 2, name: "Customer 2" },
+      { id: 1, name: 'Customer 1' },
+      { id: 2, name: 'Customer 2' },
     ];
     customerService.getCustomers.mockReturnValue(of(mockCustomers));
 
@@ -150,8 +156,8 @@ describe("CustomersComponent", () => {
     expect(component.customers).toEqual(mockCustomers);
   });
 
-  it("should create customer", async () => {
-    const newCustomer = { name: "New Customer" };
+  it('should create customer', async () => {
+    const newCustomer = { name: 'New Customer' };
     const createdCustomer = { id: 3, ...newCustomer };
     customerService.createCustomer.mockReturnValue(of(createdCustomer));
 
@@ -168,11 +174,11 @@ describe("CustomersComponent", () => {
 Example of a service test:
 
 ```typescript
-import { TestBed } from "@angular/core/testing";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
-import { CustomerService } from "./customer.service";
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { CustomerService } from './customer.service';
 
-describe("CustomerService", () => {
+describe('CustomerService', () => {
   let service: CustomerService;
   let httpMock: HttpTestingController;
 
@@ -190,14 +196,14 @@ describe("CustomerService", () => {
     httpMock.verify();
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it("should fetch customers", () => {
+  it('should fetch customers', () => {
     const mockCustomers = [
-      { id: 1, name: "Customer 1" },
-      { id: 2, name: "Customer 2" },
+      { id: 1, name: 'Customer 1' },
+      { id: 2, name: 'Customer 2' },
     ];
 
     service.getCustomers().subscribe((customers) => {
@@ -205,35 +211,35 @@ describe("CustomerService", () => {
       expect(customers.length).toBe(2);
     });
 
-    const req = httpMock.expectOne("/api/customers");
-    expect(req.request.method).toBe("GET");
+    const req = httpMock.expectOne('/api/customers');
+    expect(req.request.method).toBe('GET');
     req.flush(mockCustomers);
   });
 
-  it("should create customer", () => {
-    const newCustomer = { name: "New Customer" };
+  it('should create customer', () => {
+    const newCustomer = { name: 'New Customer' };
     const createdCustomer = { id: 3, ...newCustomer };
 
     service.createCustomer(newCustomer).subscribe((customer) => {
       expect(customer).toEqual(createdCustomer);
     });
 
-    const req = httpMock.expectOne("/api/customers");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne('/api/customers');
+    expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newCustomer);
     req.flush(createdCustomer);
   });
 
-  it("should handle errors", () => {
+  it('should handle errors', () => {
     service.getCustomers().subscribe({
-      next: () => fail("should have failed"),
+      next: () => fail('should have failed'),
       error: (error) => {
         expect(error.status).toBe(500);
       },
     });
 
-    const req = httpMock.expectOne("/api/customers");
-    req.flush("Server error", { status: 500, statusText: "Internal Server Error" });
+    const req = httpMock.expectOne('/api/customers');
+    req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
   });
 });
 ```
@@ -243,12 +249,12 @@ describe("CustomerService", () => {
 Example of a route guard test:
 
 ```typescript
-import { TestBed } from "@angular/core/testing";
-import { Router } from "@angular/router";
-import { AuthGuard } from "./auth.guard";
-import { AuthService } from "./auth.service";
+import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { AuthGuard } from './auth.guard';
+import { AuthService } from './auth.service';
 
-describe("AuthGuard", () => {
+describe('AuthGuard', () => {
   let guard: AuthGuard;
   let authService: jest.Mocked<AuthService>;
   let router: jest.Mocked<Router>;
@@ -264,7 +270,11 @@ describe("AuthGuard", () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [AuthGuard, { provide: AuthService, useValue: authServiceMock }, { provide: Router, useValue: routerMock }],
+      providers: [
+        AuthGuard,
+        { provide: AuthService, useValue: authServiceMock },
+        { provide: Router, useValue: routerMock },
+      ],
     });
 
     guard = TestBed.inject(AuthGuard);
@@ -272,11 +282,11 @@ describe("AuthGuard", () => {
     router = TestBed.inject(Router) as jest.Mocked<Router>;
   });
 
-  it("should be created", () => {
+  it('should be created', () => {
     expect(guard).toBeTruthy();
   });
 
-  it("should allow access when authenticated", () => {
+  it('should allow access when authenticated', () => {
     authService.isAuthenticated.mockReturnValue(true);
 
     const result = guard.canActivate();
@@ -285,13 +295,13 @@ describe("AuthGuard", () => {
     expect(router.navigate).not.toHaveBeenCalled();
   });
 
-  it("should deny access and redirect when not authenticated", () => {
+  it('should deny access and redirect when not authenticated', () => {
     authService.isAuthenticated.mockReturnValue(false);
 
     const result = guard.canActivate();
 
     expect(result).toBe(false);
-    expect(router.navigate).toHaveBeenCalledWith(["/login"]);
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 });
 ```
@@ -301,33 +311,33 @@ describe("AuthGuard", () => {
 Example of a custom pipe test:
 
 ```typescript
-import { CurrencyFormatPipe } from "./currency-format.pipe";
+import { CurrencyFormatPipe } from './currency-format.pipe';
 
-describe("CurrencyFormatPipe", () => {
+describe('CurrencyFormatPipe', () => {
   let pipe: CurrencyFormatPipe;
 
   beforeEach(() => {
     pipe = new CurrencyFormatPipe();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(pipe).toBeTruthy();
   });
 
-  it("should format currency correctly", () => {
-    expect(pipe.transform(1234.56)).toBe("$1,234.56");
-    expect(pipe.transform(0)).toBe("$0.00");
-    expect(pipe.transform(999999.99)).toBe("$999,999.99");
+  it('should format currency correctly', () => {
+    expect(pipe.transform(1234.56)).toBe('$1,234.56');
+    expect(pipe.transform(0)).toBe('$0.00');
+    expect(pipe.transform(999999.99)).toBe('$999,999.99');
   });
 
-  it("should handle null values", () => {
-    expect(pipe.transform(null)).toBe("$0.00");
-    expect(pipe.transform(undefined)).toBe("$0.00");
+  it('should handle null values', () => {
+    expect(pipe.transform(null)).toBe('$0.00');
+    expect(pipe.transform(undefined)).toBe('$0.00');
   });
 
-  it("should support different currencies", () => {
-    expect(pipe.transform(1234.56, "EUR")).toBe("€1,234.56");
-    expect(pipe.transform(1234.56, "GBP")).toBe("£1,234.56");
+  it('should support different currencies', () => {
+    expect(pipe.transform(1234.56, 'EUR')).toBe('€1,234.56');
+    expect(pipe.transform(1234.56, 'GBP')).toBe('£1,234.56');
   });
 });
 ```
@@ -379,10 +389,10 @@ Vitest generates several coverage report formats:
 Follow the AAA pattern (Arrange, Act, Assert):
 
 ```typescript
-it("should do something", () => {
+it('should do something', () => {
   // Arrange: Set up test data and mocks
-  const input = "test";
-  const expected = "TEST";
+  const input = 'test';
+  const expected = 'TEST';
 
   // Act: Execute the code under test
   const result = component.toUpperCase(input);
@@ -410,18 +420,18 @@ Keep tests focused with one logical assertion:
 
 ```typescript
 // ❌ Bad - Testing multiple things
-it("should work", () => {
-  expect(component.name).toBe("John");
+it('should work', () => {
+  expect(component.name).toBe('John');
   expect(component.age).toBe(30);
-  expect(component.email).toBe("john@example.com");
+  expect(component.email).toBe('john@example.com');
 });
 
 // ✅ Good - Separate tests
-it("should set name correctly", () => {
-  expect(component.name).toBe("John");
+it('should set name correctly', () => {
+  expect(component.name).toBe('John');
 });
 
-it("should set age correctly", () => {
+it('should set age correctly', () => {
   expect(component.age).toBe(30);
 });
 ```
@@ -433,11 +443,11 @@ Mock external dependencies to isolate tests:
 ```typescript
 // Mock service
 const mockService = {
-  getData: jest.fn().mockReturnValue(of({ data: "test" })),
+  getData: jest.fn().mockReturnValue(of({ data: 'test' })),
 };
 
 // Spy on methods
-jest.spyOn(service, "getData").mockReturnValue(of({ data: "test" }));
+jest.spyOn(service, 'getData').mockReturnValue(of({ data: 'test' }));
 ```
 
 ### 5. Test Edge Cases
@@ -486,23 +496,23 @@ expect(value).toBeCloseTo(0.3);
 
 // Strings
 expect(value).toMatch(/pattern/);
-expect(value).toContain("substring");
+expect(value).toContain('substring');
 
 // Arrays and Iterables
 expect(array).toContain(item);
 expect(array).toHaveLength(3);
 
 // Objects
-expect(object).toHaveProperty("key");
-expect(object).toMatchObject({ key: "value" });
+expect(object).toHaveProperty('key');
+expect(object).toMatchObject({ key: 'value' });
 
 // Exceptions
 expect(() => {
-  throw new Error("error");
+  throw new Error('error');
 }).toThrow();
 expect(() => {
-  throw new Error("error");
-}).toThrow("error");
+  throw new Error('error');
+}).toThrow('error');
 
 // Async
 await expect(promise).resolves.toBe(value);

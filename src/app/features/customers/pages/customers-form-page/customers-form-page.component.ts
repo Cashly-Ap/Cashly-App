@@ -72,7 +72,6 @@ interface CustomerFormData {
     CustomerAddressesSectionComponent,
   ],
   templateUrl: './customers-form-page.component.html',
-
 })
 export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormData> {
   private service = inject(CustomerApplicationService);
@@ -86,9 +85,10 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
 
   customerTypes = [...CUSTOMER_TYPES];
   priceTypeOptions = computed(() =>
-    this.priceTypeService.priceTypes()
+    this.priceTypeService
+      .priceTypes()
       .filter((pt) => pt.active)
-      .map((pt) => ({ label: pt.name, value: pt.id }))
+      .map((pt) => ({ label: pt.name, value: pt.id })),
   );
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
@@ -98,7 +98,8 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
 
   warehouseOptions = computed(() => {
     const assigned = new Set(this.warehouseAccess().map((w) => w.warehouseId));
-    return this.warehouseService.simpleWarehouses()
+    return this.warehouseService
+      .simpleWarehouses()
       .filter((w) => !assigned.has(w.id))
       .map((w) => ({ label: w.name, value: w.id }));
   });
@@ -152,7 +153,10 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       rif: ['', [Validators.required, CustomerValidators.rif()]],
       alias: ['', [CustomerValidators.customerAlias()]],
       paymentType: [PaymentType.CASH, Validators.required],
-      creditDays: [{ value: null, disabled: true }, [Validators.required, Validators.min(0), Validators.max(365)]],
+      creditDays: [
+        { value: null, disabled: true },
+        [Validators.required, Validators.min(0), Validators.max(365)],
+      ],
       creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
       portalAccess: [false],
@@ -178,7 +182,9 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
     const phonesArray = this.form.get('phones') as FormArray;
     phonesArray.clear();
     (data.phones ?? []).forEach((phone) => {
-      phonesArray.push(this.fb.control(phone, [Validators.required, CustomerValidators.phoneNumber()]));
+      phonesArray.push(
+        this.fb.control(phone, [Validators.required, CustomerValidators.phoneNumber()]),
+      );
     });
 
     const addressesArray = this.form.get('addresses') as FormArray;
@@ -211,13 +217,17 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         const emailsArray = this.form.get('emails') as FormArray;
         emailsArray.clear();
         formModel.emails.forEach((e) => {
-          emailsArray.push(this.fb.control(e.email, [Validators.required, CustomerValidators.email()]));
+          emailsArray.push(
+            this.fb.control(e.email, [Validators.required, CustomerValidators.email()]),
+          );
         });
 
         const phonesArray = this.form.get('phones') as FormArray;
         phonesArray.clear();
         formModel.phones.forEach((p) => {
-          phonesArray.push(this.fb.control(p.phone, [Validators.required, CustomerValidators.phoneNumber()]));
+          phonesArray.push(
+            this.fb.control(p.phone, [Validators.required, CustomerValidators.phoneNumber()]),
+          );
         });
 
         const addressesArray = this.form.get('addresses') as FormArray;
@@ -295,12 +305,22 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
             warehouse$.subscribe({
               next: () => {
                 this.markAsSubmitted();
-                this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente actualizado exitosamente', life: 3000 });
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Éxito',
+                  detail: 'Cliente actualizado exitosamente',
+                  life: 3000,
+                });
                 this.router.navigate(['/customers']);
               },
               error: () => {
                 this.markAsSubmitted();
-                this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Cliente actualizado, pero hubo un error al sincronizar los almacenes', life: 5000 });
+                this.messageService.add({
+                  severity: 'warn',
+                  summary: 'Advertencia',
+                  detail: 'Cliente actualizado, pero hubo un error al sincronizar los almacenes',
+                  life: 5000,
+                });
                 this.router.navigate(['/customers']);
               },
             });
@@ -330,14 +350,20 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         this.service.create(createData).subscribe({
           next: (created) => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Cliente creado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Cliente creado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/customers']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: err?.error?.message || 'Error al crear el cliente. Por favor, intente nuevamente.',
+              detail:
+                err?.error?.message || 'Error al crear el cliente. Por favor, intente nuevamente.',
               life: 5000,
             });
           },

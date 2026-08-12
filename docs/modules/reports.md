@@ -8,14 +8,15 @@ Reports open inside a **`p-dialog` modal** triggered from either the navbar menu
 
 Reports are grouped into four main categories:
 
-| Category | Reports | Count |
-|----------|---------|-------|
-| **Customers** | Customer List, Account Statement (Summary & Detailed), Aging Analysis, Accounts Receivable | 4 |
-| **Products** | Product Labels, Product List, Product Catalog, Stock Inventory, Inventory Movements, Price List | 6 |
-| **Sales** | Cash Reconciliation, Sales Breakdown | 2 |
-| **Sales Representatives** | Representative List, Sales by Representative, Collections by Representative | 3 |
+| Category                  | Reports                                                                                         | Count |
+| ------------------------- | ----------------------------------------------------------------------------------------------- | ----- |
+| **Customers**             | Customer List, Account Statement (Summary & Detailed), Aging Analysis, Accounts Receivable      | 4     |
+| **Products**              | Product Labels, Product List, Product Catalog, Stock Inventory, Inventory Movements, Price List | 6     |
+| **Sales**                 | Cash Reconciliation, Sales Breakdown                                                            | 2     |
+| **Sales Representatives** | Representative List, Sales by Representative, Collections by Representative                     | 3     |
 
 **Key Concepts**:
+
 - **PDF-Only**: Every report page shows a filter form and a single **"Generar PDF"** button. There is no JSON/table preview in any report component.
 - **Dialog-Based**: Reports open inside a `p-dialog` modal via `ReportsDialogService` — no route navigation
 - **PDF Download**: The API returns `application/pdf` binary content; the browser download is triggered via a blob URL
@@ -134,6 +135,7 @@ export class ReportsDialogService {
 ```
 
 **Important implementation notes**:
+
 - Uses plain class properties (NOT signals) — PrimeNG `p-dialog` `[(visible)]` requires two-way binding on a plain boolean, not a signal
 - `(onHide)` must be used instead of `(visibleChange)` to reset state on close — `visibleChange` also fires on open
 
@@ -153,7 +155,7 @@ The dialog is rendered **inside** `<app-main-layout>` (not outside):
   (onHide)="reportsDialog.close()"
 >
   @if (reportsDialog.activeComponent) {
-    <ng-container [ngComponentOutlet]="reportsDialog.activeComponent" />
+  <ng-container [ngComponentOutlet]="reportsDialog.activeComponent" />
   }
 </p-dialog>
 ```
@@ -170,10 +172,7 @@ export function buildMenuItems(reportsDialog: ReportsDialogService): MenuItem[] 
     {
       label: 'Cuadre de Caja',
       icon: 'pi pi-wallet',
-      command: () => reportsDialog.open(
-        CashReconciliationReportPageComponent,
-        'Cuadre de Caja'
-      ),
+      command: () => reportsDialog.open(CashReconciliationReportPageComponent, 'Cuadre de Caja'),
     },
     // ...
   ];
@@ -195,23 +194,23 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 ### Endpoint Summary
 
-| Method | Endpoint | Description | Roles |
-|--------|----------|-------------|-------|
-| GET | /api/reports/customers/list | Customer list report | USER, ADMIN |
-| GET | /api/reports/customers/{id}/statement | Customer account statement | USER, ADMIN |
-| GET | /api/reports/customers/aging | Customer aging analysis | USER, ADMIN |
-| GET | /api/reports/customers/receivables | Accounts receivable | USER, ADMIN |
-| GET | /api/reports/products/labels | Product labels (PDF only) | USER, ADMIN |
-| GET | /api/reports/products/list | Product list report | USER, ADMIN |
-| GET | /api/reports/products/catalog | Product catalog (PDF only) | USER, ADMIN |
-| GET | /api/reports/products/stock | Stock inventory report | USER, ADMIN |
-| GET | /api/reports/products/movements | Inventory movements report | USER, ADMIN |
-| GET | /api/reports/products/price-list | Price list report | USER, ADMIN |
-| GET | /api/reports/sales/cash-reconciliation | Cash reconciliation report | USER, ADMIN |
-| GET | /api/reports/sales/breakdown | Sales breakdown report | USER, ADMIN |
-| GET | /api/reports/merchants/list | Sales representative list | USER, ADMIN |
-| GET | /api/reports/merchants/sales | Sales by representative | USER, ADMIN, MERCHANT (own) |
-| GET | /api/reports/merchants/collections | Collections by representative | USER, ADMIN, MERCHANT (own) |
+| Method | Endpoint                               | Description                   | Roles                       |
+| ------ | -------------------------------------- | ----------------------------- | --------------------------- |
+| GET    | /api/reports/customers/list            | Customer list report          | USER, ADMIN                 |
+| GET    | /api/reports/customers/{id}/statement  | Customer account statement    | USER, ADMIN                 |
+| GET    | /api/reports/customers/aging           | Customer aging analysis       | USER, ADMIN                 |
+| GET    | /api/reports/customers/receivables     | Accounts receivable           | USER, ADMIN                 |
+| GET    | /api/reports/products/labels           | Product labels (PDF only)     | USER, ADMIN                 |
+| GET    | /api/reports/products/list             | Product list report           | USER, ADMIN                 |
+| GET    | /api/reports/products/catalog          | Product catalog (PDF only)    | USER, ADMIN                 |
+| GET    | /api/reports/products/stock            | Stock inventory report        | USER, ADMIN                 |
+| GET    | /api/reports/products/movements        | Inventory movements report    | USER, ADMIN                 |
+| GET    | /api/reports/products/price-list       | Price list report             | USER, ADMIN                 |
+| GET    | /api/reports/sales/cash-reconciliation | Cash reconciliation report    | USER, ADMIN                 |
+| GET    | /api/reports/sales/breakdown           | Sales breakdown report        | USER, ADMIN                 |
+| GET    | /api/reports/merchants/list            | Sales representative list     | USER, ADMIN                 |
+| GET    | /api/reports/merchants/sales           | Sales by representative       | USER, ADMIN, MERCHANT (own) |
+| GET    | /api/reports/merchants/collections     | Collections by representative | USER, ADMIN, MERCHANT (own) |
 
 **All endpoints accept `format=pdf`** — the API returns `application/pdf` binary content. The frontend always calls with `format=pdf` and `responseType: 'blob'`.
 
@@ -227,14 +226,15 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| active | boolean | No | Filter by active status |
-| type | string | No | `INDIVIDUAL`, `BUSINESS`, `GOVERNMENT`, `NON_PROFIT` |
-| search | string | No | Search by legal name, alias, or RIF |
-| format | string | No | `pdf` |
+| Parameter | Type    | Required | Description                                          |
+| --------- | ------- | -------- | ---------------------------------------------------- |
+| active    | boolean | No       | Filter by active status                              |
+| type      | string  | No       | `INDIVIDUAL`, `BUSINESS`, `GOVERNMENT`, `NON_PROFIT` |
+| search    | string  | No       | Search by legal name, alias, or RIF                  |
+| format    | string  | No       | `pdf`                                                |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="customer-list-{date}.pdf"`
 
@@ -248,20 +248,21 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Path Parameters**:
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter  | Type | Description                |
+| ---------- | ---- | -------------------------- |
 | customerId | UUID | Customer unique identifier |
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | Yes | Start date `YYYY-MM-DD` |
-| to | string | Yes | End date `YYYY-MM-DD` |
-| mode | string | No | `summary` (default) or `detailed` |
-| format | string | No | `pdf` |
+| Parameter | Type   | Required | Description                       |
+| --------- | ------ | -------- | --------------------------------- |
+| from      | string | Yes      | Start date `YYYY-MM-DD`           |
+| to        | string | Yes      | End date `YYYY-MM-DD`             |
+| mode      | string | No       | `summary` (default) or `detailed` |
+| format    | string | No       | `pdf`                             |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="statement-{customerId}-{date}.pdf"`
 
@@ -275,13 +276,14 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asOf | string | No | Reference date `YYYY-MM-DD` (default: today) |
-| customerId | UUID | No | Filter for a specific customer |
-| format | string | No | `pdf` |
+| Parameter  | Type   | Required | Description                                  |
+| ---------- | ------ | -------- | -------------------------------------------- |
+| asOf       | string | No       | Reference date `YYYY-MM-DD` (default: today) |
+| customerId | UUID   | No       | Filter for a specific customer               |
+| format     | string | No       | `pdf`                                        |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="aging-{date}.pdf"`
 
@@ -295,13 +297,14 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asOf | string | No | Balance as of this date (default: today) |
-| overdueOnly | boolean | No | Show only overdue invoices |
-| format | string | No | `pdf` |
+| Parameter   | Type    | Required | Description                              |
+| ----------- | ------- | -------- | ---------------------------------------- |
+| asOf        | string  | No       | Balance as of this date (default: today) |
+| overdueOnly | boolean | No       | Show only overdue invoices               |
+| format      | string  | No       | `pdf`                                    |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="receivables-{date}.pdf"`
 
@@ -317,16 +320,17 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| categoryId | number | No | All products in a category |
-| labelSize | string | No | `small`, `medium` (default), `large` |
-| showBarcode | boolean | No | Include barcode (default: `true`) |
-| showCostPrice | boolean | No | Include cost price — **ADMIN only** |
-| differentialId | number | No | Apply differential for displayed price |
-| format | string | No | `pdf` |
+| Parameter      | Type    | Required | Description                            |
+| -------------- | ------- | -------- | -------------------------------------- |
+| categoryId     | number  | No       | All products in a category             |
+| labelSize      | string  | No       | `small`, `medium` (default), `large`   |
+| showBarcode    | boolean | No       | Include barcode (default: `true`)      |
+| showCostPrice  | boolean | No       | Include cost price — **ADMIN only**    |
+| differentialId | number  | No       | Apply differential for displayed price |
+| format         | string  | No       | `pdf`                                  |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="product-labels-{date}.pdf"`
 
@@ -340,16 +344,17 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| categoryId | number | No | Filter by category |
-| productType | string | No | `SIMPLE` or `COMPOSITE` |
-| activeOnly | boolean | No | Only active products (default: `true`) |
-| groupBy | string | No | `category` (default), `type`, `none` |
-| showCostPrice | boolean | No | Show cost price — **ADMIN only** |
-| format | string | No | `pdf` |
+| Parameter     | Type    | Required | Description                            |
+| ------------- | ------- | -------- | -------------------------------------- |
+| categoryId    | number  | No       | Filter by category                     |
+| productType   | string  | No       | `SIMPLE` or `COMPOSITE`                |
+| activeOnly    | boolean | No       | Only active products (default: `true`) |
+| groupBy       | string  | No       | `category` (default), `type`, `none`   |
+| showCostPrice | boolean | No       | Show cost price — **ADMIN only**       |
+| format        | string  | No       | `pdf`                                  |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="product-list-{date}.pdf"`
 
@@ -363,13 +368,14 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| differentialId | number | No | Apply differential pricing |
-| categoryId | number | No | Limit to a specific category |
-| format | string | No | `pdf` |
+| Parameter      | Type   | Required | Description                  |
+| -------------- | ------ | -------- | ---------------------------- |
+| differentialId | number | No       | Apply differential pricing   |
+| categoryId     | number | No       | Limit to a specific category |
+| format         | string | No       | `pdf`                        |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="product-catalog-{date}.pdf"`
 
@@ -383,18 +389,19 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| asOf | string | No | Stock as of date (default: today) |
-| warehouseId | number | No | Filter by warehouse |
-| categoryId | number | No | Filter by category |
-| productId | number | No | Filter for a specific product |
-| includeZeroStock | boolean | No | Include products with 0 stock (default: `false`) |
-| showPrices | string | No | `sale` (default), `cost`, `both` |
-| differentialId | number | No | Apply differential for extra price column |
-| format | string | No | `pdf` |
+| Parameter        | Type    | Required | Description                                      |
+| ---------------- | ------- | -------- | ------------------------------------------------ |
+| asOf             | string  | No       | Stock as of date (default: today)                |
+| warehouseId      | number  | No       | Filter by warehouse                              |
+| categoryId       | number  | No       | Filter by category                               |
+| productId        | number  | No       | Filter for a specific product                    |
+| includeZeroStock | boolean | No       | Include products with 0 stock (default: `false`) |
+| showPrices       | string  | No       | `sale` (default), `cost`, `both`                 |
+| differentialId   | number  | No       | Apply differential for extra price column        |
+| format           | string  | No       | `pdf`                                            |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="stock-{date}.pdf"`
 
@@ -408,16 +415,17 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | **Yes** | Start date `YYYY-MM-DD` |
-| to | string | **Yes** | End date `YYYY-MM-DD` |
-| warehouseId | number | No | Filter by warehouse |
-| productId | number | No | Filter by product |
-| movementType | string | No | `ENTRY`, `EXIT`, `ADJUSTMENT`, `TRANSFER` |
-| format | string | No | `pdf` |
+| Parameter    | Type   | Required | Description                               |
+| ------------ | ------ | -------- | ----------------------------------------- |
+| from         | string | **Yes**  | Start date `YYYY-MM-DD`                   |
+| to           | string | **Yes**  | End date `YYYY-MM-DD`                     |
+| warehouseId  | number | No       | Filter by warehouse                       |
+| productId    | number | No       | Filter by product                         |
+| movementType | string | No       | `ENTRY`, `EXIT`, `ADJUSTMENT`, `TRANSFER` |
+| format       | string | No       | `pdf`                                     |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="movements-{date}.pdf"`
 
@@ -431,14 +439,15 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| categoryId | number | No | Filter by category |
-| differentialIds | number[] | No | Up to 5 differentials for extra price columns |
-| showCostPrice | boolean | No | Show cost price — **ADMIN only** |
-| format | string | No | `pdf` |
+| Parameter       | Type     | Required | Description                                   |
+| --------------- | -------- | -------- | --------------------------------------------- |
+| categoryId      | number   | No       | Filter by category                            |
+| differentialIds | number[] | No       | Up to 5 differentials for extra price columns |
+| showCostPrice   | boolean  | No       | Show cost price — **ADMIN only**              |
+| format          | string   | No       | `pdf`                                         |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="price-list-{date}.pdf"`
 
@@ -454,15 +463,16 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | Conditional | Period start `YYYY-MM-DDTHH:mm:ss` (required if no `period`) |
-| to | string | Conditional | Period end `YYYY-MM-DDTHH:mm:ss` (required if no `period`) |
-| period | string | No | Shortcut: `today`, `yesterday`, `this_week`, `last_week` |
-| userId | UUID | No | Filter by cashier/user |
-| format | string | No | `pdf` |
+| Parameter | Type   | Required    | Description                                                  |
+| --------- | ------ | ----------- | ------------------------------------------------------------ |
+| from      | string | Conditional | Period start `YYYY-MM-DDTHH:mm:ss` (required if no `period`) |
+| to        | string | Conditional | Period end `YYYY-MM-DDTHH:mm:ss` (required if no `period`)   |
+| period    | string | No          | Shortcut: `today`, `yesterday`, `this_week`, `last_week`     |
+| userId    | UUID   | No          | Filter by cashier/user                                       |
+| format    | string | No          | `pdf`                                                        |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="cash-reconciliation-{date}.pdf"`
 
@@ -476,19 +486,20 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | **Yes** | Start date `YYYY-MM-DD` |
-| to | string | **Yes** | End date `YYYY-MM-DD` |
-| groupBy | string | No | `product`, `category`, `warehouse`, `day`, `week`, `month`, `year`, `currency`, `customer` |
-| warehouseId | number | No | Filter by warehouse |
-| categoryId | number | No | Filter by category |
-| productId | number | No | Filter by product |
-| customerId | UUID | No | Filter by customer |
-| merchantId | UUID | No | Filter by sales representative |
-| format | string | No | `pdf` |
+| Parameter   | Type   | Required | Description                                                                                |
+| ----------- | ------ | -------- | ------------------------------------------------------------------------------------------ |
+| from        | string | **Yes**  | Start date `YYYY-MM-DD`                                                                    |
+| to          | string | **Yes**  | End date `YYYY-MM-DD`                                                                      |
+| groupBy     | string | No       | `product`, `category`, `warehouse`, `day`, `week`, `month`, `year`, `currency`, `customer` |
+| warehouseId | number | No       | Filter by warehouse                                                                        |
+| categoryId  | number | No       | Filter by category                                                                         |
+| productId   | number | No       | Filter by product                                                                          |
+| customerId  | UUID   | No       | Filter by customer                                                                         |
+| merchantId  | UUID   | No       | Filter by sales representative                                                             |
+| format      | string | No       | `pdf`                                                                                      |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="sales-breakdown-{date}.pdf"`
 
@@ -504,12 +515,13 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| active | boolean | No | Filter by active status |
-| format | string | No | `pdf` |
+| Parameter | Type    | Required | Description             |
+| --------- | ------- | -------- | ----------------------- |
+| active    | boolean | No       | Filter by active status |
+| format    | string  | No       | `pdf`                   |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="merchant-list-{date}.pdf"`
 
@@ -523,15 +535,16 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | **Yes** | Start date `YYYY-MM-DD` |
-| to | string | **Yes** | End date `YYYY-MM-DD` |
-| merchantId | UUID | No | Filter for a specific representative |
-| groupBy | string | No | `merchant` (default), `month`, `customer` |
-| format | string | No | `pdf` |
+| Parameter  | Type   | Required | Description                               |
+| ---------- | ------ | -------- | ----------------------------------------- |
+| from       | string | **Yes**  | Start date `YYYY-MM-DD`                   |
+| to         | string | **Yes**  | End date `YYYY-MM-DD`                     |
+| merchantId | UUID   | No       | Filter for a specific representative      |
+| groupBy    | string | No       | `merchant` (default), `month`, `customer` |
+| format     | string | No       | `pdf`                                     |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="merchant-sales-{date}.pdf"`
 
@@ -545,15 +558,16 @@ protected openReport(component: Type<unknown>, title: string): void {
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| from | string | **Yes** | Start date `YYYY-MM-DD` |
-| to | string | **Yes** | End date `YYYY-MM-DD` |
-| merchantId | UUID | No | Filter for a specific representative |
-| status | string | No | `PENDING`, `PAID` (default: both) — typed as `'PAID' \| 'PENDING' \| undefined` |
-| format | string | No | `pdf` |
+| Parameter  | Type   | Required | Description                                                                     |
+| ---------- | ------ | -------- | ------------------------------------------------------------------------------- |
+| from       | string | **Yes**  | Start date `YYYY-MM-DD`                                                         |
+| to         | string | **Yes**  | End date `YYYY-MM-DD`                                                           |
+| merchantId | UUID   | No       | Filter for a specific representative                                            |
+| status     | string | No       | `PENDING`, `PAID` (default: both) — typed as `'PAID' \| 'PENDING' \| undefined` |
+| format     | string | No       | `pdf`                                                                           |
 
 **PDF Response (200 OK)**:
+
 - Content-Type: `application/pdf`
 - Content-Disposition: `attachment; filename="merchant-collections-{date}.pdf"`
 
@@ -694,6 +708,7 @@ Every report template follows this exact layout:
 ```
 
 **Rules**:
+
 - Outer wrapper is always `<div class="p-4">` (not `p-6 max-w-7xl mx-auto`)
 - Single card: no `mb-5` — no second card below
 - `appendTo="body"` is mandatory on every `p-datepicker` and `p-select`
@@ -704,26 +719,26 @@ Every report template follows this exact layout:
 
 ## Role Permissions
 
-| Report | USER | ADMIN | MERCHANT |
-|--------|------|-------|----------|
-| Customer List | ✅ | ✅ | ❌ |
-| Customer Statement | ✅ | ✅ | ❌ |
-| Aging Analysis | ✅ | ✅ | ❌ |
-| Accounts Receivable | ✅ | ✅ | ❌ |
-| Product Labels | ✅ | ✅ | ❌ |
-| Product Labels (`showCostPrice`) | ❌ | ✅ | ❌ |
-| Product List | ✅ | ✅ | ❌ |
-| Product List (`showCostPrice`) | ❌ | ✅ | ❌ |
-| Product Catalog | ✅ | ✅ | ❌ |
-| Stock Inventory | ✅ | ✅ | ❌ |
-| Inventory Movements | ✅ | ✅ | ❌ |
-| Price List | ✅ | ✅ | ❌ |
-| Price List (`showCostPrice`) | ❌ | ✅ | ❌ |
-| Cash Reconciliation | ✅ | ✅ | ❌ |
-| Sales Breakdown | ✅ | ✅ | ❌ |
-| Merchant List | ✅ | ✅ | ❌ |
-| Merchant Sales | ✅ All | ✅ All | ✅ Own only |
-| Merchant Collections | ✅ All | ✅ All | ✅ Own only |
+| Report                           | USER   | ADMIN  | MERCHANT    |
+| -------------------------------- | ------ | ------ | ----------- |
+| Customer List                    | ✅     | ✅     | ❌          |
+| Customer Statement               | ✅     | ✅     | ❌          |
+| Aging Analysis                   | ✅     | ✅     | ❌          |
+| Accounts Receivable              | ✅     | ✅     | ❌          |
+| Product Labels                   | ✅     | ✅     | ❌          |
+| Product Labels (`showCostPrice`) | ❌     | ✅     | ❌          |
+| Product List                     | ✅     | ✅     | ❌          |
+| Product List (`showCostPrice`)   | ❌     | ✅     | ❌          |
+| Product Catalog                  | ✅     | ✅     | ❌          |
+| Stock Inventory                  | ✅     | ✅     | ❌          |
+| Inventory Movements              | ✅     | ✅     | ❌          |
+| Price List                       | ✅     | ✅     | ❌          |
+| Price List (`showCostPrice`)     | ❌     | ✅     | ❌          |
+| Cash Reconciliation              | ✅     | ✅     | ❌          |
+| Sales Breakdown                  | ✅     | ✅     | ❌          |
+| Merchant List                    | ✅     | ✅     | ❌          |
+| Merchant Sales                   | ✅ All | ✅ All | ✅ Own only |
+| Merchant Collections             | ✅ All | ✅ All | ✅ Own only |
 
 ---
 
@@ -737,8 +752,9 @@ export const REPORTS_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/reports-landing-page/reports-landing-page.component')
-        .then((m) => m.ReportsLandingPageComponent),
+      import('../pages/reports-landing-page/reports-landing-page.component').then(
+        (m) => m.ReportsLandingPageComponent,
+      ),
     title: 'Reportes',
   },
 ];

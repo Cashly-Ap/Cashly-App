@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -70,7 +63,9 @@ export class InvoicePdfModalComponent {
   ];
 
   readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
-  readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
+  readonly categoryOptions = signal<SelectOption[]>([
+    { value: null, label: 'Todas las categorías' },
+  ]);
 
   loadFilters(): void {
     if (this.filtersLoaded) return;

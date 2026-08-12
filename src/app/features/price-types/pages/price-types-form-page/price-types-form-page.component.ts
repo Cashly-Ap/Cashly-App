@@ -89,7 +89,12 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
         this.form.patchValue({ name: priceType.name, active: priceType.active });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el tipo de precio.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el tipo de precio.',
+          life: 5000,
+        });
         this.router.navigate(['/price-types']);
       },
     });
@@ -100,31 +105,58 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
       const value = this.form.getRawValue() as PriceTypeFormData;
 
       if (this.isEditMode() && this.entityId()) {
-        this.service.update(this.entityId()!, { name: value.name, active: value.active }).subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Tipo de precio actualizado exitosamente', life: 3000 });
-            this.router.navigate(['/price-types']);
-          },
-          error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el tipo de precio.', life: 5000 });
-          },
-        });
+        this.service
+          .update(this.entityId()!, { name: value.name, active: value.active })
+          .subscribe({
+            next: () => {
+              this.markAsSubmitted();
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Éxito',
+                detail: 'Tipo de precio actualizado exitosamente',
+                life: 3000,
+              });
+              this.router.navigate(['/price-types']);
+            },
+            error: () => {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: 'Error al actualizar el tipo de precio.',
+                life: 5000,
+              });
+            },
+          });
       } else {
         this.service.create({ name: value.name }).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Tipo de precio creado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Tipo de precio creado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/price-types']);
           },
           error: (err: { error?: { message?: string } }) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear el tipo de precio.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.error?.message || 'Error al crear el tipo de precio.',
+              life: 5000,
+            });
           },
         });
       }
     } else {
       this.form.markAllAsTouched();
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, complete todos los campos requeridos.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Por favor, complete todos los campos requeridos.',
+        life: 5000,
+      });
     }
   }
 }

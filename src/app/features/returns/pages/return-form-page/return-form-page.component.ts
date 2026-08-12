@@ -26,7 +26,11 @@ import { WarehouseApiService } from '@features/warehouses/services/api/warehouse
 import { ReturnType, RETURN_TYPE_LABELS } from '@features/returns/models/enums/return-type.enum';
 import { ReturnCreate } from '@features/returns/models/interfaces';
 import { CustomerList } from '@features/customers/models/interfaces';
-import { InvoiceList, InvoiceDetails, InvoiceLineDetail } from '@features/invoices/models/interfaces';
+import {
+  InvoiceList,
+  InvoiceDetails,
+  InvoiceLineDetail,
+} from '@features/invoices/models/interfaces';
 import { ReturnLinesTableComponent } from '@features/returns/components/return-lines-table/return-lines-table.component';
 
 interface ReturnLineFormData {
@@ -63,7 +67,6 @@ interface ReturnLineFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReturnFormPageComponent implements OnInit {
-  
   readonly ReturnType = ReturnType;
 
   private readonly router = inject(Router);
@@ -75,37 +78,30 @@ export class ReturnFormPageComponent implements OnInit {
 
   readonly isSubmitting = signal<boolean>(false);
 
-  
   readonly showCustomerPicker = signal(false);
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
 
-  
   readonly showInvoicePicker = signal(false);
   readonly selectedInvoice = signal<InvoiceDetails | null>(null);
 
-  
   readonly returnType = signal<ReturnType>(ReturnType.MANUAL);
   readonly returnTypeOptions = Object.values(ReturnType).map((t) => ({
     label: RETURN_TYPE_LABELS[t],
     value: t,
   }));
 
-  
   readonly warehouses = signal<{ id: string; name: string }[]>([]);
   readonly autoWarehouseId = signal<string>('');
   readonly warehouseOptions = computed(() =>
     this.warehouses().map((w) => ({ label: w.name, value: w.id })),
   );
 
-  
   readonly returnLines = signal<ReturnLineFormData[]>([]);
   readonly totalAmount = computed(() =>
     this.returnLines().reduce((sum, l) => sum + l.quantity * l.unitPrice, 0),
   );
-  readonly hasInvalidLines = computed(() =>
-    this.returnLines().some((l) => l.quantity <= 0),
-  );
+  readonly hasInvalidLines = computed(() => this.returnLines().some((l) => l.quantity <= 0));
 
   readonly form = this.fb.group({
     invoiceId: ['', [Validators.required]],
@@ -130,7 +126,6 @@ export class ReturnFormPageComponent implements OnInit {
     });
   }
 
-  
   openCustomerPicker(): void {
     this.showCustomerPicker.set(true);
   }
@@ -140,7 +135,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
     this.showCustomerPicker.set(false);
-    
+
     this.selectedInvoice.set(null);
     this.form.patchValue({ invoiceId: '' });
     this.returnLines.set([]);
@@ -150,7 +145,6 @@ export class ReturnFormPageComponent implements OnInit {
     this.showCustomerPicker.set(false);
   }
 
-  
   openInvoicePicker(): void {
     if (!this.selectedCustomer()) {
       this.messageService.add({
@@ -168,7 +162,11 @@ export class ReturnFormPageComponent implements OnInit {
     this.showInvoicePicker.set(false);
     this.form.patchValue({ invoiceId: invoice.id });
     if (!this.selectedCustomer()) {
-      this.selectedCustomer.set({ id: invoice.customerId, alias: invoice.customerName, legalName: '' } as CustomerList);
+      this.selectedCustomer.set({
+        id: invoice.customerId,
+        alias: invoice.customerName,
+        legalName: '',
+      } as CustomerList);
       this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: '' });
       this.form.patchValue({ customerId: invoice.customerId });
     }
@@ -184,7 +182,6 @@ export class ReturnFormPageComponent implements OnInit {
     this.showInvoicePicker.set(false);
   }
 
-  
   onAutoWarehouseSelected(warehouseId: string): void {
     this.autoWarehouseId.set(warehouseId);
     if (!warehouseId) return;

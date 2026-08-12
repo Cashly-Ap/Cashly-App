@@ -7,5 +7,3 @@ export function createUserNameForm() {
     userName: ['', [Validators.required, Validators.minLength(3)]],
   });
 }
-
-

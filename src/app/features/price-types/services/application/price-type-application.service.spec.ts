@@ -30,10 +30,7 @@ describe('PriceTypeApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        PriceTypeApplicationService,
-        { provide: PriceTypeApiService, useValue: apiMock },
-      ],
+      providers: [PriceTypeApplicationService, { provide: PriceTypeApiService, useValue: apiMock }],
     });
 
     service = TestBed.inject(PriceTypeApplicationService);

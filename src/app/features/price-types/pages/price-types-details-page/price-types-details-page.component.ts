@@ -57,7 +57,12 @@ export class PriceTypesDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el tipo de precio.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el tipo de precio.',
+          life: 5000,
+        });
         this.router.navigate(['/price-types']);
       },
     });

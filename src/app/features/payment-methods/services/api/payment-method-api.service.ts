@@ -54,10 +54,12 @@ export class PaymentMethodApiService {
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
       .get<PagedResponse<PaymentMethodListApiResponse>>(this.baseUrl, { params })
-      .pipe(map((res) => ({
-        ...res,
-        content: res.content.map((r) => this.toPaymentMethodList(r)),
-      })));
+      .pipe(
+        map((res) => ({
+          ...res,
+          content: res.content.map((r) => this.toPaymentMethodList(r)),
+        })),
+      );
   }
 
   getById(id: string): Observable<PaymentMethodDetail> {

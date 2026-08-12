@@ -1,6 +1,6 @@
 const PROXY_CONFIG = {
-  "/api": {
-    target: "http://parsun-api-app:8080",
+  '/api': {
+    target: 'http://parsun-api-app:8080',
     secure: false,
     changeOrigin: true,
     configure: (proxy, options) => {
@@ -11,14 +11,14 @@ const PROXY_CONFIG = {
           proxyReq.setHeader('Content-Type', cleanContentType);
         }
       });
-    }
+    },
   },
-  "/ws": {
-    target: "ws://parsun-api-app:8080",
+  '/ws': {
+    target: 'ws://parsun-api-app:8080',
     ws: true,
     secure: false,
     changeOrigin: true,
-  }
+  },
 };
 
 module.exports = PROXY_CONFIG;

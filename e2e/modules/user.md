@@ -11,21 +11,21 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 ## Module Routes
 
-| Route | Component | Title | Guards |
-|-------|-----------|-------|--------|
-| `/users` | UsersListPageComponent | Usuarios | `authGuard` + `adminGuard` + `modulePermissionGuard(USERS)` |
-| `/users/new` | UsersFormPageComponent | Nuevo Usuario | Same |
-| `/users/:id` | UsersDetailsPageComponent | Detalles del Usuario | Same |
-| `/users/:id/edit` | UsersFormPageComponent | Editar Usuario | Same |
+| Route             | Component                 | Title                | Guards                                                      |
+| ----------------- | ------------------------- | -------------------- | ----------------------------------------------------------- |
+| `/users`          | UsersListPageComponent    | Usuarios             | `authGuard` + `adminGuard` + `modulePermissionGuard(USERS)` |
+| `/users/new`      | UsersFormPageComponent    | Nuevo Usuario        | Same                                                        |
+| `/users/:id`      | UsersDetailsPageComponent | Detalles del Usuario | Same                                                        |
+| `/users/:id/edit` | UsersFormPageComponent    | Editar Usuario       | Same                                                        |
 
 ## Seed Users for Testing
 
-| Email | Password | Role | Permissions |
-|-------|----------|------|-------------|
-| `gabriel@gmail.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules |
-| `admin@parsun.com` | `49510561Gabriel.` | ADMIN | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
-| `operator@parsun.com` | `49510561Gabriel.` | OPERATOR | INVENTORY, SALES, PURCHASES |
-| `testuser@parsun.com` | `Test1234!` | OPERATOR | INVENTORY (can be created for testing) |
+| Email                 | Password           | Role        | Permissions                                                  |
+| --------------------- | ------------------ | ----------- | ------------------------------------------------------------ |
+| `gabriel@gmail.com`   | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
+| `admin@parsun.com`    | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
+| `operator@parsun.com` | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
+| `testuser@parsun.com` | `Test1234!`        | OPERATOR    | INVENTORY (can be created for testing)                       |
 
 ---
 
@@ -221,6 +221,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 - **And** the submit button should be disabled
 
 **Password requirements (backend):**
+
 - Min 8 characters, max 100
 - At least 1 uppercase letter
 - At least 1 lowercase letter
@@ -381,35 +382,35 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 ## Coverage Matrix
 
-| Functionality | Tests covering it | Priority |
-|--------------|-------------------|----------|
-| List users | USER-001, USER-002, USER-003 | CRITICAL |
-| View user details | USER-004 | HIGH |
-| Create user | USER-005, USER-006, USER-007, USER-021 | CRITICAL |
-| Edit user | USER-008 | HIGH |
-| Delete user | USER-009, USER-010 | CRITICAL |
-| Change password | USER-011, USER-015 | HIGH |
-| Change email | USER-012, USER-013 | HIGH |
-| Module permissions | USER-014, USER-021 | HIGH |
+| Functionality          | Tests covering it                      | Priority |
+| ---------------------- | -------------------------------------- | -------- |
+| List users             | USER-001, USER-002, USER-003           | CRITICAL |
+| View user details      | USER-004                               | HIGH     |
+| Create user            | USER-005, USER-006, USER-007, USER-021 | CRITICAL |
+| Edit user              | USER-008                               | HIGH     |
+| Delete user            | USER-009, USER-010                     | CRITICAL |
+| Change password        | USER-011, USER-015                     | HIGH     |
+| Change email           | USER-012, USER-013                     | HIGH     |
+| Module permissions     | USER-014, USER-021                     | HIGH     |
 | Permission enforcement | USER-023, USER-024, USER-025, USER-026 | CRITICAL |
-| Route protection | USER-019, USER-020 | CRITICAL |
-| Filters & Search | USER-016 | MEDIUM |
-| Pagination | USER-017 | MEDIUM |
-| Sorting | USER-018 | LOW |
-| Empty states | USER-022 | MEDIUM |
+| Route protection       | USER-019, USER-020                     | CRITICAL |
+| Filters & Search       | USER-016                               | MEDIUM   |
+| Pagination             | USER-017                               | MEDIUM   |
+| Sorting                | USER-018                               | LOW      |
+| Empty states           | USER-022                               | MEDIUM   |
 
 ---
 
 ## Execution Results
 
-*To be filled after test execution.*
+_To be filled after test execution._
 
-| Metric | Value |
-|--------|-------|
-| Planned Tests | 26 |
-| Executed Tests | |
-| ✅ PASS | |
-| ❌ FAIL | |
-| ⚠️ WARNING | |
-| 🔲 NOT EXECUTED | |
-| Issues Found | |
+| Metric          | Value |
+| --------------- | ----- |
+| Planned Tests   | 26    |
+| Executed Tests  |       |
+| ✅ PASS         |       |
+| ❌ FAIL         |       |
+| ⚠️ WARNING      |       |
+| 🔲 NOT EXECUTED |       |
+| Issues Found    |       |

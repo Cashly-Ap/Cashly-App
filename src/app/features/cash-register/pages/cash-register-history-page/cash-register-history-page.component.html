@@ -1,220 +1,239 @@
-  <div class="min-h-screen">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg">
-          <i class="pi pi-history text-surface-0 dark:text-surface-900 text-3xl"></i>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-bold mb-2">Historial de Caja</h1>
-        <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-          Consulta el historial de aperturas y cierres de caja
-        </p>
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    <div class="text-center mb-6">
+      <div
+        class="inline-flex items-center justify-center w-16 h-16 bg-surface-900 dark:bg-surface-100 rounded-2xl mb-4 shadow-lg"
+      >
+        <i class="pi pi-history text-surface-0 dark:text-surface-900 text-3xl"></i>
       </div>
+      <h1 class="text-3xl sm:text-4xl font-bold mb-2">Historial de Caja</h1>
+      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
+        Consulta el historial de aperturas y cierres de caja
+      </p>
+    </div>
 
-      <app-list-container>
-        <div class="px-4 sm:px-6 py-4">
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
-            <div class="flex gap-2 items-center w-full sm:w-auto">
-              <p-button
-                icon="pi pi-filter"
-                [outlined]="true"
-                severity="secondary"
-                (onClick)="filterPopover.toggle($event)"
-                pTooltip="Filtros"
-                [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-                badgeSeverity="contrast"
-              />
-              <p-popover #filterPopover>
-                <div class="flex flex-col gap-4 p-1 min-w-[280px]">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold text-sm">Filtros</span>
-                    @if (activeFilterCount() > 0) {
-                      <p-button
-                        label="Limpiar"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        (onClick)="clearFilters()"
-                      />
-                    }
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
-                    <p-datepicker
-                      [ngModel]="filterDateFrom()"
-                      (onSelect)="onDateFromChange($event)"
-                      [showIcon]="true"
-                      dateFormat="dd/mm/yy"
-                      placeholder="Desde"
-                      styleClass="w-full"
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <p-button
+              icon="pi pi-filter"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="filterPopover.toggle($event)"
+              pTooltip="Filtros"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+            />
+            <p-popover #filterPopover>
+              <div class="flex flex-col gap-4 p-1 min-w-[280px]">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">Filtros</span>
+                  @if (activeFilterCount() > 0) {
+                    <p-button
+                      label="Limpiar"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
                     />
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
-                    <p-datepicker
-                      [ngModel]="filterDateTo()"
-                      (onSelect)="onDateToChange($event)"
-                      [showIcon]="true"
-                      dateFormat="dd/mm/yy"
-                      placeholder="Hasta"
-                      styleClass="w-full"
-                    />
-                  </div>
+                  }
                 </div>
-              </p-popover>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
+                  <p-datepicker
+                    [ngModel]="filterDateFrom()"
+                    (onSelect)="onDateFromChange($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    placeholder="Desde"
+                    styleClass="w-full"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
+                  <p-datepicker
+                    [ngModel]="filterDateTo()"
+                    (onSelect)="onDateToChange($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    placeholder="Hasta"
+                    styleClass="w-full"
+                  />
+                </div>
+              </div>
+            </p-popover>
+          </div>
+          <div class="flex gap-2 items-center">
+            <p-button
+              icon="pi pi-arrow-left"
+              label="Volver a Caja"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onBack()"
+            />
+          </div>
+        </div>
+      </div>
+    </app-list-container>
+
+    <div class="h-4"></div>
+
+    @if (showInitialLoading()) {
+      <app-content-card>
+        <app-loading-spinner message="Cargando historial..." />
+      </app-content-card>
+    } @else if (isEmptyDatabase()) {
+      <app-content-card>
+        <app-empty-state
+          icon="pi-history"
+          title="No hay registros de caja"
+          message="Aún no se ha realizado ninguna apertura de caja."
+        />
+      </app-content-card>
+    } @else {
+      <app-list-container class="mt-4">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
             </div>
-            <div class="flex gap-2 items-center">
-              <p-button
-                icon="pi pi-arrow-left"
-                label="Volver a Caja"
-                severity="secondary"
-                [outlined]="true"
-                (onClick)="onBack()"
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              title="Sin resultados"
+              message="No hay registros que coincidan con los filtros seleccionados."
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table [value]="history()" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-36 cursor-pointer select-none" (click)="onSort('closureDate')">
+                      <div class="font-semibold inline-flex items-center gap-1">
+                        Fecha
+                        <i [class]="getSortIcon('closureDate')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th class="w-24 cursor-pointer select-none" (click)="onSort('status')">
+                      <div class="font-semibold inline-flex items-center gap-1">
+                        Estado
+                        <i [class]="getSortIcon('status')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th class="w-auto cursor-pointer select-none" (click)="onSort('openedByName')">
+                      <div class="font-semibold inline-flex items-center gap-1">
+                        Abierto por
+                        <i [class]="getSortIcon('openedByName')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th
+                      class="w-32 text-right cursor-pointer select-none"
+                      (click)="onSort('totalInvoiced')"
+                    >
+                      <div class="font-semibold inline-flex items-center gap-1 justify-end">
+                        Facturado
+                        <i [class]="getSortIcon('totalInvoiced')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th
+                      class="w-32 text-right cursor-pointer select-none"
+                      (click)="onSort('totalRevenue')"
+                    >
+                      <div class="font-semibold inline-flex items-center gap-1 justify-end">
+                        Ingresos
+                        <i [class]="getSortIcon('totalRevenue')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th
+                      class="w-32 text-right cursor-pointer select-none"
+                      (click)="onSort('totalExpenses')"
+                    >
+                      <div class="font-semibold inline-flex items-center gap-1 justify-end">
+                        Gastos
+                        <i [class]="getSortIcon('totalExpenses')" class="text-xs"></i>
+                      </div>
+                    </th>
+                    <th
+                      class="w-32 text-right cursor-pointer select-none"
+                      (click)="onSort('balance')"
+                    >
+                      <div class="font-semibold inline-flex items-center gap-1 justify-end">
+                        Balance
+                        <i [class]="getSortIcon('balance')" class="text-xs"></i>
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-register>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <span class="text-sm font-medium">{{
+                        register.closureDate | date: 'dd/MM/yyyy'
+                      }}</span>
+                    </td>
+                    <td>
+                      <p-tag
+                        [value]="getStatusLabel(register.status)"
+                        [severity]="getStatusSeverity(register.status)"
+                        styleClass="text-xs font-medium px-2 py-0.5"
+                      />
+                    </td>
+                    <td>
+                      <span class="text-sm">{{ register.openedByName }}</span>
+                      @if (register.closedByName) {
+                        <span class="text-xs text-surface-400 ml-1"
+                          >/ {{ register.closedByName }}</span
+                        >
+                      }
+                    </td>
+                    <td class="text-right">
+                      <span class="text-sm font-medium text-sky-600 dark:text-sky-400">
+                        {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <span class="text-sm font-medium text-green-600 dark:text-green-400">
+                        {{ register.totalRevenue | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <span class="text-sm font-medium text-red-600 dark:text-red-400">
+                        {{ register.totalExpenses | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <span
+                        class="text-sm font-medium"
+                        [class.text-green-600]="register.balance >= 0"
+                        [class.text-red-600]="register.balance < 0"
+                      >
+                        {{ register.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <p-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
-          </div>
+          }
         </div>
       </app-list-container>
-
-      <div class="h-4"></div>
-
-      @if (showInitialLoading()) {
-        <app-content-card>
-          <app-loading-spinner message="Cargando historial..." />
-        </app-content-card>
-      } @else if (isEmptyDatabase()) {
-        <app-content-card>
-          <app-empty-state
-            icon="pi-history"
-            title="No hay registros de caja"
-            message="Aún no se ha realizado ninguna apertura de caja."
-          />
-        </app-content-card>
-      } @else {
-        <app-list-container class="mt-4">
-          <div class="relative">
-            @if (loading()) {
-              <div class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl">
-                <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
-              </div>
-            }
-            @if (hasFilteredResults()) {
-              <app-empty-state
-                icon="pi-search"
-                title="Sin resultados"
-                message="No hay registros que coincidan con los filtros seleccionados."
-              />
-            } @else {
-              <div class="overflow-x-auto rounded-t-2xl">
-                <p-table
-                  [value]="history()"
-                  styleClass="p-datatable-striped"
-                >
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th class="w-36 cursor-pointer select-none" (click)="onSort('closureDate')">
-                        <div class="font-semibold inline-flex items-center gap-1">
-                          Fecha
-                          <i [class]="getSortIcon('closureDate')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-24 cursor-pointer select-none" (click)="onSort('status')">
-                        <div class="font-semibold inline-flex items-center gap-1">
-                          Estado
-                          <i [class]="getSortIcon('status')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-auto cursor-pointer select-none" (click)="onSort('openedByName')">
-                        <div class="font-semibold inline-flex items-center gap-1">
-                          Abierto por
-                          <i [class]="getSortIcon('openedByName')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('totalInvoiced')">
-                        <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                          Facturado
-                          <i [class]="getSortIcon('totalInvoiced')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('totalRevenue')">
-                        <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                          Ingresos
-                          <i [class]="getSortIcon('totalRevenue')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('totalExpenses')">
-                        <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                          Gastos
-                          <i [class]="getSortIcon('totalExpenses')" class="text-xs"></i>
-                        </div>
-                      </th>
-                      <th class="w-32 text-right cursor-pointer select-none" (click)="onSort('balance')">
-                        <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                          Balance
-                          <i [class]="getSortIcon('balance')" class="text-xs"></i>
-                        </div>
-                      </th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-register>
-                    <tr class="transition-colors duration-150">
-                      <td>
-                        <span class="text-sm font-medium">{{ register.closureDate | date: 'dd/MM/yyyy' }}</span>
-                      </td>
-                      <td>
-                        <p-tag
-                          [value]="getStatusLabel(register.status)"
-                          [severity]="getStatusSeverity(register.status)"
-                          styleClass="text-xs font-medium px-2 py-0.5"
-                        />
-                      </td>
-                      <td>
-                        <span class="text-sm">{{ register.openedByName }}</span>
-                        @if (register.closedByName) {
-                          <span class="text-xs text-surface-400 ml-1">/ {{ register.closedByName }}</span>
-                        }
-                      </td>
-                      <td class="text-right">
-                        <span class="text-sm font-medium text-sky-600 dark:text-sky-400">
-                          {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
-                        </span>
-                      </td>
-                      <td class="text-right">
-                        <span class="text-sm font-medium text-green-600 dark:text-green-400">
-                          {{ register.totalRevenue | currency: 'USD' : 'symbol' : '1.2-2' }}
-                        </span>
-                      </td>
-                      <td class="text-right">
-                        <span class="text-sm font-medium text-red-600 dark:text-red-400">
-                          {{ register.totalExpenses | currency: 'USD' : 'symbol' : '1.2-2' }}
-                        </span>
-                      </td>
-                      <td class="text-right">
-                        <span
-                          class="text-sm font-medium"
-                          [class.text-green-600]="register.balance >= 0"
-                          [class.text-red-600]="register.balance < 0"
-                        >
-                          {{ register.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
-                        </span>
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-              <div class="px-4 sm:px-6 py-3">
-                <p-paginator
-                  [first]="first()"
-                  [rows]="rows()"
-                  [totalRecords]="totalElements()"
-                  [rowsPerPageOptions]="[10, 25, 50, 100]"
-                  [showCurrentPageReport]="true"
-                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
-                  (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
-                />
-              </div>
-            }
-          </div>
-        </app-list-container>
-      }
-    </div>
+    }
   </div>
+</div>

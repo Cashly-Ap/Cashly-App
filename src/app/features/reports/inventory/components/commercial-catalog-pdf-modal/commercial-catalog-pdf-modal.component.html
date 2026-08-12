@@ -13,66 +13,58 @@
       <p-progressSpinner strokeWidth="4" styleClass="w-10 h-10" />
     </div>
   } @else {
-  <div class="flex flex-col gap-4 pt-2">
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Búsqueda</label>
-      <input
-        pInputText
-        [(ngModel)]="search"
-        placeholder="Buscar producto..."
-        class="w-full"
-      />
-    </div>
+    <div class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Búsqueda</label>
+        <input pInputText [(ngModel)]="search" placeholder="Buscar producto..." class="w-full" />
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Categoría</label>
-      <p-select
-        [options]="categoryOptions()"
-        [(ngModel)]="categoryId"
-        optionLabel="label"
-        optionValue="value"
-        appendTo="body"
-        placeholder="Todas las categorías"
-        styleClass="w-full"
-      />
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Categoría</label>
+        <p-select
+          [options]="categoryOptions()"
+          [(ngModel)]="categoryId"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          placeholder="Todas las categorías"
+          styleClass="w-full"
+        />
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Precio</label>
-      <p-select
-        [options]="priceTypeOptions()"
-        [(ngModel)]="priceTypeId"
-        optionLabel="label"
-        optionValue="value"
-        appendTo="body"
-        placeholder="Sin precio"
-        styleClass="w-full"
-      />
-      <small class="text-surface-500 dark:text-surface-400">
-        Opcional. Si no selecciona, el catálogo no mostrará precios.
-      </small>
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+          >Tipo de Precio</label
+        >
+        <p-select
+          [options]="priceTypeOptions()"
+          [(ngModel)]="priceTypeId"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          placeholder="Sin precio"
+          styleClass="w-full"
+        />
+        <small class="text-surface-500 dark:text-surface-400">
+          Opcional. Si no selecciona, el catálogo no mostrará precios.
+        </small>
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Disponible</label>
-      <p-select
-        [options]="activeOptions"
-        [(ngModel)]="active"
-        optionLabel="label"
-        optionValue="value"
-        appendTo="body"
-        styleClass="w-full"
-      />
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Disponible</label>
+        <p-select
+          [options]="activeOptions"
+          [(ngModel)]="active"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          styleClass="w-full"
+        />
+      </div>
     </div>
-  </div>
   }
 
   <ng-template pTemplate="footer">
-    <p-button
-      label="Ver PDF"
-      icon="pi pi-file-pdf"
-      (onClick)="generatePdf()"
-      severity="primary"
-    />
+    <p-button label="Ver PDF" icon="pi pi-file-pdf" (onClick)="generatePdf()" severity="primary" />
   </ng-template>
 </p-dialog>

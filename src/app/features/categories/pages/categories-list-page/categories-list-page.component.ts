@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -73,8 +80,19 @@ export class CategoriesListPageComponent implements OnInit {
   activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
 
   showInitialLoading = computed(() => this.loading() && this.categories().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.filterActive() === 'true' && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.filterActive() !== 'true' || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.filterActive() === 'true' &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.filterActive() !== 'true' || !!this.searchTerm()),
+  );
 
   ngOnInit(): void {
     this.loadWithFilters();

@@ -96,40 +96,30 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   );
 
   readonly isEmpty = computed(
-    () =>
-      !this.service.loading() &&
-      this.service.totalCustomers() === 0 &&
-      !this.searchTerm(),
+    () => !this.service.loading() && this.service.totalCustomers() === 0 && !this.searchTerm(),
   );
 
   readonly hasFilteredResults = computed(
-    () =>
-      !this.service.loading() &&
-      this.service.totalCustomers() === 0 &&
-      !!this.searchTerm(),
+    () => !this.service.loading() && this.service.totalCustomers() === 0 && !!this.searchTerm(),
   );
 
   ngOnInit(): void {
-    this.route.queryParamMap
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        const requestedTab = params.get('tab');
-        const focusPaymentId = params.get('focus');
-        if (requestedTab === 'pending' || focusPaymentId) {
-          this.activeTab.set('pending');
-        }
-        this.focusPaymentId.set(focusPaymentId);
-      });
+    this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      const requestedTab = params.get('tab');
+      const focusPaymentId = params.get('focus');
+      if (requestedTab === 'pending' || focusPaymentId) {
+        this.activeTab.set('pending');
+      }
+      this.focusPaymentId.set(focusPaymentId);
+    });
 
     this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
     this.loadCustomers();
 
-    this.service.customerDebtChange
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
-        this.loadCustomers();
-      });
+    this.service.customerDebtChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
+      this.loadCustomers();
+    });
 
     this.searchSubject
       .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
@@ -228,7 +218,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.paymentFormVisible.set(true);
   }
 
-
   onClosePaymentFormDialog(): void {
     this.paymentFormVisible.set(false);
     this.paymentInvoice.set(null);
@@ -321,8 +310,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     if (this.sortField() && this.sortOrder() !== 0) {
       params.sort = `${this.sortField()},${this.sortOrder() === 1 ? 'asc' : 'desc'}`;
     }
-    this.service.searchCustomersWithDebt(params)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe();
+    this.service.searchCustomersWithDebt(params).pipe(takeUntil(this.destroy$)).subscribe();
   }
 }

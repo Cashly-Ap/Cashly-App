@@ -42,9 +42,7 @@ describe('ProductPricesSectionComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [HostComponent, ProductPricesSectionComponent],
-      providers: [
-        { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
-      ],
+      providers: [{ provide: PriceTypeApplicationService, useValue: mockPriceTypeService }],
       schemas: [NO_ERRORS_SCHEMA],
     });
 
@@ -138,7 +136,9 @@ describe('ProductPricesSectionComponent', () => {
   it('should update pricesControls when prices array changes', () => {
     const pricesArray = sectionComponent.pricesArray;
     const initialLength = sectionComponent.pricesControls().length;
-    pricesArray.push(hostComponent['fb'].group({ priceTypeId: ['pt-003'], price: [200], profitMargin: [15] }));
+    pricesArray.push(
+      hostComponent['fb'].group({ priceTypeId: ['pt-003'], price: [200], profitMargin: [15] }),
+    );
     fixture.detectChanges();
     expect(sectionComponent.pricesControls().length).toBe(initialLength + 1);
   });

@@ -20,8 +20,16 @@ describe('CategoryApplicationService', () => {
   };
 
   const mockPaged = {
-    content: [{ id: 1, name: 'Electrónica', description: 'Dispositivos', active: true, productCount: 5 }],
-    totalElements: 1, totalPages: 1, size: 10, number: 0, first: true, last: true, empty: false,
+    content: [
+      { id: 1, name: 'Electrónica', description: 'Dispositivos', active: true, productCount: 5 },
+    ],
+    totalElements: 1,
+    totalPages: 1,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: false,
   };
 
   beforeEach(() => {
@@ -34,10 +42,7 @@ describe('CategoryApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        CategoryApplicationService,
-        { provide: CategoryApiService, useValue: apiMock },
-      ],
+      providers: [CategoryApplicationService, { provide: CategoryApiService, useValue: apiMock }],
     });
 
     service = TestBed.inject(CategoryApplicationService);

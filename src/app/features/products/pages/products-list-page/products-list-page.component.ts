@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -89,8 +96,24 @@ export class ProductsListPageComponent implements OnInit {
   ];
 
   showInitialLoading = computed(() => this.loading() && this.products().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.filterActive() === 'true' && !this.filterComposite() && !this.filterCategoryId() && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.filterActive() !== 'true' || !!this.filterComposite() || !!this.filterCategoryId() || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.filterActive() === 'true' &&
+      !this.filterComposite() &&
+      !this.filterCategoryId() &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.filterActive() !== 'true' ||
+        !!this.filterComposite() ||
+        !!this.filterCategoryId() ||
+        !!this.searchTerm()),
+  );
 
   activeFilterCount = computed(() => {
     let count = 0;
@@ -106,9 +129,10 @@ export class ProductsListPageComponent implements OnInit {
   ]);
 
   priceTypeOptions = computed(() =>
-    this.priceTypeService.priceTypes()
+    this.priceTypeService
+      .priceTypes()
       .filter((pt) => pt.active)
-      .map((pt) => ({ label: pt.name, value: pt.id }))
+      .map((pt) => ({ label: pt.name, value: pt.id })),
   );
 
   ngOnInit(): void {
@@ -125,7 +149,11 @@ export class ProductsListPageComponent implements OnInit {
   getPriceForProduct(product: ProductList): number {
     const selected = this.selectedPriceTypeId();
     if (!selected) return product.purchasePrice ?? 0;
-    return product.productPrices.find((pp) => pp.priceTypeId === selected)?.price ?? product.purchasePrice ?? 0;
+    return (
+      product.productPrices.find((pp) => pp.priceTypeId === selected)?.price ??
+      product.purchasePrice ??
+      0
+    );
   }
 
   onSearch(value: string): void {
@@ -231,7 +259,8 @@ export class ProductsListPageComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'No se puede eliminar el producto porque tiene movimientos o documentos asociados.',
+              detail:
+                'No se puede eliminar el producto porque tiene movimientos o documentos asociados.',
               life: 5000,
             });
           },

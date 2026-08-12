@@ -1,20 +1,20 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { ReactiveFormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
-import { of, throwError } from "rxjs";
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { signal } from "@angular/core";
-import { LoginPageComponent } from "./login-page.component";
-import { AuthService } from "@features/auth/services";
-import { TextInputComponent } from "@core/forms/components/inputs";
-import { CardModule } from "primeng/card";
-import { ButtonModule } from "primeng/button";
-import { MessageModule } from "primeng/message";
-import { MessageService } from "primeng/api";
-import { ThemeService } from "@core/theme/components/theme-toggle/theme.service";
-import { AuthenticationResponse, UserResponse } from "@features/auth/models";
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { of, throwError } from 'rxjs';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { signal } from '@angular/core';
+import { LoginPageComponent } from './login-page.component';
+import { AuthService } from '@features/auth/services';
+import { TextInputComponent } from '@core/forms/components/inputs';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { MessageModule } from 'primeng/message';
+import { MessageService } from 'primeng/api';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
+import { AuthenticationResponse, UserResponse } from '@features/auth/models';
 
-describe("LoginPageComponent", () => {
+describe('LoginPageComponent', () => {
   let component: LoginPageComponent;
   let fixture: ComponentFixture<LoginPageComponent>;
   let authServiceMock: {
@@ -27,19 +27,19 @@ describe("LoginPageComponent", () => {
   let themeServiceMock: { isDarkMode: ReturnType<typeof signal<boolean>> };
 
   const mockUser: UserResponse = {
-    id: "1",
-    email: "test@example.com",
-    userName: "testuser",
-    type: "OPERATOR",
-    role: "ADMIN",
+    id: '1',
+    email: 'test@example.com',
+    userName: 'testuser',
+    type: 'OPERATOR',
+    role: 'ADMIN',
     active: true,
     createdAt: new Date().toISOString(),
   };
 
   const mockAuthResponse: AuthenticationResponse = {
-    accessToken: "access-token",
-    refreshToken: "refresh-token",
-    tokenType: "Bearer",
+    accessToken: 'access-token',
+    refreshToken: 'refresh-token',
+    tokenType: 'Bearer',
     expiresIn: 3600,
     entity: mockUser,
   };
@@ -61,7 +61,14 @@ describe("LoginPageComponent", () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginPageComponent, ReactiveFormsModule, CardModule, ButtonModule, MessageModule, TextInputComponent],
+      imports: [
+        LoginPageComponent,
+        ReactiveFormsModule,
+        CardModule,
+        ButtonModule,
+        MessageModule,
+        TextInputComponent,
+      ],
       providers: [
         { provide: AuthService, useValue: authServiceMock },
         { provide: Router, useValue: routerMock },
@@ -75,105 +82,105 @@ describe("LoginPageComponent", () => {
     fixture.detectChanges();
   });
 
-  it("should create", () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe("form initialization", () => {
-    it("should initialize form with email and password controls", () => {
+  describe('form initialization', () => {
+    it('should initialize form with email and password controls', () => {
       expect(component.form.controls.email).toBeDefined();
       expect(component.form.controls.password).toBeDefined();
     });
 
-    it("should have invalid form when empty", () => {
+    it('should have invalid form when empty', () => {
       expect(component.form.valid).toBe(false);
     });
 
-    it("should have invalid form with only email", () => {
-      component.form.controls.email.setValue("test@example.com");
+    it('should have invalid form with only email', () => {
+      component.form.controls.email.setValue('test@example.com');
       expect(component.form.valid).toBe(false);
     });
 
-    it("should have invalid form with only password", () => {
-      component.form.controls.password.setValue("password");
+    it('should have invalid form with only password', () => {
+      component.form.controls.password.setValue('password');
       expect(component.form.valid).toBe(false);
     });
 
-    it("should have valid form with email and password", () => {
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("password");
+    it('should have valid form with email and password', () => {
+      component.form.controls.email.setValue('test@example.com');
+      component.form.controls.password.setValue('password');
       expect(component.form.valid).toBe(true);
     });
   });
 
-  describe("email validation", () => {
-    it("should validate required email", () => {
+  describe('email validation', () => {
+    it('should validate required email', () => {
       const emailControl = component.form.controls.email;
       emailControl.markAsTouched();
 
-      expect(emailControl.hasError("required")).toBe(true);
+      expect(emailControl.hasError('required')).toBe(true);
     });
 
-    it("should validate invalid email format", () => {
+    it('should validate invalid email format', () => {
       const emailControl = component.form.controls.email;
-      emailControl.setValue("invalid-email");
+      emailControl.setValue('invalid-email');
       emailControl.markAsTouched();
 
-      expect(emailControl.hasError("email")).toBe(true);
+      expect(emailControl.hasError('email')).toBe(true);
     });
 
-    it("should accept valid email", () => {
+    it('should accept valid email', () => {
       const emailControl = component.form.controls.email;
-      emailControl.setValue("test@example.com");
+      emailControl.setValue('test@example.com');
       emailControl.markAsTouched();
 
       expect(emailControl.valid).toBe(true);
     });
   });
 
-  describe("password validation", () => {
-    it("should validate required password", () => {
+  describe('password validation', () => {
+    it('should validate required password', () => {
       const passwordControl = component.form.controls.password;
       passwordControl.markAsTouched();
 
-      expect(passwordControl.hasError("required")).toBe(true);
+      expect(passwordControl.hasError('required')).toBe(true);
     });
 
-    it("should accept any password for login", () => {
+    it('should accept any password for login', () => {
       const passwordControl = component.form.controls.password;
-      passwordControl.setValue("weak");
+      passwordControl.setValue('weak');
       passwordControl.markAsTouched();
 
       expect(passwordControl.valid).toBe(true);
     });
   });
 
-  describe("form submission", () => {
-    it("should not submit when form is invalid", () => {
+  describe('form submission', () => {
+    it('should not submit when form is invalid', () => {
       component.onSubmit();
 
       expect(authServiceMock.login).not.toHaveBeenCalled();
     });
 
-    it("should call authService.login with form values", () => {
+    it('should call authService.login with form values', () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
 
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("Password123!");
+      component.form.controls.email.setValue('test@example.com');
+      component.form.controls.password.setValue('Password123!');
 
       component.onSubmit();
 
       expect(authServiceMock.login).toHaveBeenCalledWith({
-        email: "test@example.com",
-        password: "Password123!",
+        email: 'test@example.com',
+        password: 'Password123!',
       });
     });
 
-    it("should send exact data from form to service", () => {
+    it('should send exact data from form to service', () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
 
-      const testEmail = "user@domain.com";
-      const testPassword = "MySecretPass123!";
+      const testEmail = 'user@domain.com';
+      const testPassword = 'MySecretPass123!';
 
       component.form.controls.email.setValue(testEmail);
       component.form.controls.password.setValue(testPassword);
@@ -186,24 +193,24 @@ describe("LoginPageComponent", () => {
       });
     });
 
-    it("should navigate to customers on successful login", async () => {
+    it('should navigate to customers on successful login', async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
 
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("Password123!");
+      component.form.controls.email.setValue('test@example.com');
+      component.form.controls.password.setValue('Password123!');
 
       component.onSubmit();
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/customers"]);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/customers']);
     });
 
-    it("should handle login error", async () => {
-      const errorMessage = "Invalid credentials";
+    it('should handle login error', async () => {
+      const errorMessage = 'Invalid credentials';
       authServiceMock.login.mockReturnValue(throwError(() => ({ message: errorMessage })));
 
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("wrongpassword");
+      component.form.controls.email.setValue('test@example.com');
+      component.form.controls.password.setValue('wrongpassword');
 
       component.onSubmit();
 
@@ -212,34 +219,34 @@ describe("LoginPageComponent", () => {
     });
   });
 
-  describe("error messages", () => {
-    it("should return correct email error message", () => {
+  describe('error messages', () => {
+    it('should return correct email error message', () => {
       const emailControl = component.form.controls.email;
       emailControl.setErrors({ required: true });
 
       const message = component.getEmailError();
 
-      expect(message).toBe("Email is required");
+      expect(message).toBe('Email is required');
     });
 
-    it("should return correct email format error", () => {
+    it('should return correct email format error', () => {
       const emailControl = component.form.controls.email;
-      emailControl.setValue("invalid");
+      emailControl.setValue('invalid');
       emailControl.setErrors({ email: true });
 
       const message = component.getEmailError();
 
-      expect(message).toBe("Invalid email format");
+      expect(message).toBe('Invalid email format');
     });
   });
 
-  describe("form integration", () => {
-    it("should pass correct data through complete flow", async () => {
+  describe('form integration', () => {
+    it('should pass correct data through complete flow', async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
 
       const credentials = {
-        email: "integration@test.com",
-        password: "IntegrationTest123!",
+        email: 'integration@test.com',
+        password: 'IntegrationTest123!',
       };
 
       component.form.patchValue(credentials);
@@ -251,19 +258,19 @@ describe("LoginPageComponent", () => {
       expect(authServiceMock.login).toHaveBeenCalledWith(credentials);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(["/customers"]);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/customers']);
     });
 
-    it("should maintain form values after failed submission", () => {
-      authServiceMock.login.mockReturnValue(throwError(() => ({ message: "Error" })));
+    it('should maintain form values after failed submission', () => {
+      authServiceMock.login.mockReturnValue(throwError(() => ({ message: 'Error' })));
 
-      component.form.controls.email.setValue("test@example.com");
-      component.form.controls.password.setValue("password");
+      component.form.controls.email.setValue('test@example.com');
+      component.form.controls.password.setValue('password');
 
       component.onSubmit();
 
-      expect(component.form.controls.email.value).toBe("test@example.com");
-      expect(component.form.controls.password.value).toBe("password");
+      expect(component.form.controls.email.value).toBe('test@example.com');
+      expect(component.form.controls.password.value).toBe('password');
     });
   });
 });

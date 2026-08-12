@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '@features/customers/models/interfaces';
+import {
+  CustomerList,
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+} from '@features/customers/models/interfaces';
 
 export interface CustomerFormModel {
   id?: string;

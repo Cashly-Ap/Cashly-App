@@ -6,7 +6,13 @@ import { provideHttpClient } from '@angular/common/http';
 import { AssignWarehousesDialogComponent } from './assign-warehouses-dialog.component';
 
 @Component({
-  template: `<app-assign-warehouses-dialog [visible]="visible" [orderId]="orderId" (confirmed)="onConfirmed($event)" (finished)="onFinished()" (cancelled)="onCancelled()"></app-assign-warehouses-dialog>`,
+  template: `<app-assign-warehouses-dialog
+    [visible]="visible"
+    [orderId]="orderId"
+    (confirmed)="onConfirmed($event)"
+    (finished)="onFinished()"
+    (cancelled)="onCancelled()"
+  ></app-assign-warehouses-dialog>`,
   imports: [AssignWarehousesDialogComponent],
 })
 class HostComponent {
@@ -113,7 +119,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
   });
 
   function flushOrder() {
-    httpMock.expectOne((r) => r.url.includes('/q-001') && r.method === 'GET').flush(apiOrderResponse);
+    httpMock
+      .expectOne((r) => r.url.includes('/q-001') && r.method === 'GET')
+      .flush(apiOrderResponse);
   }
 
   it('should have visible input as true', () => expect(dialog.visible()).toBe(true));
@@ -127,7 +135,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
   });
 
   it('should set error on order API failure', () => {
-    httpMock.expectOne((r) => r.url.includes('/q-001') && r.method === 'GET').error(new ProgressEvent('Network error'));
+    httpMock
+      .expectOne((r) => r.url.includes('/q-001') && r.method === 'GET')
+      .error(new ProgressEvent('Network error'));
     expect(dialog.error()).toBeTruthy();
     expect(dialog.loading()).toBe(false);
   });
@@ -159,7 +169,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     line.warehouses[0].assigned = 5;
     dialog.onAssignedChange(line);
     dialog.onSubmit();
-    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush(apiOrderResponse);
+    httpMock
+      .expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT')
+      .flush(apiOrderResponse);
     expect(hostComponent.onConfirmed).toHaveBeenCalledWith('q-001');
   });
 
@@ -169,7 +181,9 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     line.warehouses[0].assigned = 5;
     dialog.onAssignedChange(line);
     dialog.onSubmit();
-    httpMock.expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT').flush(apiOrderResponse);
+    httpMock
+      .expectOne((r) => r.url.includes('/allocations') && r.method === 'PUT')
+      .flush(apiOrderResponse);
     expect(hostComponent.onFinished).toHaveBeenCalled();
   });
 });

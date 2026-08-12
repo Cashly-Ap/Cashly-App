@@ -57,7 +57,7 @@ export class ProductGeneralSectionComponent implements OnInit {
   readonly deletePhoto = output<void>();
 
   readonly categoryOptions = computed(() =>
-    this.categoryService.categories().map((c) => ({ value: c.id, label: c.name }))
+    this.categoryService.categories().map((c) => ({ value: c.id, label: c.name })),
   );
 
   readonly productTypeOptions = [

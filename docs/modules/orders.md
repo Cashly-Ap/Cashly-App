@@ -5,6 +5,7 @@
 The Orders module manages sales orders (pedidos) in the invoicing system. Orders can be created by Users or Merchants, and can optionally have a merchant associated for commission tracking. Orders serve as the basis for invoice generation.
 
 **Key Concepts**:
+
 - **Customer Required**: Every order MUST have a customer associated
 - **Merchant Optional**: Orders MAY have a merchant associated (for commission tracking)
 - **No Validation Required**: Orders do not require validation workflow
@@ -17,13 +18,14 @@ The Orders module manages sales orders (pedidos) in the invoicing system. Orders
 
 ## Who Can Create Orders
 
-| Role | Can Create Orders | Merchant Association |
-|------|-------------------|---------------------|
-| USER | Yes | Optional (can assign any merchant) |
-| MERCHANT | Yes | Automatic (self-assigned) |
-| ADMIN | Yes | Optional (can assign any merchant) |
+| Role     | Can Create Orders | Merchant Association               |
+| -------- | ----------------- | ---------------------------------- |
+| USER     | Yes               | Optional (can assign any merchant) |
+| MERCHANT | Yes               | Automatic (self-assigned)          |
+| ADMIN    | Yes               | Optional (can assign any merchant) |
 
 **Important**:
+
 - When a **MERCHANT** creates an order, they are automatically associated as the merchant
 - When a **USER/ADMIN** creates an order, they can optionally assign a merchant
 - Orders without merchant = no commission charged
@@ -33,14 +35,14 @@ The Orders module manages sales orders (pedidos) in the invoicing system. Orders
 
 ## Role-Based Endpoint Usage
 
-| Endpoint | USER/ADMIN | MERCHANT |
-|----------|-----------|---------|
-| `GET /api/orders` | Returns ALL orders | Returns ONLY own orders (filtered automatically by backend) |
-| `GET /api/orders/:id` | Any order | Only own orders (403 if not owner) |
-| `POST /api/orders` | With optional merchantId | merchantId ignored, auto-assigned |
-| `PUT /api/orders/:id` | Any PENDING order | Only own PENDING orders |
-| `PUT /api/orders/:id/cancel` | Any PENDING order | Only own PENDING orders |
-| `POST /api/orders/:id/convert-to-invoice` | Any PENDING order | **NOT ALLOWED** (403) |
+| Endpoint                                  | USER/ADMIN               | MERCHANT                                                    |
+| ----------------------------------------- | ------------------------ | ----------------------------------------------------------- |
+| `GET /api/orders`                         | Returns ALL orders       | Returns ONLY own orders (filtered automatically by backend) |
+| `GET /api/orders/:id`                     | Any order                | Only own orders (403 if not owner)                          |
+| `POST /api/orders`                        | With optional merchantId | merchantId ignored, auto-assigned                           |
+| `PUT /api/orders/:id`                     | Any PENDING order        | Only own PENDING orders                                     |
+| `PUT /api/orders/:id/cancel`              | Any PENDING order        | Only own PENDING orders                                     |
+| `POST /api/orders/:id/convert-to-invoice` | Any PENDING order        | **NOT ALLOWED** (403)                                       |
 
 **Key rule for MERCHANT**: The same `GET /api/orders` endpoint is used for all roles. The backend automatically filters results based on the authenticated user's role — no extra query parameters needed.
 
@@ -190,6 +192,7 @@ src/app/features/orders/
 **Purpose**: Displays all orders in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by order number, customer name
 - Filter by status (PENDING, INVOICED, CANCELLED)
@@ -200,6 +203,7 @@ src/app/features/orders/
 - Status badges with colors
 
 **Access**:
+
 - USER/ADMIN: View all orders
 - MERCHANT: View only own orders
 
@@ -212,6 +216,7 @@ src/app/features/orders/
 **Purpose**: Create new order or edit existing one.
 
 **Features**:
+
 - Tab-based layout (General, Lines)
 - Customer selection (required)
 - Merchant selection (optional, hidden for MERCHANT role)
@@ -223,6 +228,7 @@ src/app/features/orders/
 - Pending changes guard
 
 **Access**:
+
 - All roles can create
 - Edit only PENDING orders
 - MERCHANT can only edit own orders
@@ -236,6 +242,7 @@ src/app/features/orders/
 **Purpose**: Display complete order information in read-only mode.
 
 **Features**:
+
 - Complete order data display
 - Customer information section
 - Merchant information (if assigned)
@@ -246,6 +253,7 @@ src/app/features/orders/
 - Action buttons: Edit, Cancel, Convert to Invoice
 
 **Access**:
+
 - USER/ADMIN: View all orders
 - MERCHANT: View only own orders
 
@@ -263,18 +271,18 @@ src/app/features/orders/
 
 ```typescript
 export interface OrderList {
-  id: string;                    // UUID identifier
-  orderNumber: string;           // ORD-2025-00001
-  customerId: string;            // Customer UUID
-  customerName: string;          // Customer name
-  merchantId: string | null;     // Merchant UUID (null if no merchant)
-  merchantName: string | null;   // Merchant name (null if no merchant)
-  status: OrderStatus;           // PENDING, INVOICED, CANCELLED
-  deliveryDate: string;          // ISO date string (date only)
-  subtotal: number;              // Order subtotal
-  lineCount: number;             // Number of order lines
-  invoiceId: string | null;      // Invoice UUID (null if not invoiced)
-  createdAt: string;             // ISO datetime string
+  id: string; // UUID identifier
+  orderNumber: string; // ORD-2025-00001
+  customerId: string; // Customer UUID
+  customerName: string; // Customer name
+  merchantId: string | null; // Merchant UUID (null if no merchant)
+  merchantName: string | null; // Merchant name (null if no merchant)
+  status: OrderStatus; // PENDING, INVOICED, CANCELLED
+  deliveryDate: string; // ISO date string (date only)
+  subtotal: number; // Order subtotal
+  lineCount: number; // Number of order lines
+  invoiceId: string | null; // Invoice UUID (null if not invoiced)
+  createdAt: string; // ISO datetime string
 }
 ```
 
@@ -290,38 +298,38 @@ export interface OrderList {
 
 ```typescript
 export interface OrderLineDetails {
-  id: string;                    // Order line UUID
-  productId: string;             // Product UUID
-  productName: string;           // Product name snapshot
-  productCode: string;           // Product code snapshot
-  quantity: number;              // Quantity ordered
-  unitPrice: number;             // Price per unit
-  lineTotal: number;             // Line total (qty x price)
+  id: string; // Order line UUID
+  productId: string; // Product UUID
+  productName: string; // Product name snapshot
+  productCode: string; // Product code snapshot
+  quantity: number; // Quantity ordered
+  unitPrice: number; // Price per unit
+  lineTotal: number; // Line total (qty x price)
 }
 
 export interface OrderDetails {
-  id: string;                    // UUID identifier
-  orderNumber: string;           // ORD-2025-00001
-  customerId: string;            // Customer UUID
-  customerName: string;          // Customer name
-  customerRif: string;           // Customer RIF
-  merchantId: string | null;     // Merchant UUID
-  merchantName: string | null;   // Merchant name
+  id: string; // UUID identifier
+  orderNumber: string; // ORD-2025-00001
+  customerId: string; // Customer UUID
+  customerName: string; // Customer name
+  customerRif: string; // Customer RIF
+  merchantId: string | null; // Merchant UUID
+  merchantName: string | null; // Merchant name
   merchantCommission: number | null; // Merchant commission %
-  createdBy: string;             // Creator UUID
-  createdByName: string;         // Creator name
-  createdByType: CreatorType;    // USER or MERCHANT
-  status: OrderStatus;           // PENDING, INVOICED, CANCELLED
-  deliveryDate: string;          // ISO date string
-  notes: string | null;          // Order notes
-  subtotal: number;              // Order subtotal
-  invoiceId: string | null;      // Invoice UUID
-  invoiceNumber: string | null;  // Invoice number
-  cancelledAt: string | null;    // Cancellation timestamp
+  createdBy: string; // Creator UUID
+  createdByName: string; // Creator name
+  createdByType: CreatorType; // USER or MERCHANT
+  status: OrderStatus; // PENDING, INVOICED, CANCELLED
+  deliveryDate: string; // ISO date string
+  notes: string | null; // Order notes
+  subtotal: number; // Order subtotal
+  invoiceId: string | null; // Invoice UUID
+  invoiceNumber: string | null; // Invoice number
+  cancelledAt: string | null; // Cancellation timestamp
   cancelledReason: string | null; // Cancellation reason
-  createdAt: string;             // Creation timestamp
-  updatedAt: string;             // Last update timestamp
-  lines: OrderLineDetails[];     // Order line items
+  createdAt: string; // Creation timestamp
+  updatedAt: string; // Last update timestamp
+  lines: OrderLineDetails[]; // Order line items
 }
 ```
 
@@ -337,15 +345,15 @@ export interface OrderDetails {
 
 ```typescript
 export interface OrderLineEdit {
-  productId: string;             // Product UUID
-  quantity: number;              // Quantity
-  unitPrice: number;             // Price per unit
+  productId: string; // Product UUID
+  quantity: number; // Quantity
+  unitPrice: number; // Price per unit
 }
 
 export interface OrderEdit {
-  deliveryDate: string;          // ISO date string
-  notes: string | null;          // Order notes
-  lines: OrderLineEdit[];        // Replaces all lines
+  deliveryDate: string; // ISO date string
+  notes: string | null; // Order notes
+  lines: OrderLineEdit[]; // Replaces all lines
 }
 ```
 
@@ -363,17 +371,17 @@ export interface OrderEdit {
 
 ```typescript
 export interface OrderLineCreate {
-  productId: string;             // Product UUID
-  quantity: number;              // Quantity (> 0)
-  unitPrice: number;             // Price per unit (>= 0)
+  productId: string; // Product UUID
+  quantity: number; // Quantity (> 0)
+  unitPrice: number; // Price per unit (>= 0)
 }
 
 export interface OrderCreate {
-  customerId: string;            // Required, customer UUID
-  merchantId: string | null;     // Optional, ignored for MERCHANT role
-  deliveryDate: string;          // Required, today or future
-  notes: string | null;          // Optional, max 1000 chars
-  lines: OrderLineCreate[];      // At least 1 required
+  customerId: string; // Required, customer UUID
+  merchantId: string | null; // Optional, ignored for MERCHANT role
+  deliveryDate: string; // Required, today or future
+  notes: string | null; // Optional, max 1000 chars
+  lines: OrderLineCreate[]; // At least 1 required
 }
 ```
 
@@ -387,7 +395,7 @@ export interface OrderCreate {
 
 ```typescript
 export interface OrderCancelRequest {
-  reason: string;                // Required, max 500 chars
+  reason: string; // Required, max 500 chars
 }
 
 export interface OrderCancelResponse extends OrderDetails {
@@ -403,14 +411,14 @@ export interface OrderCancelResponse extends OrderDetails {
 
 ```typescript
 export interface ConvertToInvoiceResponse {
-  orderId: string;               // Order UUID
-  orderNumber: string;           // Order number
-  orderStatus: OrderStatus;      // INVOICED
-  invoiceId: string;             // Generated invoice UUID
-  invoiceNumber: string;         // Generated invoice number
-  hasMerchant: boolean;          // If order had merchant
-  merchantId: string | null;     // Merchant UUID
-  merchantName: string | null;   // Merchant name
+  orderId: string; // Order UUID
+  orderNumber: string; // Order number
+  orderStatus: OrderStatus; // INVOICED
+  invoiceId: string; // Generated invoice UUID
+  invoiceNumber: string; // Generated invoice number
+  hasMerchant: boolean; // If order had merchant
+  merchantId: string | null; // Merchant UUID
+  merchantName: string | null; // Merchant name
   merchantCommission: number | null; // Commission percentage
 }
 ```
@@ -423,9 +431,9 @@ export interface ConvertToInvoiceResponse {
 
 ```typescript
 export enum OrderStatus {
-  PENDING = 'PENDING',           // Created, awaiting conversion to invoice
-  INVOICED = 'INVOICED',         // Converted to invoice
-  CANCELLED = 'CANCELLED',       // Cancelled by user/merchant
+  PENDING = 'PENDING', // Created, awaiting conversion to invoice
+  INVOICED = 'INVOICED', // Converted to invoice
+  CANCELLED = 'CANCELLED', // Cancelled by user/merchant
 }
 
 export interface OrderStatusOption {
@@ -466,8 +474,8 @@ export function getOrderStatusColor(status: OrderStatus): string {
 
 ```typescript
 export enum CreatorType {
-  USER = 'USER',                 // Created by a system user (ADMIN/USER role)
-  MERCHANT = 'MERCHANT',         // Created by a merchant
+  USER = 'USER', // Created by a system user (ADMIN/USER role)
+  MERCHANT = 'MERCHANT', // Created by a merchant
 }
 
 export const CREATOR_TYPE_LABELS: Record<CreatorType, string> = {
@@ -490,14 +498,14 @@ All endpoints use: `/api/orders`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/orders | - | `OrderList[]` | List page |
-| GET | /api/orders/:id | - | `OrderDetails` | Details/Edit page |
-| POST | /api/orders | `OrderCreate` | `OrderDetails` | Create form |
-| PUT | /api/orders/:id | `OrderEdit` | `OrderDetails` | Edit form |
-| PUT | /api/orders/:id/cancel | `OrderCancelRequest` | `OrderDetails` | Cancel action |
-| POST | /api/orders/:id/convert-to-invoice | - | `ConvertToInvoiceResponse` | Convert action |
+| HTTP Method | Endpoint                           | Request Interface    | Response Interface         | Frontend Usage    |
+| ----------- | ---------------------------------- | -------------------- | -------------------------- | ----------------- |
+| GET         | /api/orders                        | -                    | `OrderList[]`              | List page         |
+| GET         | /api/orders/:id                    | -                    | `OrderDetails`             | Details/Edit page |
+| POST        | /api/orders                        | `OrderCreate`        | `OrderDetails`             | Create form       |
+| PUT         | /api/orders/:id                    | `OrderEdit`          | `OrderDetails`             | Edit form         |
+| PUT         | /api/orders/:id/cancel             | `OrderCancelRequest` | `OrderDetails`             | Cancel action     |
+| POST        | /api/orders/:id/convert-to-invoice | -                    | `ConvertToInvoiceResponse` | Convert action    |
 
 ---
 
@@ -508,10 +516,12 @@ All endpoints use: `/api/orders`
 **Frontend Interface**: `OrderList[]`
 
 **Roles**:
+
 - USER/ADMIN: Returns all orders in the system
 - MERCHANT: Returns **only own orders** — backend filters automatically by authenticated merchant, no extra params needed
 
 **Query Parameters** (optional):
+
 - `customerId` (UUID): Filter by customer
 - `merchantId` (UUID): Filter by merchant (**ignored for MERCHANT role** — backend enforces own filter)
 - `status` (string): Filter by status (PENDING, INVOICED, CANCELLED)
@@ -523,6 +533,7 @@ All endpoints use: `/api/orders`
 **Frontend note**: The MERCHANT role uses the **exact same endpoint and same API service call** as USER/ADMIN. No role-switching logic needed on the frontend — the backend handles the filtering transparently.
 
 **Example Response**:
+
 ```json
 [
   {
@@ -534,7 +545,7 @@ All endpoints use: `/api/orders`
     "merchantName": "Juan Perez",
     "status": "PENDING",
     "deliveryDate": "2025-01-15",
-    "subtotal": 1275.00,
+    "subtotal": 1275.0,
     "lineCount": 2,
     "invoiceId": null,
     "createdAt": "2025-12-30T10:30:00"
@@ -551,10 +562,12 @@ All endpoints use: `/api/orders`
 **Frontend Interface**: `OrderDetails`
 
 **Roles**:
+
 - USER/ADMIN: View any order
 - MERCHANT: View only own orders
 
 **Example Response**:
+
 ```json
 {
   "id": "order-001-uuid",
@@ -564,14 +577,14 @@ All endpoints use: `/api/orders`
   "customerRif": "J-12345678-9",
   "merchantId": "merchant-uuid-here",
   "merchantName": "Juan Perez",
-  "merchantCommission": 15.00,
+  "merchantCommission": 15.0,
   "createdBy": "user-uuid-here",
   "createdByName": "Admin User",
   "createdByType": "USER",
   "status": "PENDING",
   "deliveryDate": "2025-01-15",
   "notes": "Entrega en horario de oficina",
-  "subtotal": 1275.00,
+  "subtotal": 1275.0,
   "invoiceId": null,
   "invoiceNumber": null,
   "cancelledAt": null,
@@ -585,8 +598,8 @@ All endpoints use: `/api/orders`
       "productName": "Producto A",
       "productCode": "PRD-00001",
       "quantity": 10,
-      "unitPrice": 100.00,
-      "lineTotal": 1000.00
+      "unitPrice": 100.0,
+      "lineTotal": 1000.0
     },
     {
       "id": "line-002-uuid",
@@ -594,14 +607,15 @@ All endpoints use: `/api/orders`
       "productName": "Producto B",
       "productCode": "PRD-00002",
       "quantity": 5.5,
-      "unitPrice": 50.00,
-      "lineTotal": 275.00
+      "unitPrice": 50.0,
+      "lineTotal": 275.0
     }
   ]
 }
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: Merchant trying to access another merchant's order
 - `404 Not Found`: Order not found
@@ -617,10 +631,12 @@ All endpoints use: `/api/orders`
 **Roles**: USER, ADMIN, MERCHANT
 
 **Notes on merchantId**:
+
 - **USER/ADMIN**: Can send `merchantId` (optional) or omit it (null)
 - **MERCHANT**: The `merchantId` field is **ignored** - system automatically assigns the authenticated merchant
 
 **Example Request**:
+
 ```json
 {
   "customerId": "customer-uuid-here",
@@ -631,12 +647,12 @@ All endpoints use: `/api/orders`
     {
       "productId": "product-001-uuid",
       "quantity": 10,
-      "unitPrice": 100.00
+      "unitPrice": 100.0
     },
     {
       "productId": "product-002-uuid",
       "quantity": 5.5,
-      "unitPrice": 50.00
+      "unitPrice": 50.0
     }
   ]
 }
@@ -645,6 +661,7 @@ All endpoints use: `/api/orders`
 **Example Response**: Same as GET /:id
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data or validation error
 - `401 Unauthorized`: Missing or invalid JWT token
 - `404 Not Found`: Customer or product not found
@@ -659,10 +676,12 @@ All endpoints use: `/api/orders`
 **Frontend Interface**: `OrderEdit` (request), `OrderDetails` (response)
 
 **Roles**:
+
 - USER/ADMIN: Can update any PENDING order
 - MERCHANT: Can only update own PENDING orders
 
 **Example Request**:
+
 ```json
 {
   "deliveryDate": "2025-01-20",
@@ -671,7 +690,7 @@ All endpoints use: `/api/orders`
     {
       "productId": "product-001-uuid",
       "quantity": 15,
-      "unitPrice": 100.00
+      "unitPrice": 100.0
     }
   ]
 }
@@ -680,6 +699,7 @@ All endpoints use: `/api/orders`
 **Note**: `customerId` and `merchantId` cannot be changed after creation. Lines are replaced completely.
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: Merchant trying to update another's order
@@ -695,10 +715,12 @@ All endpoints use: `/api/orders`
 **Frontend Interface**: `OrderCancelRequest` (request), `OrderDetails` (response)
 
 **Roles**:
+
 - USER/ADMIN: Can cancel any PENDING order
 - MERCHANT: Can only cancel own PENDING orders
 
 **Example Request**:
+
 ```json
 {
   "reason": "Cliente solicito cancelacion"
@@ -706,6 +728,7 @@ All endpoints use: `/api/orders`
 ```
 
 **Example Response**:
+
 ```json
 {
   "id": "order-001-uuid",
@@ -718,6 +741,7 @@ All endpoints use: `/api/orders`
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Reason is required
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: Merchant trying to cancel another's order
@@ -737,6 +761,7 @@ All endpoints use: `/api/orders`
 **Request Body**: None
 
 **Example Response**:
+
 ```json
 {
   "orderId": "order-001-uuid",
@@ -747,11 +772,12 @@ All endpoints use: `/api/orders`
   "hasMerchant": true,
   "merchantId": "merchant-uuid",
   "merchantName": "Juan Perez",
-  "merchantCommission": 15.00
+  "merchantCommission": 15.0
 }
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: MERCHANT role cannot convert orders
 - `404 Not Found`: Order not found
@@ -759,6 +785,7 @@ All endpoints use: `/api/orders`
 - `422 Unprocessable Entity`: Insufficient stock for products
 
 **Business Logic**:
+
 1. Validates order is in PENDING status
 2. Validates stock availability for all products
 3. Creates invoice from order data
@@ -773,17 +800,17 @@ All endpoints use: `/api/orders`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `customerId` | UUID | Yes | Must exist | "El cliente es requerido" |
-| `merchantId` | UUID | No | Must exist if provided | "Comercial no encontrado" |
-| `deliveryDate` | date | Yes | Today or future | "La fecha de entrega debe ser hoy o futura" |
-| `notes` | string | No | Max 1000 chars | "Las notas deben tener maximo 1000 caracteres" |
-| `lines` | array | Yes | At least 1 line | "Se requiere al menos una linea de pedido" |
-| `productId` | UUID | Yes | Must exist | "El producto es requerido" |
-| `quantity` | number | Yes | > 0 | "La cantidad debe ser mayor a cero" |
-| `unitPrice` | number | Yes | >= 0 | "El precio debe ser mayor o igual a cero" |
-| `cancelReason` | string | Yes | Max 500 chars | "El motivo es requerido" |
+| Field          | Type   | Required | Rules                  | Error Message                                  |
+| -------------- | ------ | -------- | ---------------------- | ---------------------------------------------- |
+| `customerId`   | UUID   | Yes      | Must exist             | "El cliente es requerido"                      |
+| `merchantId`   | UUID   | No       | Must exist if provided | "Comercial no encontrado"                      |
+| `deliveryDate` | date   | Yes      | Today or future        | "La fecha de entrega debe ser hoy o futura"    |
+| `notes`        | string | No       | Max 1000 chars         | "Las notas deben tener maximo 1000 caracteres" |
+| `lines`        | array  | Yes      | At least 1 line        | "Se requiere al menos una linea de pedido"     |
+| `productId`    | UUID   | Yes      | Must exist             | "El producto es requerido"                     |
+| `quantity`     | number | Yes      | > 0                    | "La cantidad debe ser mayor a cero"            |
+| `unitPrice`    | number | Yes      | >= 0                   | "El precio debe ser mayor o igual a cero"      |
+| `cancelReason` | string | Yes      | Max 500 chars          | "El motivo es requerido"                       |
 
 ### Custom Validators
 
@@ -795,16 +822,16 @@ export class OrderValidators {
   static deliveryDateFutureOrToday(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const selectedDate = new Date(control.value);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       selectedDate.setHours(0, 0, 0, 0);
-      
+
       if (selectedDate < today) {
         return { pastDate: 'La fecha de entrega debe ser hoy o futura' };
       }
-      
+
       return null;
     };
   }
@@ -814,11 +841,11 @@ export class OrderValidators {
       if (!control.value || !Array.isArray(control.value)) {
         return { minLines: `Se requiere al menos ${min} linea(s)` };
       }
-      
+
       if (control.value.length < min) {
         return { minLines: `Se requiere al menos ${min} linea(s)` };
       }
-      
+
       return null;
     };
   }
@@ -826,11 +853,11 @@ export class OrderValidators {
   static positiveQuantity(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === undefined) return null;
-      
+
       if (control.value <= 0) {
         return { invalidQuantity: 'La cantidad debe ser mayor a cero' };
       }
-      
+
       return null;
     };
   }
@@ -838,11 +865,11 @@ export class OrderValidators {
   static nonNegativePrice(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === undefined) return null;
-      
+
       if (control.value < 0) {
         return { invalidPrice: 'El precio debe ser mayor o igual a cero' };
       }
-      
+
       return null;
     };
   }
@@ -856,10 +883,12 @@ export class OrderValidators {
 ### Tab Organization
 
 #### Tab 1: General Information
+
 - **Component**: `order-general-section`
 - **Fields**: customerId (dropdown), merchantId (dropdown, optional), deliveryDate (calendar), notes (textarea)
 
 #### Tab 2: Order Lines
+
 - **Component**: `order-lines-section`
 - **Fields**: lines[] (product selector, quantity, unitPrice, lineTotal)
 
@@ -871,26 +900,26 @@ interface OrderFormModel {
   id?: string;
   orderNumber?: string;
   customerId: string;
-  customerName?: string;         // Display only
+  customerName?: string; // Display only
   merchantId: string | null;
-  merchantName?: string | null;  // Display only
+  merchantName?: string | null; // Display only
   deliveryDate: Date;
   notes: string | null;
-  
+
   // Tab 2: Lines
   lines: OrderLineFormModel[];
-  
+
   // Calculated
   subtotal?: number;
 }
 
 interface OrderLineFormModel {
   productId: string;
-  productCode?: string;          // Display only
-  productName?: string;          // Display only
+  productCode?: string; // Display only
+  productName?: string; // Display only
   quantity: number;
   unitPrice: number;
-  lineTotal?: number;            // Calculated: quantity * unitPrice
+  lineTotal?: number; // Calculated: quantity * unitPrice
 }
 ```
 
@@ -981,46 +1010,40 @@ export class OrderApplicationService {
   loadAll(params?: OrderFilterParams): Observable<OrderList[]> {
     this.loading.set(true);
     return this.api.getAll(params).pipe(
-      tap(orders => this.orders.set(orders)),
-      finalize(() => this.loading.set(false))
+      tap((orders) => this.orders.set(orders)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: string): Observable<OrderDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(order => this.currentOrder.set(order)),
-      finalize(() => this.loading.set(false))
+      tap((order) => this.currentOrder.set(order)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   create(data: OrderCreate): Observable<OrderDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: string, data: OrderEdit): Observable<OrderDetails> {
     this.loading.set(true);
-    return this.api.update(id, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   cancel(id: string, reason: string): Observable<OrderDetails> {
     this.loading.set(true);
     return this.api.cancel(id, { reason }).pipe(
-      tap(order => this.currentOrder.set(order)),
-      finalize(() => this.loading.set(false))
+      tap((order) => this.currentOrder.set(order)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   convertToInvoice(id: string): Observable<ConvertToInvoiceResponse> {
     this.loading.set(true);
-    return this.api.convertToInvoice(id).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.convertToInvoice(id).pipe(finalize(() => this.loading.set(false)));
   }
 
   clearCurrentOrder(): void {
@@ -1062,7 +1085,7 @@ export class OrderMapper {
       merchantName: details.merchantName,
       deliveryDate: new Date(details.deliveryDate),
       notes: details.notes,
-      lines: details.lines.map(line => ({
+      lines: details.lines.map((line) => ({
         productId: line.productId,
         productCode: line.productCode,
         productName: line.productName,
@@ -1080,7 +1103,7 @@ export class OrderMapper {
       merchantId: form.merchantId,
       deliveryDate: this.formatDate(form.deliveryDate),
       notes: form.notes,
-      lines: form.lines.map(line => ({
+      lines: form.lines.map((line) => ({
         productId: line.productId,
         quantity: line.quantity,
         unitPrice: line.unitPrice,
@@ -1092,7 +1115,7 @@ export class OrderMapper {
     return {
       deliveryDate: this.formatDate(form.deliveryDate),
       notes: form.notes,
-      lines: form.lines.map(line => ({
+      lines: form.lines.map((line) => ({
         productId: line.productId,
         quantity: line.quantity,
         unitPrice: line.unitPrice,
@@ -1158,6 +1181,7 @@ PENDING ──┬──► INVOICED (via convert-to-invoice)
 ### Update Pattern (Replace All Lines)
 
 When updating an order:
+
 - Backend **replaces ALL** order lines
 - Frontend must send complete arrays with ALL desired lines
 - Backend deletes old lines and creates new ones
@@ -1175,29 +1199,33 @@ export const ORDER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/orders-list-page/orders-list-page.component')
-        .then(m => m.OrdersListPageComponent),
+      import('../pages/orders-list-page/orders-list-page.component').then(
+        (m) => m.OrdersListPageComponent,
+      ),
     title: 'Pedidos',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/orders-form-page/orders-form-page.component')
-        .then(m => m.OrdersFormPageComponent),
+      import('../pages/orders-form-page/orders-form-page.component').then(
+        (m) => m.OrdersFormPageComponent,
+      ),
     title: 'Nuevo Pedido',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/orders-details-page/orders-details-page.component')
-        .then(m => m.OrdersDetailsPageComponent),
+      import('../pages/orders-details-page/orders-details-page.component').then(
+        (m) => m.OrdersDetailsPageComponent,
+      ),
     title: 'Detalles del Pedido',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/orders-form-page/orders-form-page.component')
-        .then(m => m.OrdersFormPageComponent),
+      import('../pages/orders-form-page/orders-form-page.component').then(
+        (m) => m.OrdersFormPageComponent,
+      ),
     title: 'Editar Pedido',
     canDeactivate: [pendingChangesGuard],
   },
@@ -1227,7 +1255,7 @@ export const ORDER_ROUTES: Routes = [
 })
 export class OrderLinesSectionComponent {
   private readonly productService = inject(ProductApplicationService);
-  
+
   @Input({ required: true }) formArray!: FormArray;
   @Input() readonly = false;
 
@@ -1242,7 +1270,7 @@ export class OrderLinesSectionComponent {
       quantity: new FormControl(1, [Validators.required, Validators.min(0.001)]),
       unitPrice: new FormControl(0, [Validators.required, Validators.min(0)]),
     });
-    
+
     this.formArray.push(lineGroup);
   }
 
@@ -1273,17 +1301,16 @@ export class OrderLinesSectionComponent {
       const group = control as FormGroup;
       const quantity = group.get('quantity')?.value || 0;
       const unitPrice = group.get('unitPrice')?.value || 0;
-      return sum + (quantity * unitPrice);
+      return sum + quantity * unitPrice;
     }, 0);
   }
 
   searchProducts(event: { query: string }): void {
     const query = event.query.toLowerCase();
     this.filteredProducts.set(
-      this.products().filter(p => 
-        p.name.toLowerCase().includes(query) ||
-        p.code.toLowerCase().includes(query)
-      )
+      this.products().filter(
+        (p) => p.name.toLowerCase().includes(query) || p.code.toLowerCase().includes(query),
+      ),
     );
   }
 }
@@ -1295,13 +1322,7 @@ export class OrderLinesSectionComponent {
 @Component({
   selector: 'app-order-cancel-dialog',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DialogModule,
-    ButtonModule,
-    InputTextareaModule,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, DialogModule, ButtonModule, InputTextareaModule],
   template: `
     <p-dialog
       header="Cancelar Pedido"
@@ -1325,13 +1346,9 @@ export class OrderLinesSectionComponent {
           }
         </div>
       </div>
-      
+
       <ng-template pTemplate="footer">
-        <p-button
-          label="Cancelar"
-          [text]="true"
-          (onClick)="onClose()"
-        />
+        <p-button label="Cancelar" [text]="true" (onClick)="onClose()" />
         <p-button
           label="Confirmar Cancelacion"
           severity="danger"
@@ -1347,10 +1364,7 @@ export class OrderCancelDialogComponent {
   @Output() visibleChange = new EventEmitter<boolean>();
   @Output() confirm = new EventEmitter<string>();
 
-  reasonControl = new FormControl('', [
-    Validators.required,
-    Validators.maxLength(500),
-  ]);
+  reasonControl = new FormControl('', [Validators.required, Validators.maxLength(500)]);
 
   onClose(): void {
     this.reasonControl.reset();

@@ -9,7 +9,12 @@ import { UserApplicationService } from '@features/users/services/application';
 @Component({
   standalone: true,
   imports: [ChangeEmailDialogComponent],
-  template: `<app-change-email-dialog [userId]="userId" [visible]="visible" (visibleChange)="onVisibleChange($event)" (changed)="onChanged($event)" />`,
+  template: `<app-change-email-dialog
+    [userId]="userId"
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (changed)="onChanged($event)"
+  />`,
 })
 class HostComponent {
   userId = 'user-001';
@@ -33,10 +38,7 @@ describe('ChangeEmailDialogComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [HostComponent, ChangeEmailDialogComponent],
-      providers: [
-        { provide: UserApplicationService, useValue: mockService },
-        MessageService,
-      ],
+      providers: [{ provide: UserApplicationService, useValue: mockService }, MessageService],
       schemas: [NO_ERRORS_SCHEMA],
     });
 

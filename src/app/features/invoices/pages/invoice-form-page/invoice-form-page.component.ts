@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -29,10 +37,18 @@ import { ToastModule } from 'primeng/toast';
   selector: 'app-invoice-form-page',
   standalone: true,
   imports: [
-    ReactiveFormsModule, DecimalPipe,
-    ButtonModule, TextareaModule, SelectModule, ToastModule, FormContainerComponent, FormHeaderComponent,
-    FormCardComponent, FormActionsComponent,
-    OrderItemsTableComponent, CustomerPickerDialogComponent,
+    ReactiveFormsModule,
+    DecimalPipe,
+    ButtonModule,
+    TextareaModule,
+    SelectModule,
+    ToastModule,
+    FormContainerComponent,
+    FormHeaderComponent,
+    FormCardComponent,
+    FormActionsComponent,
+    OrderItemsTableComponent,
+    CustomerPickerDialogComponent,
   ],
   providers: [MessageService],
   templateUrl: './invoice-form-page.component.html',
@@ -67,7 +83,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   readonly creditInfo = computed(() => {
     const s = this.creditStatus();
     if (!s) return null;
-    return { creditLimit: s.creditLimit, customerBalance: s.customerBalance, availableCredit: s.availableCredit };
+    return {
+      creditLimit: s.creditLimit,
+      customerBalance: s.customerBalance,
+      availableCredit: s.availableCredit,
+    };
   });
 
   readonly creditWarningMessage = computed(() => {
@@ -75,7 +95,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     const paymentType = this.form.get('paymentType')?.value;
     const total = this.total();
     if (!status || paymentType !== PaymentType.CREDIT) return null;
-    if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice) return null;
+    if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice)
+      return null;
     return {
       hasOverdue: status.hasOverdue,
       canCreateCreditInvoice: status.canCreateCreditInvoice,
@@ -97,7 +118,10 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     return parts.join(' ');
   }
 
-  private readonly FIELD_LABELS: Record<string, string> = { customerId: 'Cliente', paymentType: 'Tipo de Pago' };
+  private readonly FIELD_LABELS: Record<string, string> = {
+    customerId: 'Cliente',
+    paymentType: 'Tipo de Pago',
+  };
 
   readonly paymentTypeOptions = computed(() => {
     const options = Object.values(PaymentType).map((pt) => ({
@@ -106,7 +130,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     }));
     const status = this.creditStatus();
     if (!status?.canCreateCreditInvoice) {
-      return options.filter(o => o.value !== PaymentType.CREDIT);
+      return options.filter((o) => o.value !== PaymentType.CREDIT);
     }
     return options;
   });
@@ -172,9 +196,22 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       notes: this.form.value.notes ?? '',
       items: this.items(),
     };
-    const title = this.invoiceNumber() ? `Editar Factura ${this.invoiceNumber()}` : this.isEditMode() ? 'Editar Factura' : 'Nueva Factura';
-    const route = this.isEditMode() ? `/facturas/${this.invoiceId()}/edit` : `/facturas/new?tabId=${this.tabId}`;
-    this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'invoices');
+    const title = this.invoiceNumber()
+      ? `Editar Factura ${this.invoiceNumber()}`
+      : this.isEditMode()
+        ? 'Editar Factura'
+        : 'Nueva Factura';
+    const route = this.isEditMode()
+      ? `/facturas/${this.invoiceId()}/edit`
+      : `/facturas/new?tabId=${this.tabId}`;
+    this.pendingTabsService.save(
+      this.tabId,
+      title,
+      route,
+      formData,
+      this.isEditMode() ? 'edit' : 'create',
+      'invoices',
+    );
   }
 
   private restoreFromPendingTab(): void {
@@ -184,14 +221,22 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.items.set(tab.formData.items);
     if (tab.formData.customerId) {
       this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
-      this.selectedCustomerLabel.set({ alias: tab.formData.customerAlias, legalName: tab.formData.customerLegalName });
+      this.selectedCustomerLabel.set({
+        alias: tab.formData.customerAlias,
+        legalName: tab.formData.customerLegalName,
+      });
     }
   }
 
-  private markAsSubmitted(): void { this.isSubmitted = true; this.pendingTabsService.remove(this.tabId); }
+  private markAsSubmitted(): void {
+    this.isSubmitted = true;
+    this.pendingTabsService.remove(this.tabId);
+  }
 
   private updateSubmitTooltip(): void {
-    const invalid = Object.entries(this.FIELD_LABELS).filter(([key]) => this.form.get(key)?.invalid).map(([, label]) => label);
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
     this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
   }
 
@@ -200,15 +245,36 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       next: (invoice) => {
         this.invoiceNumber.set(invoice.invoiceNumber ?? null);
         this.form.patchValue({ notes: invoice.notes ?? '', paymentType: invoice.paymentType });
-        this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: invoice.customerName });
+        this.selectedCustomerLabel.set({
+          alias: invoice.customerName,
+          legalName: invoice.customerName,
+        });
         this.form.patchValue({ customerId: invoice.customerId });
         this.selectedCustomer.set({ id: invoice.customerId } as CustomerList);
-        this.items.set(invoice.lines.map((item) => ({
-          productId: item.productId, productCode: item.productCode, productName: item.productName,
-          quantity: item.quantity, unitPrice: item.unitPrice,
-          stock: (item.warehouseStocks ?? []).map((s) => ({ warehouseId: s.warehouseId, warehouseCode: s.warehouseCode, warehouseName: s.warehouseName, quantity: s.quantity, reserved: s.reserved, available: s.available })),
-          warehouseAllocations: item.warehouseAllocations.map((a) => ({ warehouseId: a.warehouseId, warehouseCode: a.warehouseCode, warehouseName: a.warehouseName, available: a.available, allocated: a.allocated })),
-        })));
+        this.items.set(
+          invoice.lines.map((item) => ({
+            productId: item.productId,
+            productCode: item.productCode,
+            productName: item.productName,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            stock: (item.warehouseStocks ?? []).map((s) => ({
+              warehouseId: s.warehouseId,
+              warehouseCode: s.warehouseCode,
+              warehouseName: s.warehouseName,
+              quantity: s.quantity,
+              reserved: s.reserved,
+              available: s.available,
+            })),
+            warehouseAllocations: item.warehouseAllocations.map((a) => ({
+              warehouseId: a.warehouseId,
+              warehouseCode: a.warehouseCode,
+              warehouseName: a.warehouseName,
+              available: a.available,
+              allocated: a.allocated,
+            })),
+          })),
+        );
       },
     });
   }
@@ -227,7 +293,9 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  openPicker(): void { this.pickerVisible.set(true); }
+  openPicker(): void {
+    this.pickerVisible.set(true);
+  }
 
   onCustomerSelected(customer: CustomerList): void {
     this.selectedCustomer.set(customer);
@@ -241,17 +309,35 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.loadCustomerBalance(customer.id);
   }
 
-  onPickerCancelled(): void { this.pickerVisible.set(false); }
-  onItemsChange(updated: OrderItemFormData[]): void { this.items.set(updated); this.scheduleAutoSave(); }
+  onPickerCancelled(): void {
+    this.pickerVisible.set(false);
+  }
+  onItemsChange(updated: OrderItemFormData[]): void {
+    this.items.set(updated);
+    this.scheduleAutoSave();
+  }
 
   submit(): void {
-    if (this.form.invalid) { this.form.markAllAsTouched(); return; }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     if (this.items().length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes agregar al menos un producto.', life: 4000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes agregar al menos un producto.',
+        life: 4000,
+      });
       return;
     }
     if (this.items().filter((i) => i.warehouseAllocations.length === 0).length > 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Todos los productos deben tener asignación de almacén.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Todos los productos deben tener asignación de almacén.',
+        life: 5000,
+      });
       return;
     }
 
@@ -262,15 +348,32 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       paymentType: formValue.paymentType as PaymentType,
       notes: formValue.notes ?? '',
       lines: this.items().map((i) => ({
-        productId: i.productId, quantity: i.quantity, unitPrice: i.unitPrice,
-        warehouseAllocations: i.warehouseAllocations.filter((a) => a.allocated > 0).map((a) => ({ warehouseId: a.warehouseId, allocated: a.allocated })),
+        productId: i.productId,
+        quantity: i.quantity,
+        unitPrice: i.unitPrice,
+        warehouseAllocations: i.warehouseAllocations
+          .filter((a) => a.allocated > 0)
+          .map((a) => ({ warehouseId: a.warehouseId, allocated: a.allocated })),
       })),
     };
 
     if (this.isEditMode() && this.invoiceId()) {
       this.invoiceService.update(this.invoiceId()!, baseData).subscribe({
-        next: (inv) => { this.isSubmitting.set(false); this.markAsSubmitted(); this.messageService.add(INVOICE_SUCCESS_MESSAGES.updated); this.router.navigate(['/invoices', inv.id]); },
-        error: () => { this.isSubmitting.set(false); this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar.', life: 5000 }); },
+        next: (inv) => {
+          this.isSubmitting.set(false);
+          this.markAsSubmitted();
+          this.messageService.add(INVOICE_SUCCESS_MESSAGES.updated);
+          this.router.navigate(['/invoices', inv.id]);
+        },
+        error: () => {
+          this.isSubmitting.set(false);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al actualizar.',
+            life: 5000,
+          });
+        },
       });
     } else {
       this.invoiceService.create(baseData).subscribe({
@@ -280,10 +383,20 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           this.messageService.add(INVOICE_SUCCESS_MESSAGES.created);
           this.router.navigate(['/invoices', inv.id]);
         },
-        error: () => { this.isSubmitting.set(false); this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear.', life: 5000 }); },
+        error: () => {
+          this.isSubmitting.set(false);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al crear.',
+            life: 5000,
+          });
+        },
       });
     }
   }
 
-  cancel(): void { this.router.navigate(['/invoices']); }
+  cancel(): void {
+    this.router.navigate(['/invoices']);
+  }
 }

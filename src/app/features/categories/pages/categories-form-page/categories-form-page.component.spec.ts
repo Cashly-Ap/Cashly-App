@@ -42,7 +42,9 @@ describe('CategoriesFormPageComponent', () => {
 
   function configureTestBed(id: string | null = null) {
     mockService = {
-      loadAll: vi.fn().mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, size: 10, number: 0 })),
+      loadAll: vi
+        .fn()
+        .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, size: 10, number: 0 })),
       loadById: vi.fn().mockReturnValue(of(mockCategory)),
       create: vi.fn().mockReturnValue(of(mockCategory)),
       update: vi.fn().mockReturnValue(of(mockCategory)),
@@ -59,7 +61,13 @@ describe('CategoriesFormPageComponent', () => {
       imports: [CategoriesFormPageComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { paramMap: of({ get: () => id }), snapshot: { paramMap: { get: () => id }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({ get: () => id }),
+            snapshot: { paramMap: { get: () => id }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: CategoryApplicationService, useValue: mockService },
         MessageService,
         ...pdfMocks,
@@ -273,7 +281,11 @@ describe('CategoriesFormPageComponent', () => {
   });
 
   it('should return pending tab title with form data name', () => {
-    const title = component['getPendingTabTitle']({ name: 'Draft Category', description: '', active: true });
+    const title = component['getPendingTabTitle']({
+      name: 'Draft Category',
+      description: '',
+      active: true,
+    });
     expect(title).toBe('Draft Category');
   });
 

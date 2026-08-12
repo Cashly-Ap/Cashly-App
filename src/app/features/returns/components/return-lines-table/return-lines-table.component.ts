@@ -37,7 +37,14 @@ export interface ReturnLineFormData {
   selector: 'app-return-lines-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DecimalPipe, PopoverModule, ButtonModule, TooltipModule, WarehouseStockPopoverComponent],
+  imports: [
+    CommonModule,
+    DecimalPipe,
+    PopoverModule,
+    ButtonModule,
+    TooltipModule,
+    WarehouseStockPopoverComponent,
+  ],
   templateUrl: './return-lines-table.component.html',
 })
 export class ReturnLinesTableComponent implements OnInit {
@@ -49,7 +56,7 @@ export class ReturnLinesTableComponent implements OnInit {
 
   ngOnInit(): void {
     this.warehouseApi.getAllSimple().subscribe({
-      next:       (whs) => this.allWarehouses.set(whs.map((w) => ({ id: w.id, code: '', name: w.name }))),
+      next: (whs) => this.allWarehouses.set(whs.map((w) => ({ id: w.id, code: '', name: w.name }))),
     });
   }
 
@@ -117,7 +124,8 @@ export class ReturnLinesTableComponent implements OnInit {
     const remaining = Math.max(0, maxQty - allocatedTotal);
 
     const updated = current.map((a, i) => {
-      if (i === index) return { ...a, allocated: clampedValue, available: clampedValue + remaining };
+      if (i === index)
+        return { ...a, allocated: clampedValue, available: clampedValue + remaining };
       const avail = (a.allocated ?? 0) + remaining;
       return { ...a, available: avail > 0 ? avail : 0 };
     });

@@ -1,101 +1,104 @@
-  <div class="min-h-screen">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      @if (loading()) {
-        <app-loading-spinner />
-      }
-      @if (user(); as currentUser) {
-        <div class="flex flex-col gap-6">
-          <app-page-header
-            title="Detalles del Usuario"
-            subtitle="Información completa del usuario"
-          />
-          <app-details-card>
-            <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
-              <div actions class="flex flex-wrap gap-3">
-                <p-button
-                  label="Volver"
-                  icon="pi pi-arrow-left"
-                  [outlined]="true"
-                  (onClick)="onBack()"
-                  styleClass="w-full sm:w-auto"
-                />
-                <p-button
-                  label="Cambiar Contraseña"
-                  icon="pi pi-lock"
-                  [outlined]="true"
-                  (onClick)="showChangePasswordDialog.set(true)"
-                  styleClass="w-full sm:w-auto"
-                />
-                <p-button
-                  label="Cambiar Correo"
-                  icon="pi pi-envelope"
-                  [outlined]="true"
-                  (onClick)="showChangeEmailDialog.set(true)"
-                  styleClass="w-full sm:w-auto"
-                />
-                <p-button
-                  label="Editar"
-                  icon="pi pi-pencil"
-                  severity="contrast"
-                  (onClick)="onEdit()"
-                  styleClass="w-full sm:w-auto"
-                />
-              </div>
-            </app-details-card-header>
-            <div class="p-4 sm:p-6">
-              <app-details-info-grid>
-                <app-details-info-field
-                  label="Email"
-                  [value]="currentUser.email"
-                />
-                <app-details-info-field
-                  label="Usuario"
-                  [value]="currentUser.userName"
-                />
-                <app-details-info-field label="Estado" type="badge"><app-status-badge [active]="currentUser.active" /></app-details-info-field>
-                <app-details-info-field label="Rol" type="badge"><app-text-badge [label]="getTypeLabel(currentUser.role)" variant="label" /></app-details-info-field>
-                <app-details-info-field
-                  label="Email Verificado"
-                  [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
-                />
-                <app-details-info-field
-                  label="Fecha de Creación"
-                  [value]="(currentUser.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-                <app-details-info-field
-                  label="Última Actualización"
-                  [value]="(currentUser.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-              </app-details-info-grid>
+<div class="min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (user(); as currentUser) {
+      <div class="flex flex-col gap-6">
+        <app-page-header title="Detalles del Usuario" subtitle="Información completa del usuario" />
+        <app-details-card>
+          <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
+            <div actions class="flex flex-wrap gap-3">
+              <p-button
+                label="Volver"
+                icon="pi pi-arrow-left"
+                [outlined]="true"
+                (onClick)="onBack()"
+                styleClass="w-full sm:w-auto"
+              />
+              <p-button
+                label="Cambiar Contraseña"
+                icon="pi pi-lock"
+                [outlined]="true"
+                (onClick)="showChangePasswordDialog.set(true)"
+                styleClass="w-full sm:w-auto"
+              />
+              <p-button
+                label="Cambiar Correo"
+                icon="pi pi-envelope"
+                [outlined]="true"
+                (onClick)="showChangeEmailDialog.set(true)"
+                styleClass="w-full sm:w-auto"
+              />
+              <p-button
+                label="Editar"
+                icon="pi pi-pencil"
+                severity="contrast"
+                (onClick)="onEdit()"
+                styleClass="w-full sm:w-auto"
+              />
             </div>
-          </app-details-card>
+          </app-details-card-header>
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field label="Email" [value]="currentUser.email" />
+              <app-details-info-field label="Usuario" [value]="currentUser.userName" />
+              <app-details-info-field label="Estado" type="badge"
+                ><app-status-badge [active]="currentUser.active"
+              /></app-details-info-field>
+              <app-details-info-field label="Rol" type="badge"
+                ><app-text-badge [label]="getTypeLabel(currentUser.role)" variant="label"
+              /></app-details-info-field>
+              <app-details-info-field
+                label="Email Verificado"
+                [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
+              />
+              <app-details-info-field
+                label="Fecha de Creación"
+                [value]="(currentUser.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                label="Última Actualización"
+                [value]="(currentUser.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-details-card>
 
-          <app-details-card>
-            <app-details-card-header
-              title="Permisos de Módulos"
-              subtitle="Módulos a los que este usuario tiene acceso"
-            />
-            <div class="p-4 sm:p-6">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                @for (module of allModules; track module) {
-                  <div class="flex items-center gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700">
-                    @if (isModuleAssigned(module)) {
-                      <i class="pi pi-check-circle text-surface-900 dark:text-surface-0 text-lg"></i>
-                    } @else {
-                      <i class="pi pi-times-circle text-surface-300 dark:text-surface-600 text-lg"></i>
-                    }
-                    <span class="text-sm" [class.font-medium]="isModuleAssigned(module)" [class.text-surface-400]="!isModuleAssigned(module)">
-                      {{ moduleLabels[module] }}
-                    </span>
-                  </div>
-                }
-              </div>
+        <app-details-card>
+          <app-details-card-header
+            title="Permisos de Módulos"
+            subtitle="Módulos a los que este usuario tiene acceso"
+          />
+          <div class="p-4 sm:p-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              @for (module of allModules; track module) {
+                <div
+                  class="flex items-center gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700"
+                >
+                  @if (isModuleAssigned(module)) {
+                    <i class="pi pi-check-circle text-surface-900 dark:text-surface-0 text-lg"></i>
+                  } @else {
+                    <i
+                      class="pi pi-times-circle text-surface-300 dark:text-surface-600 text-lg"
+                    ></i>
+                  }
+                  <span
+                    class="text-sm"
+                    [class.font-medium]="isModuleAssigned(module)"
+                    [class.text-surface-400]="!isModuleAssigned(module)"
+                  >
+                    {{ moduleLabels[module] }}
+                  </span>
+                </div>
+              }
             </div>
-          </app-details-card>
-        </div>
-      }
-    </div>
+          </div>
+        </app-details-card>
+      </div>
+    }
   </div>
+</div>
 
 @if (user(); as currentUser) {
   <app-change-password-dialog

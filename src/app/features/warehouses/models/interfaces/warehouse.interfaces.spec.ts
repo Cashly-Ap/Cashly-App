@@ -206,9 +206,7 @@ describe('StockEntryRequest interface', () => {
 describe('StockExitRequest interface', () => {
   it('should have items array', () => {
     const request: StockExitRequest = {
-      items: [
-        { productId: 'p1', quantity: 5 },
-      ],
+      items: [{ productId: 'p1', quantity: 5 }],
     };
     expect(request.items).toHaveLength(1);
   });

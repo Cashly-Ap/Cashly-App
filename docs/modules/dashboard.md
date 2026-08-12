@@ -45,6 +45,7 @@ src/app/features/dashboard/
 **Purpose**: Main dashboard view displaying all metrics and charts.
 
 **Features**:
+
 - Sales metrics cards with icons and change indicators
 - Interactive charts using PrimeNG Chart component
 - Recent orders table with status badges
@@ -64,11 +65,11 @@ src/app/features/dashboard/
 
 ```typescript
 interface SalesMetric {
-  label: string;        // Display label (e.g., "Ventas Totales")
-  value: string;        // Formatted value (e.g., "$3,628,250")
-  change: string;       // Change indicator (e.g., "+12.5%")
-  icon: string;         // PrimeNG icon class (e.g., "pi pi-dollar")
-  iconColor: string;    // Tailwind color classes
+  label: string; // Display label (e.g., "Ventas Totales")
+  value: string; // Formatted value (e.g., "$3,628,250")
+  change: string; // Change indicator (e.g., "+12.5%")
+  icon: string; // PrimeNG icon class (e.g., "pi pi-dollar")
+  iconColor: string; // Tailwind color classes
 }
 ```
 
@@ -80,11 +81,11 @@ interface SalesMetric {
 
 ```typescript
 interface RecentOrder {
-  id: string;           // Order ID (e.g., "#12453")
-  customer: string;     // Customer name
-  product: string;      // Product name
-  amount: number;       // Order total amount
-  status: string;       // Order status (e.g., "Entregado", "Pendiente")
+  id: string; // Order ID (e.g., "#12453")
+  customer: string; // Customer name
+  product: string; // Product name
+  amount: number; // Order total amount
+  status: string; // Order status (e.g., "Entregado", "Pendiente")
 }
 ```
 
@@ -96,9 +97,9 @@ interface RecentOrder {
 
 ```typescript
 interface TopProduct {
-  name: string;         // Product name
-  sales: number;        // Number of units sold
-  revenue: number;      // Total revenue from product
+  name: string; // Product name
+  sales: number; // Number of units sold
+  revenue: number; // Total revenue from product
 }
 ```
 
@@ -166,28 +167,28 @@ chartOptions = {
     legend: {
       position: 'top',
       labels: {
-        color: string  // Theme-aware color
-      }
-    }
+        color: string, // Theme-aware color
+      },
+    },
   },
   scales: {
     x: {
       ticks: {
-        color: string  // Theme-aware color
+        color: string, // Theme-aware color
       },
       grid: {
-        color: string  // Theme-aware color
-      }
+        color: string, // Theme-aware color
+      },
     },
     y: {
       ticks: {
-        color: string  // Theme-aware color
+        color: string, // Theme-aware color
       },
       grid: {
-        color: string  // Theme-aware color
-      }
-    }
-  }
+        color: string, // Theme-aware color
+      },
+    },
+  },
 };
 ```
 
@@ -261,14 +262,14 @@ salesMetrics = [
     value: '$3,628,250',
     change: '+12.5%',
     icon: 'pi pi-dollar',
-    iconColor: 'text-green-500 bg-green-100'
+    iconColor: 'text-green-500 bg-green-100',
   },
   {
     label: 'Nuevos Clientes',
     value: '342',
     change: '+8.2%',
     icon: 'pi pi-users',
-    iconColor: 'text-blue-500 bg-blue-100'
+    iconColor: 'text-blue-500 bg-blue-100',
   },
   // ...more metrics
 ];
@@ -279,10 +280,34 @@ salesMetrics = [
 ```typescript
 recentOrders = [
   { id: '#12453', customer: 'Juan Pérez', product: 'Laptop HP', amount: 850, status: 'Entregado' },
-  { id: '#12452', customer: 'María García', product: 'Mouse Logitech', amount: 25, status: 'Pendiente' },
-  { id: '#12451', customer: 'Carlos López', product: 'Teclado Mecánico', amount: 120, status: 'Entregado' },
-  { id: '#12450', customer: 'Ana Martínez', product: 'Monitor Samsung', amount: 320, status: 'En Proceso' },
-  { id: '#12449', customer: 'Luis Rodríguez', product: 'Webcam HD', amount: 75, status: 'Entregado' }
+  {
+    id: '#12452',
+    customer: 'María García',
+    product: 'Mouse Logitech',
+    amount: 25,
+    status: 'Pendiente',
+  },
+  {
+    id: '#12451',
+    customer: 'Carlos López',
+    product: 'Teclado Mecánico',
+    amount: 120,
+    status: 'Entregado',
+  },
+  {
+    id: '#12450',
+    customer: 'Ana Martínez',
+    product: 'Monitor Samsung',
+    amount: 320,
+    status: 'En Proceso',
+  },
+  {
+    id: '#12449',
+    customer: 'Luis Rodríguez',
+    product: 'Webcam HD',
+    amount: 75,
+    status: 'Entregado',
+  },
 ];
 ```
 
@@ -294,7 +319,7 @@ topProducts = [
   { name: 'Mouse Logitech MX', sales: 320, revenue: 8000 },
   { name: 'Teclado Mecánico RGB', sales: 180, revenue: 21600 },
   { name: 'Monitor Samsung 27"', sales: 95, revenue: 30400 },
-  { name: 'Webcam Logitech HD', sales: 210, revenue: 15750 }
+  { name: 'Webcam Logitech HD', sales: 210, revenue: 15750 },
 ];
 ```
 
@@ -304,14 +329,14 @@ topProducts = [
 
 When connected to real backend, the dashboard should call:
 
-| HTTP Method | Endpoint | Response Interface | Description |
-|-------------|----------|-------------------|-------------|
-| GET | /api/dashboard/sales-metrics | `SalesMetric[]` | Sales metrics data |
-| GET | /api/dashboard/recent-orders | `RecentOrder[]` | Recent orders list |
-| GET | /api/dashboard/top-products | `TopProduct[]` | Best selling products |
-| GET | /api/dashboard/sales-trend | `ChartData` | Monthly sales trend |
-| GET | /api/dashboard/category-distribution | `ChartData` | Sales by category |
-| GET | /api/dashboard/revenue | `ChartData` | Weekly/monthly revenue |
+| HTTP Method | Endpoint                             | Response Interface | Description            |
+| ----------- | ------------------------------------ | ------------------ | ---------------------- |
+| GET         | /api/dashboard/sales-metrics         | `SalesMetric[]`    | Sales metrics data     |
+| GET         | /api/dashboard/recent-orders         | `RecentOrder[]`    | Recent orders list     |
+| GET         | /api/dashboard/top-products          | `TopProduct[]`     | Best selling products  |
+| GET         | /api/dashboard/sales-trend           | `ChartData`        | Monthly sales trend    |
+| GET         | /api/dashboard/category-distribution | `ChartData`        | Sales by category      |
+| GET         | /api/dashboard/revenue               | `ChartData`        | Weekly/monthly revenue |
 
 ### Query Parameters (Future)
 

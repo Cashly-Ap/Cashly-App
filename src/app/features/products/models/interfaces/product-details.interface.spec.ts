@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type {
-  ProductComponentItem,
-  ProductDetails,
-} from './product-details.interface';
+import type { ProductComponentItem, ProductDetails } from './product-details.interface';
 import type { ProductPriceItem } from './product-price-item.interface';
 
 describe('ProductComponentItem interface', () => {

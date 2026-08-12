@@ -16,7 +16,11 @@ import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
-import { CUSTOMER_TYPES, CustomerType, getCustomerTypeLabel } from '@features/customers/models/enums/customer-type.enum';
+import {
+  CUSTOMER_TYPES,
+  CustomerType,
+  getCustomerTypeLabel,
+} from '@features/customers/models/enums/customer-type.enum';
 
 const PAGE_SIZE = 10;
 

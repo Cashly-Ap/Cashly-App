@@ -11,17 +11,17 @@ export const CASH_REGISTER_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import(
-            '../pages/cash-register-page/cash-register-page.component'
-          ).then((m) => m.CashRegisterPageComponent),
+          import('../pages/cash-register-page/cash-register-page.component').then(
+            (m) => m.CashRegisterPageComponent,
+          ),
         title: 'Caja',
       },
       {
         path: 'history',
         loadComponent: () =>
-          import(
-            '../pages/cash-register-history-page/cash-register-history-page.component'
-          ).then((m) => m.CashRegisterHistoryPageComponent),
+          import('../pages/cash-register-history-page/cash-register-history-page.component').then(
+            (m) => m.CashRegisterHistoryPageComponent,
+          ),
         title: 'Historial de Caja',
       },
     ],

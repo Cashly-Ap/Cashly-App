@@ -1,25 +1,51 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 import { NotificationBellComponent } from './notification-bell.component';
-import { AppNotification, NotificationApiService } from '../../services/api/notification-api.service';
+import {
+  AppNotification,
+  NotificationApiService,
+} from '../../services/api/notification-api.service';
 import { NotificationWebSocketService } from '../../services/websocket/notification-websocket.service';
 import { NotificationDestinationResolver } from '../../services/navigation/notification-destination.resolver';
 
-const notification: AppNotification = { id: 'n1', type: 'QUOTE_CREATED', title: 'Presupuesto', message: 'Creado', referenceType: 'QUOTE', referenceId: 'q1', isRead: false, createdAt: '2026-08-11T12:00:00', readAt: null };
+const notification: AppNotification = {
+  id: 'n1',
+  type: 'QUOTE_CREATED',
+  title: 'Presupuesto',
+  message: 'Creado',
+  referenceType: 'QUOTE',
+  referenceId: 'q1',
+  isRead: false,
+  createdAt: '2026-08-11T12:00:00',
+  readAt: null,
+};
 
 describe('NotificationBellComponent', () => {
   let component: NotificationBellComponent;
-  let api: { markAsRead: ReturnType<typeof vi.fn>; getUnreadCount: ReturnType<typeof vi.fn>; list: ReturnType<typeof vi.fn>; markAllAsRead: ReturnType<typeof vi.fn> };
+  let api: {
+    markAsRead: ReturnType<typeof vi.fn>;
+    getUnreadCount: ReturnType<typeof vi.fn>;
+    list: ReturnType<typeof vi.fn>;
+    markAllAsRead: ReturnType<typeof vi.fn>;
+  };
   let resolver: { navigate: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
-    api = { markAsRead: vi.fn(() => of(void 0)), getUnreadCount: vi.fn(() => of({ count: 0 })), list: vi.fn(() => of([])), markAllAsRead: vi.fn(() => of(void 0)) };
+    api = {
+      markAsRead: vi.fn(() => of(void 0)),
+      getUnreadCount: vi.fn(() => of({ count: 0 })),
+      list: vi.fn(() => of([])),
+      markAllAsRead: vi.fn(() => of(void 0)),
+    };
     resolver = { navigate: vi.fn(() => Promise.resolve()) };
     await TestBed.configureTestingModule({
       imports: [NotificationBellComponent],
       providers: [
         { provide: NotificationApiService, useValue: api },
-        { provide: NotificationWebSocketService, useValue: { connect: vi.fn(), notification$: new Subject<AppNotification>() } },
+        {
+          provide: NotificationWebSocketService,
+          useValue: { connect: vi.fn(), notification$: new Subject<AppNotification>() },
+        },
         { provide: NotificationDestinationResolver, useValue: resolver },
       ],
     }).compileComponents();

@@ -42,16 +42,14 @@ export class ProductPhotoService implements OnDestroy {
   }
 
   getPhotoUrl(photoPath: string): Observable<string | null> {
-    return this.http
-      .get(`${this.filesUrl}/${photoPath}`, { responseType: 'blob' })
-      .pipe(
-        map((blob) => {
-          const objectUrl = URL.createObjectURL(blob);
-          this.objectUrls.add(objectUrl);
-          return objectUrl;
-        }),
-        catchError(() => of(null)),
-      );
+    return this.http.get(`${this.filesUrl}/${photoPath}`, { responseType: 'blob' }).pipe(
+      map((blob) => {
+        const objectUrl = URL.createObjectURL(blob);
+        this.objectUrls.add(objectUrl);
+        return objectUrl;
+      }),
+      catchError(() => of(null)),
+    );
   }
 
   clearPhoto(): void {

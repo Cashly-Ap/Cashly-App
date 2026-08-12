@@ -536,12 +536,12 @@ Create a validation function in your application:
 ```typescript
 // src/app/config/env.validator.ts
 export function validateEnvironment(): void {
-  const required = ["API_URL", "NODE_ENV"];
+  const required = ['API_URL', 'NODE_ENV'];
 
   const missing = required.filter((key) => !process.env[key]);
 
   if (missing.length > 0) {
-    throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
+    throw new Error(`Missing required environment variables: ${missing.join(', ')}`);
   }
 }
 ```
@@ -683,10 +683,10 @@ Environment variables are typically accessed through Angular's environment files
 // src/environments/environment.ts
 export const environment = {
   production: false,
-  apiUrl: process.env["API_URL"] || "http://localhost:8080/api",
-  apiTimeout: parseInt(process.env["API_TIMEOUT"] || "30000"),
-  enableLogging: process.env["ENABLE_LOGGING"] === "true",
-  logLevel: process.env["LOG_LEVEL"] || "info",
+  apiUrl: process.env['API_URL'] || 'http://localhost:8080/api',
+  apiTimeout: parseInt(process.env['API_TIMEOUT'] || '30000'),
+  enableLogging: process.env['ENABLE_LOGGING'] === 'true',
+  logLevel: process.env['LOG_LEVEL'] || 'info',
 };
 ```
 
@@ -694,10 +694,10 @@ export const environment = {
 // src/environments/environment.prod.ts
 export const environment = {
   production: true,
-  apiUrl: process.env["API_URL"] || "https://api.lexand.com/api",
-  apiTimeout: parseInt(process.env["API_TIMEOUT"] || "30000"),
+  apiUrl: process.env['API_URL'] || 'https://api.lexand.com/api',
+  apiTimeout: parseInt(process.env['API_TIMEOUT'] || '30000'),
   enableLogging: false,
-  logLevel: "error",
+  logLevel: 'error',
 };
 ```
 
@@ -705,12 +705,12 @@ export const environment = {
 
 ```typescript
 // src/app/services/api.service.ts
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "@env/environment";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '@env/environment';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ApiService {
   private apiUrl = environment.apiUrl;
@@ -730,15 +730,15 @@ Set test-specific variables in `Dockerfile.test` or test configuration:
 // jest.config.js
 module.exports = {
   // ...
-  setupFiles: ["<rootDir>/setup-test-env.ts"],
+  setupFiles: ['<rootDir>/setup-test-env.ts'],
 };
 ```
 
 ```typescript
 // setup-test-env.ts
-process.env["NODE_ENV"] = "test";
-process.env["API_URL"] = "http://localhost:8080/api";
-process.env["ENABLE_LOGGING"] = "false";
+process.env['NODE_ENV'] = 'test';
+process.env['API_URL'] = 'http://localhost:8080/api';
+process.env['ENABLE_LOGGING'] = 'false';
 ```
 
 ## 📚 Additional Resources

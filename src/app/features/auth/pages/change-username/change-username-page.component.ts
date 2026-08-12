@@ -76,5 +76,3 @@ export class ChangeUsernamePageComponent implements OnInit {
     return '';
   }
 }
-
-

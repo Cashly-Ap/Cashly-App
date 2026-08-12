@@ -142,8 +142,20 @@ describe('InvoiceDetails interface', () => {
       debitApplied: 50,
       total: 850,
       notesList: [
-        { id: 'n1', type: 'CREDIT', amount: 200, reason: 'Discount', applicationDate: '2026-05-28T10:00:00Z' },
-        { id: 'n2', type: 'DEBIT', amount: 50, reason: 'Charge', applicationDate: '2026-05-28T11:00:00Z' },
+        {
+          id: 'n1',
+          type: 'CREDIT',
+          amount: 200,
+          reason: 'Discount',
+          applicationDate: '2026-05-28T10:00:00Z',
+        },
+        {
+          id: 'n2',
+          type: 'DEBIT',
+          amount: 50,
+          reason: 'Charge',
+          applicationDate: '2026-05-28T11:00:00Z',
+        },
       ],
       cancelledAt: null,
       cancelledReason: null,

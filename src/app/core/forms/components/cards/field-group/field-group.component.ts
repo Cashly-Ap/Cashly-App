@@ -14,7 +14,9 @@ export class FieldGroupComponent {
 
   wrapperClass = input<string>('rounded-lg p-3');
 
-  labelClass = input<string>('block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5');
+  labelClass = input<string>(
+    'block text-sm font-medium text-surface-700 dark:text-surface-300 mb-1.5',
+  );
 
   iconClass = input<string>('text-surface-500 dark:text-surface-400');
 

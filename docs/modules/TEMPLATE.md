@@ -88,6 +88,7 @@ src/app/features/[module-name]/
 **Purpose**: Displays all [entities] in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search functionality
 - Pagination
@@ -103,6 +104,7 @@ src/app/features/[module-name]/
 **Purpose**: Create new [entity] or edit existing one.
 
 **Features**:
+
 - Reactive forms with validation
 - Tab-based layout (if multiple sections)
 - Real-time validation feedback
@@ -117,6 +119,7 @@ src/app/features/[module-name]/
 **Purpose**: Display complete [entity] information in read-only mode.
 
 **Features**:
+
 - Complete [entity] data display
 - Edit and Delete actions
 - Related information sections
@@ -197,7 +200,8 @@ export interface [Entity]Edit {
 }
 ```
 
-**API Mapping**: 
+**API Mapping**:
+
 - Derived from `[Entity]Details` response
 - Maps to `Update[Entity]Request` for PUT request
 
@@ -270,13 +274,13 @@ All endpoints use: `/api/[entities]`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/[entities] | - | `[Entity]List[]` | List page |
-| GET | /api/[entities]/:id | - | `[Entity]Details` | Details/Edit page |
-| POST | /api/[entities] | `[Entity]Create` | `[Entity]Details` | Create form |
-| PUT | /api/[entities]/:id | `[Entity]Edit` | `[Entity]Details` | Edit form |
-| DELETE | /api/[entities]/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint            | Request Interface | Response Interface | Frontend Usage    |
+| ----------- | ------------------- | ----------------- | ------------------ | ----------------- |
+| GET         | /api/[entities]     | -                 | `[Entity]List[]`   | List page         |
+| GET         | /api/[entities]/:id | -                 | `[Entity]Details`  | Details/Edit page |
+| POST        | /api/[entities]     | `[Entity]Create`  | `[Entity]Details`  | Create form       |
+| PUT         | /api/[entities]/:id | `[Entity]Edit`    | `[Entity]Details`  | Edit form         |
+| DELETE      | /api/[entities]/:id | -                 | void (204)         | Delete action     |
 
 ---
 
@@ -287,6 +291,7 @@ All endpoints use: `/api/[entities]`
 **Frontend Interface**: `[Entity]List[]`
 
 **Example Response**:
+
 ```json
 [
   {
@@ -307,6 +312,7 @@ All endpoints use: `/api/[entities]`
 **Frontend Interface**: `[Entity]Details`
 
 **Example Response**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -334,14 +340,13 @@ All endpoints use: `/api/[entities]`
 **Frontend Interface**: `[Entity]Create` (request), `[Entity]Details` (response)
 
 **Example Request**:
+
 ```json
 {
   "field1": "New Value",
   "field2": 100,
   "active": true,
-  "nestedEntities": [
-    { "nestedField1": "Nested Value" }
-  ]
+  "nestedEntities": [{ "nestedField1": "Nested Value" }]
 }
 ```
 
@@ -356,15 +361,14 @@ All endpoints use: `/api/[entities]`
 **Frontend Interface**: `[Entity]Edit` (request), `[Entity]Details` (response)
 
 **Example Request**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
   "field1": "Updated Value",
   "field2": 150,
   "active": true,
-  "nestedEntities": [
-    { "nestedField1": "Updated Nested Value" }
-  ]
+  "nestedEntities": [{ "nestedField1": "Updated Nested Value" }]
 }
 ```
 
@@ -384,12 +388,12 @@ All endpoints use: `/api/[entities]`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `field1` | string | Yes | 3-100 chars | "Field1 must be 3-100 characters" |
-| `field2` | number | Yes | >= 0 | "Field2 must be non-negative" |
-| `active` | boolean | Yes | - | - |
-| `nestedField1` | string | Yes | Valid format | "Invalid format" |
+| Field          | Type    | Required | Rules        | Error Message                     |
+| -------------- | ------- | -------- | ------------ | --------------------------------- |
+| `field1`       | string  | Yes      | 3-100 chars  | "Field1 must be 3-100 characters" |
+| `field2`       | number  | Yes      | >= 0         | "Field2 must be non-negative"     |
+| `active`       | boolean | Yes      | -            | -                                 |
+| `nestedField1` | string  | Yes      | Valid format | "Invalid format"                  |
 
 ### Custom Validators
 
@@ -401,26 +405,26 @@ export class [Entity]Validators {
   static field1Format(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const pattern = /^[A-Z]-\d{8}-\d$/;
       if (!pattern.test(control.value)) {
         return { invalidFormat: 'Invalid field1 format' };
       }
-      
+
       return null;
     };
   }
-  
+
   static minArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value || !Array.isArray(control.value)) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       if (control.value.length < min) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       return null;
     };
   }
@@ -434,14 +438,17 @@ export class [Entity]Validators {
 ### Tab Organization (if applicable)
 
 #### Tab 1: General Information
+
 - **Component**: `[entity]-general-section`
 - **Fields**: field1, field2, type, active
 
 #### Tab 2: Contact Information (example)
+
 - **Component**: `[entity]-contact-section`
 - **Fields**: emails[], phones[]
 
 #### Tab 3: Addresses (example)
+
 - **Component**: `[entity]-addresses-section`
 - **Fields**: addresses[]
 
@@ -454,7 +461,7 @@ interface [Entity]FormModel {
   field2: number;
   type: [Entity]Type;
   active: boolean;
-  
+
   // Tab 2: Nested Arrays (example)
   nestedItems: [Entity]NestedFormModel[];
 }

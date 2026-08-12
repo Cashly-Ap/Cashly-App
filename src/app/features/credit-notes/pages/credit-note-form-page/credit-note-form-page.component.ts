@@ -115,12 +115,10 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
   }
 
   searchCustomers(event: AutoCompleteCompleteEvent): void {
-    
     this.filteredCustomers = [];
   }
 
   searchInvoices(event: AutoCompleteCompleteEvent): void {
-    
     this.filteredInvoices = [];
   }
 

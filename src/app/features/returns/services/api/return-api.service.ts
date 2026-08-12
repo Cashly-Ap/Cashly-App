@@ -1,11 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import {
-  ReturnList,
-  ReturnDetail,
-  ReturnCreate,
-} from '@features/returns/models/interfaces';
+import { ReturnList, ReturnDetail, ReturnCreate } from '@features/returns/models/interfaces';
 
 export interface ReturnFilters {
   search?: string;
@@ -87,15 +83,15 @@ export class ReturnApiService {
   }
 
   getById(id: string): Observable<ReturnDetail> {
-    return this.http.get<ReturnDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toDetail(r)),
-    );
+    return this.http
+      .get<ReturnDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toDetail(r)));
   }
 
   create(data: ReturnCreate): Observable<ReturnDetail> {
-    return this.http.post<ReturnDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toDetail(r)),
-    );
+    return this.http
+      .post<ReturnDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toDetail(r)));
   }
 
   delete(id: string): Observable<void> {

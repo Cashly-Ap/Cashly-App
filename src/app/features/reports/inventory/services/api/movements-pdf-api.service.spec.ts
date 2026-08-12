@@ -39,7 +39,9 @@ describe('MovementsPdfApiService', () => {
     it('should GET with warehouseId filter', () => {
       service.getPdf({ warehouseId: 'wh-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('warehouseId')).toBe('wh-001');
       req.flush(mockBlob);
     });
@@ -47,7 +49,9 @@ describe('MovementsPdfApiService', () => {
     it('should GET with productId filter', () => {
       service.getPdf({ productId: 'prod-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('productId')).toBe('prod-001');
       req.flush(mockBlob);
     });
@@ -55,7 +59,9 @@ describe('MovementsPdfApiService', () => {
     it('should GET with movementType filter', () => {
       service.getPdf({ movementType: 'IN' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('movementType')).toBe('IN');
       req.flush(mockBlob);
     });
@@ -63,22 +69,28 @@ describe('MovementsPdfApiService', () => {
     it('should GET with date range filters', () => {
       service.getPdf({ from: '2025-01-01', to: '2025-01-31' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('from')).toBe('2025-01-01');
       expect(req.request.params.get('to')).toBe('2025-01-31');
       req.flush(mockBlob);
     });
 
     it('should GET with all filters combined', () => {
-      service.getPdf({
-        warehouseId: 'wh-001',
-        productId: 'prod-001',
-        movementType: 'OUT',
-        from: '2025-01-01',
-        to: '2025-12-31',
-      }).subscribe();
+      service
+        .getPdf({
+          warehouseId: 'wh-001',
+          productId: 'prod-001',
+          movementType: 'OUT',
+          from: '2025-01-01',
+          to: '2025-12-31',
+        })
+        .subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/movements/pdf' && r.method === 'GET',
+      );
       expect(req.request.params.get('warehouseId')).toBe('wh-001');
       expect(req.request.params.get('productId')).toBe('prod-001');
       expect(req.request.params.get('movementType')).toBe('OUT');

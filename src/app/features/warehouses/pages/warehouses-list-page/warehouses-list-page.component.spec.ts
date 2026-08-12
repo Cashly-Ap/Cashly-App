@@ -8,7 +8,11 @@ import { WarehousesListPageComponent } from './warehouses-list-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
-import { WarehouseList, WarehouseStockItem, WarehouseDetails } from '@features/warehouses/models/interfaces';
+import {
+  WarehouseList,
+  WarehouseStockItem,
+  WarehouseDetails,
+} from '@features/warehouses/models/interfaces';
 import { ProductDetails } from '@features/products/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
@@ -28,8 +32,20 @@ describe('WarehousesListPageComponent', () => {
   let confirmationService: ConfirmationService;
 
   const mockWarehouses: WarehouseList[] = [
-    { id: 'wh-001', name: 'Almacén Central', state: 'Distrito Capital', municipality: 'Libertador', active: true },
-    { id: 'wh-002', name: 'Almacén Norte', state: 'Zulia', municipality: 'Maracaibo', active: false },
+    {
+      id: 'wh-001',
+      name: 'Almacén Central',
+      state: 'Distrito Capital',
+      municipality: 'Libertador',
+      active: true,
+    },
+    {
+      id: 'wh-002',
+      name: 'Almacén Norte',
+      state: 'Zulia',
+      municipality: 'Maracaibo',
+      active: false,
+    },
   ];
 
   const mockProducts = [
@@ -50,7 +66,16 @@ describe('WarehousesListPageComponent', () => {
     { provide: QuotePdfApiService, useValue: { downloadQuotesReportPdf: vi.fn() } },
   ];
 
-  function configureTestBed(loadAllValue: any = of({ content: mockWarehouses, totalElements: 2, totalPages: 1, size: 10, number: 0 }), getStockValue: any = of(mockStock)) {
+  function configureTestBed(
+    loadAllValue: any = of({
+      content: mockWarehouses,
+      totalElements: 2,
+      totalPages: 1,
+      size: 10,
+      number: 0,
+    }),
+    getStockValue: any = of(mockStock),
+  ) {
     mockService = {
       loadAll: vi.fn().mockReturnValue(loadAllValue),
       getStock: vi.fn().mockReturnValue(getStockValue),
@@ -72,18 +97,35 @@ describe('WarehousesListPageComponent', () => {
     mockProductService = {
       simpleProducts: signal(mockProducts),
       loadSimpleProducts: vi.fn().mockReturnValue(of(mockProducts)),
-      getById: vi.fn().mockReturnValue(of({ id: 'p2', name: 'Kit Compuesto', composite: true, components: [{ componentProductId: 'p1', componentProductName: 'Motor 10HP', quantity: 2 }] } as unknown as ProductDetails)),
+      getById: vi.fn().mockReturnValue(
+        of({
+          id: 'p2',
+          name: 'Kit Compuesto',
+          composite: true,
+          components: [
+            { componentProductId: 'p1', componentProductName: 'Motor 10HP', quantity: 2 },
+          ],
+        } as unknown as ProductDetails),
+      ),
     };
 
     TestBed.configureTestingModule({
       imports: [WarehousesListPageComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+          },
+        },
         FormBuilder,
         { provide: WarehouseApplicationService, useValue: mockService },
         { provide: ProductApplicationService, useValue: mockProductService },
-        { provide: CategoryApplicationService, useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) } },
+        {
+          provide: CategoryApplicationService,
+          useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) },
+        },
         ConfirmationService,
         MessageService,
         ...pdfMocks,
@@ -375,7 +417,9 @@ describe('WarehousesListPageComponent', () => {
     });
 
     it('should show error on entry failure', () => {
-      (mockService.addEntry as ReturnType<typeof vi.fn>).mockReturnValue(throwError(() => new Error('Fail')));
+      (mockService.addEntry as ReturnType<typeof vi.fn>).mockReturnValue(
+        throwError(() => new Error('Fail')),
+      );
 
       fixture.detectChanges();
       component.selectedWarehouseId.set('wh-001');
@@ -384,9 +428,7 @@ describe('WarehousesListPageComponent', () => {
       const addSpy = vi.spyOn(messageService, 'add');
       component.onSubmitEntry();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
   });
 
@@ -426,9 +468,7 @@ describe('WarehousesListPageComponent', () => {
       fixture.detectChanges();
       const addSpy = vi.spyOn(messageService, 'add');
       component.onToggleActive(mockWarehouses[0]);
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
   });
 

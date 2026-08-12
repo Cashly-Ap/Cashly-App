@@ -1,9 +1,4 @@
-import {
-  UserType,
-  USER_TYPES,
-  USER_TYPE_LABELS,
-  getUserTypeLabel,
-} from './user-type.enum';
+import { UserType, USER_TYPES, USER_TYPE_LABELS, getUserTypeLabel } from './user-type.enum';
 
 describe('UserType', () => {
   it('should have all expected enum values', () => {

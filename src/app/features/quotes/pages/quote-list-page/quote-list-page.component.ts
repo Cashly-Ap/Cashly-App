@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,8 +29,16 @@ import { ConvertToOrderDialogComponent } from '@features/quotes/components/conve
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
-import { QuoteFilters, ConvertToInvoiceRequest, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
-import { QuoteStatus, QUOTE_STATUS_LABELS, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
+import {
+  QuoteFilters,
+  ConvertToInvoiceRequest,
+  AssignQuoteWarehousesRequest,
+} from '@features/quotes/services/api/quote-api.service';
+import {
+  QuoteStatus,
+  QUOTE_STATUS_LABELS,
+  getQuoteStatusLabel,
+} from '@features/quotes/models/enums/quote-status.enum';
 import { QuoteList } from '@features/quotes/models/interfaces';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
@@ -98,7 +113,9 @@ export class QuoteListPageComponent implements OnInit {
     return count;
   });
 
-  readonly showInitialLoading = computed(() => this.loading() && (this.quotes()?.length ?? 0) === 0);
+  readonly showInitialLoading = computed(
+    () => this.loading() && (this.quotes()?.length ?? 0) === 0,
+  );
   readonly isEmptyDatabase = computed(
     () => !this.loading() && this.totalElements() === 0 && !this.searchTerm(),
   );

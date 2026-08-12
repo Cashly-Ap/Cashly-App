@@ -9,7 +9,13 @@ const mockSanitizer = {
 };
 
 @Component({
-  template: `<app-pdf-viewer-modal [visible]="visible" [pdfUrl]="pdfUrl" [title]="title" [loading]="loading" (visibleChange)="onVisibleChange($event)"></app-pdf-viewer-modal>`,
+  template: `<app-pdf-viewer-modal
+    [visible]="visible"
+    [pdfUrl]="pdfUrl"
+    [title]="title"
+    [loading]="loading"
+    (visibleChange)="onVisibleChange($event)"
+  ></app-pdf-viewer-modal>`,
   imports: [PdfViewerModalComponent],
 })
 class HostComponent {
@@ -20,14 +26,14 @@ class HostComponent {
   onVisibleChange = vi.fn();
 }
 
-function setup(overrides: { visible?: boolean; pdfUrl?: string | null; title?: string; loading?: boolean } = {}) {
+function setup(
+  overrides: { visible?: boolean; pdfUrl?: string | null; title?: string; loading?: boolean } = {},
+) {
   TestBed.resetTestingModule();
   TestBed.configureTestingModule({
     imports: [HostComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    providers: [
-      { provide: DomSanitizer, useValue: mockSanitizer },
-    ],
+    providers: [{ provide: DomSanitizer, useValue: mockSanitizer }],
   });
   TestBed.compileComponents();
 
@@ -74,14 +80,17 @@ describe('PdfViewerModalComponent', () => {
   });
 });
 
-
-
 describe.skip('PdfViewerModalComponent - visible', () => {
   let hostComponent: HostComponent;
   let component: PdfViewerModalComponent;
 
   beforeEach(() => {
-    const result = setup({ visible: true, pdfUrl: 'blob:test-url', title: 'Test PDF', loading: false });
+    const result = setup({
+      visible: true,
+      pdfUrl: 'blob:test-url',
+      title: 'Test PDF',
+      loading: false,
+    });
     hostComponent = result.hostComponent;
     component = result.component;
   });

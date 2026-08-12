@@ -3,7 +3,13 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { ProductApplicationService } from './product-application.service';
 import { ProductApiService, ProductFilters } from '../api/product-api.service';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '../../models/interfaces';
+import {
+  ProductList,
+  ProductDetails,
+  ProductCreate,
+  ProductUpdate,
+  ProductStockByWarehouse,
+} from '../../models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('ProductApplicationService', () => {
@@ -32,7 +38,15 @@ describe('ProductApplicationService', () => {
     active: true,
     stockTotal: 50,
     components: [],
-    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 100, profitMargin: 40 }],
+    productPrices: [
+      {
+        id: 'pp-001',
+        priceTypeId: 'pt-001',
+        priceTypeName: 'Retail',
+        price: 100,
+        profitMargin: 40,
+      },
+    ],
     createdAt: '2025-01-15T10:30:00Z',
     updatedAt: '2025-01-15T10:30:00Z',
   };
@@ -59,7 +73,12 @@ describe('ProductApplicationService', () => {
   });
 
   const mockStock: ProductStockByWarehouse[] = [
-    { warehouseId: 'wh-001', warehouseName: 'Main Warehouse', quantity: 30, lastMovementAt: '2025-01-15T10:30:00Z' },
+    {
+      warehouseId: 'wh-001',
+      warehouseName: 'Main Warehouse',
+      quantity: 30,
+      lastMovementAt: '2025-01-15T10:30:00Z',
+    },
   ];
 
   beforeEach(() => {
@@ -230,7 +249,11 @@ describe('ProductApplicationService', () => {
       mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
       service.loadAll().subscribe();
 
-      const updatedDetails: ProductDetails = { ...mockDetails, name: 'Updated Product', categoryName: 'Updated Category' };
+      const updatedDetails: ProductDetails = {
+        ...mockDetails,
+        name: 'Updated Product',
+        categoryName: 'Updated Category',
+      };
       mockApiService.update.mockReturnValue(of(updatedDetails));
 
       const updateData: ProductUpdate = {

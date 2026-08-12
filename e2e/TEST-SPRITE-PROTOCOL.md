@@ -37,43 +37,49 @@ Each module follows this cycle:
 ```
 
 ### 3.1 Setup
+
 - Navigate to the module
 - Verify the route loads correctly
 - Verify no console errors
 
 ### 3.2 Listing
+
 - Verify expected columns
 - Verify pagination (if applicable)
 - Verify data loaded from API (status 200)
 
 ### 3.3 CRUD
+
 - Test record creation
 - Test record editing
 - Test record deletion (if applicable)
 - Verify changes persist after reload
 
 ### 3.4 Filters/Search
+
 - Test filters for each available field
 - Test filter combinations
 - Test filter reset
 
 ### 3.5 Empty States
+
 - Check what is displayed when there is no data
 - Check what is displayed on connection error
 
 ### 3.6 Errors
+
 - Submit invalid data
 - Test insufficient permissions
 - Test timeouts
 
 ## 4. Severity Categories
 
-| Severity | Meaning | Action |
-|----------|---------|--------|
-| CRITICAL | Prevents system usage | Blocks release |
-| HIGH | Core functionality broken | Requires fix before proceeding |
-| MEDIUM | Secondary functionality affected | Document and plan fix |
-| LOW | Cosmetic or UX issue | Document |
+| Severity | Meaning                          | Action                         |
+| -------- | -------------------------------- | ------------------------------ |
+| CRITICAL | Prevents system usage            | Blocks release                 |
+| HIGH     | Core functionality broken        | Requires fix before proceeding |
+| MEDIUM   | Secondary functionality affected | Document and plan fix          |
+| LOW      | Cosmetic or UX issue             | Document                       |
 
 ## 5. Execution Log
 

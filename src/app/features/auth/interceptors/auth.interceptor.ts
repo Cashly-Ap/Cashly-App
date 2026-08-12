@@ -8,7 +8,9 @@ import { AuthService } from '@features/auth/services';
 import { AUTH_SESSION_MESSAGES } from '@features/auth/messages';
 
 const isAuthEndpoint = (url: string): boolean => {
-  return url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh');
+  return (
+    url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh')
+  );
 };
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {

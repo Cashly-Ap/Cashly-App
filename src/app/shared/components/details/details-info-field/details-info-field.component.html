@@ -3,36 +3,29 @@
   [class.sm:col-span-2]="colspan() === 'full'"
   [class.lg:col-span-3]="colspan() === 'full'"
 >
-  <span
-    class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase"
-    >{{ label() }}</span
-  >
+  <span class="text-xs font-semibold text-surface-500 dark:text-surface-400 uppercase">{{
+    label()
+  }}</span>
 
-  @if (type() === "status") {
+  @if (type() === 'status') {
     <app-status-badge
       [active]="active()!"
       [activeLabel]="activeLabel()"
       [inactiveLabel]="inactiveLabel()"
     />
-  } @else if (type() === "tag") {
+  } @else if (type() === 'tag') {
     <p-tag [value]="tagLabel()" [severity]="tagSeverity()" />
-  } @else if (type() === "text-badge") {
+  } @else if (type() === 'text-badge') {
     <app-text-badge [label]="textBadgeLabel()" [variant]="textBadgeVariant()" />
-  } @else if (type() === "code") {
-    <span
-      class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0"
-      >{{ value() }}</span
-    >
-  } @else if (type() === "currency") {
-    <span
-      class="text-base font-semibold text-surface-900 dark:text-surface-0"
-      >{{ value() }}</span
-    >
-  } @else if (type() === "badge") {
-    <ng-content></ng-content>
-  } @else if (value() !== undefined && value() !== null && value() !== '') {
-    <span class="text-base text-surface-900 dark:text-surface-0">{{
+  } @else if (type() === 'code') {
+    <span class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0">{{
       value()
     }}</span>
+  } @else if (type() === 'currency') {
+    <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{ value() }}</span>
+  } @else if (type() === 'badge') {
+    <ng-content></ng-content>
+  } @else if (value() !== undefined && value() !== null && value() !== '') {
+    <span class="text-base text-surface-900 dark:text-surface-0">{{ value() }}</span>
   }
 </div>

@@ -55,7 +55,10 @@ export class PdfViewerService {
         }));
       },
       error: (err) => {
-        const errorMessage = err.status === 404 ? 'El documento PDF no fue encontrado' : 'Error al cargar el documento PDF. Por favor, intente nuevamente.';
+        const errorMessage =
+          err.status === 404
+            ? 'El documento PDF no fue encontrado'
+            : 'Error al cargar el documento PDF. Por favor, intente nuevamente.';
         this.state.update((s) => ({
           ...s,
           loading: false,

@@ -8,7 +8,11 @@ import { ProductApiService } from '@features/products/services/api/product-api.s
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 
 @Component({
-  template: `<app-order-pdf-modal [visible]="visible" (visibleChange)="onVisibleChange($event)" (onGeneratePdf)="onGeneratePdf($event)"></app-order-pdf-modal>`,
+  template: `<app-order-pdf-modal
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (onGeneratePdf)="onGeneratePdf($event)"
+  ></app-order-pdf-modal>`,
   imports: [OrderPdfModalComponent],
 })
 class HostComponent {
@@ -51,10 +55,10 @@ function setup(overrides: { visible?: boolean } = {}) {
   const component = fixture.debugElement.children[0].componentInstance as OrderPdfModalComponent;
 
   if (showVisible) {
-    const productReq = httpTesting.expectOne(req => req.url.includes('/api/products'));
+    const productReq = httpTesting.expectOne((req) => req.url.includes('/api/products'));
     productReq.flush(PRODUCTS_WITH_DATA);
 
-    const categoryReq = httpTesting.expectOne(req => req.url.includes('/api/categories'));
+    const categoryReq = httpTesting.expectOne((req) => req.url.includes('/api/categories'));
     categoryReq.flush(CATEGORIES_WITH_DATA);
   }
 
@@ -212,7 +216,7 @@ describe('OrderPdfModalComponent - with data', () => {
     component.dateFrom.set(new Date('2025-01-05'));
     component.generatePdf();
     expect(hostComponent.onGeneratePdf).toHaveBeenCalledWith(
-      expect.objectContaining({ dateFrom: '2025-01-05' })
+      expect.objectContaining({ dateFrom: '2025-01-05' }),
     );
   });
 });

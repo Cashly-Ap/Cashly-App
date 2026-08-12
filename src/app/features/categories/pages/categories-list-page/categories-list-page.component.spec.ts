@@ -33,7 +33,11 @@ describe('CategoriesListPageComponent', () => {
 
   beforeEach(async () => {
     mockService = {
-      loadAll: vi.fn().mockReturnValue(of({ content: [mockCategory], totalElements: 1, totalPages: 1, size: 10, number: 0 })),
+      loadAll: vi
+        .fn()
+        .mockReturnValue(
+          of({ content: [mockCategory], totalElements: 1, totalPages: 1, size: 10, number: 0 }),
+        ),
       toggleActive: vi.fn().mockReturnValue(of({ ...mockCategory, active: false })),
       delete: vi.fn().mockReturnValue(of(undefined)),
       categories: signal([mockCategory]),

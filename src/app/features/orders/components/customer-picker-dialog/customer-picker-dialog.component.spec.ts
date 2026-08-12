@@ -8,7 +8,11 @@ import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
 
 @Component({
-  template: `<app-customer-picker-dialog [visible]="visible" (customerSelected)="onCustomerSelected($event)" (cancelled)="onCancelled()"></app-customer-picker-dialog>`,
+  template: `<app-customer-picker-dialog
+    [visible]="visible"
+    (customerSelected)="onCustomerSelected($event)"
+    (cancelled)="onCancelled()"
+  ></app-customer-picker-dialog>`,
   imports: [CustomerPickerDialogComponent],
 })
 class HostComponent {
@@ -281,9 +285,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
   it('should load previous page', () => {
     dialog.currentPage.set(2);
     dialog.onPagePrev();
-    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1 }),
-    );
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(expect.objectContaining({ page: 1 }));
   });
 
   it('should not load previous page when on first page', () => {
@@ -296,9 +298,7 @@ describe('CustomerPickerDialogComponent - interactions', () => {
     dialog.totalPages.set(3);
     dialog.currentPage.set(0);
     dialog.onPageNext();
-    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 1 }),
-    );
+    expect(mockCustomerApi.getForPicker).toHaveBeenCalledWith(expect.objectContaining({ page: 1 }));
   });
 
   it('should not load next page when on last page', () => {

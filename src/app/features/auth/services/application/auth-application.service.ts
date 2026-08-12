@@ -315,4 +315,3 @@ export class AuthService {
     return AUTH_HTTP_ERRORS[status] ?? AUTH_DEFAULT_ERROR_MESSAGE;
   }
 }
-

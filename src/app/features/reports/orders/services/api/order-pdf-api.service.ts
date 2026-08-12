@@ -20,14 +20,12 @@ export class OrderPdfApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = `${environment.apiUrl}/reports/orders`;
 
-  
   downloadOrderPdf(orderId: string): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${orderId}/pdf`, {
       responseType: 'blob',
     });
   }
 
-  
   downloadOrdersReportPdf(filters: OrdersPdfFilters): Observable<Blob> {
     let params = new HttpParams();
 

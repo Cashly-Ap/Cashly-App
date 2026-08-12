@@ -174,19 +174,23 @@ The Master Security Agent is a specialized AI agent responsible for ensuring the
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   login(credentials: LoginCredentials): Observable<void> {
-    return this.http.post('/api/auth/login', credentials, {
-      withCredentials: true // Sends httpOnly cookie
-    }).pipe(
-      tap(() => this.loadUserProfile())
-    );
+    return this.http
+      .post('/api/auth/login', credentials, {
+        withCredentials: true, // Sends httpOnly cookie
+      })
+      .pipe(tap(() => this.loadUserProfile()));
   }
-  
+
   logout(): Observable<void> {
-    return this.http.post('/api/auth/logout', {}, {
-      withCredentials: true
-    }).pipe(
-      tap(() => this.clearUserData())
-    );
+    return this.http
+      .post(
+        '/api/auth/logout',
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(tap(() => this.clearUserData()));
   }
 }
 
@@ -238,31 +242,31 @@ export class CustomerValidators {
   static email(control: AbstractControl): ValidationErrors | null {
     const value = control.value?.trim();
     if (!value) return null;
-    
+
     // Email regex validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(value)) {
       return { invalidEmail: true };
     }
-    
+
     // Length validation
     if (value.length > 100) {
       return { maxLength: { max: 100, actual: value.length } };
     }
-    
+
     return null;
   }
-  
+
   static phone(control: AbstractControl): ValidationErrors | null {
     const value = control.value?.trim();
     if (!value) return null;
-    
+
     // Phone regex validation (international format)
     const phoneRegex = /^\+?[1-9]\d{1,14}$/;
     if (!phoneRegex.test(value.replace(/[\s-()]/g, ''))) {
       return { invalidPhone: true };
     }
-    
+
     return null;
   }
 }
@@ -282,17 +286,17 @@ export class HttpErrorHandler implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         // Don't expose sensitive server errors to client
         const userMessage = this.getUserFriendlyMessage(error);
-        
+
         // Log full error server-side only
         if (!environment.production) {
           console.error('HTTP Error:', error);
         }
-        
+
         return throwError(() => new Error(userMessage));
-      })
+      }),
     );
   }
-  
+
   private getUserFriendlyMessage(error: HttpErrorResponse): string {
     switch (error.status) {
       case 401:
@@ -310,7 +314,7 @@ export class HttpErrorHandler implements HttpInterceptor {
 }
 
 // ❌ INSECURE: Exposes server errors
-catchError(error => {
+catchError((error) => {
   alert(error.message); // ❌ May expose sensitive info!
   return throwError(() => error);
 });
@@ -326,30 +330,38 @@ catchError(error => {
 export class AuthService {
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable();
-  
+
   login(credentials: LoginCredentials): Observable<void> {
-    return this.http.post<void>('/api/auth/login', credentials, {
-      withCredentials: true
-    }).pipe(
-      switchMap(() => this.loadUserProfile()),
-      tap(user => this.userSubject.next(user))
-    );
-  }
-  
-  logout(): Observable<void> {
-    return this.http.post<void>('/api/auth/logout', {}, {
-      withCredentials: true
-    }).pipe(
-      tap(() => {
-        this.userSubject.next(null);
-        this.router.navigate(['/auth/login']);
+    return this.http
+      .post<void>('/api/auth/login', credentials, {
+        withCredentials: true,
       })
-    );
+      .pipe(
+        switchMap(() => this.loadUserProfile()),
+        tap((user) => this.userSubject.next(user)),
+      );
   }
-  
+
+  logout(): Observable<void> {
+    return this.http
+      .post<void>(
+        '/api/auth/logout',
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .pipe(
+        tap(() => {
+          this.userSubject.next(null);
+          this.router.navigate(['/auth/login']);
+        }),
+      );
+  }
+
   private loadUserProfile(): Observable<User> {
     return this.http.get<User>('/api/auth/profile', {
-      withCredentials: true
+      withCredentials: true,
     });
   }
 }
@@ -359,18 +371,18 @@ export class AuthService {
 export class AuthGuard implements CanActivate {
   private authService = inject(AuthService);
   private router = inject(Router);
-  
+
   canActivate(): Observable<boolean> {
     return this.authService.user$.pipe(
       take(1),
-      map(user => {
+      map((user) => {
         if (user) {
           return true;
         }
-        
+
         this.router.navigate(['/auth/login']);
         return false;
-      })
+      }),
     );
   }
 }
@@ -381,9 +393,9 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Cookie automatically sent with withCredentials: true
     const authReq = req.clone({
-      withCredentials: true
+      withCredentials: true,
     });
-    
+
     return next.handle(authReq).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
@@ -391,7 +403,7 @@ export class AuthInterceptor implements HttpInterceptor {
           inject(Router).navigate(['/auth/login']);
         }
         return throwError(() => error);
-      })
+      }),
     );
   }
 }
@@ -407,19 +419,19 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   template: `
     <!-- ✅ SECURE: Angular sanitizes by default -->
     <div>{{ userBio }}</div>
-    
+
     <!-- ✅ SECURE: Explicit sanitization for HTML -->
     <div [innerHTML]="sanitizedBio"></div>
-    
+
     <!-- ❌ NEVER: Bypassing security -->
     <!-- <div [innerHTML]="unsafeBio"></div> -->
-  `
+  `,
 })
 export class UserProfileComponent {
   private sanitizer = inject(DomSanitizer);
-  
+
   userBio = '<script>alert("XSS")</script>Normal text';
-  
+
   get sanitizedBio(): SafeHtml {
     // Angular sanitizer removes dangerous content
     return this.sanitizer.sanitize(SecurityContext.HTML, this.userBio) || '';
@@ -443,10 +455,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withXsrfConfiguration({
         cookieName: 'XSRF-TOKEN',
-        headerName: 'X-XSRF-TOKEN'
-      })
-    )
-  ]
+        headerName: 'X-XSRF-TOKEN',
+      }),
+    ),
+  ],
 };
 ```
 
@@ -455,30 +467,33 @@ export const appConfig: ApplicationConfig = {
 ### High Severity Issues
 
 1. **Hardcoded Credentials**
+
    ```typescript
    // ❌ CRITICAL
    const apiKey = 'sk_live_123456789';
    const dbPassword = 'admin123';
-   
+
    // ✅ SECURE
    const apiKey = environment.apiKey;
    const dbPassword = process.env.DB_PASSWORD;
    ```
 
 2. **SQL Injection (Backend)**
+
    ```sql
    -- ❌ CRITICAL
    SELECT * FROM users WHERE username = '${username}';
-   
+
    -- ✅ SECURE
    SELECT * FROM users WHERE username = ?;
    ```
 
 3. **XSS Vulnerabilities**
+
    ```typescript
    // ❌ CRITICAL
    element.innerHTML = userInput;
-   
+
    // ✅ SECURE
    element.textContent = userInput; // Or use Angular binding
    ```
@@ -486,16 +501,17 @@ export const appConfig: ApplicationConfig = {
 ### Medium Severity Issues
 
 1. **Weak Password Policy**
+
    ```typescript
    // ❌ WEAK
-   Validators.minLength(4)
-   
+   Validators.minLength(4);
+
    // ✅ STRONG
    Validators.compose([
      Validators.required,
      Validators.minLength(8),
      Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/),
-   ])
+   ]);
    ```
 
 2. **Missing Rate Limiting**
@@ -504,10 +520,11 @@ export const appConfig: ApplicationConfig = {
    - Monitor for brute force attacks
 
 3. **Insecure Session Management**
+
    ```typescript
    // ❌ INSECURE
    sessionTimeout = Infinity;
-   
+
    // ✅ SECURE
    sessionTimeout = 30 * 60 * 1000; // 30 minutes
    ```
@@ -515,10 +532,11 @@ export const appConfig: ApplicationConfig = {
 ### Low Severity Issues
 
 1. **Verbose Error Messages**
+
    ```typescript
    // ❌ AVOID
    console.error('Database connection failed:', error.stack);
-   
+
    // ✅ BETTER
    if (!environment.production) {
      console.error('Database error:', error);
@@ -595,6 +613,7 @@ npx @cyclonedx/bom --output bom.xml
 ## Critical Issues
 
 ### 1. [Issue Title]
+
 - **Severity**: Critical
 - **Location**: [File path and line number]
 - **Description**: [What is the issue]

@@ -17,7 +17,7 @@ describe('Auth Integration - Form to API', () => {
   beforeEach(() => {
     localStorage.clear();
     vi.useFakeTimers();
-    
+
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       providers: [

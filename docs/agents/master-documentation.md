@@ -66,32 +66,32 @@ As an expert in **Angular 21**, this agent has complete knowledge of:
     } @else {
       <p-skeleton />
     }
-  `
+  `,
 })
 export class UserProfileComponent {
   private userService = inject(UserService);
-  
+
   userId = input.required<number>();
   user = computed(() => this.userService.getUserById(this.userId()));
-  
+
   profileUpdated = output<User>();
 }
 ```
 
 ### Expertise Areas
 
-| Area | Proficiency | Details |
-|------|-------------|---------|
-| Angular 21 | Expert | Full mastery of latest features and patterns |
-| Standalone Components | Expert | Default architecture for all documentation |
-| Signals | Expert | Complete signal-based reactivity patterns |
-| New Control Flow | Expert | @if, @for, @switch, @defer syntax |
-| RxJS Integration | Expert | Combining observables with signals |
-| TypeScript | Expert | Strict typing, generics, utility types |
-| PrimeNG | Expert | Component library integration |
-| Testing | Advanced | Vitest, component testing, TDD |
-| Performance | Advanced | Bundle optimization, lazy loading |
-| Security | Advanced | Authentication, authorization patterns |
+| Area                  | Proficiency | Details                                      |
+| --------------------- | ----------- | -------------------------------------------- |
+| Angular 21            | Expert      | Full mastery of latest features and patterns |
+| Standalone Components | Expert      | Default architecture for all documentation   |
+| Signals               | Expert      | Complete signal-based reactivity patterns    |
+| New Control Flow      | Expert      | @if, @for, @switch, @defer syntax            |
+| RxJS Integration      | Expert      | Combining observables with signals           |
+| TypeScript            | Expert      | Strict typing, generics, utility types       |
+| PrimeNG               | Expert      | Component library integration                |
+| Testing               | Advanced    | Vitest, component testing, TDD               |
+| Performance           | Advanced    | Bundle optimization, lazy loading            |
+| Security              | Advanced    | Authentication, authorization patterns       |
 
 ## Responsibilities
 
@@ -176,32 +176,30 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
         <p>No customers found</p>
       }
     }
-  `
+  `,
 })
 export class CustomerListComponent {
   private customerService = inject(CustomerService);
-  
+
   customers = this.customerService.customers;
   loading = this.customerService.loading;
-  
-  activeCustomers = computed(() => 
-    this.customers().filter(c => c.status === 'active')
-  );
+
+  activeCustomers = computed(() => this.customers().filter((c) => c.status === 'active'));
 }
 ```
 
 #### Angular 21 Code Standards
 
-| Pattern | Requirement |
-|---------|-------------|
-| Components | Always standalone, no NgModule |
-| Injection | Use `inject()` function, not constructor |
-| Control Flow | Use `@if`, `@for`, `@switch` (not `*ngIf`, `*ngFor`) |
-| Signals | Prefer signals over BehaviorSubject |
-| Change Detection | Always use `OnPush` strategy |
-| Inputs | Use `input()` function for signal inputs |
-| Outputs | Use `output()` function for outputs |
-| Comments | No comments - use self-documenting code |
+| Pattern          | Requirement                                          |
+| ---------------- | ---------------------------------------------------- |
+| Components       | Always standalone, no NgModule                       |
+| Injection        | Use `inject()` function, not constructor             |
+| Control Flow     | Use `@if`, `@for`, `@switch` (not `*ngIf`, `*ngFor`) |
+| Signals          | Prefer signals over BehaviorSubject                  |
+| Change Detection | Always use `OnPush` strategy                         |
+| Inputs           | Use `input()` function for signal inputs             |
+| Outputs          | Use `output()` function for outputs                  |
+| Comments         | No comments - use self-documenting code              |
 
 ### Angular 21 Documentation Guidelines
 
@@ -442,7 +440,7 @@ Each module must document:
 
 Each endpoint must include:
 
-```markdown
+````markdown
 #### POST /api/customers
 
 Creates a new customer.
@@ -451,12 +449,13 @@ Creates a new customer.
 
 ```typescript
 interface CustomerCreateRequest {
-  name: string;        // Required, max 100 chars
-  email: string;       // Required, valid email
-  phone: string;       // Required, valid phone
-  taxId?: string;      // Optional, tax ID
+  name: string; // Required, max 100 chars
+  email: string; // Required, valid email
+  phone: string; // Required, valid phone
+  taxId?: string; // Optional, tax ID
 }
 ```
+````
 
 **Response:** `201 Created`
 
@@ -486,14 +485,15 @@ const response = await fetch('/api/customers', {
   body: JSON.stringify({
     name: 'Acme Corp',
     email: 'contact@acme.com',
-    phone: '+1-555-0100'
-  })
+    phone: '+1-555-0100',
+  }),
 });
 
 const customer = await response.json();
 console.log('Created customer:', customer);
 ```
-```
+
+````
 
 ### Interface Documentation
 
@@ -524,7 +524,7 @@ export interface CustomerDetail extends CustomerList {
   createdAt: Date;             // Creation timestamp
   updatedAt: Date;             // Last update timestamp
 }
-```
+````
 
 ## Maintenance Schedule
 

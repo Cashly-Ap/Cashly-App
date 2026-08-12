@@ -107,7 +107,10 @@ describe('PriceTypesDetailsPageComponent', () => {
 
   it('should show error message and navigate on load failure', () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('pt-999', throwError(() => new Error('Not found')));
+    configureTestBed(
+      'pt-999',
+      throwError(() => new Error('Not found')),
+    );
     createComponent();
 
     const addSpy = vi.spyOn(messageService, 'add');

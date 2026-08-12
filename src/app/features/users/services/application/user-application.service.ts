@@ -69,9 +69,7 @@ export class UserApplicationService {
       tap({
         next: (user) => {
           const listItem = UserMapper.toList(user);
-          this.users.update((current) =>
-            current.map((u) => (u.id === id ? listItem : u)),
-          );
+          this.users.update((current) => current.map((u) => (u.id === id ? listItem : u)));
           if (this.currentUser()?.id === id) {
             this.currentUser.set(user);
           }
@@ -114,9 +112,7 @@ export class UserApplicationService {
     return this.api.changeEmail(id, email).pipe(
       tap({
         next: () => {
-          this.users.update((current) =>
-            current.map((u) => (u.id === id ? { ...u, email } : u)),
-          );
+          this.users.update((current) => current.map((u) => (u.id === id ? { ...u, email } : u)));
           if (this.currentUser()?.id === id) {
             this.currentUser.update((u) => (u ? { ...u, email } : null));
           }
@@ -127,7 +123,10 @@ export class UserApplicationService {
     );
   }
 
-  updateModulePermissions(id: string, modulePermissions: BusinessModule[]): Observable<UserDetails> {
+  updateModulePermissions(
+    id: string,
+    modulePermissions: BusinessModule[],
+  ): Observable<UserDetails> {
     this.loading.set(true);
     this.error.set(null);
 

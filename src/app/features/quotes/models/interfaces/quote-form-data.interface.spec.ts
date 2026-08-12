@@ -29,9 +29,7 @@ describe('QuoteLineFormData interface', () => {
       productName: 'Motor 20HP',
       quantity: 3,
       unitPrice: 200,
-      stock: [
-        { warehouseId: 'wh-001', warehouseName: 'Central', quantity: 50 },
-      ],
+      stock: [{ warehouseId: 'wh-001', warehouseName: 'Central', quantity: 50 }],
       warehouseAllocations: [],
     };
 

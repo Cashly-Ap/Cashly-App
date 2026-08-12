@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -19,8 +26,14 @@ import {
 } from '@shared/components/ui';
 import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
-import { InvoiceStatus, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
-import { PaymentType, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
+import {
+  InvoiceStatus,
+  getInvoiceStatusLabel,
+} from '@features/invoices/models/enums/invoice-status.enum';
+import {
+  PaymentType,
+  getPaymentTypeLabel,
+} from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({
   selector: 'app-invoice-detail-page',
@@ -53,11 +66,11 @@ export class InvoiceDetailPageComponent implements OnInit {
   readonly invoice = this.invoiceService.currentInvoice;
   readonly loading = this.invoiceService.loading;
 
-  readonly creditNotes = computed(() =>
-    this.invoice()?.notesList?.filter(n => n.type === 'CREDIT') ?? []
+  readonly creditNotes = computed(
+    () => this.invoice()?.notesList?.filter((n) => n.type === 'CREDIT') ?? [],
   );
-  readonly debitNotes = computed(() =>
-    this.invoice()?.notesList?.filter(n => n.type === 'DEBIT') ?? []
+  readonly debitNotes = computed(
+    () => this.invoice()?.notesList?.filter((n) => n.type === 'DEBIT') ?? [],
   );
 
   readonly InvoiceStatus = InvoiceStatus;
@@ -142,7 +155,7 @@ export class InvoiceDetailPageComponent implements OnInit {
       PARTIAL: 'Parcialmente Devuelta',
       FULL: 'Totalmente Devuelta',
     };
-    return returnStatus ? labels[returnStatus] ?? '' : '';
+    return returnStatus ? (labels[returnStatus] ?? '') : '';
   }
 
   getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
@@ -152,7 +165,12 @@ export class InvoiceDetailPageComponent implements OnInit {
   }
 
   canCancel(status: InvoiceStatus): boolean {
-    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID && status !== InvoiceStatus.FULLY_RETURNED;
+    return (
+      status !== InvoiceStatus.DRAFT &&
+      status !== InvoiceStatus.CANCELLED &&
+      status !== InvoiceStatus.PAID &&
+      status !== InvoiceStatus.FULLY_RETURNED
+    );
   }
 
   getPaymentTypeLabel(paymentType: PaymentType): string {

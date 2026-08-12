@@ -1,8 +1,17 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { OrderApiService, OrderFilters, ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
+import {
+  OrderApiService,
+  OrderFilters,
+  ConvertToInvoiceRequest,
+} from '@features/orders/services/api/order-api.service';
 import { OrderMapper } from '@features/orders/services/mappers/order.mapper';
-import { OrderList, OrderDetails, OrderCreate, OrderEdit } from '@features/orders/models/interfaces';
+import {
+  OrderList,
+  OrderDetails,
+  OrderCreate,
+  OrderEdit,
+} from '@features/orders/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class OrderApplicationService {

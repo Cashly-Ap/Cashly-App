@@ -72,7 +72,12 @@ describe('QuoteListPageComponent', () => {
       imports: [QuoteListPageComponent],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: QuoteApplicationService, useValue: mockService },
         { provide: PdfViewerService, useValue: mockPdfViewer },
         ConfirmationService,
@@ -265,9 +270,7 @@ describe('QuoteListPageComponent', () => {
       component.quoteToConvertToOrder.set(mockQuotes[0]);
       const addSpy = vi.spyOn(messageService, 'add');
       component.onOrderDialogConfirmed();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
 
     it('should show error on convert to order failure', () => {
@@ -291,7 +294,12 @@ describe('QuoteListPageComponent', () => {
         imports: [QuoteListPageComponent],
         providers: [
           provideRouter([]),
-          { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } } } },
+          {
+            provide: ActivatedRoute,
+            useValue: {
+              snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+            },
+          },
           { provide: QuoteApplicationService, useValue: errorMockService },
           { provide: PdfViewerService, useValue: mockPdfViewer },
           ConfirmationService,
@@ -310,9 +318,7 @@ describe('QuoteListPageComponent', () => {
       component.quoteToConvertToOrder.set(mockQuotes[0]);
       const addSpy = vi.spyOn(messageService, 'add');
       component.onOrderDialogConfirmed();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
   });
 
@@ -344,9 +350,7 @@ describe('QuoteListPageComponent', () => {
       component.quoteToConvertToInvoice.set(mockQuotes[0]);
       const addSpy = vi.spyOn(messageService, 'add');
       component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
   });
 
@@ -371,9 +375,7 @@ describe('QuoteListPageComponent', () => {
       const addSpy = vi.spyOn(messageService, 'add');
       component.onConvertToOrderFromAssign('q-001');
       expect(component.assignDialogVisible()).toBe(false);
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
 
     it('should handle convert to invoice from assign dialog', () => {
@@ -381,9 +383,7 @@ describe('QuoteListPageComponent', () => {
       const addSpy = vi.spyOn(messageService, 'add');
       component.onConvertToInvoiceFromAssign('q-001');
       expect(component.assignDialogVisible()).toBe(false);
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'success' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
     });
   });
 
@@ -396,7 +396,7 @@ describe('QuoteListPageComponent', () => {
           url: '/api/reports/quotes/q-001/pdf',
           title: 'Presupuesto #QT-001',
           fileName: 'presupuesto-QT-001.pdf',
-        })
+        }),
       );
     });
   });
@@ -407,7 +407,9 @@ describe('QuoteListPageComponent', () => {
       expect(component.getStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
       expect(component.getStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
       expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
-      expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('Convertido a Factura');
+      expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe(
+        'Convertido a Factura',
+      );
       expect(component.getStatusLabel(QuoteStatus.CANCELLED)).toBe('Cancelado');
     });
 
@@ -431,7 +433,9 @@ describe('QuoteListPageComponent', () => {
 
     it('should include CUSTOMER_DRAFT in status options', () => {
       fixture.detectChanges();
-      const customerDraft = component.statusOptions.find((o) => o.value === QuoteStatus.CUSTOMER_DRAFT);
+      const customerDraft = component.statusOptions.find(
+        (o) => o.value === QuoteStatus.CUSTOMER_DRAFT,
+      );
       expect(customerDraft).toBeDefined();
       expect(customerDraft?.label).toBe('Borrador de Cliente');
     });

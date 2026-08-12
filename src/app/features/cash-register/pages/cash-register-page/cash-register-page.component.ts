@@ -68,8 +68,6 @@ export class CashRegisterPageComponent implements OnInit {
   readonly loading = this.service.loading;
   readonly currentUserName = this.service.currentUserName;
 
-  
-
   readonly showInitialLoading = computed(
     () => this.service.loading() && this.service.activeClosure() === null,
   );
@@ -85,37 +83,24 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly canClose = computed(() => this.isOpen());
 
-  
-
   readonly openDialogVisible = signal(false);
   readonly closeDialogVisible = signal(false);
   readonly detailDialogVisible = signal(false);
 
   readonly isSubmitting = signal(false);
 
-  
-
   readonly openForm = this.fb.group({
     openedByName: ['', Validators.required],
   });
-
-  
 
   readonly closeForm = this.fb.group({
     closedByName: ['', Validators.required],
     closingNotes: [''],
   });
 
-  
-
   ngOnInit(): void {
-    this.service
-      .loadActiveClosure()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe();
+    this.service.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
-
-  
 
   onOpenDialogOpen(): void {
     this.openForm.reset({ openedByName: this.currentUserName() });
@@ -145,8 +130,6 @@ export class CashRegisterPageComponent implements OnInit {
   onOpenDialogClose(): void {
     this.openDialogVisible.set(false);
   }
-
-  
 
   onOpenCloseDialog(): void {
     this.closeForm.reset({
@@ -185,8 +168,6 @@ export class CashRegisterPageComponent implements OnInit {
     this.closeDialogVisible.set(false);
   }
 
-  
-
   onOpenDetailDialog(): void {
     this.detailDialogVisible.set(true);
   }
@@ -194,8 +175,6 @@ export class CashRegisterPageComponent implements OnInit {
   onDetailDialogClose(): void {
     this.detailDialogVisible.set(false);
   }
-
-  
 
   onViewHistory(): void {
     this.router.navigate(['/cash-register/history']);
@@ -214,9 +193,7 @@ export class CashRegisterPageComponent implements OnInit {
     }
   }
 
-  getStatusSeverity(
-    status: string | undefined,
-  ): 'info' | 'warn' | 'success' | 'contrast' {
+  getStatusSeverity(status: string | undefined): 'info' | 'warn' | 'success' | 'contrast' {
     switch (status) {
       case 'OPEN':
         return 'info';

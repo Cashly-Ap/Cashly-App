@@ -14,9 +14,17 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserDetails } from '@features/users/models/interfaces';
-import { getUserTypeLabel, UserType, BusinessModule, BUSINESS_MODULE_LABELS } from '@features/users/models/enums';
+import {
+  getUserTypeLabel,
+  UserType,
+  BusinessModule,
+  BUSINESS_MODULE_LABELS,
+} from '@features/users/models/enums';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
+import {
+  ChangePasswordDialogComponent,
+  ChangeEmailDialogComponent,
+} from '@features/users/components';
 
 @Component({
   selector: 'app-users-details-page',

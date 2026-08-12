@@ -2,7 +2,10 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TagModule } from 'primeng/tag';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
-import { TextBadgeComponent, TextBadgeVariant } from '@shared/components/ui/text-badge/text-badge.component';
+import {
+  TextBadgeComponent,
+  TextBadgeVariant,
+} from '@shared/components/ui/text-badge/text-badge.component';
 
 type FieldType = 'text' | 'code' | 'currency' | 'badge' | 'status' | 'tag' | 'text-badge';
 type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast';

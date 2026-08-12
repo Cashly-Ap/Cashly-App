@@ -106,7 +106,11 @@ export class DebitNoteFormPageComponent implements OnInit {
     this.selectedInvoice.set(invoice);
     this.form.patchValue({ invoiceId: invoice.id });
     if (!this.selectedCustomer()) {
-      this.selectedCustomer.set({ id: invoice.customerId, alias: invoice.customerName, legalName: '' } as CustomerList);
+      this.selectedCustomer.set({
+        id: invoice.customerId,
+        alias: invoice.customerName,
+        legalName: '',
+      } as CustomerList);
       this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: '' });
       this.form.patchValue({ customerId: invoice.customerId });
     }

@@ -112,6 +112,7 @@ src/app/features/warehouses/
 **Purpose**: Displays all warehouses in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by code, name, location
 - Pagination
@@ -128,6 +129,7 @@ src/app/features/warehouses/
 **Purpose**: Create new warehouse or edit existing one.
 
 **Features**:
+
 - Reactive forms with validation
 - Code input with WH-XXX pattern validation (only on create)
 - Name and location fields
@@ -143,6 +145,7 @@ src/app/features/warehouses/
 **Purpose**: Display complete warehouse information and stock overview.
 
 **Features**:
+
 - Complete warehouse data display
 - Stock summary per product
 - Recent movements history
@@ -158,6 +161,7 @@ src/app/features/warehouses/
 **Purpose**: Add stock to warehouse (ENTRY movements).
 
 **Features**:
+
 - Product selection with autocomplete
 - Quantity input per product
 - Multiple products in single operation
@@ -172,6 +176,7 @@ src/app/features/warehouses/
 **Purpose**: Remove stock from warehouse (EXIT movements).
 
 **Features**:
+
 - Product selection with current stock display
 - Quantity input with max validation
 - Multiple products in single operation
@@ -186,6 +191,7 @@ src/app/features/warehouses/
 **Purpose**: Transfer stock between warehouses.
 
 **Features**:
+
 - Source warehouse selection
 - Destination warehouse selection
 - Product selection with source stock display
@@ -206,11 +212,11 @@ src/app/features/warehouses/
 
 ```typescript
 export interface WarehouseList {
-  id: number;              // Warehouse ID
-  code: string;            // Warehouse code (WH-XXX)
-  name: string;            // Warehouse name
-  location: string;        // Physical address
-  active: boolean;         // Active status
+  id: number; // Warehouse ID
+  code: string; // Warehouse code (WH-XXX)
+  name: string; // Warehouse name
+  location: string; // Physical address
+  active: boolean; // Active status
 }
 ```
 
@@ -226,13 +232,13 @@ export interface WarehouseList {
 
 ```typescript
 export interface WarehouseDetails {
-  id: number;              // Warehouse ID
-  code: string;            // Warehouse code (WH-XXX)
-  name: string;            // Warehouse name
-  location: string;        // Physical address
-  active: boolean;         // Active status
-  createdAt: string;       // ISO date string
-  updatedAt: string;       // ISO date string
+  id: number; // Warehouse ID
+  code: string; // Warehouse code (WH-XXX)
+  name: string; // Warehouse name
+  location: string; // Physical address
+  active: boolean; // Active status
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 ```
 
@@ -248,8 +254,8 @@ export interface WarehouseDetails {
 
 ```typescript
 export interface WarehouseEdit {
-  name: string;            // Editable - 3-100 characters
-  location: string;        // Editable - max 200 characters
+  name: string; // Editable - 3-100 characters
+  location: string; // Editable - max 200 characters
 }
 ```
 
@@ -267,9 +273,9 @@ export interface WarehouseEdit {
 
 ```typescript
 export interface WarehouseCreate {
-  code: string;            // Required - pattern WH-XXX
-  name: string;            // Required - 3-100 characters
-  location: string;        // Required - max 200 characters
+  code: string; // Required - pattern WH-XXX
+  name: string; // Required - 3-100 characters
+  location: string; // Required - max 200 characters
 }
 ```
 
@@ -283,12 +289,12 @@ export interface WarehouseCreate {
 
 ```typescript
 export interface ProductQuantity {
-  productId: number;       // Product ID
-  quantity: number;        // Positive integer
+  productId: number; // Product ID
+  quantity: number; // Positive integer
 }
 
 export interface StockEntry {
-  products: ProductQuantity[];  // At least 1 product required
+  products: ProductQuantity[]; // At least 1 product required
 }
 ```
 
@@ -302,7 +308,7 @@ export interface StockEntry {
 
 ```typescript
 export interface StockExit {
-  products: ProductQuantity[];  // At least 1 product required
+  products: ProductQuantity[]; // At least 1 product required
 }
 ```
 
@@ -316,13 +322,13 @@ export interface StockExit {
 
 ```typescript
 export interface StockTransfer {
-  fromWarehouseId: number;      // Source warehouse ID
-  toWarehouseId: number;        // Destination warehouse ID
-  products: ProductQuantity[];  // At least 1 product required
+  fromWarehouseId: number; // Source warehouse ID
+  toWarehouseId: number; // Destination warehouse ID
+  products: ProductQuantity[]; // At least 1 product required
 }
 
 export interface StockTransferResponse {
-  transferBatchId: string;      // Batch ID grouping movements
+  transferBatchId: string; // Batch ID grouping movements
   fromWarehouseId: number;
   fromWarehouseCode: string;
   toWarehouseId: number;
@@ -352,8 +358,8 @@ export interface StockMovement {
 
 ```typescript
 export enum MovementType {
-  ENTRY = 'ENTRY',           // Entry: purchases, returns, inbound transfer
-  EXIT = 'EXIT',             // Exit: sales, damages, outbound transfer
+  ENTRY = 'ENTRY', // Entry: purchases, returns, inbound transfer
+  EXIT = 'EXIT', // Exit: sales, damages, outbound transfer
   ADJUSTMENT = 'ADJUSTMENT', // Manual adjustment: inventory correction
 }
 
@@ -389,16 +395,16 @@ All endpoints use: `/api/warehouses`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/warehouses | - | `WarehouseList[]` | List page |
-| GET | /api/warehouses/:id | - | `WarehouseDetails` | Details/Edit page |
-| POST | /api/warehouses | `WarehouseCreate` | `WarehouseDetails` | Create form |
-| PUT | /api/warehouses/:id | `WarehouseEdit` | `WarehouseDetails` | Edit form |
-| DELETE | /api/warehouses/:id | - | void (204) | Delete action |
-| POST | /api/warehouses/:id/stock/entry | `StockEntry` | void (204) | Stock entry |
-| POST | /api/warehouses/:id/stock/exit | `StockExit` | void (204) | Stock exit |
-| POST | /api/warehouses/transfer | `StockTransfer` | `StockTransferResponse` | Stock transfer |
+| HTTP Method | Endpoint                        | Request Interface | Response Interface      | Frontend Usage    |
+| ----------- | ------------------------------- | ----------------- | ----------------------- | ----------------- |
+| GET         | /api/warehouses                 | -                 | `WarehouseList[]`       | List page         |
+| GET         | /api/warehouses/:id             | -                 | `WarehouseDetails`      | Details/Edit page |
+| POST        | /api/warehouses                 | `WarehouseCreate` | `WarehouseDetails`      | Create form       |
+| PUT         | /api/warehouses/:id             | `WarehouseEdit`   | `WarehouseDetails`      | Edit form         |
+| DELETE      | /api/warehouses/:id             | -                 | void (204)              | Delete action     |
+| POST        | /api/warehouses/:id/stock/entry | `StockEntry`      | void (204)              | Stock entry       |
+| POST        | /api/warehouses/:id/stock/exit  | `StockExit`       | void (204)              | Stock exit        |
+| POST        | /api/warehouses/transfer        | `StockTransfer`   | `StockTransferResponse` | Stock transfer    |
 
 ---
 
@@ -409,6 +415,7 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `WarehouseList[]`
 
 **Example Response**:
+
 ```json
 [
   {
@@ -437,6 +444,7 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `WarehouseDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": 1,
@@ -458,6 +466,7 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `WarehouseCreate` (request), `WarehouseDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "code": "WH-003",
@@ -477,6 +486,7 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `WarehouseEdit` (request), `WarehouseDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "name": "Updated Warehouse Name",
@@ -495,6 +505,7 @@ All endpoints use: `/api/warehouses`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `409 Conflict`: Cannot deactivate warehouse with existing stock
 
 ---
@@ -506,11 +517,12 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `StockEntry` (request), void (response)
 
 **Example Request**:
+
 ```json
 {
   "products": [
-    {"productId": 10, "quantity": 100},
-    {"productId": 11, "quantity": 50}
+    { "productId": 10, "quantity": 100 },
+    { "productId": 11, "quantity": 50 }
   ]
 }
 ```
@@ -528,11 +540,12 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `StockExit` (request), void (response)
 
 **Example Request**:
+
 ```json
 {
   "products": [
-    {"productId": 10, "quantity": 20},
-    {"productId": 11, "quantity": 10}
+    { "productId": 10, "quantity": 20 },
+    { "productId": 11, "quantity": 10 }
   ]
 }
 ```
@@ -540,6 +553,7 @@ All endpoints use: `/api/warehouses`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `422 Unprocessable Entity`: Insufficient stock
 
 ---
@@ -551,18 +565,20 @@ All endpoints use: `/api/warehouses`
 **Frontend Interface**: `StockTransfer` (request), `StockTransferResponse` (response)
 
 **Example Request**:
+
 ```json
 {
   "fromWarehouseId": 1,
   "toWarehouseId": 2,
   "products": [
-    {"productId": 10, "quantity": 50},
-    {"productId": 11, "quantity": 30}
+    { "productId": 10, "quantity": 50 },
+    { "productId": 11, "quantity": 30 }
   ]
 }
 ```
 
 **Example Response**:
+
 ```json
 {
   "transferBatchId": "TRF-20251217-143022",
@@ -607,13 +623,13 @@ All endpoints use: `/api/warehouses`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `code` | string | Yes (create) | Pattern WH-XXX, unique | "Code must follow pattern WH-XXX" |
-| `name` | string | Yes | 3-100 characters | "Name must be 3-100 characters" |
-| `location` | string | Yes | Max 200 characters | "Location must be max 200 characters" |
-| `productId` | number | Yes | Positive, exists | "Product not found" |
-| `quantity` | number | Yes | Positive integer | "Quantity must be positive" |
+| Field       | Type   | Required     | Rules                  | Error Message                         |
+| ----------- | ------ | ------------ | ---------------------- | ------------------------------------- |
+| `code`      | string | Yes (create) | Pattern WH-XXX, unique | "Code must follow pattern WH-XXX"     |
+| `name`      | string | Yes          | 3-100 characters       | "Name must be 3-100 characters"       |
+| `location`  | string | Yes          | Max 200 characters     | "Location must be max 200 characters" |
+| `productId` | number | Yes          | Positive, exists       | "Product not found"                   |
+| `quantity`  | number | Yes          | Positive integer       | "Quantity must be positive"           |
 
 ### Custom Validators
 
@@ -625,24 +641,24 @@ export class WarehouseValidators {
   static warehouseCodeFormat(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const pattern = /^WH-\d{3}$/;
       if (!pattern.test(control.value)) {
         return { invalidCode: 'Code must follow pattern WH-XXX (e.g., WH-001)' };
       }
-      
+
       return null;
     };
   }
-  
+
   static positiveQuantity(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       if (control.value <= 0 || !Number.isInteger(control.value)) {
         return { invalidQuantity: 'Quantity must be a positive integer' };
       }
-      
+
       return null;
     };
   }
@@ -652,11 +668,11 @@ export class WarehouseValidators {
       if (!control.value || !Array.isArray(control.value)) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       if (control.value.length < min) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       return null;
     };
   }
@@ -677,7 +693,7 @@ export class WarehouseValidators {
 ```typescript
 interface WarehouseFormModel {
   id?: number;
-  code?: string;           // Only for create (read-only on edit)
+  code?: string; // Only for create (read-only on edit)
   name: string;
   location: string;
   active: boolean;
@@ -695,7 +711,7 @@ interface StockOperationFormModel {
 
 interface ProductQuantityFormModel {
   productId: number;
-  productName?: string;    // Display only
+  productName?: string; // Display only
   quantity: number;
 }
 ```
@@ -783,31 +799,27 @@ export class WarehouseApplicationService {
   loadAll(): Observable<WarehouseList[]> {
     this.loading.set(true);
     return this.api.getAll().pipe(
-      tap(warehouses => this.warehouses.set(warehouses)),
-      finalize(() => this.loading.set(false))
+      tap((warehouses) => this.warehouses.set(warehouses)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: number): Observable<WarehouseDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(warehouse => this.currentWarehouse.set(warehouse)),
-      finalize(() => this.loading.set(false))
+      tap((warehouse) => this.currentWarehouse.set(warehouse)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   create(data: WarehouseCreate): Observable<WarehouseDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: number, data: WarehouseEdit): Observable<WarehouseDetails> {
     this.loading.set(true);
-    return this.api.update(id, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   delete(id: number): Observable<void> {
@@ -816,23 +828,17 @@ export class WarehouseApplicationService {
 
   addStock(warehouseId: number, data: StockEntry): Observable<void> {
     this.loading.set(true);
-    return this.api.addStock(warehouseId, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.addStock(warehouseId, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   removeStock(warehouseId: number, data: StockExit): Observable<void> {
     this.loading.set(true);
-    return this.api.removeStock(warehouseId, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.removeStock(warehouseId, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   transferStock(data: StockTransfer): Observable<StockTransferResponse> {
     this.loading.set(true);
-    return this.api.transferStock(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.transferStock(data).pipe(finalize(() => this.loading.set(false)));
   }
 }
 ```
@@ -924,51 +930,58 @@ export const WAREHOUSE_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/warehouses-list-page/warehouses-list-page.component')
-        .then(m => m.WarehousesListPageComponent),
+      import('../pages/warehouses-list-page/warehouses-list-page.component').then(
+        (m) => m.WarehousesListPageComponent,
+      ),
     title: 'Almacenes',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/warehouses-form-page/warehouses-form-page.component')
-        .then(m => m.WarehousesFormPageComponent),
+      import('../pages/warehouses-form-page/warehouses-form-page.component').then(
+        (m) => m.WarehousesFormPageComponent,
+      ),
     title: 'Nuevo Almacén',
   },
   {
     path: 'transfer',
     loadComponent: () =>
-      import('../pages/stock-transfer-page/stock-transfer-page.component')
-        .then(m => m.StockTransferPageComponent),
+      import('../pages/stock-transfer-page/stock-transfer-page.component').then(
+        (m) => m.StockTransferPageComponent,
+      ),
     title: 'Transferir Stock',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/warehouses-details-page/warehouses-details-page.component')
-        .then(m => m.WarehousesDetailsPageComponent),
+      import('../pages/warehouses-details-page/warehouses-details-page.component').then(
+        (m) => m.WarehousesDetailsPageComponent,
+      ),
     title: 'Detalles del Almacén',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/warehouses-form-page/warehouses-form-page.component')
-        .then(m => m.WarehousesFormPageComponent),
+      import('../pages/warehouses-form-page/warehouses-form-page.component').then(
+        (m) => m.WarehousesFormPageComponent,
+      ),
     title: 'Editar Almacén',
     canDeactivate: [pendingChangesGuard],
   },
   {
     path: ':id/stock/entry',
     loadComponent: () =>
-      import('../pages/stock-entry-page/stock-entry-page.component')
-        .then(m => m.StockEntryPageComponent),
+      import('../pages/stock-entry-page/stock-entry-page.component').then(
+        (m) => m.StockEntryPageComponent,
+      ),
     title: 'Entrada de Stock',
   },
   {
     path: ':id/stock/exit',
     loadComponent: () =>
-      import('../pages/stock-exit-page/stock-exit-page.component')
-        .then(m => m.StockExitPageComponent),
+      import('../pages/stock-exit-page/stock-exit-page.component').then(
+        (m) => m.StockExitPageComponent,
+      ),
     title: 'Salida de Stock',
   },
 ];

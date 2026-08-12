@@ -5,7 +5,12 @@ import { CustomerApplicationService } from './customer-application.service';
 import { CustomerApiService } from '@features/customers/services/api';
 import { CustomerMapper } from '@features/customers/services/mappers';
 import { CustomerType } from '@features/customers/models/enums';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '@features/customers/models/interfaces';
+import {
+  CustomerList,
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+} from '@features/customers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('CustomerApplicationService', () => {
@@ -31,7 +36,9 @@ describe('CustomerApplicationService', () => {
     createdAt: '2025-01-15T10:30:00Z',
     emails: [{ id: 'e1', customerId: 'uuid-001', email: 'contact@acme.com' }],
     phones: [{ id: 'p1', customerId: 'uuid-001', phone: '0212-1234567' }],
-    addresses: [{ id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true }],
+    addresses: [
+      { id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true },
+    ],
   };
 
   const mockListItem: CustomerList = {
@@ -207,7 +214,11 @@ describe('CustomerApplicationService', () => {
       mockApiService.getAll.mockReturnValue(of(mockPagedResponse([mockListItem])));
       service.loadAll().subscribe();
 
-      const updatedDetails: CustomerDetails = { ...mockDetails, legalName: 'Acme C.A. Updated', alias: 'ACME Updated' };
+      const updatedDetails: CustomerDetails = {
+        ...mockDetails,
+        legalName: 'Acme C.A. Updated',
+        alias: 'ACME Updated',
+      };
       mockApiService.update.mockReturnValue(of(updatedDetails));
 
       const editData: CustomerEdit = {

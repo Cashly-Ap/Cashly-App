@@ -68,10 +68,14 @@ describe('CustomerGeneralSectionComponent', () => {
   });
 
   it('should show initial password hint when portal access is enabled', () => {
-    expect(fixture.nativeElement.textContent).not.toContain('La contraseña inicial del portal será el RIF del cliente');
+    expect(fixture.nativeElement.textContent).not.toContain(
+      'La contraseña inicial del portal será el RIF del cliente',
+    );
     host.form.get('portalAccess')?.setValue(true);
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('La contraseña inicial del portal será el RIF del cliente');
+    expect(fixture.nativeElement.textContent).toContain(
+      'La contraseña inicial del portal será el RIF del cliente',
+    );
   });
 
   it('should disable credit fields when payment type is CASH', () => {

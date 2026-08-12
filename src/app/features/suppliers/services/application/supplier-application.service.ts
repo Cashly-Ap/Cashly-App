@@ -1,8 +1,17 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { SupplierApiService, SupplierFilters, SupplierCreatedResponse } from '@features/suppliers/services/api/supplier-api.service';
+import {
+  SupplierApiService,
+  SupplierFilters,
+  SupplierCreatedResponse,
+} from '@features/suppliers/services/api/supplier-api.service';
 import { SupplierMapper } from '@features/suppliers/services/mappers/supplier.mapper';
-import { SupplierList, SupplierDetails, SupplierCreate, SupplierEdit } from '@features/suppliers/models/interfaces';
+import {
+  SupplierList,
+  SupplierDetails,
+  SupplierCreate,
+  SupplierEdit,
+} from '@features/suppliers/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

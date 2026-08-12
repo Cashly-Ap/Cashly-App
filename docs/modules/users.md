@@ -70,6 +70,7 @@ src/app/features/users/
 **Purpose**: Displays all users in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG Table with sorting and filtering
 - Search by email or display name
 - Status filter (active/inactive)
@@ -85,6 +86,7 @@ src/app/features/users/
 **Purpose**: Create new user or edit existing one.
 
 **Features**:
+
 - Reactive forms with validation
 - Email and password fields
 - Role selection dropdown
@@ -100,6 +102,7 @@ src/app/features/users/
 **Purpose**: Display complete user information in read-only mode.
 
 **Features**:
+
 - Complete user data display
 - Edit and Delete actions
 - User activity information
@@ -233,13 +236,13 @@ All endpoints use: `/api/users`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/users | - | `UserList[]` | List page |
-| GET | /api/users/:id | - | `UserDetails` | Details/Edit page |
-| POST | /api/users | `UserCreate` | `UserDetails` | Create form |
-| PUT | /api/users/:id | `UserEdit` | `UserDetails` | Edit form |
-| DELETE | /api/users/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint       | Request Interface | Response Interface | Frontend Usage    |
+| ----------- | -------------- | ----------------- | ------------------ | ----------------- |
+| GET         | /api/users     | -                 | `UserList[]`       | List page         |
+| GET         | /api/users/:id | -                 | `UserDetails`      | Details/Edit page |
+| POST        | /api/users     | `UserCreate`      | `UserDetails`      | Create form       |
+| PUT         | /api/users/:id | `UserEdit`        | `UserDetails`      | Edit form         |
+| DELETE      | /api/users/:id | -                 | void (204)         | Delete action     |
 
 ---
 
@@ -250,6 +253,7 @@ All endpoints use: `/api/users`
 **Frontend Interface**: `UserList[]`
 
 **Example Response**:
+
 ```json
 [
   {
@@ -272,6 +276,7 @@ All endpoints use: `/api/users`
 **Frontend Interface**: `UserDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -294,6 +299,7 @@ All endpoints use: `/api/users`
 **Frontend Interface**: `UserCreate` (request), `UserDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "email": "newuser@example.com",
@@ -315,6 +321,7 @@ All endpoints use: `/api/users`
 **Frontend Interface**: `UserEdit` (request), `UserDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -339,13 +346,13 @@ All endpoints use: `/api/users`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `email` | string | Yes | Valid email format | "El formato del correo electrónico es inválido" |
-| `password` | string | Yes | Min 8 chars, uppercase, lowercase, number, special char | "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial" |
-| `displayName` | string | Yes | 3-100 chars | "El nombre debe tener entre 3 y 100 caracteres" |
-| `type` | string | Yes | Valid UserType | "El tipo de usuario es requerido" |
-| `active` | boolean | Yes | - | - |
+| Field         | Type    | Required | Rules                                                   | Error Message                                                                                                    |
+| ------------- | ------- | -------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `email`       | string  | Yes      | Valid email format                                      | "El formato del correo electrónico es inválido"                                                                  |
+| `password`    | string  | Yes      | Min 8 chars, uppercase, lowercase, number, special char | "La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial" |
+| `displayName` | string  | Yes      | 3-100 chars                                             | "El nombre debe tener entre 3 y 100 caracteres"                                                                  |
+| `type`        | string  | Yes      | Valid UserType                                          | "El tipo de usuario es requerido"                                                                                |
+| `active`      | boolean | Yes      | -                                                       | -                                                                                                                |
 
 ### Custom Validators
 
@@ -465,7 +472,7 @@ export class UserApplicationService {
     this.error.set(null);
 
     return this.api.getAll().pipe(
-      tap(users => this.users.set(users)),
+      tap((users) => this.users.set(users)),
       tap({
         error: (err) => this.error.set(err.message),
       }),
@@ -478,7 +485,7 @@ export class UserApplicationService {
     this.error.set(null);
 
     return this.api.getById(id).pipe(
-      tap(user => this.currentUser.set(user)),
+      tap((user) => this.currentUser.set(user)),
       tap({
         error: (err) => this.error.set(err.message),
       }),
@@ -493,7 +500,7 @@ export class UserApplicationService {
       tap({
         next: (user) => {
           const listItem = this.mapper.toList(user);
-          this.users.update(current => [...current, listItem]);
+          this.users.update((current) => [...current, listItem]);
         },
       }),
       finalize(() => this.loading.set(false)),
@@ -507,9 +514,7 @@ export class UserApplicationService {
       tap({
         next: (user) => {
           const listItem = this.mapper.toList(user);
-          this.users.update(current =>
-            current.map(u => (u.id === id ? listItem : u)),
-          );
+          this.users.update((current) => current.map((u) => (u.id === id ? listItem : u)));
           if (this.currentUser()?.id === id) {
             this.currentUser.set(user);
           }
@@ -525,7 +530,7 @@ export class UserApplicationService {
     return this.api.delete(id).pipe(
       tap({
         next: () => {
-          this.users.update(current => current.filter(u => u.id !== id));
+          this.users.update((current) => current.filter((u) => u.id !== id));
         },
       }),
       finalize(() => this.loading.set(false)),
@@ -603,29 +608,33 @@ export const USER_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/users-list-page/users-list-page.component')
-            .then(m => m.UsersListPageComponent),
+          import('../pages/users-list-page/users-list-page.component').then(
+            (m) => m.UsersListPageComponent,
+          ),
         title: 'Usuarios',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/users-form-page/users-form-page.component')
-            .then(m => m.UsersFormPageComponent),
+          import('../pages/users-form-page/users-form-page.component').then(
+            (m) => m.UsersFormPageComponent,
+          ),
         title: 'Nuevo Usuario',
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/users-details-page/users-details-page.component')
-            .then(m => m.UsersDetailsPageComponent),
+          import('../pages/users-details-page/users-details-page.component').then(
+            (m) => m.UsersDetailsPageComponent,
+          ),
         title: 'Detalles del Usuario',
       },
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/users-form-page/users-form-page.component')
-            .then(m => m.UsersFormPageComponent),
+          import('../pages/users-form-page/users-form-page.component').then(
+            (m) => m.UsersFormPageComponent,
+          ),
         title: 'Editar Usuario',
         canDeactivate: [pendingChangesGuard],
       },

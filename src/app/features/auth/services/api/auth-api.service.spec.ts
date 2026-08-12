@@ -159,7 +159,10 @@ describe('AuthApiService', () => {
       });
 
       const req = httpMock.expectOne(`${baseUrl}/auth/refresh`);
-      req.flush({ message: 'Invalid or expired refresh token' }, { status: 401, statusText: 'Unauthorized' });
+      req.flush(
+        { message: 'Invalid or expired refresh token' },
+        { status: 401, statusText: 'Unauthorized' },
+      );
     });
   });
 
@@ -242,7 +245,10 @@ describe('AuthApiService', () => {
       });
 
       const req = httpMock.expectOne(`${baseUrl}/auth/change-password`);
-      req.flush({ message: 'Password does not meet requirements' }, { status: 400, statusText: 'Bad Request' });
+      req.flush(
+        { message: 'Password does not meet requirements' },
+        { status: 400, statusText: 'Bad Request' },
+      );
     });
   });
 });

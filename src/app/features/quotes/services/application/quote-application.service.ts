@@ -1,8 +1,18 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, map } from 'rxjs';
-import { QuoteApiService, QuoteFilters, ConvertToInvoiceRequest, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
+import {
+  QuoteApiService,
+  QuoteFilters,
+  ConvertToInvoiceRequest,
+  AssignQuoteWarehousesRequest,
+} from '@features/quotes/services/api/quote-api.service';
 import { QuoteMapper } from '@features/quotes/services/mappers/quote.mapper';
-import { QuoteList, QuoteDetails, QuoteCreate, QuoteEdit } from '@features/quotes/models/interfaces';
+import {
+  QuoteList,
+  QuoteDetails,
+  QuoteCreate,
+  QuoteEdit,
+} from '@features/quotes/models/interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class QuoteApplicationService {

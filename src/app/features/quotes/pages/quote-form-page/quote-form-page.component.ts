@@ -132,7 +132,14 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
       ? `/presupuestos/${this.quoteId()}/edit`
       : `/presupuestos/new?tabId=${this.tabId}`;
 
-    this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'quotes');
+    this.pendingTabsService.save(
+      this.tabId,
+      title,
+      route,
+      formData,
+      this.isEditMode() ? 'edit' : 'create',
+      'quotes',
+    );
   }
 
   private restoreFromPendingTab(): void {
@@ -182,7 +189,9 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
               unitPrice: line.unitPrice,
               stock: [],
               warehouseAllocations: line.allocations.map((a) => {
-                const stockInfo = line.warehouseStocks?.find((ws) => ws.warehouseId === a.warehouseId);
+                const stockInfo = line.warehouseStocks?.find(
+                  (ws) => ws.warehouseId === a.warehouseId,
+                );
                 return {
                   warehouseId: a.warehouseId,
                   warehouseCode: a.warehouseCode ?? '',
@@ -226,7 +235,12 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
     }
 
     if (this.items().length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes agregar al menos un producto al presupuesto.', life: 4000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes agregar al menos un producto al presupuesto.',
+        life: 4000,
+      });
       return;
     }
 
@@ -259,7 +273,12 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el presupuesto. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar el presupuesto. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     } else {
@@ -288,7 +307,12 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el presupuesto. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear el presupuesto. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     }

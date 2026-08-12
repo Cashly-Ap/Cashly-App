@@ -9,14 +9,21 @@
     (add)="addAddress()"
   >
     @for (addr of addressesArray.controls; track $index) {
-      <div [formGroup]="addressGroup($index)" class="p-3 mt-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950">
+      <div
+        [formGroup]="addressGroup($index)"
+        class="p-3 mt-3 rounded-lg border border-surface-200 dark:border-surface-800 bg-white dark:bg-surface-950"
+      >
         <div class="flex gap-2 items-start">
           <input
             pInputText
             formControlName="address"
             placeholder="Av. Principal, Edificio Acme, Piso 5"
             class="flex-1 min-w-0"
-            [ngClass]="{ 'ng-invalid ng-dirty': addressGroup($index).get('address')?.invalid && addressGroup($index).get('address')?.touched }"
+            [ngClass]="{
+              'ng-invalid ng-dirty':
+                addressGroup($index).get('address')?.invalid &&
+                addressGroup($index).get('address')?.touched,
+            }"
           />
           <p-button
             icon="pi pi-trash"
@@ -28,7 +35,10 @@
             styleClass="flex-shrink-0"
           />
         </div>
-        @if (addressGroup($index).get('address')?.invalid && addressGroup($index).get('address')?.touched) {
+        @if (
+          addressGroup($index).get('address')?.invalid &&
+          addressGroup($index).get('address')?.touched
+        ) {
           <small class="block mt-1.5 text-red-500 text-xs">
             La dirección es requerida (máximo 500 caracteres)
           </small>
@@ -71,7 +81,10 @@
               inputId="billing-{{ $index }}"
               (onChange)="onBillingChange($index)"
             />
-            <label [for]="'billing-' + $index" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+            <label
+              [for]="'billing-' + $index"
+              class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer"
+            >
               Dirección de Facturación
             </label>
           </div>
@@ -81,7 +94,10 @@
               [binary]="true"
               inputId="addrActive-{{ $index }}"
             />
-            <label [for]="'addrActive-' + $index" class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer">
+            <label
+              [for]="'addrActive-' + $index"
+              class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer"
+            >
               Activa
             </label>
           </div>

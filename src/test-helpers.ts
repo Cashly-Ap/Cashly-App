@@ -1,6 +1,6 @@
-import { Provider } from "@angular/core";
-import { MessageService } from "primeng/api";
-import { DialogService } from "primeng/dynamicdialog";
+import { Provider } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 
 export function getTestProviders(): Provider[] {
   return [MessageService, DialogService];

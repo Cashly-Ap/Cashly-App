@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tailwindcss-primeui";
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
 @variant dark (.my-app-dark &);
 
 :root {
@@ -96,7 +96,7 @@ textarea[pinputtextarea],
 .mobile-panel-menu .p-panelmenu-header-content:focus,
 .mobile-panel-menu .p-panelmenu-header-content.p-focus,
 .mobile-panel-menu .p-panelmenu-header-content.p-highlight,
-.mobile-panel-menu .p-panelmenu-header-content[aria-expanded="true"] {
+.mobile-panel-menu .p-panelmenu-header-content[aria-expanded='true'] {
   background: transparent !important;
   box-shadow: none !important;
 }
@@ -229,12 +229,21 @@ body:not(.p-overflow-hidden) .p-drawer-mask {
     flex-wrap: nowrap;
   }
 
-  .main-menubar .p-menubar-root-list > .p-menubar-item > .p-menubar-item-content > .p-menubar-item-link {
+  .main-menubar
+    .p-menubar-root-list
+    > .p-menubar-item
+    > .p-menubar-item-content
+    > .p-menubar-item-link {
     font-size: 0.875rem;
   }
 }
 
-.main-menubar .p-menubar-root-list > .p-menubar-item:last-child .p-menubar-submenu > .p-menubar-item > .p-menubar-submenu {
+.main-menubar
+  .p-menubar-root-list
+  > .p-menubar-item:last-child
+  .p-menubar-submenu
+  > .p-menubar-item
+  > .p-menubar-submenu {
   left: auto;
   right: 100%;
 }

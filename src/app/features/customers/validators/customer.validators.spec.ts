@@ -55,14 +55,20 @@ describe('CustomerValidators', () => {
     it('should return legalNameMinLength for single character', () => {
       const control = new FormControl('A');
       expect(CustomerValidators.legalName()(control)).toEqual({
-        legalNameMinLength: { message: 'La razón social debe tener al menos 2 caracteres', minLength: 2 },
+        legalNameMinLength: {
+          message: 'La razón social debe tener al menos 2 caracteres',
+          minLength: 2,
+        },
       });
     });
 
     it('should return legalNameMaxLength when exceeds 300 characters', () => {
       const control = new FormControl('A'.repeat(301));
       expect(CustomerValidators.legalName()(control)).toEqual({
-        legalNameMaxLength: { message: 'La razón social no puede exceder 300 caracteres', maxLength: 300 },
+        legalNameMaxLength: {
+          message: 'La razón social no puede exceder 300 caracteres',
+          maxLength: 300,
+        },
       });
     });
 
@@ -133,7 +139,10 @@ describe('CustomerValidators', () => {
     it('should return emailMaxLength when exceeds 255 characters', () => {
       const control = new FormControl(`${'a'.repeat(250)}@b.com`);
       expect(CustomerValidators.email()(control)).toEqual({
-        emailMaxLength: { message: 'El email es demasiado largo (máximo 255 caracteres)', maxLength: 255 },
+        emailMaxLength: {
+          message: 'El email es demasiado largo (máximo 255 caracteres)',
+          maxLength: 255,
+        },
       });
     });
   });
@@ -180,7 +189,10 @@ describe('CustomerValidators', () => {
     it('should return addressMaxLength when exceeds 500 characters', () => {
       const control = new FormControl('A'.repeat(501));
       expect(CustomerValidators.address()(control)).toEqual({
-        addressMaxLength: { message: 'La dirección no puede exceder 500 caracteres', maxLength: 500 },
+        addressMaxLength: {
+          message: 'La dirección no puede exceder 500 caracteres',
+          maxLength: 500,
+        },
       });
     });
 

@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { OrderList, OrderDetails, OrderCreate, OrderEdit, OrderProduct } from '@features/orders/models/interfaces';
+import {
+  OrderList,
+  OrderDetails,
+  OrderCreate,
+  OrderEdit,
+  OrderProduct,
+} from '@features/orders/models/interfaces';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 export interface ConvertToInvoiceRequest {
@@ -144,21 +150,21 @@ export class OrderApiService {
   }
 
   getById(id: string): Observable<OrderDetails> {
-    return this.http.get<OrderDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .get<OrderDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   create(data: OrderCreate): Observable<OrderDetails> {
-    return this.http.post<OrderDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .post<OrderDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   update(id: string, data: OrderEdit): Observable<OrderDetails> {
-    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}`, data).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .put<OrderDetailApiResponse>(`${this.baseUrl}/${id}`, data)
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   delete(id: string): Observable<void> {
@@ -166,9 +172,9 @@ export class OrderApiService {
   }
 
   confirm(id: string): Observable<OrderDetails> {
-    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {}).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, {})
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<void> {
@@ -176,23 +182,25 @@ export class OrderApiService {
   }
 
   cancel(id: string, reason: string): Observable<OrderDetails> {
-    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason })
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   assignWarehouses(id: string, request: AssignOrderWarehousesRequest): Observable<OrderDetails> {
-    return this.http.put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request).pipe(
-      map((r) => this.toOrderDetails(r)),
-    );
+    return this.http
+      .put<OrderDetailApiResponse>(`${this.baseUrl}/${id}/allocations`, request)
+      .pipe(map((r) => this.toOrderDetails(r)));
   }
 
   getProductsForOrder(filters: OrderProductFilters): Observable<PageResponse<OrderProduct>> {
     let params = new HttpParams().set('customerId', filters.customerId);
     if (filters.search) params = params.set('search', filters.search);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
-    if (filters.composite !== undefined) params = params.set('composite', String(filters.composite));
-    if (filters.withStock !== undefined) params = params.set('withStock', String(filters.withStock));
+    if (filters.composite !== undefined)
+      params = params.set('composite', String(filters.composite));
+    if (filters.withStock !== undefined)
+      params = params.set('withStock', String(filters.withStock));
     if (filters.page !== undefined) params = params.set('page', String(filters.page));
     if (filters.size !== undefined) params = params.set('size', String(filters.size));
     return this.http.get<PageResponse<OrderProduct>>('/api/products', { params });

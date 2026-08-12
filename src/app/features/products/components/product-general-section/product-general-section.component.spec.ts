@@ -60,9 +60,7 @@ describe('ProductGeneralSectionComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [HostComponent, ProductGeneralSectionComponent],
-      providers: [
-        { provide: CategoryApplicationService, useValue: mockCategoryService },
-      ],
+      providers: [{ provide: CategoryApplicationService, useValue: mockCategoryService }],
       schemas: [NO_ERRORS_SCHEMA],
     });
 

@@ -1,8 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import {
   HttpClient,
   HTTP_INTERCEPTORS,
@@ -70,9 +67,7 @@ describe('authInterceptor', () => {
       httpClient.get('/api/test').subscribe();
 
       const req = httpMock.expectOne('/api/test');
-      expect(req.request.headers.get('Authorization')).toBe(
-        'Bearer test-token',
-      );
+      expect(req.request.headers.get('Authorization')).toBe('Bearer test-token');
       req.flush({});
     });
 
@@ -97,8 +92,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'error',
               summary: 'Error de Conexión',
-              detail:
-                'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
+              detail: 'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
@@ -123,8 +117,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'error',
               summary: 'Error de Conexión',
-              detail:
-                'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
+              detail: 'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
@@ -149,8 +142,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'error',
               summary: 'Error de Conexión',
-              detail:
-                'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
+              detail: 'No se puede conectar con el servidor. Por favor, inténtelo más tarde.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
@@ -185,9 +177,7 @@ describe('authInterceptor', () => {
         },
       };
 
-      authServiceMock.refreshTokenSilently.mockReturnValue(
-        of(mockRefreshResponse),
-      );
+      authServiceMock.refreshTokenSilently.mockReturnValue(of(mockRefreshResponse));
 
       const promise = new Promise((resolve) => {
         httpClient.get('/api/test').subscribe({
@@ -219,8 +209,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'warn',
               summary: 'Sesión Expirada',
-              detail:
-                'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+              detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
@@ -265,8 +254,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'warn',
               summary: 'Sesión Expirada',
-              detail:
-                'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
+              detail: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
@@ -293,8 +281,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'error',
               summary: 'Error del Servidor',
-              detail:
-                'Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.',
+              detail: 'Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.',
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).not.toHaveBeenCalled();
@@ -319,8 +306,7 @@ describe('authInterceptor', () => {
             expect(messageServiceMock.add).toHaveBeenCalledWith({
               severity: 'error',
               summary: 'Error del Servidor',
-              detail:
-                'Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.',
+              detail: 'Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.',
               life: 5000,
             });
             resolve(undefined);

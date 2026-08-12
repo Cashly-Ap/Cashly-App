@@ -9,7 +9,12 @@ import { QuoteApiService } from '@features/quotes/services/api/quote-api.service
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({
-  template: `<app-convert-to-invoice-dialog [visible]="visible" [quoteId]="quoteId" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-convert-to-invoice-dialog>`,
+  template: `<app-convert-to-invoice-dialog
+    [visible]="visible"
+    [quoteId]="quoteId"
+    (confirmed)="onConfirmed($event)"
+    (cancelled)="onCancelled()"
+  ></app-convert-to-invoice-dialog>`,
   imports: [ConvertToInvoiceDialogComponent],
 })
 class HostComponent {
@@ -46,11 +51,14 @@ describe('ConvertToInvoiceDialogComponent', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', warehouseCode: 'WH1', allocatedQuantity: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseName: 'Central',
+            warehouseCode: 'WH1',
+            allocatedQuantity: 5,
+          },
         ],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -126,11 +134,14 @@ describe('ConvertToInvoiceDialogComponent - visible with data', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', warehouseCode: 'WH1', allocatedQuantity: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseName: 'Central',
+            warehouseCode: 'WH1',
+            allocatedQuantity: 5,
+          },
         ],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -184,9 +195,7 @@ describe('ConvertToInvoiceDialogComponent - visible with data', () => {
       lines: [
         {
           ...mockQuote.lines[0],
-          warehouseStocks: [
-            { warehouseId: 'wh-001', warehouseName: 'Central', available: 2 },
-          ],
+          warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 2 }],
         },
       ],
     };

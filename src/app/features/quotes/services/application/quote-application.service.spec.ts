@@ -45,9 +45,25 @@ describe('QuoteApplicationService', () => {
       create: vi.fn().mockReturnValue(of(mockQuote)),
       update: vi.fn().mockReturnValue(of(mockQuote)),
       delete: vi.fn().mockReturnValue(of(undefined)),
-      convertToOrder: vi.fn().mockReturnValue(of({ quoteId: 'q-001', quoteNumber: 'QT-001', orderId: 'ord-001', orderNumber: 'ORD-001' })),
-      convertToInvoice: vi.fn().mockReturnValue(of({ quoteId: 'q-001', quoteNumber: 'QT-001', invoiceId: 'inv-001', invoiceNumber: 'FAC-001' })),
-      getProductsForQuote: vi.fn().mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
+      convertToOrder: vi.fn().mockReturnValue(
+        of({
+          quoteId: 'q-001',
+          quoteNumber: 'QT-001',
+          orderId: 'ord-001',
+          orderNumber: 'ORD-001',
+        }),
+      ),
+      convertToInvoice: vi.fn().mockReturnValue(
+        of({
+          quoteId: 'q-001',
+          quoteNumber: 'QT-001',
+          invoiceId: 'inv-001',
+          invoiceNumber: 'FAC-001',
+        }),
+      ),
+      getProductsForQuote: vi
+        .fn()
+        .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
       getWarehousesForQuote: vi.fn().mockReturnValue(of([])),
       assignWarehouses: vi.fn().mockReturnValue(of(mockQuote)),
     };
@@ -164,7 +180,9 @@ describe('QuoteApplicationService', () => {
     });
 
     it('should set error on failure', () => {
-      mockApi.convertToOrder = vi.fn().mockReturnValue(throwError(() => new Error('Convert failed')));
+      mockApi.convertToOrder = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Convert failed')));
 
       service.convertToOrder('q-001').subscribe({ error: () => {} });
 
@@ -192,7 +210,9 @@ describe('QuoteApplicationService', () => {
     });
 
     it('should set error on failure', () => {
-      mockApi.convertToInvoice = vi.fn().mockReturnValue(throwError(() => new Error('Convert failed')));
+      mockApi.convertToInvoice = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Convert failed')));
 
       service.convertToInvoice('q-001', { paymentType: 'CASH' }).subscribe({ error: () => {} });
 
@@ -251,7 +271,9 @@ describe('QuoteApplicationService', () => {
     });
 
     it('should set error on failure', () => {
-      mockApi.assignWarehouses = vi.fn().mockReturnValue(throwError(() => new Error('Assign failed')));
+      mockApi.assignWarehouses = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Assign failed')));
 
       service.assignWarehouses('q-001', { lines: [] }).subscribe({ error: () => {} });
 

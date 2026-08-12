@@ -35,14 +35,32 @@ describe('ProductsDetailsPageComponent', () => {
     description: 'Test description',
     purchasePrice: 80,
     components: [],
-    productPrices: [{ id: 'pp-001', priceTypeId: 'pt-001', priceTypeName: 'Retail', price: 120, profitMargin: 20 }],
+    productPrices: [
+      {
+        id: 'pp-001',
+        priceTypeId: 'pt-001',
+        priceTypeName: 'Retail',
+        price: 120,
+        profitMargin: 20,
+      },
+    ],
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-01T00:00:00Z',
   };
 
   const mockStock: ProductStockByWarehouse[] = [
-    { warehouseId: 'wh-001', warehouseName: 'Main Warehouse', quantity: 50, lastMovementAt: '2025-01-01T00:00:00Z' },
-    { warehouseId: 'wh-002', warehouseName: 'Secondary Warehouse', quantity: 30, lastMovementAt: null },
+    {
+      warehouseId: 'wh-001',
+      warehouseName: 'Main Warehouse',
+      quantity: 50,
+      lastMovementAt: '2025-01-01T00:00:00Z',
+    },
+    {
+      warehouseId: 'wh-002',
+      warehouseName: 'Secondary Warehouse',
+      quantity: 30,
+      lastMovementAt: null,
+    },
   ];
 
   const pdfMocks = [
@@ -158,7 +176,10 @@ describe('ProductsDetailsPageComponent', () => {
 
   it('should show error message and navigate on load failure', () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('prod-999', throwError(() => new Error('Not found')));
+    configureTestBed(
+      'prod-999',
+      throwError(() => new Error('Not found')),
+    );
     createComponent();
 
     const addSpy = vi.spyOn(messageService, 'add');
@@ -177,7 +198,11 @@ describe('ProductsDetailsPageComponent', () => {
 
   it('should handle getStock error gracefully', () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('prod-001', of(mockProduct), throwError(() => new Error('Stock error')));
+    configureTestBed(
+      'prod-001',
+      of(mockProduct),
+      throwError(() => new Error('Stock error')),
+    );
     createComponent();
     fixture.detectChanges();
 

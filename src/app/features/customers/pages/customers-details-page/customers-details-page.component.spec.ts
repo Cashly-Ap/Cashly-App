@@ -33,7 +33,9 @@ describe('CustomersDetailsPageComponent', () => {
     createdAt: '2025-01-15T10:30:00Z',
     emails: [{ id: 'e1', customerId: 'uuid-001', email: 'contact@acme.com' }],
     phones: [{ id: 'p1', customerId: 'uuid-001', phone: '0212-1234567' }],
-    addresses: [{ id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true }],
+    addresses: [
+      { id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true },
+    ],
   };
 
   beforeEach(async () => {
@@ -62,7 +64,10 @@ describe('CustomersDetailsPageComponent', () => {
         { provide: CustomerApplicationService, useValue: mockService },
         { provide: CustomerApiService, useValue: mockCustomerApi },
         { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'uuid-001' } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: { snapshot: { paramMap: { get: () => 'uuid-001' } } },
+        },
         ConfirmationService,
         MessageService,
       ],

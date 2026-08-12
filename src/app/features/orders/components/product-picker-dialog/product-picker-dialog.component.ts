@@ -19,7 +19,11 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { OrderApiService } from '@features/orders/services/api/order-api.service';
-import { OrderProduct, OrderProductStockItem, OrderItemFormData } from '@features/orders/models/interfaces';
+import {
+  OrderProduct,
+  OrderProductStockItem,
+  OrderItemFormData,
+} from '@features/orders/models/interfaces';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 import { CategoryList } from '@features/categories/models/interfaces';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
@@ -46,7 +50,18 @@ export interface ProductSelection {
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, InputNumberModule, TooltipModule, PopoverModule, DecimalPipe, SelectModule, WarehouseStockPopoverComponent],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    InputNumberModule,
+    TooltipModule,
+    PopoverModule,
+    DecimalPipe,
+    SelectModule,
+    WarehouseStockPopoverComponent,
+  ],
   templateUrl: './product-picker-dialog.component.html',
 })
 export class ProductPickerDialogComponent {
@@ -238,7 +253,6 @@ export class ProductPickerDialogComponent {
     const productId = this.popoverProductId();
     if (!productId) return;
 
-    
     const allocations = this.popoverAllocations().map((a) => ({
       ...a,
       allocated: Math.min(a.allocated ?? 0, a.available),

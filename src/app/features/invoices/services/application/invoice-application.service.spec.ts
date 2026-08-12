@@ -60,10 +60,7 @@ describe('InvoiceApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [
-        InvoiceApplicationService,
-        { provide: InvoiceApiService, useValue: mockApi },
-      ],
+      providers: [InvoiceApplicationService, { provide: InvoiceApiService, useValue: mockApi }],
     });
 
     service = TestBed.inject(InvoiceApplicationService);
@@ -109,7 +106,9 @@ describe('InvoiceApplicationService', () => {
 
   describe('create()', () => {
     it('should call api.create and prepend to invoices list', () => {
-      service.create({ customerId: 'c1', paymentType: PaymentType.CASH, notes: '', lines: [] }).subscribe();
+      service
+        .create({ customerId: 'c1', paymentType: PaymentType.CASH, notes: '', lines: [] })
+        .subscribe();
 
       expect(mockApi.create).toHaveBeenCalled();
       expect(service.invoices()[0].id).toBe('inv-001');
@@ -118,7 +117,9 @@ describe('InvoiceApplicationService', () => {
     it('should set error on failure', () => {
       mockApi.create = vi.fn().mockReturnValue(throwError(() => new Error('Create failed')));
 
-      service.create({ customerId: 'c1', paymentType: PaymentType.CASH, notes: '', lines: [] }).subscribe({ error: () => {} });
+      service
+        .create({ customerId: 'c1', paymentType: PaymentType.CASH, notes: '', lines: [] })
+        .subscribe({ error: () => {} });
 
       expect(service.error()).toBe('Create failed');
     });
@@ -126,7 +127,9 @@ describe('InvoiceApplicationService', () => {
 
   describe('update()', () => {
     it('should call api.update and update invoices list', () => {
-      service.update('inv-001', { paymentType: PaymentType.CREDIT, notes: null, lines: [] }).subscribe();
+      service
+        .update('inv-001', { paymentType: PaymentType.CREDIT, notes: null, lines: [] })
+        .subscribe();
 
       expect(mockApi.update).toHaveBeenCalledWith('inv-001', expect.any(Object));
     });
@@ -136,7 +139,9 @@ describe('InvoiceApplicationService', () => {
       mockApi.update = vi.fn().mockReturnValue(of(updatedInvoice));
       service.currentInvoice.set(mockInvoice);
 
-      service.update('inv-001', { paymentType: PaymentType.CREDIT, notes: null, lines: [] }).subscribe();
+      service
+        .update('inv-001', { paymentType: PaymentType.CREDIT, notes: null, lines: [] })
+        .subscribe();
 
       expect(service.currentInvoice()?.paymentType).toBe(PaymentType.CREDIT);
     });

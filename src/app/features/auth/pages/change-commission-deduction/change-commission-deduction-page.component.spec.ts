@@ -76,7 +76,9 @@ describe('ChangeCommissionDeductionPageComponent', () => {
 
     component.onSubmit();
 
-    expect(mockAuthService.changeCommissionDeduction).toHaveBeenCalledWith({ commissionDeductionPercentage: 25 });
+    expect(mockAuthService.changeCommissionDeduction).toHaveBeenCalledWith({
+      commissionDeductionPercentage: 25,
+    });
     expect(addSpy).toHaveBeenCalledWith(AUTH_SUCCESS_MESSAGES.commissionDeductionChanged);
     expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
   });

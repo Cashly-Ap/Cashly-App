@@ -13,12 +13,7 @@
         <i class="pi pi-spin pi-spinner text-2xl"></i>
       </div>
     } @else if (pdfUrl()) {
-      <iframe
-        [src]="pdfUrl()"
-        class="w-full"
-        style="height: 500px;"
-        frameborder="0"
-      ></iframe>
+      <iframe [src]="pdfUrl()" class="w-full" style="height: 500px" frameborder="0"></iframe>
     } @else {
       <div class="flex flex-col items-center gap-4 py-8">
         <i class="pi pi-file-pdf text-4xl text-surface-400"></i>
@@ -29,12 +24,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <p-button
-        label="Cancelar"
-        [text]="true"
-        severity="secondary"
-        (onClick)="onHide()"
-      />
+      <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
       @if (pdfUrl()) {
         <p-button
           label="Descargar"

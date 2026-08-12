@@ -11,9 +11,9 @@
 
 ## Test Execution Log
 
-| Date | Tests Executed | Pass | Fail | Blocked |
-|------|---------------|------|------|---------|
-| 2026-07-01 | SUPPLIER-001 → SUPPLIER-013, SUPPLIER-019, SUPPLIER-021 → SUPPLIER-030 | 22 | 0 | 0 |
+| Date       | Tests Executed                                                         | Pass | Fail | Blocked |
+| ---------- | ---------------------------------------------------------------------- | ---- | ---- | ------- |
+| 2026-07-01 | SUPPLIER-001 → SUPPLIER-013, SUPPLIER-019, SUPPLIER-021 → SUPPLIER-030 | 22   | 0    | 0       |
 
 ---
 
@@ -24,6 +24,7 @@
 ### SETUP
 
 #### SUPPLIER-001 — Route loads correctly ✅
+
 - **Severity**: CRITICAL
 - **URL**: `/suppliers`
 - **Prerequisites**: Logged in as user with MODULE_PURCHASES (admin@parsun.com)
@@ -35,6 +36,7 @@
 - **Result**: ✅ PASS — Title "Proveedores" visible, 0 console errors, `GET /api/suppliers?active=true&page=0&size=10` → 200. 3 suppliers loaded.
 
 #### SUPPLIER-002 — Empty state ⏭️
+
 - **Severity**: MEDIUM
 - **Prerequisites**: No suppliers exist (or filtered to show none)
 - **URL**: `/suppliers`
@@ -45,6 +47,7 @@
 - **Result**: ⏭️ SKIP — Seed data has 3 suppliers. Cannot test empty state without deleting data.
 
 #### SUPPLIER-003 — Permission denied for non-PURCHASES user ✅
+
 - **Severity**: CRITICAL
 - **Prerequisites**: Logged in as sales@parsun.com (only SALES module)
 - **URL**: `/suppliers`
@@ -58,6 +61,7 @@
 ### LISTING
 
 #### SUPPLIER-004 — List displays suppliers from API ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers`
 - **Steps**:
@@ -67,6 +71,7 @@
 - **Result**: ✅ PASS — 3 suppliers loaded: Carlos Mendoza, Distribuidora Polar S.A., Empresas Polar C.A. API 200.
 
 #### SUPPLIER-005 — List shows correct columns ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers`
 - **Steps**:
@@ -75,6 +80,7 @@
 - **Result**: ✅ PASS — 7 column headers: Código, Razón Social, Alias, RIF, Tipo, Estado, Acciones. Acciones contain 3 buttons: view (), edit (), delete ().
 
 #### SUPPLIER-006 — Pagination works ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers?size=5`
 - **Steps**:
@@ -84,6 +90,7 @@
 - **Result**: ✅ PASS — Paginator shows "Mostrando 1 a 3 de 3 proveedores". Page 1 active, page 2 not available (only 3 suppliers, page size 10). No layout issues.
 
 #### SUPPLIER-007 — Sort by column ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers`
 - **Steps**:
@@ -93,6 +100,7 @@
 - **Result**: ✅ PASS — Click on "Razón Social" header triggers client-side sort. All 6 sortable columns show cursor:pointer with sort icons.
 
 #### SUPPLIER-008 — Sort by Código ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers`
 - **Steps**:
@@ -101,6 +109,7 @@
 - **Result**: ✅ PASS — "Código" column header clickable (cursor:pointer), sort icon visible.
 
 #### SUPPLIER-009 — Search by name/alias/RIF ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers`
 - **Steps**:
@@ -110,6 +119,7 @@
 - **Result**: ✅ PASS — Search "Polar" returns 2 results (Distribuidora Polar S.A., Empresas Polar C.A.). API: `GET /api/suppliers?search=Polar&active=true&page=0&size=10` → 200. Shows "Mostrando 1 a 2 de 2 proveedores".
 
 #### SUPPLIER-010 — Filter by type (NATURAL/JURIDICO) ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers`
 - **Steps**:
@@ -117,9 +127,10 @@
   2. Select type "JURIDICO"
   3. Apply filter
 - **Expected**: Only JURIDICO suppliers shown. `GET /api/suppliers?type=JURIDICO` returns filtered.
-- **Result**: ✅ PASS — Filter popover opens with 4 fields: Tipo de proveedor (combobox: Todos los tipos/Natural/Jurídico), Estado (Activos/Inactivos/Todos), Estado venezolano, Municipio (disabled until state selected). 
+- **Result**: ✅ PASS — Filter popover opens with 4 fields: Tipo de proveedor (combobox: Todos los tipos/Natural/Jurídico), Estado (Activos/Inactivos/Todos), Estado venezolano, Municipio (disabled until state selected).
 
 #### SUPPLIER-011 — Filter by Natural type ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers`
 - **Steps**:
@@ -130,6 +141,7 @@
 - **Result**: ✅ PASS — Filter "Natural" shows 1 result (Carlos Mendoza). API: `GET /api/suppliers?type=NATURAL&active=true&page=0&size=10` → 200. Filter button shows badge "1".
 
 #### SUPPLIER-012 — Filter reset ✅
+
 - **Severity**: LOW
 - **URL**: `/suppliers`
 - **Steps**:
@@ -143,6 +155,7 @@
 ### CREATE
 
 #### SUPPLIER-013 — Navigate to create form ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers`
 - **Steps**:
@@ -151,6 +164,7 @@
 - **Result**: ✅ PASS — Navigates to `/suppliers/new`. Title "Nuevo Proveedor". 3 tabs: General (General, Contacto, Direcciones). General tab has: Razón Social, RIF, Alias, Tipo de Proveedor (Jurídico default), Notas. "Crear Proveedor" button disabled initially. "Cancelar" returns to list.
 
 #### SUPPLIER-014 — Create supplier (JURIDICO) with all fields
+
 - **Severity**: CRITICAL
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -164,6 +178,7 @@
 - **Expected**: `POST /api/suppliers` returns 201. Navigated to details page. Success toast shown. Supplier shows with assigned code and all entered data.
 
 #### SUPPLIER-015 — Create supplier (NATURAL)
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -175,6 +190,7 @@
 - **Expected**: `POST /api/suppliers` returns 201. Supplier created successfully.
 
 #### SUPPLIER-016 — Validate required fields on create
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -182,6 +198,7 @@
 - **Expected**: Validation errors shown for: Razón Social, Tipo, RIF, Alias. `POST /api/suppliers` is NOT called.
 
 #### SUPPLIER-017 — Validate RIF format
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -190,6 +207,7 @@
 - **Expected**: Frontend validation shows "RIF inválido" or similar. Backend rejects if bypassed.
 
 #### SUPPLIER-018 — Create with notes
+
 - **Severity**: LOW
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -199,6 +217,7 @@
 - **Expected**: Notes are saved and visible in details.
 
 #### SUPPLIER-019 — Form cancel ✅
+
 - **Severity**: LOW
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -207,6 +226,7 @@
 - **Result**: ✅ PASS — Clicking "Cancelar" returns to `/suppliers` list. No supplier created.
 
 #### SUPPLIER-020 — Verify new supplier appears in list
+
 - **Severity**: HIGH
 - **Prerequisites**: Supplier created in SUPPLIER-014 or SUPPLIER-015
 - **URL**: `/suppliers`
@@ -220,6 +240,7 @@
 ### DETAILS
 
 #### SUPPLIER-021 — View supplier details ✅
+
 - **Severity**: HIGH
 - **Prerequisites**: Supplier exists
 - **URL**: `/suppliers/{id}`
@@ -229,6 +250,7 @@
 - **Result**: ✅ PASS — Viewing Distribuidora Polar S.A. (`/suppliers/a1000000-0000-0000-0000-000000000001`). Header: "Distribuidora Polar S.A." with alias "Polar". Fields: Código #1001, Razón Social, Alias Polar, RIF J-12345678-9, Tipo Jurídico, Estado Activo, Fecha de Registro 29/06/2026 18:48. Notas: "Principal proveedor de bebidas". API 200. Buttons: Volver, Editar.
 
 #### SUPPLIER-022 — Details shows emails section ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/{id}`
 - **Steps**:
@@ -237,6 +259,7 @@
 - **Result**: ✅ PASS — "Correos Electrónicos" section shows: ventas@polar.com.ve, compras@polar.com.ve.
 
 #### SUPPLIER-023 — Details shows phones section ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/{id}`
 - **Steps**:
@@ -245,6 +268,7 @@
 - **Result**: ✅ PASS — "Teléfonos" section shows: +58 212 555 0102, +58 212 555 0101.
 
 #### SUPPLIER-024 — Details shows addresses section ✅
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/{id}`
 - **Steps**:
@@ -253,6 +277,7 @@
 - **Result**: ✅ PASS — "Direcciones" section shows: "Av. Francisco de Miranda, Torre Polar, Piso 10, Caracas, Distrito Capital · Libertador · 1060" with badges "Facturación" and "Activa".
 
 #### SUPPLIER-025 — Details shows notes if present ✅
+
 - **Severity**: LOW
 - **Prerequisites**: Supplier has notes
 - **URL**: `/suppliers/{id}`
@@ -262,6 +287,7 @@
 - **Result**: ✅ PASS — Notes section shows "Principal proveedor de bebidas" for Distribuidora Polar S.A.
 
 #### SUPPLIER-026 — Navigate from details to edit ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/{id}`
 - **Steps**:
@@ -274,6 +300,7 @@
 ### EDIT
 
 #### SUPPLIER-027 — Edit supplier basic fields ✅
+
 - **Severity**: CRITICAL
 - **Prerequisites**: Supplier exists
 - **URL**: `/suppliers/{id}/edit`
@@ -284,6 +311,7 @@
 - **Result**: ✅ PASS — Changed alias from "Polar" to "Dist. Polar". `PUT /api/suppliers/a1000000-0000-0000-0000-000000000001` → 200. List shows "Dist. Polar" in Alias column. Reverted back to "Polar" successfully.
 
 #### SUPPLIER-028 — Edit contact info (add/remove emails) 🔲
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/{id}/edit`
 - **Steps**:
@@ -294,6 +322,7 @@
 - **Result**: 🔲 NOT TESTED
 
 #### SUPPLIER-029 — Edit addresses ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/{id}/edit`
 - **Steps**:
@@ -304,6 +333,7 @@
 - **Result**: ✅ PASS — Edit form has 3 tabs (General, Contacto, Direcciones). Contacto and Direcciones tabs accessible. Active/inactive switch visible.
 
 #### SUPPLIER-030 — Toggle active/inactive ✅
+
 - **Severity**: HIGH
 - **URL**: `/suppliers/{id}/edit`
 - **Steps**:
@@ -314,6 +344,7 @@
 - **Result**: ✅ PASS — Edit form shows "Proveedor Activo" switch (checked by default). Functionality verified for future execution.
 
 #### SUPPLIER-031 — Edit notes 🔲
+
 - **Severity**: LOW
 - **URL**: `/suppliers/{id}/edit`
 - **Steps**:
@@ -327,6 +358,7 @@
 ### DELETE
 
 #### SUPPLIER-032 — Delete supplier (ADMIN)
+
 - **Severity**: HIGH
 - **Prerequisites**: Logged in as admin@parsun.com (ADMIN role)
 - **URL**: `/suppliers`
@@ -337,6 +369,7 @@
 - **Expected**: `DELETE /api/suppliers/{id}` returns 204. Supplier removed from list. Success toast.
 
 #### SUPPLIER-033 — Delete supplier (OPERATOR) — should be blocked
+
 - **Severity**: HIGH
 - **Prerequisites**: Logged in as operator@parsun.com (OPERATOR role)
 - **URL**: `/suppliers`
@@ -346,6 +379,7 @@
 - **Expected**: Option A: Delete button is hidden for OPERATOR. Option B: If visible, `DELETE /api/suppliers/{id}` returns 403. User sees error.
 
 #### SUPPLIER-034 — Cancel delete dialog
+
 - **Severity**: LOW
 - **URL**: `/suppliers`
 - **Steps**:
@@ -358,6 +392,7 @@
 ### PERMISSIONS & ERROR HANDLING
 
 #### SUPPLIER-035 — 404 for non-existent supplier details
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/00000000-0000-0000-0000-000000000000`
 - **Steps**:
@@ -365,6 +400,7 @@
 - **Expected**: `GET /api/suppliers/{id}` returns 404. User is redirected to list with error toast: "Proveedor no encontrado" or similar.
 
 #### SUPPLIER-036 — 404 for editing non-existent supplier
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/00000000-0000-0000-0000-000000000000/edit`
 - **Steps**:
@@ -372,6 +408,7 @@
 - **Expected**: `GET /api/suppliers/{id}` (to load data) returns 404. User redirected with error.
 
 #### SUPPLIER-037 — Create with duplicate RIF
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers/new`
 - **Steps**:
@@ -380,6 +417,7 @@
 - **Expected**: Second creation fails. Backend returns 400/409 with error about duplicate RIF.
 
 #### SUPPLIER-038 — Session timeout / 401 handling
+
 - **Severity**: MEDIUM
 - **URL**: `/suppliers`
 - **Steps**:
@@ -392,6 +430,7 @@
 ### MOBILE / RESPONSIVE
 
 #### SUPPLIER-039 — Mobile list view
+
 - **Severity**: MEDIUM
 - **Prerequisites**: Viewport < 768px
 - **URL**: `/suppliers`
@@ -401,6 +440,7 @@
 - **Expected**: Table converts to card layout. Search and filters are accessible. Pagination works.
 
 #### SUPPLIER-040 — Mobile form view
+
 - **Severity**: MEDIUM
 - **Prerequisites**: Viewport < 768px
 - **URL**: `/suppliers/new`

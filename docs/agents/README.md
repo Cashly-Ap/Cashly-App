@@ -36,6 +36,7 @@ This guide describes how the four Master Agents work together to maintain and im
 **Primary Role**: Angular module development with TDD, SOLID, DRY, and DDD principles
 
 **Key Responsibilities**:
+
 - Design and implement feature modules using Angular 21
 - Follow Test-Driven Development (write tests before implementation)
 - Apply SOLID principles in all code
@@ -45,6 +46,7 @@ This guide describes how the four Master Agents work together to maintain and im
 - Use modern Angular syntax (@if, @for, signals)
 
 **Output**:
+
 - Complete CRUD modules with pages, services, models
 - Unit tests with Vitest
 - Type-safe interfaces and models
@@ -52,6 +54,7 @@ This guide describes how the four Master Agents work together to maintain and im
 - Clean, maintainable code
 
 **Triggers**:
+
 - New module/feature requests
 - Module refactoring needs
 - Code quality improvements
@@ -62,6 +65,7 @@ This guide describes how the four Master Agents work together to maintain and im
 **Primary Role**: Technical documentation and knowledge management
 
 **Key Responsibilities**:
+
 - Create and maintain module documentation
 - Document API endpoints with examples
 - Write architecture guides and tutorials
@@ -69,11 +73,13 @@ This guide describes how the four Master Agents work together to maintain and im
 - Provide code examples and best practices
 
 **Output**:
+
 - `docs/modules/*.md` - Module documentation
 - `docs/*.md` - Architecture and guides
 - Code examples and tutorials
 
 **Triggers**:
+
 - New module created
 - API changes
 - Architecture updates
@@ -84,6 +90,7 @@ This guide describes how the four Master Agents work together to maintain and im
 **Primary Role**: Security auditing and compliance
 
 **Key Responsibilities**:
+
 - Audit authentication and authorization
 - Review API security implementations
 - Identify vulnerabilities (OWASP Top 10)
@@ -91,12 +98,14 @@ This guide describes how the four Master Agents work together to maintain and im
 - Ensure GDPR compliance
 
 **Output**:
+
 - Security audit reports
 - Vulnerability assessments
 - Security recommendations
 - Secure code examples
 
 **Triggers**:
+
 - New feature implementation
 - Authentication changes
 - API endpoint additions
@@ -108,6 +117,7 @@ This guide describes how the four Master Agents work together to maintain and im
 **Primary Role**: Performance optimization and code quality
 
 **Key Responsibilities**:
+
 - Analyze bundle size and composition
 - Optimize runtime performance
 - Improve build times
@@ -115,12 +125,14 @@ This guide describes how the four Master Agents work together to maintain and im
 - Monitor Core Web Vitals
 
 **Output**:
+
 - Performance reports
 - Bundle analysis
 - Optimization recommendations
 - Refactoring suggestions
 
 **Triggers**:
+
 - Bundle size increases
 - Performance degradation
 - New feature additions
@@ -138,7 +150,7 @@ sequenceDiagram
     participant MS as Master Security
     participant MO as Master Optimization
     participant MD as Master Documentation
-    
+
     Dev->>MAA: Request new module
     MAA->>MAA: Generate module structure
     MAA->>MS: Security review request
@@ -185,7 +197,7 @@ sequenceDiagram
     participant MO as Master Optimization
     participant MD as Master Documentation
     participant Dev as Developer
-    
+
     MS->>MS: Run security audit
     MS->>MS: Identify vulnerabilities
     MS->>MO: Check if fixes impact performance
@@ -228,7 +240,7 @@ sequenceDiagram
     participant MS as Master Security
     participant MD as Master Documentation
     participant Dev as Developer
-    
+
     MO->>MO: Analyze performance
     MO->>MO: Identify bottlenecks
     MO->>MS: Verify optimizations are secure
@@ -271,7 +283,7 @@ sequenceDiagram
     participant MS as Master Security
     participant MO as Master Optimization
     participant Dev as Developer
-    
+
     MD->>MD: Create/update documentation
     MD->>MS: Request security review
     MS->>MS: Review examples for security
@@ -314,6 +326,7 @@ sequenceDiagram
 **When**: After code generation or significant changes
 
 **Process**:
+
 ```typescript
 // Angular Architecture generates code
 const newModule = architectureAgent.generateModule('products');
@@ -337,23 +350,26 @@ return {
   module: newModule,
   security: securityReport,
   performance: perfReport,
-  documentation: docs
+  documentation: docs,
 };
 ```
 
 ### 2. Continuous Monitoring
 
 **Daily Tasks**:
+
 - **Master Security**: Scan for new vulnerabilities
 - **Master Optimization**: Monitor bundle size
 - **Master Documentation**: Check for outdated docs
 
 **Weekly Tasks**:
+
 - **Master Security**: Comprehensive security audit
 - **Master Optimization**: Performance benchmarking
 - **Master Documentation**: Documentation review
 
 **Monthly Tasks**:
+
 - **All Agents**: Comprehensive project review
 - **All Agents**: Update guidelines and standards
 - **All Agents**: Generate improvement reports
@@ -366,6 +382,7 @@ Before any deployment, all agents collaborate:
 ## Pre-Deployment Checklist
 
 ### Master Security
+
 - [ ] No critical vulnerabilities
 - [ ] All routes protected
 - [ ] Input validation complete
@@ -373,6 +390,7 @@ Before any deployment, all agents collaborate:
 - [ ] Dependencies updated
 
 ### Master Optimization
+
 - [ ] Bundle size within budget
 - [ ] Performance tests passing
 - [ ] No memory leaks
@@ -380,6 +398,7 @@ Before any deployment, all agents collaborate:
 - [ ] Core Web Vitals good
 
 ### Master Documentation
+
 - [ ] All features documented
 - [ ] API docs updated
 - [ ] Examples tested
@@ -392,6 +411,7 @@ Before any deployment, all agents collaborate:
 ### Agent-to-Agent Communication
 
 **Format**:
+
 ```json
 {
   "from": "master-security",
@@ -407,6 +427,7 @@ Before any deployment, all agents collaborate:
 ```
 
 **Response**:
+
 ```json
 {
   "from": "master-optimization",
@@ -431,12 +452,13 @@ Before any deployment, all agents collaborate:
 Each agent can request review from others:
 
 **Security Review Request**:
+
 ```typescript
 // When Master Optimization suggests a change
 const securityReview = await masterSecurity.review({
   type: 'optimization',
   changes: ['implement-http-cache', 'lazy-load-components'],
-  module: 'customers'
+  module: 'customers',
 });
 
 if (!securityReview.approved) {
@@ -446,12 +468,13 @@ if (!securityReview.approved) {
 ```
 
 **Performance Review Request**:
+
 ```typescript
 // When Master Security suggests a change
 const perfReview = await masterOptimization.review({
   type: 'security',
   changes: ['add-encryption', 'implement-rate-limiting'],
-  module: 'customers'
+  module: 'customers',
 });
 
 if (perfReview.impact > threshold) {
@@ -461,12 +484,13 @@ if (perfReview.impact > threshold) {
 ```
 
 **Documentation Review Request**:
+
 ```typescript
 // When any agent needs documentation
 const docReview = await masterDocumentation.review({
   type: 'code-example',
   content: exampleCode,
-  module: 'customers'
+  module: 'customers',
 });
 
 if (!docReview.complete) {
@@ -492,6 +516,7 @@ if (!docReview.complete) {
 ### 3. Provide Context
 
 When requesting review:
+
 - What changed
 - Why it changed
 - What impact expected
@@ -500,20 +525,24 @@ When requesting review:
 ### 4. Validate Cross-Impacts
 
 Security changes may affect:
+
 - Performance (encryption overhead)
 - Documentation (new patterns)
 
 Performance changes may affect:
+
 - Security (caching sensitive data)
 - Documentation (new strategies)
 
 Documentation changes may need:
+
 - Security review (example code)
 - Performance review (recommended patterns)
 
 ### 5. Maintain Consistency
 
 All agents should:
+
 - Follow Lexand architecture
 - Use consistent terminology
 - Reference same standards
@@ -559,6 +588,7 @@ graph TD
 **Scenario**: Master Optimization wants to cache user data for 1 hour. Master Security concerned about stale data.
 
 **Resolution**:
+
 1. **Identify concern**: Stale vs. fresh data
 2. **Analyze impact**:
    - Security: Medium risk (user sees old data)
@@ -577,6 +607,7 @@ graph TD
 ### Shared Resources
 
 All agents have access to:
+
 - Source code repository
 - Documentation directory
 - Build and test scripts
@@ -586,17 +617,20 @@ All agents have access to:
 ### Agent-Specific Tools
 
 **Master Documentation**:
+
 - Read/Write to `docs/`
 - Markdown generation
 - Code example validation
 
 **Master Security**:
+
 - Security scanning tools
 - Dependency auditing
 - OWASP check tools
 - Compliance validators
 
 **Master Optimization**:
+
 - Bundle analyzers
 - Performance profilers
 - Build optimizers
@@ -605,6 +639,7 @@ All agents have access to:
 ### Shared Standards
 
 All agents follow:
+
 - Lexand Architecture Rules
 - TypeScript strict mode
 - Angular 21 best practices
@@ -618,16 +653,19 @@ All agents follow:
 Each agent generates specialized reports:
 
 **Security Report**:
+
 ```
 docs/reports/security/YYYY-MM-DD-security-audit.md
 ```
 
 **Performance Report**:
+
 ```
 docs/reports/performance/YYYY-MM-DD-performance-analysis.md
 ```
 
 **Documentation Report**:
+
 ```
 docs/reports/documentation/YYYY-MM-DD-doc-coverage.md
 ```
@@ -638,25 +676,30 @@ Combined report for comprehensive view:
 
 ```markdown
 # Lexand Project Health Report
+
 **Date**: 2025-01-16
 
 ## Security Status
+
 - **Overall Score**: 95/100 ✅
 - **Critical Issues**: 0
 - **High Priority**: 1
 - **Compliance**: GDPR ✅, OWASP ✅
 
 ## Performance Status
+
 - **Bundle Size**: 180 KB ✅ (Target: 200 KB)
 - **Load Time**: 1.2s ✅ (Target: 2.5s)
 - **Performance Score**: 98/100 ✅
 
 ## Documentation Status
+
 - **Coverage**: 90% ✅ (Target: 85%)
 - **Outdated**: 2 files
 - **Missing**: 1 module
 
 ## Recommendations
+
 1. [Security] Update password policy (High)
 2. [Performance] Implement virtual scrolling (Medium)
 3. [Documentation] Document Products module (Medium)
@@ -669,18 +712,21 @@ Combined report for comprehensive view:
 ### Individual Metrics
 
 **Master Security**:
+
 - Vulnerabilities found and fixed
 - Zero critical issues in production
 - 100% route protection
 - GDPR compliance maintained
 
 **Master Optimization**:
+
 - Bundle size under budget
 - Core Web Vitals in green
 - Build time improvements
 - Zero memory leaks
 
 **Master Documentation**:
+
 - 100% feature coverage
 - All APIs documented
 - Zero broken links
@@ -722,6 +768,7 @@ Combined report for comprehensive view:
 ### For Developers
 
 1. **Request Module Creation**:
+
    ```
    Ask Angular Architecture Agent to create module
    ```
@@ -769,21 +816,21 @@ Each agent can be invoked using the Task tool:
 task({
   subagent_type: 'documentation',
   description: 'Document customers module',
-  prompt: 'Create comprehensive documentation for the customers module'
+  prompt: 'Create comprehensive documentation for the customers module',
 });
 
 // Invoke Master Security
 task({
   subagent_type: 'security',
   description: 'Security audit',
-  prompt: 'Perform security audit on customers module focusing on authentication'
+  prompt: 'Perform security audit on customers module focusing on authentication',
 });
 
 // Invoke Master Optimization
 task({
   subagent_type: 'optimization',
   description: 'Performance analysis',
-  prompt: 'Analyze bundle size and suggest optimizations for customers module'
+  prompt: 'Analyze bundle size and suggest optimizations for customers module',
 });
 ```
 

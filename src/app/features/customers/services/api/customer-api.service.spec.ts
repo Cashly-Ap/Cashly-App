@@ -4,14 +4,27 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { CustomerApiService } from './customer-api.service';
 import { CustomerType } from '../../models/enums';
-import { CustomerList, CustomerDetails, CustomerCreate, CustomerEdit } from '../../models/interfaces';
+import {
+  CustomerList,
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+} from '../../models/interfaces';
 
 describe('CustomerApiService', () => {
   let service: CustomerApiService;
   let httpMock: HttpTestingController;
 
   const mockList: CustomerList[] = [
-    { id: 'uuid-001', code: 1001, alias: 'ACME', legalName: 'Acme C.A.', rif: 'J-12345678-9', type: CustomerType.BUSINESS, active: true },
+    {
+      id: 'uuid-001',
+      code: 1001,
+      alias: 'ACME',
+      legalName: 'Acme C.A.',
+      rif: 'J-12345678-9',
+      type: CustomerType.BUSINESS,
+      active: true,
+    },
   ];
 
   const mockDetails: CustomerDetails = {
@@ -27,7 +40,9 @@ describe('CustomerApiService', () => {
     createdAt: '2025-01-15T10:30:00Z',
     emails: [{ id: 'e1', customerId: 'uuid-001', email: 'contact@acme.com' }],
     phones: [{ id: 'p1', customerId: 'uuid-001', phone: '0212-1234567' }],
-    addresses: [{ id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true }],
+    addresses: [
+      { id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true },
+    ],
   };
 
   beforeEach(() => {

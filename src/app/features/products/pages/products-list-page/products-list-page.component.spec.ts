@@ -48,7 +48,13 @@ describe('ProductsListPageComponent', () => {
   ];
 
   function configureTestBed(
-    loadAllValue: any = of({ content: [mockProduct], totalElements: 1, totalPages: 1, size: 10, number: 0 }),
+    loadAllValue: any = of({
+      content: [mockProduct],
+      totalElements: 1,
+      totalPages: 1,
+      size: 10,
+      number: 0,
+    }),
     toggleActiveValue: any = of({ ...mockProduct, active: false }),
     deleteValue: any = of(undefined),
   ) {

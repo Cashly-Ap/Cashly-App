@@ -7,7 +7,11 @@ import { PaymentPdfModalComponent } from './payment-pdf-modal.component';
 import { MessageService } from 'primeng/api';
 
 @Component({
-  template: `<app-payment-pdf-modal [visible]="visible" [paymentId]="paymentId" (visibleChange)="onVisibleChange($event)"></app-payment-pdf-modal>`,
+  template: `<app-payment-pdf-modal
+    [visible]="visible"
+    [paymentId]="paymentId"
+    (visibleChange)="onVisibleChange($event)"
+  ></app-payment-pdf-modal>`,
   imports: [PaymentPdfModalComponent],
 })
 class HostComponent {

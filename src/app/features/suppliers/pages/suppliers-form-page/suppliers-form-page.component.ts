@@ -64,7 +64,6 @@ interface SupplierFormData {
     SupplierAddressesSectionComponent,
   ],
   templateUrl: './suppliers-form-page.component.html',
-
 })
 export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormData> {
   private service = inject(SupplierApplicationService);
@@ -136,7 +135,9 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
     const phonesArray = this.form.get('phones') as FormArray;
     phonesArray.clear();
     (data.phones ?? []).forEach((phone) => {
-      phonesArray.push(this.fb.control(phone, [Validators.required, SupplierValidators.phoneNumber()]));
+      phonesArray.push(
+        this.fb.control(phone, [Validators.required, SupplierValidators.phoneNumber()]),
+      );
     });
 
     const addressesArray = this.form.get('addresses') as FormArray;
@@ -163,13 +164,17 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
         const emailsArray = this.form.get('emails') as FormArray;
         emailsArray.clear();
         formModel.emails.forEach((e) => {
-          emailsArray.push(this.fb.control(e.email, [Validators.required, SupplierValidators.email()]));
+          emailsArray.push(
+            this.fb.control(e.email, [Validators.required, SupplierValidators.email()]),
+          );
         });
 
         const phonesArray = this.form.get('phones') as FormArray;
         phonesArray.clear();
         formModel.phones.forEach((p) => {
-          phonesArray.push(this.fb.control(p.phone, [Validators.required, SupplierValidators.phoneNumber()]));
+          phonesArray.push(
+            this.fb.control(p.phone, [Validators.required, SupplierValidators.phoneNumber()]),
+          );
         });
 
         const addressesArray = this.form.get('addresses') as FormArray;
@@ -222,7 +227,12 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
         this.service.update(this.entityId()!, updateData).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Proveedor actualizado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Proveedor actualizado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/suppliers']);
           },
           error: () => {
@@ -239,14 +249,21 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
         this.service.create(createData).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Proveedor creado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Proveedor creado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/suppliers']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: err?.error?.message || 'Error al crear el proveedor. Por favor, intente nuevamente.',
+              detail:
+                err?.error?.message ||
+                'Error al crear el proveedor. Por favor, intente nuevamente.',
               life: 5000,
             });
           },

@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnChanges, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +17,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { QuoteApiService, AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
+import {
+  QuoteApiService,
+  AssignQuoteWarehousesRequest,
+} from '@features/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/quotes/models/interfaces';
 
 type ConversionOption = 'none' | 'order' | 'invoice';
@@ -35,7 +47,18 @@ interface LineAssignmentState {
 @Component({
   selector: 'app-assign-warehouses-dialog',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DialogModule, ButtonModule, TableModule, InputNumberModule, InputTextModule, TooltipModule, RadioButtonModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DecimalPipe,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    InputNumberModule,
+    InputTextModule,
+    TooltipModule,
+    RadioButtonModule,
+  ],
   templateUrl: './assign-warehouses-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -54,7 +77,12 @@ export class AssignWarehousesDialogComponent implements OnChanges {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineAssignmentState[]>([]);
-  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number; isCustomerDraft: boolean } | null>(null);
+  readonly quoteInfo = signal<{
+    number: string;
+    customerName: string;
+    subtotal: number;
+    isCustomerDraft: boolean;
+  } | null>(null);
   readonly conversionOption = signal<ConversionOption>('none');
 
   readonly canConfirm = computed(() => {
@@ -91,17 +119,26 @@ export class AssignWarehousesDialogComponent implements OnChanges {
               subtotal: quote.subtotal,
               isCustomerDraft: quote.status === 'CUSTOMER_DRAFT',
             });
-            this.lines.set(this.buildLines(quote, warehouses.map((w) => ({ id: w.id, name: w.name }))));
+            this.lines.set(
+              this.buildLines(
+                quote,
+                warehouses.map((w) => ({ id: w.id, name: w.name })),
+              ),
+            );
             this.loading.set(false);
           },
           error: (err) => {
-            this.error.set(err?.error?.message || err?.message || 'Error al cargar los almacenes del cliente');
+            this.error.set(
+              err?.error?.message || err?.message || 'Error al cargar los almacenes del cliente',
+            );
             this.loading.set(false);
           },
         });
       },
       error: (err) => {
-        this.error.set(err?.error?.message || err?.message || 'Error al cargar datos del presupuesto');
+        this.error.set(
+          err?.error?.message || err?.message || 'Error al cargar datos del presupuesto',
+        );
         this.loading.set(false);
       },
     });

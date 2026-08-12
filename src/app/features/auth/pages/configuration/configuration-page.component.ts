@@ -8,10 +8,7 @@ import { UserType } from '@features/auth/models';
 @Component({
   selector: 'app-configuration-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    AvatarModule,
-  ],
+  imports: [CommonModule, AvatarModule],
   templateUrl: './configuration-page.component.html',
 })
 export class ConfigurationPageComponent {
@@ -42,5 +39,3 @@ export class ConfigurationPageComponent {
     this.router.navigate(['/auth/change-password']);
   }
 }
-
-

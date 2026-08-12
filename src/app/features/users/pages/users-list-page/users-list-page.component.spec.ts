@@ -81,13 +81,17 @@ describe('UsersListPageComponent', () => {
   it('should filter users based on search term', () => {
     fixture.detectChanges();
     component.onSearch('Test');
-    expect(mockUserService.loadUsers).toHaveBeenCalledWith(expect.objectContaining({ search: 'Test' }));
+    expect(mockUserService.loadUsers).toHaveBeenCalledWith(
+      expect.objectContaining({ search: 'Test' }),
+    );
   });
 
   it('should return empty filtered list when no match', () => {
     fixture.detectChanges();
     component.onSearch('nonexistent');
-    expect(mockUserService.loadUsers).toHaveBeenCalledWith(expect.objectContaining({ search: 'nonexistent' }));
+    expect(mockUserService.loadUsers).toHaveBeenCalledWith(
+      expect.objectContaining({ search: 'nonexistent' }),
+    );
   });
 
   it('should return correct type label', () => {

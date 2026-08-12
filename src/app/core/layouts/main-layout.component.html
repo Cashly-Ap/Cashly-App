@@ -5,7 +5,6 @@
     class="fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 shadow-md"
   >
     <div class="flex items-center justify-between px-4 h-16">
-      
       <div class="xl:hidden">
         <p-button
           icon="pi pi-bars"
@@ -17,7 +16,6 @@
         />
       </div>
 
-      
       <div class="hidden xl:flex flex-1 min-w-0 px-2 2xl:px-4">
         <p-menubar
           [model]="primeMenuItems()"
@@ -25,11 +23,10 @@
         ></p-menubar>
       </div>
 
-      
       <div class="flex items-center gap-1 xl:gap-2 2xl:gap-4">
         <app-notification-bell />
         <app-pending-tabs-dropdown />
-        
+
         <button
           #userButton
           (click)="toggleUserMenu($event)"
@@ -43,9 +40,11 @@
           <span class="hidden 2xl:inline font-bold text-surface-900 dark:text-surface-100">
             {{ currentUser()?.userName || 'Usuario' }}
           </span>
-          <i class="hidden! 2xl:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"></i>
+          <i
+            class="hidden! 2xl:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"
+          ></i>
         </button>
-        
+
         <div class="hidden xl:block">
           <app-theme-toggle></app-theme-toggle>
         </div>
@@ -53,7 +52,6 @@
     </div>
   </div>
 
-  
   <p-drawer
     #mobileDrawer
     [visible]="mobileMenuVisible()"
@@ -66,7 +64,14 @@
     <ng-template pTemplate="header">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          <img [ngSrc]="logoSrc" alt="Logo Parsun" width="70" height="32" style="width: auto" class="h-8 object-contain" />
+          <img
+            [ngSrc]="logoSrc"
+            alt="Logo Parsun"
+            width="70"
+            height="32"
+            style="width: auto"
+            class="h-8 object-contain"
+          />
         </div>
         <p-button
           icon="pi pi-times"
@@ -81,7 +86,6 @@
 
     <ng-template pTemplate="content">
       <div class="flex flex-col h-full">
-        
         <div class="p-4 border-b border-surface-200 dark:border-surface-700">
           <div class="flex items-center gap-3">
             <p-avatar
@@ -100,14 +104,14 @@
           </div>
         </div>
 
-        
         <div class="flex-1 overflow-y-auto py-2">
-          <p-panelMenu [model]="mobileMenuItems()" styleClass="border-0 bg-transparent mobile-panel-menu" />
+          <p-panelMenu
+            [model]="mobileMenuItems()"
+            styleClass="border-0 bg-transparent mobile-panel-menu"
+          />
         </div>
 
-        
         <div class="border-t border-surface-200 dark:border-surface-700 p-4 space-y-1">
-          
           <div class="flex items-center justify-between p-3 rounded-lg">
             <div class="flex items-center gap-3">
               <i class="pi pi-palette text-surface-600 dark:text-surface-400"></i>
@@ -159,66 +163,66 @@
 
   @defer (when activeModal() !== null || pdfViewerVisible()) {
     <app-catalog-pdf-modal
-    [visible]="activeModal() === 'catalog'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onCatalogPdf($event)"
-  />
+      [visible]="activeModal() === 'catalog'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onCatalogPdf($event)"
+    />
 
-  <app-commercial-catalog-pdf-modal
-    [visible]="activeModal() === 'commercialCatalog'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onCommercialCatalogPdf($event)"
-  />
+    <app-commercial-catalog-pdf-modal
+      [visible]="activeModal() === 'commercialCatalog'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onCommercialCatalogPdf($event)"
+    />
 
-  <app-stock-pdf-modal
-    [visible]="activeModal() === 'stock'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onStockPdf($event)"
-    (onGenerateExcel)="onStockExcel($event)"
-  />
+    <app-stock-pdf-modal
+      [visible]="activeModal() === 'stock'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onStockPdf($event)"
+      (onGenerateExcel)="onStockExcel($event)"
+    />
 
-  <app-movements-pdf-modal
-    [visible]="activeModal() === 'movements'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onMovementsPdf($event)"
-    (onGenerateExcel)="onMovementsExcel($event)"
-  />
+    <app-movements-pdf-modal
+      [visible]="activeModal() === 'movements'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onMovementsPdf($event)"
+      (onGenerateExcel)="onMovementsExcel($event)"
+    />
 
-  <app-order-pdf-modal
-    [visible]="activeModal() === 'orders'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onOrdersPdf($event)"
-  />
+    <app-order-pdf-modal
+      [visible]="activeModal() === 'orders'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onOrdersPdf($event)"
+    />
 
-  <app-invoice-pdf-modal
-    [visible]="activeModal() === 'invoices'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onInvoicesPdf($event)"
-  />
+    <app-invoice-pdf-modal
+      [visible]="activeModal() === 'invoices'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onInvoicesPdf($event)"
+    />
 
-  <app-quote-pdf-modal
-    [visible]="activeModal() === 'quotes'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onQuotesPdf($event)"
-  />
+    <app-quote-pdf-modal
+      [visible]="activeModal() === 'quotes'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onQuotesPdf($event)"
+    />
 
-  <app-purchase-pdf-modal
-    [visible]="activeModal() === 'purchases'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onPurchasesPdf($event)"
-  />
+    <app-purchase-pdf-modal
+      [visible]="activeModal() === 'purchases'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onPurchasesPdf($event)"
+    />
 
-  <app-accounts-receivable-pdf-modal
-    [visible]="activeModal() === 'accountsReceivable'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGeneratePdf)="onAccountsReceivablePdf($event)"
-  />
+    <app-accounts-receivable-pdf-modal
+      [visible]="activeModal() === 'accountsReceivable'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGeneratePdf)="onAccountsReceivablePdf($event)"
+    />
 
-  <app-cash-register-report-modal
-    [visible]="activeModal() === 'cashRegister'"
-    (visibleChange)="$event === false && activeModal.set(null)"
-    (onGenerateExcel)="onCashRegisterExcel($event)"
-  />
+    <app-cash-register-report-modal
+      [visible]="activeModal() === 'cashRegister'"
+      (visibleChange)="$event === false && activeModal.set(null)"
+      (onGenerateExcel)="onCashRegisterExcel($event)"
+    />
 
     <app-pdf-viewer-modal
       [visible]="pdfViewerVisible()"
@@ -231,8 +235,7 @@
 
   <main
     class="pt-16 min-h-screen bg-gradient-to-br from-app-bg-primary via-app-bg-primary-via to-app-bg-primary-to"
-   >
+  >
     <router-outlet />
   </main>
-
 </div>

@@ -1,4 +1,11 @@
-import { Component, input, inject, ChangeDetectionStrategy, ChangeDetectorRef, effect } from '@angular/core';
+import {
+  Component,
+  input,
+  inject,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  effect,
+} from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -7,13 +14,24 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { ListSectionComponent } from '@core/forms/components';
 import { SupplierValidators } from '@features/suppliers/validators';
-import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/customers/data/venezuela-geo.data';
+import {
+  VENEZUELA_STATE_NAMES,
+  getMunicipalitiesForState,
+} from '@features/customers/data/venezuela-geo.data';
 
 @Component({
   selector: 'app-supplier-addresses-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, ListSectionComponent, ButtonModule, InputTextModule, CheckboxModule, SelectModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ListSectionComponent,
+    ButtonModule,
+    InputTextModule,
+    CheckboxModule,
+    SelectModule,
+  ],
   templateUrl: './supplier-addresses-section.component.html',
 })
 export class SupplierAddressesSectionComponent {

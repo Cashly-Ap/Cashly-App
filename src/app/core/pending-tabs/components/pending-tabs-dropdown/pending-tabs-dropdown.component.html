@@ -20,9 +20,7 @@
     <div
       class="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700"
     >
-      <h3
-        class="text-lg font-semibold text-surface-900 dark:text-surface-100 m-0"
-      >
+      <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-100 m-0">
         Pestañas Pendientes
       </h3>
       @if (tabs().length > 0) {
@@ -40,12 +38,8 @@
 
     @if (tabs().length === 0) {
       <div class="flex flex-col items-center justify-center p-8 text-center">
-        <i
-          class="pi pi-inbox text-6xl text-surface-300 dark:text-surface-600 mb-4"
-        ></i>
-        <p class="text-surface-600 dark:text-surface-400 m-0">
-          No hay pestañas pendientes
-        </p>
+        <i class="pi pi-inbox text-6xl text-surface-300 dark:text-surface-600 mb-4"></i>
+        <p class="text-surface-600 dark:text-surface-400 m-0">No hay pestañas pendientes</p>
       </div>
     } @else {
       <div class="flex flex-col max-h-96 overflow-y-auto">
@@ -60,26 +54,17 @@
               tooltipPosition="left"
             >
               <div class="flex items-center gap-2 mb-1">
-                <span
-                  [class]="
-                    'px-2 py-1 text-xs font-medium rounded ' +
-                    getTypeClass(tab.type)
-                  "
-                >
+                <span [class]="'px-2 py-1 text-xs font-medium rounded ' + getTypeClass(tab.type)">
                   {{ getTypeLabel(tab.type) }}
                 </span>
                 <span class="text-xs text-surface-500 dark:text-surface-400">
                   {{ getModuleLabel(tab.module) }}
                 </span>
               </div>
-              <p
-                class="text-sm font-medium text-surface-900 dark:text-surface-100 m-0 truncate"
-              >
+              <p class="text-sm font-medium text-surface-900 dark:text-surface-100 m-0 truncate">
                 {{ tab.title }}
               </p>
-              <p
-                class="text-xs text-surface-500 dark:text-surface-400 m-0 mt-1"
-              >
+              <p class="text-xs text-surface-500 dark:text-surface-400 m-0 mt-1">
                 {{ tab.timeLabel }}
               </p>
             </div>

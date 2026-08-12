@@ -12,10 +12,14 @@ export class CatalogApiService {
   getAll(filters?: CatalogFilters): Observable<PagedResponse<CatalogItem>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
-    if (filters?.categoryId !== undefined) params = params.set('categoryId', String(filters.categoryId));
-    if (filters?.warehouseId !== undefined) params = params.set('warehouseId', String(filters.warehouseId));
-    if (filters?.composite !== undefined) params = params.set('composite', String(filters.composite));
-    if (filters?.withStock !== undefined) params = params.set('withStock', String(filters.withStock));
+    if (filters?.categoryId !== undefined)
+      params = params.set('categoryId', String(filters.categoryId));
+    if (filters?.warehouseId !== undefined)
+      params = params.set('warehouseId', String(filters.warehouseId));
+    if (filters?.composite !== undefined)
+      params = params.set('composite', String(filters.composite));
+    if (filters?.withStock !== undefined)
+      params = params.set('withStock', String(filters.withStock));
     if (filters?.lowStock !== undefined) params = params.set('lowStock', String(filters.lowStock));
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));

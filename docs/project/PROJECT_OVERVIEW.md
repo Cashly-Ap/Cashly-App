@@ -10,14 +10,14 @@ The system is built from scratch, drawing inspiration from key modules of the **
 
 ## Strategic Goals
 
-| Goal | Description |
-|------|-------------|
+| Goal                            | Description                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
 | **Real-Time Inventory Control** | Full traceability and precise stock management across all warehouses |
-| **Commercial Automation** | Streamlined flow from quotation to invoice with minimal friction |
+| **Commercial Automation**       | Streamlined flow from quotation to invoice with minimal friction     |
 | **Credit & Payment Management** | Structured financial control with partial payments and credit limits |
-| **Document Automation** | PDF generation for every operational document |
-| **Customer Self-Service** | B2B portal for clients to manage their own orders and invoices |
-| **Scalability** | Modular architecture prepared for future growth |
+| **Document Automation**         | PDF generation for every operational document                        |
+| **Customer Self-Service**       | B2B portal for clients to manage their own orders and invoices       |
+| **Scalability**                 | Modular architecture prepared for future growth                      |
 
 ---
 
@@ -26,6 +26,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 1 – User & Role Management
 
 **Features:**
+
 - User creation and administration
 - Role assignment: Super Admin, Administration, Operators, Customers
 - Module-level access control
@@ -39,6 +40,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 2 – Inventory Management (Inventory 360°)
 
 **Features:**
+
 - Warehouse/branch creation and management
 - Product registration and administration
 - Multi-level pricing: maximum, promotional, wholesale, minimum
@@ -60,6 +62,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 3 – Commercial Management (Sales)
 
 **Features:**
+
 - Quotations (budgets) without inventory lock
 - Quotation-to-order conversion
 - Orders with automatic inventory reservation
@@ -77,6 +80,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 4 – Finance & Credit Control
 
 **Features:**
+
 - Accounts receivable per customer
 - Partial payment management
 - Advance payments (credit balance / saldo a favor)
@@ -94,6 +98,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 5 – Purchasing
 
 **Features:**
+
 - Supplier management
 - Purchase orders
 - Purchase order reception
@@ -107,6 +112,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 6 – Customer Web Portal
 
 **Features:**
+
 - Customer login
 - Available product catalog browsing
 - Automatic price type application based on customer profile
@@ -123,6 +129,7 @@ The system is built from scratch, drawing inspiration from key modules of the **
 ### Module 7 – Global Document Manager
 
 **Features:**
+
 - Invoice listing
 - Order listing
 - Quotation listing
@@ -171,44 +178,44 @@ graph TD
 
 ### Core Technical Capabilities
 
-| Capability | Description |
-|-----------|-------------|
-| **Transactional Inventory Engine** | Real-time stock operations with full audit trail |
+| Capability                         | Description                                         |
+| ---------------------------------- | --------------------------------------------------- |
+| **Transactional Inventory Engine** | Real-time stock operations with full audit trail    |
 | **Credit & Partial Payment Logic** | Flexible financial management for wholesale clients |
-| **Automated Document Management** | PDF generation and document lifecycle tracking |
-| **Composite Product Logic** | Dynamic kit pricing with per-unit discount rules |
-| **Full Commercial Flow** | Quotation → Order → Invoice pipeline |
-| **Integrated Customer Portal** | B2B self-service with profile-based pricing |
+| **Automated Document Management**  | PDF generation and document lifecycle tracking      |
+| **Composite Product Logic**        | Dynamic kit pricing with per-unit discount rules    |
+| **Full Commercial Flow**           | Quotation → Order → Invoice pipeline                |
+| **Integrated Customer Portal**     | B2B self-service with profile-based pricing         |
 
 ---
 
 ## Technology Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Backend** | Java 24 + Spring Boot 3.5.5 |
-| **Architecture** | Hexagonal Architecture + DDD + Clean Architecture |
-| **Database** | MySQL |
-| **Authentication** | JWT (Role-based access control) |
-| **Documentation** | OpenAPI / Swagger |
-| **Containerization** | Docker + Docker Compose |
+| Layer                | Technology                                        |
+| -------------------- | ------------------------------------------------- |
+| **Backend**          | Java 24 + Spring Boot 3.5.5                       |
+| **Architecture**     | Hexagonal Architecture + DDD + Clean Architecture |
+| **Database**         | MySQL                                             |
+| **Authentication**   | JWT (Role-based access control)                   |
+| **Documentation**    | OpenAPI / Swagger                                 |
+| **Containerization** | Docker + Docker Compose                           |
 
 ---
 
 ## Module Documentation Index
 
-| Module | Documentation |
-|--------|--------------|
-| Authentication & Users | [AUTH.md](modules/AUTH.md) |
-| Products & Inventory | [PRODUCTS.md](modules/PRODUCTS.md) |
-| Warehouse & Stock | [WAREHOUSE.md](modules/WAREHOUSE.md) |
-| Customers | [CUSTOMERS.md](modules/CUSTOMERS.md) |
-| Differential Pricing | [DIFFERENTIAL.md](modules/DIFFERENTIAL.md) |
-| API Endpoints | [API.md](API.md) |
-| Architecture | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Business Rules | [BUSINESS_RULES.md](BUSINESS_RULES.md) |
-| Workflows | [WORKFLOWS.md](WORKFLOWS.md) |
-| Roadmap | [ROADMAP.md](ROADMAP.md) |
-| Setup Guide | [SETUP.md](SETUP.md) |
-| Testing Strategy | [TESTING.md](TESTING.md) |
-| Deployment | [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md) |
+| Module                 | Documentation                              |
+| ---------------------- | ------------------------------------------ |
+| Authentication & Users | [AUTH.md](modules/AUTH.md)                 |
+| Products & Inventory   | [PRODUCTS.md](modules/PRODUCTS.md)         |
+| Warehouse & Stock      | [WAREHOUSE.md](modules/WAREHOUSE.md)       |
+| Customers              | [CUSTOMERS.md](modules/CUSTOMERS.md)       |
+| Differential Pricing   | [DIFFERENTIAL.md](modules/DIFFERENTIAL.md) |
+| API Endpoints          | [API.md](API.md)                           |
+| Architecture           | [ARCHITECTURE.md](ARCHITECTURE.md)         |
+| Business Rules         | [BUSINESS_RULES.md](BUSINESS_RULES.md)     |
+| Workflows              | [WORKFLOWS.md](WORKFLOWS.md)               |
+| Roadmap                | [ROADMAP.md](ROADMAP.md)                   |
+| Setup Guide            | [SETUP.md](SETUP.md)                       |
+| Testing Strategy       | [TESTING.md](TESTING.md)                   |
+| Deployment             | [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md)     |

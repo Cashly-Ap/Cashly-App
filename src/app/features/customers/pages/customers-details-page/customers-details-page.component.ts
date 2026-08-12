@@ -21,7 +21,10 @@ import { AuthService } from '@features/auth/services/application/auth-applicatio
 import { BusinessModule } from '@features/users/models/enums';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerDetails, CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
+import {
+  CustomerDetails,
+  CustomerWarehouseAccessItem,
+} from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
@@ -52,7 +55,6 @@ const SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     TextBadgeComponent,
   ],
   templateUrl: './customers-details-page.component.html',
-
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
@@ -87,8 +89,10 @@ export class CustomersDetailsPageComponent implements OnInit {
     const value = this.newPassword();
     if (!value) return 'La contraseña es requerida';
     if (value === this.customer()?.rif) return '';
-    if (value.length < PASSWORD_MIN_LENGTH) return `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`;
-    if (value.length > PASSWORD_MAX_LENGTH) return `La contraseña no puede exceder ${PASSWORD_MAX_LENGTH} caracteres`;
+    if (value.length < PASSWORD_MIN_LENGTH)
+      return `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`;
+    if (value.length > PASSWORD_MAX_LENGTH)
+      return `La contraseña no puede exceder ${PASSWORD_MAX_LENGTH} caracteres`;
     if (!UPPERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra mayúscula';
     if (!LOWERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra minúscula';
     if (!DIGIT_PATTERN.test(value)) return 'La contraseña debe contener: número';
@@ -103,9 +107,7 @@ export class CustomersDetailsPageComponent implements OnInit {
     return '';
   });
 
-  isPasswordFormValid = computed(
-    () => !this.passwordError() && !this.confirmPasswordError(),
-  );
+  isPasswordFormValid = computed(() => !this.passwordError() && !this.confirmPasswordError());
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -216,7 +218,11 @@ export class CustomersDetailsPageComponent implements OnInit {
     return getCustomerTypeLabel(type as Parameters<typeof getCustomerTypeLabel>[0]);
   }
 
-  getAddressLocation(state: string | undefined, municipality: string | undefined, postalCode: string | undefined): string {
+  getAddressLocation(
+    state: string | undefined,
+    municipality: string | undefined,
+    postalCode: string | undefined,
+  ): string {
     return [state, municipality, postalCode].filter((v): v is string => !!v).join(' · ');
   }
 }

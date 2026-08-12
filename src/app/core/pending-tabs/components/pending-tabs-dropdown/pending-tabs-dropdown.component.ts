@@ -1,12 +1,4 @@
-import {
-  Component,
-  ViewChild,
-  inject,
-  OnInit,
-  OnDestroy,
-  signal,
-  computed,
-} from '@angular/core';
+import { Component, ViewChild, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -67,9 +59,7 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
       }),
     );
 
-    this.subscriptions.add(
-      interval(30000).subscribe(() => this.now.set(Date.now())),
-    );
+    this.subscriptions.add(interval(30000).subscribe(() => this.now.set(Date.now())));
   }
 
   ngOnDestroy(): void {

@@ -102,6 +102,7 @@ src/app/features/customers/
 **Purpose**: Displays all customers in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by name, alias, RIF
 - Pagination
@@ -117,6 +118,7 @@ src/app/features/customers/
 **Purpose**: Create new customer or edit existing one.
 
 **Features**:
+
 - Reactive forms with validation
 - Tab-based layout (General, Contact, Addresses)
 - Real-time validation feedback
@@ -132,6 +134,7 @@ src/app/features/customers/
 **Purpose**: Display complete customer information in read-only mode.
 
 **Features**:
+
 - Complete customer data display
 - Email list
 - Phone list
@@ -152,13 +155,13 @@ src/app/features/customers/
 
 ```typescript
 export interface CustomerList {
-  id: string;              // UUID identifier
-  code: number;            // Sequential business code
-  alias: string;           // Short name/nickname
-  legalName: string;       // Legal business/person name
-  rif: string;             // Tax ID (RIF)
-  type: CustomerType;      // Customer classification
-  active: boolean;         // Active status
+  id: string; // UUID identifier
+  code: number; // Sequential business code
+  alias: string; // Short name/nickname
+  legalName: string; // Legal business/person name
+  rif: string; // Tax ID (RIF)
+  type: CustomerType; // Customer classification
+  active: boolean; // Active status
 }
 ```
 
@@ -256,7 +259,8 @@ export interface CustomerEdit {
 }
 ```
 
-**API Mapping**: 
+**API Mapping**:
+
 - Derived from `CustomerDetails` response
 - Maps to `UpdateCustomerRequest` for PUT request
 
@@ -307,10 +311,10 @@ export interface CustomerCreate {
 
 ```typescript
 export enum CustomerType {
-  INDIVIDUAL = 'INDIVIDUAL',   // Natural person
-  BUSINESS = 'BUSINESS',       // Business/Company
-  GOVERNMENT = 'GOVERNMENT',   // Government entity
-  NON_PROFIT = 'NON_PROFIT',   // Non-profit organization
+  INDIVIDUAL = 'INDIVIDUAL', // Natural person
+  BUSINESS = 'BUSINESS', // Business/Company
+  GOVERNMENT = 'GOVERNMENT', // Government entity
+  NON_PROFIT = 'NON_PROFIT', // Non-profit organization
 }
 
 export interface CustomerTypeOption {
@@ -347,13 +351,13 @@ All endpoints use: `/api/customers`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/customers | - | `CustomerList[]` | List page |
-| GET | /api/customers/:id | - | `CustomerDetails` | Details/Edit page |
-| POST | /api/customers | `CustomerCreate` | `CustomerDetails` | Create form |
-| PUT | /api/customers/:id | `CustomerEdit` | `CustomerDetails` | Edit form |
-| DELETE | /api/customers/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint           | Request Interface | Response Interface | Frontend Usage    |
+| ----------- | ------------------ | ----------------- | ------------------ | ----------------- |
+| GET         | /api/customers     | -                 | `CustomerList[]`   | List page         |
+| GET         | /api/customers/:id | -                 | `CustomerDetails`  | Details/Edit page |
+| POST        | /api/customers     | `CustomerCreate`  | `CustomerDetails`  | Create form       |
+| PUT         | /api/customers/:id | `CustomerEdit`    | `CustomerDetails`  | Edit form         |
+| DELETE      | /api/customers/:id | -                 | void (204)         | Delete action     |
 
 ---
 
@@ -364,6 +368,7 @@ All endpoints use: `/api/customers`
 **Frontend Interface**: `CustomerList[]`
 
 **Example Response**:
+
 ```json
 [
   {
@@ -396,6 +401,7 @@ All endpoints use: `/api/customers`
 **Frontend Interface**: `CustomerDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -405,7 +411,7 @@ All endpoints use: `/api/customers`
   "rif": "J-12345678-9",
   "alias": "ACME Corp",
   "creditDays": 30,
-  "creditLimit": 50000.00,
+  "creditLimit": 50000.0,
   "active": true,
   "createdAt": "2025-01-15T10:30:00Z",
   "emails": [
@@ -460,6 +466,7 @@ All endpoints use: `/api/customers`
 **Frontend Interface**: `CustomerCreate` (request), `CustomerDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "legalName": "Nueva Empresa C.A.",
@@ -467,14 +474,10 @@ All endpoints use: `/api/customers`
   "rif": "J-98765432-1",
   "alias": "Nueva Empresa",
   "creditDays": 15,
-  "creditLimit": 25000.00,
+  "creditLimit": 25000.0,
   "active": true,
-  "emails": [
-    { "email": "info@nuevaempresa.com" }
-  ],
-  "phones": [
-    { "phone": "0212-9876543" }
-  ],
+  "emails": [{ "email": "info@nuevaempresa.com" }],
+  "phones": [{ "phone": "0212-9876543" }],
   "addresses": [
     {
       "address": "Calle Principal, Edificio Nuevo, Piso 3",
@@ -496,6 +499,7 @@ All endpoints use: `/api/customers`
 **Frontend Interface**: `CustomerEdit` (request), `CustomerDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -504,7 +508,7 @@ All endpoints use: `/api/customers`
   "rif": "J-12345678-9",
   "alias": "ACME Corp Updated",
   "creditDays": 45,
-  "creditLimit": 75000.00,
+  "creditLimit": 75000.0,
   "active": true,
   "emails": [
     {
@@ -551,18 +555,18 @@ All endpoints use: `/api/customers`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `legalName` | string | Yes | 3-200 characters | "Legal name must be 3-200 characters" |
-| `type` | enum | Yes | Valid CustomerType | "Customer type is required" |
-| `rif` | string | Yes | Venezuelan RIF format (J/V/E/G-XXXXXXXX-X) | "Invalid RIF format" |
-| `alias` | string | Yes | 3-100 characters | "Alias must be 3-100 characters" |
-| `creditDays` | number | Yes | Integer >= 0, max 365 | "Credit days must be 0-365" |
-| `creditLimit` | number | Yes | Number >= 0 | "Credit limit must be non-negative" |
-| `active` | boolean | Yes | - | - |
-| `emails` | array | Yes | At least 1, valid email format | "At least one email is required" |
-| `phones` | array | Yes | At least 1, Venezuelan phone format | "At least one phone is required" |
-| `addresses` | array | Yes | At least 1, max 1 billing address | "At least one address is required" |
+| Field         | Type    | Required | Rules                                      | Error Message                         |
+| ------------- | ------- | -------- | ------------------------------------------ | ------------------------------------- |
+| `legalName`   | string  | Yes      | 3-200 characters                           | "Legal name must be 3-200 characters" |
+| `type`        | enum    | Yes      | Valid CustomerType                         | "Customer type is required"           |
+| `rif`         | string  | Yes      | Venezuelan RIF format (J/V/E/G-XXXXXXXX-X) | "Invalid RIF format"                  |
+| `alias`       | string  | Yes      | 3-100 characters                           | "Alias must be 3-100 characters"      |
+| `creditDays`  | number  | Yes      | Integer >= 0, max 365                      | "Credit days must be 0-365"           |
+| `creditLimit` | number  | Yes      | Number >= 0                                | "Credit limit must be non-negative"   |
+| `active`      | boolean | Yes      | -                                          | -                                     |
+| `emails`      | array   | Yes      | At least 1, valid email format             | "At least one email is required"      |
+| `phones`      | array   | Yes      | At least 1, Venezuelan phone format        | "At least one phone is required"      |
+| `addresses`   | array   | Yes      | At least 1, max 1 billing address          | "At least one address is required"    |
 
 ### Custom Validators
 
@@ -574,39 +578,39 @@ export class CustomerValidators {
   static rifFormat(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const pattern = /^[JVEGP]-\d{8}-\d$/;
       if (!pattern.test(control.value)) {
         return { invalidRif: 'RIF format must be X-XXXXXXXX-X (e.g., J-12345678-9)' };
       }
-      
+
       return null;
     };
   }
-  
+
   static phoneFormat(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const pattern = /^0\d{3}-\d{7}$/;
       if (!pattern.test(control.value)) {
         return { invalidPhone: 'Phone format must be 0XXX-XXXXXXX' };
       }
-      
+
       return null;
     };
   }
-  
+
   static minArrayLength(min: number): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value || !Array.isArray(control.value)) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       if (control.value.length < min) {
         return { minArrayLength: `Minimum ${min} items required` };
       }
-      
+
       return null;
     };
   }
@@ -614,12 +618,12 @@ export class CustomerValidators {
   static maxOneBillingAddress(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value || !Array.isArray(control.value)) return null;
-      
+
       const billingCount = control.value.filter((addr: any) => addr.billing).length;
       if (billingCount > 1) {
         return { maxOneBilling: 'Only one billing address allowed' };
       }
-      
+
       return null;
     };
   }
@@ -633,14 +637,17 @@ export class CustomerValidators {
 ### Tab Organization
 
 #### Tab 1: General Information
+
 - **Component**: `customer-general-section`
 - **Fields**: legalName, type, rif, alias, creditDays, creditLimit, active
 
 #### Tab 2: Contact Information
+
 - **Component**: `customer-contact-section`
 - **Fields**: emails[] (array), phones[] (array)
 
 #### Tab 3: Addresses
+
 - **Component**: `customer-addresses-section`
 - **Fields**: addresses[] (array with address, billing, active)
 
@@ -658,11 +665,11 @@ interface CustomerFormModel {
   creditDays: number;
   creditLimit: number;
   active: boolean;
-  
+
   // Tab 2: Contact
   emails: CustomerEditEmail[];
   phones: CustomerEditPhone[];
-  
+
   // Tab 3: Addresses
   addresses: CustomerEditAddress[];
 }
@@ -729,32 +736,28 @@ export class CustomerApplicationService {
   loadAll(): Observable<CustomerList[]> {
     this.loading.set(true);
     return this.api.getAll().pipe(
-      tap(customers => this.customers.set(customers)),
-      finalize(() => this.loading.set(false))
+      tap((customers) => this.customers.set(customers)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: string): Observable<CustomerDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(customer => this.currentCustomer.set(customer)),
-      finalize(() => this.loading.set(false))
+      tap((customer) => this.currentCustomer.set(customer)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   create(data: CustomerCreate): Observable<CustomerDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: string, data: CustomerEdit): Observable<CustomerDetails> {
     this.loading.set(true);
     const mapped = this.mapper.toUpdateRequest(data);
-    return this.api.update(id, mapped).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, mapped).pipe(finalize(() => this.loading.set(false)));
   }
 
   delete(id: string): Observable<void> {
@@ -785,17 +788,17 @@ export class CustomerMapper {
       creditDays: details.creditDays,
       creditLimit: details.creditLimit,
       active: details.active,
-      emails: details.emails.map(e => ({
+      emails: details.emails.map((e) => ({
         id: e.id,
         customerId: e.customerId,
         email: e.email,
       })),
-      phones: details.phones.map(p => ({
+      phones: details.phones.map((p) => ({
         id: p.id,
         customerId: p.customerId,
         phone: p.phone,
       })),
-      addresses: details.addresses.map(a => ({
+      addresses: details.addresses.map((a) => ({
         id: a.id,
         customerId: a.customerId,
         address: a.address,
@@ -814,9 +817,9 @@ export class CustomerMapper {
       creditDays: form.creditDays,
       creditLimit: form.creditLimit,
       active: form.active ?? true,
-      emails: form.emails.map(e => ({ email: e.email })),
-      phones: form.phones.map(p => ({ phone: p.phone })),
-      addresses: form.addresses.map(a => ({
+      emails: form.emails.map((e) => ({ email: e.email })),
+      phones: form.phones.map((p) => ({ phone: p.phone })),
+      addresses: form.addresses.map((a) => ({
         address: a.address,
         billing: a.billing,
         active: a.active,
@@ -834,9 +837,9 @@ export class CustomerMapper {
       creditDays: form.creditDays,
       creditLimit: form.creditLimit,
       active: form.active ?? true,
-      emails: form.emails.map(e => ({ email: e.email })),
-      phones: form.phones.map(p => ({ phone: p.phone })),
-      addresses: form.addresses.map(a => ({
+      emails: form.emails.map((e) => ({ email: e.email })),
+      phones: form.phones.map((p) => ({ phone: p.phone })),
+      addresses: form.addresses.map((a) => ({
         address: a.address,
         billing: a.billing,
         active: a.active,
@@ -880,6 +883,7 @@ export class CustomerMapper {
 ### Update Pattern (Replace All)
 
 When updating a customer:
+
 - Backend **replaces ALL** emails, phones, and addresses
 - Frontend must send complete arrays with ALL desired entities
 - Backend deletes old entities and creates new ones
@@ -898,29 +902,33 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/customers-list-page/customers-list-page.component')
-        .then(m => m.CustomersListPageComponent),
+      import('../pages/customers-list-page/customers-list-page.component').then(
+        (m) => m.CustomersListPageComponent,
+      ),
     title: 'Clientes',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/customers-form-page/customers-form-page.component')
-        .then(m => m.CustomersFormPageComponent),
+      import('../pages/customers-form-page/customers-form-page.component').then(
+        (m) => m.CustomersFormPageComponent,
+      ),
     title: 'Nuevo Cliente',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/customers-details-page/customers-details-page.component')
-        .then(m => m.CustomersDetailsPageComponent),
+      import('../pages/customers-details-page/customers-details-page.component').then(
+        (m) => m.CustomersDetailsPageComponent,
+      ),
     title: 'Detalles del Cliente',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/customers-form-page/customers-form-page.component')
-        .then(m => m.CustomersFormPageComponent),
+      import('../pages/customers-form-page/customers-form-page.component').then(
+        (m) => m.CustomersFormPageComponent,
+      ),
     title: 'Editar Cliente',
     canDeactivate: [pendingChangesGuard],
   },

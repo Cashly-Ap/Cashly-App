@@ -35,15 +35,14 @@ export class NotificationWebSocketService implements OnDestroy {
 
     this.stompClient.onConnect = () => {
       this.connected.set(true);
-      this.stompClient!.subscribe(
-        `/topic/notifications/user/${user.id}`,
-        (message: IMessage) => {
-          try {
-            const notification: AppNotification = JSON.parse(message.body);
-            this.notification$.next(notification);
-          } catch { /* ignore */ }
-        },
-      );
+      this.stompClient!.subscribe(`/topic/notifications/user/${user.id}`, (message: IMessage) => {
+        try {
+          const notification: AppNotification = JSON.parse(message.body);
+          this.notification$.next(notification);
+        } catch {
+          /* ignore */
+        }
+      });
     };
 
     this.stompClient.onDisconnect = () => this.connected.set(false);

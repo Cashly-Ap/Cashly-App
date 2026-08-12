@@ -8,7 +8,12 @@ import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
 import { PaymentType } from '../../models/enums/payment-type.enum';
 
 @Component({
-  template: `<app-duplicate-invoice-dialog [visible]="visible" [invoiceId]="invoiceId" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-duplicate-invoice-dialog>`,
+  template: `<app-duplicate-invoice-dialog
+    [visible]="visible"
+    [invoiceId]="invoiceId"
+    (confirmed)="onConfirmed($event)"
+    (cancelled)="onCancelled()"
+  ></app-duplicate-invoice-dialog>`,
   imports: [DuplicateInvoiceDialogComponent],
 })
 class HostComponent {
@@ -52,10 +57,24 @@ describe('DuplicateInvoiceDialogComponent', () => {
         unitPrice: 100,
         lineTotal: 500,
         warehouseAllocations: [
-          { id: 'alloc-001', warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            id: 'alloc-001',
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],
@@ -88,8 +107,15 @@ describe('DuplicateInvoiceDialogComponent', () => {
   });
 
   it.skip('should reset state when visible changes to false', async () => {
-    
-    dialog.lines.set([{ productName: 'Test', productCode: 'T1', quantity: 1, allocations: [], hasNegativeStock: false }]);
+    dialog.lines.set([
+      {
+        productName: 'Test',
+        productCode: 'T1',
+        quantity: 1,
+        allocations: [],
+        hasNegativeStock: false,
+      },
+    ]);
     hostComponent.visible = true;
     fixture.detectChanges();
     await fixture.whenStable();
@@ -149,10 +175,24 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
         unitPrice: 100,
         lineTotal: 500,
         warehouseAllocations: [
-          { id: 'alloc-001', warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            id: 'alloc-001',
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],
@@ -199,7 +239,6 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
   it('should set error on load failure', async () => {
     mockApi.getById = vi.fn().mockReturnValue(throwError(() => new Error('Not found')));
 
-    
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HostComponent],
@@ -221,7 +260,7 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
   it('should calculate realAvailable as available - allocated', async () => {
     await fixture.whenStable();
     const line = dialog.lines()[0];
-    expect(line.allocations[0].realAvailable).toBe(35); 
+    expect(line.allocations[0].realAvailable).toBe(35);
   });
 
   it('should set hasAnyNegativeStock when any allocation would be negative', async () => {
@@ -231,10 +270,24 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
         {
           ...mockInvoice.lines[0],
           warehouseAllocations: [
-            { id: 'alloc-001', warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 30 },
+            {
+              id: 'alloc-001',
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 30,
+            },
           ],
           warehouseStocks: [
-            { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              quantity: 50,
+              reserved: 10,
+              available: 40,
+            },
           ],
         },
       ],
@@ -242,7 +295,6 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
 
     mockApi.getById = vi.fn().mockReturnValue(of(negativeInvoice));
 
-    
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [HostComponent],
@@ -264,14 +316,29 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
   it('should emit confirmed with invoiceId and no customerId when valid', () => {
     dialog.hasAnyNegativeStock.set(false);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ invoiceId: 'inv-001', customerId: undefined });
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      invoiceId: 'inv-001',
+      customerId: undefined,
+    });
   });
 
   it('should emit confirmed with selectedCustomer when customer was chosen', () => {
-    dialog.selectedCustomer.set({ id: 'new-customer-id', code: 200, alias: 'NewCo', legalName: 'New Customer SA', rif: 'J-22222222-2', type: 'BUSINESS', active: true, portalAccess: false });
+    dialog.selectedCustomer.set({
+      id: 'new-customer-id',
+      code: 200,
+      alias: 'NewCo',
+      legalName: 'New Customer SA',
+      rif: 'J-22222222-2',
+      type: 'BUSINESS',
+      active: true,
+      portalAccess: false,
+    });
     dialog.hasAnyNegativeStock.set(false);
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({ invoiceId: 'inv-001', customerId: 'new-customer-id' });
+    expect(hostComponent.onConfirmed).toHaveBeenCalledWith({
+      invoiceId: 'inv-001',
+      customerId: 'new-customer-id',
+    });
   });
 
   it('should not emit confirmed when has negative stock', () => {

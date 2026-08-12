@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -45,9 +52,11 @@ interface WarehouseFormData {
     SelectInputComponent,
   ],
   templateUrl: './warehouses-form-page.component.html',
-
 })
-export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseFormData> implements OnInit {
+export class WarehousesFormPageComponent
+  extends BaseFormComponent<WarehouseFormData>
+  implements OnInit
+{
   private service = inject(WarehouseApplicationService);
   private messageService = inject(MessageService);
 
@@ -145,7 +154,12 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
         });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el almacén.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el almacén.',
+          life: 5000,
+        });
         this.router.navigate(['/warehouses']);
       },
     });
@@ -167,28 +181,53 @@ export class WarehousesFormPageComponent extends BaseFormComponent<WarehouseForm
         this.service.update(this.entityId()!, payload).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén actualizado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Almacén actualizado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/warehouses']);
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el almacén.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar el almacén.',
+              life: 5000,
+            });
           },
         });
       } else {
         this.service.create(payload).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén creado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Almacén creado exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/warehouses']);
           },
           error: (err: { error?: { message?: string } }) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear el almacén.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.error?.message || 'Error al crear el almacén.',
+              life: 5000,
+            });
           },
         });
       }
     } else {
       this.form.markAllAsTouched();
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, complete todos los campos requeridos.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Por favor, complete todos los campos requeridos.',
+        life: 5000,
+      });
     }
   }
 }

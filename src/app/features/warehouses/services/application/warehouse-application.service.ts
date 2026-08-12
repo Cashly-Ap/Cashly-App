@@ -1,7 +1,20 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { WarehouseApiService, WarehouseFilters } from '@features/warehouses/services/api/warehouse-api.service';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '@features/warehouses/models/interfaces';
+import {
+  WarehouseApiService,
+  WarehouseFilters,
+} from '@features/warehouses/services/api/warehouse-api.service';
+import {
+  WarehouseList,
+  WarehouseDetails,
+  WarehouseCreate,
+  WarehouseUpdate,
+  StockEntryRequest,
+  StockExitRequest,
+  WarehouseStockItem,
+  WarehouseMovementItem,
+  MovementFilters,
+} from '@features/warehouses/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -31,9 +44,9 @@ export class WarehouseApplicationService {
   }
 
   loadSimpleWarehouses(): Observable<WarehouseList[]> {
-    return this.api.getAllSimple().pipe(
-      tap({ next: (warehouses) => this.simpleWarehouses.set(warehouses) }),
-    );
+    return this.api
+      .getAllSimple()
+      .pipe(tap({ next: (warehouses) => this.simpleWarehouses.set(warehouses) }));
   }
 
   loadById(id: string): Observable<WarehouseDetails> {
@@ -64,7 +77,16 @@ export class WarehouseApplicationService {
       tap({
         next: (warehouse) => {
           this.warehouses.update((current) =>
-            current.map((w) => (w.id === id ? { ...w, name: warehouse.name, state: warehouse.state, municipality: warehouse.municipality } : w)),
+            current.map((w) =>
+              w.id === id
+                ? {
+                    ...w,
+                    name: warehouse.name,
+                    state: warehouse.state,
+                    municipality: warehouse.municipality,
+                  }
+                : w,
+            ),
           );
           if (this.currentWarehouse()?.id === id) this.currentWarehouse.set(warehouse);
         },
@@ -115,7 +137,10 @@ export class WarehouseApplicationService {
     return this.api.getStock(id);
   }
 
-  getMovements(id: string, filters?: MovementFilters): Observable<PagedResponse<WarehouseMovementItem>> {
+  getMovements(
+    id: string,
+    filters?: MovementFilters,
+  ): Observable<PagedResponse<WarehouseMovementItem>> {
     return this.api.getMovements(id, filters);
   }
 }

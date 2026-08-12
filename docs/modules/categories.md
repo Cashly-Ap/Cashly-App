@@ -86,6 +86,7 @@ src/app/features/categories/
 **Purpose**: Displays all categories in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by code and name
 - Pagination
@@ -102,6 +103,7 @@ src/app/features/categories/
 **Purpose**: Create new category or edit existing one.
 
 **Features**:
+
 - Simple form layout (no tabs needed)
 - Reactive forms with validation
 - Name uniqueness validation (server-side)
@@ -116,6 +118,7 @@ src/app/features/categories/
 **Purpose**: Display complete category information in read-only mode.
 
 **Features**:
+
 - Complete category data display
 - Code (auto-generated) display
 - Edit and Delete actions
@@ -239,13 +242,13 @@ All endpoints use: `/api/categories`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/categories | - | `CategoryList[]` | List page, Product form dropdown |
-| GET | /api/categories/:id | - | `CategoryDetails` | Details/Edit page |
-| POST | /api/categories | `CategoryCreate` | `CategoryDetails` | Create form |
-| PUT | /api/categories/:id | `CategoryEdit` | `CategoryDetails` | Edit form |
-| DELETE | /api/categories/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint            | Request Interface | Response Interface | Frontend Usage                   |
+| ----------- | ------------------- | ----------------- | ------------------ | -------------------------------- |
+| GET         | /api/categories     | -                 | `CategoryList[]`   | List page, Product form dropdown |
+| GET         | /api/categories/:id | -                 | `CategoryDetails`  | Details/Edit page                |
+| POST        | /api/categories     | `CategoryCreate`  | `CategoryDetails`  | Create form                      |
+| PUT         | /api/categories/:id | `CategoryEdit`    | `CategoryDetails`  | Edit form                        |
+| DELETE      | /api/categories/:id | -                 | void (204)         | Delete action                    |
 
 ---
 
@@ -256,6 +259,7 @@ All endpoints use: `/api/categories`
 **Frontend Interface**: `CategoryList[]`
 
 **Example Response**:
+
 ```json
 [
   {
@@ -284,6 +288,7 @@ All endpoints use: `/api/categories`
 **Frontend Interface**: `CategoryDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": 1,
@@ -295,6 +300,7 @@ All endpoints use: `/api/categories`
 ```
 
 **Errors**:
+
 - `404 Not Found`: Category not found
 
 ---
@@ -306,6 +312,7 @@ All endpoints use: `/api/categories`
 **Frontend Interface**: `CategoryCreate` (request), `CategoryDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "name": "Electronics"
@@ -313,6 +320,7 @@ All endpoints use: `/api/categories`
 ```
 
 **Example Response**:
+
 ```json
 {
   "id": 1,
@@ -324,6 +332,7 @@ All endpoints use: `/api/categories`
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data or validation error
 - `409 Conflict`: Category name already exists
 
@@ -336,6 +345,7 @@ All endpoints use: `/api/categories`
 **Frontend Interface**: `CategoryEdit` (request), `CategoryDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "name": "Electronics & Gadgets"
@@ -343,6 +353,7 @@ All endpoints use: `/api/categories`
 ```
 
 **Example Response**:
+
 ```json
 {
   "id": 1,
@@ -354,6 +365,7 @@ All endpoints use: `/api/categories`
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data or validation error
 - `404 Not Found`: Category not found
 - `409 Conflict`: Category name already exists
@@ -367,6 +379,7 @@ All endpoints use: `/api/categories`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `404 Not Found`: Category not found
 - `409 Conflict`: Cannot delete category with associated products
 
@@ -376,9 +389,9 @@ All endpoints use: `/api/categories`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `name` | string | Yes | 2-100 characters, unique | "El nombre es requerido (2-100 caracteres)" |
+| Field  | Type   | Required | Rules                    | Error Message                               |
+| ------ | ------ | -------- | ------------------------ | ------------------------------------------- |
+| `name` | string | Yes      | 2-100 characters, unique | "El nombre es requerido (2-100 caracteres)" |
 
 ### Custom Validators
 
@@ -481,58 +494,56 @@ export class CategoryService {
   loadAll(): Observable<CategoryList[]> {
     this.loading.set(true);
     return this.api.getAll().pipe(
-      tap(categories => this.categories.set(categories)),
-      finalize(() => this.loading.set(false))
+      tap((categories) => this.categories.set(categories)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: number): Observable<CategoryDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(category => this.currentCategory.set(category)),
-      finalize(() => this.loading.set(false))
+      tap((category) => this.currentCategory.set(category)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   getFormData(id: number): Observable<CategoryFormData> {
-    return this.loadById(id).pipe(
-      map(category => this.mapper.toFormData(category))
-    );
+    return this.loadById(id).pipe(map((category) => this.mapper.toFormData(category)));
   }
 
   create(formData: CategoryFormData): Observable<CategoryDetails> {
     this.loading.set(true);
     const request = this.mapper.toCreateRequest(formData);
-    return this.api.create(request).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(request).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: number, formData: CategoryFormData): Observable<CategoryDetails> {
     this.loading.set(true);
     const request = this.mapper.toUpdateRequest(formData);
     return this.api.update(id, request).pipe(
-      tap(category => this.currentCategory.set(category)),
-      finalize(() => this.loading.set(false))
+      tap((category) => this.currentCategory.set(category)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   delete(id: number): Observable<void> {
     return this.api.delete(id).pipe(
       tap(() => {
-        this.categories.update(cats => cats.filter(c => c.id !== id));
-      })
+        this.categories.update((cats) => cats.filter((c) => c.id !== id));
+      }),
     );
   }
 
   // For dropdown options in other modules (Products)
   getOptionsForDropdown(): Observable<CategoryOption[]> {
     return this.loadAll().pipe(
-      map(categories => categories.map(c => ({
-        id: c.id,
-        code: c.code,
-        name: c.name
-      })))
+      map((categories) =>
+        categories.map((c) => ({
+          id: c.id,
+          code: c.code,
+          name: c.name,
+        })),
+      ),
     );
   }
 }
@@ -605,29 +616,33 @@ export const CATEGORY_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/categories-list-page/categories-list-page.component')
-        .then(m => m.CategoriesListPageComponent),
+      import('../pages/categories-list-page/categories-list-page.component').then(
+        (m) => m.CategoriesListPageComponent,
+      ),
     title: 'Categorías',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/categories-form-page/categories-form-page.component')
-        .then(m => m.CategoriesFormPageComponent),
+      import('../pages/categories-form-page/categories-form-page.component').then(
+        (m) => m.CategoriesFormPageComponent,
+      ),
     title: 'Nueva Categoría',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/categories-details-page/categories-details-page.component')
-        .then(m => m.CategoriesDetailsPageComponent),
+      import('../pages/categories-details-page/categories-details-page.component').then(
+        (m) => m.CategoriesDetailsPageComponent,
+      ),
     title: 'Detalles de la Categoría',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/categories-form-page/categories-form-page.component')
-        .then(m => m.CategoriesFormPageComponent),
+      import('../pages/categories-form-page/categories-form-page.component').then(
+        (m) => m.CategoriesFormPageComponent,
+      ),
     title: 'Editar Categoría',
     canDeactivate: [pendingChangesGuard],
   },

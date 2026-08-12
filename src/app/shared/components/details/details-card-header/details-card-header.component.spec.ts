@@ -7,10 +7,7 @@ import { ComponentRef, Component } from '@angular/core';
   standalone: true,
   imports: [DetailsCardHeaderComponent],
   template: `
-    <app-details-card-header
-      [title]="'Test Title'"
-      [subtitle]="'Test Subtitle'"
-    >
+    <app-details-card-header [title]="'Test Title'" [subtitle]="'Test Subtitle'">
       <div actions class="test-actions">Actions</div>
     </app-details-card-header>
   `,

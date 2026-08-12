@@ -1,23 +1,8 @@
-import {
-  Directive,
-  OnInit,
-  OnDestroy,
-  inject,
-  signal,
-  computed,
-  DestroyRef,
-} from '@angular/core';
+import { Directive, OnInit, OnDestroy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  filter,
-  map,
-  Subject,
-  takeUntil,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, Subject, takeUntil } from 'rxjs';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
 import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
@@ -224,10 +209,7 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
     this.array(field).removeAt(index);
   }
 
-  protected populateArray<TItem extends object>(
-    field: string,
-    items?: TItem[],
-  ): void {
+  protected populateArray<TItem extends object>(field: string, items?: TItem[]): void {
     const config = this.getConfig().arrayConfigs?.[field];
     if (!config) {
       return;
@@ -235,16 +217,11 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
     const formArray = this.array(field);
     formArray.clear();
     items?.forEach((item) =>
-      formArray.push(
-        this.createArrayItemGroup(config, item as Record<string, unknown>),
-      ),
+      formArray.push(this.createArrayItemGroup(config, item as Record<string, unknown>)),
     );
   }
 
-  private createArrayItemGroup(
-    config: ArrayItemConfig,
-    data?: Record<string, unknown>,
-  ): FormGroup {
+  private createArrayItemGroup(config: ArrayItemConfig, data?: Record<string, unknown>): FormGroup {
     const group: Record<string, unknown> = {};
 
     if (data?.['id'] !== undefined) {

@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, input, output } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  signal,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -52,7 +60,9 @@ export class CatalogPdfModalComponent {
 
   readonly warehouseOptions = computed(() => [
     { value: null, label: 'Todos los almacenes' },
-    ...this.warehouseService.simpleWarehouses().map((w) => ({ value: w.id, label: `${w.name} (${w.state})` })),
+    ...this.warehouseService
+      .simpleWarehouses()
+      .map((w) => ({ value: w.id, label: `${w.name} (${w.state})` })),
   ]);
 
   loadFilters(): void {

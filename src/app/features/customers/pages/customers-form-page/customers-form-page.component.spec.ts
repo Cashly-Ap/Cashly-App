@@ -31,7 +31,9 @@ describe('CustomersFormPageComponent', () => {
     createdAt: '2025-01-15T10:30:00Z',
     emails: [{ id: 'e1', customerId: 'uuid-001', email: 'contact@acme.com' }],
     phones: [{ id: 'p1', customerId: 'uuid-001', phone: '0212-1234567' }],
-    addresses: [{ id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true }],
+    addresses: [
+      { id: 'a1', customerId: 'uuid-001', address: 'Av. Principal', billing: true, active: true },
+    ],
   };
 
   beforeEach(async () => {
@@ -105,9 +107,7 @@ describe('CustomersFormPageComponent', () => {
     component.form.get('legalName')?.setValue('');
     component.onSubmit();
 
-    expect(addSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'warn' }),
-    );
+    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
   });
 
   it('should show warning and not create when no warehouses assigned', () => {
@@ -125,7 +125,10 @@ describe('CustomersFormPageComponent', () => {
     component.onSubmit();
 
     expect(addSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'warn', detail: 'Debe asignar al menos un almacén antes de crear el cliente' }),
+      expect.objectContaining({
+        severity: 'warn',
+        detail: 'Debe asignar al menos un almacén antes de crear el cliente',
+      }),
     );
     expect(createSpy).not.toHaveBeenCalled();
   });
@@ -145,9 +148,7 @@ describe('CustomersFormPageComponent', () => {
 
     component.onSubmit();
 
-    expect(createSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ warehouseIds: ['wh-001'] }),
-    );
+    expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ warehouseIds: ['wh-001'] }));
     expect(grantSpy).not.toHaveBeenCalled();
   });
 });

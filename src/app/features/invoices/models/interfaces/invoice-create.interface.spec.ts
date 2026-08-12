@@ -13,9 +13,7 @@ describe('InvoiceCreate interface', () => {
           productId: 'p1',
           quantity: 5,
           unitPrice: 100,
-          warehouseAllocations: [
-            { warehouseId: 'wh-001', allocated: 5 },
-          ],
+          warehouseAllocations: [{ warehouseId: 'wh-001', allocated: 5 }],
         },
       ],
     };

@@ -1,5 +1,12 @@
 import { Component, input, inject } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormArray, FormControl, FormBuilder, Validators } from '@angular/forms';
+import {
+  ReactiveFormsModule,
+  FormGroup,
+  FormArray,
+  FormControl,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
 import { ListSectionComponent, ListItemComponent } from '@core/forms/components';
 import { CustomerValidators } from '@features/customers/validators';
 
@@ -39,7 +46,9 @@ export class CustomerContactSectionComponent {
   }
 
   addPhone(): void {
-    this.phonesArray.push(this.fb.control('', [Validators.required, CustomerValidators.phoneNumber()]));
+    this.phonesArray.push(
+      this.fb.control('', [Validators.required, CustomerValidators.phoneNumber()]),
+    );
   }
 
   removePhone(index: number): void {

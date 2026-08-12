@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '@features/products/models/interfaces';
+import {
+  ProductList,
+  ProductDetails,
+  ProductCreate,
+  ProductUpdate,
+  ProductStockByWarehouse,
+} from '@features/products/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ProductFilters {
@@ -23,8 +29,10 @@ export class ProductApiService {
   getAll(filters?: ProductFilters): Observable<PagedResponse<ProductList>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
-    if (filters?.categoryId !== undefined) params = params.set('categoryId', String(filters.categoryId));
-    if (filters?.composite !== undefined) params = params.set('composite', String(filters.composite));
+    if (filters?.categoryId !== undefined)
+      params = params.set('categoryId', String(filters.categoryId));
+    if (filters?.composite !== undefined)
+      params = params.set('composite', String(filters.composite));
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));

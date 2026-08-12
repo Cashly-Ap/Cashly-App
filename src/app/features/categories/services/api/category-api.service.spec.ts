@@ -10,7 +10,14 @@ describe('CategoryApiService', () => {
   let httpMock: HttpTestingController;
 
   const mockList: CategoryList[] = [
-    { id: 1, name: 'Electrónica', description: 'Dispositivos electrónicos', active: true, productCount: 5, deletable: false },
+    {
+      id: 1,
+      name: 'Electrónica',
+      description: 'Dispositivos electrónicos',
+      active: true,
+      productCount: 5,
+      deletable: false,
+    },
   ];
 
   const mockDetails: CategoryDetails = {
@@ -38,7 +45,16 @@ describe('CategoryApiService', () => {
 
   describe('getAll()', () => {
     it('should_GET_categories_and_return_paged_list', () => {
-      const paged = { content: mockList, totalElements: 1, totalPages: 1, size: 10, number: 0, first: true, last: true, empty: false };
+      const paged = {
+        content: mockList,
+        totalElements: 1,
+        totalPages: 1,
+        size: 10,
+        number: 0,
+        first: true,
+        last: true,
+        empty: false,
+      };
       service.getAll().subscribe((result) => {
         expect(result.content).toEqual(mockList);
       });

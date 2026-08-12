@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -24,7 +31,10 @@ import { SupplierApplicationService } from '@features/suppliers/services/applica
 import { SupplierFilters } from '@features/suppliers/services/api/supplier-api.service';
 import { SupplierList } from '@features/suppliers/models/interfaces';
 import { getSupplierTypeLabel, SUPPLIER_TYPES } from '@features/suppliers/models/enums';
-import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/customers/data/venezuela-geo.data';
+import {
+  VENEZUELA_STATE_NAMES,
+  getMunicipalitiesForState,
+} from '@features/customers/data/venezuela-geo.data';
 
 @Component({
   selector: 'app-suppliers-list-page',
@@ -101,8 +111,19 @@ export class SuppliersListPageComponent implements OnInit {
   stateOptions = VENEZUELA_STATE_NAMES;
 
   showInitialLoading = computed(() => this.loading() && (this.suppliers()?.length ?? 0) === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
+  );
 
   ngOnInit(): void {
     this.loadWithFilters();

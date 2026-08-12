@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -119,7 +126,12 @@ export class WarehousesDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el almacén.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el almacén.',
+          life: 5000,
+        });
         this.router.navigate(['/warehouses']);
       },
     });
@@ -166,7 +178,12 @@ export class WarehousesDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.movementsLoading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar los movimientos.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar los movimientos.',
+          life: 5000,
+        });
       },
     });
   }
@@ -219,5 +236,4 @@ export class WarehousesDetailsPageComponent implements OnInit {
     };
     return map[type] ?? `${base} bg-surface-100 text-surface-700`;
   }
-
 }

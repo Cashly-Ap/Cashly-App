@@ -76,20 +76,20 @@ src/app/features/receivables/
 
 ## Role-Based Endpoint Usage
 
-| Endpoint | USER/ADMIN | MERCHANT |
-|----------|-----------|---------|
-| `GET /api/receivables/summary` | Global summary | **NOT AVAILABLE** (403) |
-| `GET /api/receivables/customers` | All customers with debt | Only customers from own invoices (filtered automatically) |
-| `GET /api/receivables/customers/:id` | Any customer | Only if has invoices with that customer (403 otherwise) |
-| `GET /api/receivables/customers/:id/invoices` | All invoices for customer | Only own invoices for that customer (filtered automatically) |
-| `GET /api/receivables/customers/:id/payment-history` | Full history | Only own payments for that customer |
-| `POST /api/receivables/invoices/:id/pay` | Auto-approved payment | Payment goes to PENDING_APPROVAL + requires `proofFile` |
-| `POST /api/receivables/customers/:id/pay-all` | Auto-approved | PENDING_APPROVAL + requires `proofFile` |
-| `POST /api/receivables/customers/:id/pay-partial` | Auto-approved | PENDING_APPROVAL + requires `proofFile` |
-| `GET /api/receivables/payments/pending` | All pending/rejected payments | **NOT AVAILABLE** (403) |
-| `GET /api/receivables/payments/my` | **NOT AVAILABLE** | Own registered payments (all statuses) |
-| `PUT /api/receivables/payments/:id/approve` | Available | **NOT AVAILABLE** (403) |
-| `PUT /api/receivables/payments/:id/reject` | Available | **NOT AVAILABLE** (403) |
+| Endpoint                                             | USER/ADMIN                    | MERCHANT                                                     |
+| ---------------------------------------------------- | ----------------------------- | ------------------------------------------------------------ |
+| `GET /api/receivables/summary`                       | Global summary                | **NOT AVAILABLE** (403)                                      |
+| `GET /api/receivables/customers`                     | All customers with debt       | Only customers from own invoices (filtered automatically)    |
+| `GET /api/receivables/customers/:id`                 | Any customer                  | Only if has invoices with that customer (403 otherwise)      |
+| `GET /api/receivables/customers/:id/invoices`        | All invoices for customer     | Only own invoices for that customer (filtered automatically) |
+| `GET /api/receivables/customers/:id/payment-history` | Full history                  | Only own payments for that customer                          |
+| `POST /api/receivables/invoices/:id/pay`             | Auto-approved payment         | Payment goes to PENDING_APPROVAL + requires `proofFile`      |
+| `POST /api/receivables/customers/:id/pay-all`        | Auto-approved                 | PENDING_APPROVAL + requires `proofFile`                      |
+| `POST /api/receivables/customers/:id/pay-partial`    | Auto-approved                 | PENDING_APPROVAL + requires `proofFile`                      |
+| `GET /api/receivables/payments/pending`              | All pending/rejected payments | **NOT AVAILABLE** (403)                                      |
+| `GET /api/receivables/payments/my`                   | **NOT AVAILABLE**             | Own registered payments (all statuses)                       |
+| `PUT /api/receivables/payments/:id/approve`          | Available                     | **NOT AVAILABLE** (403)                                      |
+| `PUT /api/receivables/payments/:id/reject`           | Available                     | **NOT AVAILABLE** (403)                                      |
 
 **Key rule for MERCHANT**: The endpoints `GET /api/receivables/customers` and `GET /api/receivables/customers/:id/invoices` are shared with USER/ADMIN. The backend automatically filters results to only show data related to the authenticated merchant's invoices — no extra query parameters needed.
 
@@ -126,12 +126,14 @@ src/app/features/receivables/
 **Purpose**: Single-page module using PrimeNG Tabs to organize all receivables functionality. All interactions (customer detail, payment, approve/reject) are handled via dialogs — there are no sub-routes.
 
 **Tabs**:
+
 - **Clientes con Deuda** (USER/ADMIN + MERCHANT): Searchable table of customers with outstanding balances
 - **Pagos Pendientes** (USER/ADMIN only): Payments awaiting approval
 - **Pagos Rechazados** (USER/ADMIN only): Payments that were rejected
 - **Mis Pagos Registrados** (MERCHANT only): Merchant's own registered payments with status tracking
 
 **Dialogs used**:
+
 - `CustomerDebtDialogComponent` — Customer invoice list + pay actions
 - `PaymentFormDialogComponent` — Register payment (single / all / partial modes)
 - `ApproveRejectDialogComponent` — Confirm approve or reject with reason
@@ -152,11 +154,11 @@ src/app/features/receivables/
 
 ```typescript
 export interface GlobalDebtSummary {
-  totalDebt: number;                    // Total outstanding debt
-  totalCustomersWithDebt: number;       // Count of customers with debt
-  totalInvoicesWithDebt: number;        // Count of invoices with balance > 0
+  totalDebt: number; // Total outstanding debt
+  totalCustomersWithDebt: number; // Count of customers with debt
+  totalInvoicesWithDebt: number; // Count of invoices with balance > 0
   debtByStatus: Record<string, number>; // Debt grouped by invoice status
-  calculatedAt: string;                 // ISO timestamp of calculation
+  calculatedAt: string; // ISO timestamp of calculation
 }
 ```
 
@@ -172,15 +174,15 @@ export interface GlobalDebtSummary {
 
 ```typescript
 export interface CustomerDebtList {
-  customerId: string;                   // UUID identifier
-  customerName: string;                 // Customer legal name
-  customerRif: string;                  // Venezuelan tax ID (J-12345678-9)
-  totalDebt: number;                    // Total amount owed
-  invoicesWithDebt: number;             // Count of invoices with balance
-  oldestInvoiceDate: string;            // ISO date of oldest unpaid invoice
-  pendingValidationAmount: number;      // Amount blocked in PENDING_APPROVAL payments
-  pendingValidationCount: number;       // Count of invoices with a pending payment
-  availableDebt: number;                // Debt available to pay (totalDebt - pendingValidationAmount)
+  customerId: string; // UUID identifier
+  customerName: string; // Customer legal name
+  customerRif: string; // Venezuelan tax ID (J-12345678-9)
+  totalDebt: number; // Total amount owed
+  invoicesWithDebt: number; // Count of invoices with balance
+  oldestInvoiceDate: string; // ISO date of oldest unpaid invoice
+  pendingValidationAmount: number; // Amount blocked in PENDING_APPROVAL payments
+  pendingValidationCount: number; // Count of invoices with a pending payment
+  availableDebt: number; // Debt available to pay (totalDebt - pendingValidationAmount)
 }
 ```
 
@@ -196,15 +198,15 @@ export interface CustomerDebtList {
 
 ```typescript
 export interface CustomerDebtSummary {
-  customerId: string;                    // UUID identifier
-  customerName: string;                  // Customer legal name
-  customerRif: string;                   // Venezuelan tax ID
-  customerPhone: string | null;          // Primary phone
-  customerEmail: string | null;          // Primary email
-  totalDebt: number;                     // Total amount owed
-  invoicesWithDebt: number;              // Count of invoices with balance
-  pendingPaymentsCount: number;          // Payments awaiting validation
-  pendingPaymentsAmount: number;         // Amount in pending payments
+  customerId: string; // UUID identifier
+  customerName: string; // Customer legal name
+  customerRif: string; // Venezuelan tax ID
+  customerPhone: string | null; // Primary phone
+  customerEmail: string | null; // Primary email
+  totalDebt: number; // Total amount owed
+  invoicesWithDebt: number; // Count of invoices with balance
+  pendingPaymentsCount: number; // Payments awaiting validation
+  pendingPaymentsAmount: number; // Amount in pending payments
   debtBreakdown: Record<string, number>; // Debt by invoice status
 }
 ```
@@ -221,24 +223,24 @@ export interface CustomerDebtSummary {
 
 ```typescript
 export interface PendingPaymentSummary {
-  id: string;                // Pending payment UUID
-  amount: number;            // Payment amount
-  status: string;            // PENDING_APPROVAL
-  registeredAt: string;      // ISO timestamp
+  id: string; // Pending payment UUID
+  amount: number; // Payment amount
+  status: string; // PENDING_APPROVAL
+  registeredAt: string; // ISO timestamp
 }
 
 export interface CustomerInvoiceDebt {
-  invoiceId: string;                       // UUID identifier
-  invoiceNumber: string;                   // INV-YYYY-NNNNN format
-  status: string;                          // DELIVERED, PARTIALLY_PAID
-  invoiceDate: string;                     // ISO date
-  subtotal: number;                        // Invoice total
-  totalPaid: number;                       // Amount already paid
-  balance: number;                         // Remaining amount
+  invoiceId: string; // UUID identifier
+  invoiceNumber: string; // INV-YYYY-NNNNN format
+  status: string; // DELIVERED, PARTIALLY_PAID
+  invoiceDate: string; // ISO date
+  subtotal: number; // Invoice total
+  totalPaid: number; // Amount already paid
+  balance: number; // Remaining amount
   pendingPayment: PendingPaymentSummary | null; // Pending validation payment
-  merchantId: string;                      // Associated merchant UUID
-  merchantName: string;                    // Merchant display name
-  lineCount: number;                       // Number of line items
+  merchantId: string; // Associated merchant UUID
+  merchantName: string; // Merchant display name
+  lineCount: number; // Number of line items
 }
 ```
 
@@ -304,7 +306,7 @@ export interface PendingPayment {
   paymentDate: string;
   paymentMethod: PaymentMethod;
   reference: string | null;
-  proofFileUrl: string | null;          // URL of stored payment proof file
+  proofFileUrl: string | null; // URL of stored payment proof file
   status: PaymentValidationStatus;
   registeredAt: string;
   invoiceBalance: number;
@@ -332,10 +334,10 @@ export interface PaymentResult {
   invoiceId: string;
   invoiceNumber: string;
   amount: number;
-  status: string;                  // APPROVED, PENDING_APPROVAL
+  status: string; // APPROVED, PENDING_APPROVAL
   newInvoiceStatus: string;
   newInvoiceBalance: number;
-  requiresValidation: boolean;     // True if MERCHANT payment
+  requiresValidation: boolean; // True if MERCHANT payment
   collectionGenerated: boolean;
   commissionAmount: number | null;
   message: string | null;
@@ -367,7 +369,7 @@ export interface PaymentItem {
 ```typescript
 export interface PayInvoiceRequest {
   amount: number;
-  paymentDate: string;           // ISO date (YYYY-MM-DD)
+  paymentDate: string; // ISO date (YYYY-MM-DD)
   paymentMethod: PaymentMethod;
   reference: string | null;
 }
@@ -386,7 +388,7 @@ export interface PayPartialDebtRequest {
 }
 
 export interface ValidatePaymentRequest {
-  reason: string;               // Required for rejection
+  reason: string; // Required for rejection
 }
 ```
 
@@ -410,7 +412,11 @@ export interface PaymentValidationStatusOption {
 }
 
 export const PAYMENT_VALIDATION_STATUSES: readonly PaymentValidationStatusOption[] = [
-  { label: 'Pendiente de Aprobación', value: PaymentValidationStatus.PENDING_APPROVAL, severity: 'warn' },
+  {
+    label: 'Pendiente de Aprobación',
+    value: PaymentValidationStatus.PENDING_APPROVAL,
+    severity: 'warn',
+  },
   { label: 'Aprobado', value: PaymentValidationStatus.APPROVED, severity: 'success' },
   { label: 'Rechazado', value: PaymentValidationStatus.REJECTED, severity: 'danger' },
 ] as const;
@@ -419,7 +425,9 @@ export function getPaymentValidationStatusLabel(status: PaymentValidationStatus)
   return PAYMENT_VALIDATION_STATUS_LABELS[status] || status;
 }
 
-export function getPaymentValidationStatusSeverity(status: PaymentValidationStatus): 'warn' | 'success' | 'danger' {
+export function getPaymentValidationStatusSeverity(
+  status: PaymentValidationStatus,
+): 'warn' | 'success' | 'danger' {
   const option = PAYMENT_VALIDATION_STATUSES.find((s) => s.value === status);
   return option?.severity || 'warn';
 }
@@ -451,33 +459,33 @@ const RECEIVABLES_API_ROUTES = {
   MERCHANT_PAYMENTS: '/receivables/payments/my',
   APPROVE_PAYMENT: (id: string) => `/receivables/payments/${id}/approve`,
   REJECT_PAYMENT: (id: string) => `/receivables/payments/${id}/reject`,
-}
+};
 ```
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request | Response | Frontend Usage |
-|-------------|----------|---------|----------|----------------|
-| GET | /api/receivables/summary | - | `GlobalDebtSummary` | Summary cards |
-| GET | /api/receivables/customers | `ReceivablesSearchParams` | `PagedResponse<CustomerDebtList>` | Customer list |
-| GET | /api/receivables/customers/:id | - | `CustomerDebtSummary` | Customer dialog header |
-| GET | /api/receivables/customers/:id/invoices | `ReceivablesSearchParams` | `PagedResponse<CustomerInvoiceDebt>` | Invoice list in dialog |
-| GET | /api/receivables/customers/:id/payment-history | `ReceivablesSearchParams` | `PagedResponse<PendingPayment>` | Payment history dialog |
-| GET | /api/invoices/:id | - | `InvoiceDetail` | Invoice payment history |
-| POST | /api/receivables/invoices/:id/pay | `PayInvoiceRequest` + `proofFile?` | `PaymentResult` | Pay single invoice |
-| POST | /api/receivables/customers/:id/pay-all | `PayCustomerDebtRequest` + `proofFile?` | `BulkPaymentResult` | Pay all debt |
-| POST | /api/receivables/customers/:id/pay-partial | `PayPartialDebtRequest` + `proofFile?` | `BulkPaymentResult` | Pay partial |
-| GET | /api/receivables/payments/pending | `ReceivablesSearchParams` | `PagedResponse<PendingPayment>` | Pending/rejected tabs |
-| GET | /api/receivables/payments/my | `ReceivablesSearchParams` | `PagedResponse<PendingPayment>` | Merchant self-view tab |
-| PUT | /api/receivables/payments/:id/approve | - | `PaymentResult` | Approve payment |
-| PUT | /api/receivables/payments/:id/reject | `ValidatePaymentRequest` | `PaymentResult` | Reject payment |
+| HTTP Method | Endpoint                                       | Request                                 | Response                             | Frontend Usage          |
+| ----------- | ---------------------------------------------- | --------------------------------------- | ------------------------------------ | ----------------------- |
+| GET         | /api/receivables/summary                       | -                                       | `GlobalDebtSummary`                  | Summary cards           |
+| GET         | /api/receivables/customers                     | `ReceivablesSearchParams`               | `PagedResponse<CustomerDebtList>`    | Customer list           |
+| GET         | /api/receivables/customers/:id                 | -                                       | `CustomerDebtSummary`                | Customer dialog header  |
+| GET         | /api/receivables/customers/:id/invoices        | `ReceivablesSearchParams`               | `PagedResponse<CustomerInvoiceDebt>` | Invoice list in dialog  |
+| GET         | /api/receivables/customers/:id/payment-history | `ReceivablesSearchParams`               | `PagedResponse<PendingPayment>`      | Payment history dialog  |
+| GET         | /api/invoices/:id                              | -                                       | `InvoiceDetail`                      | Invoice payment history |
+| POST        | /api/receivables/invoices/:id/pay              | `PayInvoiceRequest` + `proofFile?`      | `PaymentResult`                      | Pay single invoice      |
+| POST        | /api/receivables/customers/:id/pay-all         | `PayCustomerDebtRequest` + `proofFile?` | `BulkPaymentResult`                  | Pay all debt            |
+| POST        | /api/receivables/customers/:id/pay-partial     | `PayPartialDebtRequest` + `proofFile?`  | `BulkPaymentResult`                  | Pay partial             |
+| GET         | /api/receivables/payments/pending              | `ReceivablesSearchParams`               | `PagedResponse<PendingPayment>`      | Pending/rejected tabs   |
+| GET         | /api/receivables/payments/my                   | `ReceivablesSearchParams`               | `PagedResponse<PendingPayment>`      | Merchant self-view tab  |
+| PUT         | /api/receivables/payments/:id/approve          | -                                       | `PaymentResult`                      | Approve payment         |
+| PUT         | /api/receivables/payments/:id/reject           | `ValidatePaymentRequest`                | `PaymentResult`                      | Reject payment          |
 
 ### Search Params Interface
 
 ```typescript
 export interface ReceivablesSearchParams extends PaginationParams {
   search?: string;
-  status?: string;      // For filtering pending/rejected: 'PENDING_APPROVAL' | 'REJECTED' | 'ALL'
+  status?: string; // For filtering pending/rejected: 'PENDING_APPROVAL' | 'REJECTED' | 'ALL'
   merchantId?: string;
   customerId?: string;
 }
@@ -510,23 +518,23 @@ private toFormData(data: unknown, file?: File): FormData {
 
 ### Payment Form Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `amount` | number | Yes (except 'all' mode) | > 0, <= balance | "El monto debe ser mayor a cero / no puede exceder el saldo" |
-| `paymentDate` | date | Yes | <= today | "La fecha no puede ser futura" |
-| `paymentMethod` | enum | Yes | Valid PaymentMethod | "El método de pago es requerido" |
-| `reference` | string | No | max 100 chars | "Máximo 100 caracteres" |
-| `proofFile` | File | Yes (MERCHANT) / No (USER/ADMIN) | image/jpeg, image/png, image/gif, image/webp, application/pdf | "El comprobante de pago es requerido" |
-| `reason` | string | Yes (for rejection) | max 500 chars | "La razón es requerida / no puede exceder 500 caracteres" |
+| Field           | Type   | Required                         | Rules                                                         | Error Message                                                |
+| --------------- | ------ | -------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------ |
+| `amount`        | number | Yes (except 'all' mode)          | > 0, <= balance                                               | "El monto debe ser mayor a cero / no puede exceder el saldo" |
+| `paymentDate`   | date   | Yes                              | <= today                                                      | "La fecha no puede ser futura"                               |
+| `paymentMethod` | enum   | Yes                              | Valid PaymentMethod                                           | "El método de pago es requerido"                             |
+| `reference`     | string | No                               | max 100 chars                                                 | "Máximo 100 caracteres"                                      |
+| `proofFile`     | File   | Yes (MERCHANT) / No (USER/ADMIN) | image/jpeg, image/png, image/gif, image/webp, application/pdf | "El comprobante de pago es requerido"                        |
+| `reason`        | string | Yes (for rejection)              | max 500 chars                                                 | "La razón es requerida / no puede exceder 500 caracteres"    |
 
 ### Custom Validators (`PaymentValidators`)
 
 ```typescript
 export class PaymentValidators {
-  static maxAmount(maxBalance: number): ValidatorFn;      // value <= maxBalance
-  static notFutureDate(): ValidatorFn;                     // date <= today (23:59:59)
-  static positiveAmount(): ValidatorFn;                    // value > 0
-  static maxLength(max: number): ValidatorFn;              // string.length <= max
+  static maxAmount(maxBalance: number): ValidatorFn; // value <= maxBalance
+  static notFutureDate(): ValidatorFn; // date <= today (23:59:59)
+  static positiveAmount(): ValidatorFn; // value > 0
+  static maxLength(max: number): ValidatorFn; // string.length <= max
 }
 ```
 
@@ -541,19 +549,39 @@ export class PaymentValidators {
 ```typescript
 @Injectable({ providedIn: 'root' })
 export class ReceivablesApiService {
-  getGlobalSummary(): Observable<GlobalDebtSummary>
-  searchCustomersWithDebt(params?: ReceivablesSearchParams): Observable<PagedResponse<CustomerDebtList>>
-  getCustomerDebt(customerId: string): Observable<CustomerDebtSummary>
-  getCustomerInvoices(customerId: string, params?: ReceivablesSearchParams): Observable<PagedResponse<CustomerInvoiceDebt>>
-  getCustomerPaymentHistory(customerId: string, params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>>
-  getInvoicePaymentHistory(invoiceId: string): Observable<InvoiceDetail>
-  payInvoice(invoiceId: string, request: PayInvoiceRequest, proofFile?: File): Observable<PaymentResult>
-  payAllCustomerDebt(customerId: string, request: PayCustomerDebtRequest, proofFile?: File): Observable<BulkPaymentResult>
-  payPartialDebt(customerId: string, request: PayPartialDebtRequest, proofFile?: File): Observable<BulkPaymentResult>
-  getPendingPayments(params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>>
-  getMerchantPayments(params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>>  // calls /payments/my
-  approvePayment(paymentId: string): Observable<PaymentResult>
-  rejectPayment(paymentId: string, request: ValidatePaymentRequest): Observable<PaymentResult>
+  getGlobalSummary(): Observable<GlobalDebtSummary>;
+  searchCustomersWithDebt(
+    params?: ReceivablesSearchParams,
+  ): Observable<PagedResponse<CustomerDebtList>>;
+  getCustomerDebt(customerId: string): Observable<CustomerDebtSummary>;
+  getCustomerInvoices(
+    customerId: string,
+    params?: ReceivablesSearchParams,
+  ): Observable<PagedResponse<CustomerInvoiceDebt>>;
+  getCustomerPaymentHistory(
+    customerId: string,
+    params?: ReceivablesSearchParams,
+  ): Observable<PagedResponse<PendingPayment>>;
+  getInvoicePaymentHistory(invoiceId: string): Observable<InvoiceDetail>;
+  payInvoice(
+    invoiceId: string,
+    request: PayInvoiceRequest,
+    proofFile?: File,
+  ): Observable<PaymentResult>;
+  payAllCustomerDebt(
+    customerId: string,
+    request: PayCustomerDebtRequest,
+    proofFile?: File,
+  ): Observable<BulkPaymentResult>;
+  payPartialDebt(
+    customerId: string,
+    request: PayPartialDebtRequest,
+    proofFile?: File,
+  ): Observable<BulkPaymentResult>;
+  getPendingPayments(params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>>;
+  getMerchantPayments(params?: ReceivablesSearchParams): Observable<PagedResponse<PendingPayment>>; // calls /payments/my
+  approvePayment(paymentId: string): Observable<PaymentResult>;
+  rejectPayment(paymentId: string, request: ValidatePaymentRequest): Observable<PaymentResult>;
 }
 ```
 
@@ -606,6 +634,7 @@ export class ReceivablesApplicationService {
 ```
 
 **Key design notes**:
+
 - `isMerchant` is a `computed` signal derived from `AuthService`
 - Error handling includes 409 Conflict detection with specific messages
 - `loadPendingPayments` and `loadRejectedPayments` internally fix the `status` parameter
@@ -618,19 +647,22 @@ export class ReceivablesApplicationService {
 **File**: `components/payment-form-dialog/payment-form-dialog.component.ts`
 
 **Modes** (exported as `PaymentFormMode`):
+
 - `'single'` — Register payment for one invoice (amount field pre-filled with invoice balance)
 - `'all'` — Pay all customer debt (amount field disabled, shows total debt)
 - `'partial'` — Pay partial amount (amount field editable, max = total debt)
 
 **Submit event** (exported as `PaymentSubmitEvent`):
+
 ```typescript
 export interface PaymentSubmitEvent {
   request: PayInvoiceRequest;
-  proofFile?: File;            // Only present if file selected (required for MERCHANT)
+  proofFile?: File; // Only present if file selected (required for MERCHANT)
 }
 ```
 
 **Key behaviors**:
+
 - Title changes dynamically based on `mode` and `isMerchant` ("Registrar Pago" vs "Registrar Justificante")
 - MERCHANT must upload a `voucherFile` — form is blocked if no file selected
 - Form controls are disabled while `loading` signal is true
@@ -685,7 +717,8 @@ export const RECEIVABLES_ERROR_MESSAGES = {
   PAYMENT_NOT_FOUND: 'Pago no encontrado',
   AMOUNT_EXCEEDS_BALANCE: 'El monto excede el saldo de la factura',
   PAYMENT_REGISTRATION_ERROR: 'Error al registrar el pago',
-  PAYMENT_REGISTRATION_CONFLICT: 'No se puede registrar el pago: la factura ya fue pagada o no tiene deuda pendiente.',
+  PAYMENT_REGISTRATION_CONFLICT:
+    'No se puede registrar el pago: la factura ya fue pagada o no tiene deuda pendiente.',
   PAYMENT_APPROVAL_ERROR: 'Error al aprobar el pago',
   PAYMENT_APPROVAL_CONFLICT: 'No se puede aprobar el pago: ya fue procesado anteriormente.',
   PAYMENT_REJECTION_ERROR: 'Error al rechazar el pago',
@@ -716,7 +749,8 @@ export const RECEIVABLES_INFO_MESSAGES = {
   NO_CUSTOMERS_WITH_DEBT: 'No hay clientes con deuda',
   NO_INVOICES_WITH_DEBT: 'No hay facturas con saldo pendiente',
   NO_PENDING_PAYMENTS: 'No hay pagos pendientes de aprobación',
-  MERCHANT_PAYMENT_PENDING: 'El pago ha sido registrado y está pendiente de aprobación por un administrador',
+  MERCHANT_PAYMENT_PENDING:
+    'El pago ha sido registrado y está pendiente de aprobación por un administrador',
   LOADING_DATA: 'Cargando información...',
   PROCESSING_PAYMENT: 'Procesando pago...',
 };
@@ -742,11 +776,11 @@ export const RECEIVABLES_CONFIRMATION_MESSAGES = {
 4. Customer total debt = Sum of all invoice balances
 5. **`hasPendingPayment` flag**: When a MERCHANT registers a payment, the invoice's `hasPendingPayment` flag is set to `true`. This invoice's balance is excluded from `availableDebt` but the customer remains visible in the debt list if they have at least one other invoice available. When the payment is approved or rejected, the flag resets to `false`.
 
-| Event | `hasPendingPayment` | Effect on debt queries |
-|-------|---------------------|------------------------|
-| Invoice created | `false` | Visible in debt lists |
-| MERCHANT registers payment | `true` | Invoice excluded from `availableDebt`; customer hidden only if ALL invoices are in validation |
-| Payment approved or rejected | `false` | Visible again (if balance > 0) |
+| Event                        | `hasPendingPayment` | Effect on debt queries                                                                        |
+| ---------------------------- | ------------------- | --------------------------------------------------------------------------------------------- |
+| Invoice created              | `false`             | Visible in debt lists                                                                         |
+| MERCHANT registers payment   | `true`              | Invoice excluded from `availableDebt`; customer hidden only if ALL invoices are in validation |
+| Payment approved or rejected | `false`             | Visible again (if balance > 0)                                                                |
 
 ### Payment Registration
 
@@ -792,6 +826,7 @@ export const RECEIVABLES_CONFIRMATION_MESSAGES = {
 ### 409 Conflict Handling
 
 When a payment operation returns HTTP 409:
+
 - Registration conflict: "No se puede registrar el pago: la factura ya fue pagada o no tiene deuda pendiente."
 - Approval conflict: "No se puede aprobar el pago: ya fue procesado anteriormente."
 - Rejection conflict: "No se puede rechazar el pago: ya fue procesado anteriormente."

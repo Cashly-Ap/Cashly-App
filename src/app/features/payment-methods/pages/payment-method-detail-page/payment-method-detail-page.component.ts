@@ -100,7 +100,9 @@ export class PaymentMethodDetailPageComponent implements OnInit {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: err?.error?.message || 'No se pudo eliminar el método de pago. Verifica que no tenga pagos asociados.',
+              detail:
+                err?.error?.message ||
+                'No se pudo eliminar el método de pago. Verifica que no tenga pagos asociados.',
               life: 5000,
             });
           },

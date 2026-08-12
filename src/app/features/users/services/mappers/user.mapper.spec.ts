@@ -31,7 +31,10 @@ describe('UserMapper', () => {
     });
 
     it('should default modulePermissions to empty array when undefined', () => {
-      const userWithoutPermissions = { ...mockUserDetails, modulePermissions: undefined as unknown as BusinessModule[] };
+      const userWithoutPermissions = {
+        ...mockUserDetails,
+        modulePermissions: undefined as unknown as BusinessModule[],
+      };
       const result = UserMapper.toList(userWithoutPermissions);
       expect(result.modulePermissions).toEqual([]);
     });

@@ -1,89 +1,76 @@
-  <div class="min-h-screen">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      @if (loading()) {
-        <app-loading-spinner />
-      }
-      @if (creditNote(); as cn) {
-        <div class="flex flex-col gap-6">
-          <app-page-header
-            title="Detalles de la Nota de Crédito"
-            subtitle="Información completa de la nota de crédito"
-          />
+<div class="min-h-screen">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (creditNote(); as cn) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          title="Detalles de la Nota de Crédito"
+          subtitle="Información completa de la nota de crédito"
+        />
 
+        <app-details-card>
+          <app-details-card-header
+            [title]="cn.noteNumber"
+            [subtitle]="'Monto: ' + (cn.amount | number: '1.2-2')"
+          >
+            <div actions class="flex gap-3">
+              <p-button
+                label="Volver"
+                icon="pi pi-arrow-left"
+                [outlined]="true"
+                (onClick)="onBack()"
+                styleClass="w-full sm:w-auto"
+              />
+              <p-button
+                label="Eliminar"
+                icon="pi pi-trash"
+                severity="danger"
+                (onClick)="onDelete()"
+                styleClass="w-full sm:w-auto"
+              />
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field label="Número" [value]="cn.noteNumber" type="code" />
+              <app-details-info-field label="Cliente" [value]="cn.customerName || '—'" />
+              <app-details-info-field label="RIF" [value]="cn.customerRif || '—'" type="code" />
+              <app-details-info-field
+                label="Factura"
+                [value]="cn.invoiceNumber || '—'"
+                type="code"
+              />
+              <app-details-info-field label="Monto" [value]="(cn.amount | number: '1.2-2') || ''" />
+              <app-details-info-field label="Creado por" [value]="cn.createdByName" />
+              <app-details-info-field
+                label="Fecha de Creación"
+                [value]="(cn.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                label="Última Actualización"
+                [value]="(cn.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-details-card>
+
+        @if (cn.reason) {
           <app-details-card>
-            <app-details-card-header
-              [title]="cn.noteNumber"
-              [subtitle]="'Monto: ' + (cn.amount | number:'1.2-2')"
-            >
-              <div actions class="flex gap-3">
-                <p-button
-                  label="Volver"
-                  icon="pi pi-arrow-left"
-                  [outlined]="true"
-                  (onClick)="onBack()"
-                  styleClass="w-full sm:w-auto"
-                />
-                <p-button
-                  label="Eliminar"
-                  icon="pi pi-trash"
-                  severity="danger"
-                  (onClick)="onDelete()"
-                  styleClass="w-full sm:w-auto"
-                />
-              </div>
-            </app-details-card-header>
-
+            <app-details-card-header title="Motivo" />
             <div class="p-4 sm:p-6">
-              <app-details-info-grid>
-                <app-details-info-field
-                  label="Número"
-                  [value]="cn.noteNumber"
-                  type="code"
-                />
-                <app-details-info-field
-                  label="Cliente"
-                  [value]="cn.customerName || '—'"
-                />
-                <app-details-info-field
-                  label="RIF"
-                  [value]="cn.customerRif || '—'"
-                  type="code"
-                />
-                <app-details-info-field
-                  label="Factura"
-                  [value]="cn.invoiceNumber || '—'"
-                  type="code"
-                />
-                <app-details-info-field
-                  label="Monto"
-                  [value]="(cn.amount | number:'1.2-2') || ''"
-                />
-                <app-details-info-field
-                  label="Creado por"
-                  [value]="cn.createdByName"
-                />
-                <app-details-info-field
-                  label="Fecha de Creación"
-                  [value]="(cn.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-                <app-details-info-field
-                  label="Última Actualización"
-                  [value]="(cn.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-              </app-details-info-grid>
+              <p
+                class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap leading-relaxed"
+              >
+                {{ cn.reason }}
+              </p>
             </div>
           </app-details-card>
-
-          @if (cn.reason) {
-            <app-details-card>
-              <app-details-card-header title="Motivo" />
-              <div class="p-4 sm:p-6">
-                <p class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap leading-relaxed">{{ cn.reason }}</p>
-              </div>
-            </app-details-card>
-          }
-        </div>
-      }
-    </div>
+        }
+      </div>
+    }
   </div>
-  <p-confirmDialog styleClass="max-w-md" />
+</div>
+<p-confirmDialog styleClass="max-w-md" />

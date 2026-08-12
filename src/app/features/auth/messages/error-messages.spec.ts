@@ -8,7 +8,9 @@ import {
 
 describe('AUTH_HTTP_ERRORS', () => {
   it('should have expected HTTP status codes', () => {
-    expect(Object.keys(AUTH_HTTP_ERRORS).map(Number)).toEqual([0, 400, 401, 403, 404, 500, 503, 504]);
+    expect(Object.keys(AUTH_HTTP_ERRORS).map(Number)).toEqual([
+      0, 400, 401, 403, 404, 500, 503, 504,
+    ]);
   });
 
   it('should have string values for all status codes', () => {

@@ -113,7 +113,10 @@ describe('ProductsFormPageComponent', () => {
         { provide: ProductPhotoService, useValue: mockPhotoService },
         { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
         { provide: PendingTabsService, useValue: mockPendingTabsService },
-        { provide: CategoryApplicationService, useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) } },
+        {
+          provide: CategoryApplicationService,
+          useValue: { loadAll: vi.fn().mockReturnValue(of(undefined)), categories: signal([]) },
+        },
         MessageService,
         ...pdfMocks,
       ],
@@ -309,12 +312,32 @@ describe('ProductsFormPageComponent', () => {
   });
 
   it('should return pending tab title from formData name', () => {
-    const title = component['getPendingTabTitle']({ name: 'My Product', categoryId: 'cat-001', description: '', active: true, composite: false, purchasePrice: null, photo: null, components: [], productPrices: [] });
+    const title = component['getPendingTabTitle']({
+      name: 'My Product',
+      categoryId: 'cat-001',
+      description: '',
+      active: true,
+      composite: false,
+      purchasePrice: null,
+      photo: null,
+      components: [],
+      productPrices: [],
+    });
     expect(title).toBe('My Product');
   });
 
   it('should return default pending tab title when name is empty', () => {
-    const title = component['getPendingTabTitle']({ name: '', categoryId: 'cat-001', description: '', active: true, composite: false, purchasePrice: null, photo: null, components: [], productPrices: [] });
+    const title = component['getPendingTabTitle']({
+      name: '',
+      categoryId: 'cat-001',
+      description: '',
+      active: true,
+      composite: false,
+      purchasePrice: null,
+      photo: null,
+      components: [],
+      productPrices: [],
+    });
     expect(title).toContain('Nuevo');
   });
 
@@ -349,7 +372,10 @@ describe('ProductsFormPageComponent', () => {
 
   it('should show error and navigate on load entity failure', async () => {
     (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed('prod-999', throwError(() => new Error('Not found')));
+    configureTestBed(
+      'prod-999',
+      throwError(() => new Error('Not found')),
+    );
     createComponent();
 
     await fixture.whenStable();
@@ -357,7 +383,6 @@ describe('ProductsFormPageComponent', () => {
     const addSpy = vi.spyOn(messageService, 'add');
     const navigateSpy = vi.spyOn(router, 'navigate');
 
-    
     component.onLoadEntity('prod-999');
 
     expect(addSpy).toHaveBeenCalledWith({

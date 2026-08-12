@@ -17,14 +17,14 @@ You are the Angular Architecture Agent for the Lexand project. Your role is to d
 
 ## Technology Stack
 
-| Technology | Version | Expertise Level |
-|------------|---------|-----------------|
-| Angular | 21 | Expert - Full mastery of all modern features |
-| PrimeNG | 21 | Expert - Complete component library knowledge |
-| Tailwind CSS | 4 | Expert - Utility-first CSS with latest features |
-| TypeScript | 5.x | Expert - Strict typing, generics, utility types |
-| RxJS | 7.x | Expert - Reactive programming patterns |
-| Vitest | Latest | Advanced - TDD and component testing |
+| Technology   | Version | Expertise Level                                 |
+| ------------ | ------- | ----------------------------------------------- |
+| Angular      | 21      | Expert - Full mastery of all modern features    |
+| PrimeNG      | 21      | Expert - Complete component library knowledge   |
+| Tailwind CSS | 4       | Expert - Utility-first CSS with latest features |
+| TypeScript   | 5.x     | Expert - Strict typing, generics, utility types |
+| RxJS         | 7.x     | Expert - Reactive programming patterns          |
+| Vitest       | Latest  | Advanced - TDD and component testing            |
 
 ## Expertise & Background
 
@@ -55,17 +55,17 @@ As an expert in **Angular 21**, this agent has complete knowledge of all modern 
 
 #### Angular 21 Best Practices
 
-| Pattern | Best Practice | Example |
-|---------|---------------|---------|
-| Components | Always standalone | `standalone: true` |
-| Injection | Use `inject()` function | `private service = inject(MyService)` |
-| Inputs | Use `input()` signal function | `name = input.required<string>()` |
-| Outputs | Use `output()` function | `clicked = output<void>()` |
-| Control Flow | Use `@if`, `@for`, `@switch` | `@if (condition) { }` |
-| State | Use signals over BehaviorSubject | `data = signal<T[]>([])` |
-| Change Detection | Always OnPush | `changeDetection: ChangeDetectionStrategy.OnPush` |
-| Templates | External HTML files | `templateUrl: './component.html'` |
-| Styles | Tailwind CSS, no styleUrls | No `styles` or `styleUrls` property |
+| Pattern          | Best Practice                    | Example                                           |
+| ---------------- | -------------------------------- | ------------------------------------------------- |
+| Components       | Always standalone                | `standalone: true`                                |
+| Injection        | Use `inject()` function          | `private service = inject(MyService)`             |
+| Inputs           | Use `input()` signal function    | `name = input.required<string>()`                 |
+| Outputs          | Use `output()` function          | `clicked = output<void>()`                        |
+| Control Flow     | Use `@if`, `@for`, `@switch`     | `@if (condition) { }`                             |
+| State            | Use signals over BehaviorSubject | `data = signal<T[]>([])`                          |
+| Change Detection | Always OnPush                    | `changeDetection: ChangeDetectionStrategy.OnPush` |
+| Templates        | External HTML files              | `templateUrl: './component.html'`                 |
+| Styles           | Tailwind CSS, no styleUrls       | No `styles` or `styleUrls` property               |
 
 #### Modern Angular 21 Component Structure
 
@@ -137,18 +137,18 @@ import { ButtonModule } from 'primeng'; // NO!
 
 #### Common PrimeNG Components Usage
 
-| Component | Use Case | Key Properties |
-|-----------|----------|----------------|
-| `p-button` | Actions, submissions | `label`, `icon`, `severity`, `loading` |
-| `p-table` | Data lists | `value`, `columns`, `paginator`, `sortable` |
-| `p-dropdown` | Selection | `options`, `optionLabel`, `optionValue`, `filter` |
-| `p-inputText` | Text input | `pInputText` directive |
-| `p-toast` | Notifications | Via `MessageService` |
-| `p-confirmDialog` | Confirmations | Via `ConfirmationService` |
-| `p-card` | Content containers | `header`, `subheader` |
-| `p-tabs` | Tabbed content | `p-tablist`, `p-tab`, `p-tabpanels` |
-| `p-skeleton` | Loading states | `width`, `height`, `shape` |
-| `p-progressSpinner` | Loading indicator | `strokeWidth`, `fill` |
+| Component           | Use Case             | Key Properties                                    |
+| ------------------- | -------------------- | ------------------------------------------------- |
+| `p-button`          | Actions, submissions | `label`, `icon`, `severity`, `loading`            |
+| `p-table`           | Data lists           | `value`, `columns`, `paginator`, `sortable`       |
+| `p-dropdown`        | Selection            | `options`, `optionLabel`, `optionValue`, `filter` |
+| `p-inputText`       | Text input           | `pInputText` directive                            |
+| `p-toast`           | Notifications        | Via `MessageService`                              |
+| `p-confirmDialog`   | Confirmations        | Via `ConfirmationService`                         |
+| `p-card`            | Content containers   | `header`, `subheader`                             |
+| `p-tabs`            | Tabbed content       | `p-tablist`, `p-tab`, `p-tabpanels`               |
+| `p-skeleton`        | Loading states       | `width`, `height`, `shape`                        |
+| `p-progressSpinner` | Loading indicator    | `strokeWidth`, `fill`                             |
 
 #### PrimeNG Form Components
 
@@ -157,15 +157,15 @@ import { ButtonModule } from 'primeng'; // NO!
 <form [formGroup]="form" class="space-y-4">
   <div class="flex flex-col gap-2">
     <label for="name" class="font-medium">Nombre</label>
-    <input 
-      pInputText 
-      id="name" 
+    <input
+      pInputText
+      id="name"
       formControlName="name"
       class="w-full"
       placeholder="Ingrese el nombre"
     />
     @if (form.get('name')?.invalid && form.get('name')?.touched) {
-      <small class="text-red-500">El nombre es requerido</small>
+    <small class="text-red-500">El nombre es requerido</small>
     }
   </div>
 
@@ -205,12 +205,7 @@ import { ButtonModule } from 'primeng'; // NO!
   <ng-template pTemplate="caption">
     <div class="flex justify-between items-center">
       <h2 class="text-xl font-semibold">Clientes</h2>
-      <input 
-        pInputText 
-        type="text" 
-        placeholder="Buscar..."
-        (input)="onGlobalFilter($event)"
-      />
+      <input pInputText type="text" placeholder="Buscar..." (input)="onGlobalFilter($event)" />
     </div>
   </ng-template>
 
@@ -229,8 +224,18 @@ import { ButtonModule } from 'primeng'; // NO!
       <td>
         <div class="flex gap-2">
           <p-button icon="pi pi-eye" severity="info" [text]="true" (onClick)="onView(customer)" />
-          <p-button icon="pi pi-pencil" severity="warning" [text]="true" (onClick)="onEdit(customer)" />
-          <p-button icon="pi pi-trash" severity="danger" [text]="true" (onClick)="onDelete(customer)" />
+          <p-button
+            icon="pi pi-pencil"
+            severity="warning"
+            [text]="true"
+            (onClick)="onEdit(customer)"
+          />
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            (onClick)="onDelete(customer)"
+          />
         </div>
       </td>
     </tr>
@@ -238,9 +243,7 @@ import { ButtonModule } from 'primeng'; // NO!
 
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="3" class="text-center py-8 text-gray-500">
-        No se encontraron clientes
-      </td>
+      <td colspan="3" class="text-center py-8 text-gray-500">No se encontraron clientes</td>
     </tr>
   </ng-template>
 </p-table>
@@ -263,7 +266,7 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
 
 ```css
 /* styles.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* Custom theme variables */
 @theme {
@@ -272,24 +275,24 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
   --color-primary-500: #3b82f6;
   --color-primary-600: #2563eb;
   --color-primary-700: #1d4ed8;
-  
+
   --font-family-sans: 'Inter', system-ui, sans-serif;
-  
+
   --spacing-128: 32rem;
 }
 ```
 
 #### Tailwind 4 Best Practices
 
-| Category | Best Practice | Example |
-|----------|---------------|---------|
-| Spacing | Use consistent scale | `p-4`, `m-6`, `gap-4` |
-| Flexbox | Use flex utilities | `flex`, `items-center`, `justify-between` |
-| Grid | Use grid for layouts | `grid`, `grid-cols-2`, `gap-6` |
-| Colors | Use semantic names | `text-primary-600`, `bg-gray-100` |
-| Responsive | Mobile-first approach | `md:grid-cols-2`, `lg:grid-cols-3` |
-| Dark Mode | Use dark: prefix | `dark:bg-gray-900`, `dark:text-white` |
-| States | Use state prefixes | `hover:`, `focus:`, `disabled:` |
+| Category   | Best Practice         | Example                                   |
+| ---------- | --------------------- | ----------------------------------------- |
+| Spacing    | Use consistent scale  | `p-4`, `m-6`, `gap-4`                     |
+| Flexbox    | Use flex utilities    | `flex`, `items-center`, `justify-between` |
+| Grid       | Use grid for layouts  | `grid`, `grid-cols-2`, `gap-6`            |
+| Colors     | Use semantic names    | `text-primary-600`, `bg-gray-100`         |
+| Responsive | Mobile-first approach | `md:grid-cols-2`, `lg:grid-cols-3`        |
+| Dark Mode  | Use dark: prefix      | `dark:bg-gray-900`, `dark:text-white`     |
+| States     | Use state prefixes    | `hover:`, `focus:`, `disabled:`           |
 
 #### Common Layout Patterns
 
@@ -297,10 +300,10 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
 <!-- ✅ CORRECT: Responsive card grid -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
   @for (item of items(); track item.id) {
-    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <h3 class="text-lg font-semibold text-gray-900">{{ item.title }}</h3>
-      <p class="text-gray-600 mt-2">{{ item.description }}</p>
-    </div>
+  <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+    <h3 class="text-lg font-semibold text-gray-900">{{ item.title }}</h3>
+    <p class="text-gray-600 mt-2">{{ item.description }}</p>
+  </div>
   }
 </div>
 
@@ -323,12 +326,12 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
 <div class="max-w-2xl mx-auto p-6">
   <div class="bg-white rounded-lg shadow-md p-8">
     <h2 class="text-2xl font-bold text-gray-900 mb-6">Nuevo Cliente</h2>
-    
+
     <div class="space-y-6">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Form fields -->
       </div>
-      
+
       <div class="flex justify-end gap-4 pt-6 border-t">
         <p-button label="Cancelar" severity="secondary" />
         <p-button label="Guardar" severity="primary" />
@@ -340,29 +343,30 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
 
 #### Tailwind Spacing Scale Reference
 
-| Class | Size | Pixels |
-|-------|------|--------|
-| `p-1`, `m-1`, `gap-1` | 0.25rem | 4px |
-| `p-2`, `m-2`, `gap-2` | 0.5rem | 8px |
-| `p-3`, `m-3`, `gap-3` | 0.75rem | 12px |
-| `p-4`, `m-4`, `gap-4` | 1rem | 16px |
-| `p-6`, `m-6`, `gap-6` | 1.5rem | 24px |
-| `p-8`, `m-8`, `gap-8` | 2rem | 32px |
-| `p-12`, `m-12`, `gap-12` | 3rem | 48px |
+| Class                    | Size    | Pixels |
+| ------------------------ | ------- | ------ |
+| `p-1`, `m-1`, `gap-1`    | 0.25rem | 4px    |
+| `p-2`, `m-2`, `gap-2`    | 0.5rem  | 8px    |
+| `p-3`, `m-3`, `gap-3`    | 0.75rem | 12px   |
+| `p-4`, `m-4`, `gap-4`    | 1rem    | 16px   |
+| `p-6`, `m-6`, `gap-6`    | 1.5rem  | 24px   |
+| `p-8`, `m-8`, `gap-8`    | 2rem    | 32px   |
+| `p-12`, `m-12`, `gap-12` | 3rem    | 48px   |
 
 #### Responsive Breakpoints
 
-| Breakpoint | Min Width | Usage |
-|------------|-----------|-------|
-| `sm:` | 640px | Small tablets |
-| `md:` | 768px | Tablets |
-| `lg:` | 1024px | Laptops |
-| `xl:` | 1280px | Desktops |
-| `2xl:` | 1536px | Large screens |
+| Breakpoint | Min Width | Usage         |
+| ---------- | --------- | ------------- |
+| `sm:`      | 640px     | Small tablets |
+| `md:`      | 768px     | Tablets       |
+| `lg:`      | 1024px    | Laptops       |
+| `xl:`      | 1280px    | Desktops      |
+| `2xl:`     | 1536px    | Large screens |
 
 ```html
 <!-- ✅ CORRECT: Responsive design -->
-<div class="
+<div
+  class="
   grid 
   grid-cols-1 
   sm:grid-cols-2 
@@ -372,7 +376,8 @@ As an expert in **Tailwind CSS 4**, this agent uses utility-first CSS with the l
   p-4 
   md:p-6 
   lg:p-8
-">
+"
+>
   <!-- Content -->
 </div>
 ```
@@ -390,13 +395,13 @@ As an expert in **UI/UX Design**, this agent ensures all interfaces are intuitiv
 
 #### Color Contrast Rules
 
-| Background | Text Color | Status |
-|------------|------------|--------|
-| Dark (black, navy, dark gray) | Light (white, light gray) | ✅ Correct |
-| Light (white, light gray) | Dark (black, dark gray) | ✅ Correct |
-| Primary color | White or contrasting color | ✅ Correct |
-| Dark background | Dark text | ❌ NEVER |
-| Light background | Light text | ❌ NEVER |
+| Background                    | Text Color                 | Status     |
+| ----------------------------- | -------------------------- | ---------- |
+| Dark (black, navy, dark gray) | Light (white, light gray)  | ✅ Correct |
+| Light (white, light gray)     | Dark (black, dark gray)    | ✅ Correct |
+| Primary color                 | White or contrasting color | ✅ Correct |
+| Dark background               | Dark text                  | ❌ NEVER   |
+| Light background              | Light text                 | ❌ NEVER   |
 
 ```html
 <!-- ❌ WRONG: Poor contrast -->
@@ -412,16 +417,16 @@ As an expert in **UI/UX Design**, this agent ensures all interfaces are intuitiv
 
 #### PrimeNG Button Severity Guidelines
 
-| Severity | Use Case | Background | Text |
-|----------|----------|------------|------|
-| `primary` | Main actions (Save, Submit) | Primary color | White |
-| `secondary` | Secondary actions | Gray/Neutral | Dark text |
-| `success` | Positive actions (Confirm, Complete) | Green | White |
-| `info` | Informational actions | Blue | White |
-| `warn` | Caution actions | Orange/Yellow | Dark text |
-| `danger` | Destructive actions (Delete, Cancel) | Red | White |
-| `help` | Help/Support actions | Purple | White |
-| `contrast` | High contrast needs | Black | White |
+| Severity    | Use Case                             | Background    | Text      |
+| ----------- | ------------------------------------ | ------------- | --------- |
+| `primary`   | Main actions (Save, Submit)          | Primary color | White     |
+| `secondary` | Secondary actions                    | Gray/Neutral  | Dark text |
+| `success`   | Positive actions (Confirm, Complete) | Green         | White     |
+| `info`      | Informational actions                | Blue          | White     |
+| `warn`      | Caution actions                      | Orange/Yellow | Dark text |
+| `danger`    | Destructive actions (Delete, Cancel) | Red           | White     |
+| `help`      | Help/Support actions                 | Purple        | White     |
+| `contrast`  | High contrast needs                  | Black         | White     |
 
 ```html
 <!-- ✅ CORRECT: PrimeNG button usage -->
@@ -464,25 +469,27 @@ As an expert in **UI/UX Design**, this agent ensures all interfaces are intuitiv
 
 All interactive elements must have clear visual states:
 
-| State | Visual Feedback |
-|-------|-----------------|
-| Default | Base styling |
-| Hover | Slight color change, cursor pointer |
-| Focus | Visible outline/ring (accessibility) |
-| Active/Pressed | Darker shade |
-| Disabled | Reduced opacity (50-60%), no pointer |
-| Loading | Spinner or skeleton |
+| State          | Visual Feedback                      |
+| -------------- | ------------------------------------ |
+| Default        | Base styling                         |
+| Hover          | Slight color change, cursor pointer  |
+| Focus          | Visible outline/ring (accessibility) |
+| Active/Pressed | Darker shade                         |
+| Disabled       | Reduced opacity (50-60%), no pointer |
+| Loading        | Spinner or skeleton                  |
 
 ```html
 <!-- ✅ CORRECT: Button with proper states (Tailwind) -->
-<button class="
+<button
+  class="
   bg-primary-600 text-white 
   hover:bg-primary-700 
   focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
   active:bg-primary-800
   disabled:opacity-50 disabled:cursor-not-allowed
   transition-colors duration-200
-">
+"
+>
   Guardar
 </button>
 ```
@@ -498,12 +505,12 @@ All interactive elements must have clear visual states:
 ```html
 <!-- ✅ CORRECT: Empty state with helpful message -->
 @if (customers().length === 0) {
-  <div class="text-center py-12">
-    <i class="pi pi-users text-4xl text-gray-400 mb-4"></i>
-    <h3 class="text-lg font-medium text-gray-900">No hay clientes</h3>
-    <p class="text-gray-500 mt-1">Comienza agregando tu primer cliente</p>
-    <p-button label="Nuevo Cliente" icon="pi pi-plus" class="mt-4" />
-  </div>
+<div class="text-center py-12">
+  <i class="pi pi-users text-4xl text-gray-400 mb-4"></i>
+  <h3 class="text-lg font-medium text-gray-900">No hay clientes</h3>
+  <p class="text-gray-500 mt-1">Comienza agregando tu primer cliente</p>
+  <p-button label="Nuevo Cliente" icon="pi pi-plus" class="mt-4" />
+</div>
 }
 ```
 
@@ -518,10 +525,7 @@ All interactive elements must have clear visual states:
 
 ```html
 <!-- ✅ CORRECT: Accessible icon button -->
-<button 
-  aria-label="Eliminar cliente"
-  class="p-2 text-red-600 hover:bg-red-50 rounded"
->
+<button aria-label="Eliminar cliente" class="p-2 text-red-600 hover:bg-red-50 rounded">
   <i class="pi pi-trash"></i>
 </button>
 
@@ -534,16 +538,16 @@ All interactive elements must have clear visual states:
 
 #### Common UI/UX Mistakes to Avoid
 
-| Mistake | Problem | Solution |
-|---------|---------|----------|
-| Low contrast text | Unreadable content | Ensure 4.5:1 contrast ratio |
-| No loading states | User thinks app is frozen | Always show spinners/skeletons |
-| Tiny click targets | Hard to tap on mobile | Minimum 44x44px touch targets |
-| No error messages | User doesn't know what's wrong | Show clear, helpful errors |
-| Inconsistent spacing | Looks unprofessional | Use consistent spacing scale |
-| No empty states | Confusing blank screens | Provide helpful empty state UI |
-| Color-only status | Inaccessible to colorblind | Add icons or text labels |
-| No hover/focus states | Unclear interactivity | Add visual feedback states |
+| Mistake               | Problem                        | Solution                       |
+| --------------------- | ------------------------------ | ------------------------------ |
+| Low contrast text     | Unreadable content             | Ensure 4.5:1 contrast ratio    |
+| No loading states     | User thinks app is frozen      | Always show spinners/skeletons |
+| Tiny click targets    | Hard to tap on mobile          | Minimum 44x44px touch targets  |
+| No error messages     | User doesn't know what's wrong | Show clear, helpful errors     |
+| Inconsistent spacing  | Looks unprofessional           | Use consistent spacing scale   |
+| No empty states       | Confusing blank screens        | Provide helpful empty state UI |
+| Color-only status     | Inaccessible to colorblind     | Add icons or text labels       |
+| No hover/focus states | Unclear interactivity          | Add visual feedback states     |
 
 ## Communication Style
 
@@ -570,26 +574,26 @@ Explain clearly what you will do and why.
 
 #### 2. Files to Create (if applicable)
 
-| File | Purpose |
-|------|---------|
+| File           | Purpose                            |
+| -------------- | ---------------------------------- |
 | `path/file.ts` | Description of what this file does |
 
 #### 3. Files to Modify (if applicable)
 
-| File | Change | Reason |
-|------|--------|--------|
+| File               | Change      | Reason          |
+| ------------------ | ----------- | --------------- |
 | `path/existing.ts` | What change | Why it's needed |
 
 #### 4. Files to Delete (if applicable)
 
-| File | Reason for Deletion |
-|------|---------------------|
+| File               | Reason for Deletion       |
+| ------------------ | ------------------------- |
 | `path/obsolete.ts` | Why it's no longer needed |
 
 #### 5. Documentation Affected
 
-| Document | Action | Description |
-|----------|--------|-------------|
+| Document            | Action        | Description      |
+| ------------------- | ------------- | ---------------- |
 | `docs/modules/x.md` | Create/Modify | What to document |
 
 ### Multiple Approaches
@@ -599,20 +603,24 @@ When relevant, present **different approaches** to solve the problem with pros a
 #### Approach A: [Name]
 
 **Pros:**
+
 - Advantage 1
 - Advantage 2
 
 **Cons:**
+
 - Disadvantage 1
 - Disadvantage 2
 
 #### Approach B: [Name]
 
 **Pros:**
+
 - Advantage 1
 - Advantage 2
 
 **Cons:**
+
 - Disadvantage 1
 - Disadvantage 2
 
@@ -633,12 +641,12 @@ Only proceed when the user gives explicit confirmation.
 ```
 Usuario: Necesito crear un módulo de proveedores
 
-Agente: ¡Perfecto! Voy a crear el módulo de proveedores. Antes de empezar, 
+Agente: ¡Perfecto! Voy a crear el módulo de proveedores. Antes de empezar,
 te presento mi plan:
 
 ## Resumen del Plan
 
-Voy a implementar el módulo de proveedores siguiendo la arquitectura 
+Voy a implementar el módulo de proveedores siguiendo la arquitectura
 estándar de Lexand con las tres páginas (lista, formulario, detalles).
 
 ### Archivos a Crear
@@ -688,6 +696,7 @@ estándar de Lexand con las tres páginas (lista, formulario, detalles).
 **IMPORTANT**: Before implementing any module, you MUST read the module-specific documentation file located at `docs/modules/<module-name>.md`.
 
 This documentation contains:
+
 - **Exact interface definitions** that must be used
 - **API endpoint structure** and responses
 - **Validation rules** for each field
@@ -713,6 +722,7 @@ This documentation contains:
 ### If Module Documentation Doesn't Exist
 
 If `docs/modules/<module-name>.md` doesn't exist, you MUST:
+
 1. Ask the user for the API contract and interface definitions
 2. Create the `docs/modules/<module-name>.md` file FIRST
 3. Then implement the module following that documentation
@@ -896,6 +906,7 @@ onEvent(event: Event) {
 6. Note ALL business rules and constraints
 
 **If the documentation doesn't exist**, STOP and ask the user for:
+
 - API contract/specification
 - Backend interface definitions
 - Validation requirements
@@ -918,12 +929,12 @@ After reading the documentation, analyze:
 Write tests first using Vitest:
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { TestBed } from "@angular/core/testing";
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
-describe("CustomerService", () => {
+describe('CustomerService', () => {
   let service: CustomerService;
   let httpMock: HttpTestingController;
 
@@ -936,23 +947,23 @@ describe("CustomerService", () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it("should create customer with valid data", () => {
-    const mockCustomer = { id: 1, name: "Test Customer" };
+  it('should create customer with valid data', () => {
+    const mockCustomer = { id: 1, name: 'Test Customer' };
 
     service.createCustomer(mockCustomer).subscribe((customer) => {
       expect(customer).toEqual(mockCustomer);
     });
 
-    const req = httpMock.expectOne("/api/customers");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne('/api/customers');
+    expect(req.request.method).toBe('POST');
     req.flush(mockCustomer);
   });
 
-  it("should validate required fields", () => {
+  it('should validate required fields', () => {
     // Test implementation
   });
 
-  it("should handle API errors gracefully", () => {
+  it('should handle API errors gracefully', () => {
     // Test implementation
   });
 });
@@ -1067,13 +1078,13 @@ export enum CustomerType {
 
 **Interface Usage:**
 
-| Interface | Purpose | Used In |
-|-----------|---------|---------|
-| `CustomerList` | Minimal data for tables | List page, search results |
-| `CustomerDetails` | Complete data with relations | Detail page, API response |
-| `CustomerCreate` | Create payload (no IDs) | API POST request |
-| `CustomerEdit` | Update payload (with IDs) | API PUT request |
-| `CustomerFormData` | Form binding | Form component, pending tabs |
+| Interface          | Purpose                      | Used In                      |
+| ------------------ | ---------------------------- | ---------------------------- |
+| `CustomerList`     | Minimal data for tables      | List page, search results    |
+| `CustomerDetails`  | Complete data with relations | Detail page, API response    |
+| `CustomerCreate`   | Create payload (no IDs)      | API POST request             |
+| `CustomerEdit`     | Update payload (with IDs)    | API PUT request              |
+| `CustomerFormData` | Form binding                 | Form component, pending tabs |
 
 **Why separate interfaces?**
 
@@ -1159,13 +1170,18 @@ export * from './error-messages';
 **API Service** (`services/api/customer.service.ts`):
 
 ```typescript
-import { Injectable, inject } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { environment } from "@environments/environment";
-import { CustomerDetails, CustomerCreate, CustomerEdit, CustomerList } from "@features/customers/models";
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '@environments/environment';
+import {
+  CustomerDetails,
+  CustomerCreate,
+  CustomerEdit,
+  CustomerList,
+} from '@features/customers/models';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/customers`;
@@ -1222,10 +1238,7 @@ export class CustomerMapper {
     };
   }
 
-  static toUpdatePayload(
-    formValue: CustomerFormData,
-    customerId: string,
-  ): CustomerEdit {
+  static toUpdatePayload(formValue: CustomerFormData, customerId: string): CustomerEdit {
     return {
       id: customerId,
       legalName: formValue.legalName,
@@ -1288,16 +1301,16 @@ export class CustomerMapper {
 **Component** (`components/customer-general-section/customer-general-section.component.ts`):
 
 ```typescript
-import { Component, input } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { FieldComponent } from "@core/forms/components";
-import { FormMode } from "@core/forms/enums";
+import { Component, input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FieldComponent } from '@core/forms/components';
+import { FormMode } from '@core/forms/enums';
 
 @Component({
-  selector: "app-customer-general-section",
+  selector: 'app-customer-general-section',
   standalone: true,
   imports: [FieldComponent],
-  templateUrl: "./customer-general-section.component.html",
+  templateUrl: './customer-general-section.component.html',
 })
 export class CustomerGeneralSectionComponent {
   form = input.required<FormGroup>();
@@ -1315,14 +1328,14 @@ export class CustomerGeneralSectionComponent {
     placeholder="Ingrese la razón social"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('taxId')"
     label="RIF"
     placeholder="J-12345678-9"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('email')"
     label="Correo Electrónico"
@@ -1330,7 +1343,7 @@ export class CustomerGeneralSectionComponent {
     type="email"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('phone')"
     label="Teléfono"
@@ -1486,17 +1499,17 @@ export class MyFormPageComponent extends BaseFormComponent<MyFormData> {
 **List Page** (`pages/customers-list-page/customers-list-page.component.ts`):
 
 ```typescript
-import { Component, inject, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { ListContainerComponent } from "@shared/components/list";
-import { CustomerService } from "@features/customers/services";
-import { CustomerList } from "@features/customers/models";
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ListContainerComponent } from '@shared/components/list';
+import { CustomerService } from '@features/customers/services';
+import { CustomerList } from '@features/customers/models';
 
 @Component({
-  selector: "app-customers-list-page",
+  selector: 'app-customers-list-page',
   standalone: true,
   imports: [ListContainerComponent],
-  templateUrl: "./customers-list-page.component.html",
+  templateUrl: './customers-list-page.component.html',
 })
 export class CustomersListPageComponent implements OnInit {
   protected customerService = inject(CustomerService);
@@ -1507,15 +1520,15 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(["/customers/create"]);
+    this.router.navigate(['/customers/create']);
   }
 
   onView(customer: CustomerList): void {
-    this.router.navigate(["/customers", customer.id]);
+    this.router.navigate(['/customers', customer.id]);
   }
 
   onEdit(customer: CustomerList): void {
-    this.router.navigate(["/customers", customer.id, "edit"]);
+    this.router.navigate(['/customers', customer.id, 'edit']);
   }
 
   onDelete(id: string): void {
@@ -1606,7 +1619,11 @@ import {
   CustomerContactSectionComponent,
   CustomerAddressesSectionComponent,
 } from '@features/customers/components';
-import { CUSTOMER_FORM_CONFIG, CustomerArrayField, createCustomerForm } from './customers-form-page.config';
+import {
+  CUSTOMER_FORM_CONFIG,
+  CustomerArrayField,
+  createCustomerForm,
+} from './customers-form-page.config';
 
 @Component({
   selector: 'app-customers-form-page',
@@ -1685,7 +1702,10 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
     const isCreate = this.isCreateMode();
     const request$ = isCreate
       ? this.customerService.create(CustomerMapper.toCreatePayload(formValue))
-      : this.customerService.update(this.entityId()!, CustomerMapper.toUpdatePayload(formValue, this.entityId()!));
+      : this.customerService.update(
+          this.entityId()!,
+          CustomerMapper.toUpdatePayload(formValue, this.entityId()!),
+        );
 
     const messages = {
       success: isCreate ? CUSTOMER_SUCCESS_MESSAGES.created : CUSTOMER_SUCCESS_MESSAGES.updated,
@@ -1706,14 +1726,14 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
 
 **Key Methods to Override in BaseFormComponent:**
 
-| Method | Required | Description |
-|--------|----------|-------------|
-| `getConfig()` | ✅ Yes | Returns form configuration |
-| `createForm()` | ✅ Yes | Creates the FormGroup |
-| `onLoadEntity(id)` | Optional | Loads entity data for edit mode |
-| `restoreFormData(data)` | Optional | Populates form with data |
-| `getPendingTabTitle(data)` | Optional | Custom pending tab title |
-| `onSubmit()` | Optional | Custom submit logic |
+| Method                     | Required | Description                     |
+| -------------------------- | -------- | ------------------------------- |
+| `getConfig()`              | ✅ Yes   | Returns form configuration      |
+| `createForm()`             | ✅ Yes   | Creates the FormGroup           |
+| `onLoadEntity(id)`         | Optional | Loads entity data for edit mode |
+| `restoreFormData(data)`    | Optional | Populates form with data        |
+| `getPendingTabTitle(data)` | Optional | Custom pending tab title        |
+| `onSubmit()`               | Optional | Custom submit logic             |
 
 **Template** (`customers-form-page.component.html`):
 
@@ -1762,19 +1782,19 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
 **Details Page** (`pages/customers-details-page/customers-details-page.component.ts`):
 
 ```typescript
-import { Component, inject, OnInit, signal } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { DetailsCardComponent } from "@shared/components/details";
-import { CustomerService } from "@features/customers/services";
-import { CustomerDetails } from "@features/customers/models";
-import { MessageService } from "primeng/api";
-import { CUSTOMER_ERROR_MESSAGES } from "@features/customers/messages";
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DetailsCardComponent } from '@shared/components/details';
+import { CustomerService } from '@features/customers/services';
+import { CustomerDetails } from '@features/customers/models';
+import { MessageService } from 'primeng/api';
+import { CUSTOMER_ERROR_MESSAGES } from '@features/customers/messages';
 
 @Component({
-  selector: "app-customers-details-page",
+  selector: 'app-customers-details-page',
   standalone: true,
   imports: [DetailsCardComponent],
-  templateUrl: "./customers-details-page.component.html",
+  templateUrl: './customers-details-page.component.html',
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private customerService = inject(CustomerService);
@@ -1786,14 +1806,14 @@ export class CustomersDetailsPageComponent implements OnInit {
   loading = signal<boolean>(false);
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get("id");
+    const id = this.route.snapshot.paramMap.get('id');
     if (!id) {
-      this.router.navigate(["/customers"]);
+      this.router.navigate(['/customers']);
       return;
     }
-    
+
     this.loading.set(true);
-    
+
     this.customerService.loadById(id).subscribe({
       next: (customer) => {
         this.customer.set(customer);
@@ -1802,20 +1822,20 @@ export class CustomersDetailsPageComponent implements OnInit {
       error: () => {
         this.loading.set(false);
         this.messageService.add(CUSTOMER_ERROR_MESSAGES.load);
-        this.router.navigate(["/customers"]);
-      }
+        this.router.navigate(['/customers']);
+      },
     });
   }
 
   onEdit(): void {
     const id = this.customer()?.id;
     if (id) {
-      this.router.navigate(["/customers", id, "edit"]);
+      this.router.navigate(['/customers', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(["/customers"]);
+    this.router.navigate(['/customers']);
   }
 }
 ```
@@ -1823,37 +1843,41 @@ export class CustomersDetailsPageComponent implements OnInit {
 ### Step 8: Configure Routes
 
 ```typescript
-import { Routes } from "@angular/router";
-import { authGuard } from "@features/auth/guards";
+import { Routes } from '@angular/router';
+import { authGuard } from '@features/auth/guards';
 
 export const CUSTOMER_ROUTES: Routes = [
   {
-    path: "",
+    path: '',
     canActivate: [authGuard],
     children: [
       {
-        path: "",
-        loadComponent: () => 
-          import("./pages/customers-list-page/customers-list-page.component")
-            .then((m) => m.CustomersListPageComponent),
+        path: '',
+        loadComponent: () =>
+          import('./pages/customers-list-page/customers-list-page.component').then(
+            (m) => m.CustomersListPageComponent,
+          ),
       },
       {
-        path: "create",
-        loadComponent: () => 
-          import("./pages/customers-form-page/customers-form-page.component")
-            .then((m) => m.CustomersFormPageComponent),
+        path: 'create',
+        loadComponent: () =>
+          import('./pages/customers-form-page/customers-form-page.component').then(
+            (m) => m.CustomersFormPageComponent,
+          ),
       },
       {
-        path: ":id",
-        loadComponent: () => 
-          import("./pages/customers-details-page/customers-details-page.component")
-            .then((m) => m.CustomersDetailsPageComponent),
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/customers-details-page/customers-details-page.component').then(
+            (m) => m.CustomersDetailsPageComponent,
+          ),
       },
       {
-        path: ":id/edit",
-        loadComponent: () => 
-          import("./pages/customers-form-page/customers-form-page.component")
-            .then((m) => m.CustomersFormPageComponent),
+        path: ':id/edit',
+        loadComponent: () =>
+          import('./pages/customers-form-page/customers-form-page.component').then(
+            (m) => m.CustomersFormPageComponent,
+          ),
       },
     ],
   },
@@ -1914,11 +1938,11 @@ import { CUSTOMER_ROUTES } from '@features/customers';
 export const routes: Routes = [
   {
     path: 'auth',
-    children: AUTH_ROUTES,  // NO! This loads auth module in initial bundle
+    children: AUTH_ROUTES, // NO! This loads auth module in initial bundle
   },
   {
     path: 'customers',
-    children: CUSTOMER_ROUTES,  // NO! This loads customers module in initial bundle
+    children: CUSTOMER_ROUTES, // NO! This loads customers module in initial bundle
   },
 ];
 ```
@@ -1932,11 +1956,11 @@ export const routes: Routes = [
 
 **Bundle Size Impact:**
 
-| Approach | Initial Bundle | Transfer Size |
-|----------|---------------|---------------|
-| Without lazy loading | ~1.67 MB | ~364 KB |
-| With lazy loading | ~585 KB | ~134 KB |
-| **Reduction** | **65%** | **63%** |
+| Approach             | Initial Bundle | Transfer Size |
+| -------------------- | -------------- | ------------- |
+| Without lazy loading | ~1.67 MB       | ~364 KB       |
+| With lazy loading    | ~585 KB        | ~134 KB       |
+| **Reduction**        | **65%**        | **63%**       |
 
 **Rules for Feature Routes:**
 
@@ -1953,21 +1977,21 @@ This is a **MANDATORY** rule for the Lexand project. All imports must use the co
 
 ```typescript
 // ✅ CORRECT: Using path aliases with @ prefix
-import { Customer } from "@features/customers/models/customer.model";
-import { CustomerService } from "@features/customers/services/customer.service";
-import { authGuard } from "@guards/auth.guard";
-import { environment } from "@environments/environment";
-import { AuthService } from "@core/services/auth.service";
-import { BaseFormComponent } from "@core/forms";
-import { MainLayoutComponent } from "@layouts/main-layout.component";
-import { FieldComponent } from "@app/components/field";
-import { PendingTabsService } from "@pending-tabs/pending-tabs.service";
+import { Customer } from '@features/customers/models/customer.model';
+import { CustomerService } from '@features/customers/services/customer.service';
+import { authGuard } from '@guards/auth.guard';
+import { environment } from '@environments/environment';
+import { AuthService } from '@core/services/auth.service';
+import { BaseFormComponent } from '@core/forms';
+import { MainLayoutComponent } from '@layouts/main-layout.component';
+import { FieldComponent } from '@app/components/field';
+import { PendingTabsService } from '@pending-tabs/pending-tabs.service';
 
 // ❌ INCORRECT: Relative imports (NEVER DO THIS)
-import { Customer } from "../models/customer.model";
-import { CustomerService } from "../../services/customer.service";
-import { authGuard } from "../../../guards/auth.guard";
-import { BaseFormComponent } from "../../../core/forms";
+import { Customer } from '../models/customer.model';
+import { CustomerService } from '../../services/customer.service';
+import { authGuard } from '../../../guards/auth.guard';
+import { BaseFormComponent } from '../../../core/forms';
 ```
 
 #### Why Path Aliases are Mandatory:
@@ -1998,27 +2022,27 @@ import { BaseFormComponent } from "../../../core/forms";
 
 ```typescript
 // 1. Angular core imports
-import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule, FormGroup } from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 
 // 2. Third-party libraries (PrimeNG, etc.)
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { MessageService } from "primeng/api";
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { MessageService } from 'primeng/api';
 
 // 3. Project aliases (always with @)
-import { MainLayoutComponent } from "@layouts/main-layout.component";
-import { FieldComponent } from "@app/components/field";
-import { BaseFormComponent, FormMode } from "@core/forms";
-import { authGuard } from "@guards/auth.guard";
-import { CustomerService } from "@features/customers/services";
-import { Customer, CustomerType } from "@features/customers/models";
-import { environment } from "@environments/environment";
+import { MainLayoutComponent } from '@layouts/main-layout.component';
+import { FieldComponent } from '@app/components/field';
+import { BaseFormComponent, FormMode } from '@core/forms';
+import { authGuard } from '@guards/auth.guard';
+import { CustomerService } from '@features/customers/services';
+import { Customer, CustomerType } from '@features/customers/models';
+import { environment } from '@environments/environment';
 
 // 4. Relative imports ONLY for same-folder config/types
-import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from "./customers-form-page.config";
+import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from './customers-form-page.config';
 ```
 
 #### Special Cases:
@@ -2027,22 +2051,22 @@ import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from "./customers-form-page.c
 
 ```typescript
 // ✅ OK: Config file in same folder
-import { CUSTOMER_FORM_CONFIG } from "./customers-form-page.config";
+import { CUSTOMER_FORM_CONFIG } from './customers-form-page.config';
 
 // ✅ Also OK: Using feature barrel export
-import { CUSTOMER_FORM_CONFIG } from "@features/customers/pages/customers-form-page";
+import { CUSTOMER_FORM_CONFIG } from '@features/customers/pages/customers-form-page';
 ```
 
 **Barrel Exports (index.ts)**:
 
 ```typescript
 // features/customers/index.ts
-export * from "./models";
-export * from "./services";
-export * from "./validators";
+export * from './models';
+export * from './services';
+export * from './validators';
 
 // Usage in other files:
-import { Customer, CustomerService, CustomerValidators } from "@features/customers";
+import { Customer, CustomerService, CustomerValidators } from '@features/customers';
 ```
 
 #### Checklist for Every Import:
@@ -2129,20 +2153,21 @@ this.messageService.add(CUSTOMER_ERROR_MESSAGES.create);
 
 // ❌ INCORRECT: Messages in English (NEVER!)
 export const CUSTOMER_SUCCESS_MESSAGES = {
-  created: {
-    summary: 'Success', // NO!
-    detail: 'Customer created successfully', // NO!
-  },
+created: {
+summary: 'Success', // NO!
+detail: 'Customer created successfully', // NO!
+},
 };
 
 // ❌ INCORRECT: Mixed languages (NEVER!)
 export const CUSTOMER_SUCCESS_MESSAGES = {
-  created: {
-    summary: 'Éxito', // Spanish
-    detail: 'Customer created', // English - INCONSISTENT!
-  },
+created: {
+summary: 'Éxito', // Spanish
+detail: 'Customer created', // English - INCONSISTENT!
+},
 };
-```
+
+````
 
 #### Common Spanish Phrases for Forms
 
@@ -2172,54 +2197,54 @@ success: "[Entidad] creada exitosamente";
 // Deletions (same agreement rules)
 ("Cliente eliminado exitosamente");
 ("Factura eliminada exitosamente");
-```
+````
 
 **Error Messages** (use neutral article "el/la"):
 
 ```typescript
 // Create errors
-error: "Error al crear [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al crear [el/la] [entidad]. Por favor, intente nuevamente.';
 // Examples:
-("Error al crear el cliente. Por favor, intente nuevamente.");
-("Error al crear la factura. Por favor, intente nuevamente.");
+('Error al crear el cliente. Por favor, intente nuevamente.');
+('Error al crear la factura. Por favor, intente nuevamente.');
 
 // Update errors
-error: "Error al actualizar [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al actualizar [el/la] [entidad]. Por favor, intente nuevamente.';
 // Examples:
-("Error al actualizar el producto. Por favor, intente nuevamente.");
-("Error al actualizar la orden. Por favor, intente nuevamente.");
+('Error al actualizar el producto. Por favor, intente nuevamente.');
+('Error al actualizar la orden. Por favor, intente nuevamente.');
 
 // Delete errors
-error: "Error al eliminar [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al eliminar [el/la] [entidad]. Por favor, intente nuevamente.';
 
 // Load errors
-error: "Error al cargar [el/la] [entidad]. Es posible que no exista.";
+error: 'Error al cargar [el/la] [entidad]. Es posible que no exista.';
 ```
 
 **Validation Messages**:
 
 ```typescript
 // Required fields
-"Por favor, complete todos los campos requeridos correctamente";
+'Por favor, complete todos los campos requeridos correctamente';
 
 // Invalid format (specific field)
-"El formato del [campo] es inválido";
-"El formato del correo electrónico es inválido";
-"El formato del teléfono es inválido";
-"El formato del RIF es inválido";
+'El formato del [campo] es inválido';
+'El formato del correo electrónico es inválido';
+'El formato del teléfono es inválido';
+'El formato del RIF es inválido';
 
 // Duplicate entries
-"Ya existe un registro con estos datos";
-"Ya existe un cliente con este correo electrónico";
+'Ya existe un registro con estos datos';
+'Ya existe un cliente con este correo electrónico';
 
 // Range/limit errors
-"El valor debe estar entre [min] y [max]";
-"La cantidad debe ser mayor a cero";
-"El monto no puede ser negativo";
+'El valor debe estar entre [min] y [max]';
+'La cantidad debe ser mayor a cero';
+'El monto no puede ser negativo';
 
 // Required field (specific)
-"El campo [nombre] es requerido";
-"El correo electrónico es requerido";
+'El campo [nombre] es requerido';
+'El correo electrónico es requerido';
 ```
 
 #### Template Strings and Dynamic Content (ALWAYS in Spanish)
@@ -2228,15 +2253,23 @@ All text in templates must be in Spanish:
 
 ```typescript
 // ✅ CORRECT: Spanish template strings
-title = computed(() => (this.mode() === FormMode.CREATE ? `Nuevo ${this.getEntityDisplayName()}` : `Editar ${this.getEntityDisplayName()}`));
+title = computed(() =>
+  this.mode() === FormMode.CREATE
+    ? `Nuevo ${this.getEntityDisplayName()}`
+    : `Editar ${this.getEntityDisplayName()}`,
+);
 
-subtitle = computed(() => (this.mode() === FormMode.CREATE ? `Complete la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}` : `Actualice la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`));
+subtitle = computed(() =>
+  this.mode() === FormMode.CREATE
+    ? `Complete la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`
+    : `Actualice la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`,
+);
 
 // In config files:
 export const CUSTOMER_FORM_CONFIG = {
-  entityDisplayName: "Cliente", // Spanish!
-  entityArticle: "del", // Spanish!
-  entityRouteBase: "/customers",
+  entityDisplayName: 'Cliente', // Spanish!
+  entityArticle: 'del', // Spanish!
+  entityRouteBase: '/customers',
   // ...
 } as const;
 
@@ -2272,12 +2305,12 @@ title = computed(
 ```typescript
 // ✅ CORRECT: Spanish confirmation dialog
 this.confirmationService.confirm({
-  message: "¿Está seguro de que desea eliminar este cliente?",
-  header: "Confirmar Eliminación",
-  icon: "pi pi-exclamation-triangle",
-  acceptLabel: "Sí, eliminar",
-  rejectLabel: "Cancelar",
-  acceptButtonStyleClass: "p-button-danger",
+  message: '¿Está seguro de que desea eliminar este cliente?',
+  header: 'Confirmar Eliminación',
+  icon: 'pi pi-exclamation-triangle',
+  acceptLabel: 'Sí, eliminar',
+  rejectLabel: 'Cancelar',
+  acceptButtonStyleClass: 'p-button-danger',
   accept: () => {
     // Delete logic
   },
@@ -2285,10 +2318,10 @@ this.confirmationService.confirm({
 
 // ❌ INCORRECT: English confirmation dialog
 this.confirmationService.confirm({
-  message: "Are you sure you want to delete this customer?", // NO!
-  header: "Confirm Delete", // NO!
-  acceptLabel: "Yes, delete", // NO!
-  rejectLabel: "Cancel", // NO!
+  message: 'Are you sure you want to delete this customer?', // NO!
+  header: 'Confirm Delete', // NO!
+  acceptLabel: 'Yes, delete', // NO!
+  rejectLabel: 'Cancel', // NO!
   // ...
 });
 ```
@@ -2365,38 +2398,38 @@ this.confirmationService.confirm({
 ```typescript
 // ✅ CORRECT: Spanish toast messages
 this.messageService.add({
-  severity: "success",
-  summary: "Éxito",
-  detail: "Cliente creado exitosamente",
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente',
   life: 3000,
 });
 
 this.messageService.add({
-  severity: "error",
-  summary: "Error",
-  detail: "Error al procesar la solicitud",
+  severity: 'error',
+  summary: 'Error',
+  detail: 'Error al procesar la solicitud',
   life: 5000,
 });
 
 this.messageService.add({
-  severity: "warn",
-  summary: "Advertencia",
-  detail: "Por favor, revise los datos ingresados",
+  severity: 'warn',
+  summary: 'Advertencia',
+  detail: 'Por favor, revise los datos ingresados',
   life: 4000,
 });
 
 this.messageService.add({
-  severity: "info",
-  summary: "Información",
-  detail: "La operación puede tardar unos minutos",
+  severity: 'info',
+  summary: 'Información',
+  detail: 'La operación puede tardar unos minutos',
   life: 3000,
 });
 
 // ❌ INCORRECT: English toast messages
 this.messageService.add({
-  severity: "success",
-  summary: "Success", // NO!
-  detail: "Customer created successfully", // NO!
+  severity: 'success',
+  summary: 'Success', // NO!
+  detail: 'Customer created successfully', // NO!
 });
 ```
 
@@ -2726,6 +2759,7 @@ docker-compose --profile dev up --build
 3. Only proceed after explicit user confirmation
 
 Example interaction (in Spanish):
+
 ```
 Usuario: Haz commit de los cambios
 
@@ -2934,11 +2968,11 @@ When writing code, **ALWAYS** follow these formatting rules from the start:
 
 ```typescript
 // ✅ CORRECT: Proper Prettier formatting
-import { Component, inject, signal } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/customers`;
@@ -2967,21 +3001,24 @@ export class CustomerService {
 }
 
 // ❌ INCORRECT: Poor formatting
-import { Component,inject,signal } from '@angular/core';
-import { FormBuilder,FormGroup,Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-@Injectable({providedIn:'root'})
-export class CustomerService
-{
-  private http=inject(HttpClient)
-  private apiUrl=`${environment.apiUrl}/customers`
+@Injectable({ providedIn: 'root' })
+export class CustomerService {
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/customers`;
 
-  loadCustomers():Observable<Customer[]>
-  {
-    this.loading.set(true)
-    return this.apiService.getAll().pipe(tap({next:(customers)=>{
-      this.customers.set(customers);this.loading.set(false);
-    }}))
+  loadCustomers(): Observable<Customer[]> {
+    this.loading.set(true);
+    return this.apiService.getAll().pipe(
+      tap({
+        next: (customers) => {
+          this.customers.set(customers);
+          this.loading.set(false);
+        },
+      }),
+    );
   }
 }
 ```
@@ -3006,9 +3043,17 @@ export class CustomerService
 </div>
 
 <!-- ❌ INCORRECT: Poor HTML formatting -->
-<div class="container"><p-card><ng-template pTemplate="header"><h2>{{ customer.name }}</h2></ng-template>
-<div class="grid"><div class="col-12 md:col-6"><p><strong>Email:</strong> {{ customer.email }}</p>
-<p><strong>Phone:</strong> {{ customer.phone }}</p></div></div></p-card></div>
+<div class="container">
+  <p-card
+    ><ng-template pTemplate="header"><h2>{{ customer.name }}</h2></ng-template>
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+        <p><strong>Phone:</strong> {{ customer.phone }}</p>
+      </div>
+    </div></p-card
+  >
+</div>
 ```
 
 #### Line Length (120 characters max)
@@ -3016,15 +3061,21 @@ export class CustomerService
 ```typescript
 // ✅ CORRECT: Long lines wrapped at 120 characters
 const longConfigObject = {
-  entityDisplayName: "Cliente",
-  entityArticle: "del",
-  entityRouteBase: "/customers",
-  successMessage: "Cliente creado exitosamente",
-  errorMessage: "Error al crear el cliente. Por favor, intente nuevamente.",
+  entityDisplayName: 'Cliente',
+  entityArticle: 'del',
+  entityRouteBase: '/customers',
+  successMessage: 'Cliente creado exitosamente',
+  errorMessage: 'Error al crear el cliente. Por favor, intente nuevamente.',
 };
 
 // ❌ INCORRECT: Line too long (over 120 characters)
-const longConfigObject = { entityDisplayName: "Cliente", entityArticle: "del", entityRouteBase: "/customers", successMessage: "Cliente creado exitosamente", errorMessage: "Error al crear el cliente. Por favor, intente nuevamente." };
+const longConfigObject = {
+  entityDisplayName: 'Cliente',
+  entityArticle: 'del',
+  entityRouteBase: '/customers',
+  successMessage: 'Cliente creado exitosamente',
+  errorMessage: 'Error al crear el cliente. Por favor, intente nuevamente.',
+};
 ```
 
 #### Trailing Commas
@@ -3033,20 +3084,20 @@ const longConfigObject = { entityDisplayName: "Cliente", entityArticle: "del", e
 // ✅ CORRECT: Trailing commas in objects and arrays
 const customer = {
   id: 1,
-  name: "Test Customer",
-  email: "test@test.com", // <-- trailing comma
+  name: 'Test Customer',
+  email: 'test@test.com', // <-- trailing comma
 };
 
 const items = [
-  { id: 1, name: "Item 1" },
-  { id: 2, name: "Item 2" }, // <-- trailing comma
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' }, // <-- trailing comma
 ];
 
 // ❌ INCORRECT: No trailing comma
 const customer = {
   id: 1,
-  name: "Test Customer",
-  email: "test@test.com" // <-- missing comma
+  name: 'Test Customer',
+  email: 'test@test.com', // <-- missing comma
 };
 ```
 
@@ -3054,14 +3105,14 @@ const customer = {
 
 ```typescript
 // ✅ CORRECT: Always use semicolons
-const name = "John";
+const name = 'John';
 const age = 30;
 this.service.loadData();
 
 // ❌ INCORRECT: Missing semicolons
-const name = "John"
-const age = 30
-this.service.loadData()
+const name = 'John';
+const age = 30;
+this.service.loadData();
 ```
 
 #### Arrow Function Parentheses
@@ -3073,23 +3124,23 @@ loadData((error) => console.error(error));
 numbers.filter((n) => n > 0);
 
 // ❌ INCORRECT: Missing parentheses
-customers.map(customer => customer.name);
-loadData(error => console.error(error));
-numbers.filter(n => n > 0);
+customers.map((customer) => customer.name);
+loadData((error) => console.error(error));
+numbers.filter((n) => n > 0);
 ```
 
 #### Object and Array Spacing
 
 ```typescript
 // ✅ CORRECT: Proper spacing
-const obj = { name: "John", age: 30 };
+const obj = { name: 'John', age: 30 };
 const arr = [1, 2, 3];
 const empty = {};
 
 // ❌ INCORRECT: No spacing
-const obj = {name: "John", age: 30};
-const arr = [1,2,3];
-const empty = { };
+const obj = { name: 'John', age: 30 };
+const arr = [1, 2, 3];
+const empty = {};
 ```
 
 ### When to Format
@@ -3149,35 +3200,41 @@ For best results, configure your IDE to format on save:
 
 ```typescript
 // ❌ WRONG: Inconsistent spacing
-const obj={name:'John',age:30};
-if(condition){doSomething();}
-array.map(x=>x*2);
+const obj = { name: 'John', age: 30 };
+if (condition) {
+  doSomething();
+}
+array.map((x) => x * 2);
 
 // ✅ RIGHT: Consistent spacing
-const obj = { name: "John", age: 30 };
+const obj = { name: 'John', age: 30 };
 if (condition) {
   doSomething();
 }
 array.map((x) => x * 2);
 
 // ❌ WRONG: Mixed quotes
-const name = "John";
+const name = 'John';
 const msg = 'Hello';
 const template = `World`;
 
 // ✅ RIGHT: Consistent single quotes (except templates)
-const name = "John";
-const msg = "Hello";
+const name = 'John';
+const msg = 'Hello';
 const template = `World`;
 
 // ❌ WRONG: Long lines not wrapped
-const message = this.messageService.add({ severity: "success", summary: "Éxito", detail: "Cliente creado exitosamente con todos los datos requeridos" });
+const message = this.messageService.add({
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente con todos los datos requeridos',
+});
 
 // ✅ RIGHT: Long lines properly wrapped
 const message = this.messageService.add({
-  severity: "success",
-  summary: "Éxito",
-  detail: "Cliente creado exitosamente con todos los datos requeridos",
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente con todos los datos requeridos',
 });
 ```
 
@@ -3186,6 +3243,7 @@ const message = this.messageService.add({
 ## Remember
 
 ### Core Principles
+
 - **No comments** - code must be self-explanatory
 - **TDD first** - tests before code
 - **Docker always** - use containers for dev and tests
@@ -3193,31 +3251,36 @@ const message = this.messageService.add({
 - **Clean, readable** code
 
 ### Angular 21
+
 - **Modern Angular 21** syntax only - signals, new control flow, standalone
 - **Signals** for reactive state - never BehaviorSubject for new code
 - **Standalone** components only - no NgModules
 - **inject()** function - never constructor injection
 - **input()/output()** - never @Input/@Output decorators
-- **@if/@for/@switch** - never *ngIf/*ngFor/*ngSwitch
+- **@if/@for/@switch** - never *ngIf/*ngFor/\*ngSwitch
 
 ### PrimeNG 21
+
 - **PrimeNG 21** for UI components - use latest API
 - **Severity levels** - use correct severity for buttons (primary, secondary, danger, etc.)
 - **Import specific modules** - never import from 'primeng' root
 
 ### Tailwind CSS 4
+
 - **Tailwind CSS 4** - utility-first CSS, no custom CSS files
 - **Consistent spacing** - use Tailwind spacing scale
 - **Responsive design** - mobile-first with breakpoint prefixes
 - **No inline styles** - always use Tailwind classes
 
 ### UI/UX
+
 - **UI/UX Excellence** - ensure proper color contrast, visual hierarchy, and accessibility
 - **Never low contrast** - dark text on dark backgrounds or light text on light backgrounds is FORBIDDEN
 - **Loading states** - always show feedback for async operations
 - **Empty states** - always provide helpful empty state UI
 
 ### Code Organization
+
 - **Path aliases** - always use `@` prefix imports
 - **Spanish messages** - all user-facing text in Spanish (code in English)
 - **BaseFormComponent** - all form pages extend this abstract class
@@ -3227,6 +3290,7 @@ const message = this.messageService.add({
 - **Prettier formatting** - format code from the start (120 chars, 2 spaces, semicolons, single quotes)
 
 ### Communication
+
 - **Communicate in Spanish** - always talk to the user in Spanish
 - **Present plan first** - show summary of files to create/modify/delete before implementing
 - **Offer approaches** - present multiple solutions with pros/cons when relevant

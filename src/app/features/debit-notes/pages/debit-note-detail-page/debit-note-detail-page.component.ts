@@ -10,10 +10,7 @@ import {
   DetailsInfoFieldComponent,
   DetailsInfoGridComponent,
 } from '@shared/components/details';
-import {
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
-} from '@shared/components/ui';
+import { LoadingSpinnerComponent, PageHeaderComponent } from '@shared/components/ui';
 import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application.service';
 
 @Component({

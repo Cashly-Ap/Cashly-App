@@ -16,7 +16,9 @@
     }
 
     @if (error(); as err) {
-      <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm">
+      <div
+        class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-300 text-sm"
+      >
         {{ err }}
       </div>
     }
@@ -29,12 +31,11 @@
         </div>
         <p class="text-xs text-surface-400 ml-6 mt-1">
           <i class="pi pi-info-circle mr-1"></i>
-          Los precios se actualizar&aacute;n seg&uacute;n la base de datos al duplicar.
-          El stock se reservar&aacute; en las mismas cantidades y almacenes de la factura original.
+          Los precios se actualizar&aacute;n seg&uacute;n la base de datos al duplicar. El stock se
+          reservar&aacute; en las mismas cantidades y almacenes de la factura original.
         </p>
       </div>
 
-      
       <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -52,7 +53,9 @@
         </div>
         <div class="mt-2 ml-6">
           @if (selectedCustomer(); as customer) {
-            <p class="text-sm font-medium text-surface-900 dark:text-surface-0">{{ customer.legalName }}</p>
+            <p class="text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ customer.legalName }}
+            </p>
             <p class="text-xs text-surface-500 font-mono">{{ customer.rif }}</p>
             <button
               type="button"
@@ -65,18 +68,19 @@
             <p class="text-sm text-surface-500">
               {{ info.customerName }}
               @if (info.customerRif) {
-                <span class="text-xs text-surface-400 ml-2 font-mono">({{ info.customerRif }})</span>
+                <span class="text-xs text-surface-400 ml-2 font-mono"
+                  >({{ info.customerRif }})</span
+                >
               }
             </p>
-            <p class="text-xs text-surface-400 mt-0.5">Se usar&aacute; el cliente original de la factura</p>
+            <p class="text-xs text-surface-400 mt-0.5">
+              Se usar&aacute; el cliente original de la factura
+            </p>
           }
         </div>
       </div>
 
-      <p-table
-        [value]="lines()"
-        styleClass="p-datatable-sm"
-      >
+      <p-table [value]="lines()" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
             <th>Producto</th>
@@ -114,16 +118,15 @@
                   </span>
                 </td>
                 <td class="text-center">
-                  <span
-                    class="font-mono text-sm"
-                    [class.font-bold]="alloc.wouldBeNegative"
-                  >
+                  <span class="font-mono text-sm" [class.font-bold]="alloc.wouldBeNegative">
                     {{ alloc.availableAfterReserve }}
                   </span>
                   @if (alloc.wouldBeNegative) {
                     <i
                       class="pi pi-exclamation-triangle text-red-500 ml-1"
-                      pTooltip="Stock insuficiente: disponible {{ alloc.realAvailable }}, reservando {{ alloc.allocated }}"
+                      pTooltip="Stock insuficiente: disponible {{
+                        alloc.realAvailable
+                      }}, reservando {{ alloc.allocated }}"
                     ></i>
                   }
                 </td>
@@ -134,12 +137,14 @@
       </p-table>
 
       @if (hasAnyNegativeStock()) {
-        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start gap-3">
+        <div
+          class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 flex items-start gap-3"
+        >
           <i class="pi pi-exclamation-circle text-red-500 mt-0.5"></i>
           <div class="text-sm text-red-700 dark:text-red-300">
             <span class="font-semibold">No se puede duplicar.</span>
-            No hay suficiente stock disponible en uno o m&aacute;s almacenes.
-            La duplicaci&oacute;n reservar&iacute;a stock y dejar&iacute;a existencias negativas.
+            No hay suficiente stock disponible en uno o m&aacute;s almacenes. La duplicaci&oacute;n
+            reservar&iacute;a stock y dejar&iacute;a existencias negativas.
           </div>
         </div>
       }
@@ -148,12 +153,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button
-        label="Cancelar"
-        severity="secondary"
-        [outlined]="true"
-        (onClick)="onCancel()"
-      />
+      <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
       <p-button
         label="Duplicar Factura"
         icon="pi pi-copy"

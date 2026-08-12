@@ -6,7 +6,11 @@ import { CategoryApplicationService } from '@features/categories/services/applic
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
 @Component({
-  template: `<app-commercial-catalog-pdf-modal [visible]="visible" (visibleChange)="onVisibleChange($event)" (onGeneratePdf)="onGeneratePdf($event)"></app-commercial-catalog-pdf-modal>`,
+  template: `<app-commercial-catalog-pdf-modal
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (onGeneratePdf)="onGeneratePdf($event)"
+  ></app-commercial-catalog-pdf-modal>`,
   imports: [CommercialCatalogPdfModalComponent],
 })
 class HostComponent {

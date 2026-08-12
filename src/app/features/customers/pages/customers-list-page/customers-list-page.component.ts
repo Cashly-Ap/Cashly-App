@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -24,7 +31,10 @@ import { CustomerApplicationService } from '@features/customers/services/applica
 import { CustomerFilters } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel, CUSTOMER_TYPES } from '@features/customers/models/enums';
-import { VENEZUELA_STATE_NAMES, getMunicipalitiesForState } from '@features/customers/data/venezuela-geo.data';
+import {
+  VENEZUELA_STATE_NAMES,
+  getMunicipalitiesForState,
+} from '@features/customers/data/venezuela-geo.data';
 
 @Component({
   selector: 'app-customers-list-page',
@@ -109,8 +119,19 @@ export class CustomersListPageComponent implements OnInit {
   stateOptions = VENEZUELA_STATE_NAMES;
 
   showInitialLoading = computed(() => this.loading() && (this.customers()?.length ?? 0) === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
+  );
 
   ngOnInit(): void {
     this.loadWithFilters();

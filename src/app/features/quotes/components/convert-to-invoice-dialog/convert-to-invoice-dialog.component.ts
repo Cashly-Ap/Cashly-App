@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnChanges, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnChanges,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +18,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
-import { PaymentType, PAYMENT_TYPE_LABELS } from '@features/invoices/models/enums/payment-type.enum';
+import {
+  PaymentType,
+  PAYMENT_TYPE_LABELS,
+} from '@features/invoices/models/enums/payment-type.enum';
 import { QuoteApiService } from '@features/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/quotes/models/interfaces';
 import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
@@ -41,17 +53,31 @@ interface LineWithStockInfo {
 @Component({
   selector: 'app-convert-to-invoice-dialog',
   standalone: true,
-  styles: [`
-    ::ng-deep .confirm-invoice-dialog .p-select,
-    ::ng-deep .confirm-invoice-dialog .p-inputnumber {
-      width: 100% !important;
-    }
-    ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
-    ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
-      width: 100% !important;
-    }
-  `],
-  imports: [CommonModule, DialogModule, ButtonModule, SelectModule, FormsModule, DecimalPipe, TableModule, TooltipModule, InputNumberModule, PasswordModule, RadioButtonModule],
+  styles: [
+    `
+      ::ng-deep .confirm-invoice-dialog .p-select,
+      ::ng-deep .confirm-invoice-dialog .p-inputnumber {
+        width: 100% !important;
+      }
+      ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
+      ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
+        width: 100% !important;
+      }
+    `,
+  ],
+  imports: [
+    CommonModule,
+    DialogModule,
+    ButtonModule,
+    SelectModule,
+    FormsModule,
+    DecimalPipe,
+    TableModule,
+    TooltipModule,
+    InputNumberModule,
+    PasswordModule,
+    RadioButtonModule,
+  ],
   templateUrl: './convert-to-invoice-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -76,7 +102,9 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineWithStockInfo[]>([]);
-  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(null);
+  readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(
+    null,
+  );
   readonly quoteCustomerId = signal<string | null>(null);
   readonly hasAnyNegativeStock = signal(false);
 
@@ -90,13 +118,16 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     if (!status || this.paymentType() !== PaymentType.CREDIT) return null;
 
     const total = this.totalAmount();
-    if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice) return null;
+    if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice)
+      return null;
 
     const parts: string[] = [];
     if (status.hasOverdue) parts.push('El cliente tiene facturas vencidas.');
     if (total > status.availableCredit) {
       const deficit = total - status.availableCredit;
-      parts.push(`El total (${total.toLocaleString()}) excede el crédito disponible (${status.availableCredit.toLocaleString()}) por ${deficit.toLocaleString()}.`);
+      parts.push(
+        `El total (${total.toLocaleString()}) excede el crédito disponible (${status.availableCredit.toLocaleString()}) por ${deficit.toLocaleString()}.`,
+      );
     }
     if (!status.canCreateCreditInvoice) parts.push('El cliente no puede crear facturas a crédito.');
 
@@ -129,7 +160,9 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   });
 
   readonly maxPaymentPerLine = computed(() => {
-    const balanceUsed = this.useBalance() ? Math.min(this.customerBalance(), this.totalAmount()) : 0;
+    const balanceUsed = this.useBalance()
+      ? Math.min(this.customerBalance(), this.totalAmount())
+      : 0;
     const alreadyAssigned = this.paymentLines().reduce((s, l) => s + (l.amount || 0), 0);
     return Math.max(0, this.totalAmount() - balanceUsed - alreadyAssigned);
   });
@@ -138,11 +171,13 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     const lines = this.paymentLines();
     const total = this.totalAmount();
     if (lines.length === 0 && !this.useBalance()) return false;
-    return lines.every(l => l.methodId && l.amount > 0) && this.totalPayments() === total;
+    return lines.every((l) => l.methodId && l.amount > 0) && this.totalPayments() === total;
   });
 
   maxForLine(index: number): number {
-    const balanceUsed = this.useBalance() ? Math.min(this.customerBalance(), this.totalAmount()) : 0;
+    const balanceUsed = this.useBalance()
+      ? Math.min(this.customerBalance(), this.totalAmount())
+      : 0;
     const otherLines = this.paymentLines()
       .filter((_, i) => i !== index)
       .reduce((s, l) => s + (l.amount || 0), 0);
@@ -158,17 +193,19 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   });
 
   addPaymentLine(): void {
-    this.paymentLines.update(lines => [...lines, { methodId: '', amount: 0 }]);
+    this.paymentLines.update((lines) => [...lines, { methodId: '', amount: 0 }]);
   }
 
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   removePaymentLine(index: number): void {
-    this.paymentLines.update(lines => lines.filter((_, i) => i !== index));
+    this.paymentLines.update((lines) => lines.filter((_, i) => i !== index));
   }
 
   updatePaymentLine(index: number, field: 'methodId' | 'amount', value: any): void {
-    this.paymentLines.update(lines => {
+    this.paymentLines.update((lines) => {
       const updated = [...lines];
       if (field === 'amount') {
         const v = Number(value) || 0;
@@ -219,13 +256,18 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
         }
       },
       error: (err) => {
-        this.error.set(err?.error?.message || err?.message || 'Error al cargar datos del presupuesto');
+        this.error.set(
+          err?.error?.message || err?.message || 'Error al cargar datos del presupuesto',
+        );
         this.loading.set(false);
       },
     });
   }
 
-  private mapLineWithStock(line: QuoteDetails['lines'][0], _quote: QuoteDetails): LineWithStockInfo {
+  private mapLineWithStock(
+    line: QuoteDetails['lines'][0],
+    _quote: QuoteDetails,
+  ): LineWithStockInfo {
     const allocations: AllocationWithStock[] = line.allocations.map((wa) => {
       const stockInfo = line.warehouseStocks?.find((ws) => ws.warehouseId === wa.warehouseId);
 
@@ -320,7 +362,9 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     if (!this.canConfirm()) return;
     const request: ConvertToInvoiceRequest = { paymentType: this.paymentType() };
     if (this.isCash()) {
-      const balanceToUse = this.useBalance() ? Math.min(this.customerBalance(), this.totalAmount()) : 0;
+      const balanceToUse = this.useBalance()
+        ? Math.min(this.customerBalance(), this.totalAmount())
+        : 0;
       request.useBalance = this.useBalance();
       request.balanceAmount = balanceToUse;
       const lines = this.paymentLines();

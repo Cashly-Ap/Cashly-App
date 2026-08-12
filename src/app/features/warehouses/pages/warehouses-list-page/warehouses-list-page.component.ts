@@ -1,7 +1,21 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormBuilder,
+  FormArray,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { of, catchError } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -102,12 +116,13 @@ export class WarehousesListPageComponent implements OnInit {
       value: p.id,
       label: p.composite ? `${p.name} [Compuesto]` : p.name,
       composite: p.composite,
-    }))
+    })),
   );
 
   exitProductOptions = computed(() => {
     const stockMap = new Map(this.cachedStock().map((s) => [s.productId, s.quantity]));
-    return this.productService.simpleProducts()
+    return this.productService
+      .simpleProducts()
       .filter((p) => (stockMap.get(p.id) ?? 0) > 0)
       .map((p) => ({
         value: p.id,
@@ -129,7 +144,10 @@ export class WarehousesListPageComponent implements OnInit {
     });
   }
 
-  getComponentStockImpact(productId: string | null, quantity: number | null): { name: string; current: number; resulting: number }[] {
+  getComponentStockImpact(
+    productId: string | null,
+    quantity: number | null,
+  ): { name: string; current: number; resulting: number }[] {
     if (!productId || !quantity) return [];
     const details = this.compositeDetailsCache.get(productId);
     if (!details?.composite) return [];
@@ -149,8 +167,19 @@ export class WarehousesListPageComponent implements OnInit {
   ];
 
   showInitialLoading = computed(() => this.loading() && this.warehouses().length === 0);
-  isEmptyDatabase = computed(() => !this.loading() && this.totalElements() === 0 && this.filterActive() === 'true' && !this.searchTerm());
-  hasFilteredResults = computed(() => !this.loading() && this.totalElements() === 0 && (this.filterActive() !== 'true' || !!this.searchTerm()));
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.filterActive() === 'true' &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.filterActive() !== 'true' || !!this.searchTerm()),
+  );
   activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
 
   ngOnInit(): void {
@@ -273,13 +302,16 @@ export class WarehousesListPageComponent implements OnInit {
 
   private loadCachedStock(warehouseId: string): void {
     this.stockLoading.set(true);
-    this.service.getStock(warehouseId).pipe(catchError(() => of([]))).subscribe({
-      next: (stock) => {
-        this.cachedStock.set(stock);
-        this.stockLoading.set(false);
-      },
-      error: () => this.stockLoading.set(false),
-    });
+    this.service
+      .getStock(warehouseId)
+      .pipe(catchError(() => of([])))
+      .subscribe({
+        next: (stock) => {
+          this.cachedStock.set(stock);
+          this.stockLoading.set(false);
+        },
+        error: () => this.stockLoading.set(false),
+      });
   }
 
   onSubmitEntry(): void {
@@ -290,7 +322,12 @@ export class WarehousesListPageComponent implements OnInit {
     const warehouseId = this.selectedWarehouseId();
     if (!warehouseId) return;
 
-    type LineValue = { productId: string; quantity: number; unitPrice: number | null; notes: string };
+    type LineValue = {
+      productId: string;
+      quantity: number;
+      unitPrice: number | null;
+      notes: string;
+    };
     const lines = this.entryForm.getRawValue().lines as LineValue[];
     const items = lines.map((line) => ({
       productId: line.productId,
@@ -304,11 +341,21 @@ export class WarehousesListPageComponent implements OnInit {
       next: () => {
         this.showEntryDialog.set(false);
         this.entryLoading.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Entradas registradas exitosamente', life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Entradas registradas exitosamente',
+          life: 3000,
+        });
       },
       error: () => {
         this.entryLoading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al registrar las entradas.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al registrar las entradas.',
+          life: 5000,
+        });
       },
     });
   }
@@ -334,11 +381,21 @@ export class WarehousesListPageComponent implements OnInit {
       next: () => {
         this.showExitDialog.set(false);
         this.exitLoading.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Salidas registradas exitosamente', life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Salidas registradas exitosamente',
+          life: 3000,
+        });
       },
       error: () => {
         this.exitLoading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al registrar las salidas.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al registrar las salidas.',
+          life: 5000,
+        });
       },
     });
   }
@@ -354,7 +411,12 @@ export class WarehousesListPageComponent implements OnInit {
         });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cambiar el estado del almacén.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cambiar el estado del almacén.',
+          life: 5000,
+        });
       },
     });
   }
@@ -370,10 +432,20 @@ export class WarehousesListPageComponent implements OnInit {
       accept: () => {
         this.service.delete(warehouse.id).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Almacén eliminado exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Almacén eliminado exitosamente',
+              life: 3000,
+            });
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el almacén.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al eliminar el almacén.',
+              life: 5000,
+            });
           },
         });
       },

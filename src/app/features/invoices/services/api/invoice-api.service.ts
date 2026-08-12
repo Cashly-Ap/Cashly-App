@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { InvoiceList, InvoiceDetails, InvoiceCreate, InvoiceUpdate, NoteInfo } from '@features/invoices/models/interfaces';
+import {
+  InvoiceList,
+  InvoiceDetails,
+  InvoiceCreate,
+  InvoiceUpdate,
+  NoteInfo,
+} from '@features/invoices/models/interfaces';
 import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
@@ -167,44 +173,52 @@ export class InvoiceApiService {
   }
 
   getById(id: string): Observable<InvoiceDetails> {
-    return this.http.get<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+    return this.http
+      .get<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   create(data: InvoiceCreate): Observable<InvoiceDetails> {
-    return this.http.post<InvoiceDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+    return this.http
+      .post<InvoiceDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   update(id: string, data: InvoiceUpdate): Observable<InvoiceDetails> {
-    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}`, data).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+    return this.http
+      .put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}`, data)
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   cancel(id: string, reason: string): Observable<InvoiceDetails> {
-    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason }).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+    return this.http
+      .put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, { reason })
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  confirm(id: string, data?: { confirmationPassword?: string; useBalance?: boolean; balanceAmount?: number; paymentMethodId?: string }): Observable<InvoiceDetails> {
-    return this.http.put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, data ?? {}).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+  confirm(
+    id: string,
+    data?: {
+      confirmationPassword?: string;
+      useBalance?: boolean;
+      balanceAmount?: number;
+      paymentMethodId?: string;
+    },
+  ): Observable<InvoiceDetails> {
+    return this.http
+      .put<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/confirm`, data ?? {})
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   duplicate(id: string, customerId?: string): Observable<InvoiceDetails> {
     const body = customerId ? { customerId } : {};
-    return this.http.post<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/duplicate`, body).pipe(
-      map((r) => this.toInvoiceDetails(r)),
-    );
+    return this.http
+      .post<InvoiceDetailApiResponse>(`${this.baseUrl}/${id}/duplicate`, body)
+      .pipe(map((r) => this.toInvoiceDetails(r)));
   }
 
   private toInvoiceDetails(r: InvoiceDetailApiResponse): InvoiceDetails {

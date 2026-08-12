@@ -1,4 +1,6 @@
-<div class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-md border border-surface-200 dark:border-surface-700 overflow-hidden">
+<div
+  class="bg-surface-0 dark:bg-surface-800 rounded-2xl shadow-md border border-surface-200 dark:border-surface-700 overflow-hidden"
+>
   @if (loading()) {
     <div class="flex items-center justify-center py-16">
       <i class="pi pi-spin pi-spinner text-3xl text-surface-400"></i>
@@ -6,11 +8,17 @@
   } @else if (payments().length === 0) {
     <div class="py-16 text-center">
       <i class="pi pi-check-circle text-4xl text-green-400 mb-3"></i>
-      <p class="text-lg font-semibold text-surface-700 dark:text-surface-200">No hay pagos pendientes</p>
+      <p class="text-lg font-semibold text-surface-700 dark:text-surface-200">
+        No hay pagos pendientes
+      </p>
       <p class="text-sm text-surface-500">Todos los pagos han sido verificados</p>
     </div>
   } @else {
-    <p-table [value]="payments()" styleClass="p-datatable-striped" [tableStyle]="{ 'min-width': '100%' }">
+    <p-table
+      [value]="payments()"
+      styleClass="p-datatable-striped"
+      [tableStyle]="{ 'min-width': '100%' }"
+    >
       <ng-template pTemplate="header">
         <tr>
           <th>N° Pago</th>
@@ -24,16 +32,44 @@
       </ng-template>
       <ng-template pTemplate="body" let-payment>
         <tr>
-          <td><span class="font-mono text-sm">{{ payment.paymentNumber }}</span></td>
+          <td>
+            <span class="font-mono text-sm">{{ payment.paymentNumber }}</span>
+          </td>
           <td>{{ formatCustomer(payment) }}</td>
-          <td><span class="font-mono font-semibold">{{ payment.amount | currency:'USD':'symbol' }}</span></td>
-          <td><span class="text-sm">{{ payment.referenceNumber || '-' }}</span></td>
-          <td><span class="text-sm">{{ payment.paymentDate | date:'dd/MM/yy' }}</span></td>
-          <td><span class="text-sm text-surface-500 max-w-[200px] truncate block">{{ payment.notes || '-' }}</span></td>
+          <td>
+            <span class="font-mono font-semibold">{{
+              payment.amount | currency: 'USD' : 'symbol'
+            }}</span>
+          </td>
+          <td>
+            <span class="text-sm">{{ payment.referenceNumber || '-' }}</span>
+          </td>
+          <td>
+            <span class="text-sm">{{ payment.paymentDate | date: 'dd/MM/yy' }}</span>
+          </td>
+          <td>
+            <span class="text-sm text-surface-500 max-w-[200px] truncate block">{{
+              payment.notes || '-'
+            }}</span>
+          </td>
           <td class="text-center">
             <div class="flex gap-1 justify-center">
-              <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="openApprove(payment)" pTooltip="Aprobar" />
-              <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="openReject(payment)" pTooltip="Rechazar" />
+              <p-button
+                icon="pi pi-check"
+                [text]="true"
+                [rounded]="true"
+                severity="success"
+                (onClick)="openApprove(payment)"
+                pTooltip="Aprobar"
+              />
+              <p-button
+                icon="pi pi-times"
+                [text]="true"
+                [rounded]="true"
+                severity="danger"
+                (onClick)="openReject(payment)"
+                pTooltip="Rechazar"
+              />
             </div>
           </td>
         </tr>
@@ -42,30 +78,93 @@
   }
 </div>
 
-<p-dialog [(visible)]="approveDialogVisible" header="Aprobar Pago" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false">
+<p-dialog
+  [(visible)]="approveDialogVisible"
+  header="Aprobar Pago"
+  [modal]="true"
+  [style]="{ width: '28rem' }"
+  [draggable]="false"
+>
   <div class="flex flex-col gap-3">
-    <p class="text-sm text-surface-500">Estás por aprobar el pago <strong>{{ selectedPayment()?.paymentNumber }}</strong> por <strong>{{ selectedPayment()?.amount | currency:'USD':'symbol' }}</strong>.</p>
+    <p class="text-sm text-surface-500">
+      Estás por aprobar el pago <strong>{{ selectedPayment()?.paymentNumber }}</strong> por
+      <strong>{{ selectedPayment()?.amount | currency: 'USD' : 'symbol' }}</strong
+      >.
+    </p>
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700">Razón de aprobación <span class="text-red-500">*</span></label>
-      <textarea pTextarea [(ngModel)]="reason" rows="2" placeholder="Motivo de la aprobación..." class="w-full" [disabled]="submitting()"></textarea>
+      <label class="text-sm font-medium text-surface-700"
+        >Razón de aprobación <span class="text-red-500">*</span></label
+      >
+      <textarea
+        pTextarea
+        [(ngModel)]="reason"
+        rows="2"
+        placeholder="Motivo de la aprobación..."
+        class="w-full"
+        [disabled]="submitting()"
+      ></textarea>
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <p-button label="Cancelar" severity="secondary" [text]="true" (click)="approveDialogVisible.set(false)" [disabled]="submitting()" />
-    <p-button label="Aprobar" icon="pi pi-check" severity="success" [loading]="submitting()" [disabled]="!reason().trim()" (click)="submitApprove()" />
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      [text]="true"
+      (click)="approveDialogVisible.set(false)"
+      [disabled]="submitting()"
+    />
+    <p-button
+      label="Aprobar"
+      icon="pi pi-check"
+      severity="success"
+      [loading]="submitting()"
+      [disabled]="!reason().trim()"
+      (click)="submitApprove()"
+    />
   </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="rejectDialogVisible" header="Rechazar Pago" [modal]="true" [style]="{ width: '28rem' }" [draggable]="false">
+<p-dialog
+  [(visible)]="rejectDialogVisible"
+  header="Rechazar Pago"
+  [modal]="true"
+  [style]="{ width: '28rem' }"
+  [draggable]="false"
+>
   <div class="flex flex-col gap-3">
-    <p class="text-sm text-surface-500">Estás por rechazar el pago <strong>{{ selectedPayment()?.paymentNumber }}</strong>.</p>
+    <p class="text-sm text-surface-500">
+      Estás por rechazar el pago <strong>{{ selectedPayment()?.paymentNumber }}</strong
+      >.
+    </p>
     <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700">Motivo de rechazo <span class="text-red-500">*</span></label>
-      <textarea pTextarea [(ngModel)]="reason" rows="2" placeholder="Explica por qué se rechaza este pago..." class="w-full" [disabled]="submitting()"></textarea>
+      <label class="text-sm font-medium text-surface-700"
+        >Motivo de rechazo <span class="text-red-500">*</span></label
+      >
+      <textarea
+        pTextarea
+        [(ngModel)]="reason"
+        rows="2"
+        placeholder="Explica por qué se rechaza este pago..."
+        class="w-full"
+        [disabled]="submitting()"
+      ></textarea>
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <p-button label="Cancelar" severity="secondary" [text]="true" (click)="rejectDialogVisible.set(false)" [disabled]="submitting()" />
-    <p-button label="Rechazar" icon="pi pi-times" severity="danger" [loading]="submitting()" [disabled]="!reason().trim()" (click)="submitReject()" />
+    <p-button
+      label="Cancelar"
+      severity="secondary"
+      [text]="true"
+      (click)="rejectDialogVisible.set(false)"
+      [disabled]="submitting()"
+    />
+    <p-button
+      label="Rechazar"
+      icon="pi pi-times"
+      severity="danger"
+      [loading]="submitting()"
+      [disabled]="!reason().trim()"
+      (click)="submitReject()"
+    />
   </ng-template>
 </p-dialog>

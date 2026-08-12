@@ -2,7 +2,17 @@ import { MOVEMENT_TYPE_LABELS, MovementType } from './movement-type.enum';
 
 describe('MovementType', () => {
   it('should have all expected type values', () => {
-    const types: MovementType[] = ['ENTRY', 'EXIT', 'ADJUSTMENT', 'TRANSFER_IN', 'TRANSFER_OUT', 'COMPONENT_EXIT', 'RETURN_ENTRY', 'CANCEL_ENTRY', 'SALE_EXIT'];
+    const types: MovementType[] = [
+      'ENTRY',
+      'EXIT',
+      'ADJUSTMENT',
+      'TRANSFER_IN',
+      'TRANSFER_OUT',
+      'COMPONENT_EXIT',
+      'RETURN_ENTRY',
+      'CANCEL_ENTRY',
+      'SALE_EXIT',
+    ];
     expect(types).toContain('ENTRY');
     expect(types).toContain('EXIT');
     expect(types).toContain('ADJUSTMENT');
@@ -11,7 +21,17 @@ describe('MovementType', () => {
   });
 
   it('should have exactly 9 type values', () => {
-    const types: MovementType[] = ['ENTRY', 'EXIT', 'ADJUSTMENT', 'TRANSFER_IN', 'TRANSFER_OUT', 'COMPONENT_EXIT', 'RETURN_ENTRY', 'CANCEL_ENTRY', 'SALE_EXIT'];
+    const types: MovementType[] = [
+      'ENTRY',
+      'EXIT',
+      'ADJUSTMENT',
+      'TRANSFER_IN',
+      'TRANSFER_OUT',
+      'COMPONENT_EXIT',
+      'RETURN_ENTRY',
+      'CANCEL_ENTRY',
+      'SALE_EXIT',
+    ];
     expect(types).toHaveLength(9);
   });
 });

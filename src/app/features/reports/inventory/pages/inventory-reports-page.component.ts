@@ -7,9 +7,15 @@ import { StockPdfModalComponent } from '@features/reports/inventory/components/s
 import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
 import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
 import { StockPdfApiService, StockExcelApiService } from '@features/reports/inventory/services/api';
-import { MovementsPdfApiService, MovementsExcelApiService } from '@features/reports/inventory/services/api';
+import {
+  MovementsPdfApiService,
+  MovementsExcelApiService,
+} from '@features/reports/inventory/services/api';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
-import type { StockPdfFilters, MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
+import type {
+  StockPdfFilters,
+  MovementsPdfFilters,
+} from '@features/reports/inventory/models/interfaces';
 
 @Component({
   selector: 'app-inventory-reports-page',
@@ -62,9 +68,7 @@ export default class InventoryReportsPageComponent {
         FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx');
         this.stockModalVisible.set(false);
       },
-      error: () => {
-        
-      },
+      error: () => {},
     });
   }
 
@@ -91,9 +95,7 @@ export default class InventoryReportsPageComponent {
         FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx');
         this.movementsModalVisible.set(false);
       },
-      error: () => {
-        
-      },
+      error: () => {},
     });
   }
 }

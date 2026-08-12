@@ -1,7 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { ProductApiService, ProductFilters } from '@features/products/services/api/product-api.service';
-import { ProductList, ProductDetails, ProductCreate, ProductUpdate, ProductStockByWarehouse } from '@features/products/models/interfaces';
+import {
+  ProductApiService,
+  ProductFilters,
+} from '@features/products/services/api/product-api.service';
+import {
+  ProductList,
+  ProductDetails,
+  ProductCreate,
+  ProductUpdate,
+  ProductStockByWarehouse,
+} from '@features/products/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -31,9 +40,9 @@ export class ProductApplicationService {
   }
 
   loadSimpleProducts(): Observable<ProductList[]> {
-    return this.api.getAllSimple().pipe(
-      tap({ next: (products) => this.simpleProducts.set(products) }),
-    );
+    return this.api
+      .getAllSimple()
+      .pipe(tap({ next: (products) => this.simpleProducts.set(products) }));
   }
 
   loadById(id: string): Observable<ProductDetails> {
@@ -65,7 +74,7 @@ export class ProductApplicationService {
         next: (product) => {
           this.products.update((current) =>
             current.map((p) =>
-              p.id === id ? { ...p, name: product.name, categoryName: product.categoryName } : p
+              p.id === id ? { ...p, name: product.name, categoryName: product.categoryName } : p,
             ),
           );
           if (this.currentProduct()?.id === id) this.currentProduct.set(product);

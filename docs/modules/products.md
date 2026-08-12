@@ -104,6 +104,7 @@ src/app/features/products/
 **Purpose**: Displays all products in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by code, name, category
 - Filter by product type (SIMPLE, COMPOSITE)
@@ -121,6 +122,7 @@ src/app/features/products/
 **Purpose**: Create new product or edit existing one.
 
 **Features**:
+
 - Tab-based layout (General, Composition for COMPOSITE)
 - Reactive forms with validation
 - Product type selection (only on create)
@@ -138,6 +140,7 @@ src/app/features/products/
 **Purpose**: Display complete product information in read-only mode.
 
 **Features**:
+
 - Complete product data display
 - Composition table for COMPOSITE products
 - Component stock levels display
@@ -158,15 +161,15 @@ src/app/features/products/
 
 ```typescript
 export interface ProductList {
-  id: number;                        // Product ID
-  code: string;                      // Product code (PRD-XXXXX)
-  name: string;                      // Product name
-  category: string;                  // Category name
-  salePrice: number;                 // Sale price
-  productType: ProductType;          // SIMPLE or COMPOSITE
+  id: number; // Product ID
+  code: string; // Product code (PRD-XXXXX)
+  name: string; // Product name
+  category: string; // Category name
+  salePrice: number; // Sale price
+  productType: ProductType; // SIMPLE or COMPOSITE
   primaryUnitOfMeasure: UnitOfMeasure; // UNIT, KILOGRAM, or BULK
-  bulkQuantity: number | null;       // Units per bulk (if BULK)
-  active: boolean;                   // Active status
+  bulkQuantity: number | null; // Units per bulk (if BULK)
+  active: boolean; // Active status
 }
 ```
 
@@ -274,30 +277,30 @@ export interface ProductCreate {
 
 ```typescript
 export interface ProductStockByWarehouse {
-  warehouseId: string;           // Warehouse UUID
-  warehouseCode: string;         // Warehouse code (WH-XXX)
-  warehouseName: string;         // Warehouse name
-  quantity: number;              // Quantity in warehouse
+  warehouseId: string; // Warehouse UUID
+  warehouseCode: string; // Warehouse code (WH-XXX)
+  warehouseName: string; // Warehouse name
+  quantity: number; // Quantity in warehouse
   lastMovementAt: string | null; // Last stock movement timestamp
 }
 
 export interface ProductCompositionStock {
-  componentProductId: string;              // Component product UUID
-  componentProductCode: string;            // Component product code
-  componentProductName: string;            // Component product name
-  quantityRequired: number;                // Quantity required per composite unit
-  componentUnitOfMeasure: UnitOfMeasure;   // Component unit of measure
-  totalStock: number;                      // Total stock across all warehouses
+  componentProductId: string; // Component product UUID
+  componentProductCode: string; // Component product code
+  componentProductName: string; // Component product name
+  quantityRequired: number; // Quantity required per composite unit
+  componentUnitOfMeasure: UnitOfMeasure; // Component unit of measure
+  totalStock: number; // Total stock across all warehouses
   stockByWarehouse: ProductStockByWarehouse[]; // Stock breakdown by warehouse
 }
 
 export interface ProductStock {
-  productId: string;                    // Product UUID
-  productCode: string;                  // Product code (PRD-XXXXX)
-  productName: string;                  // Product name
-  productType: ProductType;             // SIMPLE or COMPOSITE
-  primaryUnitOfMeasure: UnitOfMeasure;  // Primary unit of measure
-  totalStock: number;                   // Total stock across all warehouses
+  productId: string; // Product UUID
+  productCode: string; // Product code (PRD-XXXXX)
+  productName: string; // Product name
+  productType: ProductType; // SIMPLE or COMPOSITE
+  primaryUnitOfMeasure: UnitOfMeasure; // Primary unit of measure
+  totalStock: number; // Total stock across all warehouses
   stockByWarehouse: ProductStockByWarehouse[]; // Stock breakdown by warehouse
   compositions: ProductCompositionStock[] | null; // Component stock (COMPOSITE only)
 }
@@ -313,7 +316,7 @@ export interface ProductStock {
 
 ```typescript
 export enum ProductType {
-  SIMPLE = 'SIMPLE',       // Standard product with direct stock tracking
+  SIMPLE = 'SIMPLE', // Standard product with direct stock tracking
   COMPOSITE = 'COMPOSITE', // Product assembled from components
 }
 
@@ -343,9 +346,9 @@ export function getProductTypeLabel(type: ProductType): string {
 
 ```typescript
 export enum UnitOfMeasure {
-  UNIT = 'UNIT',         // Individual units (1 bottle, 1 item)
+  UNIT = 'UNIT', // Individual units (1 bottle, 1 item)
   KILOGRAM = 'KILOGRAM', // Weight-based (2.5 kg of flour)
-  BULK = 'BULK',         // Packages/Bundles (1 bulk = 12 units)
+  BULK = 'BULK', // Packages/Bundles (1 bulk = 12 units)
 }
 
 export interface UnitOfMeasureOption {
@@ -380,14 +383,14 @@ All endpoints use: `/api/products`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/products | - | `ProductList[]` | List page |
-| GET | /api/products/:id | - | `ProductDetails` | Details/Edit page |
-| GET | /api/products/:id/stock | - | `ProductStock` | Details page stock section |
-| POST | /api/products | `ProductCreate` | `ProductDetails` | Create form |
-| PUT | /api/products/:id | `ProductEdit` | `ProductDetails` | Edit form |
-| DELETE | /api/products/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint                | Request Interface | Response Interface | Frontend Usage             |
+| ----------- | ----------------------- | ----------------- | ------------------ | -------------------------- |
+| GET         | /api/products           | -                 | `ProductList[]`    | List page                  |
+| GET         | /api/products/:id       | -                 | `ProductDetails`   | Details/Edit page          |
+| GET         | /api/products/:id/stock | -                 | `ProductStock`     | Details page stock section |
+| POST        | /api/products           | `ProductCreate`   | `ProductDetails`   | Create form                |
+| PUT         | /api/products/:id       | `ProductEdit`     | `ProductDetails`   | Edit form                  |
+| DELETE      | /api/products/:id       | -                 | void (204)         | Delete action              |
 
 ---
 
@@ -398,10 +401,12 @@ All endpoints use: `/api/products`
 **Frontend Interface**: `ProductList[]`
 
 **Query Parameters**:
+
 - `category` (string): Filter by category
 - `productType` (string): Filter by type (SIMPLE, COMPOSITE)
 
 **Example Response**:
+
 ```json
 [
   {
@@ -409,7 +414,7 @@ All endpoints use: `/api/products`
     "code": "PRD-00001",
     "name": "Laptop Dell XPS 15",
     "category": "Electronics",
-    "salePrice": 1200.00,
+    "salePrice": 1200.0,
     "productType": "SIMPLE",
     "primaryUnitOfMeasure": "UNIT",
     "bulkQuantity": null,
@@ -420,7 +425,7 @@ All endpoints use: `/api/products`
     "code": "PRD-00002",
     "name": "Gift Basket Premium",
     "category": "Gifts",
-    "salePrice": 75.00,
+    "salePrice": 75.0,
     "productType": "COMPOSITE",
     "primaryUnitOfMeasure": "UNIT",
     "bulkQuantity": null,
@@ -438,6 +443,7 @@ All endpoints use: `/api/products`
 **Frontend Interface**: `ProductDetails`
 
 **Example Response** (Simple Product):
+
 ```json
 {
   "id": 1,
@@ -445,8 +451,8 @@ All endpoints use: `/api/products`
   "name": "Laptop Dell XPS 15",
   "description": "15-inch professional laptop",
   "category": "Electronics",
-  "costPrice": 800.00,
-  "salePrice": 1200.00,
+  "costPrice": 800.0,
+  "salePrice": 1200.0,
   "productType": "SIMPLE",
   "primaryUnitOfMeasure": "UNIT",
   "bulkQuantity": null,
@@ -459,6 +465,7 @@ All endpoints use: `/api/products`
 ```
 
 **Example Response** (Composite Product):
+
 ```json
 {
   "id": 2,
@@ -466,8 +473,8 @@ All endpoints use: `/api/products`
   "name": "Gift Basket Premium",
   "description": "Luxury gift basket with wine and chocolates",
   "category": "Gifts",
-  "costPrice": 45.00,
-  "salePrice": 75.00,
+  "costPrice": 45.0,
+  "salePrice": 75.0,
   "productType": "COMPOSITE",
   "primaryUnitOfMeasure": "UNIT",
   "bulkQuantity": null,
@@ -509,6 +516,7 @@ All endpoints use: `/api/products`
 **Description**: Returns the total stock of a product across all warehouses, with detailed breakdown per warehouse. For COMPOSITE products, also includes the stock information for each component product.
 
 **Example Response** (Simple Product):
+
 ```json
 {
   "productId": "550e8400-e29b-41d4-a716-446655440001",
@@ -538,6 +546,7 @@ All endpoints use: `/api/products`
 ```
 
 **Example Response** (Composite Product):
+
 ```json
 {
   "productId": "550e8400-e29b-41d4-a716-446655440002",
@@ -602,6 +611,7 @@ All endpoints use: `/api/products`
 ```
 
 **Errors**:
+
 - `404 Not Found`: Product does not exist
 
 ---
@@ -613,26 +623,28 @@ All endpoints use: `/api/products`
 **Frontend Interface**: `ProductCreate` (request), `ProductDetails` (response)
 
 **Example Request** (Simple):
+
 ```json
 {
   "name": "Laptop Dell XPS 15",
   "description": "15-inch professional laptop",
   "category": "Electronics",
-  "costPrice": 800.00,
-  "salePrice": 1200.00,
+  "costPrice": 800.0,
+  "salePrice": 1200.0,
   "productType": "SIMPLE",
   "primaryUnitOfMeasure": "UNIT"
 }
 ```
 
 **Example Request** (Composite):
+
 ```json
 {
   "name": "Gift Basket Premium",
   "description": "Luxury gift basket",
   "category": "Gifts",
-  "costPrice": 45.00,
-  "salePrice": 75.00,
+  "costPrice": 45.0,
+  "salePrice": 75.0,
   "productType": "COMPOSITE",
   "primaryUnitOfMeasure": "UNIT",
   "components": [
@@ -651,13 +663,14 @@ All endpoints use: `/api/products`
 ```
 
 **Example Request** (Bulk):
+
 ```json
 {
   "name": "Coca-Cola Case",
   "description": "Case of 12 Coca-Cola cans",
   "category": "Beverages",
-  "costPrice": 8.00,
-  "salePrice": 12.00,
+  "costPrice": 8.0,
+  "salePrice": 12.0,
   "productType": "SIMPLE",
   "primaryUnitOfMeasure": "BULK",
   "bulkQuantity": 12
@@ -673,13 +686,14 @@ All endpoints use: `/api/products`
 **Frontend Interface**: `ProductEdit` (request), `ProductDetails` (response)
 
 **Example Request**:
+
 ```json
 {
   "name": "Gift Basket Premium Deluxe",
   "description": "Updated description",
   "category": "Gifts",
-  "costPrice": 50.00,
-  "salePrice": 85.00
+  "costPrice": 50.0,
+  "salePrice": 85.0
 }
 ```
 
@@ -694,6 +708,7 @@ All endpoints use: `/api/products`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `409 Conflict`: Cannot delete product with existing stock or used as component
 
 ---
@@ -702,18 +717,18 @@ All endpoints use: `/api/products`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `name` | string | Yes | 3-200 characters | "Name must be 3-200 characters" |
-| `description` | string | No | Max 1000 characters | "Description must be max 1000 characters" |
-| `category` | string | Yes | Max 100 characters | "Category is required" |
-| `costPrice` | number | Yes | > 0, scale 2 | "El precio debe ser mayor a cero" |
-| `salePrice` | number | Yes | > 0, scale 2 | "El precio debe ser mayor a cero" |
-| `productType` | enum | Yes | SIMPLE or COMPOSITE | "Product type is required" |
-| `primaryUnitOfMeasure` | enum | Yes | UNIT, KILOGRAM, or BULK | "Unit of measure is required" |
-| `bulkQuantity` | number | Conditional | Required if BULK, > 0 | "Bulk quantity required for BULK unit" |
-| `components` | array | Conditional | Required if COMPOSITE, min 1 | "At least one component required" |
-| `quantityRequired` | number | Yes | > 0, scale 3 | "Quantity must be positive" |
+| Field                  | Type   | Required    | Rules                        | Error Message                             |
+| ---------------------- | ------ | ----------- | ---------------------------- | ----------------------------------------- |
+| `name`                 | string | Yes         | 3-200 characters             | "Name must be 3-200 characters"           |
+| `description`          | string | No          | Max 1000 characters          | "Description must be max 1000 characters" |
+| `category`             | string | Yes         | Max 100 characters           | "Category is required"                    |
+| `costPrice`            | number | Yes         | > 0, scale 2                 | "El precio debe ser mayor a cero"         |
+| `salePrice`            | number | Yes         | > 0, scale 2                 | "El precio debe ser mayor a cero"         |
+| `productType`          | enum   | Yes         | SIMPLE or COMPOSITE          | "Product type is required"                |
+| `primaryUnitOfMeasure` | enum   | Yes         | UNIT, KILOGRAM, or BULK      | "Unit of measure is required"             |
+| `bulkQuantity`         | number | Conditional | Required if BULK, > 0        | "Bulk quantity required for BULK unit"    |
+| `components`           | array  | Conditional | Required if COMPOSITE, min 1 | "At least one component required"         |
+| `quantityRequired`     | number | Yes         | > 0, scale 3                 | "Quantity must be positive"               |
 
 ### Custom Validators
 
@@ -726,41 +741,41 @@ export class ProductValidators {
   static bulkQuantityRequired(productTypeControl: AbstractControl): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const unitOfMeasure = control.parent?.get('primaryUnitOfMeasure')?.value;
-      
+
       if (unitOfMeasure === UnitOfMeasure.BULK) {
         if (!control.value || control.value <= 0) {
           return { bulkQuantityRequired: 'Bulk quantity required for BULK unit' };
         }
       }
-      
+
       return null;
     };
   }
-  
+
   static compositionRequired(productTypeControl: AbstractControl): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const productType = productTypeControl.value;
-      
+
       if (productType === ProductType.COMPOSITE) {
         if (!control.value || !Array.isArray(control.value) || control.value.length === 0) {
           return { compositionRequired: 'At least one component required for COMPOSITE products' };
         }
       }
-      
+
       return null;
     };
   }
-  
+
   static noCompositionForSimple(productTypeControl: AbstractControl): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const productType = productTypeControl.value;
-      
+
       if (productType === ProductType.SIMPLE) {
         if (control.value && Array.isArray(control.value) && control.value.length > 0) {
           return { noCompositionForSimple: 'SIMPLE products cannot have compositions' };
         }
       }
-      
+
       return null;
     };
   }
@@ -768,11 +783,11 @@ export class ProductValidators {
   static positiveQuantity(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       if (control.value <= 0) {
         return { invalidQuantity: 'Quantity must be positive' };
       }
-      
+
       return null;
     };
   }
@@ -786,10 +801,12 @@ export class ProductValidators {
 ### Tab Organization
 
 #### Tab 1: General Information
+
 - **Component**: `product-general-section`
 - **Fields**: name, description, category, costPrice, salePrice, productType, primaryUnitOfMeasure, bulkQuantity, active
 
 #### Tab 2: Composition (COMPOSITE only)
+
 - **Component**: `product-composition-section`
 - **Fields**: components[] (componentProductId, quantityRequired, componentUnitOfMeasure)
 - **Visibility**: Only shown when productType === COMPOSITE
@@ -810,14 +827,14 @@ interface ProductFormModel {
   primaryUnitOfMeasure: UnitOfMeasure;
   bulkQuantity: number | null;
   active: boolean;
-  
+
   // Tab 2: Composition (COMPOSITE only)
   components: ProductCompositionFormModel[];
 }
 
 interface ProductCompositionFormModel {
   componentProductId: number;
-  componentProductName?: string;  // Display only
+  componentProductName?: string; // Display only
   quantityRequired: number;
   componentUnitOfMeasure: UnitOfMeasure;
 }
@@ -890,39 +907,35 @@ export class ProductApplicationService {
   loadAll(params?: { category?: string; productType?: string }): Observable<ProductList[]> {
     this.loading.set(true);
     return this.api.getAll(params).pipe(
-      tap(products => this.products.set(products)),
-      finalize(() => this.loading.set(false))
+      tap((products) => this.products.set(products)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: number): Observable<ProductDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(product => this.currentProduct.set(product)),
-      finalize(() => this.loading.set(false))
+      tap((product) => this.currentProduct.set(product)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadStock(id: string): Observable<ProductStock> {
     this.stockLoading.set(true);
     return this.api.getStock(id).pipe(
-      tap(stock => this.currentProductStock.set(stock)),
-      finalize(() => this.stockLoading.set(false))
+      tap((stock) => this.currentProductStock.set(stock)),
+      finalize(() => this.stockLoading.set(false)),
     );
   }
 
   create(data: ProductCreate): Observable<ProductDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: number, data: ProductEdit): Observable<ProductDetails> {
     this.loading.set(true);
-    return this.api.update(id, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   delete(id: number): Observable<void> {
@@ -964,12 +977,13 @@ export class ProductMapper {
       primaryUnitOfMeasure: details.primaryUnitOfMeasure,
       bulkQuantity: details.bulkQuantity,
       active: details.active,
-      components: details.compositions?.map(c => ({
-        componentProductId: c.componentProductId,
-        componentProductName: c.componentProductName,
-        quantityRequired: c.quantityRequired,
-        componentUnitOfMeasure: c.componentUnitOfMeasure,
-      })) || [],
+      components:
+        details.compositions?.map((c) => ({
+          componentProductId: c.componentProductId,
+          componentProductName: c.componentProductName,
+          quantityRequired: c.quantityRequired,
+          componentUnitOfMeasure: c.componentUnitOfMeasure,
+        })) || [],
     };
   }
 
@@ -983,13 +997,14 @@ export class ProductMapper {
       productType: form.productType,
       primaryUnitOfMeasure: form.primaryUnitOfMeasure,
       bulkQuantity: form.primaryUnitOfMeasure === UnitOfMeasure.BULK ? form.bulkQuantity : null,
-      components: form.productType === ProductType.COMPOSITE 
-        ? form.components.map(c => ({
-            componentProductId: c.componentProductId,
-            quantityRequired: c.quantityRequired,
-            componentUnitOfMeasure: c.componentUnitOfMeasure,
-          }))
-        : null,
+      components:
+        form.productType === ProductType.COMPOSITE
+          ? form.components.map((c) => ({
+              componentProductId: c.componentProductId,
+              quantityRequired: c.quantityRequired,
+              componentUnitOfMeasure: c.componentUnitOfMeasure,
+            }))
+          : null,
     };
   }
 
@@ -1012,11 +1027,13 @@ export class ProductMapper {
 ### Product Type Rules
 
 **SIMPLE Products**:
+
 1. Cannot have compositions
 2. Stock tracked directly in warehouse
 3. Adding/removing stock affects quantity directly
 
 **COMPOSITE Products**:
+
 1. MUST have at least 1 composition (no maximum limit)
 2. Stock tracked in warehouse
 3. Adding stock triggers automatic component deduction
@@ -1064,29 +1081,33 @@ export const PRODUCT_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/products-list-page/products-list-page.component')
-        .then(m => m.ProductsListPageComponent),
+      import('../pages/products-list-page/products-list-page.component').then(
+        (m) => m.ProductsListPageComponent,
+      ),
     title: 'Productos',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/products-form-page/products-form-page.component')
-        .then(m => m.ProductsFormPageComponent),
+      import('../pages/products-form-page/products-form-page.component').then(
+        (m) => m.ProductsFormPageComponent,
+      ),
     title: 'Nuevo Producto',
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/products-details-page/products-details-page.component')
-        .then(m => m.ProductsDetailsPageComponent),
+      import('../pages/products-details-page/products-details-page.component').then(
+        (m) => m.ProductsDetailsPageComponent,
+      ),
     title: 'Detalles del Producto',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/products-form-page/products-form-page.component')
-        .then(m => m.ProductsFormPageComponent),
+      import('../pages/products-form-page/products-form-page.component').then(
+        (m) => m.ProductsFormPageComponent,
+      ),
     title: 'Editar Producto',
     canDeactivate: [pendingChangesGuard],
   },

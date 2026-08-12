@@ -49,10 +49,24 @@ describe('InvoiceFormPageComponent', () => {
         unitPrice: 100,
         lineTotal: 500,
         warehouseAllocations: [
-          { id: 'alloc-001', warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            id: 'alloc-001',
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],
@@ -66,7 +80,12 @@ describe('InvoiceFormPageComponent', () => {
     allTabs: signal([]),
   };
 
-  function configureTestBed(id: string | null = null, loadByIdValue: any = of(mockInvoice), createValue: any = of(mockInvoice), updateValue: any = of(mockInvoice)) {
+  function configureTestBed(
+    id: string | null = null,
+    loadByIdValue: any = of(mockInvoice),
+    createValue: any = of(mockInvoice),
+    updateValue: any = of(mockInvoice),
+  ) {
     mockService = {
       loadById: vi.fn().mockReturnValue(loadByIdValue),
       create: vi.fn().mockReturnValue(createValue),
@@ -85,7 +104,13 @@ describe('InvoiceFormPageComponent', () => {
       imports: [InvoiceFormPageComponent, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap, queryParamMap: { get: () => null } }, paramMap: of({ get: () => id }) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap, queryParamMap: { get: () => null } },
+            paramMap: of({ get: () => id }),
+          },
+        },
         { provide: InvoiceApplicationService, useValue: mockService },
         { provide: PendingTabsService, useValue: mockPendingTabsService },
         MessageService,
@@ -116,7 +141,6 @@ describe('InvoiceFormPageComponent', () => {
   });
 
   afterEach(() => {
-    
     if (httpMock) {
       httpMock.match(() => true).forEach((req) => req.flush([]));
     }
@@ -168,7 +192,15 @@ describe('InvoiceFormPageComponent', () => {
   it('should compute total from items', () => {
     fixture.detectChanges();
     component.items.set([
-      { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [] },
+      {
+        productId: 'p1',
+        productCode: 'MOT-10',
+        productName: 'Motor 10HP',
+        quantity: 5,
+        unitPrice: 100,
+        stock: [],
+        warehouseAllocations: [],
+      },
     ]);
     expect(component.total()).toBe(500);
   });
@@ -212,7 +244,15 @@ describe('InvoiceFormPageComponent', () => {
     it('should update items signal', () => {
       fixture.detectChanges();
       const newItems = [
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 3, unitPrice: 100, stock: [], warehouseAllocations: [] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 3,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [],
+        },
       ];
       component.onItemsChange(newItems);
       expect(component.items()).toHaveLength(1);
@@ -224,7 +264,23 @@ describe('InvoiceFormPageComponent', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       component.submit();
@@ -233,7 +289,7 @@ describe('InvoiceFormPageComponent', () => {
         expect.objectContaining({
           customerId: 'c1',
           paymentType: PaymentType.CASH,
-        })
+        }),
       );
     });
 
@@ -241,7 +297,23 @@ describe('InvoiceFormPageComponent', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const navigateSpy = vi.spyOn(router, 'navigate');
@@ -252,20 +324,38 @@ describe('InvoiceFormPageComponent', () => {
 
     it('should show error on create failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed(null, of(mockInvoice), throwError(() => new Error('Fail')));
+      configureTestBed(
+        null,
+        of(mockInvoice),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
 
     it('should not submit when form is invalid', () => {
@@ -286,25 +376,29 @@ describe('InvoiceFormPageComponent', () => {
       component.form.patchValue({ customerId: 'c1' });
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'warn' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
 
     it('should not submit when no warehouse allocations', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
       expect(mockService.create).not.toHaveBeenCalled();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'warn' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
   });
 
@@ -319,32 +413,70 @@ describe('InvoiceFormPageComponent', () => {
     it('should call service.update when form is valid', () => {
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CREDIT });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       component.submit();
 
-      expect(mockService.update).toHaveBeenCalledWith('inv-001', expect.objectContaining({
-        paymentType: PaymentType.CREDIT,
-      }));
+      expect(mockService.update).toHaveBeenCalledWith(
+        'inv-001',
+        expect.objectContaining({
+          paymentType: PaymentType.CREDIT,
+        }),
+      );
     });
 
     it('should show error on update failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('inv-001', of(mockInvoice), of(mockInvoice), throwError(() => new Error('Fail')));
+      configureTestBed(
+        'inv-001',
+        of(mockInvoice),
+        of(mockInvoice),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
   });
 
@@ -370,9 +502,11 @@ describe('InvoiceFormPageComponent', () => {
     });
 
     it.skip('should navigate to /facturas on load failure', async () => {
-      
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('inv-999', throwError(() => new Error('Not found')));
+      configureTestBed(
+        'inv-999',
+        throwError(() => new Error('Not found')),
+      );
       createComponent();
 
       const navigateSpy = vi.spyOn(router, 'navigate');

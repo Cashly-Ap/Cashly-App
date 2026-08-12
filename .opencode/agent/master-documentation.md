@@ -80,18 +80,18 @@ import { CustomerService } from '@features/customers/services/application/custom
     @if (loading()) {
       <p-progressSpinner />
     }
-    
+
     @for (customer of customers(); track customer.id) {
       <div>{{ customer.name }}</div>
     }
-  `
+  `,
 })
 export class CustomerListComponent {
   private customerService = inject(CustomerService);
-  
+
   customers = this.customerService.customers;
   loading = this.customerService.loading;
-  
+
   ngOnInit() {
     this.customerService.loadCustomers().subscribe();
   }
@@ -279,7 +279,7 @@ Each module must document:
 
 Each endpoint must include:
 
-```markdown
+````markdown
 #### POST /api/customers
 
 Creates a new customer.
@@ -288,12 +288,13 @@ Creates a new customer.
 
 ```typescript
 interface CustomerCreateRequest {
-  name: string;        // Required, max 100 chars
-  email: string;       // Required, valid email
-  phone: string;       // Required, valid phone
-  taxId?: string;      // Optional, tax ID
+  name: string; // Required, max 100 chars
+  email: string; // Required, valid email
+  phone: string; // Required, valid phone
+  taxId?: string; // Optional, tax ID
 }
 ```
+````
 
 **Response:** `201 Created`
 
@@ -323,14 +324,15 @@ const response = await fetch('/api/customers', {
   body: JSON.stringify({
     name: 'Acme Corp',
     email: 'contact@acme.com',
-    phone: '+1-555-0100'
-  })
+    phone: '+1-555-0100',
+  }),
 });
 
 const customer = await response.json();
 console.log('Created customer:', customer);
 ```
-```
+
+````
 
 ### Interface Documentation
 
@@ -361,7 +363,7 @@ export interface CustomerDetail extends CustomerList {
   createdAt: Date;             // Creation timestamp
   updatedAt: Date;             // Last update timestamp
 }
-```
+````
 
 ## Maintenance Schedule
 

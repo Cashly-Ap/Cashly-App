@@ -23,14 +23,8 @@ export class CashRegisterApiService {
     return this.http.get<CashRegisterResponse>(`${this.baseUrl}/active`);
   }
 
-  close(
-    id: string,
-    request: CloseRegisterRequest,
-  ): Observable<CashRegisterResponse> {
-    return this.http.post<CashRegisterResponse>(
-      `${this.baseUrl}/${id}/close`,
-      request,
-    );
+  close(id: string, request: CloseRegisterRequest): Observable<CashRegisterResponse> {
+    return this.http.post<CashRegisterResponse>(`${this.baseUrl}/${id}/close`, request);
   }
 
   getHistory(
@@ -40,16 +34,13 @@ export class CashRegisterApiService {
     dateTo?: string,
     sort?: string,
   ): Observable<PagedResponse<CashRegisterResponse>> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+    let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     if (dateFrom) params = params.set('dateFrom', dateFrom);
     if (dateTo) params = params.set('dateTo', dateTo);
     if (sort) params = params.set('sort', sort);
-    return this.http.get<PagedResponse<CashRegisterResponse>>(
-      `${this.baseUrl}/history`,
-      { params },
-    );
+    return this.http.get<PagedResponse<CashRegisterResponse>>(`${this.baseUrl}/history`, {
+      params,
+    });
   }
 
   exportExcel(dateFrom: string, dateTo: string, type: ReportType = 'DETAILED'): Observable<Blob> {

@@ -1,7 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { DebitNoteList, DebitNoteDetail, DebitNoteCreate } from '@features/debit-notes/models/interfaces';
+import {
+  DebitNoteList,
+  DebitNoteDetail,
+  DebitNoteCreate,
+} from '@features/debit-notes/models/interfaces';
 
 export interface DebitNoteFilters {
   search?: string;
@@ -57,15 +61,15 @@ export class DebitNoteApiService {
   }
 
   getById(id: string): Observable<DebitNoteDetail> {
-    return this.http.get<DebitNoteDetailApiResponse>(`${this.baseUrl}/${id}`).pipe(
-      map((r) => this.toDetail(r)),
-    );
+    return this.http
+      .get<DebitNoteDetailApiResponse>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => this.toDetail(r)));
   }
 
   create(data: DebitNoteCreate): Observable<DebitNoteDetail> {
-    return this.http.post<DebitNoteDetailApiResponse>(this.baseUrl, data).pipe(
-      map((r) => this.toDetail(r)),
-    );
+    return this.http
+      .post<DebitNoteDetailApiResponse>(this.baseUrl, data)
+      .pipe(map((r) => this.toDetail(r)));
   }
 
   delete(id: string): Observable<void> {

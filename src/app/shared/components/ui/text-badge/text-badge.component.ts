@@ -1,6 +1,13 @@
 import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
 
-export type TextBadgeVariant = 'default' | 'info' | 'success' | 'warning' | 'danger' | 'secondary' | 'label';
+export type TextBadgeVariant =
+  | 'default'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'danger'
+  | 'secondary'
+  | 'label';
 
 @Component({
   selector: 'app-text-badge',

@@ -4,8 +4,8 @@ This folder contains all raw project information, client requirements, functiona
 
 ## Index
 
-| File | Description |
-|------|-------------|
+| File                                       | Description                                                 |
+| ------------------------------------------ | ----------------------------------------------------------- |
 | [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | Full project vision, functional scope, and module breakdown |
 
 ---

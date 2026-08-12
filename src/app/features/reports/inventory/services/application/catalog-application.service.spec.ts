@@ -16,9 +16,7 @@ describe('CatalogApplicationService', () => {
         categoryName: 'Motors',
         composite: false,
         totalStock: 100,
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', quantity: 100 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', quantity: 100 }],
       },
       {
         productId: 'prod-002',
@@ -88,7 +86,9 @@ describe('CatalogApplicationService', () => {
     });
 
     it('should handle empty content', () => {
-      mockApi.getAll = vi.fn().mockReturnValue(of({ ...mockPagedResponse, content: undefined, totalElements: 0 }));
+      mockApi.getAll = vi
+        .fn()
+        .mockReturnValue(of({ ...mockPagedResponse, content: undefined, totalElements: 0 }));
 
       service.loadAll().subscribe();
 

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderDetails, OrderItemDetail, OrderItemAllocationDetail } from './order-details.interface';
+import type {
+  OrderDetails,
+  OrderItemDetail,
+  OrderItemAllocationDetail,
+} from './order-details.interface';
 import { OrderStatus } from '../enums/order-status.enum';
 
 describe('OrderItemAllocationDetail interface', () => {

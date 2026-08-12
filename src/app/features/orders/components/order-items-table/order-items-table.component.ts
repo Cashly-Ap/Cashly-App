@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, ViewChild, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  computed,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -16,7 +24,17 @@ import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock
 @Component({
   selector: 'app-order-items-table',
   standalone: true,
-  imports: [DecimalPipe, FormsModule, ButtonModule, InputNumberModule, TooltipModule, PopoverModule, EmptyStateComponent, ProductPickerDialogComponent, WarehouseStockPopoverComponent],
+  imports: [
+    DecimalPipe,
+    FormsModule,
+    ButtonModule,
+    InputNumberModule,
+    TooltipModule,
+    PopoverModule,
+    EmptyStateComponent,
+    ProductPickerDialogComponent,
+    WarehouseStockPopoverComponent,
+  ],
   templateUrl: './order-items-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -100,32 +118,33 @@ export class OrderItemsTableComponent {
     const item = this.items()[itemIdx];
     if (!item) return;
 
-    const existingMap = new Map(
-      item.warehouseAllocations.map((a) => [a.warehouseId, a.allocated]),
-    );
+    const existingMap = new Map(item.warehouseAllocations.map((a) => [a.warehouseId, a.allocated]));
 
-    const allocations: WarehouseStockEntry[] = item.stock.length > 0
-      ? item.stock.map((s) => {
-          const existingAlloc = item.warehouseAllocations.find(a => a.warehouseId === s.warehouseId);
-          return {
-            warehouseId: s.warehouseId,
-            warehouseCode: s.warehouseCode,
-            warehouseName: s.warehouseName,
-            quantity: s.quantity,
-            reserved: s.reserved,
-            available: s.available,
-            allocated: existingMap.get(s.warehouseId) ?? 0,
-          };
-        })
-      : item.warehouseAllocations.map((a) => ({
-          warehouseId: a.warehouseId,
-          warehouseCode: a.warehouseCode,
-          warehouseName: a.warehouseName,
-          quantity: a.available,
-          reserved: 0,
-          available: a.available,
-          allocated: a.allocated,
-        }));
+    const allocations: WarehouseStockEntry[] =
+      item.stock.length > 0
+        ? item.stock.map((s) => {
+            const existingAlloc = item.warehouseAllocations.find(
+              (a) => a.warehouseId === s.warehouseId,
+            );
+            return {
+              warehouseId: s.warehouseId,
+              warehouseCode: s.warehouseCode,
+              warehouseName: s.warehouseName,
+              quantity: s.quantity,
+              reserved: s.reserved,
+              available: s.available,
+              allocated: existingMap.get(s.warehouseId) ?? 0,
+            };
+          })
+        : item.warehouseAllocations.map((a) => ({
+            warehouseId: a.warehouseId,
+            warehouseCode: a.warehouseCode,
+            warehouseName: a.warehouseName,
+            quantity: a.available,
+            reserved: 0,
+            available: a.available,
+            allocated: a.allocated,
+          }));
 
     this.activeItemIdx.set(itemIdx);
     this.popoverAllocations.set(allocations);

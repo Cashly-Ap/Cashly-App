@@ -6,7 +6,10 @@ import { TestBed } from '@angular/core/testing';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('modulePermissionGuard', () => {
-  let mockAuthService: { isAuthenticated: ReturnType<typeof vi.fn>; hasModulePermission: ReturnType<typeof vi.fn> };
+  let mockAuthService: {
+    isAuthenticated: ReturnType<typeof vi.fn>;
+    hasModulePermission: ReturnType<typeof vi.fn>;
+  };
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
@@ -33,7 +36,9 @@ describe('modulePermissionGuard', () => {
   it('should redirect to /auth/login when not authenticated', () => {
     mockAuthService.isAuthenticated.mockReturnValue(false);
 
-    const result = TestBed.runInInjectionContext(() => modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any));
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any),
+    );
 
     expect(result).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
@@ -42,7 +47,9 @@ describe('modulePermissionGuard', () => {
   it('should return true when no module is specified in route data', () => {
     mockAuthService.isAuthenticated.mockReturnValue(true);
 
-    const result = TestBed.runInInjectionContext(() => modulePermissionGuard(createRoute(undefined), {} as any));
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(createRoute(undefined), {} as any),
+    );
 
     expect(result).toBe(true);
     expect(mockRouter.navigate).not.toHaveBeenCalled();
@@ -52,7 +59,9 @@ describe('modulePermissionGuard', () => {
     mockAuthService.isAuthenticated.mockReturnValue(true);
     mockAuthService.hasModulePermission.mockReturnValue(true);
 
-    const result = TestBed.runInInjectionContext(() => modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any));
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any),
+    );
 
     expect(result).toBe(true);
     expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.USERS);
@@ -62,7 +71,9 @@ describe('modulePermissionGuard', () => {
     mockAuthService.isAuthenticated.mockReturnValue(true);
     mockAuthService.hasModulePermission.mockReturnValue(false);
 
-    const result = TestBed.runInInjectionContext(() => modulePermissionGuard(createRoute(BusinessModule.FINANCE), {} as any));
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(createRoute(BusinessModule.FINANCE), {} as any),
+    );
 
     expect(result).toBe(false);
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);

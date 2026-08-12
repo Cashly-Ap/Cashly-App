@@ -6,7 +6,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { ConvertToOrderDialogComponent } from './convert-to-order-dialog.component';
 
 @Component({
-  template: `<app-convert-to-order-dialog [visible]="visible" [quoteId]="quoteId" (confirmed)="onConfirmed()" (cancelled)="onCancelled()"></app-convert-to-order-dialog>`,
+  template: `<app-convert-to-order-dialog
+    [visible]="visible"
+    [quoteId]="quoteId"
+    (confirmed)="onConfirmed()"
+    (cancelled)="onCancelled()"
+  ></app-convert-to-order-dialog>`,
   imports: [ConvertToOrderDialogComponent],
 })
 class HostComponent {
@@ -43,11 +48,14 @@ describe('ConvertToOrderDialogComponent', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', warehouseCode: 'WH1', allocatedQuantity: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseName: 'Central',
+            warehouseCode: 'WH1',
+            allocatedQuantity: 5,
+          },
         ],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -126,11 +134,14 @@ describe('ConvertToOrderDialogComponent - visible with data', () => {
         unitPrice: 300,
         subtotal: 1500,
         allocations: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', warehouseCode: 'WH1', allocatedQuantity: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseName: 'Central',
+            warehouseCode: 'WH1',
+            allocatedQuantity: 5,
+          },
         ],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -192,9 +203,7 @@ describe('ConvertToOrderDialogComponent - visible with data', () => {
       lines: [
         {
           ...mockQuote.lines[0],
-          warehouseStocks: [
-            { warehouseId: 'wh-001', warehouseName: 'Central', available: 2 },
-          ],
+          warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 2 }],
         },
       ],
     };

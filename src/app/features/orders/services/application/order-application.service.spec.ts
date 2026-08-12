@@ -45,7 +45,9 @@ describe('OrderApplicationService', () => {
       delete: vi.fn().mockReturnValue(of(undefined)),
       confirm: vi.fn().mockReturnValue(of(mockOrder)),
       convertToInvoice: vi.fn().mockReturnValue(of(undefined)),
-      getProductsForOrder: vi.fn().mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
+      getProductsForOrder: vi
+        .fn()
+        .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
     };
 
     TestBed.configureTestingModule({
@@ -159,7 +161,9 @@ describe('OrderApplicationService', () => {
     });
 
     it('should set error on failure', () => {
-      mockApi.convertToInvoice = vi.fn().mockReturnValue(throwError(() => new Error('Convert failed')));
+      mockApi.convertToInvoice = vi
+        .fn()
+        .mockReturnValue(throwError(() => new Error('Convert failed')));
 
       service.convertToInvoice('ord-001', { paymentType: 'CASH' }).subscribe({ error: () => {} });
 

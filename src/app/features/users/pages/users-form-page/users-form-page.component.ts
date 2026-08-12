@@ -15,9 +15,17 @@ import {
   SelectInputComponent,
 } from '@core/forms/components';
 import { UserApplicationService } from '@features/users/services/application';
-import { UserType, USER_TYPES, BusinessModule, BUSINESS_MODULE_LABELS } from '@features/users/models/enums';
+import {
+  UserType,
+  USER_TYPES,
+  BusinessModule,
+  BUSINESS_MODULE_LABELS,
+} from '@features/users/models/enums';
 import { UserValidators } from '@features/users/validators';
-import { ChangePasswordDialogComponent, ChangeEmailDialogComponent } from '@features/users/components';
+import {
+  ChangePasswordDialogComponent,
+  ChangeEmailDialogComponent,
+} from '@features/users/components';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { AuthService } from '@features/auth/services';
 import { forkJoin, of, switchMap } from 'rxjs';
@@ -51,7 +59,6 @@ interface UserFormData {
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-
 })
 export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private service = inject(UserApplicationService);
@@ -95,11 +102,21 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
 
   userTypes = [...USER_TYPES];
 
-  get emailControl(): FormControl { return this.form.get('email') as FormControl; }
-  get passwordControl(): FormControl { return this.form.get('password') as FormControl; }
-  get userNameControl(): FormControl { return this.form.get('userName') as FormControl; }
-  get roleControl(): FormControl { return this.form.get('role') as FormControl; }
-  get activeControl(): FormControl { return this.form.get('active') as FormControl; }
+  get emailControl(): FormControl {
+    return this.form.get('email') as FormControl;
+  }
+  get passwordControl(): FormControl {
+    return this.form.get('password') as FormControl;
+  }
+  get userNameControl(): FormControl {
+    return this.form.get('userName') as FormControl;
+  }
+  get roleControl(): FormControl {
+    return this.form.get('role') as FormControl;
+  }
+  get activeControl(): FormControl {
+    return this.form.get('active') as FormControl;
+  }
 
   getConfig(): FormConfig {
     return {
@@ -113,7 +130,10 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   createForm(): FormGroup {
     return this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', this.isCreateMode() ? [Validators.required, UserValidators.passwordStrength()] : []],
+      password: [
+        '',
+        this.isCreateMode() ? [Validators.required, UserValidators.passwordStrength()] : [],
+      ],
       userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
       role: ['', Validators.required],
       active: [true],
@@ -225,41 +245,43 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         active: formValue.active,
       };
 
-      this.service.createUser(createData).pipe(
-        switchMap((createdUser) => {
-          if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
-            return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
-          }
-          return of(null);
-        }),
-      ).subscribe({
-        next: () => {
-          this.markAsSubmitted();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Usuario creado exitosamente',
-            life: 3000,
-          });
-          this.router.navigate(['/users']);
-        },
-        error: (err) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
-            life: 5000,
-          });
-        },
-      });
+      this.service
+        .createUser(createData)
+        .pipe(
+          switchMap((createdUser) => {
+            if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
+              return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
+            }
+            return of(null);
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.markAsSubmitted();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Usuario creado exitosamente',
+              life: 3000,
+            });
+            this.router.navigate(['/users']);
+          },
+          error: (err) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail:
+                err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
+              life: 5000,
+            });
+          },
+        });
     }
   }
 
   toggleModule(module: BusinessModule): void {
     this.selectedModules.update((current) =>
-      current.includes(module)
-        ? current.filter((m) => m !== module)
-        : [...current, module],
+      current.includes(module) ? current.filter((m) => m !== module) : [...current, module],
     );
     this.updateSubmitTooltip();
   }

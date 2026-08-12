@@ -8,7 +8,6 @@
   styleClass="w-full max-w-md"
 >
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5 pt-2">
-
     <app-text-input
       label="Nuevo Correo Electrónico"
       placeholder="usuario@correo.com"
@@ -22,17 +21,11 @@
       [control]="confirmEmailControl"
       [errorMessage]="getConfirmEmailError()"
     />
-
   </form>
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-3">
-      <p-button
-        label="Cancelar"
-        [outlined]="true"
-        (onClick)="onCancel()"
-        [disabled]="loading()"
-      />
+      <p-button label="Cancelar" [outlined]="true" (onClick)="onCancel()" [disabled]="loading()" />
       <p-button
         label="Guardar"
         icon="pi pi-check"

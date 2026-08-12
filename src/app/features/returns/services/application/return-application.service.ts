@@ -2,11 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize, switchMap, forkJoin, of, map, catchError } from 'rxjs';
 import { ReturnApiService, ReturnFilters } from '@features/returns/services/api/return-api.service';
 import { ReturnMapper } from '@features/returns/services/mappers/return.mapper';
-import {
-  ReturnList,
-  ReturnDetail,
-  ReturnCreate,
-} from '@features/returns/models/interfaces';
+import { ReturnList, ReturnDetail, ReturnCreate } from '@features/returns/models/interfaces';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 
@@ -53,39 +49,39 @@ export class ReturnApplicationService {
   }
 
   private enrichReturnData(ret: ReturnDetail): Observable<ReturnDetail> {
-    
-    const customer$ = !ret.customerName && ret.customerId
-      ? this.customerApi.getById(ret.customerId).pipe(
-          map((c) => ({ customerName: c.legalName, customerRif: c.rif })),
-          catchError(() => of(null)),
-        )
-      : of(null);
+    const customer$ =
+      !ret.customerName && ret.customerId
+        ? this.customerApi.getById(ret.customerId).pipe(
+            map((c) => ({ customerName: c.legalName, customerRif: c.rif })),
+            catchError(() => of(null)),
+          )
+        : of(null);
 
-    
     const linesNeedingProducts = ret.lines.filter((l) => !l.productName || !l.productCode);
     const productIds = [...new Set(linesNeedingProducts.map((l) => l.productId))];
-    const products$ = productIds.length > 0
-      ? forkJoin(
-          productIds.map((pid) =>
-            this.productApi.getById(pid).pipe(
-              map((p) => ({ id: p.id, name: p.name, code: p.code })),
-              catchError(() => of(null)),
+    const products$ =
+      productIds.length > 0
+        ? forkJoin(
+            productIds.map((pid) =>
+              this.productApi.getById(pid).pipe(
+                map((p) => ({ id: p.id, name: p.name, code: p.code })),
+                catchError(() => of(null)),
+              ),
             ),
-          ),
-        ).pipe(
-          map((products) => {
-            const map = new Map(products.filter((p) => p).map((p) => [p!.id, p!]));
-            return ret.lines.map((line) => {
-              const product = map.get(line.productId);
-              return {
-                ...line,
-                productName: line.productName || product?.name || '',
-                productCode: line.productCode || product?.code || '',
-              };
-            });
-          }),
-        )
-      : of(ret.lines);
+          ).pipe(
+            map((products) => {
+              const map = new Map(products.filter((p) => p).map((p) => [p!.id, p!]));
+              return ret.lines.map((line) => {
+                const product = map.get(line.productId);
+                return {
+                  ...line,
+                  productName: line.productName || product?.name || '',
+                  productCode: line.productCode || product?.code || '',
+                };
+              });
+            }),
+          )
+        : of(ret.lines);
 
     return forkJoin({ customer: customer$, lines: products$ }).pipe(
       map(({ customer, lines }) => ({

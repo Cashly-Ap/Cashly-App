@@ -1,5 +1,5 @@
 variables:
-  RAILWAY_SERVICE: "parsun-app"
+  RAILWAY_SERVICE: 'parsun-app'
 
 stages:
   - build
@@ -29,9 +29,9 @@ package:docker:
     - docker:24.0.5-dind
   variables:
     DOCKER_HOST: tcp://docker:2376
-    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_CERTDIR: '/certs'
     DOCKER_TLS_VERIFY: 1
-    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+    DOCKER_CERT_PATH: '$DOCKER_TLS_CERTDIR/client'
   before_script:
     - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
   script:

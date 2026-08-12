@@ -1,9 +1,4 @@
-import {
-  AbstractControl,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 
 export class AuthValidators {
   static readonly email = [Validators.required, Validators.email];

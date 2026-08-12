@@ -6,7 +6,12 @@ import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
 import { PaymentType } from '../../models/enums/payment-type.enum';
 
 @Component({
-  template: `<app-cancel-invoice-dialog [visible]="visible" [invoice]="invoice" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-cancel-invoice-dialog>`,
+  template: `<app-cancel-invoice-dialog
+    [visible]="visible"
+    [invoice]="invoice"
+    (confirmed)="onConfirmed($event)"
+    (cancelled)="onCancelled()"
+  ></app-cancel-invoice-dialog>`,
   imports: [CancelInvoiceDialogComponent],
 })
 class HostComponent {
@@ -157,7 +162,6 @@ describe('CancelInvoiceDialogComponent - visible', () => {
   });
 
   it.skip('should reset form when visible changes to false', async () => {
-    
     dialog.form.get('reason')?.setValue('Test reason');
     dialog.form.get('reason')?.markAsTouched();
 

@@ -79,17 +79,11 @@ export class CashRegisterHistoryPageComponent implements OnInit {
   );
 
   readonly isEmptyDatabase = computed(
-    () =>
-      !this.loading() &&
-      this.totalElements() === 0 &&
-      this.activeFilterCount() === 0,
+    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0,
   );
 
   readonly hasFilteredResults = computed(
-    () =>
-      !this.loading() &&
-      this.totalElements() === 0 &&
-      this.activeFilterCount() > 0,
+    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() > 0,
   );
 
   ngOnInit(): void {
@@ -127,9 +121,7 @@ export class CashRegisterHistoryPageComponent implements OnInit {
 
   getSortIcon(field: string): string {
     if (this.orderBy() !== field) return 'pi pi-sort-alt';
-    return this.orderDir() === 'asc'
-      ? 'pi pi-sort-up'
-      : 'pi pi-sort-down';
+    return this.orderDir() === 'asc' ? 'pi pi-sort-up' : 'pi pi-sort-down';
   }
 
   clearFilters(): void {
@@ -154,9 +146,7 @@ export class CashRegisterHistoryPageComponent implements OnInit {
     }
   }
 
-  getStatusSeverity(
-    status: string,
-  ): 'info' | 'warn' | 'success' | 'contrast' {
+  getStatusSeverity(status: string): 'info' | 'warn' | 'success' | 'contrast' {
     switch (status) {
       case 'OPEN':
         return 'info';

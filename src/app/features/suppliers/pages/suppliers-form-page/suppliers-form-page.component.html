@@ -1,38 +1,38 @@
-  <app-form-container>
-    <app-form-header [title]="title()" [subtitle]="subtitle()" />
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <app-form-card>
-        <p-tabs value="0">
-          <p-tablist>
-            <p-tab value="0">
-              <i class="pi pi-info-circle mr-2"></i>
-              General
-            </p-tab>
-            <p-tab value="1">
-              <i class="pi pi-address-book mr-2"></i>
-              Contacto y Direcciones
-            </p-tab>
-          </p-tablist>
+<app-form-container>
+  <app-form-header [title]="title()" [subtitle]="subtitle()" />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-card>
+      <p-tabs value="0">
+        <p-tablist>
+          <p-tab value="0">
+            <i class="pi pi-info-circle mr-2"></i>
+            General
+          </p-tab>
+          <p-tab value="1">
+            <i class="pi pi-address-book mr-2"></i>
+            Contacto y Direcciones
+          </p-tab>
+        </p-tablist>
 
-          <p-tabpanels>
-            <p-tabpanel value="0">
-              <app-supplier-general-section [form]="form" [isEditMode]="isEditMode()" />
-            </p-tabpanel>
-            <p-tabpanel value="1">
-              <app-supplier-contact-section [form]="form" />
-              <app-supplier-addresses-section [form]="form" />
-            </p-tabpanel>
-          </p-tabpanels>
-        </p-tabs>
+        <p-tabpanels>
+          <p-tabpanel value="0">
+            <app-supplier-general-section [form]="form" [isEditMode]="isEditMode()" />
+          </p-tabpanel>
+          <p-tabpanel value="1">
+            <app-supplier-contact-section [form]="form" />
+            <app-supplier-addresses-section [form]="form" />
+          </p-tabpanel>
+        </p-tabpanels>
+      </p-tabs>
 
-        <app-form-actions
-          [submitLabel]="submitLabel()"
-          cancelLabel="Cancelar"
-          [loading]="loading()"
-          [disabled]="form.invalid"
-          [tooltipMessage]="submitTooltip()"
-          (cancel)="onCancel()"
-        />
-      </app-form-card>
-    </form>
-  </app-form-container>
+      <app-form-actions
+        [submitLabel]="submitLabel()"
+        cancelLabel="Cancelar"
+        [loading]="loading()"
+        [disabled]="form.invalid"
+        [tooltipMessage]="submitTooltip()"
+        (cancel)="onCancel()"
+      />
+    </app-form-card>
+  </form>
+</app-form-container>

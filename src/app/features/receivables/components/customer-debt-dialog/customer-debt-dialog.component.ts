@@ -23,7 +23,14 @@ import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog';
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceDetails } from '@features/invoices/models/interfaces';
 
-type InvoiceStatusFilter = 'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN';
+type InvoiceStatusFilter =
+  | 'ALL'
+  | 'PENDING'
+  | 'PARTIAL'
+  | 'PAID'
+  | 'RETURNED'
+  | 'CANCELLED'
+  | 'PARTIAL_RETURN';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
@@ -89,9 +96,9 @@ export class CustomerDebtDialogComponent {
   protected invoiceRows = signal(10);
   protected invoiceTotalRecords = signal(0);
 
-  protected allInvoicesFullyBlocked = computed(() =>
-    this.invoices().length > 0 &&
-    this.invoices().every((inv) => this.isInvoiceFullyBlocked(inv)),
+  protected allInvoicesFullyBlocked = computed(
+    () =>
+      this.invoices().length > 0 && this.invoices().every((inv) => this.isInvoiceFullyBlocked(inv)),
   );
 
   protected readonly statusFilterOptions: StatusFilterOption[] = [
@@ -104,7 +111,6 @@ export class CustomerDebtDialogComponent {
     { label: 'Canceladas', value: 'CANCELLED' },
   ];
 
-  
   protected balance = signal<number>(0);
   protected transactions = signal<BalanceTransactionResponse[]>([]);
   protected loadingBalance = signal(false);
@@ -316,33 +322,50 @@ export class CustomerDebtDialogComponent {
     this.selectedInvoiceDetails.set(null);
   }
 
-  
   protected getBalanceTypeLabel(type: string): string {
     switch (type) {
-      case 'ADVANCED': return 'Anticipo';
-      case 'RETURNS': return 'Devolución';
-      case 'PAYMENTS': return 'Pago';
-      case 'INVOICES': return 'Factura';
-      case 'REFUND': return 'Reintegro';
-      case 'CREDIT_NOTE': return 'Nota de Crédito';
-      default: return type;
+      case 'ADVANCED':
+        return 'Anticipo';
+      case 'RETURNS':
+        return 'Devolución';
+      case 'PAYMENTS':
+        return 'Pago';
+      case 'INVOICES':
+        return 'Factura';
+      case 'REFUND':
+        return 'Reintegro';
+      case 'CREDIT_NOTE':
+        return 'Nota de Crédito';
+      default:
+        return type;
     }
   }
 
-  protected getBalanceTypeSeverity(type: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
+  protected getBalanceTypeSeverity(
+    type: string,
+  ): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
     switch (type) {
-      case 'ADVANCED': return 'info';
-      case 'RETURNS': return 'warn';
-      case 'PAYMENTS': return 'success';
-      case 'INVOICES': return 'contrast';
-      case 'REFUND': return 'danger';
-      case 'CREDIT_NOTE': return 'info';
-      default: return 'info';
+      case 'ADVANCED':
+        return 'info';
+      case 'RETURNS':
+        return 'warn';
+      case 'PAYMENTS':
+        return 'success';
+      case 'INVOICES':
+        return 'contrast';
+      case 'REFUND':
+        return 'danger';
+      case 'CREDIT_NOTE':
+        return 'info';
+      default:
+        return 'info';
     }
   }
 
   protected isPositive(type: string): boolean {
-    return type === 'ADVANCED' || type === 'RETURNS' || type === 'PAYMENTS' || type === 'CREDIT_NOTE';
+    return (
+      type === 'ADVANCED' || type === 'RETURNS' || type === 'PAYMENTS' || type === 'CREDIT_NOTE'
+    );
   }
 
   protected isNegative(type: string): boolean {
@@ -385,32 +408,34 @@ export class CustomerDebtDialogComponent {
     if (!amount || amount <= 0 || !customerId) return;
 
     this.creatingAdvance.set(true);
-    this.balanceApi.createAdvance(customerId, {
-      amount,
-      notes: notes || undefined,
-    }).subscribe({
-      next: (response) => {
-        this.balance.set(response.totalBalance);
-        this.showAdvanceDialog.set(false);
-        this.service.loadCustomerDebt(customerId).subscribe();
-        this.service.customerDebtChange.next();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Anticipo registrado',
-          detail: `Se agregaron $${amount.toFixed(2)} al balance del cliente`,
-        });
-        this.loadTransactionsForCurrentFilter();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo registrar el anticipo',
-        });
-        this.creatingAdvance.set(false);
-      },
-      complete: () => this.creatingAdvance.set(false),
-    });
+    this.balanceApi
+      .createAdvance(customerId, {
+        amount,
+        notes: notes || undefined,
+      })
+      .subscribe({
+        next: (response) => {
+          this.balance.set(response.totalBalance);
+          this.showAdvanceDialog.set(false);
+          this.service.loadCustomerDebt(customerId).subscribe();
+          this.service.customerDebtChange.next();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Anticipo registrado',
+            detail: `Se agregaron $${amount.toFixed(2)} al balance del cliente`,
+          });
+          this.loadTransactionsForCurrentFilter();
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo registrar el anticipo',
+          });
+          this.creatingAdvance.set(false);
+        },
+        complete: () => this.creatingAdvance.set(false),
+      });
   }
 
   protected onCreateRefund(): void {
@@ -531,26 +556,25 @@ export class CustomerDebtDialogComponent {
     const rows = this.balanceRows();
     const filter = this.selectedBalanceFilter();
 
-        this.balanceApi.getTransactions(customerId, Math.floor(first / rows), rows)
-      .subscribe({
-        next: (response: PagedResponse<BalanceTransactionResponse>) => {
-          let filtered = response.content;
+    this.balanceApi.getTransactions(customerId, Math.floor(first / rows), rows).subscribe({
+      next: (response: PagedResponse<BalanceTransactionResponse>) => {
+        let filtered = response.content;
 
-          if (filter === 'CREDITS') {
-            filtered = filtered.filter(t => this.isPositive(t.type));
-          } else if (filter === 'USES') {
-            filtered = filtered.filter(t => this.isNegative(t.type));
-          }
+        if (filter === 'CREDITS') {
+          filtered = filtered.filter((t) => this.isPositive(t.type));
+        } else if (filter === 'USES') {
+          filtered = filtered.filter((t) => this.isNegative(t.type));
+        }
 
-          this.transactions.set(filtered);
-          this.balanceTotalRecords.set(filter === 'ALL' ? response.totalElements : filtered.length);
-          this.loadingTransactions.set(false);
-        },
-        error: () => {
-          this.transactions.set([]);
-          this.balanceTotalRecords.set(0);
-          this.loadingTransactions.set(false);
-        },
-      });
+        this.transactions.set(filtered);
+        this.balanceTotalRecords.set(filter === 'ALL' ? response.totalElements : filtered.length);
+        this.loadingTransactions.set(false);
+      },
+      error: () => {
+        this.transactions.set([]);
+        this.balanceTotalRecords.set(0);
+        this.loadingTransactions.set(false);
+      },
+    });
   }
 }

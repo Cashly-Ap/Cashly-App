@@ -51,7 +51,7 @@ describe('ImageViewerDialogComponent', () => {
 
   it('should emit visibleChange when closing', () => {
     let emittedValue: boolean | undefined;
-    
+
     fixture.componentRef.setInput('visible', true);
     fixture.componentRef.setInput('imageUrl', 'test.jpg');
     component.visibleChange.subscribe((value) => {

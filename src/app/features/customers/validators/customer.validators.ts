@@ -25,12 +25,28 @@ export class CustomerValidators {
       if (!value) return null;
 
       const trimmed = value.trim();
-      if (trimmed.length === 0) return { legalNameBlank: { message: 'La razón social no puede estar vacía' } };
-      if (trimmed.length < 2) return { legalNameMinLength: { message: 'La razón social debe tener al menos 2 caracteres', minLength: 2 } };
-      if (trimmed.length > 300) return { legalNameMaxLength: { message: 'La razón social no puede exceder 300 caracteres', maxLength: 300 } };
+      if (trimmed.length === 0)
+        return { legalNameBlank: { message: 'La razón social no puede estar vacía' } };
+      if (trimmed.length < 2)
+        return {
+          legalNameMinLength: {
+            message: 'La razón social debe tener al menos 2 caracteres',
+            minLength: 2,
+          },
+        };
+      if (trimmed.length > 300)
+        return {
+          legalNameMaxLength: {
+            message: 'La razón social no puede exceder 300 caracteres',
+            maxLength: 300,
+          },
+        };
 
       const validPattern = /^[a-zA-ZÀ-ÿ0-9\s.,&'-]+$/;
-      if (!validPattern.test(trimmed)) return { legalNameInvalidCharacters: { message: 'La razón social contiene caracteres inválidos' } };
+      if (!validPattern.test(trimmed))
+        return {
+          legalNameInvalidCharacters: { message: 'La razón social contiene caracteres inválidos' },
+        };
 
       return null;
     };
@@ -43,7 +59,10 @@ export class CustomerValidators {
 
       const trimmed = value.trim();
       if (trimmed.length === 0) return { aliasBlank: { message: 'El alias no puede estar vacío' } };
-      if (trimmed.length > 200) return { aliasMaxLength: { message: 'El alias no puede exceder 200 caracteres', maxLength: 200 } };
+      if (trimmed.length > 200)
+        return {
+          aliasMaxLength: { message: 'El alias no puede exceder 200 caracteres', maxLength: 200 },
+        };
 
       return null;
     };
@@ -56,10 +75,18 @@ export class CustomerValidators {
 
       const trimmed = value.trim();
       if (trimmed.length === 0) return { emailBlank: { message: 'El email no puede estar vacío' } };
-      if (trimmed.length > 255) return { emailMaxLength: { message: 'El email es demasiado largo (máximo 255 caracteres)', maxLength: 255 } };
+      if (trimmed.length > 255)
+        return {
+          emailMaxLength: {
+            message: 'El email es demasiado largo (máximo 255 caracteres)',
+            maxLength: 255,
+          },
+        };
 
-      const emailPattern = /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
-      if (!emailPattern.test(trimmed)) return { emailInvalidFormat: { message: 'Formato de email inválido' } };
+      const emailPattern =
+        /^[a-zA-Z0-9_+&*-]+(?:\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,7}$/;
+      if (!emailPattern.test(trimmed))
+        return { emailInvalidFormat: { message: 'Formato de email inválido' } };
 
       return null;
     };
@@ -71,8 +98,12 @@ export class CustomerValidators {
       if (!value) return null;
 
       const trimmed = value.trim();
-      if (trimmed.length === 0) return { phoneBlank: { message: 'El teléfono no puede estar vacío' } };
-      if (trimmed.length > 20) return { phoneMaxLength: { message: 'El teléfono no puede exceder 20 caracteres', maxLength: 20 } };
+      if (trimmed.length === 0)
+        return { phoneBlank: { message: 'El teléfono no puede estar vacío' } };
+      if (trimmed.length > 20)
+        return {
+          phoneMaxLength: { message: 'El teléfono no puede exceder 20 caracteres', maxLength: 20 },
+        };
 
       return null;
     };
@@ -84,8 +115,15 @@ export class CustomerValidators {
       if (!value) return null;
 
       const trimmed = value.trim();
-      if (trimmed.length === 0) return { addressBlank: { message: 'La dirección no puede estar vacía' } };
-      if (trimmed.length > 500) return { addressMaxLength: { message: 'La dirección no puede exceder 500 caracteres', maxLength: 500 } };
+      if (trimmed.length === 0)
+        return { addressBlank: { message: 'La dirección no puede estar vacía' } };
+      if (trimmed.length > 500)
+        return {
+          addressMaxLength: {
+            message: 'La dirección no puede exceder 500 caracteres',
+            maxLength: 500,
+          },
+        };
 
       return null;
     };
@@ -95,7 +133,13 @@ export class CustomerValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       const array = control as FormArray;
       if (array.length < min) {
-        return { minLengthArray: { message: `Se requiere al menos ${min} elemento(s)`, min, actual: array.length } };
+        return {
+          minLengthArray: {
+            message: `Se requiere al menos ${min} elemento(s)`,
+            min,
+            actual: array.length,
+          },
+        };
       }
       return null;
     };
@@ -105,8 +149,12 @@ export class CustomerValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
       if (value === null || value === undefined) return null;
-      if (value < 0) return { creditDaysNegative: { message: 'Los días de crédito no pueden ser negativos' } };
-      if (value > 365) return { creditDaysMax: { message: 'Los días de crédito no pueden exceder 365 días', max: 365 } };
+      if (value < 0)
+        return { creditDaysNegative: { message: 'Los días de crédito no pueden ser negativos' } };
+      if (value > 365)
+        return {
+          creditDaysMax: { message: 'Los días de crédito no pueden exceder 365 días', max: 365 },
+        };
 
       return null;
     };
@@ -116,7 +164,8 @@ export class CustomerValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
       if (value === null || value === undefined) return null;
-      if (value < 0) return { creditLimitNegative: { message: 'El límite de crédito no puede ser negativo' } };
+      if (value < 0)
+        return { creditLimitNegative: { message: 'El límite de crédito no puede ser negativo' } };
 
       return null;
     };

@@ -9,7 +9,12 @@ import { UserApplicationService } from '@features/users/services/application';
 @Component({
   standalone: true,
   imports: [ChangePasswordDialogComponent],
-  template: `<app-change-password-dialog [userId]="userId" [visible]="visible" (visibleChange)="onVisibleChange($event)" (changed)="onChanged()" />`,
+  template: `<app-change-password-dialog
+    [userId]="userId"
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (changed)="onChanged()"
+  />`,
 })
 class HostComponent {
   userId = 'user-001';
@@ -33,10 +38,7 @@ describe('ChangePasswordDialogComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [HostComponent, ChangePasswordDialogComponent],
-      providers: [
-        { provide: UserApplicationService, useValue: mockService },
-        MessageService,
-      ],
+      providers: [{ provide: UserApplicationService, useValue: mockService }, MessageService],
       schemas: [NO_ERRORS_SCHEMA],
     });
 

@@ -4,7 +4,8 @@
 
 The Merchants module manages merchant (comercial) accounts that can authenticate into the system with limited access. Merchants are sales representatives who can create orders on behalf of customers and earn commissions when those orders are converted to invoices and paid.
 
-**Important**: 
+**Important**:
+
 - Merchants are **separate entities** from Users (not a User with a special role)
 - Merchants can login to the system with **restricted permissions**
 - Each merchant has a **single commission percentage** applied when invoices are paid
@@ -85,17 +86,17 @@ src/app/features/merchants/
 
 ## What Merchants Can Do
 
-| Action | Allowed |
-|--------|---------|
-| Login to system | Yes |
-| Create orders | Yes |
-| View own orders only | Yes |
-| Cancel own pending orders | Yes |
-| View products | Yes |
-| View other merchants' orders | No |
-| Validate/reject orders | No |
-| Convert orders to invoices | No |
-| Access admin features | No |
+| Action                       | Allowed |
+| ---------------------------- | ------- |
+| Login to system              | Yes     |
+| Create orders                | Yes     |
+| View own orders only         | Yes     |
+| Cancel own pending orders    | Yes     |
+| View products                | Yes     |
+| View other merchants' orders | No      |
+| Validate/reject orders       | No      |
+| Convert orders to invoices   | No      |
+| Access admin features        | No      |
 
 ---
 
@@ -110,6 +111,7 @@ src/app/features/merchants/
 **Purpose**: Displays all merchants in a searchable, sortable table.
 
 **Features**:
+
 - PrimeNG DataTable with sorting and filtering
 - Search by name, email, code
 - Filter by active status
@@ -129,6 +131,7 @@ src/app/features/merchants/
 **Purpose**: Create new merchant or edit existing one.
 
 **Features**:
+
 - Reactive forms with validation
 - Email validation (unique across merchants AND users)
 - Password field (only on create)
@@ -147,6 +150,7 @@ src/app/features/merchants/
 **Purpose**: Display complete merchant information in read-only mode.
 
 **Features**:
+
 - Complete merchant data display
 - Commission percentage display
 - Active status indicator
@@ -163,6 +167,7 @@ src/app/features/merchants/
 **Purpose**: Allow merchants to view their own profile.
 
 **Features**:
+
 - Own profile data display
 - Commission percentage (read-only)
 - Cannot edit own commission
@@ -183,12 +188,12 @@ src/app/features/merchants/
 
 ```typescript
 export interface MerchantList {
-  id: string;                    // UUID identifier
-  code: number;                  // Sequential merchant code (1, 2, 3...)
-  name: string;                  // Merchant business name
-  email: string;                 // Login email address
-  commissionPercentage: number;  // Commission rate (0-100)
-  active: boolean;               // Account active status
+  id: string; // UUID identifier
+  code: number; // Sequential merchant code (1, 2, 3...)
+  name: string; // Merchant business name
+  email: string; // Login email address
+  commissionPercentage: number; // Commission rate (0-100)
+  active: boolean; // Account active status
 }
 ```
 
@@ -204,15 +209,15 @@ export interface MerchantList {
 
 ```typescript
 export interface MerchantDetails {
-  id: string;                    // UUID identifier
-  code: number;                  // Sequential merchant code
-  name: string;                  // Merchant business name
-  email: string;                 // Login email address
-  phone: string;                 // Contact phone
-  address: string | null;        // Business address (optional)
-  commissionPercentage: number;  // Commission rate (0-100%)
-  active: boolean;               // Account active status
-  createdAt: string;             // ISO date string
+  id: string; // UUID identifier
+  code: number; // Sequential merchant code
+  name: string; // Merchant business name
+  email: string; // Login email address
+  phone: string; // Contact phone
+  address: string | null; // Business address (optional)
+  commissionPercentage: number; // Commission rate (0-100%)
+  active: boolean; // Account active status
+  createdAt: string; // ISO date string
 }
 ```
 
@@ -228,17 +233,18 @@ export interface MerchantDetails {
 
 ```typescript
 export interface MerchantEdit {
-  name: string;                    // Editable field
-  email: string;                   // Editable field
-  password?: string;               // Optional - only if changing password
-  phone: string;                   // Editable field
-  address: string | null;          // Editable field
-  commissionPercentage: number;    // Editable field (0-100%)
-  active: boolean;                 // Editable field
+  name: string; // Editable field
+  email: string; // Editable field
+  password?: string; // Optional - only if changing password
+  phone: string; // Editable field
+  address: string | null; // Editable field
+  commissionPercentage: number; // Editable field (0-100%)
+  active: boolean; // Editable field
 }
 ```
 
-**API Mapping**: 
+**API Mapping**:
+
 - Derived from `MerchantDetails` response
 - Maps to `UpdateMerchantRequest` for PUT request
 
@@ -254,13 +260,13 @@ export interface MerchantEdit {
 
 ```typescript
 export interface MerchantCreate {
-  name: string;                  // Required, 3-200 chars
-  email: string;                 // Required, unique, valid email
-  password: string;              // Required, min 8 chars
-  phone: string;                 // Required, non-blank
-  address: string | null;        // Optional, max 500 chars
-  commissionPercentage: number;  // Required, 0-100
-  active: boolean;               // Required, default true
+  name: string; // Required, 3-200 chars
+  email: string; // Required, unique, valid email
+  password: string; // Required, min 8 chars
+  phone: string; // Required, non-blank
+  address: string | null; // Optional, max 500 chars
+  commissionPercentage: number; // Required, 0-100
+  active: boolean; // Required, default true
 }
 ```
 
@@ -276,14 +282,14 @@ All endpoints use: `/api/merchants`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/merchants | - | `MerchantList[]` | List page |
-| GET | /api/merchants/:id | - | `MerchantDetails` | Details/Edit page |
-| GET | /api/merchants/me | - | `MerchantDetails` | Merchant profile |
-| POST | /api/merchants | `MerchantCreate` | `MerchantDetails` | Create form |
-| PUT | /api/merchants/:id | `MerchantEdit` | `MerchantDetails` | Edit form |
-| DELETE | /api/merchants/:id | - | void (204) | Delete action |
+| HTTP Method | Endpoint           | Request Interface | Response Interface | Frontend Usage    |
+| ----------- | ------------------ | ----------------- | ------------------ | ----------------- |
+| GET         | /api/merchants     | -                 | `MerchantList[]`   | List page         |
+| GET         | /api/merchants/:id | -                 | `MerchantDetails`  | Details/Edit page |
+| GET         | /api/merchants/me  | -                 | `MerchantDetails`  | Merchant profile  |
+| POST        | /api/merchants     | `MerchantCreate`  | `MerchantDetails`  | Create form       |
+| PUT         | /api/merchants/:id | `MerchantEdit`    | `MerchantDetails`  | Edit form         |
+| DELETE      | /api/merchants/:id | -                 | void (204)         | Delete action     |
 
 ---
 
@@ -296,11 +302,13 @@ All endpoints use: `/api/merchants`
 **Roles**: ADMIN, USER
 
 **Query Parameters** (optional):
+
 - `active` (boolean): Filter by active status
 - `page` (int): Page number (default: 0)
 - `size` (int): Page size (default: 20)
 
 **Example Response**:
+
 ```json
 [
   {
@@ -308,7 +316,7 @@ All endpoints use: `/api/merchants`
     "code": 1,
     "name": "Juan Perez",
     "email": "juan.perez@comercial.com",
-    "commissionPercentage": 15.00,
+    "commissionPercentage": 15.0,
     "active": true
   },
   {
@@ -316,7 +324,7 @@ All endpoints use: `/api/merchants`
     "code": 2,
     "name": "Maria Garcia",
     "email": "maria.garcia@comercial.com",
-    "commissionPercentage": 12.50,
+    "commissionPercentage": 12.5,
     "active": true
   }
 ]
@@ -333,6 +341,7 @@ All endpoints use: `/api/merchants`
 **Roles**: ADMIN, USER
 
 **Example Response**:
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -341,13 +350,14 @@ All endpoints use: `/api/merchants`
   "email": "juan.perez@comercial.com",
   "phone": "+58-424-1234567",
   "address": "Av. Principal, Local 5, Caracas",
-  "commissionPercentage": 15.00,
+  "commissionPercentage": 15.0,
   "active": true,
   "createdAt": "2025-12-30T10:30:00"
 }
 ```
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: User is not ADMIN or USER
 - `404 Not Found`: Merchant not found
@@ -365,6 +375,7 @@ All endpoints use: `/api/merchants`
 **Description**: Allows merchants to view their own profile information.
 
 **Example Response**:
+
 ```json
 {
   "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -373,7 +384,7 @@ All endpoints use: `/api/merchants`
   "email": "juan.perez@comercial.com",
   "phone": "+58-424-1234567",
   "address": "Av. Principal, Local 5, Caracas",
-  "commissionPercentage": 15.00,
+  "commissionPercentage": 15.0,
   "active": true,
   "createdAt": "2025-12-30T10:30:00"
 }
@@ -390,6 +401,7 @@ All endpoints use: `/api/merchants`
 **Roles**: ADMIN only
 
 **Example Request**:
+
 ```json
 {
   "name": "Juan Perez",
@@ -397,7 +409,7 @@ All endpoints use: `/api/merchants`
   "password": "SecurePass123!",
   "phone": "+58-424-1234567",
   "address": "Av. Principal, Local 5, Caracas",
-  "commissionPercentage": 15.00,
+  "commissionPercentage": 15.0,
   "active": true
 }
 ```
@@ -405,6 +417,7 @@ All endpoints use: `/api/merchants`
 **Example Response**: Same as GET /:id (with generated ID and code)
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data or validation error
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: User is not ADMIN
@@ -421,6 +434,7 @@ All endpoints use: `/api/merchants`
 **Roles**: ADMIN only
 
 **Example Request**:
+
 ```json
 {
   "name": "Juan Perez Actualizado",
@@ -428,7 +442,7 @@ All endpoints use: `/api/merchants`
   "password": "NewSecurePass123!",
   "phone": "+58-424-9999999",
   "address": "Nueva Direccion, Caracas",
-  "commissionPercentage": 18.00,
+  "commissionPercentage": 18.0,
   "active": true
 }
 ```
@@ -436,6 +450,7 @@ All endpoints use: `/api/merchants`
 **Note**: Password is optional. If not provided or empty, the current password is kept.
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request data
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: User is not ADMIN
@@ -452,6 +467,7 @@ All endpoints use: `/api/merchants`
 **Response**: 204 No Content
 
 **Errors**:
+
 - `401 Unauthorized`: Missing or invalid JWT token
 - `403 Forbidden`: User is not ADMIN
 - `404 Not Found`: Merchant not found
@@ -463,15 +479,15 @@ All endpoints use: `/api/merchants`
 
 ### Field Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `name` | string | Yes | 3-200 characters | "El nombre debe tener entre 3 y 200 caracteres" |
-| `email` | string | Yes (create only) | Valid email, unique across merchants AND users | "Email invalido" / "Email ya existe" |
-| `password` | string | Yes (create only) | Min 8 characters | "La contraseña debe tener al menos 8 caracteres" |
-| `phone` | string | Yes | Non-blank | "El telefono es requerido" |
-| `address` | string | No | Max 500 characters | "La direccion debe tener maximo 500 caracteres" |
-| `commissionPercentage` | number | Yes | 0-100, 2 decimal precision | "La comision debe estar entre 0 y 100" |
-| `active` | boolean | Yes | - | - |
+| Field                  | Type    | Required          | Rules                                          | Error Message                                    |
+| ---------------------- | ------- | ----------------- | ---------------------------------------------- | ------------------------------------------------ |
+| `name`                 | string  | Yes               | 3-200 characters                               | "El nombre debe tener entre 3 y 200 caracteres"  |
+| `email`                | string  | Yes (create only) | Valid email, unique across merchants AND users | "Email invalido" / "Email ya existe"             |
+| `password`             | string  | Yes (create only) | Min 8 characters                               | "La contraseña debe tener al menos 8 caracteres" |
+| `phone`                | string  | Yes               | Non-blank                                      | "El telefono es requerido"                       |
+| `address`              | string  | No                | Max 500 characters                             | "La direccion debe tener maximo 500 caracteres"  |
+| `commissionPercentage` | number  | Yes               | 0-100, 2 decimal precision                     | "La comision debe estar entre 0 y 100"           |
+| `active`               | boolean | Yes               | -                                              | -                                                |
 
 ### Custom Validators
 
@@ -483,12 +499,12 @@ export class MerchantValidators {
   static commissionRange(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (control.value === null || control.value === undefined) return null;
-      
+
       const value = Number(control.value);
       if (isNaN(value) || value < 0 || value > 100) {
         return { invalidCommission: 'La comision debe estar entre 0 y 100' };
       }
-      
+
       return null;
     };
   }
@@ -498,7 +514,7 @@ export class MerchantValidators {
       if (!control.value || control.value.trim() === '') {
         return { phoneRequired: 'El telefono es requerido' };
       }
-      
+
       return null;
     };
   }
@@ -506,11 +522,11 @@ export class MerchantValidators {
   static passwordStrength(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       if (control.value.length < 8) {
         return { weakPassword: 'La contraseña debe tener al menos 8 caracteres' };
       }
-      
+
       return null;
     };
   }
@@ -528,6 +544,7 @@ The merchant form is a simple single-page form without tabs since it doesn't hav
 ### Form Fields
 
 **Create Mode Fields**:
+
 - name (text input)
 - email (email input)
 - password (password input)
@@ -537,6 +554,7 @@ The merchant form is a simple single-page form without tabs since it doesn't hav
 - active (switch/checkbox)
 
 **Edit Mode Fields**:
+
 - name (text input)
 - email (email input) - editable
 - password (password input) - optional, leave empty to keep current
@@ -552,8 +570,8 @@ interface MerchantFormModel {
   id?: string;
   code?: number;
   name: string;
-  email?: string;              // Only for create
-  password?: string;           // Only for create
+  email?: string; // Only for create
+  password?: string; // Only for create
   phone: string;
   address: string | null;
   commissionPercentage: number;
@@ -626,39 +644,35 @@ export class MerchantApplicationService {
   loadAll(params?: { active?: boolean }): Observable<MerchantList[]> {
     this.loading.set(true);
     return this.api.getAll(params).pipe(
-      tap(merchants => this.merchants.set(merchants)),
-      finalize(() => this.loading.set(false))
+      tap((merchants) => this.merchants.set(merchants)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadById(id: string): Observable<MerchantDetails> {
     this.loading.set(true);
     return this.api.getById(id).pipe(
-      tap(merchant => this.currentMerchant.set(merchant)),
-      finalize(() => this.loading.set(false))
+      tap((merchant) => this.currentMerchant.set(merchant)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   loadProfile(): Observable<MerchantDetails> {
     this.loading.set(true);
     return this.api.getProfile().pipe(
-      tap(merchant => this.currentMerchant.set(merchant)),
-      finalize(() => this.loading.set(false))
+      tap((merchant) => this.currentMerchant.set(merchant)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
   create(data: MerchantCreate): Observable<MerchantDetails> {
     this.loading.set(true);
-    return this.api.create(data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.create(data).pipe(finalize(() => this.loading.set(false)));
   }
 
   update(id: string, data: MerchantEdit): Observable<MerchantDetails> {
     this.loading.set(true);
-    return this.api.update(id, data).pipe(
-      finalize(() => this.loading.set(false))
-    );
+    return this.api.update(id, data).pipe(finalize(() => this.loading.set(false)));
   }
 
   delete(id: string): Observable<void> {
@@ -782,37 +796,42 @@ export const MERCHANT_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/merchants-list-page/merchants-list-page.component')
-        .then(m => m.MerchantsListPageComponent),
+      import('../pages/merchants-list-page/merchants-list-page.component').then(
+        (m) => m.MerchantsListPageComponent,
+      ),
     title: 'Comerciales',
   },
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/merchants-form-page/merchants-form-page.component')
-        .then(m => m.MerchantsFormPageComponent),
+      import('../pages/merchants-form-page/merchants-form-page.component').then(
+        (m) => m.MerchantsFormPageComponent,
+      ),
     title: 'Nuevo Comercial',
   },
   {
     path: 'me',
     loadComponent: () =>
-      import('../pages/merchants-details-page/merchants-details-page.component')
-        .then(m => m.MerchantsDetailsPageComponent),
+      import('../pages/merchants-details-page/merchants-details-page.component').then(
+        (m) => m.MerchantsDetailsPageComponent,
+      ),
     title: 'Mi Perfil',
     data: { selfMode: true },
   },
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/merchants-details-page/merchants-details-page.component')
-        .then(m => m.MerchantsDetailsPageComponent),
+      import('../pages/merchants-details-page/merchants-details-page.component').then(
+        (m) => m.MerchantsDetailsPageComponent,
+      ),
     title: 'Detalles del Comercial',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/merchants-form-page/merchants-form-page.component')
-        .then(m => m.MerchantsFormPageComponent),
+      import('../pages/merchants-form-page/merchants-form-page.component').then(
+        (m) => m.MerchantsFormPageComponent,
+      ),
     title: 'Editar Comercial',
     canDeactivate: [pendingChangesGuard],
   },
@@ -829,14 +848,7 @@ export const MERCHANT_ROUTES: Routes = [
 @Component({
   selector: 'app-merchants-list-page',
   standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    TagModule,
-    TooltipModule,
-  ],
+  imports: [CommonModule, TableModule, ButtonModule, InputTextModule, TagModule, TooltipModule],
   templateUrl: './merchants-list-page.component.html',
 })
 export class MerchantsListPageComponent implements OnInit {
@@ -891,11 +903,7 @@ export class MerchantsListPageComponent implements OnInit {
     <ng-template pTemplate="caption">
       <div class="flex justify-content-between align-items-center">
         <h2>Comerciales</h2>
-        <p-button
-          label="Nuevo Comercial"
-          icon="pi pi-plus"
-          (onClick)="onAdd()"
-        />
+        <p-button label="Nuevo Comercial" icon="pi pi-plus" (onClick)="onAdd()" />
       </div>
     </ng-template>
 
@@ -904,7 +912,9 @@ export class MerchantsListPageComponent implements OnInit {
         <th pSortableColumn="code">Codigo <p-sortIcon field="code" /></th>
         <th pSortableColumn="name">Nombre <p-sortIcon field="name" /></th>
         <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
-        <th pSortableColumn="commissionPercentage">Comision <p-sortIcon field="commissionPercentage" /></th>
+        <th pSortableColumn="commissionPercentage">
+          Comision <p-sortIcon field="commissionPercentage" />
+        </th>
         <th pSortableColumn="active">Estado <p-sortIcon field="active" /></th>
         <th>Acciones</th>
       </tr>

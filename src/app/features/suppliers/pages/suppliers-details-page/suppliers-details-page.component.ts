@@ -33,7 +33,6 @@ import { getSupplierTypeLabel } from '@features/suppliers/models/enums';
     TextBadgeComponent,
   ],
   templateUrl: './suppliers-details-page.component.html',
-
 })
 export class SuppliersDetailsPageComponent implements OnInit {
   private service = inject(SupplierApplicationService);
@@ -86,7 +85,11 @@ export class SuppliersDetailsPageComponent implements OnInit {
     return getSupplierTypeLabel(type as Parameters<typeof getSupplierTypeLabel>[0]);
   }
 
-  getAddressLocation(state: string | undefined, municipality: string | undefined, postalCode: string | undefined): string {
+  getAddressLocation(
+    state: string | undefined,
+    municipality: string | undefined,
+    postalCode: string | undefined,
+  ): string {
     return [state, municipality, postalCode].filter((v): v is string => !!v).join(' · ');
   }
 }

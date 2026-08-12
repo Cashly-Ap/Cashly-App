@@ -43,10 +43,23 @@ describe('OrderFormPageComponent', () => {
         unitPrice: 100,
         subtotal: 500,
         warehouseAllocations: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            available: 50,
+            allocated: 5,
+          },
         ],
         warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', quantity: 50, reserved: 10, available: 40 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            quantity: 50,
+            reserved: 10,
+            available: 40,
+          },
         ],
       },
     ],
@@ -60,7 +73,12 @@ describe('OrderFormPageComponent', () => {
     allTabs: signal([]),
   };
 
-  function configureTestBed(id: string | null = null, loadByIdValue: any = of(mockOrder), createValue: any = of(mockOrder), updateValue: any = of(mockOrder)) {
+  function configureTestBed(
+    id: string | null = null,
+    loadByIdValue: any = of(mockOrder),
+    createValue: any = of(mockOrder),
+    updateValue: any = of(mockOrder),
+  ) {
     mockService = {
       loadById: vi.fn().mockReturnValue(loadByIdValue),
       create: vi.fn().mockReturnValue(createValue),
@@ -79,7 +97,13 @@ describe('OrderFormPageComponent', () => {
       imports: [OrderFormPageComponent, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap, queryParamMap: { get: () => null } }, paramMap: of({ get: () => id }) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap, queryParamMap: { get: () => null } },
+            paramMap: of({ get: () => id }),
+          },
+        },
         { provide: OrderApplicationService, useValue: mockService },
         { provide: PendingTabsService, useValue: mockPendingTabsService },
         MessageService,
@@ -148,7 +172,15 @@ describe('OrderFormPageComponent', () => {
   it('should compute total from items', () => {
     fixture.detectChanges();
     component.items.set([
-      { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [] },
+      {
+        productId: 'p1',
+        productCode: 'MOT-10',
+        productName: 'Motor 10HP',
+        quantity: 5,
+        unitPrice: 100,
+        stock: [],
+        warehouseAllocations: [],
+      },
     ]);
     expect(component.total()).toBe(500);
   });
@@ -156,8 +188,24 @@ describe('OrderFormPageComponent', () => {
   it('should compute total from multiple items', () => {
     fixture.detectChanges();
     component.items.set([
-      { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [] },
-      { productId: 'p2', productCode: 'MOT-20', productName: 'Motor 20HP', quantity: 3, unitPrice: 200, stock: [], warehouseAllocations: [] },
+      {
+        productId: 'p1',
+        productCode: 'MOT-10',
+        productName: 'Motor 10HP',
+        quantity: 5,
+        unitPrice: 100,
+        stock: [],
+        warehouseAllocations: [],
+      },
+      {
+        productId: 'p2',
+        productCode: 'MOT-20',
+        productName: 'Motor 20HP',
+        quantity: 3,
+        unitPrice: 200,
+        stock: [],
+        warehouseAllocations: [],
+      },
     ]);
     expect(component.total()).toBe(1100);
   });
@@ -202,7 +250,15 @@ describe('OrderFormPageComponent', () => {
     it('should update items signal', () => {
       fixture.detectChanges();
       const newItems = [
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 3, unitPrice: 100, stock: [], warehouseAllocations: [] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 3,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [],
+        },
       ];
       component.onItemsChange(newItems);
       expect(component.items()).toHaveLength(1);
@@ -214,7 +270,23 @@ describe('OrderFormPageComponent', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       component.submit();
@@ -222,7 +294,7 @@ describe('OrderFormPageComponent', () => {
       expect(mockService.create).toHaveBeenCalledWith(
         expect.objectContaining({
           customerId: 'c1',
-        })
+        }),
       );
     });
 
@@ -230,7 +302,23 @@ describe('OrderFormPageComponent', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const navigateSpy = vi.spyOn(router, 'navigate');
@@ -243,7 +331,23 @@ describe('OrderFormPageComponent', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
@@ -254,20 +358,38 @@ describe('OrderFormPageComponent', () => {
 
     it('should show error on create failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed(null, of(mockOrder), throwError(() => new Error('Fail')));
+      configureTestBed(
+        null,
+        of(mockOrder),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
 
     it('should not submit when form is invalid', () => {
@@ -288,25 +410,29 @@ describe('OrderFormPageComponent', () => {
       component.form.patchValue({ customerId: 'c1' });
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'warn' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
 
     it('should not submit when no warehouse allocations', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
       expect(mockService.create).not.toHaveBeenCalled();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'warn' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
   });
 
@@ -321,7 +447,23 @@ describe('OrderFormPageComponent', () => {
     it('should call service.update when form is valid', () => {
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       component.submit();
@@ -332,7 +474,23 @@ describe('OrderFormPageComponent', () => {
     it('should show success message on update success', () => {
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
@@ -343,20 +501,39 @@ describe('OrderFormPageComponent', () => {
 
     it('should show error on update failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('ord-001', of(mockOrder), of(mockOrder), throwError(() => new Error('Fail')));
+      configureTestBed(
+        'ord-001',
+        of(mockOrder),
+        of(mockOrder),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
-        { productId: 'p1', productCode: 'MOT-10', productName: 'Motor 10HP', quantity: 5, unitPrice: 100, stock: [], warehouseAllocations: [{ warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', available: 50, allocated: 5 }] },
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
       ]);
 
       const addSpy = vi.spyOn(messageService, 'add');
       component.submit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
   });
 

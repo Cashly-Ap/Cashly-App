@@ -11,12 +11,18 @@
     <div class="space-y-4">
       <div class="flex items-center justify-between">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 bg-surface-900 dark:bg-surface-100 rounded-lg flex items-center justify-center text-surface-0 dark:text-surface-900 font-bold">
+          <div
+            class="w-10 h-10 bg-surface-900 dark:bg-surface-100 rounded-lg flex items-center justify-center text-surface-0 dark:text-surface-900 font-bold"
+          >
             <i class="pi pi-receipt"></i>
           </div>
           <div>
-            <h3 class="font-bold text-surface-900 dark:text-surface-0 m-0">{{ payment()!.invoiceNumber }}</h3>
-            <p class="text-sm text-surface-500 dark:text-surface-400 m-0">{{ payment()!.customerName }}</p>
+            <h3 class="font-bold text-surface-900 dark:text-surface-0 m-0">
+              {{ payment()!.invoiceNumber }}
+            </h3>
+            <p class="text-sm text-surface-500 dark:text-surface-400 m-0">
+              {{ payment()!.customerName }}
+            </p>
           </div>
         </div>
         <p-tag
@@ -25,40 +31,58 @@
         />
       </div>
 
-      <div class="grid grid-cols-2 gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-700">
+      <div
+        class="grid grid-cols-2 gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-700"
+      >
         <div>
-          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">Monto del Pago</p>
+          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">
+            Monto del Pago
+          </p>
           <p class="text-2xl font-bold text-green-600 dark:text-green-400 m-0">
-            {{ payment()!.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
+            {{ payment()!.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div>
-          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">Fecha de Pago</p>
+          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">
+            Fecha de Pago
+          </p>
           <p class="text-surface-900 dark:text-surface-0 font-medium m-0">
-            {{ payment()!.paymentDate | date : 'dd/MM/yyyy' }}
+            {{ payment()!.paymentDate | date: 'dd/MM/yyyy' }}
           </p>
         </div>
         <div>
-          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">Método de Pago</p>
+          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">
+            Método de Pago
+          </p>
           <p class="text-surface-900 dark:text-surface-0 font-medium m-0">
-            {{ payment()!.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment()!.paymentMethodName }}
+            {{
+              payment()!.source === 'CUSTOMER_BALANCE'
+                ? 'Saldo a Favor'
+                : payment()!.paymentMethodName
+            }}
           </p>
         </div>
         <div>
-          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">Número de Pago</p>
+          <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-1">
+            Número de Pago
+          </p>
           <p class="text-surface-900 dark:text-surface-0 font-mono text-sm m-0">
             {{ payment()!.paymentNumber }}
           </p>
         </div>
       </div>
 
-      <div class="p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-700">
-        <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-3">Información Adicional</p>
+      <div
+        class="p-4 bg-surface-50 dark:bg-surface-800/50 rounded-xl border border-surface-200 dark:border-surface-700"
+      >
+        <p class="text-xs text-surface-500 dark:text-surface-400 uppercase font-medium mb-3">
+          Información Adicional
+        </p>
         <div class="grid grid-cols-2 gap-4">
           <div>
             <p class="text-xs text-surface-500 dark:text-surface-400 mb-1">Registrado el</p>
             <p class="text-sm text-surface-700 dark:text-surface-300 m-0">
-              {{ payment()!.createdAt | date : 'dd/MM/yyyy HH:mm' }}
+              {{ payment()!.createdAt | date: 'dd/MM/yyyy HH:mm' }}
             </p>
           </div>
           <div>
@@ -74,12 +98,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <p-button
-        label="Cerrar"
-        icon="pi pi-times"
-        (onClick)="onClose()"
-        [text]="true"
-      />
+      <p-button label="Cerrar" icon="pi pi-times" (onClick)="onClose()" [text]="true" />
     </div>
   </ng-template>
 </p-dialog>

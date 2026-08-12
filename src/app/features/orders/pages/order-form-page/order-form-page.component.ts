@@ -129,7 +129,14 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
       ? `/pedidos/${this.orderId()}/edit`
       : `/pedidos/new?tabId=${this.tabId}`;
 
-    this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'orders');
+    this.pendingTabsService.save(
+      this.tabId,
+      title,
+      route,
+      formData,
+      this.isEditMode() ? 'edit' : 'create',
+      'orders',
+    );
   }
 
   private restoreFromPendingTab(): void {
@@ -227,13 +234,23 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
     }
 
     if (this.items().length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes agregar al menos un producto al pedido.', life: 4000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes agregar al menos un producto al pedido.',
+        life: 4000,
+      });
       return;
     }
 
     const unallocated = this.items().filter((i) => i.warehouseAllocations.length === 0);
     if (unallocated.length > 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Todos los productos deben tener asignación de almacén antes de guardar.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Todos los productos deben tener asignación de almacén antes de guardar.',
+        life: 5000,
+      });
       return;
     }
 
@@ -252,9 +269,9 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             warehouseAllocations: i.warehouseAllocations
               .filter((a) => a.allocated > 0)
               .map((a) => ({
-              warehouseId: a.warehouseId,
-              allocated: a.allocated,
-            })),
+                warehouseId: a.warehouseId,
+                allocated: a.allocated,
+              })),
           })),
         })
         .subscribe({
@@ -266,7 +283,12 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el pedido. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar el pedido. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     } else {
@@ -281,9 +303,9 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             warehouseAllocations: i.warehouseAllocations
               .filter((a) => a.allocated > 0)
               .map((a) => ({
-              warehouseId: a.warehouseId,
-              allocated: a.allocated,
-            })),
+                warehouseId: a.warehouseId,
+                allocated: a.allocated,
+              })),
           })),
         })
         .subscribe({
@@ -295,7 +317,12 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear el pedido. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear el pedido. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     }

@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
@@ -68,7 +75,12 @@ export class ProductsDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el producto.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el producto.',
+          life: 5000,
+        });
         this.router.navigate(['/products']);
       },
     });
@@ -85,10 +97,20 @@ export class ProductsDetailsPageComponent implements OnInit {
     this.service.toggleActive(p.id, !p.active).subscribe({
       next: (updated) => {
         this.product.set(updated);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: `Producto ${updated.active ? 'activado' : 'desactivado'} exitosamente`, life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Producto ${updated.active ? 'activado' : 'desactivado'} exitosamente`,
+          life: 3000,
+        });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cambiar el estado.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cambiar el estado.',
+          life: 5000,
+        });
       },
     });
   }

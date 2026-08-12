@@ -56,7 +56,12 @@ export class UserApiService {
     return this.http.put<void>(`${this.baseUrl}/${id}/email`, { email });
   }
 
-  updateModulePermissions(id: string, modulePermissions: BusinessModule[]): Observable<UserDetails> {
-    return this.http.put<UserDetails>(`${this.baseUrl}/${id}/module-permissions`, { modulePermissions });
+  updateModulePermissions(
+    id: string,
+    modulePermissions: BusinessModule[],
+  ): Observable<UserDetails> {
+    return this.http.put<UserDetails>(`${this.baseUrl}/${id}/module-permissions`, {
+      modulePermissions,
+    });
   }
 }

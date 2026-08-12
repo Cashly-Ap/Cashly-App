@@ -54,7 +54,13 @@ describe('PriceTypesFormPageComponent', () => {
       imports: [PriceTypesFormPageComponent, ReactiveFormsModule],
       providers: [
         provideRouter([]),
-        { provide: ActivatedRoute, useValue: { paramMap: of({ get: () => id }), snapshot: { paramMap: { get: () => id }, queryParamMap: { get: () => null } } } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of({ get: () => id }),
+            snapshot: { paramMap: { get: () => id }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: PriceTypeApplicationService, useValue: mockService },
         MessageService,
         ...pdfMocks,
@@ -189,7 +195,10 @@ describe('PriceTypesFormPageComponent', () => {
     fixture.detectChanges();
     component.form.get('name')?.setValue('Updated Price Type');
     component.onSubmit();
-    expect(mockService.update).toHaveBeenCalledWith('pt-001', { name: 'Updated Price Type', active: true });
+    expect(mockService.update).toHaveBeenCalledWith('pt-001', {
+      name: 'Updated Price Type',
+      active: true,
+    });
   });
 
   it('should show success message on update success', () => {

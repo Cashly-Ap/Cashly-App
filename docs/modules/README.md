@@ -6,21 +6,21 @@ This directory contains documentation for all frontend modules in the Lexand app
 
 ## Module Index
 
-| Module | Type | Status | Description |
-|--------|------|--------|-------------|
-| [Auth](./auth.md) | Auth | Implemented | Authentication, JWT tokens, and user profile management |
-| [Dashboard](./dashboard.md) | Display-only | Implemented | Business metrics, charts, and analytics overview |
-| [Customers](./customers.md) | CRUD | Implemented | Customer management with contacts and addresses |
-| [Products](./products.md) | CRUD | Planned | Product catalog with simple/composite types and compositions |
-| [Differentials](./differentials.md) | CRUD | Planned | Price percentage adjustments (surcharges/discounts) |
-| [Warehouses](./warehouses.md) | CRUD | Planned | Warehouse management with stock operations |
-| [Merchants](./merchants.md) | CRUD | Planned | Merchant management with commission tracking |
-| [Orders](./orders.md) | CRUD | Planned | Order management with line items and status workflow |
-| [Invoices](./invoices.md) | CRUD | Planned | Invoice management with payments and due dates |
-| [Collections](./collections.md) | Display-only | Planned | Commission records (auto-generated from invoice payments) |
-| [Receivables](./receivables.md) | Special | Implemented | Customer debt management and payment registration with validation workflow |
-| [Payables](./payables.md) | Special | Planned | Merchant commission payments tracking and settlement |
-| [Notifications](./notifications.md) | Display-only | Planned | In-app notifications system with role-based routing |
+| Module                              | Type         | Status      | Description                                                                |
+| ----------------------------------- | ------------ | ----------- | -------------------------------------------------------------------------- |
+| [Auth](./auth.md)                   | Auth         | Implemented | Authentication, JWT tokens, and user profile management                    |
+| [Dashboard](./dashboard.md)         | Display-only | Implemented | Business metrics, charts, and analytics overview                           |
+| [Customers](./customers.md)         | CRUD         | Implemented | Customer management with contacts and addresses                            |
+| [Products](./products.md)           | CRUD         | Planned     | Product catalog with simple/composite types and compositions               |
+| [Differentials](./differentials.md) | CRUD         | Planned     | Price percentage adjustments (surcharges/discounts)                        |
+| [Warehouses](./warehouses.md)       | CRUD         | Planned     | Warehouse management with stock operations                                 |
+| [Merchants](./merchants.md)         | CRUD         | Planned     | Merchant management with commission tracking                               |
+| [Orders](./orders.md)               | CRUD         | Planned     | Order management with line items and status workflow                       |
+| [Invoices](./invoices.md)           | CRUD         | Planned     | Invoice management with payments and due dates                             |
+| [Collections](./collections.md)     | Display-only | Planned     | Commission records (auto-generated from invoice payments)                  |
+| [Receivables](./receivables.md)     | Special      | Implemented | Customer debt management and payment registration with validation workflow |
+| [Payables](./payables.md)           | Special      | Planned     | Merchant commission payments tracking and settlement                       |
+| [Notifications](./notifications.md) | Display-only | Planned     | In-app notifications system with role-based routing                        |
 
 ---
 
@@ -112,6 +112,7 @@ Each module documentation includes:
 **Status**: Implemented
 
 **Features**:
+
 - User login with email and password
 - JWT access token management
 - Refresh token automatic renewal
@@ -120,6 +121,7 @@ Each module documentation includes:
 - HTTP interceptor for automatic token injection
 
 **Key Files**:
+
 - `src/app/features/auth/services/auth.service.ts`
 - `src/app/features/auth/guards/auth.guard.ts`
 - `src/app/features/auth/interceptors/auth.interceptor.ts`
@@ -133,6 +135,7 @@ Each module documentation includes:
 **Status**: Implemented (with mock data)
 
 **Features**:
+
 - Sales metrics cards
 - Monthly sales trend chart
 - Category distribution chart
@@ -141,6 +144,7 @@ Each module documentation includes:
 - Top products table
 
 **Key Files**:
+
 - `src/app/features/dashboard/pages/dashboard-page.component.ts`
 
 [View Full Documentation](./dashboard.md)
@@ -152,6 +156,7 @@ Each module documentation includes:
 **Status**: Implemented
 
 **Features**:
+
 - Customer CRUD operations
 - Multiple emails, phones, and addresses
 - Credit management (days and limit)
@@ -160,6 +165,7 @@ Each module documentation includes:
 - Billing address designation
 
 **Key Files**:
+
 - `src/app/features/customers/services/api/customer-api.service.ts`
 - `src/app/features/customers/services/application/customer-application.service.ts`
 - `src/app/features/customers/validators/customer.validators.ts`
@@ -177,6 +183,7 @@ Each module documentation includes:
 **Description**: Product catalog management with simple and composite product types, unit of measure support, and composition tracking.
 
 **Key Features**:
+
 - Product CRUD operations (Simple and Composite types)
 - Unit of measure management
 - Composite product compositions
@@ -194,6 +201,7 @@ Each module documentation includes:
 **Description**: Price percentage adjustments for surcharges or discounts that can be applied to orders.
 
 **Key Features**:
+
 - Differential CRUD operations
 - Percentage-based pricing
 - Active/Inactive status
@@ -210,6 +218,7 @@ Each module documentation includes:
 **Description**: Warehouse management with stock operations including entry, exit, and transfer.
 
 **Key Features**:
+
 - Warehouse CRUD operations
 - Stock entry/exit operations
 - Inter-warehouse transfers
@@ -227,6 +236,7 @@ Each module documentation includes:
 **Description**: Display commission records (cobranzas) automatically generated when payments are registered on invoices with merchants.
 
 **Key Features**:
+
 - View collection list with filtering and pagination
 - View collection details
 - Merchant collection summaries with aggregated data
@@ -244,6 +254,7 @@ Each module documentation includes:
 **Description**: Customer-centric view of outstanding debts with payment registration, proof-of-payment upload, and validation workflow. MERCHANT payments require USER/ADMIN approval. Single-page architecture with tabs and dialogs.
 
 **Key Features**:
+
 - Global debt summary across all customers (USER/ADMIN)
 - Customer-specific debt details with invoice breakdown (via dialog)
 - Register payments for single invoices, all debt, or partial amount
@@ -264,6 +275,7 @@ Each module documentation includes:
 **Description**: Merchant commission payments tracking. Auto-generated when payments are approved. Provides settlement operations for paying merchants their commissions.
 
 **Key Features**:
+
 - Global payables summary across all merchants
 - Merchant-specific payable details
 - Settlement operations: single, multiple, or all pending
@@ -282,6 +294,7 @@ Each module documentation includes:
 **Description**: In-app notifications system with role-based routing. Notifications are auto-generated by domain events.
 
 **Key Features**:
+
 - View all notifications for authenticated user
 - Unread notifications count badge
 - Mark single or all notifications as read
@@ -332,18 +345,18 @@ For backend API details, refer to the backend documentation at:
 
 ## Documentation Coverage
 
-| Backend Module | Frontend Doc | Status |
-|----------------|--------------|--------|
-| AUTH.md | [auth.md](./auth.md) | ✅ Complete |
-| CUSTOMERS.md | [customers.md](./customers.md) | ✅ Complete |
-| PRODUCTS.md | [products.md](./products.md) | ✅ Complete |
-| DIFFERENTIAL.md | [differentials.md](./differentials.md) | ✅ Complete |
-| WAREHOUSE.md | [warehouses.md](./warehouses.md) | ✅ Complete |
-| MERCHANTS.md | [merchants.md](./merchants.md) | ✅ Complete |
-| ORDERS.md | [orders.md](./orders.md) | ✅ Complete |
-| INVOICES.md | [invoices.md](./invoices.md) | ✅ Complete |
-| COLLECTIONS.md | [collections.md](./collections.md) | ✅ Complete |
-| RECEIVABLES.md | [receivables.md](./receivables.md) | ✅ Complete |
-| PAYABLES.md | [payables.md](./payables.md) | ✅ Complete |
-| NOTIFICATIONS.md | [notifications.md](./notifications.md) | ✅ Complete |
-| - | [dashboard.md](./dashboard.md) | ✅ Complete (Frontend-only) |
+| Backend Module   | Frontend Doc                           | Status                      |
+| ---------------- | -------------------------------------- | --------------------------- |
+| AUTH.md          | [auth.md](./auth.md)                   | ✅ Complete                 |
+| CUSTOMERS.md     | [customers.md](./customers.md)         | ✅ Complete                 |
+| PRODUCTS.md      | [products.md](./products.md)           | ✅ Complete                 |
+| DIFFERENTIAL.md  | [differentials.md](./differentials.md) | ✅ Complete                 |
+| WAREHOUSE.md     | [warehouses.md](./warehouses.md)       | ✅ Complete                 |
+| MERCHANTS.md     | [merchants.md](./merchants.md)         | ✅ Complete                 |
+| ORDERS.md        | [orders.md](./orders.md)               | ✅ Complete                 |
+| INVOICES.md      | [invoices.md](./invoices.md)           | ✅ Complete                 |
+| COLLECTIONS.md   | [collections.md](./collections.md)     | ✅ Complete                 |
+| RECEIVABLES.md   | [receivables.md](./receivables.md)     | ✅ Complete                 |
+| PAYABLES.md      | [payables.md](./payables.md)           | ✅ Complete                 |
+| NOTIFICATIONS.md | [notifications.md](./notifications.md) | ✅ Complete                 |
+| -                | [dashboard.md](./dashboard.md)         | ✅ Complete (Frontend-only) |

@@ -23,7 +23,17 @@ import { FinancePdfApiService } from '@features/reports/finance/services/api/fin
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
 
 function createPdfApiMock() {
-  return { downloadPdf: vi.fn(), getPdf: vi.fn(), getExcel: vi.fn(), exportExcel: vi.fn(), downloadOrdersReportPdf: vi.fn(), downloadInvoicesReportPdf: vi.fn(), downloadQuotesReportPdf: vi.fn(), downloadPurchasesReportPdf: vi.fn(), getAccountsReceivablePdf: vi.fn() };
+  return {
+    downloadPdf: vi.fn(),
+    getPdf: vi.fn(),
+    getExcel: vi.fn(),
+    exportExcel: vi.fn(),
+    downloadOrdersReportPdf: vi.fn(),
+    downloadInvoicesReportPdf: vi.fn(),
+    downloadQuotesReportPdf: vi.fn(),
+    downloadPurchasesReportPdf: vi.fn(),
+    getAccountsReceivablePdf: vi.fn(),
+  };
 }
 
 describe('MainLayoutComponent', () => {
@@ -228,7 +238,9 @@ describe('MainLayoutComponent', () => {
 
     it('should unsubscribe from scroll events on destroy', () => {
       const unsubscribeSpy = vi.fn();
-      component['scrollSubscription'] = { unsubscribe: unsubscribeSpy } as unknown as typeof component['scrollSubscription'];
+      component['scrollSubscription'] = {
+        unsubscribe: unsubscribeSpy,
+      } as unknown as (typeof component)['scrollSubscription'];
 
       component.ngOnDestroy();
 

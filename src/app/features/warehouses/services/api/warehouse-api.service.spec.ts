@@ -20,7 +20,13 @@ describe('WarehouseApiService', () => {
   let httpMock: HttpTestingController;
 
   const mockList: WarehouseList[] = [
-    { id: 'wh-001', name: 'Almacén Central', state: 'Distrito Capital', municipality: 'Libertador', active: true },
+    {
+      id: 'wh-001',
+      name: 'Almacén Central',
+      state: 'Distrito Capital',
+      municipality: 'Libertador',
+      active: true,
+    },
   ];
 
   const mockDetails: WarehouseDetails = {
@@ -31,9 +37,7 @@ describe('WarehouseApiService', () => {
     address: 'Av. Principal #123',
     description: 'Almacén principal',
     active: true,
-    stock: [
-      { productId: 'p1', productName: 'Motor 10HP', unit: '', quantity: 50 },
-    ],
+    stock: [{ productId: 'p1', productName: 'Motor 10HP', unit: '', quantity: 50 }],
     recentMovements: [
       {
         id: 'm1',
@@ -86,7 +90,14 @@ describe('WarehouseApiService', () => {
     });
 
     it('should GET /api/warehouses with filters', () => {
-      const filters: WarehouseFilters = { search: 'Central', active: true, page: 0, size: 10, orderBy: 'name', orderDir: 'asc' };
+      const filters: WarehouseFilters = {
+        search: 'Central',
+        active: true,
+        page: 0,
+        size: 10,
+        orderBy: 'name',
+        orderDir: 'asc',
+      };
 
       service.getAll(filters).subscribe((result) => {
         expect(result.content).toEqual(mockList);
@@ -147,7 +158,15 @@ describe('WarehouseApiService', () => {
     });
 
     it('should default stock and recentMovements to empty arrays when null', () => {
-      const bare = { id: 'wh-001', name: 'Test', state: 'X', municipality: 'Y', active: true, createdAt: '', updatedAt: '' };
+      const bare = {
+        id: 'wh-001',
+        name: 'Test',
+        state: 'X',
+        municipality: 'Y',
+        active: true,
+        createdAt: '',
+        updatedAt: '',
+      };
 
       service.getById('wh-001').subscribe((result) => {
         expect(result.stock).toEqual([]);
@@ -225,9 +244,7 @@ describe('WarehouseApiService', () => {
   describe('addEntry()', () => {
     it('should POST /api/warehouses/:id/stock/entry', () => {
       const entryData: StockEntryRequest = {
-        items: [
-          { productId: 'p1', quantity: 10, unitPrice: 100, notes: 'Test' },
-        ],
+        items: [{ productId: 'p1', quantity: 10, unitPrice: 100, notes: 'Test' }],
       };
 
       service.addEntry('wh-001', entryData).subscribe();
@@ -242,9 +259,7 @@ describe('WarehouseApiService', () => {
   describe('addExit()', () => {
     it('should POST /api/warehouses/:id/stock/exit', () => {
       const exitData: StockExitRequest = {
-        items: [
-          { productId: 'p1', quantity: 5, notes: 'Test' },
-        ],
+        items: [{ productId: 'p1', quantity: 5, notes: 'Test' }],
       };
 
       service.addExit('wh-001', exitData).subscribe();
@@ -266,7 +281,9 @@ describe('WarehouseApiService', () => {
         expect(result).toEqual(mockStock);
       });
 
-      const req = httpMock.expectOne((r) => r.url === '/api/warehouses/wh-001/stock' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/warehouses/wh-001/stock' && r.method === 'GET',
+      );
       expect(req.request.params.get('size')).toBe('1000');
       req.flush(mockPagedResponse([{ productId: 'p1', productName: 'Motor 10HP', quantity: 50 }]));
     });
@@ -276,7 +293,9 @@ describe('WarehouseApiService', () => {
         expect(result).toEqual([]);
       });
 
-      const req = httpMock.expectOne((r) => r.url === '/api/warehouses/wh-001/stock' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/warehouses/wh-001/stock' && r.method === 'GET',
+      );
       req.flush({ content: null, totalElements: 0, totalPages: 0, size: 1000, number: 0 });
     });
   });
@@ -312,7 +331,9 @@ describe('WarehouseApiService', () => {
 
       service.getMovements('wh-001', filters).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/warehouses/wh-001/movements' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/warehouses/wh-001/movements' && r.method === 'GET',
+      );
       expect(req.request.params.get('productId')).toBe('p1');
       expect(req.request.params.get('page')).toBe('1');
       expect(req.request.params.get('size')).toBe('20');

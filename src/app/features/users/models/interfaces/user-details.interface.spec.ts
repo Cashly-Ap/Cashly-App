@@ -28,11 +28,7 @@ describe('UserDetails interface', () => {
   });
 
   it('should accept all UserType values', () => {
-    const roles: UserType[] = [
-      UserType.OPERATOR,
-      UserType.ADMIN,
-      UserType.SUPER_ADMIN,
-    ];
+    const roles: UserType[] = [UserType.OPERATOR, UserType.ADMIN, UserType.SUPER_ADMIN];
 
     roles.forEach((role) => {
       const user: UserDetails = {

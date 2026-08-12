@@ -1,4 +1,11 @@
-import { Component, inject, OnInit, signal, ChangeDetectionStrategy, Injector } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  ChangeDetectionStrategy,
+  Injector,
+} from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
@@ -52,7 +59,10 @@ interface ProductFormData {
   ],
   templateUrl: './products-form-page.component.html',
 })
-export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData> implements OnInit {
+export class ProductsFormPageComponent
+  extends BaseFormComponent<ProductFormData>
+  implements OnInit
+{
   private readonly service = inject(ProductApplicationService);
   private readonly photoService = inject(ProductPhotoService);
   private readonly messageService = inject(MessageService);
@@ -114,15 +124,20 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     });
   }
 
-  private buildPricesFormArray(priceTypes: PriceTypeList[], existingPrices: ProductPriceItem[] = []): void {
+  private buildPricesFormArray(
+    priceTypes: PriceTypeList[],
+    existingPrices: ProductPriceItem[] = [],
+  ): void {
     while (this.pricesArray.length) this.pricesArray.removeAt(0);
     priceTypes.forEach((pt) => {
       const existing = existingPrices.find((p) => p.priceTypeId === pt.id);
-      this.pricesArray.push(this.fb.group({
-        priceTypeId: [pt.id],
-        price: [existing?.price ?? 0, [Validators.required, Validators.min(0)]],
-        profitMargin: [existing?.profitMargin ?? null, [Validators.min(0), Validators.max(100)]],
-      }));
+      this.pricesArray.push(
+        this.fb.group({
+          priceTypeId: [pt.id],
+          price: [existing?.price ?? 0, [Validators.required, Validators.min(0)]],
+          profitMargin: [existing?.profitMargin ?? null, [Validators.min(0), Validators.max(100)]],
+        }),
+      );
     });
   }
 
@@ -134,12 +149,14 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     this.updateSubmitTooltip();
 
     if (!this.isEditMode()) {
-      toObservable(this.priceTypeService.priceTypes, { injector: this.injector }).pipe(
-        filter(t => t.length > 0),
-        take(1),
-      ).subscribe(types => {
-        this.buildPricesFormArray(types, []);
-      });
+      toObservable(this.priceTypeService.priceTypes, { injector: this.injector })
+        .pipe(
+          filter((t) => t.length > 0),
+          take(1),
+        )
+        .subscribe((types) => {
+          this.buildPricesFormArray(types, []);
+        });
     }
 
     this.form.get('composite')?.valueChanges.subscribe((val: boolean) => {
@@ -170,10 +187,20 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     this.photoService.deletePhoto(id).subscribe({
       next: () => {
         this.photoService.clearPhoto();
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Foto eliminada exitosamente', life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Foto eliminada exitosamente',
+          life: 3000,
+        });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar la foto.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al eliminar la foto.',
+          life: 5000,
+        });
       },
     });
   }
@@ -195,19 +222,23 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     if (data.components?.length) {
       while (this.componentsArray.length) this.componentsArray.removeAt(0);
       data.components.forEach((c) => {
-        this.componentsArray.push(this.fb.group({
-          componentProductId: [c.componentProductId, Validators.required],
-          quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
-        }));
+        this.componentsArray.push(
+          this.fb.group({
+            componentProductId: [c.componentProductId, Validators.required],
+            quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
+          }),
+        );
       });
     }
     if (data.productPrices?.length) {
       while (this.pricesArray.length) this.pricesArray.removeAt(0);
       data.productPrices.forEach((p) => {
-        this.pricesArray.push(this.fb.group({
-          priceTypeId: [p.priceTypeId],
-          price: [p.price, [Validators.required, Validators.min(0)]],
-        }));
+        this.pricesArray.push(
+          this.fb.group({
+            priceTypeId: [p.priceTypeId],
+            price: [p.price, [Validators.required, Validators.min(0)]],
+          }),
+        );
       });
     }
     this.isComposite.set(!!data.composite);
@@ -217,7 +248,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     combineLatest([
       this.service.loadById(id),
       toObservable(this.priceTypeService.priceTypes, { injector: this.injector }).pipe(
-        filter(t => t.length > 0),
+        filter((t) => t.length > 0),
         take(1),
       ),
     ]).subscribe({
@@ -234,16 +265,23 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
         });
         while (this.componentsArray.length) this.componentsArray.removeAt(0);
         product.components.forEach((c) => {
-          this.componentsArray.push(this.fb.group({
-            componentProductId: [c.componentProductId, Validators.required],
-            quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
-          }));
+          this.componentsArray.push(
+            this.fb.group({
+              componentProductId: [c.componentProductId, Validators.required],
+              quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
+            }),
+          );
         });
         this.buildPricesFormArray(types, product.productPrices);
         this.photoService.loadPhoto(product.photo);
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar el producto.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el producto.',
+          life: 5000,
+        });
         this.router.navigate(['/products']);
       },
     });
@@ -252,13 +290,21 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
   override onSubmit(): void {
     if (!this.form.valid) {
       this.form.markAllAsTouched();
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, complete todos los campos requeridos.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Por favor, complete todos los campos requeridos.',
+        life: 5000,
+      });
       return;
     }
 
     const value = this.form.getRawValue() as ProductFormData;
     const components: ProductComponentInput[] = value.composite
-      ? value.components.map((c) => ({ componentProductId: c.componentProductId!, quantity: c.quantity }))
+      ? value.components.map((c) => ({
+          componentProductId: c.componentProductId!,
+          quantity: c.quantity,
+        }))
       : [];
 
     const payload = {
@@ -270,7 +316,7 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
       composite: value.composite,
       purchasePrice: value.purchasePrice ?? undefined,
       components,
-      productPrices: value.productPrices.map(p => ({
+      productPrices: value.productPrices.map((p) => ({
         priceTypeId: p.priceTypeId,
         price: p.price,
         profitMargin: p.profitMargin ?? null,
@@ -278,41 +324,67 @@ export class ProductsFormPageComponent extends BaseFormComponent<ProductFormData
     };
 
     if (this.isEditMode() && this.entityId()) {
-      this.service.update(this.entityId()!, payload).pipe(
-        switchMap((product) => {
-          if (value.photo) {
-            return this.photoService.uploadPhoto(product?.id ?? this.entityId()!, value.photo);
-          }
-          return of(undefined);
-        }),
-      ).subscribe({
-        next: () => {
-          this.markAsSubmitted();
-          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto actualizado exitosamente', life: 3000 });
-          this.router.navigate(['/products']);
-        },
-        error: () => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el producto.', life: 5000 });
-        },
-      });
+      this.service
+        .update(this.entityId()!, payload)
+        .pipe(
+          switchMap((product) => {
+            if (value.photo) {
+              return this.photoService.uploadPhoto(product?.id ?? this.entityId()!, value.photo);
+            }
+            return of(undefined);
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.markAsSubmitted();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Producto actualizado exitosamente',
+              life: 3000,
+            });
+            this.router.navigate(['/products']);
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar el producto.',
+              life: 5000,
+            });
+          },
+        });
     } else {
-      this.service.create(payload).pipe(
-        switchMap((product) => {
-          if (value.photo && product?.id) {
-            return this.photoService.uploadPhoto(product.id, value.photo);
-          }
-          return of(undefined);
-        }),
-      ).subscribe({
-        next: () => {
-          this.markAsSubmitted();
-          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Producto creado exitosamente', life: 3000 });
-          this.router.navigate(['/products']);
-        },
-        error: (err: { error?: { message?: string } }) => {
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear el producto.', life: 5000 });
-        },
-      });
+      this.service
+        .create(payload)
+        .pipe(
+          switchMap((product) => {
+            if (value.photo && product?.id) {
+              return this.photoService.uploadPhoto(product.id, value.photo);
+            }
+            return of(undefined);
+          }),
+        )
+        .subscribe({
+          next: () => {
+            this.markAsSubmitted();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Producto creado exitosamente',
+              life: 3000,
+            });
+            this.router.navigate(['/products']);
+          },
+          error: (err: { error?: { message?: string } }) => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.error?.message || 'Error al crear el producto.',
+              life: 5000,
+            });
+          },
+        });
     }
   }
 }

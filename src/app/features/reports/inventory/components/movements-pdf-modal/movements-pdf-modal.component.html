@@ -13,55 +13,57 @@
       <p-progressSpinner strokeWidth="4" styleClass="w-10 h-10" />
     </div>
   } @else {
-  <div class="flex flex-col gap-4 pt-2">
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
-      <p-select
-        [options]="warehouseOptions()"
-        [(ngModel)]="warehouseId"
-        optionLabel="label"
-        optionValue="value"
-        appendTo="body"
-        placeholder="Todos los almacenes"
-        styleClass="w-full"
-      />
-    </div>
+    <div class="flex flex-col gap-4 pt-2">
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
+        <p-select
+          [options]="warehouseOptions()"
+          [(ngModel)]="warehouseId"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          placeholder="Todos los almacenes"
+          styleClass="w-full"
+        />
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Tipo de Movimiento</label>
-      <p-select
-        [options]="movementTypeOptions"
-        [(ngModel)]="movementType"
-        optionLabel="label"
-        optionValue="value"
-        appendTo="body"
-        placeholder="Todos los tipos"
-        styleClass="w-full"
-      />
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+          >Tipo de Movimiento</label
+        >
+        <p-select
+          [options]="movementTypeOptions"
+          [(ngModel)]="movementType"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          placeholder="Todos los tipos"
+          styleClass="w-full"
+        />
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde</label>
-      <p-datepicker
-        [(ngModel)]="from"
-        dateFormat="dd/mm/yy"
-        placeholder="Seleccione fecha inicial"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde</label>
+        <p-datepicker
+          [(ngModel)]="from"
+          dateFormat="dd/mm/yy"
+          placeholder="Seleccione fecha inicial"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
 
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta</label>
-      <p-datepicker
-        [(ngModel)]="to"
-        dateFormat="dd/mm/yy"
-        placeholder="Seleccione fecha final"
-        styleClass="w-full"
-        appendTo="body"
-      />
+      <div class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta</label>
+        <p-datepicker
+          [(ngModel)]="to"
+          dateFormat="dd/mm/yy"
+          placeholder="Seleccione fecha final"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
     </div>
-  </div>
   }
 
   <ng-template pTemplate="footer">

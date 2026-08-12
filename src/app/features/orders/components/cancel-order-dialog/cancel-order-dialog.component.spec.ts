@@ -6,7 +6,12 @@ import { OrderList } from '@features/orders/models/interfaces';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 @Component({
-  template: `<app-cancel-order-dialog [visible]="visible" [order]="order" (confirmed)="onConfirmed($event)" (cancelled)="onCancelled()"></app-cancel-order-dialog>`,
+  template: `<app-cancel-order-dialog
+    [visible]="visible"
+    [order]="order"
+    (confirmed)="onConfirmed($event)"
+    (cancelled)="onCancelled()"
+  ></app-cancel-order-dialog>`,
   imports: [CancelOrderDialogComponent],
 })
 class HostComponent {

@@ -16,7 +16,9 @@ function getPaymentStatusLabel(status: string): string {
   }
 }
 
-function getPaymentStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
+function getPaymentStatusSeverity(
+  status: string,
+): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
   switch (status) {
     case 'APPLIED':
       return 'success';

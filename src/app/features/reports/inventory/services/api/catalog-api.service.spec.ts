@@ -16,9 +16,7 @@ describe('CatalogApiService', () => {
         categoryName: 'Motors',
         composite: false,
         totalStock: 100,
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', quantity: 100 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', quantity: 100 }],
       },
     ],
     totalElements: 1,
@@ -59,7 +57,9 @@ describe('CatalogApiService', () => {
     it('should GET with search filter', () => {
       service.getAll({ search: 'motor' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('search')).toBe('motor');
       req.flush(mockPagedResponse);
     });
@@ -67,7 +67,9 @@ describe('CatalogApiService', () => {
     it('should GET with categoryId filter', () => {
       service.getAll({ categoryId: 'cat-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('categoryId')).toBe('cat-001');
       req.flush(mockPagedResponse);
     });
@@ -75,7 +77,9 @@ describe('CatalogApiService', () => {
     it('should GET with warehouseId filter', () => {
       service.getAll({ warehouseId: 'wh-001' }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('warehouseId')).toBe('wh-001');
       req.flush(mockPagedResponse);
     });
@@ -83,7 +87,9 @@ describe('CatalogApiService', () => {
     it('should GET with composite flag', () => {
       service.getAll({ composite: true }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('composite')).toBe('true');
       req.flush(mockPagedResponse);
     });
@@ -91,7 +97,9 @@ describe('CatalogApiService', () => {
     it('should GET with composite=false flag', () => {
       service.getAll({ composite: false }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('composite')).toBe('false');
       req.flush(mockPagedResponse);
     });
@@ -99,7 +107,9 @@ describe('CatalogApiService', () => {
     it('should GET with withStock flag', () => {
       service.getAll({ withStock: true }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('withStock')).toBe('true');
       req.flush(mockPagedResponse);
     });
@@ -107,7 +117,9 @@ describe('CatalogApiService', () => {
     it('should GET with lowStock flag', () => {
       service.getAll({ lowStock: true }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('lowStock')).toBe('true');
       req.flush(mockPagedResponse);
     });
@@ -115,25 +127,31 @@ describe('CatalogApiService', () => {
     it('should GET with pagination params', () => {
       service.getAll({ page: 2, size: 25 }).subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('page')).toBe('2');
       expect(req.request.params.get('size')).toBe('25');
       req.flush(mockPagedResponse);
     });
 
     it('should GET with all filters combined', () => {
-      service.getAll({
-        search: 'generator',
-        categoryId: 'cat-002',
-        warehouseId: 'wh-002',
-        composite: false,
-        withStock: true,
-        lowStock: false,
-        page: 0,
-        size: 10,
-      }).subscribe();
+      service
+        .getAll({
+          search: 'generator',
+          categoryId: 'cat-002',
+          warehouseId: 'wh-002',
+          composite: false,
+          withStock: true,
+          lowStock: false,
+          page: 0,
+          size: 10,
+        })
+        .subscribe();
 
-      const req = httpMock.expectOne((r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/reports/inventory/catalog' && r.method === 'GET',
+      );
       expect(req.request.params.get('search')).toBe('generator');
       expect(req.request.params.get('categoryId')).toBe('cat-002');
       expect(req.request.params.get('warehouseId')).toBe('wh-002');

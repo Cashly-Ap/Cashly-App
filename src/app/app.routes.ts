@@ -29,7 +29,10 @@ export const routes: Routes = [
         path: 'dashboard',
         canActivate: [authGuard, modulePermissionGuard],
         data: { module: BusinessModule.DASHBOARD },
-        loadComponent: () => import('@features/dashboard/pages/dashboard-page/dashboard-page.component').then((m) => m.DashboardPageComponent),
+        loadComponent: () =>
+          import('@features/dashboard/pages/dashboard-page/dashboard-page.component').then(
+            (m) => m.DashboardPageComponent,
+          ),
       },
       {
         path: 'users',
@@ -81,11 +84,13 @@ export const routes: Routes = [
       },
       {
         path: 'payment-methods',
-        loadChildren: () => import('@features/payment-methods/router').then((m) => m.PAYMENT_METHOD_ROUTES),
+        loadChildren: () =>
+          import('@features/payment-methods/router').then((m) => m.PAYMENT_METHOD_ROUTES),
       },
       {
         path: 'credit-notes',
-        loadChildren: () => import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
+        loadChildren: () =>
+          import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
       },
       {
         path: 'debit-notes',
@@ -97,11 +102,13 @@ export const routes: Routes = [
       },
       {
         path: 'cash-register',
-        loadChildren: () => import('@features/cash-register/router').then((m) => m.CASH_REGISTER_ROUTES),
+        loadChildren: () =>
+          import('@features/cash-register/router').then((m) => m.CASH_REGISTER_ROUTES),
       },
       {
         path: 'receivables',
-        loadChildren: () => import('@features/receivables/router').then((m) => m.RECEIVABLES_ROUTES),
+        loadChildren: () =>
+          import('@features/receivables/router').then((m) => m.RECEIVABLES_ROUTES),
       },
     ],
   },

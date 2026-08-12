@@ -5,7 +5,14 @@ import { WarehouseStockPopoverComponent } from './warehouse-stock-popover.compon
 import { WarehouseStockEntry } from './warehouse-stock-entry.interface';
 
 @Component({
-  template: `<app-warehouse-stock-popover [entries]="entries" [total]="total" [confirmLabel]="confirmLabel" [emptyMessage]="emptyMessage" (allocationChange)="onAllocationChange($event)" (confirm)="onConfirm()"></app-warehouse-stock-popover>`,
+  template: `<app-warehouse-stock-popover
+    [entries]="entries"
+    [total]="total"
+    [confirmLabel]="confirmLabel"
+    [emptyMessage]="emptyMessage"
+    (allocationChange)="onAllocationChange($event)"
+    (confirm)="onConfirm()"
+  ></app-warehouse-stock-popover>`,
   imports: [WarehouseStockPopoverComponent],
 })
 class HostComponent {

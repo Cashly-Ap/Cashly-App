@@ -5,7 +5,11 @@ import { MovementsPdfModalComponent } from './movements-pdf-modal.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 
 @Component({
-  template: `<app-movements-pdf-modal [visible]="visible" (visibleChange)="onVisibleChange($event)" (onGeneratePdf)="onGeneratePdf($event)"></app-movements-pdf-modal>`,
+  template: `<app-movements-pdf-modal
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (onGeneratePdf)="onGeneratePdf($event)"
+  ></app-movements-pdf-modal>`,
   imports: [MovementsPdfModalComponent],
 })
 class HostComponent {
@@ -33,9 +37,7 @@ describe('MovementsPdfModalComponent', () => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        { provide: WarehouseApplicationService, useValue: mockWarehouseService },
-      ],
+      providers: [{ provide: WarehouseApplicationService, useValue: mockWarehouseService }],
     });
 
     TestBed.compileComponents();
@@ -117,9 +119,7 @@ describe('MovementsPdfModalComponent - visible', () => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [
-        { provide: WarehouseApplicationService, useValue: mockWarehouseService },
-      ],
+      providers: [{ provide: WarehouseApplicationService, useValue: mockWarehouseService }],
     });
 
     TestBed.compileComponents();

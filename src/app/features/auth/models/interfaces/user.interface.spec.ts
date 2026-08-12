@@ -69,11 +69,7 @@ describe('UserResponse interface', () => {
   });
 
   it('should accept all UserType values', () => {
-    const types: Array<'OPERATOR' | 'ADMIN' | 'SUPER_ADMIN'> = [
-      'OPERATOR',
-      'ADMIN',
-      'SUPER_ADMIN',
-    ];
+    const types: Array<'OPERATOR' | 'ADMIN' | 'SUPER_ADMIN'> = ['OPERATOR', 'ADMIN', 'SUPER_ADMIN'];
 
     types.forEach((type) => {
       const response: UserResponse = {

@@ -75,13 +75,17 @@ describe('CustomersListPageComponent', () => {
   it('should filter customers by rif', () => {
     fixture.detectChanges();
     component.onSearch('J-12345678');
-    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'J-12345678' }));
+    expect(mockService.loadAll).toHaveBeenCalledWith(
+      expect.objectContaining({ search: 'J-12345678' }),
+    );
   });
 
   it('should return empty filtered list when no match', () => {
     fixture.detectChanges();
     component.onSearch('nonexistent');
-    expect(mockService.loadAll).toHaveBeenCalledWith(expect.objectContaining({ search: 'nonexistent' }));
+    expect(mockService.loadAll).toHaveBeenCalledWith(
+      expect.objectContaining({ search: 'nonexistent' }),
+    );
   });
 
   it('should navigate to new customer on onCreate', () => {

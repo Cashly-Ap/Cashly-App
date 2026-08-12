@@ -11,17 +11,23 @@ import { PaymentDetailDialogComponent } from '@features/receivables/components/p
 
 function getStatusLabel(status: string): string {
   switch (status) {
-    case 'APPLIED': return 'Aplicado';
-    case 'CANCELLED': return 'Cancelado';
-    default: return status;
+    case 'APPLIED':
+      return 'Aplicado';
+    case 'CANCELLED':
+      return 'Cancelado';
+    default:
+      return status;
   }
 }
 
 function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
   switch (status) {
-    case 'APPLIED': return 'success';
-    case 'CANCELLED': return 'danger';
-    default: return 'info';
+    case 'APPLIED':
+      return 'success';
+    case 'CANCELLED':
+      return 'danger';
+    default:
+      return 'info';
   }
 }
 

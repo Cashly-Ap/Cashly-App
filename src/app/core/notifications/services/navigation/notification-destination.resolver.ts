@@ -33,14 +33,20 @@ export class NotificationDestinationResolver {
     }
 
     try {
-      const navigated = await this.router.navigate([destination.collection, destination.resourceId]);
+      const navigated = await this.router.navigate([
+        destination.collection,
+        destination.resourceId,
+      ]);
       if (!navigated) await this.navigateToCollection(destination.collection);
     } catch {
       await this.navigateToCollection(destination.collection);
     }
   }
 
-  private resolve(referenceType: string | null, resourceId: string | null): NotificationDestination | null {
+  private resolve(
+    referenceType: string | null,
+    resourceId: string | null,
+  ): NotificationDestination | null {
     if (!this.isSupportedReferenceType(referenceType)) return null;
     return { collection: COLLECTION_BY_REFERENCE_TYPE[referenceType], resourceId };
   }
@@ -54,9 +60,7 @@ export class NotificationDestinationResolver {
   }
 
   private async navigateToReceivables(resourceId: string | null): Promise<void> {
-    const queryParams = resourceId
-      ? { tab: 'pending', focus: resourceId }
-      : { tab: 'pending' };
+    const queryParams = resourceId ? { tab: 'pending', focus: resourceId } : { tab: 'pending' };
     try {
       await this.router.navigate(['/receivables'], { queryParams });
     } catch {
@@ -64,7 +68,9 @@ export class NotificationDestinationResolver {
     }
   }
 
-  private isSupportedReferenceType(referenceType: string | null): referenceType is NotificationReferenceType {
+  private isSupportedReferenceType(
+    referenceType: string | null,
+  ): referenceType is NotificationReferenceType {
     return referenceType === 'PAYMENT' || referenceType === 'QUOTE' || referenceType === 'ORDER';
   }
 }

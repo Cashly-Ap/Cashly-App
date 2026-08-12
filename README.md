@@ -22,6 +22,7 @@ The application will be available at `http://localhost:4200/`
 ## 📚 Documentation
 
 ### Getting Started
+
 - **[Getting Started](docs/GETTING_STARTED.md)** - Installation and initial setup
 - **[Docker Development](docs/DOCKER.md)** - Container setup and development
 - **[Testing](docs/TESTING.md)** - Running tests with Vitest
@@ -29,6 +30,7 @@ The application will be available at `http://localhost:4200/`
 - **[Architecture](docs/ARCHITECTURE.md)** - Project structure and modules
 
 ### AI Agents
+
 Parsun uses specialized AI agents to maintain code quality, security, and documentation:
 
 - **[🤖 Agents Overview](docs/agents/README.md)** - Integration guide for all agents
@@ -38,6 +40,7 @@ Parsun uses specialized AI agents to maintain code quality, security, and docume
 - **[⚡ Master Optimization](docs/agents/master-optimization.md)** - Performance and code quality
 
 ### Module Documentation
+
 - **[📚 Modules Index](docs/modules/README.md)** - All modules with status overview
 - **[🔐 Authentication](docs/modules/auth.md)** - User authentication and authorization
 - **[📊 Dashboard](docs/modules/dashboard.md)** - Dashboard and analytics
@@ -80,7 +83,6 @@ Parsun uses specialized AI agents to maintain code quality, security, and docume
 - **CI/CD**: GitLab Pipeline
 - **Cloud**: AWS
 - **Containers**: Docker
-
 
 ---
 

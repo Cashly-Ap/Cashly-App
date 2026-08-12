@@ -11,4 +11,3 @@ export function createCommissionDeductionForm() {
     commissionDeductionPercentage: [0, [notNullNumber, Validators.min(0), Validators.max(100)]],
   });
 }
-

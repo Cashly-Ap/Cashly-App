@@ -1,7 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { WarehouseList, WarehouseDetails, WarehouseCreate, WarehouseUpdate, StockEntryRequest, StockExitRequest, WarehouseStockItem, WarehouseMovementItem, MovementFilters } from '@features/warehouses/models/interfaces';
+import {
+  WarehouseList,
+  WarehouseDetails,
+  WarehouseCreate,
+  WarehouseUpdate,
+  StockEntryRequest,
+  StockExitRequest,
+  WarehouseStockItem,
+  WarehouseMovementItem,
+  MovementFilters,
+} from '@features/warehouses/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface WarehouseFilters {
@@ -36,9 +46,9 @@ export class WarehouseApiService {
   }
 
   getById(id: string): Observable<WarehouseDetails> {
-    return this.http.get<WarehouseDetails>(`${this.baseUrl}/${id}`).pipe(
-      map((w) => ({ ...w, stock: w.stock ?? [], recentMovements: w.recentMovements ?? [] }))
-    );
+    return this.http
+      .get<WarehouseDetails>(`${this.baseUrl}/${id}`)
+      .pipe(map((w) => ({ ...w, stock: w.stock ?? [], recentMovements: w.recentMovements ?? [] })));
   }
 
   create(data: WarehouseCreate): Observable<WarehouseDetails> {
@@ -67,24 +77,32 @@ export class WarehouseApiService {
 
   getStock(id: string): Observable<WarehouseStockItem[]> {
     const params = new HttpParams().set('size', '1000');
-    return this.http.get<PagedResponse<{ productId: string; productName: string; quantity: number }>>(
-      `${this.baseUrl}/${id}/stock`,
-      { params }
-    ).pipe(
-      map((res) => (res.content ?? []).map((s) => ({
-        productId: s.productId,
-        productName: s.productName,
-        unit: '',
-        quantity: s.quantity,
-      })))
-    );
+    return this.http
+      .get<
+        PagedResponse<{ productId: string; productName: string; quantity: number }>
+      >(`${this.baseUrl}/${id}/stock`, { params })
+      .pipe(
+        map((res) =>
+          (res.content ?? []).map((s) => ({
+            productId: s.productId,
+            productName: s.productName,
+            unit: '',
+            quantity: s.quantity,
+          })),
+        ),
+      );
   }
 
-  getMovements(id: string, filters?: MovementFilters): Observable<PagedResponse<WarehouseMovementItem>> {
+  getMovements(
+    id: string,
+    filters?: MovementFilters,
+  ): Observable<PagedResponse<WarehouseMovementItem>> {
     let params = new HttpParams();
     if (filters?.productId) params = params.set('productId', filters.productId);
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));
-    return this.http.get<PagedResponse<WarehouseMovementItem>>(`${this.baseUrl}/${id}/movements`, { params });
+    return this.http.get<PagedResponse<WarehouseMovementItem>>(`${this.baseUrl}/${id}/movements`, {
+      params,
+    });
   }
 }

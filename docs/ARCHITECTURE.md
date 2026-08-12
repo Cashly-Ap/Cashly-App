@@ -148,8 +148,9 @@ All feature modules are lazy-loaded to improve initial load time:
 // app.routes.ts
 export const routes: Routes = [
   {
-    path: "customers",
-    loadChildren: () => import("./features/customers/routes/customer.routes").then((m) => m.CUSTOMER_ROUTES),
+    path: 'customers',
+    loadChildren: () =>
+      import('./features/customers/routes/customer.routes').then((m) => m.CUSTOMER_ROUTES),
   },
   // ... other routes
 ];
@@ -162,20 +163,20 @@ Angular 21 standalone components with modern syntax:
 Authenticated feature pages render inside a persistent `MainLayoutComponent` route shell. Feature templates contain only page content and must not wrap themselves in `<app-main-layout>`. This keeps the menu, notification connection, pending tabs, and shared overlays alive while child routes change. Heavy report dialogs in the shell use `@defer` and load only when a report action opens them.
 
 ```typescript
-import { Component, input, output } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { TableModule } from "primeng/table";
+import { Component, input, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
 
 @Component({
-  selector: "app-customer-list",
+  selector: 'app-customer-list',
   standalone: true,
   imports: [CommonModule, TableModule],
-  templateUrl: "./customer-list.component.html",
+  templateUrl: './customer-list.component.html',
 })
 export class CustomerListComponent {
   customers = input.required<Customer[]>();
   loading = input<boolean>(false);
-  
+
   view = output<Customer>();
   edit = output<Customer>();
 }
@@ -185,18 +186,14 @@ export class CustomerListComponent {
 
 ```html
 @if (loading()) {
-  <p-progressSpinner />
-}
-
-@for (customer of customers(); track customer.id) {
-  <div class="p-4 border rounded-lg">
-    <h3 class="text-lg font-semibold">{{ customer.name }}</h3>
-    <p class="text-gray-600">{{ customer.email }}</p>
-  </div>
-}
-
-@empty {
-  <p class="text-center text-gray-500">No customers found</p>
+<p-progressSpinner />
+} @for (customer of customers(); track customer.id) {
+<div class="p-4 border rounded-lg">
+  <h3 class="text-lg font-semibold">{{ customer.name }}</h3>
+  <p class="text-gray-600">{{ customer.email }}</p>
+</div>
+} @empty {
+<p class="text-center text-gray-500">No customers found</p>
 }
 ```
 
@@ -230,17 +227,17 @@ export class CustomerListComponent {
 
 ```typescript
 // customer-api.service.ts (HTTP layer)
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerApiService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Customer[]> {
-    return this.http.get<Customer[]>("/api/customers");
+    return this.http.get<Customer[]>('/api/customers');
   }
 }
 
 // customer.service.ts (Business logic layer)
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerService {
   private customers$ = new BehaviorSubject<Customer[]>([]);
 
@@ -271,11 +268,13 @@ Heavy use of RxJS for:
 // Example: Combining multiple streams
 export class CustomerDetailComponent {
   customer$ = this.route.params.pipe(
-    switchMap((params) => this.customerService.getById(params["id"])),
+    switchMap((params) => this.customerService.getById(params['id'])),
     shareReplay(1),
   );
 
-  orders$ = this.customer$.pipe(switchMap((customer) => this.orderService.getByCustomerId(customer.id)));
+  orders$ = this.customer$.pipe(
+    switchMap((customer) => this.orderService.getByCustomerId(customer.id)),
+  );
 
   constructor(
     private route: ActivatedRoute,
@@ -299,7 +298,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  return router.createUrlTree(["/login"]);
+  return router.createUrlTree(['/login']);
 };
 
 // role.guard.ts
@@ -384,21 +383,21 @@ Using Signals and RxJS for reactive state:
 export class CustomerService {
   private customersSignal = signal<Customer[]>([]);
   public customers = this.customersSignal.asReadonly();
-  
+
   private loadingSignal = signal<boolean>(false);
   public loading = this.loadingSignal.asReadonly();
 
   addCustomer(customer: Customer): void {
-    this.customersSignal.update(current => [...current, customer]);
+    this.customersSignal.update((current) => [...current, customer]);
   }
-  
+
   loadCustomers(): Observable<Customer[]> {
     this.loadingSignal.set(true);
     return this.apiService.getAll().pipe(
-      tap(customers => {
+      tap((customers) => {
         this.customersSignal.set(customers);
         this.loadingSignal.set(false);
-      })
+      }),
     );
   }
 }
@@ -427,14 +426,14 @@ export class CustomerService {
 ```typescript
 // Smart Component (Page)
 @Component({
-  selector: "app-customers-list-page",
+  selector: 'app-customers-list-page',
   standalone: true,
   imports: [ListContainerComponent],
-  templateUrl: "./customers-list-page.component.html",
+  templateUrl: './customers-list-page.component.html',
 })
 export class CustomersListPageComponent {
   protected service = inject(CustomerApplicationService);
-  
+
   onView(customer: CustomerList): void {
     this.router.navigate(['/customers', customer.id]);
   }
@@ -442,10 +441,10 @@ export class CustomersListPageComponent {
 
 // Presentational Component
 @Component({
-  selector: "app-customer-general-section",
+  selector: 'app-customer-general-section',
   standalone: true,
   imports: [FieldComponent],
-  templateUrl: "./customer-general-section.component.html",
+  templateUrl: './customer-general-section.component.html',
 })
 export class CustomerGeneralSectionComponent {
   form = input.required<FormGroup>();
@@ -559,7 +558,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 ```typescript
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: "./customer-list.component.html",
+  templateUrl: './customer-list.component.html',
 })
 export class CustomerListComponent {
   customers = input.required<CustomerList[]>();
@@ -570,13 +569,11 @@ export class CustomerListComponent {
 
 ```html
 @for (customer of customers(); track customer.id) {
-  <div class="p-4">{{ customer.name }}</div>
-}
-
-@defer (on viewport) {
-  <app-customer-chart />
+<div class="p-4">{{ customer.name }}</div>
+} @defer (on viewport) {
+<app-customer-chart />
 } @loading {
-  <p-skeleton />
+<p-skeleton />
 }
 ```
 

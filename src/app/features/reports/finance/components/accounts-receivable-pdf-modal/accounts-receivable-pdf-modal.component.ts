@@ -17,14 +17,7 @@ interface SelectOption {
   selector: 'app-accounts-receivable-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CommonModule,
-    FormsModule,
-    DialogModule,
-    ButtonModule,
-    SelectModule,
-    CheckboxModule,
-  ],
+  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, SelectModule, CheckboxModule],
   templateUrl: './accounts-receivable-pdf-modal.component.html',
 })
 export class AccountsReceivablePdfModalComponent {

@@ -5,7 +5,10 @@ import { Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 
 describe('adminGuard', () => {
-  let mockAuthService: { isAuthenticated: ReturnType<typeof vi.fn>; isSuperAdmin: ReturnType<typeof vi.fn> };
+  let mockAuthService: {
+    isAuthenticated: ReturnType<typeof vi.fn>;
+    isSuperAdmin: ReturnType<typeof vi.fn>;
+  };
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {

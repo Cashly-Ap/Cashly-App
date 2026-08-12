@@ -12,7 +12,8 @@ export class StockPdfApiService {
     let params = new HttpParams();
     if (filters.warehouseId) params = params.set('warehouseId', filters.warehouseId);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
-    if (filters.withStock !== undefined) params = params.set('withStock', String(filters.withStock));
+    if (filters.withStock !== undefined)
+      params = params.set('withStock', String(filters.withStock));
     if (filters.lowStock !== undefined) params = params.set('lowStock', String(filters.lowStock));
     return this.http.get(this.baseUrl, { params, responseType: 'blob' });
   }

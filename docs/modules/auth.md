@@ -76,6 +76,7 @@ src/app/features/auth/
 **Purpose**: User authentication entry point.
 
 **Features**:
+
 - Email and password form
 - Form validation
 - Error message display
@@ -91,6 +92,7 @@ src/app/features/auth/
 **Purpose**: Allow users to update their password.
 
 **Features**:
+
 - New password input with confirmation
 - Password strength validation
 - Success notification
@@ -105,6 +107,7 @@ src/app/features/auth/
 **Purpose**: Allow users to update their display name.
 
 **Features**:
+
 - Username input
 - Format validation
 - Success notification
@@ -119,6 +122,7 @@ src/app/features/auth/
 **Purpose**: User account settings dashboard.
 
 **Features**:
+
 - Profile information display
 - Links to change password
 - Links to change username
@@ -198,11 +202,11 @@ export interface LoginRequest {
 
 ```typescript
 export interface AuthenticationResponse {
-  accessToken: string;      // JWT access token (short-lived)
-  refreshToken: string;     // Refresh token (long-lived)
-  tokenType: string;        // Always "Bearer"
-  expiresIn: number;        // Seconds until expiration
-  user: UserResponse;       // User information
+  accessToken: string; // JWT access token (short-lived)
+  refreshToken: string; // Refresh token (long-lived)
+  tokenType: string; // Always "Bearer"
+  expiresIn: number; // Seconds until expiration
+  user: UserResponse; // User information
 }
 ```
 
@@ -264,14 +268,14 @@ All endpoints use: `/api/auth`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Auth Required |
-|-------------|----------|-------------------|-------------------|---------------|
-| POST | /api/auth/register | `RegisterUserRequest` | `UserResponse` | No |
-| POST | /api/auth/login | `LoginRequest` | `AuthenticationResponse` | No |
-| POST | /api/auth/refresh | `RefreshTokenRequest` | `AuthenticationResponse` | No |
-| POST | /api/auth/logout | `LogoutRequest` | void (204) | No |
-| PATCH | /api/auth/change-username | `ChangeUsernameRequest` | `UserResponse` | Yes |
-| PATCH | /api/auth/change-password | `ChangePasswordRequest` | void (204) | Yes |
+| HTTP Method | Endpoint                  | Request Interface       | Response Interface       | Auth Required |
+| ----------- | ------------------------- | ----------------------- | ------------------------ | ------------- |
+| POST        | /api/auth/register        | `RegisterUserRequest`   | `UserResponse`           | No            |
+| POST        | /api/auth/login           | `LoginRequest`          | `AuthenticationResponse` | No            |
+| POST        | /api/auth/refresh         | `RefreshTokenRequest`   | `AuthenticationResponse` | No            |
+| POST        | /api/auth/logout          | `LogoutRequest`         | void (204)               | No            |
+| PATCH       | /api/auth/change-username | `ChangeUsernameRequest` | `UserResponse`           | Yes           |
+| PATCH       | /api/auth/change-password | `ChangePasswordRequest` | void (204)               | Yes           |
 
 ---
 
@@ -282,6 +286,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `RegisterUserRequest` (request), `UserResponse` (response)
 
 **Example Request**:
+
 ```json
 {
   "email": "user@example.com",
@@ -290,6 +295,7 @@ All endpoints use: `/api/auth`
 ```
 
 **Example Response**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -303,6 +309,7 @@ All endpoints use: `/api/auth`
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Invalid email or password format
 - `409 Conflict`: Email already exists
 
@@ -315,6 +322,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `LoginRequest` (request), `AuthenticationResponse` (response)
 
 **Example Request**:
+
 ```json
 {
   "email": "user@example.com",
@@ -323,6 +331,7 @@ All endpoints use: `/api/auth`
 ```
 
 **Example Response**:
+
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -342,6 +351,7 @@ All endpoints use: `/api/auth`
 ```
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request format
 - `401 Unauthorized`: Invalid credentials
 - `403 Forbidden`: User account is inactive
@@ -355,6 +365,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `RefreshTokenRequest` (request), `AuthenticationResponse` (response)
 
 **Example Request**:
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -364,6 +375,7 @@ All endpoints use: `/api/auth`
 **Example Response**: Same as login response
 
 **Errors**:
+
 - `400 Bad Request`: Invalid request format
 - `401 Unauthorized`: Invalid or expired refresh token
 
@@ -376,6 +388,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `LogoutRequest` (request), void (response)
 
 **Example Request**:
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -393,6 +406,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `ChangeUsernameRequest` (request), `UserResponse` (response)
 
 **Example Request**:
+
 ```json
 {
   "username": "new_username"
@@ -400,6 +414,7 @@ All endpoints use: `/api/auth`
 ```
 
 **Example Response**:
+
 ```json
 {
   "id": "123e4567-e89b-12d3-a456-426614174000",
@@ -421,6 +436,7 @@ All endpoints use: `/api/auth`
 **Frontend Interface**: `ChangePasswordRequest` (request), void (response)
 
 **Example Request**:
+
 ```json
 {
   "newPassword": "NewSecurePass456!"
@@ -435,30 +451,30 @@ All endpoints use: `/api/auth`
 
 ### Login Form
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `email` | string | Yes | Valid email format | "Invalid email format" |
-| `password` | string | Yes | Non-empty | "Password is required" |
+| Field      | Type   | Required | Rules              | Error Message          |
+| ---------- | ------ | -------- | ------------------ | ---------------------- |
+| `email`    | string | Yes      | Valid email format | "Invalid email format" |
+| `password` | string | Yes      | Non-empty          | "Password is required" |
 
 ### Registration Form
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `email` | string | Yes | Valid email format | "Invalid email format" |
-| `password` | string | Yes | Min 8 chars, uppercase, lowercase, number, special char | "Password must meet requirements" |
+| Field      | Type   | Required | Rules                                                   | Error Message                     |
+| ---------- | ------ | -------- | ------------------------------------------------------- | --------------------------------- |
+| `email`    | string | Yes      | Valid email format                                      | "Invalid email format"            |
+| `password` | string | Yes      | Min 8 chars, uppercase, lowercase, number, special char | "Password must meet requirements" |
 
 ### Change Username Form
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `username` | string | Yes | 3-50 chars, alphanumeric and underscores | "Username must be 3-50 characters" |
+| Field      | Type   | Required | Rules                                    | Error Message                      |
+| ---------- | ------ | -------- | ---------------------------------------- | ---------------------------------- |
+| `username` | string | Yes      | 3-50 chars, alphanumeric and underscores | "Username must be 3-50 characters" |
 
 ### Change Password Form
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `newPassword` | string | Yes | Min 8 chars, uppercase, lowercase, number, special char | "Password must meet requirements" |
-| `confirmPassword` | string | Yes | Must match newPassword | "Passwords must match" |
+| Field             | Type   | Required | Rules                                                   | Error Message                     |
+| ----------------- | ------ | -------- | ------------------------------------------------------- | --------------------------------- |
+| `newPassword`     | string | Yes      | Min 8 chars, uppercase, lowercase, number, special char | "Password must meet requirements" |
+| `confirmPassword` | string | Yes      | Must match newPassword                                  | "Passwords must match"            |
 
 ### Custom Validators
 
@@ -470,10 +486,10 @@ export class AuthValidators {
   static passwordStrength(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const password = control.value;
       const errors: string[] = [];
-      
+
       if (password.length < 8) {
         errors.push('At least 8 characters');
       }
@@ -489,33 +505,33 @@ export class AuthValidators {
       if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
         errors.push('At least one special character');
       }
-      
+
       return errors.length > 0 ? { weakPassword: errors } : null;
     };
   }
-  
+
   static usernameFormat(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
-      
+
       const pattern = /^[a-zA-Z0-9_]{3,50}$/;
       if (!pattern.test(control.value)) {
         return { invalidUsername: 'Username must be 3-50 alphanumeric characters or underscores' };
       }
-      
+
       return null;
     };
   }
-  
+
   static passwordMatch(passwordField: string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const password = control.parent?.get(passwordField);
       if (!password || !control.value) return null;
-      
+
       if (password.value !== control.value) {
         return { passwordMismatch: 'Passwords do not match' };
       }
-      
+
       return null;
     };
   }
@@ -593,8 +609,8 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<AuthenticationResponse> {
     this.loading.set(true);
     return this.api.login(credentials).pipe(
-      tap(response => this.handleAuthResponse(response)),
-      finalize(() => this.loading.set(false))
+      tap((response) => this.handleAuthResponse(response)),
+      finalize(() => this.loading.set(false)),
     );
   }
 
@@ -604,9 +620,9 @@ export class AuthService {
       return of(void 0);
     }
 
-    return this.api.logout({ refreshToken: this.refreshToken }).pipe(
-      finalize(() => this.clearAuth())
-    );
+    return this.api
+      .logout({ refreshToken: this.refreshToken })
+      .pipe(finalize(() => this.clearAuth()));
   }
 
   refreshAccessToken(): Observable<AuthenticationResponse> {
@@ -614,9 +630,9 @@ export class AuthService {
       return throwError(() => new Error('No refresh token'));
     }
 
-    return this.api.refresh({ refreshToken: this.refreshToken }).pipe(
-      tap(response => this.handleAuthResponse(response))
-    );
+    return this.api
+      .refresh({ refreshToken: this.refreshToken })
+      .pipe(tap((response) => this.handleAuthResponse(response)));
   }
 
   getAccessToken(): string | null {
@@ -649,11 +665,14 @@ export class AuthService {
   }
 
   private saveToStorage(): void {
-    localStorage.setItem('auth', JSON.stringify({
-      accessToken: this.accessToken,
-      refreshToken: this.refreshToken,
-      user: this.currentUser(),
-    }));
+    localStorage.setItem(
+      'auth',
+      JSON.stringify({
+        accessToken: this.accessToken,
+        refreshToken: this.refreshToken,
+        user: this.currentUser(),
+      }),
+    );
   }
 
   private clearStorage(): void {
@@ -682,9 +701,9 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 
   router.navigate(['/auth/login'], {
-    queryParams: { returnUrl: state.url }
+    queryParams: { returnUrl: state.url },
   });
-  
+
   return false;
 };
 ```
@@ -711,8 +730,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (token) {
     req = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
   }
 
@@ -725,19 +744,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             const newToken = authService.getAccessToken();
             const clonedReq = req.clone({
               setHeaders: {
-                Authorization: `Bearer ${newToken}`
-              }
+                Authorization: `Bearer ${newToken}`,
+              },
             });
             return next(clonedReq);
           }),
           catchError(() => {
             router.navigate(['/auth/login']);
             return throwError(() => error);
-          })
+          }),
         );
       }
       return throwError(() => error);
-    })
+    }),
   );
 };
 ```
@@ -790,31 +809,33 @@ export const AUTH_ROUTES: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('../pages/login-page/login-page.component')
-        .then(m => m.LoginPageComponent),
+      import('../pages/login-page/login-page.component').then((m) => m.LoginPageComponent),
     title: 'Iniciar Sesión',
   },
   {
     path: 'change-password',
     loadComponent: () =>
-      import('../pages/change-password-page/change-password-page.component')
-        .then(m => m.ChangePasswordPageComponent),
+      import('../pages/change-password-page/change-password-page.component').then(
+        (m) => m.ChangePasswordPageComponent,
+      ),
     title: 'Cambiar Contraseña',
     canActivate: [authGuard],
   },
   {
     path: 'change-username',
     loadComponent: () =>
-      import('../pages/change-username-page/change-username-page.component')
-        .then(m => m.ChangeUsernamePageComponent),
+      import('../pages/change-username-page/change-username-page.component').then(
+        (m) => m.ChangeUsernamePageComponent,
+      ),
     title: 'Cambiar Usuario',
     canActivate: [authGuard],
   },
   {
     path: 'configuration',
     loadComponent: () =>
-      import('../pages/configuration-page/configuration-page.component')
-        .then(m => m.ConfigurationPageComponent),
+      import('../pages/configuration-page/configuration-page.component').then(
+        (m) => m.ConfigurationPageComponent,
+      ),
     title: 'Configuración',
     canActivate: [authGuard],
   },

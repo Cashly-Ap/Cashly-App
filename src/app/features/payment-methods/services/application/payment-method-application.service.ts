@@ -1,6 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { PaymentMethodApiService, PaymentMethodFilters } from '@features/payment-methods/services/api/payment-method-api.service';
+import {
+  PaymentMethodApiService,
+  PaymentMethodFilters,
+} from '@features/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodMapper } from '@features/payment-methods/services/mappers/payment-method.mapper';
 import {
   PaymentMethodList,
@@ -73,9 +76,7 @@ export class PaymentMethodApplicationService {
       tap({
         next: (paymentMethod) => {
           const listItem = PaymentMethodMapper.toList(paymentMethod);
-          this.paymentMethods.update((current) =>
-            current.map((c) => (c.id === id ? listItem : c)),
-          );
+          this.paymentMethods.update((current) => current.map((c) => (c.id === id ? listItem : c)));
           if (this.currentPaymentMethod()?.id === id) {
             this.currentPaymentMethod.set(paymentMethod);
           }

@@ -85,21 +85,22 @@ src/app/features/payables/
 
 ## Role-Based Endpoint Usage
 
-| Endpoint | USER/ADMIN | MERCHANT |
-|----------|-----------|---------|
-| `GET /api/payables/summary` | Global summary | **NOT AVAILABLE** (403) |
-| `GET /api/payables/merchants` | All merchants with pending | **NOT AVAILABLE** (403) |
-| `GET /api/payables/merchants/:id` | Any merchant summary | **NOT AVAILABLE** (403) |
-| `GET /api/payables/merchants/:id/items` | Any merchant's payables | **NOT AVAILABLE** (403) |
-| `GET /api/payables/:id` | Any payable detail | Only own payables (403 otherwise) |
-| `POST /api/payables/:id/pay` | Available | **NOT ALLOWED** (403) |
-| `GET /api/payables/:id/payments` | Full history | **NOT AVAILABLE** (403) |
-| `POST /api/payables/merchants/:id/pay-all` | Available | **NOT ALLOWED** (403) |
-| `POST /api/payables/merchants/:id/pay-partial` | Available | **NOT ALLOWED** (403) |
-| `GET /api/payables/me` | **NOT APPLICABLE** | Own summary (MERCHANT only) |
-| `GET /api/payables/me/items` | **NOT APPLICABLE** | Own payables list (MERCHANT only) |
+| Endpoint                                       | USER/ADMIN                 | MERCHANT                          |
+| ---------------------------------------------- | -------------------------- | --------------------------------- |
+| `GET /api/payables/summary`                    | Global summary             | **NOT AVAILABLE** (403)           |
+| `GET /api/payables/merchants`                  | All merchants with pending | **NOT AVAILABLE** (403)           |
+| `GET /api/payables/merchants/:id`              | Any merchant summary       | **NOT AVAILABLE** (403)           |
+| `GET /api/payables/merchants/:id/items`        | Any merchant's payables    | **NOT AVAILABLE** (403)           |
+| `GET /api/payables/:id`                        | Any payable detail         | Only own payables (403 otherwise) |
+| `POST /api/payables/:id/pay`                   | Available                  | **NOT ALLOWED** (403)             |
+| `GET /api/payables/:id/payments`               | Full history               | **NOT AVAILABLE** (403)           |
+| `POST /api/payables/merchants/:id/pay-all`     | Available                  | **NOT ALLOWED** (403)             |
+| `POST /api/payables/merchants/:id/pay-partial` | Available                  | **NOT ALLOWED** (403)             |
+| `GET /api/payables/me`                         | **NOT APPLICABLE**         | Own summary (MERCHANT only)       |
+| `GET /api/payables/me/items`                   | **NOT APPLICABLE**         | Own payables list (MERCHANT only) |
 
 **Key rules for MERCHANT**:
+
 - Uses **dedicated `/me` endpoints** — completely separate from USER/ADMIN endpoints
 - `GET /api/payables/me` → returns own payables summary (`MerchantPayableSummary`)
 - `GET /api/payables/me/items` → returns own payables list (`Page<PendingPayablePayment>`)
@@ -119,17 +120,20 @@ src/app/features/payables/
 **Purpose**: Single-page module with role-based rendering. USER/ADMIN see a merchants table with payment capabilities. MERCHANT sees their own commissions table (view-only). Dialogs handle all payment operations.
 
 **USER/ADMIN View**:
+
 - Global summary cards (total pending, merchants count, invoices count, settled this month)
 - Searchable merchant table
 - "Ver Detalles" button opens `MerchantPayablesDialogComponent`
 - Merchant dialog exposes per-item payment and bulk payment actions
 
 **MERCHANT View**:
+
 - Merchant-specific summary cards (total pending, total paid, total accumulated)
 - Searchable items table filtered by status
 - View-only (no payment buttons)
 
 **Dialogs used (USER/ADMIN only)**:
+
 - `MerchantPayablesDialogComponent` — Merchant invoice list + filter + pay/bulk actions
 - `PayablePaymentFormDialogComponent` — Register single payment
 - `PayablePaymentHistoryDialogComponent` — Read-only detail of a paid payable
@@ -301,7 +305,7 @@ export interface RegisterPaymentRequest {
 
 ```typescript
 export interface PaymentResultResponse {
-  payablePaymentId: string;  // ID of the PayablePayment audit record
+  payablePaymentId: string; // ID of the PayablePayment audit record
   payableId: string;
   merchantId: string;
   merchantName: string;
@@ -344,14 +348,14 @@ export interface BulkPaymentResult {
 
 ```typescript
 export interface PayablePaymentResponse {
-  id: string;             // PayablePayment audit record ID
-  payableId: string;      // Parent payable ID
-  amount: number;         // Amount applied in this transaction
-  paymentDate: string;    // Date payment was applied (YYYY-MM-DD)
+  id: string; // PayablePayment audit record ID
+  payableId: string; // Parent payable ID
+  amount: number; // Amount applied in this transaction
+  paymentDate: string; // Date payment was applied (YYYY-MM-DD)
   paymentMethod: SettlementMethod;
   reference: string | null;
-  paidBy: string;         // Admin user UUID who registered the payment
-  registeredAt: string;   // Server-side timestamp of record creation
+  paidBy: string; // Admin user UUID who registered the payment
+  registeredAt: string; // Server-side timestamp of record creation
 }
 ```
 
@@ -382,9 +386,9 @@ export interface PayPartialVendorRequest {
 
 ```typescript
 export enum PayableStatus {
-  PENDING       = 'PENDING',        // Commission owed, not yet paid
+  PENDING = 'PENDING', // Commission owed, not yet paid
   PARTIALLY_PAID = 'PARTIALLY_PAID', // Some amount paid; remaining balance > 0
-  PAID          = 'PAID',            // Commission fully paid; terminal state
+  PAID = 'PAID', // Commission fully paid; terminal state
 }
 
 export interface PayableStatusOption {
@@ -394,15 +398,15 @@ export interface PayableStatusOption {
 }
 
 export const PAYABLE_STATUSES: readonly PayableStatusOption[] = [
-  { label: 'Pendiente',        value: PayableStatus.PENDING,        severity: 'warn' },
-  { label: 'Pago Parcial',     value: PayableStatus.PARTIALLY_PAID, severity: 'info' },
-  { label: 'Pagado',           value: PayableStatus.PAID,           severity: 'success' },
+  { label: 'Pendiente', value: PayableStatus.PENDING, severity: 'warn' },
+  { label: 'Pago Parcial', value: PayableStatus.PARTIALLY_PAID, severity: 'info' },
+  { label: 'Pagado', value: PayableStatus.PAID, severity: 'success' },
 ] as const;
 
 export const PAYABLE_STATUS_LABELS: Record<PayableStatus, string> = {
-  [PayableStatus.PENDING]:        'Pendiente',
+  [PayableStatus.PENDING]: 'Pendiente',
   [PayableStatus.PARTIALLY_PAID]: 'Pago Parcial',
-  [PayableStatus.PAID]:           'Pagado',
+  [PayableStatus.PAID]: 'Pagado',
 };
 
 export function getPayableStatusLabel(status: PayableStatus): string {
@@ -416,6 +420,7 @@ export function getPayableStatusSeverity(status: PayableStatus): 'warn' | 'info'
 ```
 
 **Status lifecycle**:
+
 - `PENDING` → `PARTIALLY_PAID`: payment amount < remaining balance (partial payment applied)
 - `PENDING` → `PAID`: payment amount == full commission amount
 - `PARTIALLY_PAID` → `PAID`: payment amount == remaining balance
@@ -484,26 +489,26 @@ const PAYABLES_API_ROUTES = {
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request | Response | Frontend Usage |
-|-------------|----------|---------|----------|----------------|
-| GET | /api/payables/summary | - | `GlobalPayableSummary` | Admin summary cards |
-| GET | /api/payables/merchants | `PayablesSearchParams` | `PagedResponse<MerchantPayableList>` | Merchants table |
-| GET | /api/payables/merchants/:id | - | `MerchantPayableSummary` | Merchant dialog header |
-| GET | /api/payables/merchants/:id/items | `PayablesSearchParams` | `PagedResponse<PendingPayablePayment>` | Items in merchant dialog |
-| POST | /api/payables/:id/pay | `RegisterPaymentRequest` | `PaymentResultResponse` | Single payment |
-| GET | /api/payables/:id/payments | - | `PayablePaymentResponse[]` | Full payment audit history (USER/ADMIN only) |
-| POST | /api/payables/merchants/:id/pay-all | `PayAllVendorRequest` | `BulkPaymentResult` | Pay all for merchant |
-| POST | /api/payables/merchants/:id/pay-partial | `PayPartialVendorRequest` | `BulkPaymentResult` | Pay partial for merchant |
-| GET | /api/payables/:id | - | `PayableDetail` | Payable detail / payment summary |
-| GET | /api/payables/me | - | `MerchantPayableSummary` | Merchant summary cards |
-| GET | /api/payables/me/items | `PayablesSearchParams` | `PagedResponse<PendingPayablePayment>` | Merchant items table |
+| HTTP Method | Endpoint                                | Request                   | Response                               | Frontend Usage                               |
+| ----------- | --------------------------------------- | ------------------------- | -------------------------------------- | -------------------------------------------- |
+| GET         | /api/payables/summary                   | -                         | `GlobalPayableSummary`                 | Admin summary cards                          |
+| GET         | /api/payables/merchants                 | `PayablesSearchParams`    | `PagedResponse<MerchantPayableList>`   | Merchants table                              |
+| GET         | /api/payables/merchants/:id             | -                         | `MerchantPayableSummary`               | Merchant dialog header                       |
+| GET         | /api/payables/merchants/:id/items       | `PayablesSearchParams`    | `PagedResponse<PendingPayablePayment>` | Items in merchant dialog                     |
+| POST        | /api/payables/:id/pay                   | `RegisterPaymentRequest`  | `PaymentResultResponse`                | Single payment                               |
+| GET         | /api/payables/:id/payments              | -                         | `PayablePaymentResponse[]`             | Full payment audit history (USER/ADMIN only) |
+| POST        | /api/payables/merchants/:id/pay-all     | `PayAllVendorRequest`     | `BulkPaymentResult`                    | Pay all for merchant                         |
+| POST        | /api/payables/merchants/:id/pay-partial | `PayPartialVendorRequest` | `BulkPaymentResult`                    | Pay partial for merchant                     |
+| GET         | /api/payables/:id                       | -                         | `PayableDetail`                        | Payable detail / payment summary             |
+| GET         | /api/payables/me                        | -                         | `MerchantPayableSummary`               | Merchant summary cards                       |
+| GET         | /api/payables/me/items                  | `PayablesSearchParams`    | `PagedResponse<PendingPayablePayment>` | Merchant items table                         |
 
 ### Search Params Interface
 
 ```typescript
 export interface PayablesSearchParams extends PaginationParams {
   search?: string;
-  status?: string;      // 'PENDING' | 'PARTIALLY_PAID' | 'PAID' | omit for ALL
+  status?: string; // 'PENDING' | 'PARTIALLY_PAID' | 'PAID' | omit for ALL
   merchantId?: string;
   fromDate?: string;
   toDate?: string;
@@ -518,11 +523,11 @@ export interface PayablesSearchParams extends PaginationParams {
 
 ### Payment Form Validations
 
-| Field | Type | Required | Rules | Error Message |
-|-------|------|----------|-------|---------------|
-| `amount` | number | Yes | > 0, <= remainingBalance | "El monto debe ser mayor a cero / no puede exceder el saldo pendiente" |
-| `paymentMethod` | enum | Yes | Valid SettlementMethod | "El método de pago es requerido" |
-| `reference` | string | No | max 100 chars | "La referencia no puede exceder 100 caracteres" |
+| Field           | Type   | Required | Rules                    | Error Message                                                          |
+| --------------- | ------ | -------- | ------------------------ | ---------------------------------------------------------------------- |
+| `amount`        | number | Yes      | > 0, <= remainingBalance | "El monto debe ser mayor a cero / no puede exceder el saldo pendiente" |
+| `paymentMethod` | enum   | Yes      | Valid SettlementMethod   | "El método de pago es requerido"                                       |
+| `reference`     | string | No       | max 100 chars            | "La referencia no puede exceder 100 caracteres"                        |
 
 ### Custom Validators (`PayablePaymentValidators`)
 
@@ -530,10 +535,10 @@ export interface PayablesSearchParams extends PaginationParams {
 
 ```typescript
 export class PayablePaymentValidators {
-  static maxAmount(maxBalance: number): ValidatorFn;    // value <= maxBalance
-  static notFutureDate(): ValidatorFn;                   // date <= today (23:59:59)
-  static positiveAmount(): ValidatorFn;                  // value > 0
-  static maxLength(max: number): ValidatorFn;            // string.length <= max
+  static maxAmount(maxBalance: number): ValidatorFn; // value <= maxBalance
+  static notFutureDate(): ValidatorFn; // date <= today (23:59:59)
+  static positiveAmount(): ValidatorFn; // value > 0
+  static maxLength(max: number): ValidatorFn; // string.length <= max
 }
 ```
 
@@ -556,17 +561,28 @@ export interface PayablesSearchParams extends PaginationParams {
 
 @Injectable({ providedIn: 'root' })
 export class PayablesApiService {
-  getGlobalSummary(): Observable<GlobalPayableSummary>
-  searchMerchantsWithPayables(params?: PayablesSearchParams): Observable<PagedResponse<MerchantPayableList>>
-  getMerchantPayable(merchantId: string): Observable<MerchantPayableSummary>
-  getMerchantItems(merchantId: string, params?: PayablesSearchParams): Observable<PagedResponse<PendingPayablePayment>>
-  getPayableById(payableId: string): Observable<PayableDetail>
-  getPayablePayments(payableId: string): Observable<PayablePaymentResponse[]>  // USER/ADMIN only
-  registerPayment(payableId: string, request: RegisterPaymentRequest): Observable<PaymentResultResponse>
-  payAllMerchant(merchantId: string, request: PayAllVendorRequest): Observable<BulkPaymentResult>
-  payPartialMerchant(merchantId: string, request: PayPartialVendorRequest): Observable<BulkPaymentResult>
-  getMyPayables(): Observable<MerchantPayableSummary>
-  getMyItems(params?: PayablesSearchParams): Observable<PagedResponse<PendingPayablePayment>>
+  getGlobalSummary(): Observable<GlobalPayableSummary>;
+  searchMerchantsWithPayables(
+    params?: PayablesSearchParams,
+  ): Observable<PagedResponse<MerchantPayableList>>;
+  getMerchantPayable(merchantId: string): Observable<MerchantPayableSummary>;
+  getMerchantItems(
+    merchantId: string,
+    params?: PayablesSearchParams,
+  ): Observable<PagedResponse<PendingPayablePayment>>;
+  getPayableById(payableId: string): Observable<PayableDetail>;
+  getPayablePayments(payableId: string): Observable<PayablePaymentResponse[]>; // USER/ADMIN only
+  registerPayment(
+    payableId: string,
+    request: RegisterPaymentRequest,
+  ): Observable<PaymentResultResponse>;
+  payAllMerchant(merchantId: string, request: PayAllVendorRequest): Observable<BulkPaymentResult>;
+  payPartialMerchant(
+    merchantId: string,
+    request: PayPartialVendorRequest,
+  ): Observable<BulkPaymentResult>;
+  getMyPayables(): Observable<MerchantPayableSummary>;
+  getMyItems(params?: PayablesSearchParams): Observable<PagedResponse<PendingPayablePayment>>;
 }
 ```
 
@@ -617,6 +633,7 @@ export class PayablesApplicationService {
 ```
 
 **Key design notes**:
+
 - `isMerchant` is a `computed` signal derived from `AuthService`
 - `loadingItems` is separate from `loading` for granular UX control
 - `loadingBulkPayment` is separate for the bulk payment dialog
@@ -632,16 +649,19 @@ export class PayablesApplicationService {
 **Selector**: `app-merchant-payables-dialog`
 
 **Inputs**:
+
 - `visible: boolean` (required)
 - `merchant: MerchantPayableList | null` (required)
 
 **Outputs**:
+
 - `close: void`
 - `registerPayment: PendingPayablePayment`
 - `viewPaymentDetail: string` (payableId)
 - `bulkPayment: { mode: 'total' | 'partial' }`
 
 **Behavior**:
+
 - Loads merchant items when opened (`effect` on visible + merchant)
 - Status filter dropdown (ALL / PENDING / PARTIALLY_PAID / PAID) — uses `p-select`
 - Per-row buttons: "Registrar Pago" (PENDING and PARTIALLY_PAID only), "Ver Pago" (PAID only)
@@ -656,14 +676,17 @@ export class PayablesApplicationService {
 **Selector**: `app-payable-payment-form-dialog`
 
 **Inputs**:
+
 - `visible: boolean` (required)
 - `payment: PendingPayablePayment | null` (required)
 
 **Outputs**:
+
 - `close: void`
 - `confirm: RegisterPaymentRequest`
 
 **Behavior**:
+
 - Pre-fills `amount` with `payment.remainingBalance`
 - Defaults `paymentMethod` to `SettlementMethod.TRANSFER`
 - Validates amount > 0 and <= remainingBalance
@@ -678,13 +701,16 @@ export class PayablesApplicationService {
 **Selector**: `app-payable-payment-history-dialog`
 
 **Inputs**:
+
 - `visible: boolean` (required)
 - `payableId: string` (required)
 
 **Outputs**:
+
 - `close: void`
 
 **Behavior**:
+
 - Loads payable detail via `PayablesApiService.getPayableById()` for commission summary
 - Loads full payment audit history via `PayablesApiService.getPayablePayments()` (`GET /api/payables/{id}/payments`)
 - Shows each payment transaction: date, amount, method, reference, who paid
@@ -699,15 +725,18 @@ export class PayablesApplicationService {
 **Selector**: `app-merchant-bulk-payment-dialog`
 
 **Inputs**:
+
 - `visible: boolean` (required)
 - `merchant: MerchantPayableList | null` (required)
 - `mode: 'total' | 'partial'` (required)
 
 **Outputs**:
+
 - `close: void`
 - `confirm: PayAllVendorRequest | PayPartialVendorRequest`
 
 **Behavior**:
+
 - `mode = 'total'`: hides amount field, emits `PayAllVendorRequest`
 - `mode = 'partial'`: shows amount field pre-filled with totalPending, emits `PayPartialVendorRequest`
 - Uses `computed()` to read `currentMerchant()` from service for live totalPending
@@ -726,7 +755,9 @@ export const PAYABLES_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/payables-page/payables-page.component').then((m) => m.PayablesPageComponent),
+          import('../pages/payables-page/payables-page.component').then(
+            (m) => m.PayablesPageComponent,
+          ),
       },
     ],
   },
@@ -813,6 +844,7 @@ export const PAYABLES_INFO_MESSAGES = {
 ### 409 Conflict Handling
 
 When a payment operation returns HTTP 409:
+
 - Single payment: "Esta factura ya fue pagada anteriormente."
 - Bulk payment: "Uno o más pagos ya fueron procesados anteriormente."
 

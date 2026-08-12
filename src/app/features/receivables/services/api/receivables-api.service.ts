@@ -35,9 +35,13 @@ export class ReceivablesApiService {
     return this.http.get<GlobalDebtSummary>(`${this.baseUrl}/summary`);
   }
 
-  searchCustomersWithDebt(params?: ReceivablesSearchParams): Observable<PagedResponse<CustomerDebtList>> {
+  searchCustomersWithDebt(
+    params?: ReceivablesSearchParams,
+  ): Observable<PagedResponse<CustomerDebtList>> {
     const httpParams = this.buildParams(params);
-    return this.http.get<PagedResponse<CustomerDebtList>>(`${this.baseUrl}/customers`, { params: httpParams });
+    return this.http.get<PagedResponse<CustomerDebtList>>(`${this.baseUrl}/customers`, {
+      params: httpParams,
+    });
   }
 
   getCustomerDebt(customerId: string): Observable<CustomerDebtSummary> {
@@ -57,11 +61,11 @@ export class ReceivablesApiService {
 
   private readonly paymentsBaseUrl = `${environment.apiUrl}/payments`;
 
-  payInvoice(
-    invoiceId: string,
-    request: PayInvoiceRequest,
-  ): Observable<PaymentResult> {
-    return this.http.post<PaymentResult>(`${this.paymentsBaseUrl}/invoices/${invoiceId}/pay`, request);
+  payInvoice(invoiceId: string, request: PayInvoiceRequest): Observable<PaymentResult> {
+    return this.http.post<PaymentResult>(
+      `${this.paymentsBaseUrl}/invoices/${invoiceId}/pay`,
+      request,
+    );
   }
 
   payAllCustomerDebt(
@@ -110,8 +114,6 @@ export class ReceivablesApiService {
     return this.http.post(`${this.paymentsBaseUrl}/${id}/reject`, { reason });
   }
 
-
-
   getCustomerPaymentHistory(
     customerId: string,
     params?: ReceivablesSearchParams,
@@ -128,7 +130,9 @@ export class ReceivablesApiService {
   }
 
   getCreditStatus(customerId: string): Observable<CreditStatusResponse> {
-    return this.http.get<CreditStatusResponse>(`${environment.apiUrl}/customers/${customerId}/credit`);
+    return this.http.get<CreditStatusResponse>(
+      `${environment.apiUrl}/customers/${customerId}/credit`,
+    );
   }
 
   private buildParams(params?: ReceivablesSearchParams): HttpParams {
@@ -142,5 +146,4 @@ export class ReceivablesApiService {
     if (params.invoiceId) httpParams = httpParams.set('invoiceId', params.invoiceId);
     return httpParams;
   }
-
 }

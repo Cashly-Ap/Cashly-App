@@ -1,31 +1,31 @@
-  <app-form-container maxWidth="max-w-2xl">
-    <app-form-header
-      title="Deducible Mensual de Retraso"
-      subtitle="Porcentaje que se descuenta de la comisión por cada mes de retraso en el cobro"
-    />
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <app-form-card>
-        <div class="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
-          <app-number-input
-            [control]="asFormControl(control('commissionDeductionPercentage'))"
-            label="Deducible Mensual (%)"
-            placeholder="0"
-            [min]="0"
-            [max]="100"
-            suffix="%"
-            [minFractionDigits]="2"
-            [maxFractionDigits]="2"
-            [errorMessage]="getCommissionDeductionError()"
-            helpText="Porcentaje que se resta de la comisión nominal por cada mes de retraso en el cobro de la factura"
-          />
-        </div>
-        <app-form-actions
-          submitLabel="Actualizar"
-          cancelLabel="Cancelar"
-          [loading]="authService.loading()"
-          [disabled]="form.invalid"
-          (cancel)="onCancel()"
+<app-form-container maxWidth="max-w-2xl">
+  <app-form-header
+    title="Deducible Mensual de Retraso"
+    subtitle="Porcentaje que se descuenta de la comisión por cada mes de retraso en el cobro"
+  />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-card>
+      <div class="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
+        <app-number-input
+          [control]="asFormControl(control('commissionDeductionPercentage'))"
+          label="Deducible Mensual (%)"
+          placeholder="0"
+          [min]="0"
+          [max]="100"
+          suffix="%"
+          [minFractionDigits]="2"
+          [maxFractionDigits]="2"
+          [errorMessage]="getCommissionDeductionError()"
+          helpText="Porcentaje que se resta de la comisión nominal por cada mes de retraso en el cobro de la factura"
         />
-      </app-form-card>
-    </form>
-  </app-form-container>
+      </div>
+      <app-form-actions
+        submitLabel="Actualizar"
+        cancelLabel="Cancelar"
+        [loading]="authService.loading()"
+        [disabled]="form.invalid"
+        (cancel)="onCancel()"
+      />
+    </app-form-card>
+  </form>
+</app-form-container>

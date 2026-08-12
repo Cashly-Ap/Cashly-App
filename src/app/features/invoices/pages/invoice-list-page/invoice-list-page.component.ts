@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -29,8 +36,16 @@ import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
 import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceFilters } from '@features/invoices/services/api/invoice-api.service';
-import { InvoiceStatus, INVOICE_STATUS_LABELS, getInvoiceStatusLabel } from '@features/invoices/models/enums/invoice-status.enum';
-import { PaymentType, PAYMENT_TYPE_LABELS, getPaymentTypeLabel } from '@features/invoices/models/enums/payment-type.enum';
+import {
+  InvoiceStatus,
+  INVOICE_STATUS_LABELS,
+  getInvoiceStatusLabel,
+} from '@features/invoices/models/enums/invoice-status.enum';
+import {
+  PaymentType,
+  PAYMENT_TYPE_LABELS,
+  getPaymentTypeLabel,
+} from '@features/invoices/models/enums/payment-type.enum';
 import { InvoiceList } from '@features/invoices/models/interfaces';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
@@ -39,16 +54,18 @@ import { CustomerBalanceApiService } from '@features/customers/services/api/cust
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [`
-    ::ng-deep .confirm-invoice-dialog .p-select,
-    ::ng-deep .confirm-invoice-dialog .p-inputnumber {
-      width: 100% !important;
-    }
-    ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
-    ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
-      width: 100% !important;
-    }
-  `],
+  styles: [
+    `
+      ::ng-deep .confirm-invoice-dialog .p-select,
+      ::ng-deep .confirm-invoice-dialog .p-inputnumber {
+        width: 100% !important;
+      }
+      ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
+      ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
+        width: 100% !important;
+      }
+    `,
+  ],
   imports: [
     CommonModule,
     FormsModule,
@@ -101,7 +118,11 @@ export class InvoiceListPageComponent implements OnInit {
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
 
-  readonly defaultStatuses = [InvoiceStatus.DRAFT, InvoiceStatus.PENDING_PAYMENT, InvoiceStatus.PARTIALLY_PAID];
+  readonly defaultStatuses = [
+    InvoiceStatus.DRAFT,
+    InvoiceStatus.PENDING_PAYMENT,
+    InvoiceStatus.PARTIALLY_PAID,
+  ];
 
   readonly filterStatus = computed(() => {
     const s = this.selectedStatus();
@@ -124,7 +145,9 @@ export class InvoiceListPageComponent implements OnInit {
   readonly paymentLines = signal<{ methodId: string; amount: number }[]>([]);
 
   readonly totalPayments = computed(() => {
-    const balance = this.useBalanceConfirm() ? Math.min(this.customerBalanceConfirm(), this.invoiceToConfirm()?.total ?? 0) : 0;
+    const balance = this.useBalanceConfirm()
+      ? Math.min(this.customerBalanceConfirm(), this.invoiceToConfirm()?.total ?? 0)
+      : 0;
     const methods = this.paymentLines().reduce((s, l) => s + (l.amount || 0), 0);
     return balance + methods;
   });
@@ -136,14 +159,18 @@ export class InvoiceListPageComponent implements OnInit {
 
   readonly maxPaymentPerLine = computed(() => {
     const total = this.invoiceToConfirm()?.total ?? 0;
-    const balanceUsed = this.useBalanceConfirm() ? Math.min(this.customerBalanceConfirm(), total) : 0;
+    const balanceUsed = this.useBalanceConfirm()
+      ? Math.min(this.customerBalanceConfirm(), total)
+      : 0;
     const alreadyAssigned = this.paymentLines().reduce((s, l) => s + (l.amount || 0), 0);
     return Math.max(0, total - balanceUsed - alreadyAssigned);
   });
 
   maxForLine(index: number): number {
     const total = this.invoiceToConfirm()?.total ?? 0;
-    const balanceUsed = this.useBalanceConfirm() ? Math.min(this.customerBalanceConfirm(), total) : 0;
+    const balanceUsed = this.useBalanceConfirm()
+      ? Math.min(this.customerBalanceConfirm(), total)
+      : 0;
     const otherLines = this.paymentLines()
       .filter((_, i) => i !== index)
       .reduce((s, l) => s + (l.amount || 0), 0);
@@ -154,7 +181,7 @@ export class InvoiceListPageComponent implements OnInit {
     const lines = this.paymentLines();
     const total = this.invoiceToConfirm()?.total ?? 0;
     if (lines.length === 0 && !this.useBalanceConfirm()) return false;
-    return lines.every(l => l.methodId && l.amount > 0) && this.totalPayments() === total;
+    return lines.every((l) => l.methodId && l.amount > 0) && this.totalPayments() === total;
   });
 
   readonly orderBy = signal('createdAt');
@@ -188,12 +215,21 @@ export class InvoiceListPageComponent implements OnInit {
     return count;
   });
 
-  readonly showInitialLoading = computed(() => this.loading() && (this.invoices()?.length ?? 0) === 0);
+  readonly showInitialLoading = computed(
+    () => this.loading() && (this.invoices()?.length ?? 0) === 0,
+  );
   readonly isEmptyDatabase = computed(
-    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0 && !this.searchTerm(),
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
   );
   readonly hasFilteredResults = computed(
-    () => !this.loading() && this.totalElements() === 0 && (this.activeFilterCount() > 0 || !!this.searchTerm()),
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
 
   ngOnInit(): void {
@@ -330,17 +366,19 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   addPaymentLine(): void {
-    this.paymentLines.update(lines => [...lines, { methodId: '', amount: 0 }]);
+    this.paymentLines.update((lines) => [...lines, { methodId: '', amount: 0 }]);
   }
 
-  trackByIndex(index: number): number { return index; }
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   removePaymentLine(index: number): void {
-    this.paymentLines.update(lines => lines.filter((_, i) => i !== index));
+    this.paymentLines.update((lines) => lines.filter((_, i) => i !== index));
   }
 
   updatePaymentLine(index: number, field: 'methodId' | 'amount', value: any): void {
-    this.paymentLines.update(lines => {
+    this.paymentLines.update((lines) => {
       const updated = [...lines];
       if (field === 'amount') {
         const v = Number(value) || 0;
@@ -361,7 +399,9 @@ export class InvoiceListPageComponent implements OnInit {
     this.isConfirming.set(true);
     const confirmData: any = {};
     if (isCash) {
-      const balanceToUse = this.useBalanceConfirm() ? Math.min(this.customerBalanceConfirm(), invoice.total) : 0;
+      const balanceToUse = this.useBalanceConfirm()
+        ? Math.min(this.customerBalanceConfirm(), invoice.total)
+        : 0;
       confirmData.useBalance = this.useBalanceConfirm();
       confirmData.balanceAmount = balanceToUse;
       const lines = this.paymentLines();
@@ -370,7 +410,12 @@ export class InvoiceListPageComponent implements OnInit {
       }
     } else {
       if (!this.confirmationPassword()) {
-        this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debe ingresar su contraseña.', life: 4000 });
+        this.messageService.add({
+          severity: 'warn',
+          summary: 'Advertencia',
+          detail: 'Debe ingresar su contraseña.',
+          life: 4000,
+        });
         this.isConfirming.set(false);
         return;
       }
@@ -381,12 +426,22 @@ export class InvoiceListPageComponent implements OnInit {
       next: () => {
         this.isConfirming.set(false);
         this.confirmDialogVisible.set(false);
-        this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Factura confirmada exitosamente', life: 3000 });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Factura confirmada exitosamente',
+          life: 3000,
+        });
         this.loadWithFilters();
       },
       error: (err) => {
         this.isConfirming.set(false);
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al confirmar.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err?.error?.message || 'Error al confirmar.',
+          life: 5000,
+        });
       },
     });
   }
@@ -495,7 +550,7 @@ export class InvoiceListPageComponent implements OnInit {
       PARTIAL: 'Parcialmente Devuelta',
       FULL: 'Totalmente Devuelta',
     };
-    return returnStatus ? labels[returnStatus] ?? '' : '';
+    return returnStatus ? (labels[returnStatus] ?? '') : '';
   }
 
   pendingAmount(invoice: InvoiceList): number {
@@ -509,7 +564,12 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   canCancel(status: InvoiceStatus): boolean {
-    return status !== InvoiceStatus.DRAFT && status !== InvoiceStatus.CANCELLED && status !== InvoiceStatus.PAID && status !== InvoiceStatus.FULLY_RETURNED;
+    return (
+      status !== InvoiceStatus.DRAFT &&
+      status !== InvoiceStatus.CANCELLED &&
+      status !== InvoiceStatus.PAID &&
+      status !== InvoiceStatus.FULLY_RETURNED
+    );
   }
 
   private loadWithFilters(): void {
@@ -518,7 +578,8 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
     if (this.selectedReturnStatus()) filters.returnStatus = [this.selectedReturnStatus()];
     if (this.filterPaymentType()) filters.paymentType = this.filterPaymentType();
-    if (this.filterDateFrom()) filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
+    if (this.filterDateFrom())
+      filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();

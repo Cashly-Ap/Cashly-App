@@ -90,9 +90,7 @@ describe('PendingTabsDropdownComponent', () => {
       component.goToTab(tab);
 
       await vi.waitFor(() => {
-        expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
-          '/customers/create?tabId=123',
-        );
+        expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/customers/create?tabId=123');
       });
     });
 
@@ -220,10 +218,7 @@ describe('PendingTabsDropdownComponent', () => {
     });
 
     it('should unsubscribe from scroll events on destroy', () => {
-      const unsubscribeSpy = vi.spyOn(
-        component['subscriptions'],
-        'unsubscribe',
-      );
+      const unsubscribeSpy = vi.spyOn(component['subscriptions'], 'unsubscribe');
 
       component.ngOnDestroy();
 

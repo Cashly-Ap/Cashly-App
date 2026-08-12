@@ -40,11 +40,14 @@ describe('QuoteDetailPageComponent', () => {
         unitPrice: 100,
         subtotal: 500,
         allocations: [
-          { warehouseId: 'wh-001', warehouseCode: 'WH1', warehouseName: 'Central', allocatedQuantity: 5 },
+          {
+            warehouseId: 'wh-001',
+            warehouseCode: 'WH1',
+            warehouseName: 'Central',
+            allocatedQuantity: 5,
+          },
         ],
-        warehouseStocks: [
-          { warehouseId: 'wh-001', warehouseName: 'Central', available: 50 },
-        ],
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 50 }],
       },
     ],
     createdAt: '2025-01-01T00:00:00Z',
@@ -146,9 +149,7 @@ describe('QuoteDetailPageComponent', () => {
     const addSpy = vi.spyOn(messageService, 'add');
     component.onConvertToOrderFromAssign('q-001');
     expect(component.assignDialogVisible()).toBe(false);
-    expect(addSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'success' })
-    );
+    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
   });
 
   it('should handle convert to invoice from assign dialog', () => {
@@ -156,9 +157,7 @@ describe('QuoteDetailPageComponent', () => {
     const addSpy = vi.spyOn(messageService, 'add');
     component.onConvertToInvoiceFromAssign('q-001');
     expect(component.assignDialogVisible()).toBe(false);
-    expect(addSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ severity: 'success' })
-    );
+    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
   });
 
   it('should expose QuoteStatus enum', () => {
@@ -169,7 +168,9 @@ describe('QuoteDetailPageComponent', () => {
   });
 
   it('should handle error on load failure', () => {
-    (mockService.loadById as ReturnType<typeof vi.fn>).mockReturnValue(throwError(() => new Error('Not found')));
+    (mockService.loadById as ReturnType<typeof vi.fn>).mockReturnValue(
+      throwError(() => new Error('Not found')),
+    );
     (mockService.currentQuote as ReturnType<typeof signal>).set(null);
 
     fixture.detectChanges();

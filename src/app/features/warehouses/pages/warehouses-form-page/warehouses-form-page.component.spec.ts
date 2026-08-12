@@ -55,7 +55,12 @@ describe('WarehousesFormPageComponent', () => {
     allTabs: signal([]),
   };
 
-  function configureTestBed(id: string | null = null, loadByIdValue: any = of(mockWarehouse), createValue: any = of(mockWarehouse), updateValue: any = of(mockWarehouse)) {
+  function configureTestBed(
+    id: string | null = null,
+    loadByIdValue: any = of(mockWarehouse),
+    createValue: any = of(mockWarehouse),
+    updateValue: any = of(mockWarehouse),
+  ) {
     mockService = {
       loadById: vi.fn().mockReturnValue(loadByIdValue),
       create: vi.fn().mockReturnValue(createValue),
@@ -75,7 +80,13 @@ describe('WarehousesFormPageComponent', () => {
       imports: [WarehousesFormPageComponent, ReactiveFormsModule],
       providers: [
         FormBuilder,
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap, queryParamMap: { get: () => null } }, paramMap: of({ get: () => id }) } },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap, queryParamMap: { get: () => null } },
+            paramMap: of({ get: () => id }),
+          },
+        },
         { provide: WarehouseApplicationService, useValue: mockService },
         { provide: PendingTabsService, useValue: mockPendingTabsService },
         MessageService,
@@ -242,7 +253,11 @@ describe('WarehousesFormPageComponent', () => {
 
     it('should show error message on create failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed(null, of(mockWarehouse), throwError(() => new Error('Fail')));
+      configureTestBed(
+        null,
+        of(mockWarehouse),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
       component.form.patchValue({
@@ -254,9 +269,7 @@ describe('WarehousesFormPageComponent', () => {
       const addSpy = vi.spyOn(messageService, 'add');
       component.onSubmit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
 
     it('should mark all fields as touched when form is invalid', () => {
@@ -270,9 +283,7 @@ describe('WarehousesFormPageComponent', () => {
       fixture.detectChanges();
       const addSpy = vi.spyOn(messageService, 'add');
       component.onSubmit();
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'warn' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
 
     it('should convert empty address to undefined', () => {
@@ -292,7 +303,7 @@ describe('WarehousesFormPageComponent', () => {
         expect.objectContaining({
           address: undefined,
           description: undefined,
-        })
+        }),
       );
     });
   });
@@ -314,11 +325,14 @@ describe('WarehousesFormPageComponent', () => {
 
       component.onSubmit();
 
-      expect(mockService.update).toHaveBeenCalledWith('wh-001', expect.objectContaining({
-        name: 'Almacén Actualizado',
-        state: 'Carabobo',
-        municipality: 'Valencia',
-      }));
+      expect(mockService.update).toHaveBeenCalledWith(
+        'wh-001',
+        expect.objectContaining({
+          name: 'Almacén Actualizado',
+          state: 'Carabobo',
+          municipality: 'Valencia',
+        }),
+      );
     });
 
     it('should navigate to /warehouses on update success', () => {
@@ -336,7 +350,12 @@ describe('WarehousesFormPageComponent', () => {
 
     it('should show error message on update failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('wh-001', of(mockWarehouse), of(mockWarehouse), throwError(() => new Error('Fail')));
+      configureTestBed(
+        'wh-001',
+        of(mockWarehouse),
+        of(mockWarehouse),
+        throwError(() => new Error('Fail')),
+      );
       createComponent();
       fixture.detectChanges();
 
@@ -349,9 +368,7 @@ describe('WarehousesFormPageComponent', () => {
       const addSpy = vi.spyOn(messageService, 'add');
       component.onSubmit();
 
-      expect(addSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ severity: 'error' })
-      );
+      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'error' }));
     });
   });
 
@@ -370,7 +387,10 @@ describe('WarehousesFormPageComponent', () => {
 
     it('should navigate to /warehouses on load failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('wh-999', throwError(() => new Error('Not found')));
+      configureTestBed(
+        'wh-999',
+        throwError(() => new Error('Not found')),
+      );
       createComponent();
 
       const navigateSpy = vi.spyOn(router, 'navigate');
@@ -381,7 +401,10 @@ describe('WarehousesFormPageComponent', () => {
 
     it('should show error message on load failure', () => {
       (TestBed as TestBedStatic).resetTestingModule();
-      configureTestBed('wh-999', throwError(() => new Error('Not found')));
+      configureTestBed(
+        'wh-999',
+        throwError(() => new Error('Not found')),
+      );
       createComponent();
 
       const addSpy = vi.spyOn(messageService, 'add');
@@ -429,13 +452,27 @@ describe('WarehousesFormPageComponent', () => {
   describe('getPendingTabTitle', () => {
     it('should return name when provided', () => {
       fixture.detectChanges();
-      const title = component.getPendingTabTitle({ name: 'My Warehouse', state: 'X', municipality: 'Y', address: '', description: '', active: true });
+      const title = component.getPendingTabTitle({
+        name: 'My Warehouse',
+        state: 'X',
+        municipality: 'Y',
+        address: '',
+        description: '',
+        active: true,
+      });
       expect(title).toBe('My Warehouse');
     });
 
     it('should return fallback when name is empty', () => {
       fixture.detectChanges();
-      const title = component.getPendingTabTitle({ name: '', state: 'X', municipality: 'Y', address: '', description: '', active: true });
+      const title = component.getPendingTabTitle({
+        name: '',
+        state: 'X',
+        municipality: 'Y',
+        address: '',
+        description: '',
+        active: true,
+      });
       expect(title).toContain('Almacén');
     });
   });

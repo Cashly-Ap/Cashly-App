@@ -173,7 +173,7 @@ services:
       dockerfile: Dockerfile.dev
     container_name: lexand-app-dev
     ports:
-      - "4200:4200"
+      - '4200:4200'
     volumes:
       - .:/app
       - /app/node_modules
@@ -190,7 +190,7 @@ services:
       dockerfile: Dockerfile
     container_name: lexand-app-prod
     ports:
-      - "4200:4200"
+      - '4200:4200'
     environment:
       - NODE_ENV=production
     profiles:
@@ -204,7 +204,7 @@ services:
       dockerfile: Dockerfile.test
     container_name: lexand-app-test
     ports:
-      - "4200:4200"
+      - '4200:4200'
     volumes:
       - .:/app
       - /app/node_modules

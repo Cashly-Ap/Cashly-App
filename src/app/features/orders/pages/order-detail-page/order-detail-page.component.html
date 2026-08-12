@@ -1,147 +1,144 @@
-  <div class="min-h-screen">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-      @if (loading()) {
-        <app-loading-spinner />
-      }
-      @if (order(); as currentOrder) {
-        <div class="flex flex-col gap-6">
-          <app-page-header
-            title="Detalles del Pedido"
-            subtitle="Información completa del pedido"
-          />
+<div class="min-h-screen">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (order(); as currentOrder) {
+      <div class="flex flex-col gap-6">
+        <app-page-header title="Detalles del Pedido" subtitle="Información completa del pedido" />
 
-          <app-details-card>
-            <app-details-card-header
-              [title]="'Pedido #' + currentOrder.orderNumber"
-              [subtitle]="currentOrder.customerAlias"
-            >
-              <div actions class="flex gap-3 flex-wrap">
-                <p-button
-                  label="Volver"
-                  icon="pi pi-arrow-left"
-                  [outlined]="true"
-                  (onClick)="onBack()"
-                  styleClass="w-full sm:w-auto"
-                />
-                @if (currentOrder.status === OrderStatus.DRAFT || currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
-                  @if (currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
-                    <p-button
-                      label="Asignar Almacenes"
-                      icon="pi pi-warehouse"
-                      severity="warn"
-                      (onClick)="onEdit()"
-                      styleClass="w-full sm:w-auto"
-                    />
-                  }
+        <app-details-card>
+          <app-details-card-header
+            [title]="'Pedido #' + currentOrder.orderNumber"
+            [subtitle]="currentOrder.customerAlias"
+          >
+            <div actions class="flex gap-3 flex-wrap">
+              <p-button
+                label="Volver"
+                icon="pi pi-arrow-left"
+                [outlined]="true"
+                (onClick)="onBack()"
+                styleClass="w-full sm:w-auto"
+              />
+              @if (
+                currentOrder.status === OrderStatus.DRAFT ||
+                currentOrder.status === OrderStatus.CUSTOMER_DRAFT
+              ) {
+                @if (currentOrder.status === OrderStatus.CUSTOMER_DRAFT) {
                   <p-button
-                    label="Editar"
-                    icon="pi pi-pencil"
-                    severity="contrast"
+                    label="Asignar Almacenes"
+                    icon="pi pi-warehouse"
+                    severity="warn"
                     (onClick)="onEdit()"
                     styleClass="w-full sm:w-auto"
                   />
                 }
-              </div>
-            </app-details-card-header>
-
-            <div class="p-4 sm:p-6">
-              <app-details-info-grid>
-                <app-details-info-field
-                  label="Número de Pedido"
-                  [value]="'#' + currentOrder.orderNumber"
-                  type="code"
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  severity="contrast"
+                  (onClick)="onEdit()"
+                  styleClass="w-full sm:w-auto"
                 />
-                <app-details-info-field label="Estado" type="badge">
-                  <app-text-badge
-                    [label]="getStatusLabel(currentOrder.status)"
-                    [variant]="getStatusVariant(currentOrder.status)"
-                  />
-                </app-details-info-field>
-                <app-details-info-field
-                  label="Cliente"
-                  [value]="currentOrder.customerAlias"
-                />
-                <app-details-info-field
-                  label="Razón Social"
-                  [value]="currentOrder.customerLegalName"
-                />
-                <app-details-info-field
-                  label="Total"
-                  [value]="(currentOrder.totalAmount | number: '1.2-2') || ''"
-                  type="currency"
-                />
-                <app-details-info-field
-                  label="Fecha de Creación"
-                  [value]="(currentOrder.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-                <app-details-info-field
-                  label="Última Actualización"
-                  [value]="(currentOrder.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
-                />
-              </app-details-info-grid>
+              }
             </div>
-          </app-details-card>
+          </app-details-card-header>
 
-          @if (currentOrder.notes) {
-            <app-details-section-card title="Notas" icon="pi-align-left">
-              <p class="text-sm whitespace-pre-wrap">{{ currentOrder.notes }}</p>
-            </app-details-section-card>
-          }
-
-          <app-details-section-card title="Ítems del Pedido" icon="pi-list">
-            @if (currentOrder.items && currentOrder.items.length > 0) {
-              <div class="overflow-x-auto">
-                <p-table [value]="currentOrder.items" styleClass="p-datatable-sm">
-                  <ng-template pTemplate="header">
-                    <tr>
-                      <th>Producto</th>
-                      <th class="text-right">Cantidad</th>
-                      <th class="text-right">Precio Unit.</th>
-                      <th class="text-right">Subtotal</th>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="body" let-item>
-                    <tr>
-                      <td>
-                        <div class="flex flex-col gap-1">
-                          <span class="font-medium">{{ item.productName }}</span>
-                          <span class="font-mono text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded w-fit">
-                            {{ item.productCode }}
-                          </span>
-                        </div>
-                      </td>
-                      <td class="text-right">
-                        <span class="font-mono">{{ item.quantity | number: '1.0-3' }}</span>
-                      </td>
-                      <td class="text-right">
-                        <span class="font-mono">{{ item.unitPrice | number: '1.2-2' }}</span>
-                      </td>
-                      <td class="text-right">
-                        <span class="font-mono font-semibold">{{ item.subtotal | number: '1.2-2' }}</span>
-                      </td>
-                    </tr>
-                  </ng-template>
-                  <ng-template pTemplate="footer">
-                    <tr>
-                      <td colspan="3" class="text-right font-semibold">Total:</td>
-                      <td class="text-right">
-                        <span class="font-mono font-bold text-lg">
-                          {{ currentOrder.totalAmount | number: '1.2-2' }}
-                        </span>
-                      </td>
-                    </tr>
-                  </ng-template>
-                </p-table>
-              </div>
-            } @else {
-              <app-empty-state
-                icon="pi-inbox"
-                message="No hay ítems en este pedido"
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                label="Número de Pedido"
+                [value]="'#' + currentOrder.orderNumber"
+                type="code"
               />
-            }
-          </app-details-section-card>
+              <app-details-info-field label="Estado" type="badge">
+                <app-text-badge
+                  [label]="getStatusLabel(currentOrder.status)"
+                  [variant]="getStatusVariant(currentOrder.status)"
+                />
+              </app-details-info-field>
+              <app-details-info-field label="Cliente" [value]="currentOrder.customerAlias" />
+              <app-details-info-field
+                label="Razón Social"
+                [value]="currentOrder.customerLegalName"
+              />
+              <app-details-info-field
+                label="Total"
+                [value]="(currentOrder.totalAmount | number: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                label="Fecha de Creación"
+                [value]="(currentOrder.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                label="Última Actualización"
+                [value]="(currentOrder.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-details-card>
 
-        </div>
-      }
-    </div>
+        @if (currentOrder.notes) {
+          <app-details-section-card title="Notas" icon="pi-align-left">
+            <p class="text-sm whitespace-pre-wrap">{{ currentOrder.notes }}</p>
+          </app-details-section-card>
+        }
+
+        <app-details-section-card title="Ítems del Pedido" icon="pi-list">
+          @if (currentOrder.items && currentOrder.items.length > 0) {
+            <div class="overflow-x-auto">
+              <p-table [value]="currentOrder.items" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Producto</th>
+                    <th class="text-right">Cantidad</th>
+                    <th class="text-right">Precio Unit.</th>
+                    <th class="text-right">Subtotal</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium">{{ item.productName }}</span>
+                        <span
+                          class="font-mono text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded w-fit"
+                        >
+                          {{ item.productCode }}
+                        </span>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{ item.quantity | number: '1.0-3' }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{ item.unitPrice | number: '1.2-2' }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold">{{
+                        item.subtotal | number: '1.2-2'
+                      }}</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="3" class="text-right font-semibold">Total:</td>
+                    <td class="text-right">
+                      <span class="font-mono font-bold text-lg">
+                        {{ currentOrder.totalAmount | number: '1.2-2' }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          } @else {
+            <app-empty-state icon="pi-inbox" message="No hay ítems en este pedido" />
+          }
+        </app-details-section-card>
+      </div>
+    }
   </div>
+</div>

@@ -42,6 +42,8 @@ export class BalanceTransactionsTableComponent {
       REFUND: `${base} bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200`,
       CREDIT_NOTE: `${base} bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200`,
     };
-    return variants[type] ?? `${base} bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200`;
+    return (
+      variants[type] ?? `${base} bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200`
+    );
   }
 }

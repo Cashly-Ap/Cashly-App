@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  inject,
+  signal,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -22,7 +29,11 @@ import { CancelPurchaseDialogComponent } from '@features/purchases/components/ca
 import { ConfirmPurchaseDialogComponent } from '@features/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
 import { PurchaseFilters } from '@features/purchases/services/api/purchase-api.service';
-import { PurchaseStatus, PURCHASE_STATUS_LABELS, getPurchaseStatusLabel } from '@features/purchases/models/enums/purchase-status.enum';
+import {
+  PurchaseStatus,
+  PURCHASE_STATUS_LABELS,
+  getPurchaseStatusLabel,
+} from '@features/purchases/models/enums/purchase-status.enum';
 import { PurchaseList } from '@features/purchases/models/interfaces';
 import { PdfViewerService } from '@core/pdf-viewer';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
@@ -93,7 +104,9 @@ export class PurchaseListPageComponent implements OnInit {
     return count;
   });
 
-  readonly showInitialLoading = computed(() => this.loading() && (this.purchases()?.length ?? 0) === 0);
+  readonly showInitialLoading = computed(
+    () => this.loading() && (this.purchases()?.length ?? 0) === 0,
+  );
   readonly isEmptyDatabase = computed(
     () => !this.loading() && this.totalElements() === 0 && !this.searchTerm(),
   );

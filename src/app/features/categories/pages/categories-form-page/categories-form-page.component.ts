@@ -36,7 +36,6 @@ interface CategoryFormData {
     FormActionsComponent,
   ],
   templateUrl: './categories-form-page.component.html',
-
 })
 export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormData> {
   private service = inject(CategoryApplicationService);
@@ -91,10 +90,19 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
   protected override onLoadEntity(id: string): void {
     this.service.loadById(id).subscribe({
       next: (category) => {
-        this.form.patchValue({ name: category.name, description: category.description ?? '', active: category.active });
+        this.form.patchValue({
+          name: category.name,
+          description: category.description ?? '',
+          active: category.active,
+        });
       },
       error: () => {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al cargar la categoría.', life: 5000 });
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar la categoría.',
+          life: 5000,
+        });
         this.router.navigate(['/categories']);
       },
     });
@@ -103,34 +111,63 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
   override onSubmit(): void {
     if (this.form.valid) {
       const value = this.form.getRawValue() as CategoryFormData;
-      const payload = { name: value.name, description: value.description || undefined, active: value.active };
+      const payload = {
+        name: value.name,
+        description: value.description || undefined,
+        active: value.active,
+      };
 
       if (this.isEditMode() && this.entityId()) {
         this.service.update(this.entityId()!, payload).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Categoría actualizada exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Categoría actualizada exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/categories']);
           },
           error: () => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar la categoría.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar la categoría.',
+              life: 5000,
+            });
           },
         });
       } else {
         this.service.create(payload).subscribe({
           next: () => {
             this.markAsSubmitted();
-            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Categoría creada exitosamente', life: 3000 });
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Categoría creada exitosamente',
+              life: 3000,
+            });
             this.router.navigate(['/categories']);
           },
           error: (err: { error?: { message?: string } }) => {
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: err?.error?.message || 'Error al crear la categoría.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.error?.message || 'Error al crear la categoría.',
+              life: 5000,
+            });
           },
         });
       }
     } else {
       this.form.markAllAsTouched();
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, complete todos los campos requeridos.', life: 5000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Por favor, complete todos los campos requeridos.',
+        life: 5000,
+      });
     }
   }
 }

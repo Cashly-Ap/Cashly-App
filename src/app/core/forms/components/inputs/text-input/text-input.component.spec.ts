@@ -87,8 +87,7 @@ describe('TextInputComponent', () => {
     fixture.componentRef.setInput('label', 'Email');
     fixture.detectChanges();
 
-    const inputElement =
-      fixture.nativeElement.querySelector('input[pInputText]');
+    const inputElement = fixture.nativeElement.querySelector('input[pInputText]');
     expect(inputElement).toBeTruthy();
   });
 

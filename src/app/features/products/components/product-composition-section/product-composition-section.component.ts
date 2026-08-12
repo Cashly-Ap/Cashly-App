@@ -1,4 +1,12 @@
-import { Component, input, output, computed, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  computed,
+  OnInit,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormArray, FormGroup, FormControl } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -40,9 +48,10 @@ export class ProductCompositionSectionComponent implements OnInit {
   readonly removeComponent = output<number>();
 
   readonly productOptions = computed<ProductOption[]>(() =>
-    this.productService.simpleProducts()
+    this.productService
+      .simpleProducts()
       .filter((p) => p.id !== this.currentProductId())
-      .map((p) => ({ id: p.id, label: p.name }))
+      .map((p) => ({ id: p.id, label: p.name })),
   );
 
   ngOnInit(): void {

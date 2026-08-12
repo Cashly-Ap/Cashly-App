@@ -56,9 +56,7 @@ describe('DetailsInfoFieldComponent', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
     const values = compiled.querySelectorAll('.font-semibold');
-    const currencyValue = Array.from(values).find(
-      (el) => el.textContent?.trim() === '$100.00',
-    );
+    const currencyValue = Array.from(values).find((el) => el.textContent?.trim() === '$100.00');
     expect(currencyValue).toBeTruthy();
     expect(currencyValue?.textContent?.trim()).toBe('$100.00');
   });

@@ -8,9 +8,36 @@ import { ProductApplicationService } from '@features/products/services/applicati
 import { ProductList } from '@features/products/models/interfaces';
 
 const mockSimpleProducts: ProductList[] = [
-  { id: 'prod-001', code: 'P001', name: 'Product A', categoryId: 'cat-001', categoryName: 'Cat 1', composite: false, active: true, productPrices: [] },
-  { id: 'prod-002', code: 'P002', name: 'Product B', categoryId: 'cat-001', categoryName: 'Cat 1', composite: false, active: true, productPrices: [] },
-  { id: 'prod-003', code: 'P003', name: 'Product C', categoryId: 'cat-002', categoryName: 'Cat 2', composite: false, active: true, productPrices: [] },
+  {
+    id: 'prod-001',
+    code: 'P001',
+    name: 'Product A',
+    categoryId: 'cat-001',
+    categoryName: 'Cat 1',
+    composite: false,
+    active: true,
+    productPrices: [],
+  },
+  {
+    id: 'prod-002',
+    code: 'P002',
+    name: 'Product B',
+    categoryId: 'cat-001',
+    categoryName: 'Cat 1',
+    composite: false,
+    active: true,
+    productPrices: [],
+  },
+  {
+    id: 'prod-003',
+    code: 'P003',
+    name: 'Product C',
+    categoryId: 'cat-002',
+    categoryName: 'Cat 2',
+    composite: false,
+    active: true,
+    productPrices: [],
+  },
 ];
 
 function createHostComponentClass(currentProductId: string | null = null) {
@@ -62,9 +89,7 @@ describe('ProductCompositionSectionComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [HostClass, ProductCompositionSectionComponent],
-      providers: [
-        { provide: ProductApplicationService, useValue: mockProductService },
-      ],
+      providers: [{ provide: ProductApplicationService, useValue: mockProductService }],
       schemas: [NO_ERRORS_SCHEMA],
     });
 

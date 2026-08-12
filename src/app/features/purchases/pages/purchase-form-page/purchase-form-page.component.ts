@@ -131,7 +131,14 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
       ? `/purchases/${this.purchaseId()}/edit`
       : `/purchases/new?tabId=${this.tabId}`;
 
-    this.pendingTabsService.save(this.tabId, title, route, formData, this.isEditMode() ? 'edit' : 'create', 'purchases');
+    this.pendingTabsService.save(
+      this.tabId,
+      title,
+      route,
+      formData,
+      this.isEditMode() ? 'edit' : 'create',
+      'purchases',
+    );
   }
 
   private restoreFromPendingTab(): void {
@@ -229,7 +236,12 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     }
 
     if (this.items().length === 0) {
-      this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes agregar al menos un producto a la compra.', life: 4000 });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes agregar al menos un producto a la compra.',
+        life: 4000,
+      });
       return;
     }
 
@@ -262,7 +274,12 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar la compra. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar la compra. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     } else {
@@ -291,7 +308,12 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           },
           error: () => {
             this.isSubmitting.set(false);
-            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear la compra. Por favor, intente nuevamente.', life: 5000 });
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear la compra. Por favor, intente nuevamente.',
+              life: 5000,
+            });
           },
         });
     }

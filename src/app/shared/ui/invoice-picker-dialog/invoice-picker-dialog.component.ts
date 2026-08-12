@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, output, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  output,
+  signal,
+  computed,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -31,8 +39,7 @@ export class InvoicePickerDialogComponent {
     if (!q) return this.allInvoices();
     return this.allInvoices().filter(
       (inv) =>
-        inv.invoiceNumber.toLowerCase().includes(q) ||
-        inv.customerName.toLowerCase().includes(q),
+        inv.invoiceNumber.toLowerCase().includes(q) || inv.customerName.toLowerCase().includes(q),
     );
   });
 

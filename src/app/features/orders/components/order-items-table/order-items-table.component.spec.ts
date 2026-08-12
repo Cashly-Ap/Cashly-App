@@ -6,7 +6,14 @@ import { OrderItemFormData } from '@features/orders/models/interfaces';
 import { ProductList } from '@features/products/models/interfaces';
 
 @Component({
-  template: `<app-order-items-table [context]="context" [items]="items" [products]="products" [customerId]="customerId" [readonly]="readonly" (itemsChange)="onItemsChange($event)"></app-order-items-table>`,
+  template: `<app-order-items-table
+    [context]="context"
+    [items]="items"
+    [products]="products"
+    [customerId]="customerId"
+    [readonly]="readonly"
+    (itemsChange)="onItemsChange($event)"
+  ></app-order-items-table>`,
   imports: [OrderItemsTableComponent],
 })
 class HostComponent {
@@ -94,7 +101,15 @@ describe('OrderItemsTableComponent', () => {
 
   it('should close picker on products added and emit itemsChange', () => {
     const newItems: OrderItemFormData[] = [
-      { productId: 'p1', productCode: 'P1', productName: 'Product 1', stock: [], quantity: 1, unitPrice: 100, warehouseAllocations: [] },
+      {
+        productId: 'p1',
+        productCode: 'P1',
+        productName: 'Product 1',
+        stock: [],
+        quantity: 1,
+        unitPrice: 100,
+        warehouseAllocations: [],
+      },
     ];
     component.onProductsAdded(newItems);
     expect(component.pickerVisible()).toBe(false);
@@ -121,8 +136,22 @@ describe('OrderItemsTableComponent', () => {
       productCode: 'P1',
       productName: 'Product 1',
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 3, available: 7 },
-        { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'WH2', quantity: 20, reserved: 5, available: 15 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'WH1',
+          quantity: 10,
+          reserved: 3,
+          available: 7,
+        },
+        {
+          warehouseId: 'wh2',
+          warehouseCode: 'WH2',
+          warehouseName: 'WH2',
+          quantity: 20,
+          reserved: 5,
+          available: 15,
+        },
       ],
       quantity: 1,
       unitPrice: 100,
@@ -150,8 +179,22 @@ describe('OrderItemsTableComponent', () => {
       productCode: 'P1',
       productName: 'Product 1',
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 3, available: 7 },
-        { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'WH2', quantity: 20, reserved: 5, available: 15 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'WH1',
+          quantity: 10,
+          reserved: 3,
+          available: 7,
+        },
+        {
+          warehouseId: 'wh2',
+          warehouseCode: 'WH2',
+          warehouseName: 'WH2',
+          quantity: 20,
+          reserved: 5,
+          available: 15,
+        },
       ],
       quantity: 1,
       unitPrice: 100,
@@ -166,7 +209,14 @@ describe('OrderItemsTableComponent', () => {
       productCode: 'P1',
       productName: 'Product 1',
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 0, available: 10 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'WH1',
+          quantity: 10,
+          reserved: 0,
+          available: 10,
+        },
       ],
       quantity: 15,
       unitPrice: 100,
@@ -181,7 +231,14 @@ describe('OrderItemsTableComponent', () => {
       productCode: 'P1',
       productName: 'Product 1',
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 0, available: 10 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'WH1',
+          quantity: 10,
+          reserved: 0,
+          available: 10,
+        },
       ],
       quantity: 5,
       unitPrice: 100,
@@ -197,8 +254,24 @@ describe('OrderItemsTableComponent - with items', () => {
   let component: OrderItemsTableComponent;
 
   const mockItems: OrderItemFormData[] = [
-    { productId: 'p1', productCode: 'P1', productName: 'Product One', stock: [], quantity: 2, unitPrice: 100, warehouseAllocations: [] },
-    { productId: 'p2', productCode: 'P2', productName: 'Product Two', stock: [], quantity: 3, unitPrice: 50, warehouseAllocations: [] },
+    {
+      productId: 'p1',
+      productCode: 'P1',
+      productName: 'Product One',
+      stock: [],
+      quantity: 2,
+      unitPrice: 100,
+      warehouseAllocations: [],
+    },
+    {
+      productId: 'p2',
+      productCode: 'P2',
+      productName: 'Product Two',
+      stock: [],
+      quantity: 3,
+      unitPrice: 50,
+      warehouseAllocations: [],
+    },
   ];
 
   beforeEach(() => {
@@ -298,7 +371,15 @@ describe('OrderItemsTableComponent - with products', () => {
   let component: OrderItemsTableComponent;
 
   const mockItems: OrderItemFormData[] = [
-    { productId: 'p1', productCode: '', productName: '', stock: undefined as any, quantity: 1, unitPrice: 100, warehouseAllocations: [] },
+    {
+      productId: 'p1',
+      productCode: '',
+      productName: '',
+      stock: undefined as any,
+      quantity: 1,
+      unitPrice: 100,
+      warehouseAllocations: [],
+    },
   ];
 
   const mockProducts: ProductList[] = [
@@ -339,8 +420,22 @@ describe('OrderItemsTableComponent - with stock items', () => {
       productCode: 'P1',
       productName: 'Product 1',
       stock: [
-        { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 0, available: 10 },
-        { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'WH2', quantity: 20, reserved: 0, available: 20 },
+        {
+          warehouseId: 'wh1',
+          warehouseCode: 'WH1',
+          warehouseName: 'WH1',
+          quantity: 10,
+          reserved: 0,
+          available: 10,
+        },
+        {
+          warehouseId: 'wh2',
+          warehouseCode: 'WH2',
+          warehouseName: 'WH2',
+          quantity: 20,
+          reserved: 0,
+          available: 20,
+        },
       ],
       quantity: 1,
       unitPrice: 100,
@@ -376,14 +471,40 @@ describe('OrderItemsTableComponent - allocation popover', () => {
     productCode: 'P1',
     productName: 'Product 1',
     stock: [
-      { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', quantity: 30, reserved: 5, available: 25 },
-      { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'Warehouse 2', quantity: 20, reserved: 0, available: 20 },
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'Warehouse 1',
+        quantity: 30,
+        reserved: 5,
+        available: 25,
+      },
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+      },
     ],
     quantity: 10,
     unitPrice: 100,
     warehouseAllocations: [
-      { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'Warehouse 1', available: 25, allocated: 5 },
-      { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'Warehouse 2', available: 20, allocated: 5 },
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'Warehouse 1',
+        available: 25,
+        allocated: 5,
+      },
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        available: 20,
+        allocated: 5,
+      },
     ],
   };
 
@@ -417,7 +538,15 @@ describe('OrderItemsTableComponent - allocation popover', () => {
 
   it('should update popover allocation', () => {
     component.popoverAllocations.set([
-      { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 30, reserved: 5, available: 25, allocated: 5 },
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'WH1',
+        quantity: 30,
+        reserved: 5,
+        available: 25,
+        allocated: 5,
+      },
     ]);
     component.updatePopoverAllocation(0, 10);
     expect(component.popoverAllocations()[0].allocated).toBe(10);
@@ -426,8 +555,24 @@ describe('OrderItemsTableComponent - allocation popover', () => {
   it('should confirm allocations and emit itemsChange', () => {
     component.activeItemIdx.set(0);
     component.popoverAllocations.set([
-      { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 30, reserved: 5, available: 25, allocated: 10 },
-      { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'WH2', quantity: 20, reserved: 0, available: 20, allocated: 5 },
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'WH1',
+        quantity: 30,
+        reserved: 5,
+        available: 25,
+        allocated: 10,
+      },
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'WH2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 5,
+      },
     ]);
     component.confirmAllocations();
     expect(hostComponent.onItemsChange).toHaveBeenCalled();
@@ -444,7 +589,15 @@ describe('OrderItemsTableComponent - allocation popover', () => {
 
   it('should merge existing items when products added', () => {
     const newItems: OrderItemFormData[] = [
-      { productId: 'p2', productCode: 'P2', productName: 'Product 2', stock: [], quantity: 2, unitPrice: 50, warehouseAllocations: [] },
+      {
+        productId: 'p2',
+        productCode: 'P2',
+        productName: 'Product 2',
+        stock: [],
+        quantity: 2,
+        unitPrice: 50,
+        warehouseAllocations: [],
+      },
     ];
     component.onProductsAdded(newItems);
     expect(hostComponent.onItemsChange).toHaveBeenCalledWith(
@@ -475,8 +628,24 @@ describe('OrderItemsTableComponent - allocationTotal', () => {
 
   it('should calculate allocationTotal from popoverAllocations', () => {
     component.popoverAllocations.set([
-      { warehouseId: 'wh1', warehouseCode: 'WH1', warehouseName: 'WH1', quantity: 10, reserved: 0, available: 10, allocated: 3 },
-      { warehouseId: 'wh2', warehouseCode: 'WH2', warehouseName: 'WH2', quantity: 20, reserved: 0, available: 20, allocated: 5 },
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'WH1',
+        quantity: 10,
+        reserved: 0,
+        available: 10,
+        allocated: 3,
+      },
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'WH2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 5,
+      },
     ]);
     expect(component.allocationTotal()).toBe(8);
   });

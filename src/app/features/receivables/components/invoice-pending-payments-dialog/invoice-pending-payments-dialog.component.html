@@ -19,10 +19,7 @@
       <p class="text-surface-500 font-medium">No hay pagos registrados para esta factura</p>
     </div>
   } @else {
-    <p-table
-      [value]="payments()"
-      styleClass="p-datatable-sm"
-    >
+    <p-table [value]="payments()" styleClass="p-datatable-sm">
       <ng-template pTemplate="header">
         <tr>
           <th>N° Pago</th>
@@ -36,26 +33,30 @@
         <tr>
           <td class="font-mono text-sm">{{ payment.paymentNumber }}</td>
           <td class="font-mono font-semibold text-green-600 dark:text-green-400">
-            {{ payment.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
+            {{ payment.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
           </td>
-          <td>{{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}</td>
-          <td>{{ payment.paymentDate | date : 'dd/MM/yyyy' }}</td>
+          <td>
+            {{
+              payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName
+            }}
+          </td>
+          <td>{{ payment.paymentDate | date: 'dd/MM/yyyy' }}</td>
           <td>
             @if (payment.status === 'APPLIED') {
               <span class="text-green-600 dark:text-green-400 font-medium">Aplicado</span>
             } @else if (payment.status === 'CANCELLED') {
               <span class="text-red-600 dark:text-red-400 font-medium">Cancelado</span>
             } @else {
-              <span class="text-surface-600 dark:text-surface-400 font-medium">{{ payment.status }}</span>
+              <span class="text-surface-600 dark:text-surface-400 font-medium">{{
+                payment.status
+              }}</span>
             }
           </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5" class="text-center py-8 text-surface-500">
-            No se encontraron pagos
-          </td>
+          <td colspan="5" class="text-center py-8 text-surface-500">No se encontraron pagos</td>
         </tr>
       </ng-template>
     </p-table>
@@ -63,12 +64,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end">
-      <p-button
-        label="Cerrar"
-        icon="pi pi-times"
-        (onClick)="onClose()"
-        [text]="true"
-      />
+      <p-button label="Cerrar" icon="pi pi-times" (onClick)="onClose()" [text]="true" />
     </div>
   </ng-template>
 </p-dialog>

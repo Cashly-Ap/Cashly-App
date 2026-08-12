@@ -53,23 +53,23 @@ The Master Optimization Agent is a specialized AI agent responsible for analyzin
 // Target Metrics
 const performanceBudgets = {
   // Bundle Sizes
-  initialBundle: 200 * 1024,      // 200 KB (gzipped)
-  totalBundle: 500 * 1024,        // 500 KB (gzipped)
-  lazyChunk: 50 * 1024,           // 50 KB per lazy chunk
-  
+  initialBundle: 200 * 1024, // 200 KB (gzipped)
+  totalBundle: 500 * 1024, // 500 KB (gzipped)
+  lazyChunk: 50 * 1024, // 50 KB per lazy chunk
+
   // Runtime Performance
-  timeToInteractive: 3000,        // 3 seconds
-  firstContentfulPaint: 1500,     // 1.5 seconds
-  largestContentfulPaint: 2500,   // 2.5 seconds
-  
+  timeToInteractive: 3000, // 3 seconds
+  firstContentfulPaint: 1500, // 1.5 seconds
+  largestContentfulPaint: 2500, // 2.5 seconds
+
   // Memory
   initialMemory: 50 * 1024 * 1024, // 50 MB
-  maxMemory: 100 * 1024 * 1024,    // 100 MB
-  
+  maxMemory: 100 * 1024 * 1024, // 100 MB
+
   // Build Performance
-  devBuildTime: 2000,              // 2 seconds
-  prodBuildTime: 60000,            // 60 seconds
-  hmrTime: 500,                    // 500 ms
+  devBuildTime: 2000, // 2 seconds
+  prodBuildTime: 60000, // 60 seconds
+  hmrTime: 500, // 500 ms
 };
 ```
 
@@ -112,22 +112,20 @@ du -sh dist/*
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => 
-      import('./features/dashboard/pages/dashboard-page.component')
-        .then(m => m.DashboardPageComponent)
+    loadComponent: () =>
+      import('./features/dashboard/pages/dashboard-page.component').then(
+        (m) => m.DashboardPageComponent,
+      ),
   },
   {
     path: 'customers',
-    loadChildren: () => 
-      import('./features/customers/router/customer.routes')
-        .then(m => m.customerRoutes)
+    loadChildren: () =>
+      import('./features/customers/router/customer.routes').then((m) => m.customerRoutes),
   },
   {
     path: 'auth',
-    loadChildren: () => 
-      import('./features/auth/router/auth.routes')
-        .then(m => m.authRoutes)
-  }
+    loadChildren: () => import('./features/auth/router/auth.routes').then((m) => m.authRoutes),
+  },
 ];
 
 // ❌ SUBOPTIMAL: Eager loading everything
@@ -138,7 +136,7 @@ import { authRoutes } from './features/auth';
 export const routes: Routes = [
   { path: '', component: DashboardPageComponent },
   { path: 'customers', children: customerRoutes },
-  { path: 'auth', children: authRoutes }
+  { path: 'auth', children: authRoutes },
 ];
 ```
 
@@ -154,11 +152,11 @@ export const routes: Routes = [
     @for (customer of customers(); track customer.id) {
       <app-customer-card [customer]="customer" />
     }
-  `
+  `,
 })
 export class CustomerListComponent {
   private customerService = inject(CustomerService);
-  
+
   // Signals are already optimized
   customers = this.customerService.customers;
 }
@@ -170,16 +168,14 @@ export class CustomerListComponent {
     @for (customer of customers; track customer.id) {
       <app-customer-card [customer]="customer" />
     }
-  `
+  `,
 })
 export class CustomerListComponent implements OnInit {
   customers: Customer[] = [];
-  
+
   ngOnInit() {
     // Triggers change detection on every check
-    this.customerService.getCustomers().subscribe(
-      customers => this.customers = customers
-    );
+    this.customerService.getCustomers().subscribe((customers) => (this.customers = customers));
   }
 }
 ```
@@ -195,8 +191,8 @@ import { NgOptimizedImage } from '@angular/common';
   standalone: true,
   imports: [NgOptimizedImage],
   template: `
-    <img 
-      [ngSrc]="imageSrc" 
+    <img
+      [ngSrc]="imageSrc"
       [alt]="imageAlt"
       width="300"
       height="200"
@@ -224,23 +220,21 @@ export class ProductImageComponent {
 export class CustomerService {
   private customersSignal = signal<Customer[]>([]);
   private filterSignal = signal<string>('');
-  
+
   // Computed signal - only recalculates when dependencies change
   filteredCustomers = computed(() => {
     const filter = this.filterSignal().toLowerCase();
-    return this.customersSignal().filter(c => 
-      c.name.toLowerCase().includes(filter)
-    );
+    return this.customersSignal().filter((c) => c.name.toLowerCase().includes(filter));
   });
-  
+
   setFilter(filter: string) {
     this.filterSignal.set(filter);
   }
-  
+
   loadCustomers() {
-    return this.http.get<Customer[]>('/api/customers').pipe(
-      tap(customers => this.customersSignal.set(customers))
-    );
+    return this.http
+      .get<Customer[]>('/api/customers')
+      .pipe(tap((customers) => this.customersSignal.set(customers)));
   }
 }
 
@@ -249,15 +243,12 @@ export class CustomerService {
 export class CustomerService {
   private customersSubject = new BehaviorSubject<Customer[]>([]);
   private filterSubject = new BehaviorSubject<string>('');
-  
+
   // Recalculates on every emission
-  filteredCustomers$ = combineLatest([
-    this.customersSubject,
-    this.filterSubject
-  ]).pipe(
-    map(([customers, filter]) => 
-      customers.filter(c => c.name.toLowerCase().includes(filter.toLowerCase()))
-    )
+  filteredCustomers$ = combineLatest([this.customersSubject, this.filterSubject]).pipe(
+    map(([customers, filter]) =>
+      customers.filter((c) => c.name.toLowerCase().includes(filter.toLowerCase())),
+    ),
   );
 }
 ```
@@ -273,11 +264,11 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
   standalone: true,
   imports: [ScrollingModule],
   template: `
-    <cdk-virtual-scroll-viewport 
-      itemSize="50" 
+    <cdk-virtual-scroll-viewport
+      itemSize="50"
       class="h-[600px]"
     >
-      <div 
+      <div
         *cdkVirtualFor="let customer of customers(); trackBy: trackById"
         class="h-[50px]"
       >
@@ -288,7 +279,7 @@ import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrollin
 })
 export class CustomerListComponent {
   customers = signal<Customer[]>([]);
-  
+
   trackById(index: number, item: Customer): number {
     return item.id;
   }
@@ -308,15 +299,15 @@ export class CustomerListComponent {
 export class CustomerCacheService {
   private cache = new Map<string, { data: any; timestamp: number }>();
   private readonly TTL = 5 * 60 * 1000; // 5 minutes
-  
+
   get<T>(key: string, fetcher: () => Observable<T>): Observable<T> {
     const cached = this.cache.get(key);
-    
+
     // Return cached if valid
     if (cached && Date.now() - cached.timestamp < this.TTL) {
       return of(cached.data as T);
     }
-    
+
     // Fetch and cache
     return fetcher().pipe(
       tap(data => {
@@ -327,11 +318,11 @@ export class CustomerCacheService {
       })
     );
   }
-  
+
   invalidate(key: string) {
     this.cache.delete(key);
   }
-  
+
   clear() {
     this.cache.clear();
   }
@@ -342,13 +333,13 @@ export class CustomerCacheService {
 export class CustomerService {
   private cache = inject(CustomerCacheService);
   private http = inject(HttpClient);
-  
+
   getCustomers(): Observable<Customer[]> {
-    return this.cache.get('customers', () => 
+    return this.cache.get('customers', () =>
       this.http.get<Customer[]>('/api/customers')
     );
   }
-  
+
   createCustomer(dto: CustomerCreate): Observable<Customer> {
     return this.http.post<Customer>('/api/customers', dto).pipe(
       tap(() => this.cache.invalidate('customers'))
@@ -371,58 +362,50 @@ import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 @Component({
   selector: 'app-customer-search',
   template: `
-    <input 
-      type="text" 
-      [formControl]="searchControl"
-      placeholder="Search customers..."
-    />
-    
+    <input type="text" [formControl]="searchControl" placeholder="Search customers..." />
+
     @if (loading()) {
       <p-progressSpinner />
     }
-    
+
     @for (customer of results(); track customer.id) {
       <div>{{ customer.name }}</div>
     }
-  `
+  `,
 })
 export class CustomerSearchComponent implements OnInit {
   searchControl = new FormControl('');
   results = signal<Customer[]>([]);
   loading = signal(false);
-  
+
   private customerService = inject(CustomerService);
-  
+
   ngOnInit() {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),           // Wait 300ms after typing stops
-      distinctUntilChanged(),      // Only if value changed
-      tap(() => this.loading.set(true)),
-      switchMap(query =>           // Cancel previous request
-        this.customerService.searchCustomers(query || '')
-      ),
-      tap(() => this.loading.set(false))
-    ).subscribe(results => this.results.set(results));
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300), // Wait 300ms after typing stops
+        distinctUntilChanged(), // Only if value changed
+        tap(() => this.loading.set(true)),
+        switchMap(
+          (
+            query, // Cancel previous request
+          ) => this.customerService.searchCustomers(query || ''),
+        ),
+        tap(() => this.loading.set(false)),
+      )
+      .subscribe((results) => this.results.set(results));
   }
 }
 
 // ❌ SUBOPTIMAL: Search on every keystroke
 @Component({
-  template: `
-    <input 
-      type="text" 
-      (input)="onSearch($event)"
-      placeholder="Search customers..."
-    />
-  `
+  template: ` <input type="text" (input)="onSearch($event)" placeholder="Search customers..." /> `,
 })
 export class CustomerSearchComponent {
   onSearch(event: Event) {
     const query = (event.target as HTMLInputElement).value;
     // Hits API on every keystroke!
-    this.customerService.searchCustomers(query).subscribe(
-      results => this.results.set(results)
-    );
+    this.customerService.searchCustomers(query).subscribe((results) => this.results.set(results));
   }
 }
 ```
@@ -438,18 +421,18 @@ import { angular } from '@analogjs/vite-plugin-angular';
 
 export default defineConfig({
   plugins: [angular()],
-  
+
   build: {
     target: 'es2022',
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,        // Remove console.log in production
+        drop_console: true, // Remove console.log in production
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info']
-      }
+        pure_funcs: ['console.log', 'console.info'],
+      },
     },
-    
+
     rollupOptions: {
       output: {
         manualChunks: {
@@ -458,38 +441,32 @@ export default defineConfig({
             '@angular/core',
             '@angular/common',
             '@angular/router',
-            '@angular/forms'
+            '@angular/forms',
           ],
           'vendor-primeng': [
             'primeng/button',
             'primeng/table',
             'primeng/inputtext',
-            'primeng/dropdown'
+            'primeng/dropdown',
           ],
-          'vendor-rxjs': ['rxjs']
-        }
-      }
+          'vendor-rxjs': ['rxjs'],
+        },
+      },
     },
-    
-    chunkSizeWarningLimit: 500,    // Warn if chunk > 500 KB
-    sourcemap: false                // Disable sourcemaps in production
+
+    chunkSizeWarningLimit: 500, // Warn if chunk > 500 KB
+    sourcemap: false, // Disable sourcemaps in production
   },
-  
+
   optimizeDeps: {
-    include: [
-      '@angular/core',
-      '@angular/common',
-      '@angular/router',
-      '@angular/forms',
-      'rxjs'
-    ]
+    include: ['@angular/core', '@angular/common', '@angular/router', '@angular/forms', 'rxjs'],
   },
-  
+
   server: {
     hmr: {
-      overlay: true
-    }
-  }
+      overlay: true,
+    },
+  },
 });
 ```
 
@@ -515,16 +492,14 @@ import * as primeng from 'primeng';
     @if (showChart) {
       <ng-container *ngComponentOutlet="chartComponent()" />
     }
-  `
+  `,
 })
 export class CustomerDetailsComponent {
   showChart = signal(false);
   chartComponent = signal<Type<any> | null>(null);
-  
+
   async loadChart() {
-    const { CustomerChartComponent } = await import(
-      './components/customer-chart.component'
-    );
+    const { CustomerChartComponent } = await import('./components/customer-chart.component');
     this.chartComponent.set(CustomerChartComponent);
     this.showChart.set(true);
   }
@@ -543,48 +518,48 @@ import { CustomerChartComponent } from './components/customer-chart.component';
 @Injectable({ providedIn: 'root' })
 export class PerformanceMonitorService {
   private metrics = new Map<string, number[]>();
-  
+
   measure(name: string, fn: () => void) {
     const start = performance.now();
     fn();
     const duration = performance.now() - start;
-    
+
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
     this.metrics.get(name)!.push(duration);
-    
+
     if (!environment.production) {
       console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
     }
   }
-  
+
   async measureAsync(name: string, fn: () => Promise<void>) {
     const start = performance.now();
     await fn();
     const duration = performance.now() - start;
-    
+
     if (!this.metrics.has(name)) {
       this.metrics.set(name, []);
     }
     this.metrics.get(name)!.push(duration);
-    
+
     if (!environment.production) {
       console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
     }
   }
-  
+
   getMetrics(name: string) {
     const values = this.metrics.get(name) || [];
     if (values.length === 0) return null;
-    
+
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     const min = Math.min(...values);
     const max = Math.max(...values);
-    
+
     return { avg, min, max, count: values.length };
   }
-  
+
   logAllMetrics() {
     console.table(
       Array.from(this.metrics.keys()).map(name => ({
@@ -599,7 +574,7 @@ export class PerformanceMonitorService {
 @Component({...})
 export class CustomerListComponent implements OnInit {
   private perfMonitor = inject(PerformanceMonitorService);
-  
+
   ngOnInit() {
     this.perfMonitor.measureAsync('loadCustomers', async () => {
       await lastValueFrom(this.customerService.loadCustomers());
@@ -615,22 +590,22 @@ export class CustomerListComponent implements OnInit {
 @Component({...})
 export class CustomerListComponent implements OnDestroy {
   private subscriptions = new Subscription();
-  
+
   ngOnInit() {
     // Track all subscriptions
     this.subscriptions.add(
       this.customerService.customers$.subscribe(...)
     );
-    
+
     this.subscriptions.add(
       this.filterControl.valueChanges.subscribe(...)
     );
   }
-  
+
   ngOnDestroy() {
     // Clean up all subscriptions
     this.subscriptions.unsubscribe();
-    
+
     if (!environment.production) {
       console.log('[Memory] CustomerListComponent destroyed');
     }
@@ -641,7 +616,7 @@ export class CustomerListComponent implements OnDestroy {
 @Component({...})
 export class CustomerListComponent {
   private destroyRef = inject(DestroyRef);
-  
+
   ngOnInit() {
     this.customerService.customers$.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -779,19 +754,19 @@ find dist -type f -size +100k -exec ls -lh {} \;
 
 ### Bundle Analysis
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| Main Bundle | X KB | 200 KB | ✅/❌ |
-| Total Size | X KB | 500 KB | ✅/❌ |
-| Lazy Chunks | X KB | 50 KB | ✅/❌ |
+| Metric      | Current | Target | Status |
+| ----------- | ------- | ------ | ------ |
+| Main Bundle | X KB    | 200 KB | ✅/❌  |
+| Total Size  | X KB    | 500 KB | ✅/❌  |
+| Lazy Chunks | X KB    | 50 KB  | ✅/❌  |
 
 ### Runtime Performance
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| FCP | X ms | 1500 ms | ✅/❌ |
-| LCP | X ms | 2500 ms | ✅/❌ |
-| TTI | X ms | 3000 ms | ✅/❌ |
+| Metric | Current | Target  | Status |
+| ------ | ------- | ------- | ------ |
+| FCP    | X ms    | 1500 ms | ✅/❌  |
+| LCP    | X ms    | 2500 ms | ✅/❌  |
+| TTI    | X ms    | 3000 ms | ✅/❌  |
 
 ## Issues Found
 

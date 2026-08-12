@@ -1,11 +1,17 @@
 <div class="w-72">
-  <div class="flex items-center justify-between gap-2 px-4 py-3 border-b border-surface-100 dark:border-surface-800">
+  <div
+    class="flex items-center justify-between gap-2 px-4 py-3 border-b border-surface-100 dark:border-surface-800"
+  >
     <div class="flex items-center gap-2">
       <i class="pi pi-warehouse text-sm text-surface-500 dark:text-surface-400"></i>
-      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Stock por Almacén</span>
+      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >Stock por Almacén</span
+      >
     </div>
     @if (entries().length > 0 && total() > 0) {
-      <span class="text-xs font-mono px-1.5 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
+      <span
+        class="text-xs font-mono px-1.5 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300"
+      >
         {{ total() | number: '1.0-3' }}
       </span>
     }
@@ -18,14 +24,18 @@
       @for (entry of entries(); track entry.warehouseId; let i = $index) {
         <div class="flex items-center justify-between gap-3">
           <div class="flex flex-col min-w-0">
-            <span class="text-xs font-medium text-surface-800 dark:text-surface-200 truncate">{{ entry.warehouseName }}</span>
+            <span class="text-xs font-medium text-surface-800 dark:text-surface-200 truncate">{{
+              entry.warehouseName
+            }}</span>
             @if (showStockDetails()) {
-            <span class="text-xs text-surface-400 dark:text-surface-500">
-              disp: {{ entry.available | number: '1.0-3' }}
-              @if (entry.reserved > 0) {
-                <span class="text-amber-500 dark:text-amber-400 ml-1">| res: {{ entry.reserved | number: '1.0-3' }}</span>
-              }
-            </span>
+              <span class="text-xs text-surface-400 dark:text-surface-500">
+                disp: {{ entry.available | number: '1.0-3' }}
+                @if (entry.reserved > 0) {
+                  <span class="text-amber-500 dark:text-amber-400 ml-1"
+                    >| res: {{ entry.reserved | number: '1.0-3' }}</span
+                  >
+                }
+              </span>
             }
           </div>
           <p-inputNumber

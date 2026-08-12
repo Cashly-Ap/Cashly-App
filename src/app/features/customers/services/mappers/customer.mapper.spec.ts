@@ -25,7 +25,13 @@ describe('CustomerMapper', () => {
     ],
     phones: [{ id: 'phone-001', customerId: 'uuid-001', phone: '0212-1234567' }],
     addresses: [
-      { id: 'addr-001', customerId: 'uuid-001', address: 'Av. Principal, Edificio Acme', billing: true, active: true },
+      {
+        id: 'addr-001',
+        customerId: 'uuid-001',
+        address: 'Av. Principal, Edificio Acme',
+        billing: true,
+        active: true,
+      },
     ],
   };
 
@@ -70,14 +76,22 @@ describe('CustomerMapper', () => {
       const result = mapper.toFormModel(mockDetails);
 
       expect(result.emails).toHaveLength(2);
-      expect(result.emails[0]).toEqual({ id: 'email-001', customerId: 'uuid-001', email: 'contact@acme.com' });
+      expect(result.emails[0]).toEqual({
+        id: 'email-001',
+        customerId: 'uuid-001',
+        email: 'contact@acme.com',
+      });
     });
 
     it('should map phones correctly', () => {
       const result = mapper.toFormModel(mockDetails);
 
       expect(result.phones).toHaveLength(1);
-      expect(result.phones[0]).toEqual({ id: 'phone-001', customerId: 'uuid-001', phone: '0212-1234567' });
+      expect(result.phones[0]).toEqual({
+        id: 'phone-001',
+        customerId: 'uuid-001',
+        phone: '0212-1234567',
+      });
     });
 
     it('should map addresses correctly', () => {
@@ -135,7 +149,9 @@ describe('CustomerMapper', () => {
       const form = mapper.toFormModel(mockDetails);
       const result = mapper.toCreateRequest(form, warehouseIds);
 
-      expect(result.addresses).toEqual([{ address: 'Av. Principal, Edificio Acme', billing: true, active: true }]);
+      expect(result.addresses).toEqual([
+        { address: 'Av. Principal, Edificio Acme', billing: true, active: true },
+      ]);
     });
   });
 
@@ -155,7 +171,9 @@ describe('CustomerMapper', () => {
 
       expect(result.emails).toEqual([{ email: 'contact@acme.com' }, { email: 'sales@acme.com' }]);
       expect(result.phones).toEqual([{ phone: '0212-1234567' }]);
-      expect(result.addresses).toEqual([{ address: 'Av. Principal, Edificio Acme', billing: true, active: true }]);
+      expect(result.addresses).toEqual([
+        { address: 'Av. Principal, Edificio Acme', billing: true, active: true },
+      ]);
     });
   });
 });

@@ -48,7 +48,9 @@
   } @else if (payments().length === 0) {
     <div class="flex flex-col items-center justify-center py-16">
       <i class="pi pi-inbox text-5xl text-surface-300 mb-4"></i>
-      <h4 class="font-bold text-surface-700 dark:text-surface-300 m-0 text-lg">No hay pagos registrados</h4>
+      <h4 class="font-bold text-surface-700 dark:text-surface-300 m-0 text-lg">
+        No hay pagos registrados
+      </h4>
       <p class="text-surface-500 dark:text-surface-400 m-0 mt-1">
         Seleccione un cliente y registre un pago
       </p>
@@ -85,13 +87,15 @@
             {{ payment.invoiceNumber }}
           </td>
           <td class="font-semibold font-mono text-green-600 dark:text-green-400">
-            {{ payment.amount | currency : 'USD' : 'symbol' : '1.2-2' }}
+            {{ payment.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
           </td>
           <td class="text-surface-700 dark:text-surface-300">
-            {{ payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName }}
+            {{
+              payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName
+            }}
           </td>
           <td class="text-surface-600 dark:text-surface-400 text-sm">
-            {{ payment.paymentDate | date : 'dd/MM/yyyy' }}
+            {{ payment.paymentDate | date: 'dd/MM/yyyy' }}
           </td>
           <td>
             <p-tag
@@ -115,9 +119,7 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" class="text-center py-8 text-surface-500">
-            No se encontraron pagos
-          </td>
+          <td colspan="7" class="text-center py-8 text-surface-500">No se encontraron pagos</td>
         </tr>
       </ng-template>
     </p-table>

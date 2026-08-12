@@ -56,7 +56,9 @@ describe('PdfViewerService', () => {
     it('should include params in request', () => {
       service.open(mockConfig);
 
-      const req = httpMock.expectOne((r) => r.url === '/api/products/pdf/catalog' && r.params.get('differentialId') === '123');
+      const req = httpMock.expectOne(
+        (r) => r.url === '/api/products/pdf/catalog' && r.params.get('differentialId') === '123',
+      );
       expect(req.request.params.get('differentialId')).toBe('123');
 
       req.flush(new Blob(['test'], { type: 'application/pdf' }));
@@ -80,7 +82,9 @@ describe('PdfViewerService', () => {
       req.error(new ProgressEvent('error'), { status: 500 });
 
       expect(service.loading()).toBe(false);
-      expect(service.error()).toBe('Error al cargar el documento PDF. Por favor, intente nuevamente.');
+      expect(service.error()).toBe(
+        'Error al cargar el documento PDF. Por favor, intente nuevamente.',
+      );
     });
 
     it('should set specific error message for 404', () => {

@@ -22,6 +22,7 @@ You are the Angular Architecture Agent for the Lexand project. Your role is to d
 **IMPORTANT**: Before implementing any module, you MUST read the module-specific documentation file located at `docs/modules/<module-name>.md`.
 
 This documentation contains:
+
 - **Exact interface definitions** that must be used
 - **API endpoint structure** and responses
 - **Validation rules** for each field
@@ -47,6 +48,7 @@ This documentation contains:
 ### If Module Documentation Doesn't Exist
 
 If `docs/modules/<module-name>.md` doesn't exist, you MUST:
+
 1. Ask the user for the API contract and interface definitions
 2. Create the `docs/modules/<module-name>.md` file FIRST
 3. Then implement the module following that documentation
@@ -224,6 +226,7 @@ onEvent(event: Event) {
 6. Note ALL business rules and constraints
 
 **If the documentation doesn't exist**, STOP and ask the user for:
+
 - API contract/specification
 - Backend interface definitions
 - Validation requirements
@@ -246,12 +249,12 @@ After reading the documentation, analyze:
 Write tests first using Vitest:
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import { TestBed } from "@angular/core/testing";
-import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
-import { provideHttpClient } from "@angular/common/http";
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
 
-describe("CustomerService", () => {
+describe('CustomerService', () => {
   let service: CustomerService;
   let httpMock: HttpTestingController;
 
@@ -264,23 +267,23 @@ describe("CustomerService", () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it("should create customer with valid data", () => {
-    const mockCustomer = { id: 1, name: "Test Customer" };
+  it('should create customer with valid data', () => {
+    const mockCustomer = { id: 1, name: 'Test Customer' };
 
     service.createCustomer(mockCustomer).subscribe((customer) => {
       expect(customer).toEqual(mockCustomer);
     });
 
-    const req = httpMock.expectOne("/api/customers");
-    expect(req.request.method).toBe("POST");
+    const req = httpMock.expectOne('/api/customers');
+    expect(req.request.method).toBe('POST');
     req.flush(mockCustomer);
   });
 
-  it("should validate required fields", () => {
+  it('should validate required fields', () => {
     // Test implementation
   });
 
-  it("should handle API errors gracefully", () => {
+  it('should handle API errors gracefully', () => {
     // Test implementation
   });
 });
@@ -323,13 +326,13 @@ export interface CustomerAddress {
 export enum CustomerStatus {
   ACTIVE = 'active',
   INACTIVE = 'inactive',
-  SUSPENDED = 'suspended'
+  SUSPENDED = 'suspended',
 }
 
 export enum AddressType {
   BILLING = 'billing',
   SHIPPING = 'shipping',
-  BOTH = 'both'
+  BOTH = 'both',
 }
 
 // Specific interfaces for different views
@@ -390,19 +393,19 @@ export interface CustomerCreate {
 **Service Layer Structure:**
 
 - **API Service** (`services/api/`) - HTTP layer
-- **Application Service** (`services/application/`) - Business logic layer  
+- **Application Service** (`services/application/`) - Business logic layer
 - **Mappers** (`services/mappers/`) - DTO transformation
 
 **API Service** (`services/api/customer-api.service.ts`):
 
 ```typescript
-import { Injectable, inject } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
-import { environment } from "@environments/environment";
-import { Customer, CustomerCreate, CustomerEdit } from "@features/customers/models";
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '@environments/environment';
+import { Customer, CustomerCreate, CustomerEdit } from '@features/customers/models';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerApiService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/customers`;
@@ -432,13 +435,13 @@ export class CustomerApiService {
 **Application Service** (`services/application/customer-application.service.ts`):
 
 ```typescript
-import { Injectable, inject, signal } from "@angular/core";
-import { Observable, tap } from "rxjs";
-import { CustomerApiService } from "@features/customers/services/api";
-import { CustomerMapper } from "@features/customers/services/mappers";
-import { Customer, CustomerList, CustomerCreate, CustomerEdit } from "@features/customers/models";
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
+import { CustomerApiService } from '@features/customers/services/api';
+import { CustomerMapper } from '@features/customers/services/mappers';
+import { Customer, CustomerList, CustomerCreate, CustomerEdit } from '@features/customers/models';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerApplicationService {
   private apiService = inject(CustomerApiService);
   private mapper = inject(CustomerMapper);
@@ -459,7 +462,7 @@ export class CustomerApplicationService {
     return this.apiService.getAll().pipe(
       tap({
         next: (customers) => {
-          const listItems = customers.map(c => this.mapper.toList(c));
+          const listItems = customers.map((c) => this.mapper.toList(c));
           this.customersSignal.set(listItems);
           this.loadingSignal.set(false);
         },
@@ -511,10 +514,10 @@ export class CustomerApplicationService {
 **Mapper Service** (`services/mappers/customer.mapper.ts`):
 
 ```typescript
-import { Injectable } from "@angular/core";
-import { Customer, CustomerList, CustomerEdit, CustomerDetail } from "@features/customers/models";
+import { Injectable } from '@angular/core';
+import { Customer, CustomerList, CustomerEdit, CustomerDetail } from '@features/customers/models';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerMapper {
   toList(customer: Customer): CustomerList {
     return {
@@ -555,16 +558,16 @@ export class CustomerMapper {
 **Component** (`components/customer-general-section/customer-general-section.component.ts`):
 
 ```typescript
-import { Component, input } from "@angular/core";
-import { FormGroup } from "@angular/forms";
-import { FieldComponent } from "@core/forms/components";
-import { FormMode } from "@core/forms/enums";
+import { Component, input } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FieldComponent } from '@core/forms/components';
+import { FormMode } from '@core/forms/enums';
 
 @Component({
-  selector: "app-customer-general-section",
+  selector: 'app-customer-general-section',
   standalone: true,
   imports: [FieldComponent],
-  templateUrl: "./customer-general-section.component.html",
+  templateUrl: './customer-general-section.component.html',
 })
 export class CustomerGeneralSectionComponent {
   form = input.required<FormGroup>();
@@ -582,14 +585,14 @@ export class CustomerGeneralSectionComponent {
     placeholder="Ingrese la razón social"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('taxId')"
     label="RIF"
     placeholder="J-12345678-9"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('email')"
     label="Correo Electrónico"
@@ -597,7 +600,7 @@ export class CustomerGeneralSectionComponent {
     type="email"
     [required]="true"
   />
-  
+
   <app-field
     [control]="form().get('phone')"
     label="Teléfono"
@@ -616,17 +619,17 @@ export class CustomerGeneralSectionComponent {
 **List Page** (`pages/customers-list-page/customers-list-page.component.ts`):
 
 ```typescript
-import { Component, inject, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
-import { ListContainerComponent } from "@shared/components/list";
-import { CustomerApplicationService } from "@features/customers/services/application";
-import { CustomerList } from "@features/customers/models";
+import { Component, inject, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ListContainerComponent } from '@shared/components/list';
+import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerList } from '@features/customers/models';
 
 @Component({
-  selector: "app-customers-list-page",
+  selector: 'app-customers-list-page',
   standalone: true,
   imports: [ListContainerComponent],
-  templateUrl: "./customers-list-page.component.html",
+  templateUrl: './customers-list-page.component.html',
 })
 export class CustomersListPageComponent implements OnInit {
   protected service = inject(CustomerApplicationService);
@@ -637,15 +640,15 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(["/customers/new"]);
+    this.router.navigate(['/customers/new']);
   }
 
   onView(customer: CustomerList): void {
-    this.router.navigate(["/customers", customer.id]);
+    this.router.navigate(['/customers', customer.id]);
   }
 
   onEdit(customer: CustomerList): void {
-    this.router.navigate(["/customers", customer.id, "edit"]);
+    this.router.navigate(['/customers', customer.id, 'edit']);
   }
 
   onDelete(id: number): void {
@@ -659,16 +662,16 @@ export class CustomersListPageComponent implements OnInit {
 Handles both CREATE and EDIT modes using `BaseFormComponent`:
 
 ```typescript
-import { Component } from "@angular/core";
-import { BaseFormComponent } from "@core/forms/base";
-import { CustomerGeneralSectionComponent } from "@features/customers/components";
-import { CUSTOMER_FORM_CONFIG } from "./customers-form-page.config";
+import { Component } from '@angular/core';
+import { BaseFormComponent } from '@core/forms/base';
+import { CustomerGeneralSectionComponent } from '@features/customers/components';
+import { CUSTOMER_FORM_CONFIG } from './customers-form-page.config';
 
 @Component({
-  selector: "app-customers-form-page",
+  selector: 'app-customers-form-page',
   standalone: true,
   imports: [BaseFormComponent, CustomerGeneralSectionComponent],
-  templateUrl: "./customers-form-page.component.html",
+  templateUrl: './customers-form-page.component.html',
 })
 export class CustomersFormPageComponent extends BaseFormComponent {
   constructor() {
@@ -703,11 +706,11 @@ export class CustomersFormPageComponent extends BaseFormComponent {
     <p-tabPanel header="General">
       <app-customer-general-section [form]="form" [mode]="mode()" />
     </p-tabPanel>
-    
+
     <p-tabPanel header="Contacto">
       <app-customer-contact-section [form]="form" [mode]="mode()" />
     </p-tabPanel>
-    
+
     <p-tabPanel header="Direcciones">
       <app-customer-addresses-section [form]="form" [mode]="mode()" />
     </p-tabPanel>
@@ -718,17 +721,17 @@ export class CustomersFormPageComponent extends BaseFormComponent {
 **Details Page** (`pages/customers-details-page/customers-details-page.component.ts`):
 
 ```typescript
-import { Component, inject, OnInit, signal } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { DetailsCardComponent } from "@shared/components/details";
-import { CustomerApplicationService } from "@features/customers/services/application";
-import { CustomerDetail } from "@features/customers/models";
+import { Component, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DetailsCardComponent } from '@shared/components/details';
+import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerDetail } from '@features/customers/models';
 
 @Component({
-  selector: "app-customers-details-page",
+  selector: 'app-customers-details-page',
   standalone: true,
   imports: [DetailsCardComponent],
-  templateUrl: "./customers-details-page.component.html",
+  templateUrl: './customers-details-page.component.html',
 })
 export class CustomersDetailsPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
@@ -739,9 +742,9 @@ export class CustomersDetailsPageComponent implements OnInit {
   loading = signal<boolean>(false);
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get("id"));
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     this.loading.set(true);
-    
+
     this.service.getById(id).subscribe({
       next: (customer) => {
         this.customer.set(customer);
@@ -749,20 +752,20 @@ export class CustomersDetailsPageComponent implements OnInit {
       },
       error: () => {
         this.loading.set(false);
-        this.router.navigate(["/customers"]);
-      }
+        this.router.navigate(['/customers']);
+      },
     });
   }
 
   onEdit(): void {
     const id = this.customer()?.id;
     if (id) {
-      this.router.navigate(["/customers", id, "edit"]);
+      this.router.navigate(['/customers', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(["/customers"]);
+    this.router.navigate(['/customers']);
   }
 }
 ```
@@ -770,37 +773,41 @@ export class CustomersDetailsPageComponent implements OnInit {
 ### Step 7: Configure Routes
 
 ```typescript
-import { Routes } from "@angular/router";
-import { authGuard } from "@features/auth/guards";
+import { Routes } from '@angular/router';
+import { authGuard } from '@features/auth/guards';
 
 export const CUSTOMER_ROUTES: Routes = [
   {
-    path: "",
+    path: '',
     canActivate: [authGuard],
     children: [
       {
-        path: "",
-        loadComponent: () => 
-          import("./pages/customers-list-page/customers-list-page.component")
-            .then((m) => m.CustomersListPageComponent),
+        path: '',
+        loadComponent: () =>
+          import('./pages/customers-list-page/customers-list-page.component').then(
+            (m) => m.CustomersListPageComponent,
+          ),
       },
       {
-        path: "new",
-        loadComponent: () => 
-          import("./pages/customers-form-page/customers-form-page.component")
-            .then((m) => m.CustomersFormPageComponent),
+        path: 'new',
+        loadComponent: () =>
+          import('./pages/customers-form-page/customers-form-page.component').then(
+            (m) => m.CustomersFormPageComponent,
+          ),
       },
       {
-        path: ":id",
-        loadComponent: () => 
-          import("./pages/customers-details-page/customers-details-page.component")
-            .then((m) => m.CustomersDetailsPageComponent),
+        path: ':id',
+        loadComponent: () =>
+          import('./pages/customers-details-page/customers-details-page.component').then(
+            (m) => m.CustomersDetailsPageComponent,
+          ),
       },
       {
-        path: ":id/edit",
-        loadComponent: () => 
-          import("./pages/customers-form-page/customers-form-page.component")
-            .then((m) => m.CustomersFormPageComponent),
+        path: ':id/edit',
+        loadComponent: () =>
+          import('./pages/customers-form-page/customers-form-page.component').then(
+            (m) => m.CustomersFormPageComponent,
+          ),
       },
     ],
   },
@@ -822,21 +829,21 @@ This is a **MANDATORY** rule for the Lexand project. All imports must use the co
 
 ```typescript
 // ✅ CORRECT: Using path aliases with @ prefix
-import { Customer } from "@features/customers/models/customer.model";
-import { CustomerService } from "@features/customers/services/customer.service";
-import { authGuard } from "@guards/auth.guard";
-import { environment } from "@environments/environment";
-import { AuthService } from "@core/services/auth.service";
-import { BaseFormComponent } from "@core/forms";
-import { MainLayoutComponent } from "@layouts/main-layout.component";
-import { FieldComponent } from "@app/components/field";
-import { PendingTabsService } from "@pending-tabs/pending-tabs.service";
+import { Customer } from '@features/customers/models/customer.model';
+import { CustomerService } from '@features/customers/services/customer.service';
+import { authGuard } from '@guards/auth.guard';
+import { environment } from '@environments/environment';
+import { AuthService } from '@core/services/auth.service';
+import { BaseFormComponent } from '@core/forms';
+import { MainLayoutComponent } from '@layouts/main-layout.component';
+import { FieldComponent } from '@app/components/field';
+import { PendingTabsService } from '@pending-tabs/pending-tabs.service';
 
 // ❌ INCORRECT: Relative imports (NEVER DO THIS)
-import { Customer } from "../models/customer.model";
-import { CustomerService } from "../../services/customer.service";
-import { authGuard } from "../../../guards/auth.guard";
-import { BaseFormComponent } from "../../../core/forms";
+import { Customer } from '../models/customer.model';
+import { CustomerService } from '../../services/customer.service';
+import { authGuard } from '../../../guards/auth.guard';
+import { BaseFormComponent } from '../../../core/forms';
 ```
 
 #### Why Path Aliases are Mandatory:
@@ -867,27 +874,27 @@ import { BaseFormComponent } from "../../../core/forms";
 
 ```typescript
 // 1. Angular core imports
-import { Component, inject } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { ReactiveFormsModule, FormGroup } from "@angular/forms";
-import { Router, ActivatedRoute } from "@angular/router";
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 
 // 2. Third-party libraries (PrimeNG, etc.)
-import { ButtonModule } from "primeng/button";
-import { TableModule } from "primeng/table";
-import { MessageService } from "primeng/api";
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
+import { MessageService } from 'primeng/api';
 
 // 3. Project aliases (always with @)
-import { MainLayoutComponent } from "@layouts/main-layout.component";
-import { FieldComponent } from "@app/components/field";
-import { BaseFormComponent, FormMode } from "@core/forms";
-import { authGuard } from "@guards/auth.guard";
-import { CustomerService } from "@features/customers/services";
-import { Customer, CustomerType } from "@features/customers/models";
-import { environment } from "@environments/environment";
+import { MainLayoutComponent } from '@layouts/main-layout.component';
+import { FieldComponent } from '@app/components/field';
+import { BaseFormComponent, FormMode } from '@core/forms';
+import { authGuard } from '@guards/auth.guard';
+import { CustomerService } from '@features/customers/services';
+import { Customer, CustomerType } from '@features/customers/models';
+import { environment } from '@environments/environment';
 
 // 4. Relative imports ONLY for same-folder config/types
-import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from "./customers-form-page.config";
+import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from './customers-form-page.config';
 ```
 
 #### Special Cases:
@@ -896,22 +903,22 @@ import { CUSTOMER_FORM_CONFIG, CustomerFormValue } from "./customers-form-page.c
 
 ```typescript
 // ✅ OK: Config file in same folder
-import { CUSTOMER_FORM_CONFIG } from "./customers-form-page.config";
+import { CUSTOMER_FORM_CONFIG } from './customers-form-page.config';
 
 // ✅ Also OK: Using feature barrel export
-import { CUSTOMER_FORM_CONFIG } from "@features/customers/pages/customers-form-page";
+import { CUSTOMER_FORM_CONFIG } from '@features/customers/pages/customers-form-page';
 ```
 
 **Barrel Exports (index.ts)**:
 
 ```typescript
 // features/customers/index.ts
-export * from "./models";
-export * from "./services";
-export * from "./validators";
+export * from './models';
+export * from './services';
+export * from './validators';
 
 // Usage in other files:
-import { Customer, CustomerService, CustomerValidators } from "@features/customers";
+import { Customer, CustomerService, CustomerValidators } from '@features/customers';
 ```
 
 #### Checklist for Every Import:
@@ -937,26 +944,26 @@ Every form must define messages in Spanish following this exact structure:
 // ✅ CORRECT: All messages in Spanish
 export const CUSTOMER_FORM_MESSAGES: FormMessages = {
   create: {
-    success: "Cliente creado exitosamente",
-    error: "Error al crear el cliente. Por favor, intente nuevamente.",
+    success: 'Cliente creado exitosamente',
+    error: 'Error al crear el cliente. Por favor, intente nuevamente.',
   },
   update: {
-    success: "Cliente actualizado exitosamente",
-    error: "Error al actualizar el cliente. Por favor, intente nuevamente.",
+    success: 'Cliente actualizado exitosamente',
+    error: 'Error al actualizar el cliente. Por favor, intente nuevamente.',
   },
   load: {
-    error: "Error al cargar el cliente. Es posible que no exista.",
+    error: 'Error al cargar el cliente. Es posible que no exista.',
   },
   validation: {
-    error: "Por favor, complete todos los campos requeridos correctamente",
+    error: 'Por favor, complete todos los campos requeridos correctamente',
   },
 };
 
 // ❌ INCORRECT: Messages in English (NEVER!)
 export const CUSTOMER_FORM_MESSAGES: FormMessages = {
   create: {
-    success: "Customer created successfully", // NO!
-    error: "Error creating customer. Please try again.", // NO!
+    success: 'Customer created successfully', // NO!
+    error: 'Error creating customer. Please try again.', // NO!
   },
   // ...
 };
@@ -964,8 +971,8 @@ export const CUSTOMER_FORM_MESSAGES: FormMessages = {
 // ❌ INCORRECT: Mixed languages (NEVER!)
 export const CUSTOMER_FORM_MESSAGES: FormMessages = {
   create: {
-    success: "Cliente creado exitosamente", // Spanish
-    error: "Error creating customer", // English - INCONSISTENT!
+    success: 'Cliente creado exitosamente', // Spanish
+    error: 'Error creating customer', // English - INCONSISTENT!
   },
   // ...
 };
@@ -979,74 +986,74 @@ Use these **standard phrases** for consistency across all modules:
 
 ```typescript
 // Masculine entities (el cliente, el producto, el pedido)
-success: "[Entidad] creado exitosamente";
+success: '[Entidad] creado exitosamente';
 // Examples:
-("Cliente creado exitosamente");
-("Producto creado exitosamente");
-("Pedido creado exitosamente");
+('Cliente creado exitosamente');
+('Producto creado exitosamente');
+('Pedido creado exitosamente');
 
 // Feminine entities (la factura, la dirección, la orden)
-success: "[Entidad] creada exitosamente";
+success: '[Entidad] creada exitosamente';
 // Examples:
-("Factura creada exitosamente");
-("Dirección creada exitosamente");
-("Orden creada exitosamente");
+('Factura creada exitosamente');
+('Dirección creada exitosamente');
+('Orden creada exitosamente');
 
 // Updates (same agreement rules)
-("Cliente actualizado exitosamente");
-("Factura actualizada exitosamente");
+('Cliente actualizado exitosamente');
+('Factura actualizada exitosamente');
 
 // Deletions (same agreement rules)
-("Cliente eliminado exitosamente");
-("Factura eliminada exitosamente");
+('Cliente eliminado exitosamente');
+('Factura eliminada exitosamente');
 ```
 
 **Error Messages** (use neutral article "el/la"):
 
 ```typescript
 // Create errors
-error: "Error al crear [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al crear [el/la] [entidad]. Por favor, intente nuevamente.';
 // Examples:
-("Error al crear el cliente. Por favor, intente nuevamente.");
-("Error al crear la factura. Por favor, intente nuevamente.");
+('Error al crear el cliente. Por favor, intente nuevamente.');
+('Error al crear la factura. Por favor, intente nuevamente.');
 
 // Update errors
-error: "Error al actualizar [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al actualizar [el/la] [entidad]. Por favor, intente nuevamente.';
 // Examples:
-("Error al actualizar el producto. Por favor, intente nuevamente.");
-("Error al actualizar la orden. Por favor, intente nuevamente.");
+('Error al actualizar el producto. Por favor, intente nuevamente.');
+('Error al actualizar la orden. Por favor, intente nuevamente.');
 
 // Delete errors
-error: "Error al eliminar [el/la] [entidad]. Por favor, intente nuevamente.";
+error: 'Error al eliminar [el/la] [entidad]. Por favor, intente nuevamente.';
 
 // Load errors
-error: "Error al cargar [el/la] [entidad]. Es posible que no exista.";
+error: 'Error al cargar [el/la] [entidad]. Es posible que no exista.';
 ```
 
 **Validation Messages**:
 
 ```typescript
 // Required fields
-"Por favor, complete todos los campos requeridos correctamente";
+'Por favor, complete todos los campos requeridos correctamente';
 
 // Invalid format (specific field)
-"El formato del [campo] es inválido";
-"El formato del correo electrónico es inválido";
-"El formato del teléfono es inválido";
-"El formato del RIF es inválido";
+'El formato del [campo] es inválido';
+'El formato del correo electrónico es inválido';
+'El formato del teléfono es inválido';
+'El formato del RIF es inválido';
 
 // Duplicate entries
-"Ya existe un registro con estos datos";
-"Ya existe un cliente con este correo electrónico";
+'Ya existe un registro con estos datos';
+'Ya existe un cliente con este correo electrónico';
 
 // Range/limit errors
-"El valor debe estar entre [min] y [max]";
-"La cantidad debe ser mayor a cero";
-"El monto no puede ser negativo";
+'El valor debe estar entre [min] y [max]';
+'La cantidad debe ser mayor a cero';
+'El monto no puede ser negativo';
 
 // Required field (specific)
-"El campo [nombre] es requerido";
-"El correo electrónico es requerido";
+'El campo [nombre] es requerido';
+'El correo electrónico es requerido';
 ```
 
 #### Template Strings and Dynamic Content (ALWAYS in Spanish)
@@ -1055,15 +1062,23 @@ All text in templates must be in Spanish:
 
 ```typescript
 // ✅ CORRECT: Spanish template strings
-title = computed(() => (this.mode() === FormMode.CREATE ? `Nuevo ${this.getEntityDisplayName()}` : `Editar ${this.getEntityDisplayName()}`));
+title = computed(() =>
+  this.mode() === FormMode.CREATE
+    ? `Nuevo ${this.getEntityDisplayName()}`
+    : `Editar ${this.getEntityDisplayName()}`,
+);
 
-subtitle = computed(() => (this.mode() === FormMode.CREATE ? `Complete la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}` : `Actualice la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`));
+subtitle = computed(() =>
+  this.mode() === FormMode.CREATE
+    ? `Complete la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`
+    : `Actualice la información ${this.getEntityArticle()} ${this.getEntityDisplayName().toLowerCase()}`,
+);
 
 // In config files:
 export const CUSTOMER_FORM_CONFIG = {
-  entityDisplayName: "Cliente", // Spanish!
-  entityArticle: "del", // Spanish!
-  entityRouteBase: "/customers",
+  entityDisplayName: 'Cliente', // Spanish!
+  entityArticle: 'del', // Spanish!
+  entityRouteBase: '/customers',
   // ...
 } as const;
 
@@ -1099,12 +1114,12 @@ title = computed(
 ```typescript
 // ✅ CORRECT: Spanish confirmation dialog
 this.confirmationService.confirm({
-  message: "¿Está seguro de que desea eliminar este cliente?",
-  header: "Confirmar Eliminación",
-  icon: "pi pi-exclamation-triangle",
-  acceptLabel: "Sí, eliminar",
-  rejectLabel: "Cancelar",
-  acceptButtonStyleClass: "p-button-danger",
+  message: '¿Está seguro de que desea eliminar este cliente?',
+  header: 'Confirmar Eliminación',
+  icon: 'pi pi-exclamation-triangle',
+  acceptLabel: 'Sí, eliminar',
+  rejectLabel: 'Cancelar',
+  acceptButtonStyleClass: 'p-button-danger',
   accept: () => {
     // Delete logic
   },
@@ -1112,10 +1127,10 @@ this.confirmationService.confirm({
 
 // ❌ INCORRECT: English confirmation dialog
 this.confirmationService.confirm({
-  message: "Are you sure you want to delete this customer?", // NO!
-  header: "Confirm Delete", // NO!
-  acceptLabel: "Yes, delete", // NO!
-  rejectLabel: "Cancel", // NO!
+  message: 'Are you sure you want to delete this customer?', // NO!
+  header: 'Confirm Delete', // NO!
+  acceptLabel: 'Yes, delete', // NO!
+  rejectLabel: 'Cancel', // NO!
   // ...
 });
 ```
@@ -1192,38 +1207,38 @@ this.confirmationService.confirm({
 ```typescript
 // ✅ CORRECT: Spanish toast messages
 this.messageService.add({
-  severity: "success",
-  summary: "Éxito",
-  detail: "Cliente creado exitosamente",
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente',
   life: 3000,
 });
 
 this.messageService.add({
-  severity: "error",
-  summary: "Error",
-  detail: "Error al procesar la solicitud",
+  severity: 'error',
+  summary: 'Error',
+  detail: 'Error al procesar la solicitud',
   life: 5000,
 });
 
 this.messageService.add({
-  severity: "warn",
-  summary: "Advertencia",
-  detail: "Por favor, revise los datos ingresados",
+  severity: 'warn',
+  summary: 'Advertencia',
+  detail: 'Por favor, revise los datos ingresados',
   life: 4000,
 });
 
 this.messageService.add({
-  severity: "info",
-  summary: "Información",
-  detail: "La operación puede tardar unos minutos",
+  severity: 'info',
+  summary: 'Información',
+  detail: 'La operación puede tardar unos minutos',
   life: 3000,
 });
 
 // ❌ INCORRECT: English toast messages
 this.messageService.add({
-  severity: "success",
-  summary: "Success", // NO!
-  detail: "Customer created successfully", // NO!
+  severity: 'success',
+  summary: 'Success', // NO!
+  detail: 'Customer created successfully', // NO!
 });
 ```
 
@@ -1739,11 +1754,11 @@ When writing code, **ALWAYS** follow these formatting rules from the start:
 
 ```typescript
 // ✅ CORRECT: Proper Prettier formatting
-import { Component, inject, signal } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { Router } from "@angular/router";
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-@Injectable({ providedIn: "root" })
+@Injectable({ providedIn: 'root' })
 export class CustomerService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/customers`;
@@ -1772,21 +1787,24 @@ export class CustomerService {
 }
 
 // ❌ INCORRECT: Poor formatting
-import { Component,inject,signal } from '@angular/core';
-import { FormBuilder,FormGroup,Validators } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-@Injectable({providedIn:'root'})
-export class CustomerService
-{
-  private http=inject(HttpClient)
-  private apiUrl=`${environment.apiUrl}/customers`
+@Injectable({ providedIn: 'root' })
+export class CustomerService {
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/customers`;
 
-  loadCustomers():Observable<Customer[]>
-  {
-    this.loading.set(true)
-    return this.apiService.getAll().pipe(tap({next:(customers)=>{
-      this.customers.set(customers);this.loading.set(false);
-    }}))
+  loadCustomers(): Observable<Customer[]> {
+    this.loading.set(true);
+    return this.apiService.getAll().pipe(
+      tap({
+        next: (customers) => {
+          this.customers.set(customers);
+          this.loading.set(false);
+        },
+      }),
+    );
   }
 }
 ```
@@ -1811,9 +1829,17 @@ export class CustomerService
 </div>
 
 <!-- ❌ INCORRECT: Poor HTML formatting -->
-<div class="container"><p-card><ng-template pTemplate="header"><h2>{{ customer.name }}</h2></ng-template>
-<div class="grid"><div class="col-12 md:col-6"><p><strong>Email:</strong> {{ customer.email }}</p>
-<p><strong>Phone:</strong> {{ customer.phone }}</p></div></div></p-card></div>
+<div class="container">
+  <p-card
+    ><ng-template pTemplate="header"><h2>{{ customer.name }}</h2></ng-template>
+    <div class="grid">
+      <div class="col-12 md:col-6">
+        <p><strong>Email:</strong> {{ customer.email }}</p>
+        <p><strong>Phone:</strong> {{ customer.phone }}</p>
+      </div>
+    </div></p-card
+  >
+</div>
 ```
 
 #### Line Length (120 characters max)
@@ -1821,15 +1847,21 @@ export class CustomerService
 ```typescript
 // ✅ CORRECT: Long lines wrapped at 120 characters
 const longConfigObject = {
-  entityDisplayName: "Cliente",
-  entityArticle: "del",
-  entityRouteBase: "/customers",
-  successMessage: "Cliente creado exitosamente",
-  errorMessage: "Error al crear el cliente. Por favor, intente nuevamente.",
+  entityDisplayName: 'Cliente',
+  entityArticle: 'del',
+  entityRouteBase: '/customers',
+  successMessage: 'Cliente creado exitosamente',
+  errorMessage: 'Error al crear el cliente. Por favor, intente nuevamente.',
 };
 
 // ❌ INCORRECT: Line too long (over 120 characters)
-const longConfigObject = { entityDisplayName: "Cliente", entityArticle: "del", entityRouteBase: "/customers", successMessage: "Cliente creado exitosamente", errorMessage: "Error al crear el cliente. Por favor, intente nuevamente." };
+const longConfigObject = {
+  entityDisplayName: 'Cliente',
+  entityArticle: 'del',
+  entityRouteBase: '/customers',
+  successMessage: 'Cliente creado exitosamente',
+  errorMessage: 'Error al crear el cliente. Por favor, intente nuevamente.',
+};
 ```
 
 #### Trailing Commas
@@ -1838,20 +1870,20 @@ const longConfigObject = { entityDisplayName: "Cliente", entityArticle: "del", e
 // ✅ CORRECT: Trailing commas in objects and arrays
 const customer = {
   id: 1,
-  name: "Test Customer",
-  email: "test@test.com", // <-- trailing comma
+  name: 'Test Customer',
+  email: 'test@test.com', // <-- trailing comma
 };
 
 const items = [
-  { id: 1, name: "Item 1" },
-  { id: 2, name: "Item 2" }, // <-- trailing comma
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' }, // <-- trailing comma
 ];
 
 // ❌ INCORRECT: No trailing comma
 const customer = {
   id: 1,
-  name: "Test Customer",
-  email: "test@test.com" // <-- missing comma
+  name: 'Test Customer',
+  email: 'test@test.com', // <-- missing comma
 };
 ```
 
@@ -1859,14 +1891,14 @@ const customer = {
 
 ```typescript
 // ✅ CORRECT: Always use semicolons
-const name = "John";
+const name = 'John';
 const age = 30;
 this.service.loadData();
 
 // ❌ INCORRECT: Missing semicolons
-const name = "John"
-const age = 30
-this.service.loadData()
+const name = 'John';
+const age = 30;
+this.service.loadData();
 ```
 
 #### Arrow Function Parentheses
@@ -1878,23 +1910,23 @@ loadData((error) => console.error(error));
 numbers.filter((n) => n > 0);
 
 // ❌ INCORRECT: Missing parentheses
-customers.map(customer => customer.name);
-loadData(error => console.error(error));
-numbers.filter(n => n > 0);
+customers.map((customer) => customer.name);
+loadData((error) => console.error(error));
+numbers.filter((n) => n > 0);
 ```
 
 #### Object and Array Spacing
 
 ```typescript
 // ✅ CORRECT: Proper spacing
-const obj = { name: "John", age: 30 };
+const obj = { name: 'John', age: 30 };
 const arr = [1, 2, 3];
 const empty = {};
 
 // ❌ INCORRECT: No spacing
-const obj = {name: "John", age: 30};
-const arr = [1,2,3];
-const empty = { };
+const obj = { name: 'John', age: 30 };
+const arr = [1, 2, 3];
+const empty = {};
 ```
 
 ### When to Format
@@ -1954,35 +1986,41 @@ For best results, configure your IDE to format on save:
 
 ```typescript
 // ❌ WRONG: Inconsistent spacing
-const obj={name:'John',age:30};
-if(condition){doSomething();}
-array.map(x=>x*2);
+const obj = { name: 'John', age: 30 };
+if (condition) {
+  doSomething();
+}
+array.map((x) => x * 2);
 
 // ✅ RIGHT: Consistent spacing
-const obj = { name: "John", age: 30 };
+const obj = { name: 'John', age: 30 };
 if (condition) {
   doSomething();
 }
 array.map((x) => x * 2);
 
 // ❌ WRONG: Mixed quotes
-const name = "John";
+const name = 'John';
 const msg = 'Hello';
 const template = `World`;
 
 // ✅ RIGHT: Consistent single quotes (except templates)
-const name = "John";
-const msg = "Hello";
+const name = 'John';
+const msg = 'Hello';
 const template = `World`;
 
 // ❌ WRONG: Long lines not wrapped
-const message = this.messageService.add({ severity: "success", summary: "Éxito", detail: "Cliente creado exitosamente con todos los datos requeridos" });
+const message = this.messageService.add({
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente con todos los datos requeridos',
+});
 
 // ✅ RIGHT: Long lines properly wrapped
 const message = this.messageService.add({
-  severity: "success",
-  summary: "Éxito",
-  detail: "Cliente creado exitosamente con todos los datos requeridos",
+  severity: 'success',
+  summary: 'Éxito',
+  detail: 'Cliente creado exitosamente con todos los datos requeridos',
 });
 ```
 

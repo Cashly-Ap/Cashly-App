@@ -5,6 +5,7 @@
 The Collections module displays commission records (cobranzas) that are automatically generated when payments are registered on invoices that have an associated merchant. This is a **read-only module** - collections cannot be created, edited, or deleted from the frontend.
 
 **Key Concepts**:
+
 - **Automatic Generation**: Collections are created automatically by the backend when a payment is registered
 - **Merchant Required**: Collections only exist for invoices with a merchant
 - **Commission Calculation**: Commission = payment amount × (merchant.commissionPercentage / 100)
@@ -88,6 +89,7 @@ src/app/features/collections/
 **Purpose**: Displays all collections in a searchable, sortable, paginated table.
 
 **Features**:
+
 - PrimeNG DataTable with server-side sorting and pagination
 - Search by invoice number, customer name, merchant name
 - Filter by merchant, customer, date range
@@ -104,6 +106,7 @@ src/app/features/collections/
 **Purpose**: Display complete collection information in read-only mode.
 
 **Features**:
+
 - Complete collection data display
 - Customer information section
 - Merchant information section
@@ -121,6 +124,7 @@ src/app/features/collections/
 **Purpose**: Display aggregated collection data for a merchant within a date range.
 
 **Features**:
+
 - Merchant selection (for ADMIN/USER roles)
 - Date range picker
 - Summary cards (total collections, total amount, total commission, average)
@@ -251,12 +255,12 @@ All endpoints use: `/api/collections`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint | Request Interface | Response Interface | Frontend Usage |
-|-------------|----------|-------------------|-------------------|----------------|
-| GET | /api/collections | `CollectionFilter` (query params) | `Page<CollectionList>` | List page |
-| GET | /api/collections/:id | - | `CollectionDetails` | Details page |
-| GET | /api/collections/merchant/:merchantId | `CollectionFilter` (query params) | `Page<CollectionList>` | Merchant collections |
-| GET | /api/collections/merchant/:merchantId/summary | `fromDate`, `toDate` | `CollectionSummary` | Summary page |
+| HTTP Method | Endpoint                                      | Request Interface                 | Response Interface     | Frontend Usage       |
+| ----------- | --------------------------------------------- | --------------------------------- | ---------------------- | -------------------- |
+| GET         | /api/collections                              | `CollectionFilter` (query params) | `Page<CollectionList>` | List page            |
+| GET         | /api/collections/:id                          | -                                 | `CollectionDetails`    | Details page         |
+| GET         | /api/collections/merchant/:merchantId         | `CollectionFilter` (query params) | `Page<CollectionList>` | Merchant collections |
+| GET         | /api/collections/merchant/:merchantId/summary | `fromDate`, `toDate`              | `CollectionSummary`    | Summary page         |
 
 ---
 
@@ -264,26 +268,28 @@ All endpoints use: `/api/collections`
 
 **Purpose**: List all collections with filters and pagination
 
-**Roles**: 
+**Roles**:
+
 - USER, ADMIN: Can view all collections
 - MERCHANT: Can only view own collections (auto-filtered by backend)
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| merchantId | UUID | - | Filter by merchant (ignored for MERCHANT role) |
-| customerId | UUID | - | Filter by customer |
-| invoiceId | UUID | - | Filter by invoice |
-| fromDate | date | - | Filter from collection date (YYYY-MM-DD) |
-| toDate | date | - | Filter to collection date (YYYY-MM-DD) |
-| page | number | 0 | Page number |
-| size | number | 20 | Page size |
-| sort | string | collectionDate,desc | Sort field and direction |
+| Parameter  | Type   | Default             | Description                                    |
+| ---------- | ------ | ------------------- | ---------------------------------------------- |
+| merchantId | UUID   | -                   | Filter by merchant (ignored for MERCHANT role) |
+| customerId | UUID   | -                   | Filter by customer                             |
+| invoiceId  | UUID   | -                   | Filter by invoice                              |
+| fromDate   | date   | -                   | Filter from collection date (YYYY-MM-DD)       |
+| toDate     | date   | -                   | Filter to collection date (YYYY-MM-DD)         |
+| page       | number | 0                   | Page number                                    |
+| size       | number | 20                  | Page size                                      |
+| sort       | string | collectionDate,desc | Sort field and direction                       |
 
 **Frontend Interface**: `Page<CollectionList>`
 
 **Example Response**:
+
 ```json
 {
   "content": [
@@ -296,9 +302,9 @@ All endpoints use: `/api/collections`
       "customerName": "ABC Company S.A.",
       "merchantId": "merchant-uuid-here",
       "merchantName": "Juan Perez",
-      "amountCollected": 500.00,
-      "commissionPercentage": 15.00,
-      "commissionAmount": 75.00,
+      "amountCollected": 500.0,
+      "commissionPercentage": 15.0,
+      "commissionAmount": 75.0,
       "collectionDate": "2026-01-15",
       "createdAt": "2026-01-15T14:00:00"
     }
@@ -316,13 +322,15 @@ All endpoints use: `/api/collections`
 
 **Purpose**: Get collection by ID
 
-**Roles**: 
+**Roles**:
+
 - USER, ADMIN: Can view any collection
 - MERCHANT: Can only view own collections
 
 **Frontend Interface**: `CollectionDetails`
 
 **Example Response**:
+
 ```json
 {
   "id": "collection-001-uuid",
@@ -334,15 +342,16 @@ All endpoints use: `/api/collections`
   "customerRif": "J-12345678-9",
   "merchantId": "merchant-uuid-here",
   "merchantName": "Juan Perez",
-  "amountCollected": 500.00,
-  "commissionPercentage": 15.00,
-  "commissionAmount": 75.00,
+  "amountCollected": 500.0,
+  "commissionPercentage": 15.0,
+  "commissionAmount": 75.0,
   "collectionDate": "2026-01-15",
   "createdAt": "2026-01-15T14:00:00"
 }
 ```
 
 **Errors**:
+
 - 401 - Unauthorized
 - 403 - MERCHANT trying to view another merchant's collection
 - 404 - Collection not found
@@ -353,22 +362,24 @@ All endpoints use: `/api/collections`
 
 **Purpose**: List collections for a specific merchant
 
-**Roles**: 
+**Roles**:
+
 - USER, ADMIN: Can view any merchant's collections
 - MERCHANT: Can only view own collections (merchantId must match)
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| fromDate | date | - | Filter from collection date |
-| toDate | date | - | Filter to collection date |
-| page | number | 0 | Page number |
-| size | number | 20 | Page size |
+| Parameter | Type   | Default | Description                 |
+| --------- | ------ | ------- | --------------------------- |
+| fromDate  | date   | -       | Filter from collection date |
+| toDate    | date   | -       | Filter to collection date   |
+| page      | number | 0       | Page number                 |
+| size      | number | 20      | Page size                   |
 
 **Frontend Interface**: `Page<CollectionList>`
 
 **Errors**:
+
 - 401 - Unauthorized
 - 403 - MERCHANT trying to access another merchant's collections
 - 404 - Merchant not found
@@ -379,55 +390,58 @@ All endpoints use: `/api/collections`
 
 **Purpose**: Get collection summary for a merchant within a date range
 
-**Roles**: 
+**Roles**:
+
 - USER, ADMIN: Can view any merchant's summary
 - MERCHANT: Can only view own summary
 
 **Query Parameters**:
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| fromDate | date | First day of current month | Start of period |
-| toDate | date | Today | End of period |
+| Parameter | Type | Default                    | Description     |
+| --------- | ---- | -------------------------- | --------------- |
+| fromDate  | date | First day of current month | Start of period |
+| toDate    | date | Today                      | End of period   |
 
 **Frontend Interface**: `CollectionSummary`
 
 **Example Response**:
+
 ```json
 {
   "merchantId": "merchant-uuid-here",
   "merchantName": "Juan Perez",
-  "merchantCommissionPercentage": 15.00,
+  "merchantCommissionPercentage": 15.0,
   "fromDate": "2026-01-01",
   "toDate": "2026-01-15",
   "totalCollections": 10,
-  "totalAmountCollected": 5000.00,
-  "totalCommission": 750.00,
-  "averageCommission": 75.00,
+  "totalAmountCollected": 5000.0,
+  "totalCommission": 750.0,
+  "averageCommission": 75.0,
   "collections": [
     {
       "collectionDate": "2026-01-15",
       "count": 3,
-      "amountCollected": 1500.00,
-      "commissionAmount": 225.00
+      "amountCollected": 1500.0,
+      "commissionAmount": 225.0
     },
     {
       "collectionDate": "2026-01-10",
       "count": 5,
-      "amountCollected": 2500.00,
-      "commissionAmount": 375.00
+      "amountCollected": 2500.0,
+      "commissionAmount": 375.0
     },
     {
       "collectionDate": "2026-01-05",
       "count": 2,
-      "amountCollected": 1000.00,
-      "commissionAmount": 150.00
+      "amountCollected": 1000.0,
+      "commissionAmount": 150.0
     }
   ]
 }
 ```
 
 **Errors**:
+
 - 401 - Unauthorized
 - 403 - MERCHANT trying to access another merchant's summary
 - 404 - Merchant not found
@@ -459,14 +473,22 @@ export class CollectionApiService {
 
   getByMerchant(merchantId: string, filter?: CollectionFilter): Observable<Page<CollectionList>> {
     const params = this.buildParams(filter);
-    return this.http.get<Page<CollectionList>>(`${this.baseUrl}/merchant/${merchantId}`, { params });
+    return this.http.get<Page<CollectionList>>(`${this.baseUrl}/merchant/${merchantId}`, {
+      params,
+    });
   }
 
-  getMerchantSummary(merchantId: string, fromDate?: string, toDate?: string): Observable<CollectionSummary> {
+  getMerchantSummary(
+    merchantId: string,
+    fromDate?: string,
+    toDate?: string,
+  ): Observable<CollectionSummary> {
     let params = new HttpParams();
     if (fromDate) params = params.set('fromDate', fromDate);
     if (toDate) params = params.set('toDate', toDate);
-    return this.http.get<CollectionSummary>(`${this.baseUrl}/merchant/${merchantId}/summary`, { params });
+    return this.http.get<CollectionSummary>(`${this.baseUrl}/merchant/${merchantId}/summary`, {
+      params,
+    });
   }
 
   private buildParams(filter?: CollectionFilter): HttpParams {
@@ -524,7 +546,7 @@ export class CollectionApplicationService {
         },
         error: (err) => this.error.set(err.message),
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
   }
 
@@ -537,11 +559,14 @@ export class CollectionApplicationService {
         next: (collection) => this.currentCollection.set(collection),
         error: (err) => this.error.set(err.message),
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
   }
 
-  loadMerchantCollections(merchantId: string, filter?: CollectionFilter): Observable<Page<CollectionList>> {
+  loadMerchantCollections(
+    merchantId: string,
+    filter?: CollectionFilter,
+  ): Observable<Page<CollectionList>> {
     this.loading.set(true);
     this.error.set(null);
 
@@ -555,11 +580,15 @@ export class CollectionApplicationService {
         },
         error: (err) => this.error.set(err.message),
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
   }
 
-  loadMerchantSummary(merchantId: string, fromDate?: string, toDate?: string): Observable<CollectionSummary> {
+  loadMerchantSummary(
+    merchantId: string,
+    fromDate?: string,
+    toDate?: string,
+  ): Observable<CollectionSummary> {
     this.loading.set(true);
     this.error.set(null);
 
@@ -568,7 +597,7 @@ export class CollectionApplicationService {
         next: (summary) => this.summary.set(summary),
         error: (err) => this.error.set(err.message),
       }),
-      finalize(() => this.loading.set(false))
+      finalize(() => this.loading.set(false)),
     );
   }
 
@@ -649,11 +678,11 @@ export interface Page<T> {
 
 ### Access Control
 
-| Role | List All | List by Merchant | View Details | View Summary |
-|------|----------|------------------|--------------|--------------|
-| USER | ✅ All | ✅ Any merchant | ✅ Any | ✅ Any |
-| ADMIN | ✅ All | ✅ Any merchant | ✅ Any | ✅ Any |
-| MERCHANT | ✅ Only own | ✅ Only own | ✅ Only own | ✅ Only own |
+| Role     | List All    | List by Merchant | View Details | View Summary |
+| -------- | ----------- | ---------------- | ------------ | ------------ |
+| USER     | ✅ All      | ✅ Any merchant  | ✅ Any       | ✅ Any       |
+| ADMIN    | ✅ All      | ✅ Any merchant  | ✅ Any       | ✅ Any       |
+| MERCHANT | ✅ Only own | ✅ Only own      | ✅ Only own  | ✅ Only own  |
 
 ---
 
@@ -671,29 +700,33 @@ export const COLLECTION_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/collections-list-page/collections-list-page.component')
-            .then(m => m.CollectionsListPageComponent),
+          import('../pages/collections-list-page/collections-list-page.component').then(
+            (m) => m.CollectionsListPageComponent,
+          ),
         title: 'Cobranzas',
       },
       {
         path: 'summary',
         loadComponent: () =>
-          import('../pages/collections-summary-page/collections-summary-page.component')
-            .then(m => m.CollectionsSummaryPageComponent),
+          import('../pages/collections-summary-page/collections-summary-page.component').then(
+            (m) => m.CollectionsSummaryPageComponent,
+          ),
         title: 'Resumen de Cobranzas',
       },
       {
         path: 'merchant/:merchantId/summary',
         loadComponent: () =>
-          import('../pages/collections-summary-page/collections-summary-page.component')
-            .then(m => m.CollectionsSummaryPageComponent),
+          import('../pages/collections-summary-page/collections-summary-page.component').then(
+            (m) => m.CollectionsSummaryPageComponent,
+          ),
         title: 'Resumen de Cobranzas',
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/collections-details-page/collections-details-page.component')
-            .then(m => m.CollectionsDetailsPageComponent),
+          import('../pages/collections-details-page/collections-details-page.component').then(
+            (m) => m.CollectionsDetailsPageComponent,
+          ),
         title: 'Detalles de Cobranza',
       },
     ],
@@ -707,16 +740,16 @@ export const COLLECTION_ROUTES: Routes = [
 
 ### List Page Table Columns
 
-| Column | Field | Sortable | Format |
-|--------|-------|----------|--------|
-| Nº Factura | invoiceNumber | ✅ | Link to invoice |
-| Cliente | customerName | ✅ | Text |
-| Comercial | merchantName | ✅ | Text |
-| Monto Cobrado | amountCollected | ✅ | Currency (USD) |
-| % Comisión | commissionPercentage | ✅ | Percentage |
-| Comisión | commissionAmount | ✅ | Currency (USD) |
-| Fecha | collectionDate | ✅ | Date (dd/mm/yyyy) |
-| Acciones | - | - | View button |
+| Column        | Field                | Sortable | Format            |
+| ------------- | -------------------- | -------- | ----------------- |
+| Nº Factura    | invoiceNumber        | ✅       | Link to invoice   |
+| Cliente       | customerName         | ✅       | Text              |
+| Comercial     | merchantName         | ✅       | Text              |
+| Monto Cobrado | amountCollected      | ✅       | Currency (USD)    |
+| % Comisión    | commissionPercentage | ✅       | Percentage        |
+| Comisión      | commissionAmount     | ✅       | Currency (USD)    |
+| Fecha         | collectionDate       | ✅       | Date (dd/mm/yyyy) |
+| Acciones      | -                    | -        | View button       |
 
 ### Details Page Sections
 
@@ -744,12 +777,12 @@ export const COLLECTION_ROUTES: Routes = [
 
 ### Summary Page Cards
 
-| Card | Value | Icon |
-|------|-------|------|
-| Total Cobranzas | totalCollections | pi-file |
-| Monto Total Cobrado | totalAmountCollected | pi-dollar |
-| Comisión Total | totalCommission | pi-percentage |
-| Comisión Promedio | averageCommission | pi-chart-line |
+| Card                | Value                | Icon          |
+| ------------------- | -------------------- | ------------- |
+| Total Cobranzas     | totalCollections     | pi-file       |
+| Monto Total Cobrado | totalAmountCollected | pi-dollar     |
+| Comisión Total      | totalCommission      | pi-percentage |
+| Comisión Promedio   | averageCommission    | pi-chart-line |
 
 ---
 

@@ -69,9 +69,11 @@ describe('PriceTypeApiService', () => {
 
   describe('update()', () => {
     it('should_PUT_to_update_price_type', () => {
-      service.update('1', { name: 'Precio Mayorista Updated', active: true }).subscribe((result) => {
-        expect(result).toEqual(mockDetails);
-      });
+      service
+        .update('1', { name: 'Precio Mayorista Updated', active: true })
+        .subscribe((result) => {
+          expect(result).toEqual(mockDetails);
+        });
       const req = httpMock.expectOne('/api/price-types/1');
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual({ name: 'Precio Mayorista Updated', active: true });

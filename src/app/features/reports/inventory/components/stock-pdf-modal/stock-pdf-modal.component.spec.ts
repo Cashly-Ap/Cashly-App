@@ -6,7 +6,11 @@ import { CategoryApplicationService } from '@features/categories/services/applic
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 
 @Component({
-  template: `<app-stock-pdf-modal [visible]="visible" (visibleChange)="onVisibleChange($event)" (onGeneratePdf)="onGeneratePdf($event)"></app-stock-pdf-modal>`,
+  template: `<app-stock-pdf-modal
+    [visible]="visible"
+    (visibleChange)="onVisibleChange($event)"
+    (onGeneratePdf)="onGeneratePdf($event)"
+  ></app-stock-pdf-modal>`,
   imports: [StockPdfModalComponent],
 })
 class HostComponent {
@@ -153,9 +157,7 @@ describe('StockPdfModalComponent', () => {
   });
 
   it('should compute warehouseOptions from warehouseService.simpleWarehouses', () => {
-    mockCategoryService.categories.mockReturnValue([
-      { id: 'cat-1', name: 'Test' },
-    ]);
+    mockCategoryService.categories.mockReturnValue([{ id: 'cat-1', name: 'Test' }]);
     mockCategoryService.loadAll.mockReturnValue({ subscribe: vi.fn() });
     mockWarehouseService.simpleWarehouses.mockReturnValue([
       { id: 'wh-1', name: 'Main', state: 'FL' },
@@ -173,7 +175,4 @@ describe('StockPdfModalComponent', () => {
     expect(options[1].label).toBe('Main (FL)');
     expect(options[2].label).toBe('Secondary (TX)');
   });
-
-  
-  
 });

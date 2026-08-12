@@ -51,8 +51,12 @@ type NoteType = 'CREDIT' | 'DEBIT';
     >
       <div class="flex flex-col gap-4 py-2">
         <!-- Tipo -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Tipo *</label>
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
+          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+            >Tipo *</label
+          >
           <p-select
             [options]="noteTypeOptions"
             [ngModel]="noteType()"
@@ -65,7 +69,9 @@ type NoteType = 'CREDIT' | 'DEBIT';
         </div>
 
         <!-- Cliente -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
           <p class="text-sm text-surface-600 dark:text-surface-400">
             <span class="font-semibold text-surface-800 dark:text-surface-200">Cliente:</span>
             {{ invoice().customerName }} — {{ invoice().customerRif }}
@@ -73,8 +79,12 @@ type NoteType = 'CREDIT' | 'DEBIT';
         </div>
 
         <!-- Monto -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Monto *</label>
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
+          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+            >Monto *</label
+          >
           <p-inputNumber
             [ngModel]="amount()"
             (ngModelChange)="amount.set($event ?? 0)"
@@ -88,8 +98,12 @@ type NoteType = 'CREDIT' | 'DEBIT';
         </div>
 
         <!-- Motivo -->
-        <div class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700">
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">Motivo *</label>
+        <div
+          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+        >
+          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+            >Motivo *</label
+          >
           <textarea
             pTextarea
             [ngModel]="reason()"
@@ -103,7 +117,12 @@ type NoteType = 'CREDIT' | 'DEBIT';
 
       <ng-template pTemplate="footer">
         <div class="flex gap-2 justify-end">
-          <p-button label="Cancelar" [outlined]="true" severity="secondary" (onClick)="onCancel()" />
+          <p-button
+            label="Cancelar"
+            [outlined]="true"
+            severity="secondary"
+            (onClick)="onCancel()"
+          />
           <p-button
             [label]="submitLabel()"
             icon="pi pi-check"
@@ -150,9 +169,7 @@ export class NoteFormDialogComponent {
     this.noteType() === 'CREDIT' ? 'Guardar Nota de Crédito' : 'Guardar Nota de Débito',
   );
 
-  readonly canSubmit = computed(() =>
-    this.amount() > 0 && this.reason().trim().length > 0,
-  );
+  readonly canSubmit = computed(() => this.amount() > 0 && this.reason().trim().length > 0);
 
   submit(): void {
     if (!this.canSubmit()) return;
@@ -161,39 +178,63 @@ export class NoteFormDialogComponent {
     const inv = this.invoice();
 
     if (this.noteType() === 'CREDIT') {
-      this.creditNoteApi.create({
-        customerId: inv.customerId,
-        invoiceId: inv.id,
-        amount: this.amount(),
-        reason: this.reason().trim(),
-      }).subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Nota de crédito creada exitosamente', life: 3000 });
-          this.confirmed.emit();
-        },
-        error: () => {
-          this.isSubmitting.set(false);
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear la nota de crédito', life: 5000 });
-        },
-      });
+      this.creditNoteApi
+        .create({
+          customerId: inv.customerId,
+          invoiceId: inv.id,
+          amount: this.amount(),
+          reason: this.reason().trim(),
+        })
+        .subscribe({
+          next: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Nota de crédito creada exitosamente',
+              life: 3000,
+            });
+            this.confirmed.emit();
+          },
+          error: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear la nota de crédito',
+              life: 5000,
+            });
+          },
+        });
     } else {
-      this.debitNoteApi.create({
-        customerId: inv.customerId,
-        invoiceId: inv.id,
-        amount: this.amount(),
-        reason: this.reason().trim(),
-      }).subscribe({
-        next: () => {
-          this.isSubmitting.set(false);
-          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Nota de débito creada exitosamente', life: 3000 });
-          this.confirmed.emit();
-        },
-        error: () => {
-          this.isSubmitting.set(false);
-          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear la nota de débito', life: 5000 });
-        },
-      });
+      this.debitNoteApi
+        .create({
+          customerId: inv.customerId,
+          invoiceId: inv.id,
+          amount: this.amount(),
+          reason: this.reason().trim(),
+        })
+        .subscribe({
+          next: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Éxito',
+              detail: 'Nota de débito creada exitosamente',
+              life: 3000,
+            });
+            this.confirmed.emit();
+          },
+          error: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear la nota de débito',
+              life: 5000,
+            });
+          },
+        });
     }
   }
 

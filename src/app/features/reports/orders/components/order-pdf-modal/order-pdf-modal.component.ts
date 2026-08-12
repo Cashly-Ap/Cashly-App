@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -13,7 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { OrderPdfApiService, OrdersPdfFilters } from '@features/reports/orders/services/api/order-pdf-api.service';
+import {
+  OrderPdfApiService,
+  OrdersPdfFilters,
+} from '@features/reports/orders/services/api/order-pdf-api.service';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 
@@ -69,7 +65,9 @@ export class OrderPdfModalComponent {
   ];
 
   readonly productOptions = signal<SelectOption[]>([{ value: null, label: 'Todos los productos' }]);
-  readonly categoryOptions = signal<SelectOption[]>([{ value: null, label: 'Todas las categorías' }]);
+  readonly categoryOptions = signal<SelectOption[]>([
+    { value: null, label: 'Todas las categorías' },
+  ]);
 
   loadFilters(): void {
     if (this.filtersLoaded) return;
