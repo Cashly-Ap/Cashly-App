@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PageHeaderComponent } from './page-header.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { ComponentRef } from '@angular/core';
 
 describe('PageHeaderComponent', () => {

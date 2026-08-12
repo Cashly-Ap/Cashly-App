@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { CustomersFormPageComponent } from './customers-form-page.component';
+import { CustomersFormPageComponent } from '@features/customers/pages/customers-form-page/customers-form-page.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerType } from '@features/customers/models/enums';

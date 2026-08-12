@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
-import { CustomerPickerDialogComponent } from './customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';

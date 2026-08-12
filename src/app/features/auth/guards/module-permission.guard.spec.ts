@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { modulePermissionGuard } from './module-permission.guard';
+import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
 import { AuthService } from '@features/auth/services';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed } from '@angular/core/testing';

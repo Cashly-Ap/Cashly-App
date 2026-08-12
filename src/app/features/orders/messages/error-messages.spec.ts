@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ORDER_ERROR_MESSAGES, ORDER_HTTP_ERRORS } from './error-messages';
+import { ORDER_ERROR_MESSAGES, ORDER_HTTP_ERRORS } from '@features/orders/messages/error-messages';
 
 describe('ORDER_ERROR_MESSAGES', () => {
   it('should have create error message', () => {

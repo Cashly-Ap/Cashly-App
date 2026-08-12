@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID } from '@angular/core';
 import { vi } from 'vitest';
-import { ThemeService } from './theme.service';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 describe('ThemeService', () => {
   let service: ThemeService;

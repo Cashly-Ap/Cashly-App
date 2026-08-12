@@ -3,7 +3,7 @@ import {
   PRODUCT_TYPES,
   PRODUCT_TYPE_LABELS,
   getProductTypeLabel,
-} from './product-type.enum';
+} from '@features/products/models/enums/product-type.enum';
 
 describe('ProductType', () => {
   it('should have all expected enum values', () => {

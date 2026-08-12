@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { WAREHOUSE_ROUTES } from './warehouse.routes';
+import { WAREHOUSE_ROUTES } from '@features/warehouses/router/warehouse.routes';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('WAREHOUSE_ROUTES', () => {

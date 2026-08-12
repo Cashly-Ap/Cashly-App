@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { CheckboxInputComponent } from './checkbox-input.component';
+import { CheckboxInputComponent } from '@core/forms/components/inputs/checkbox-input/checkbox-input.component';
 
 describe('CheckboxInputComponent', () => {
   let component: CheckboxInputComponent;

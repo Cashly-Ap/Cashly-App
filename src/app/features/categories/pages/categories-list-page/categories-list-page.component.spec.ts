@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { CategoriesListPageComponent } from './categories-list-page.component';
+import { CategoriesListPageComponent } from '@features/categories/pages/categories-list-page/categories-list-page.component';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { CategoryList } from '@features/categories/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';

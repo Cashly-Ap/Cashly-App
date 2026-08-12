@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { QUOTE_ROUTES } from './quotes.routes';
+import { QUOTE_ROUTES } from '@features/quotes/router/quotes.routes';
 
 describe('Quote Routes', () => {
   it('should have a parent route with children', () => {

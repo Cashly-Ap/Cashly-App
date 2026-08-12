@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ListContainerComponent } from './list-container.component';
+import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 
 describe('ListContainerComponent', () => {
   let component: ListContainerComponent;

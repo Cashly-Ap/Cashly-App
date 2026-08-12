@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CUSTOMER_SUCCESS_MESSAGES } from './success-messages';
+import { CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages/success-messages';
 
 describe('CUSTOMER_SUCCESS_MESSAGES', () => {
   it('should have created, updated, and deleted keys', () => {

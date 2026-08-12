@@ -6,9 +6,9 @@ export const customerBalanceRoutes: Routes = [
   {
     path: ':id/balance',
     loadComponent: () =>
-      import('../pages/customer-balance-page/customer-balance-page.component').then(
-        (m) => m.CustomerBalancePageComponent,
-      ),
+      import(
+        '@features/customers/pages/customer-balance-page/customer-balance-page.component'
+      ).then((m) => m.CustomerBalancePageComponent),
     canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.FINANCE },
     title: 'Saldo del Cliente',

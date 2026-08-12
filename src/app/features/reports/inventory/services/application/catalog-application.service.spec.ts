@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { CatalogApplicationService } from './catalog-application.service';
-import { CatalogApiService } from '../api/catalog-api.service';
+import { CatalogApplicationService } from '@features/reports/inventory/services/application/catalog-application.service';
+import { CatalogApiService } from '@features/reports/inventory/services/api/catalog-api.service';
 import { of, throwError } from 'rxjs';
 
 describe('CatalogApplicationService', () => {

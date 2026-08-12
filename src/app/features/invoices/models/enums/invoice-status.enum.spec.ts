@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceStatus, INVOICE_STATUS_LABELS, getInvoiceStatusLabel } from './invoice-status.enum';
+import {
+  InvoiceStatus,
+  INVOICE_STATUS_LABELS,
+  getInvoiceStatusLabel,
+} from '@features/invoices/models/enums/invoice-status.enum';
 
 describe('InvoiceStatus', () => {
   it('should have DRAFT value', () => {

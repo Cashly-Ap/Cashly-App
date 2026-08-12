@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { InvoiceDetailPageComponent } from './invoice-detail-page.component';
+import { InvoiceDetailPageComponent } from '@features/invoices/pages/invoice-detail-page/invoice-detail-page.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';

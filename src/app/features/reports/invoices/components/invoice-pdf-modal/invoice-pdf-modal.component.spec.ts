@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { InvoicePdfModalComponent } from './invoice-pdf-modal.component';
+import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
 import { ProductApiService } from '@features/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteMapper } from './quote.mapper';
-import { QuoteStatus } from '../../models/enums/quote-status.enum';
+import { QuoteMapper } from '@features/quotes/services/mappers/quote.mapper';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteMapper', () => {
   describe('toList()', () => {

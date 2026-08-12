@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { ProductComponentItem, ProductDetails } from './product-details.interface';
-import type { ProductPriceItem } from './product-price-item.interface';
+import type {
+  ProductComponentItem,
+  ProductDetails,
+} from '@features/products/models/interfaces/product-details.interface';
+import type { ProductPriceItem } from '@features/products/models/interfaces/product-price-item.interface';
 
 describe('ProductComponentItem interface', () => {
   it('should have all required properties', () => {

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { LoadingSpinnerComponent } from './loading-spinner.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 
 describe('LoadingSpinnerComponent', () => {
   let component: LoadingSpinnerComponent;

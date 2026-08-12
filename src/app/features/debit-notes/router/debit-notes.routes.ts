@@ -11,25 +11,25 @@ export const DEBIT_NOTE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/debit-note-list-page/debit-note-list-page.component').then(
-            (m) => m.DebitNoteListPageComponent,
-          ),
+          import(
+            '@features/debit-notes/pages/debit-note-list-page/debit-note-list-page.component'
+          ).then((m) => m.DebitNoteListPageComponent),
         title: 'Notas de Débito',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/debit-note-form-page/debit-note-form-page.component').then(
-            (m) => m.DebitNoteFormPageComponent,
-          ),
+          import(
+            '@features/debit-notes/pages/debit-note-form-page/debit-note-form-page.component'
+          ).then((m) => m.DebitNoteFormPageComponent),
         title: 'Nueva Nota de Débito',
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/debit-note-detail-page/debit-note-detail-page.component').then(
-            (m) => m.DebitNoteDetailPageComponent,
-          ),
+          import(
+            '@features/debit-notes/pages/debit-note-detail-page/debit-note-detail-page.component'
+          ).then((m) => m.DebitNoteDetailPageComponent),
         title: 'Detalle de Nota de Débito',
       },
     ],

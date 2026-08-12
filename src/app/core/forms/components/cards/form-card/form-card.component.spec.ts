@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormCardComponent } from './form-card.component';
+import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
 import { Component } from '@angular/core';
 
 @Component({

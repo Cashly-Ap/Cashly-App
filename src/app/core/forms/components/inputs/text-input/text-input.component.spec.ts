@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FormControl, Validators } from '@angular/forms';
-import { TextInputComponent } from './text-input.component';
+import { TextInputComponent } from '@core/forms/components/inputs/text-input/text-input.component';
 
 describe('TextInputComponent', () => {
   let component: TextInputComponent;

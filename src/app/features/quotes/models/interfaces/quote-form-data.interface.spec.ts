@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteFormData, QuoteLineFormData } from './quote-form-data.interface';
+import {
+  QuoteFormData,
+  QuoteLineFormData,
+} from '@features/quotes/models/interfaces/quote-form-data.interface';
 
 describe('QuoteLineFormData interface', () => {
   it('should have all required properties', () => {

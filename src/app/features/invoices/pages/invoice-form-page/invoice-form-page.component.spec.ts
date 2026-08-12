@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { InvoiceFormPageComponent } from './invoice-form-page.component';
+import { InvoiceFormPageComponent } from '@features/invoices/pages/invoice-form-page/invoice-form-page.component';
 import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';

@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ProductsListPageComponent } from './products-list-page.component';
+import { ProductsListPageComponent } from '@features/products/pages/products-list-page/products-list-page.component';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';

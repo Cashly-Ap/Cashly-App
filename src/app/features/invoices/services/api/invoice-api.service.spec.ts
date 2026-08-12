@@ -2,9 +2,12 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { InvoiceApiService, InvoiceFilters } from './invoice-api.service';
-import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
-import { PaymentType } from '../../models/enums/payment-type.enum';
+import {
+  InvoiceApiService,
+  InvoiceFilters,
+} from '@features/invoices/services/api/invoice-api.service';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 describe('InvoiceApiService', () => {
   let service: InvoiceApiService;

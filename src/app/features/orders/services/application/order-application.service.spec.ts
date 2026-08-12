@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { OrderApplicationService } from './order-application.service';
-import { OrderApiService } from '../api/order-api.service';
+import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
+import { OrderApiService } from '@features/orders/services/api/order-api.service';
 import { of, throwError } from 'rxjs';
-import { OrderStatus } from '../../models/enums/order-status.enum';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderApplicationService', () => {
   let service: OrderApplicationService;

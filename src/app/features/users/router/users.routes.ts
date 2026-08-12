@@ -11,7 +11,7 @@ export const USER_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/users-list-page/users-list-page.component').then(
+          import('@features/users/pages/users-list-page/users-list-page.component').then(
             (m) => m.UsersListPageComponent,
           ),
         title: 'Usuarios',
@@ -19,7 +19,7 @@ export const USER_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/users-form-page/users-form-page.component').then(
+          import('@features/users/pages/users-form-page/users-form-page.component').then(
             (m) => m.UsersFormPageComponent,
           ),
         title: 'Nuevo Usuario',
@@ -27,7 +27,7 @@ export const USER_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/users-details-page/users-details-page.component').then(
+          import('@features/users/pages/users-details-page/users-details-page.component').then(
             (m) => m.UsersDetailsPageComponent,
           ),
         title: 'Detalles del Usuario',
@@ -35,7 +35,7 @@ export const USER_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/users-form-page/users-form-page.component').then(
+          import('@features/users/pages/users-form-page/users-form-page.component').then(
             (m) => m.UsersFormPageComponent,
           ),
         title: 'Editar Usuario',

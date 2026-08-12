@@ -6,7 +6,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { UsersFormPageComponent } from './users-form-page.component';
+import { UsersFormPageComponent } from '@features/users/pages/users-form-page/users-form-page.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserDetails } from '@features/users/models/interfaces';
 import { UserType } from '@features/users/models/enums';

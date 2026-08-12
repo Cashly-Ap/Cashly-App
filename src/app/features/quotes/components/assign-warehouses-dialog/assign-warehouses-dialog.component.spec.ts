@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { AssignWarehousesDialogComponent } from './assign-warehouses-dialog.component';
+import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 
 @Component({
   template: `<app-assign-warehouses-dialog

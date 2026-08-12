@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { MovementsPdfFilters } from './movements-pdf-filters.interface';
+import type { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces/movements-pdf-filters.interface';
 
 describe('MovementsPdfFilters interface', () => {
   it('should have all optional properties', () => {

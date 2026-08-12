@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CategoryUpdate } from './category-update.interface';
+import type { CategoryUpdate } from '@features/categories/models/interfaces/category-update.interface';
 
 describe('CategoryUpdate interface', () => {
   it('should have all required properties', () => {

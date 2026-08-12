@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PendingTabsDropdownComponent } from './pending-tabs-dropdown.component';
+import { PendingTabsDropdownComponent } from '@core/pending-tabs/components/pending-tabs-dropdown/pending-tabs-dropdown.component';
 import { PendingTabsService } from '@core/pending-tabs/pending-tabs.service';
 import { PendingTab } from '@core/pending-tabs/models';
 import { Router } from '@angular/router';

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Component } from '@angular/core';
-import { CashRegisterReportModalComponent } from './cash-register-report-modal.component';
+import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
 
 @Component({
   template: `<app-cash-register-report-modal

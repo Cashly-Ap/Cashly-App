@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { PriceTypeApplicationService } from './price-type-application.service';
-import { PriceTypeApiService } from '../api/price-type-api.service';
-import { PriceTypeDetails, PriceTypeList } from '../../models/interfaces';
+import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
+import { PriceTypeDetails, PriceTypeList } from '@features/price-types/models/interfaces';
 
 describe('PriceTypeApplicationService', () => {
   let service: PriceTypeApplicationService;

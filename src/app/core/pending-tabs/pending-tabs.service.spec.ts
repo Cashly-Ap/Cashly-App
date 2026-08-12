@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { PendingTabsService } from './pending-tabs.service';
+import { PendingTabsService } from '@core/pending-tabs/pending-tabs.service';
 import { vi, beforeEach, describe, it, expect } from 'vitest';
 import { PENDING_TABS_STORAGE_KEY } from '@core/pending-tabs/constants';
 

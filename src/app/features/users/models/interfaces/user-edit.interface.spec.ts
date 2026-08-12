@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { UserEdit } from './user-edit.interface';
+import type { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
 import { UserType } from '@features/users/models/enums';
 
 describe('UserEdit interface', () => {

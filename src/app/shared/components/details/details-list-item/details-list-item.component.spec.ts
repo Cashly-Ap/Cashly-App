@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DetailsListItemComponent } from './details-list-item.component';
+import { DetailsListItemComponent } from '@shared/components/details/details-list-item/details-list-item.component';
 import { ComponentRef, Component } from '@angular/core';
 
 @Component({

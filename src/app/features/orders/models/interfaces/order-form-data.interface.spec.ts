@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderFormData, OrderItemFormData } from './order-form-data.interface';
+import type {
+  OrderFormData,
+  OrderItemFormData,
+} from '@features/orders/models/interfaces/order-form-data.interface';
 
 describe('OrderItemFormData interface', () => {
   it('should have all required properties', () => {

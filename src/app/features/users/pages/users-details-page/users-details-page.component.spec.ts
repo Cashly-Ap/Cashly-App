@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { UsersDetailsPageComponent } from './users-details-page.component';
+import { UsersDetailsPageComponent } from '@features/users/pages/users-details-page/users-details-page.component';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserType } from '@features/users/models/enums';
 import { UserDetails } from '@features/users/models/interfaces';

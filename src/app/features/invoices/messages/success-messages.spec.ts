@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INVOICE_SUCCESS_MESSAGES } from './success-messages';
+import { INVOICE_SUCCESS_MESSAGES } from '@features/invoices/messages/success-messages';
 
 describe('INVOICE_SUCCESS_MESSAGES', () => {
   it('should have created message', () => {

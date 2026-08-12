@@ -4,7 +4,7 @@ import { ActivatedRoute, Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { WarehousesListPageComponent } from './warehouses-list-page.component';
+import { WarehousesListPageComponent } from '@features/warehouses/pages/warehouses-list-page/warehouses-list-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';

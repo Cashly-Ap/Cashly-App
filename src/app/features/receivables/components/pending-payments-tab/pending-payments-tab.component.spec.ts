@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
-import { PendingPaymentsTabComponent } from './pending-payments-tab.component';
+import { PendingPaymentsTabComponent } from '@features/receivables/components/pending-payments-tab/pending-payments-tab.component';
 import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/receivables/models/interfaces';
 

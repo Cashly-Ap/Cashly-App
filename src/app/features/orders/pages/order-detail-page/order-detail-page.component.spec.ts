@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { OrderDetailPageComponent } from './order-detail-page.component';
+import { OrderDetailPageComponent } from '@features/orders/pages/order-detail-page/order-detail-page.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 import { OrderDetails } from '@features/orders/models/interfaces';

@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteStatus, QUOTE_STATUS_LABELS, getQuoteStatusLabel } from './quote-status.enum';
+import {
+  QuoteStatus,
+  QUOTE_STATUS_LABELS,
+  getQuoteStatusLabel,
+} from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteStatus', () => {
   it('should have DRAFT value', () => {

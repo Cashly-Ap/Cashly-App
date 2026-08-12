@@ -3,7 +3,7 @@ import type {
   OrderCreate,
   OrderItemCreate,
   WarehouseAllocationCreate,
-} from './order-create.interface';
+} from '@features/orders/models/interfaces/order-create.interface';
 
 describe('WarehouseAllocationCreate interface', () => {
   it('should have all required properties', () => {

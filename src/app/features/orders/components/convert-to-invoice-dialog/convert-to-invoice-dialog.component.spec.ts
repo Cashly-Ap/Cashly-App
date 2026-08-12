@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { ConvertToInvoiceDialogComponent } from './convert-to-invoice-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({

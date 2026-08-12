@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { AuthService } from './auth-application.service';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { AuthApiService } from '@features/auth/services/api';
 import {
   RegisterUserRequest,

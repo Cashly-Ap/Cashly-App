@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { MovementsPdfApiService } from './movements-pdf-api.service';
+import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 
 describe('MovementsPdfApiService', () => {
   let service: MovementsPdfApiService;

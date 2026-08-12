@@ -2,7 +2,7 @@ import { Injectable, inject, signal, OnDestroy } from '@angular/core';
 import { Client, IMessage } from '@stomp/stompjs';
 import { Subject } from 'rxjs';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { AppNotification } from '../api/notification-api.service';
+import { AppNotification } from '@core/notifications/services/api/notification-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationWebSocketService implements OnDestroy {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormContainerComponent } from './form-container.component';
+import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 
 describe('FormContainerComponent', () => {
   let component: FormContainerComponent;

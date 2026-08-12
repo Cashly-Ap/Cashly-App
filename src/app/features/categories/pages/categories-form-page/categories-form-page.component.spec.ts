@@ -5,7 +5,7 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CategoriesFormPageComponent } from './categories-form-page.component';
+import { CategoriesFormPageComponent } from '@features/categories/pages/categories-form-page/categories-form-page.component';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { CategoryDetails } from '@features/categories/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';

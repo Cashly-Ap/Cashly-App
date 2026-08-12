@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { UserMapper } from './user.mapper';
-import { UserDetails, UserList, UserEdit } from '../../models/interfaces';
-import { UserType, BusinessModule } from '../../models/enums';
+import { UserMapper } from '@features/users/services/mappers/user.mapper';
+import { UserDetails, UserList, UserEdit } from '@features/users/models/interfaces';
+import { UserType, BusinessModule } from '@features/users/models/enums';
 
 describe('UserMapper', () => {
   const mockUserDetails: UserDetails = {

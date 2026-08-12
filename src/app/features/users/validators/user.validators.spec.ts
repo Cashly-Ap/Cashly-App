@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 import { describe, it, expect } from 'vitest';
-import { UserValidators } from './user.validators';
+import { UserValidators } from '@features/users/validators/user.validators';
 
 describe('UserValidators', () => {
   describe('passwordStrength', () => {

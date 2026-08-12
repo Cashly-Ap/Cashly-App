@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DetailsCardHeaderComponent } from './details-card-header.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { ComponentRef, Component } from '@angular/core';
 
 @Component({

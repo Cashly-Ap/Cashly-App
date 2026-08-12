@@ -7,7 +7,7 @@ import type {
   ChangeUsernameRequest,
   ChangePasswordRequest,
   ChangeCommissionDeductionRequest,
-} from './auth-request.interface';
+} from '@features/auth/models/interfaces/auth-request.interface';
 
 describe('RegisterUserRequest interface', () => {
   it('should have all required properties', () => {

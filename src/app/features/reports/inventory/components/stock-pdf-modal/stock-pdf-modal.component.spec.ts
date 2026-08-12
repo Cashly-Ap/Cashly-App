@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { StockPdfModalComponent } from './stock-pdf-modal.component';
+import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal/stock-pdf-modal.component';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 

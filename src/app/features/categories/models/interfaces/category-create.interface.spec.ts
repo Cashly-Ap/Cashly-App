@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CategoryCreate } from './category-create.interface';
+import type { CategoryCreate } from '@features/categories/models/interfaces/category-create.interface';
 
 describe('CategoryCreate interface', () => {
   it('should have all required properties', () => {

@@ -4,8 +4,8 @@ import {
   QuoteWarehouseStock,
   QuoteLineDetail,
   QuoteDetails,
-} from './quote-details.interface';
-import { QuoteStatus } from '../enums/quote-status.enum';
+} from '@features/quotes/models/interfaces/quote-details.interface';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteAllocationDetail interface', () => {
   it('should have all required properties', () => {

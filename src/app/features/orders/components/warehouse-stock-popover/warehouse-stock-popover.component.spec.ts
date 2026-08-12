@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { WarehouseStockPopoverComponent } from './warehouse-stock-popover.component';
-import { WarehouseStockEntry } from './warehouse-stock-entry.interface';
+import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 
 @Component({
   template: `<app-warehouse-stock-popover

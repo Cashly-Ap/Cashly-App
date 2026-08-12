@@ -2,14 +2,17 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ProductApiService, ProductFilters } from './product-api.service';
+import {
+  ProductApiService,
+  ProductFilters,
+} from '@features/products/services/api/product-api.service';
 import {
   ProductList,
   ProductDetails,
   ProductCreate,
   ProductUpdate,
   ProductStockByWarehouse,
-} from '../../models/interfaces';
+} from '@features/products/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('ProductApiService', () => {

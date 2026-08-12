@@ -11,7 +11,7 @@ export const PURCHASE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/purchase-list-page/purchase-list-page.component').then(
+          import('@features/purchases/pages/purchase-list-page/purchase-list-page.component').then(
             (m) => m.PurchaseListPageComponent,
           ),
         title: 'Compras',
@@ -19,7 +19,7 @@ export const PURCHASE_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/purchase-form-page/purchase-form-page.component').then(
+          import('@features/purchases/pages/purchase-form-page/purchase-form-page.component').then(
             (m) => m.PurchaseFormPageComponent,
           ),
         title: 'Nueva Compra',
@@ -27,15 +27,15 @@ export const PURCHASE_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/purchase-detail-page/purchase-detail-page.component').then(
-            (m) => m.PurchaseDetailPageComponent,
-          ),
+          import(
+            '@features/purchases/pages/purchase-detail-page/purchase-detail-page.component'
+          ).then((m) => m.PurchaseDetailPageComponent),
         title: 'Detalle de la Compra',
       },
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/purchase-form-page/purchase-form-page.component').then(
+          import('@features/purchases/pages/purchase-form-page/purchase-form-page.component').then(
             (m) => m.PurchaseFormPageComponent,
           ),
         title: 'Editar Compra',

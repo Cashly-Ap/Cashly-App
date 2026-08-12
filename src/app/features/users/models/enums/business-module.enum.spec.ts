@@ -1,4 +1,7 @@
-import { BusinessModule, BUSINESS_MODULE_LABELS } from './business-module.enum';
+import {
+  BusinessModule,
+  BUSINESS_MODULE_LABELS,
+} from '@features/users/models/enums/business-module.enum';
 
 describe('BusinessModule', () => {
   it('should have all expected enum values', () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { QUOTE_ERROR_MESSAGES, QUOTE_HTTP_ERRORS } from './error-messages';
+import { QUOTE_ERROR_MESSAGES, QUOTE_HTTP_ERRORS } from '@features/quotes/messages/error-messages';
 
 describe('QUOTE_ERROR_MESSAGES', () => {
   it('should have create error with correct severity and detail', () => {

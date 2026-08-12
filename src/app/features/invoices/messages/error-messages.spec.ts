@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { INVOICE_ERROR_MESSAGES, INVOICE_HTTP_ERRORS } from './error-messages';
+import {
+  INVOICE_ERROR_MESSAGES,
+  INVOICE_HTTP_ERRORS,
+} from '@features/invoices/messages/error-messages';
 
 describe('INVOICE_ERROR_MESSAGES', () => {
   it('should have create error message', () => {

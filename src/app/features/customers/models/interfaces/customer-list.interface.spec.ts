@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CustomerList } from './customer-list.interface';
+import type { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
 
 describe('CustomerList interface', () => {

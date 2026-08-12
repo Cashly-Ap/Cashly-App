@@ -3,8 +3,8 @@ import type {
   OrderDetails,
   OrderItemDetail,
   OrderItemAllocationDetail,
-} from './order-details.interface';
-import { OrderStatus } from '../enums/order-status.enum';
+} from '@features/orders/models/interfaces/order-details.interface';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderItemAllocationDetail interface', () => {
   it('should have all required properties', () => {

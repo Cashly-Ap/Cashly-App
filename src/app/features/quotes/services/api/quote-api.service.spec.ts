@@ -2,8 +2,12 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { QuoteApiService, QuoteFilters, QuoteProductFilters } from './quote-api.service';
-import { QuoteStatus } from '../../models/enums/quote-status.enum';
+import {
+  QuoteApiService,
+  QuoteFilters,
+  QuoteProductFilters,
+} from '@features/quotes/services/api/quote-api.service';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteApiService', () => {
   let service: QuoteApiService;

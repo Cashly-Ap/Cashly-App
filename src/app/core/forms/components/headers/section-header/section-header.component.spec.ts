@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { SectionHeaderComponent } from './section-header.component';
+import { SectionHeaderComponent } from '@core/forms/components/headers/section-header/section-header.component';
 import { Component } from '@angular/core';
 
 @Component({

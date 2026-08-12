@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DetailsInfoGridComponent } from './details-info-grid.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
 import { Component } from '@angular/core';
 
 @Component({

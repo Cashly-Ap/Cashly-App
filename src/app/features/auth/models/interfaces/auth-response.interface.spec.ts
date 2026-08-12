@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { AuthenticationResponse } from './auth-response.interface';
-import type { UserResponse } from './user.interface';
+import type { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
+import type { UserResponse } from '@features/auth/models/interfaces/user.interface';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('AuthenticationResponse interface', () => {

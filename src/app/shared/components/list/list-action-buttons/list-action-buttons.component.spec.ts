@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ListActionButtonsComponent } from './list-action-buttons.component';
+import { ListActionButtonsComponent } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 
 describe('ListActionButtonsComponent', () => {
   let component: ListActionButtonsComponent;

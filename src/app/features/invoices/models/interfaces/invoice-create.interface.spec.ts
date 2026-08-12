@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceCreate } from './invoice-create.interface';
-import { PaymentType } from '../enums/payment-type.enum';
+import { InvoiceCreate } from '@features/invoices/models/interfaces/invoice-create.interface';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 describe('InvoiceCreate interface', () => {
   it('should have all required properties', () => {

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing'
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ConfigurationPageComponent } from './configuration-page.component';
+import { ConfigurationPageComponent } from '@features/auth/pages/configuration/configuration-page.component';
 import { AuthService } from '@features/auth/services';
 import { MessageService } from 'primeng/api';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DateUtils } from './date.utils';
+import { DateUtils } from '@shared/utils/date.utils';
 
 describe('DateUtils', () => {
   describe('toISODateString', () => {

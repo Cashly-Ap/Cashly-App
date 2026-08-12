@@ -4,7 +4,7 @@ import type {
   CustomerPhone,
   CustomerAddress,
   CustomerDetails,
-} from './customer-details.interface';
+} from '@features/customers/models/interfaces/customer-details.interface';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
 
 describe('CustomerEmail interface', () => {

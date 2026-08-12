@@ -11,7 +11,7 @@ export const QUOTE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/quote-list-page/quote-list-page.component').then(
+          import('@features/quotes/pages/quote-list-page/quote-list-page.component').then(
             (m) => m.QuoteListPageComponent,
           ),
         title: 'Presupuestos',
@@ -19,7 +19,7 @@ export const QUOTE_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/quote-form-page/quote-form-page.component').then(
+          import('@features/quotes/pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,
           ),
         title: 'Nuevo Presupuesto',
@@ -27,7 +27,7 @@ export const QUOTE_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/quote-detail-page/quote-detail-page.component').then(
+          import('@features/quotes/pages/quote-detail-page/quote-detail-page.component').then(
             (m) => m.QuoteDetailPageComponent,
           ),
         title: 'Detalle del Presupuesto',
@@ -35,7 +35,7 @@ export const QUOTE_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/quote-form-page/quote-form-page.component').then(
+          import('@features/quotes/pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,
           ),
         title: 'Editar Presupuesto',

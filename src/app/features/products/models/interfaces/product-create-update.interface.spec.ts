@@ -3,8 +3,8 @@ import type {
   ProductComponentInput,
   ProductCreate,
   ProductUpdate,
-} from './product-create-update.interface';
-import type { ProductPriceFormItem } from './product-price-form-item.interface';
+} from '@features/products/models/interfaces/product-create-update.interface';
+import type { ProductPriceFormItem } from '@features/products/models/interfaces/product-price-form-item.interface';
 
 describe('ProductComponentInput interface', () => {
   it('should have all required properties', () => {

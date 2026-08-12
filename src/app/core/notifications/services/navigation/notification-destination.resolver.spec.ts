@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
-import { NotificationDestinationResolver } from './notification-destination.resolver';
+import { NotificationDestinationResolver } from '@core/notifications/services/navigation/notification-destination.resolver';
 
 describe('NotificationDestinationResolver', () => {
   let resolver: NotificationDestinationResolver;

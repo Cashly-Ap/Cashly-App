@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { of } from 'rxjs';
-import { ProductPricesSectionComponent } from './product-prices-section.component';
+import { ProductPricesSectionComponent } from '@features/products/components/product-prices-section/product-prices-section.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
 @Component({

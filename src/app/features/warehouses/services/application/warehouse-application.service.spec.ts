@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { WarehouseApplicationService } from './warehouse-application.service';
-import { WarehouseApiService, WarehouseFilters } from '../api/warehouse-api.service';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import {
+  WarehouseApiService,
+  WarehouseFilters,
+} from '@features/warehouses/services/api/warehouse-api.service';
 import {
   WarehouseList,
   WarehouseDetails,
@@ -13,7 +16,7 @@ import {
   WarehouseStockItem,
   WarehouseMovementItem,
   MovementFilters,
-} from '../../models/interfaces';
+} from '@features/warehouses/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('WarehouseApplicationService', () => {

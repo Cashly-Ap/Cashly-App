@@ -2,7 +2,10 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { WarehouseApiService, WarehouseFilters } from './warehouse-api.service';
+import {
+  WarehouseApiService,
+  WarehouseFilters,
+} from '@features/warehouses/services/api/warehouse-api.service';
 import {
   WarehouseList,
   WarehouseDetails,
@@ -13,7 +16,7 @@ import {
   WarehouseStockItem,
   WarehouseMovementItem,
   MovementFilters,
-} from '../../models/interfaces';
+} from '@features/warehouses/models/interfaces';
 
 describe('WarehouseApiService', () => {
   let service: WarehouseApiService;

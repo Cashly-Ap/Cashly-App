@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderProduct, OrderProductStockItem } from './order-product.interface';
+import type {
+  OrderProduct,
+  OrderProductStockItem,
+} from '@features/orders/models/interfaces/order-product.interface';
 
 describe('OrderProductStockItem interface', () => {
   it('should have all required properties', () => {

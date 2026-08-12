@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { PaymentType, PAYMENT_TYPE_LABELS, getPaymentTypeLabel } from './payment-type.enum';
+import {
+  PaymentType,
+  PAYMENT_TYPE_LABELS,
+  getPaymentTypeLabel,
+} from '@features/invoices/models/enums/payment-type.enum';
 
 describe('PaymentType', () => {
   it('should have CASH value', () => {

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { WarehousesFormPageComponent } from './warehouses-form-page.component';
+import { WarehousesFormPageComponent } from '@features/warehouses/pages/warehouses-form-page/warehouses-form-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { WarehouseDetails } from '@features/warehouses/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';

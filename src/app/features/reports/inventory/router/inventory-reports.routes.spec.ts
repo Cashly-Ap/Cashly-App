@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INVENTORY_REPORTS_ROUTES } from './inventory-reports.routes';
+import { INVENTORY_REPORTS_ROUTES } from '@features/reports/inventory/router/inventory-reports.routes';
 
 describe('Inventory Reports Routes', () => {
   it('should have the inventory reports page route', () => {

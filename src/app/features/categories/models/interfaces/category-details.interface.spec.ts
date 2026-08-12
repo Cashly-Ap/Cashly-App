@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CategoryDetails } from './category-details.interface';
+import type { CategoryDetails } from '@features/categories/models/interfaces/category-details.interface';
 
 describe('CategoryDetails interface', () => {
   it('should have all required properties including inherited', () => {

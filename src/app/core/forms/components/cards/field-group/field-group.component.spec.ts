@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { FieldGroupComponent } from './field-group.component';
+import { FieldGroupComponent } from '@core/forms/components/cards/field-group/field-group.component';
 
 describe('FieldGroupComponent', () => {
   let component: FieldGroupComponent;

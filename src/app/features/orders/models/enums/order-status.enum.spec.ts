@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { OrderStatus, ORDER_STATUS_LABELS, getOrderStatusLabel } from './order-status.enum';
+import {
+  OrderStatus,
+  ORDER_STATUS_LABELS,
+  getOrderStatusLabel,
+} from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderStatus', () => {
   it('should have DRAFT value', () => {

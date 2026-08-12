@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DetailsInfoFieldComponent } from './details-info-field.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { ComponentRef } from '@angular/core';
 
 describe('DetailsInfoFieldComponent', () => {

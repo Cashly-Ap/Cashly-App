@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { signal } from '@angular/core';
-import { LoginPageComponent } from './login-page.component';
+import { LoginPageComponent } from '@features/auth/pages/login/login-page.component';
 import { AuthService } from '@features/auth/services';
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { CardModule } from 'primeng/card';

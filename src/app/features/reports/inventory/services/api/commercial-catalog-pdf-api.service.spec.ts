@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CommercialCatalogPdfApiService } from './commercial-catalog-pdf-api.service';
+import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
 
 describe('CommercialCatalogPdfApiService', () => {
   let service: CommercialCatalogPdfApiService;

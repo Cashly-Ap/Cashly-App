@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { StockPdfFilters } from './stock-pdf-filters.interface';
+import type { StockPdfFilters } from '@features/reports/inventory/models/interfaces/stock-pdf-filters.interface';
 
 describe('StockPdfFilters interface', () => {
   it('should have all optional properties', () => {

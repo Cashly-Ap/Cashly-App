@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { PriceTypeUpdate } from './price-type-update.interface';
+import type { PriceTypeUpdate } from '@features/price-types/models/interfaces/price-type-update.interface';
 
 describe('PriceTypeUpdate interface', () => {
   it('should have all required properties', () => {

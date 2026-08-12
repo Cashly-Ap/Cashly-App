@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { of } from 'rxjs';
-import { ReturnLinesTableComponent, ReturnLineFormData } from './return-lines-table.component';
+import {
+  ReturnLinesTableComponent,
+  ReturnLineFormData,
+} from '@features/returns/components/return-lines-table/return-lines-table.component';
 import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
 
 @Component({

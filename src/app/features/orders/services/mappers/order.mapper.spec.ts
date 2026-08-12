@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { OrderMapper } from './order.mapper';
-import { OrderStatus } from '../../models/enums/order-status.enum';
+import { OrderMapper } from '@features/orders/services/mappers/order.mapper';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderMapper', () => {
   describe('toList()', () => {

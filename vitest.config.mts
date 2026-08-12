@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitest/config';
 import angular from '@analogjs/vite-plugin-angular';
+import { fileURLToPath } from 'node:url';
+
+const sourceRoot = fileURLToPath(new URL('./src', import.meta.url));
 
 export default defineConfig({
   plugins: [angular({})],
@@ -32,13 +35,11 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@app': '/src/app',
-      '@shared': '/src/app/shared',
-      '@theme': '/src/app/theme',
-      '@core': '/src/app/core',
-      '@env': '/src/environments',
-      '@environments': '/src/environments',
-      '@features': '/src/app/features',
+      '@app': `${sourceRoot}/app`,
+      '@shared': `${sourceRoot}/app/shared`,
+      '@core': `${sourceRoot}/app/core`,
+      '@env': `${sourceRoot}/environments`,
+      '@features': `${sourceRoot}/app/features`,
     },
     dedupe: ['@angular/core', '@angular/common', 'primeng'],
   },

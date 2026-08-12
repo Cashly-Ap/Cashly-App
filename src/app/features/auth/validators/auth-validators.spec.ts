@@ -1,5 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { AuthValidators } from './auth-validators';
+import { AuthValidators } from '@features/auth/validators/auth-validators';
 
 describe('AuthValidators', () => {
   describe('email validation', () => {

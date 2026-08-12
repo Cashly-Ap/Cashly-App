@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceFormData } from './invoice-form-data.interface';
+import { InvoiceFormData } from '@features/invoices/models/interfaces/invoice-form-data.interface';
 
 describe('InvoiceFormData interface', () => {
   it('should have all required properties', () => {

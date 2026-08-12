@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { OrderListPageComponent } from './order-list-page.component';
+import { OrderListPageComponent } from '@features/orders/pages/order-list-page/order-list-page.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 import { OrderList } from '@features/orders/models/interfaces';

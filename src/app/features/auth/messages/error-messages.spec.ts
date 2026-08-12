@@ -4,7 +4,7 @@ import {
   AUTH_DEFAULT_ERROR_MESSAGE,
   AUTH_ERROR_MESSAGES,
   AUTH_SESSION_MESSAGES,
-} from './error-messages';
+} from '@features/auth/messages/error-messages';
 
 describe('AUTH_HTTP_ERRORS', () => {
   it('should have expected HTTP status codes', () => {

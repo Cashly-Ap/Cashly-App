@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ProductPhotoService } from './product-photo.service';
+import { ProductPhotoService } from '@features/products/services/api/product-photo.service';
 
 describe('ProductPhotoService', () => {
   let service: ProductPhotoService;

@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { PdfViewerService } from './pdf-viewer.service';
+import { PdfViewerService } from '@core/pdf-viewer/services/pdf-viewer.service';
 import { PdfViewerConfig } from '@core/pdf-viewer/models';
 
 describe('PdfViewerService', () => {

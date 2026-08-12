@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AUTH_SUCCESS_MESSAGES } from './success-messages';
+import { AUTH_SUCCESS_MESSAGES } from '@features/auth/messages/success-messages';
 
 describe('AUTH_SUCCESS_MESSAGES', () => {
   it('should have expected keys', () => {

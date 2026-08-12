@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { UserDetails } from './user-details.interface';
+import type { UserDetails } from '@features/users/models/interfaces/user-details.interface';
 import { UserType, BusinessModule } from '@features/users/models/enums';
 
 describe('UserDetails interface', () => {

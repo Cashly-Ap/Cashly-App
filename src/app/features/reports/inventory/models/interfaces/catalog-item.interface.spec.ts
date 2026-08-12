@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import type { CatalogItem, CatalogWarehouseStock } from './catalog-item.interface';
+import type {
+  CatalogItem,
+  CatalogWarehouseStock,
+} from '@features/reports/inventory/models/interfaces/catalog-item.interface';
 
 describe('CatalogWarehouseStock interface', () => {
   it('should have all required properties', () => {

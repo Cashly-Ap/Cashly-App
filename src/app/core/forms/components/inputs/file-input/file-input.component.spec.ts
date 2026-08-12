@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { FileInputComponent } from './file-input.component';
+import { FileInputComponent } from '@core/forms/components/inputs/file-input/file-input.component';
 import { FileSelectEvent } from 'primeng/fileupload';
 
 describe('FileInputComponent', () => {

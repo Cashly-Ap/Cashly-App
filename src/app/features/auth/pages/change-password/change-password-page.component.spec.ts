@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { ChangePasswordPageComponent } from './change-password-page.component';
+import { ChangePasswordPageComponent } from '@features/auth/pages/change-password/change-password-page.component';
 import { AuthService } from '@features/auth/services/application';
 import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
 

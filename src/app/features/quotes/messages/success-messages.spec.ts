@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { QUOTE_SUCCESS_MESSAGES } from './success-messages';
+import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages/success-messages';
 
 describe('QUOTE_SUCCESS_MESSAGES', () => {
   it('should have created message with correct severity and detail', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { CustomerApplicationService } from './customer-application.service';
+import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
 import { CustomerApiService } from '@features/customers/services/api';
 import { CustomerMapper } from '@features/customers/services/mappers';
 import { CustomerType } from '@features/customers/models/enums';

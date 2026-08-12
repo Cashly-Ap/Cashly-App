@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { UserApplicationService } from './user-application.service';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
 import { UserApiService } from '@features/users/services/api';
 import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
 import { UserType } from '@features/users/models/enums';

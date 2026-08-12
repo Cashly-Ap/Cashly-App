@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormActionsComponent } from './form-actions.component';
+import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { By } from '@angular/platform-browser';
 
 describe('FormActionsComponent', () => {

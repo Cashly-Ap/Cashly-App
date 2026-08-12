@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CatalogFilters } from './catalog-filters.interface';
+import type { CatalogFilters } from '@features/reports/inventory/models/interfaces/catalog-filters.interface';
 
 describe('CatalogFilters interface', () => {
   it('should have all optional properties', () => {

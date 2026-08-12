@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { InvoiceApplicationService } from './invoice-application.service';
-import { InvoiceApiService } from '../api/invoice-api.service';
+import { InvoiceApplicationService } from '@features/invoices/services/application/invoice-application.service';
+import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { of, throwError } from 'rxjs';
-import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
-import { PaymentType } from '../../models/enums/payment-type.enum';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 describe('InvoiceApplicationService', () => {
   let service: InvoiceApplicationService;

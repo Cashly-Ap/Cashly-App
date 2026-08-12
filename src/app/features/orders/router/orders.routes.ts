@@ -11,7 +11,7 @@ export const ORDER_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/order-list-page/order-list-page.component').then(
+          import('@features/orders/pages/order-list-page/order-list-page.component').then(
             (m) => m.OrderListPageComponent,
           ),
         title: 'Pedidos',
@@ -19,7 +19,7 @@ export const ORDER_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/order-form-page/order-form-page.component').then(
+          import('@features/orders/pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,
           ),
         title: 'Nuevo Pedido',
@@ -27,7 +27,7 @@ export const ORDER_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/order-detail-page/order-detail-page.component').then(
+          import('@features/orders/pages/order-detail-page/order-detail-page.component').then(
             (m) => m.OrderDetailPageComponent,
           ),
         title: 'Detalle del Pedido',
@@ -35,7 +35,7 @@ export const ORDER_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/order-form-page/order-form-page.component').then(
+          import('@features/orders/pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,
           ),
         title: 'Editar Pedido',

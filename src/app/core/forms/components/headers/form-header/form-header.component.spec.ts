@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormHeaderComponent } from './form-header.component';
+import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
 
 describe('FormHeaderComponent', () => {
   let component: FormHeaderComponent;

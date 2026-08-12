@@ -11,7 +11,7 @@ export const RECEIVABLES_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/receivables-page/receivables-page.component').then(
+          import('@features/receivables/pages/receivables-page/receivables-page.component').then(
             (m) => m.ReceivablesPageComponent,
           ),
         title: 'Cuentas por Cobrar',

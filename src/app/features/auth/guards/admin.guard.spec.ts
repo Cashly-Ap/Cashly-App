@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { adminGuard } from './admin.guard';
+import { adminGuard } from '@features/auth/guards/admin.guard';
 import { AuthService } from '@features/auth/services';
 import { Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';

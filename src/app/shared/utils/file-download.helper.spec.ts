@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { FileDownloadHelper } from './file-download.helper';
+import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 
 describe('FileDownloadHelper', () => {
   let mockLink: HTMLAnchorElement;

@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import type { OrdersPdfFilters, OrderPdfFilters } from './index';
+import type {
+  OrdersPdfFilters,
+  OrderPdfFilters,
+} from '@features/reports/orders/models/interfaces/index';
 
 describe('OrdersPdfFilters interface', () => {
   it('should have all optional properties', () => {

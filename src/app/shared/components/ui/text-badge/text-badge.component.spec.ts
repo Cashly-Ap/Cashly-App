@@ -1,6 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TextBadgeComponent, TextBadgeVariant } from './text-badge.component';
+import {
+  TextBadgeComponent,
+  TextBadgeVariant,
+} from '@shared/components/ui/text-badge/text-badge.component';
 
 describe('TextBadgeComponent', () => {
   let component: TextBadgeComponent;

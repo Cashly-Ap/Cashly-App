@@ -6,7 +6,7 @@ import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { QuoteDetailPageComponent } from './quote-detail-page.component';
+import { QuoteDetailPageComponent } from '@features/quotes/pages/quote-detail-page/quote-detail-page.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 import { QuoteDetails } from '@features/quotes/models/interfaces';

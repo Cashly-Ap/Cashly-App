@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteLineAllocationEdit, QuoteLineEdit, QuoteEdit } from './quote-edit.interface';
+import {
+  QuoteLineAllocationEdit,
+  QuoteLineEdit,
+  QuoteEdit,
+} from '@features/quotes/models/interfaces/quote-edit.interface';
 
 describe('QuoteLineAllocationEdit interface', () => {
   it('should have all required properties', () => {

@@ -11,33 +11,33 @@ export const PRICE_TYPE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/price-types-list-page/price-types-list-page.component').then(
-            (m) => m.PriceTypesListPageComponent,
-          ),
+          import(
+            '@features/price-types/pages/price-types-list-page/price-types-list-page.component'
+          ).then((m) => m.PriceTypesListPageComponent),
         title: 'Tipos de Precio',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/price-types-form-page/price-types-form-page.component').then(
-            (m) => m.PriceTypesFormPageComponent,
-          ),
+          import(
+            '@features/price-types/pages/price-types-form-page/price-types-form-page.component'
+          ).then((m) => m.PriceTypesFormPageComponent),
         title: 'Nuevo Tipo de Precio',
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/price-types-details-page/price-types-details-page.component').then(
-            (m) => m.PriceTypesDetailsPageComponent,
-          ),
+          import(
+            '@features/price-types/pages/price-types-details-page/price-types-details-page.component'
+          ).then((m) => m.PriceTypesDetailsPageComponent),
         title: 'Detalles de Tipo de Precio',
       },
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/price-types-form-page/price-types-form-page.component').then(
-            (m) => m.PriceTypesFormPageComponent,
-          ),
+          import(
+            '@features/price-types/pages/price-types-form-page/price-types-form-page.component'
+          ).then((m) => m.PriceTypesFormPageComponent),
         title: 'Editar Tipo de Precio',
       },
     ],

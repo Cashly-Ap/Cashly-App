@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { DuplicateInvoiceDialogComponent } from './duplicate-invoice-dialog.component';
-import { InvoiceApiService } from '../../services/api/invoice-api.service';
+import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
+import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { of, throwError } from 'rxjs';
-import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
-import { PaymentType } from '../../models/enums/payment-type.enum';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({
   template: `<app-duplicate-invoice-dialog

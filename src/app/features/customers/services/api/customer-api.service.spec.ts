@@ -2,14 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { CustomerApiService } from './customer-api.service';
-import { CustomerType } from '../../models/enums';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerType } from '@features/customers/models/enums';
 import {
   CustomerList,
   CustomerDetails,
   CustomerCreate,
   CustomerEdit,
-} from '../../models/interfaces';
+} from '@features/customers/models/interfaces';
 
 describe('CustomerApiService', () => {
   let service: CustomerApiService;

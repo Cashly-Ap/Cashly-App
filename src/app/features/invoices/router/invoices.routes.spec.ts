@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { INVOICE_ROUTES } from './invoices.routes';
+import { INVOICE_ROUTES } from '@features/invoices/router/invoices.routes';
 
 describe('Invoice Routes', () => {
   it('should have a parent route with children', () => {

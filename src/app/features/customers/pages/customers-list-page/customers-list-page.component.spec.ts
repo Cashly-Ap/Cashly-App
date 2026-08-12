@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { CustomersListPageComponent } from './customers-list-page.component';
+import { CustomersListPageComponent } from '@features/customers/pages/customers-list-page/customers-list-page.component';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerList } from '@features/customers/models/interfaces';

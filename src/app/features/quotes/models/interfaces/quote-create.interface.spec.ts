@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteLineAllocationCreate, QuoteLineCreate, QuoteCreate } from './quote-create.interface';
+import {
+  QuoteLineAllocationCreate,
+  QuoteLineCreate,
+  QuoteCreate,
+} from '@features/quotes/models/interfaces/quote-create.interface';
 
 describe('QuoteLineAllocationCreate interface', () => {
   it('should have all required properties', () => {

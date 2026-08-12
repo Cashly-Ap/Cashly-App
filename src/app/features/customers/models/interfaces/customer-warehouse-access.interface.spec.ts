@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CustomerWarehouseAccessItem } from './customer-warehouse-access.interface';
+import type { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces/customer-warehouse-access.interface';
 
 describe('CustomerWarehouseAccessItem interface', () => {
   it('should have all required properties', () => {

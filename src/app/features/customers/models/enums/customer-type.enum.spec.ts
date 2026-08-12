@@ -3,7 +3,7 @@ import {
   CUSTOMER_TYPES,
   CUSTOMER_TYPE_LABELS,
   getCustomerTypeLabel,
-} from './customer-type.enum';
+} from '@features/customers/models/enums/customer-type.enum';
 
 describe('CustomerType', () => {
   it('should have all expected enum values', () => {

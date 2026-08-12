@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { HttpErrorHandler } from './http-error.handler';
+import { HttpErrorHandler } from '@core/exceptions/http-error.handler';
 
 describe('HttpErrorHandler', () => {
   describe('handleCreateError', () => {

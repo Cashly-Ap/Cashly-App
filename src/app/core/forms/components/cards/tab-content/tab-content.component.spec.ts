@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { TabContentComponent } from './tab-content.component';
+import { TabContentComponent } from '@core/forms/components/cards/tab-content/tab-content.component';
 import { Component } from '@angular/core';
 
 @Component({

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { CategoryApplicationService } from './category-application.service';
-import { CategoryApiService } from '../api/category-api.service';
-import { CategoryDetails } from '../../models/interfaces';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
+import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { CategoryDetails } from '@features/categories/models/interfaces';
 
 describe('CategoryApplicationService', () => {
   let service: CategoryApplicationService;

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderList } from './order-list.interface';
-import { OrderStatus } from '../enums/order-status.enum';
+import type { OrderList } from '@features/orders/models/interfaces/order-list.interface';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderList interface', () => {
   it('should have all required properties', () => {

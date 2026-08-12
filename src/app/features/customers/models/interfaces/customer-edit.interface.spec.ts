@@ -5,7 +5,7 @@ import type {
   CustomerEditAddress,
   CustomerEdit,
   CustomerFormData,
-} from './customer-edit.interface';
+} from '@features/customers/models/interfaces/customer-edit.interface';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
 
 describe('CustomerEditEmail interface', () => {

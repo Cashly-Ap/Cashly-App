@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA, Component, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { ConvertToInvoiceDialogComponent } from './convert-to-invoice-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { QuoteApiService } from '@features/quotes/services/api/quote-api.service';
 import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 

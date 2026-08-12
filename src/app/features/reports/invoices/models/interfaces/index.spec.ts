@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { InvoicesPdfFilters } from './index';
+import type { InvoicesPdfFilters } from '@features/reports/invoices/models/interfaces/index';
 
 describe('InvoicesPdfFilters interface', () => {
   it('should have all optional properties', () => {

@@ -11,7 +11,7 @@ export const INVOICE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/invoice-list-page/invoice-list-page.component').then(
+          import('@features/invoices/pages/invoice-list-page/invoice-list-page.component').then(
             (m) => m.InvoiceListPageComponent,
           ),
         title: 'Facturas',
@@ -19,7 +19,7 @@ export const INVOICE_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/invoice-form-page/invoice-form-page.component').then(
+          import('@features/invoices/pages/invoice-form-page/invoice-form-page.component').then(
             (m) => m.InvoiceFormPageComponent,
           ),
         title: 'Nueva Factura',
@@ -27,7 +27,7 @@ export const INVOICE_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/invoice-form-page/invoice-form-page.component').then(
+          import('@features/invoices/pages/invoice-form-page/invoice-form-page.component').then(
             (m) => m.InvoiceFormPageComponent,
           ),
         title: 'Editar Factura',
@@ -35,7 +35,7 @@ export const INVOICE_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/invoice-detail-page/invoice-detail-page.component').then(
+          import('@features/invoices/pages/invoice-detail-page/invoice-detail-page.component').then(
             (m) => m.InvoiceDetailPageComponent,
           ),
         title: 'Detalle de Factura',

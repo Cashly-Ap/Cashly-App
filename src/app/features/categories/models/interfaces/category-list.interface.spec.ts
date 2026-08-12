@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { CategoryList } from './category-list.interface';
+import type { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
 
 describe('CategoryList interface', () => {
   it('should have all required properties', () => {

@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { CUSTOMER_ERROR_MESSAGES, CUSTOMER_HTTP_ERRORS } from './error-messages';
+import {
+  CUSTOMER_ERROR_MESSAGES,
+  CUSTOMER_HTTP_ERRORS,
+} from '@features/customers/messages/error-messages';
 
 describe('CUSTOMER_ERROR_MESSAGES', () => {
   it('should have create, update, load, and delete keys', () => {

@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { QuoteApplicationService } from './quote-application.service';
-import { QuoteApiService } from '../api/quote-api.service';
+import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
+import { QuoteApiService } from '@features/quotes/services/api/quote-api.service';
 import { of, throwError } from 'rxjs';
-import { QuoteStatus } from '../../models/enums/quote-status.enum';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteApplicationService', () => {
   let service: QuoteApplicationService;

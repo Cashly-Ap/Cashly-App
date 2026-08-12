@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { CATEGORY_ROUTES } from './category.routes';
+import { CATEGORY_ROUTES } from '@features/categories/router/category.routes';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('Category Routes', () => {

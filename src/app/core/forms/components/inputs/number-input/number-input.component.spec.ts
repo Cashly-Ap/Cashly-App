@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NumberInputComponent } from './number-input.component';
+import { NumberInputComponent } from '@core/forms/components/inputs/number-input/number-input.component';
 import { InputNumberModule } from 'primeng/inputnumber';
 
 describe('NumberInputComponent', () => {

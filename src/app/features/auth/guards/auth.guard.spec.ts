@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { authGuard } from './auth.guard';
+import { authGuard } from '@features/auth/guards/auth.guard';
 import { AuthService } from '@features/auth/services';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 

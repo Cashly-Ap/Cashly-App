@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ORDER_ROUTES } from './orders.routes';
+import { ORDER_ROUTES } from '@features/orders/router/orders.routes';
 
 describe('Order Routes', () => {
   it('should have a parent route with children', () => {

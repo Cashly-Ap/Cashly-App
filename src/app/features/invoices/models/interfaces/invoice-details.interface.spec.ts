@@ -1,7 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceDetails, InvoiceLineDetail, NoteInfo } from './invoice-details.interface';
-import { InvoiceStatus } from '../enums/invoice-status.enum';
-import { PaymentType } from '../enums/payment-type.enum';
+import {
+  InvoiceDetails,
+  InvoiceLineDetail,
+  NoteInfo,
+} from '@features/invoices/models/interfaces/invoice-details.interface';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 describe('InvoiceLineDetail interface', () => {
   it('should have all required properties', () => {

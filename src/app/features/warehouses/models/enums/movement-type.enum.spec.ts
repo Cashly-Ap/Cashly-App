@@ -1,4 +1,7 @@
-import { MOVEMENT_TYPE_LABELS, MovementType } from './movement-type.enum';
+import {
+  MOVEMENT_TYPE_LABELS,
+  MovementType,
+} from '@features/warehouses/models/enums/movement-type.enum';
 
 describe('MovementType', () => {
   it('should have all expected type values', () => {

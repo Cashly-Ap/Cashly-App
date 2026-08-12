@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { InvoiceMapper } from './invoice.mapper';
-import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
-import { PaymentType } from '../../models/enums/payment-type.enum';
+import { InvoiceMapper } from '@features/invoices/services/mappers/invoice.mapper';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 describe('InvoiceMapper', () => {
   describe('toList()', () => {

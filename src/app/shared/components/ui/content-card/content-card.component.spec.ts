@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ContentCardComponent } from './content-card.component';
+import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 
 describe('ContentCardComponent', () => {
   let component: ContentCardComponent;

@@ -4,7 +4,7 @@ import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { PriceTypesListPageComponent } from './price-types-list-page.component';
+import { PriceTypesListPageComponent } from '@features/price-types/pages/price-types-list-page/price-types-list-page.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeList } from '@features/price-types/models/interfaces';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';

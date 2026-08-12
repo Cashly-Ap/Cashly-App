@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteProduct } from './quote-product.interface';
+import { QuoteProduct } from '@features/quotes/models/interfaces/quote-product.interface';
 
 describe('QuoteProduct interface', () => {
   it('should have all required properties', () => {

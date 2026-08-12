@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PRODUCT_ROUTES } from './product.routes';
+import { PRODUCT_ROUTES } from '@features/products/router/product.routes';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('Product Routes', () => {

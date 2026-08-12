@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { PdfViewerModalComponent } from './pdf-viewer-modal.component';
+import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal/pdf-viewer-modal.component';
 
 @Component({
   template: `<app-pdf-viewer-modal

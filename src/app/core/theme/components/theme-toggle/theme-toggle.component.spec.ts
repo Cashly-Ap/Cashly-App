@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ThemeToggleComponent } from './theme-toggle.component';
-import { ThemeService } from './theme.service';
+import { ThemeToggleComponent } from '@core/theme/components/theme-toggle/theme-toggle.component';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { signal } from '@angular/core';
 import { vi } from 'vitest';
 

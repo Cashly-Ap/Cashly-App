@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ListSectionComponent } from './list-section.component';
+import { ListSectionComponent } from '@core/forms/components/dynamic-lists/list-section/list-section.component';
 import { By } from '@angular/platform-browser';
 
 describe('ListSectionComponent', () => {

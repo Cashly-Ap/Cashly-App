@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { CancelOrderDialogComponent } from './cancel-order-dialog.component';
+import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { OrderList } from '@features/orders/models/interfaces';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ImageViewerDialogComponent } from './image-viewer-dialog.component';
+import { ImageViewerDialogComponent } from '@shared/components/ui/image-viewer-dialog/image-viewer-dialog.component';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 

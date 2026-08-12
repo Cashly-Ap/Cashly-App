@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ListItemComponent } from './list-item.component';
+import { ListItemComponent } from '@core/forms/components/dynamic-lists/list-item/list-item.component';
 import { FormControl } from '@angular/forms';
 
 describe('ListItemComponent', () => {

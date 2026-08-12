@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import type { OrderEdit, OrderItemEdit, WarehouseAllocationEdit } from './order-edit.interface';
+import type {
+  OrderEdit,
+  OrderItemEdit,
+  WarehouseAllocationEdit,
+} from '@features/orders/models/interfaces/order-edit.interface';
 
 describe('WarehouseAllocationEdit interface', () => {
   it('should have all required properties', () => {

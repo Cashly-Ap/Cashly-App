@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { UserApiService } from './user-api.service';
+import { UserApiService } from '@features/users/services/api/user-api.service';
 import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
 import { UserType } from '@features/users/models/enums';
 

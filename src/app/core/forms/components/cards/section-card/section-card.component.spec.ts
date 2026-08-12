@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { SectionCardComponent } from './section-card.component';
+import { SectionCardComponent } from '@core/forms/components/cards/section-card/section-card.component';
 
 describe('SectionCardComponent', () => {
   let component: SectionCardComponent;

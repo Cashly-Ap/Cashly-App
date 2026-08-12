@@ -2,8 +2,8 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { PriceTypeApiService } from './price-type-api.service';
-import { PriceTypeList, PriceTypeDetails } from '../../models/interfaces';
+import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
+import { PriceTypeList, PriceTypeDetails } from '@features/price-types/models/interfaces';
 
 describe('PriceTypeApiService', () => {
   let service: PriceTypeApiService;

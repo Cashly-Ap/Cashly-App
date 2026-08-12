@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { PaymentPdfModalComponent } from './payment-pdf-modal.component';
+import { PaymentPdfModalComponent } from '@features/reports/finance/components/payment-pdf-modal/payment-pdf-modal.component';
 import { MessageService } from 'primeng/api';
 
 @Component({

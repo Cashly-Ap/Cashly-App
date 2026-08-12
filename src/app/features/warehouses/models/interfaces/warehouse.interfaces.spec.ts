@@ -10,7 +10,7 @@ import {
   StockBatchItem,
   StockEntryRequest,
   StockExitRequest,
-} from './warehouse.interfaces';
+} from '@features/warehouses/models/interfaces/warehouse.interfaces';
 
 describe('WarehouseList interface', () => {
   it('should have all required fields', () => {

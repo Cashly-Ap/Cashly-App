@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DateFormatPipe } from './date-format.pipe';
+import { DateFormatPipe } from '@shared/pipes/date-format.pipe';
 
 describe('DateFormatPipe', () => {
   let pipe: DateFormatPipe;

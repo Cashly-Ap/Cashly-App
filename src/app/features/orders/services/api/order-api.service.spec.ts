@@ -2,8 +2,12 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { OrderApiService, OrderFilters, OrderProductFilters } from './order-api.service';
-import { OrderStatus } from '../../models/enums/order-status.enum';
+import {
+  OrderApiService,
+  OrderFilters,
+  OrderProductFilters,
+} from '@features/orders/services/api/order-api.service';
+import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 describe('OrderApiService', () => {
   let service: OrderApiService;

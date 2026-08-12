@@ -4,7 +4,7 @@ import { signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EMPTY, of } from 'rxjs';
-import { MainLayoutComponent } from './main-layout.component';
+import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { AuthService } from '@features/auth/services';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { MessageService } from 'primeng/api';

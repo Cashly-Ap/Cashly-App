@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { WarehouseAllocation } from './order-item-allocation.interface';
+import type { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
 
 describe('WarehouseAllocation interface', () => {
   it('should have all required properties', () => {

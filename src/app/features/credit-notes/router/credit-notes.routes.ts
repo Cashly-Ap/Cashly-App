@@ -11,25 +11,25 @@ export const CREDIT_NOTE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/credit-note-list-page/credit-note-list-page.component').then(
-            (m) => m.CreditNoteListPageComponent,
-          ),
+          import(
+            '@features/credit-notes/pages/credit-note-list-page/credit-note-list-page.component'
+          ).then((m) => m.CreditNoteListPageComponent),
         title: 'Notas de Crédito',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/credit-note-form-page/credit-note-form-page.component').then(
-            (m) => m.CreditNoteFormPageComponent,
-          ),
+          import(
+            '@features/credit-notes/pages/credit-note-form-page/credit-note-form-page.component'
+          ).then((m) => m.CreditNoteFormPageComponent),
         title: 'Nueva Nota de Crédito',
       },
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/credit-note-detail-page/credit-note-detail-page.component').then(
-            (m) => m.CreditNoteDetailPageComponent,
-          ),
+          import(
+            '@features/credit-notes/pages/credit-note-detail-page/credit-note-detail-page.component'
+          ).then((m) => m.CreditNoteDetailPageComponent),
         title: 'Detalle de Nota de Crédito',
       },
     ],

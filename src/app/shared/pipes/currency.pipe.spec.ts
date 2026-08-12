@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CurrencyPipe } from './currency.pipe';
+import { CurrencyPipe } from '@shared/pipes/currency.pipe';
 
 describe('CurrencyPipe', () => {
   let pipe: CurrencyPipe;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { PRICE_TYPE_ROUTES } from './price-type.routes';
+import { PRICE_TYPE_ROUTES } from '@features/price-types/router/price-type.routes';
 import { BusinessModule } from '@features/users/models/enums';
 
 describe('Price Type Routes', () => {

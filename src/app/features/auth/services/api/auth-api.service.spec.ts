@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { AuthApiService } from './auth-api.service';
+import { AuthApiService } from '@features/auth/services/api/auth-api.service';
 import {
   RegisterUserRequest,
   LoginRequest,

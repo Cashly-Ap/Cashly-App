@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ORDER_SUCCESS_MESSAGES } from './success-messages';
+import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages/success-messages';
 
 describe('ORDER_SUCCESS_MESSAGES', () => {
   it('should have created message', () => {

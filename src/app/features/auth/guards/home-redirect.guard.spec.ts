@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { homeRedirectGuard } from './home-redirect.guard';
+import { homeRedirectGuard } from '@features/auth/guards/home-redirect.guard';
 import { AuthService } from '@features/auth/services';
 import { Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';

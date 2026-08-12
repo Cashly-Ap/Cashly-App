@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { MovementsPdfModalComponent } from './movements-pdf-modal.component';
+import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal/movements-pdf-modal.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 
 @Component({

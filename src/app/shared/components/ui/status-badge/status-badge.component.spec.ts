@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StatusBadgeComponent } from './status-badge.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 
 describe('StatusBadgeComponent', () => {
   let component: StatusBadgeComponent;

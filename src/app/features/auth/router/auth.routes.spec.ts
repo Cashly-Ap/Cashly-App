@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { AUTH_ROUTES, AUTHENTICATED_AUTH_ROUTES } from './auth.routes';
+import { AUTH_ROUTES, AUTHENTICATED_AUTH_ROUTES } from '@features/auth/router/auth.routes';
 
 describe('Auth Routes', () => {
   it('should keep only public routes in the public auth configuration', () => {

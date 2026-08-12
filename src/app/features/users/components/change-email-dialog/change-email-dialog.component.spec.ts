@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, signal, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { ChangeEmailDialogComponent } from './change-email-dialog.component';
+import { ChangeEmailDialogComponent } from '@features/users/components/change-email-dialog/change-email-dialog.component';
 import { UserApplicationService } from '@features/users/services/application';
 
 @Component({

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { QuoteList } from './quote-list.interface';
-import { QuoteStatus } from '../enums/quote-status.enum';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
+import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 describe('QuoteList interface', () => {
   it('should have all required properties', () => {

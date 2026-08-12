@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { CustomerContactSectionComponent } from './customer-contact-section.component';
+import { CustomerContactSectionComponent } from '@features/customers/components/customer-contact-section/customer-contact-section.component';
 
 describe('CustomerContactSectionComponent', () => {
   let fixture: ComponentFixture<CustomerContactSectionComponent>;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { ProductStockByWarehouse } from './product-stock-by-warehouse.interface';
+import type { ProductStockByWarehouse } from '@features/products/models/interfaces/product-stock-by-warehouse.interface';
 
 describe('ProductStockByWarehouse interface', () => {
   it('should have all required properties', () => {

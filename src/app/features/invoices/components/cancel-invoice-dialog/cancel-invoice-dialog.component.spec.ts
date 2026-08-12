@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
-import { CancelInvoiceDialogComponent } from './cancel-invoice-dialog.component';
-import { InvoiceStatus } from '../../models/enums/invoice-status.enum';
-import { PaymentType } from '../../models/enums/payment-type.enum';
+import { CancelInvoiceDialogComponent } from '@features/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
+import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
 
 @Component({
   template: `<app-cancel-invoice-dialog

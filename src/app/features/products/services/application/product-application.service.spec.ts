@@ -1,15 +1,18 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { ProductApplicationService } from './product-application.service';
-import { ProductApiService, ProductFilters } from '../api/product-api.service';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import {
+  ProductApiService,
+  ProductFilters,
+} from '@features/products/services/api/product-api.service';
 import {
   ProductList,
   ProductDetails,
   ProductCreate,
   ProductUpdate,
   ProductStockByWarehouse,
-} from '../../models/interfaces';
+} from '@features/products/models/interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('ProductApplicationService', () => {

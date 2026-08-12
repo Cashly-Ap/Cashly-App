@@ -11,7 +11,7 @@ export const PRODUCT_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('../pages/products-list-page/products-list-page.component').then(
+          import('@features/products/pages/products-list-page/products-list-page.component').then(
             (m) => m.ProductsListPageComponent,
           ),
         title: 'Productos',
@@ -19,7 +19,7 @@ export const PRODUCT_ROUTES: Routes = [
       {
         path: 'new',
         loadComponent: () =>
-          import('../pages/products-form-page/products-form-page.component').then(
+          import('@features/products/pages/products-form-page/products-form-page.component').then(
             (m) => m.ProductsFormPageComponent,
           ),
         title: 'Nuevo Producto',
@@ -27,15 +27,15 @@ export const PRODUCT_ROUTES: Routes = [
       {
         path: ':id',
         loadComponent: () =>
-          import('../pages/products-details-page/products-details-page.component').then(
-            (m) => m.ProductsDetailsPageComponent,
-          ),
+          import(
+            '@features/products/pages/products-details-page/products-details-page.component'
+          ).then((m) => m.ProductsDetailsPageComponent),
         title: 'Detalles de Producto',
       },
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('../pages/products-form-page/products-form-page.component').then(
+          import('@features/products/pages/products-form-page/products-form-page.component').then(
             (m) => m.ProductsFormPageComponent,
           ),
         title: 'Editar Producto',

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { FormControl } from '@angular/forms';
-import { CustomerValidators } from './customer.validators';
+import { CustomerValidators } from '@features/customers/validators/customer.validators';
 
 describe('CustomerValidators', () => {
   describe('rif()', () => {
