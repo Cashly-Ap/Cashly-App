@@ -10,11 +10,14 @@ import { PagedResponse } from '@shared/models/interfaces/paged-response.interfac
 
 export interface CreateAdvanceRequest {
   amount: number;
+  paymentMethodId: string;
   notes?: string;
 }
 
 export interface CreateRefundRequest {
   amount: number;
+  paymentMethodId: string;
+  notes?: string;
 }
 
 @Injectable({ providedIn: 'root' })

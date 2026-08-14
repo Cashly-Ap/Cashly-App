@@ -1,0 +1,106 @@
+<p-dialog
+  [header]="headerLabel()"
+  [modal]="true"
+  [visible]="visible()"
+  [style]="{ width: 'min(520px, calc(100vw - 2rem))' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="onCancel()"
+>
+  <div class="flex flex-col gap-4 py-2">
+    <div
+      class="rounded-xl border border-surface-200 bg-surface-50 p-3 dark:border-surface-700 dark:bg-surface-900"
+    >
+      <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+        >Tipo <span class="text-red-500">*</span></label
+      >
+      <p-select
+        [options]="noteTypeOptions"
+        [ngModel]="noteType()"
+        (ngModelChange)="noteType.set($event)"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+
+    <div
+      class="rounded-xl border border-surface-200 bg-surface-50 p-3 dark:border-surface-700 dark:bg-surface-900"
+    >
+      <p class="text-sm text-surface-600 dark:text-surface-400">
+        <span class="font-semibold text-surface-800 dark:text-surface-200">Cliente:</span>
+        {{ invoice().customerName }} — {{ invoice().customerRif }}
+      </p>
+    </div>
+
+    <div
+      class="rounded-xl border border-surface-200 bg-surface-50 p-3 dark:border-surface-700 dark:bg-surface-900"
+    >
+      <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+        >Monto <span class="text-red-500">*</span></label
+      >
+      <p-inputNumber
+        [ngModel]="amount()"
+        (ngModelChange)="amount.set($event ?? 0)"
+        [min]="0.01"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        [max]="999999999"
+        inputStyleClass="w-full"
+        styleClass="w-full"
+        placeholder="0.00"
+      />
+      @if (formAttempted() && amount() <= 0) {
+        <small class="mt-2 flex items-center gap-1 text-xs text-red-500">
+          <i class="pi pi-exclamation-circle"></i>
+          El monto debe ser mayor a cero
+        </small>
+      }
+    </div>
+
+    <div
+      class="rounded-xl border border-surface-200 bg-surface-50 p-3 dark:border-surface-700 dark:bg-surface-900"
+    >
+      <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+        >Motivo <span class="text-red-500">*</span></label
+      >
+      <textarea
+        pTextarea
+        [ngModel]="reason()"
+        (ngModelChange)="reason.set($event)"
+        rows="3"
+        class="w-full"
+        placeholder="Motivo de la nota..."
+      ></textarea>
+      @if (formAttempted() && !reason().trim()) {
+        <small class="mt-2 flex items-center gap-1 text-xs text-red-500">
+          <i class="pi pi-exclamation-circle"></i>
+          El motivo es requerido
+        </small>
+      }
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+      <p-button
+        label="Cancelar"
+        [outlined]="true"
+        severity="secondary"
+        styleClass="w-full sm:w-auto"
+        [disabled]="isSubmitting()"
+        (onClick)="onCancel()"
+      />
+      <p-button
+        [label]="submitLabel()"
+        icon="pi pi-check"
+        severity="contrast"
+        styleClass="w-full sm:w-auto"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

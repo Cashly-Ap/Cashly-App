@@ -1,112 +1,183 @@
 <app-form-container>
-  <app-form-header [title]="title()" [subtitle]="subtitle()" />
+  <app-form-header
+    title="Nueva Nota de Crédito"
+    subtitle="Complete la información de la nota de crédito"
+  />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-form-card>
-      <div class="p-4 md:p-6 flex flex-col gap-4">
-        <div
-          class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2"
+      <div class="p-4 md:p-6">
+        <h3
+          class="mb-4 flex items-center gap-2 text-base font-medium text-surface-800 dark:text-surface-200"
         >
-          <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-            Cliente <span class="text-red-500">*</span>
-          </label>
-          <p-autoComplete
-            formControlName="customerName"
-            [suggestions]="filteredCustomers"
-            (completeMethod)="searchCustomers($event)"
-            (onSelect)="onCustomerSelect($event.value)"
-            field="name"
-            [forceSelection]="false"
-            placeholder="Buscar cliente..."
-            class="w-full"
-            inputStyleClass="w-full"
-          />
-          @if (
-            form.get('customerName')?.errors?.['required'] && form.get('customerName')?.touched
-          ) {
-            <small class="text-red-500 text-xs">El cliente es requerido</small>
-          }
-        </div>
+          <i class="pi pi-info-circle text-surface-500"></i>
+          Información de la Nota de Crédito
+        </h3>
 
-        <div
-          class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2"
-        >
-          <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-            Factura <span class="text-red-500">*</span>
-          </label>
-          <p-autoComplete
-            formControlName="invoiceNumber"
-            [suggestions]="filteredInvoices"
-            (completeMethod)="searchInvoices($event)"
-            (onSelect)="onInvoiceSelect($event.value)"
-            field="number"
-            [forceSelection]="false"
-            placeholder="Buscar factura..."
-            class="w-full"
-            inputStyleClass="w-full"
-          />
-          @if (
-            form.get('invoiceNumber')?.errors?.['required'] && form.get('invoiceNumber')?.touched
-          ) {
-            <small class="text-red-500 text-xs">La factura es requerida</small>
-          }
-        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Cliente <span class="text-red-500">*</span>
+            </label>
+            @if (selectedCustomerLabel(); as customer) {
+              <div
+                class="flex items-center justify-between gap-3 rounded-lg border border-surface-200 bg-white px-3 py-2.5 dark:border-surface-700 dark:bg-surface-800"
+              >
+                <div class="flex min-w-0 flex-col">
+                  <span class="truncate text-sm font-medium text-surface-900 dark:text-surface-0">{{
+                    customer.alias
+                  }}</span>
+                  @if (customer.legalName) {
+                    <span class="truncate text-xs text-surface-500 dark:text-surface-400">{{
+                      customer.legalName
+                    }}</span>
+                  }
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 underline transition-colors hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-0"
+                  (click)="openPicker()"
+                >
+                  Cambiar
+                </button>
+              </div>
+            } @else {
+              <button
+                type="button"
+                class="flex w-full items-center gap-2 rounded-lg border border-surface-200 bg-white px-3 py-2.5 text-sm text-surface-400 transition-colors hover:border-surface-400 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-500 dark:hover:border-surface-500"
+                (click)="openPicker()"
+              >
+                <i class="pi pi-search text-sm"></i>
+                Buscar y seleccionar cliente...
+              </button>
+            }
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  El cliente es requerido
+                </small>
+              }
+            </div>
+          </div>
 
-        <div
-          class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2"
-        >
-          <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-            Monto <span class="text-red-500">*</span>
-          </label>
-          <p-inputNumber
-            formControlName="amount"
-            [min]="0.01"
-            [maxFractionDigits]="2"
-            mode="currency"
-            currency="VES"
-            locale="es-VE"
-            placeholder="0.00"
-            fluid
-          />
-          @if (form.get('amount')?.errors?.['required'] && form.get('amount')?.touched) {
-            <small class="text-red-500 text-xs">El monto es requerido</small>
-          }
-          @if (form.get('amount')?.errors?.['min'] && form.get('amount')?.touched) {
-            <small class="text-red-500 text-xs">El monto debe ser mayor a cero</small>
-          }
-        </div>
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300">
+              Factura Asociada <span class="text-red-500">*</span>
+            </label>
+            @if (selectedInvoiceLabel(); as invoice) {
+              <div
+                class="flex items-center justify-between gap-3 rounded-lg border border-surface-200 bg-white px-3 py-2.5 dark:border-surface-700 dark:bg-surface-800"
+              >
+                <div class="flex min-w-0 flex-col">
+                  <span class="truncate text-sm font-medium text-surface-900 dark:text-surface-0"
+                    >Factura #{{ invoice.invoiceNumber }}</span
+                  >
+                  <span class="truncate text-xs text-surface-500 dark:text-surface-400">{{
+                    invoice.customerName
+                  }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 underline transition-colors hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-0"
+                  (click)="showInvoicePicker.set(true)"
+                >
+                  Cambiar
+                </button>
+              </div>
+            } @else {
+              <button
+                type="button"
+                class="flex w-full items-center gap-2 rounded-lg border border-surface-200 bg-white px-3 py-2.5 text-sm text-surface-400 transition-colors hover:border-surface-400 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-500 dark:hover:border-surface-500"
+                (click)="showInvoicePicker.set(true)"
+              >
+                <i class="pi pi-search text-sm"></i>
+                Buscar factura por número, cliente o fecha...
+              </button>
+            }
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  La factura es requerida
+                </small>
+              }
+            </div>
+          </div>
 
-        <div
-          class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2"
-        >
-          <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-            Motivo <span class="text-red-500">*</span>
-          </label>
-          <textarea
-            pTextarea
-            formControlName="reason"
-            placeholder="Motivo de la nota de crédito"
-            rows="4"
-            class="w-full"
-          ></textarea>
-          @if (form.get('reason')?.errors?.['required'] && form.get('reason')?.touched) {
-            <small class="text-red-500 text-xs">El motivo es requerido</small>
-          }
-          @if (form.get('reason')?.errors?.['maxlength'] && form.get('reason')?.touched) {
-            <small class="text-red-500 text-xs"
-              >El motivo no puede superar los 500 caracteres</small
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+              >Monto <span class="text-red-500">*</span></label
             >
-          }
+            <p-inputNumber
+              formControlName="amount"
+              mode="decimal"
+              [minFractionDigits]="2"
+              [maxFractionDigits]="2"
+              [min]="0.01"
+              fluid
+            />
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  El monto es requerido y debe ser mayor a 0
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+              >Motivo <span class="text-red-500">*</span></label
+            >
+            <textarea
+              pTextarea
+              formControlName="reason"
+              rows="3"
+              class="w-full"
+              placeholder="Motivo de la nota de crédito..."
+            ></textarea>
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  El motivo es requerido
+                </small>
+              }
+            </div>
+          </div>
         </div>
       </div>
 
       <app-form-actions
-        [submitLabel]="submitLabel()"
+        submitLabel="Guardar"
         cancelLabel="Cancelar"
         [loading]="loading()"
-        [disabled]="form.invalid"
+        [disabled]="loading()"
         [tooltipMessage]="submitTooltip()"
         (cancel)="onCancel()"
       />
     </app-form-card>
   </form>
 </app-form-container>
+
+<app-customer-picker-dialog
+  [visible]="pickerVisible()"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onPickerCancelled()"
+/>
+
+<app-invoice-picker-dialog
+  [visible]="showInvoicePicker()"
+  [customerId]="form.get('customerId')?.value || ''"
+  (invoiceSelected)="onInvoiceSelected($event)"
+  (cancelled)="onInvoiceCancelled()"
+/>

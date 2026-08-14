@@ -808,6 +808,30 @@
           </small>
         }
       </div>
+      <div class="space-y-2">
+        <label for="refundPaymentMethod" class="block text-sm font-semibold"
+          >Método de pago <span class="text-red-500">*</span></label
+        >
+        <p-select
+          inputId="refundPaymentMethod"
+          formControlName="paymentMethodId"
+          [options]="paymentMethods()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar método"
+          fluid
+        />
+      </div>
+      <div class="space-y-2">
+        <label for="refundNotes" class="block text-sm font-semibold">Notas</label>
+        <input
+          id="refundNotes"
+          pInputText
+          formControlName="notes"
+          placeholder="Motivo del reintegro (opcional)"
+          class="w-full"
+        />
+      </div>
     </div>
   </form>
   <ng-template pTemplate="footer">
@@ -859,6 +883,21 @@
             {{ balance() | currency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
+      </div>
+
+      <div class="space-y-2">
+        <label for="advancePaymentMethod" class="block text-sm font-semibold"
+          >Método de pago <span class="text-red-500">*</span></label
+        >
+        <p-select
+          inputId="advancePaymentMethod"
+          formControlName="paymentMethodId"
+          [options]="paymentMethods()"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccionar método"
+          fluid
+        />
       </div>
 
       <div class="space-y-2">

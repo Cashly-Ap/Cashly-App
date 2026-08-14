@@ -43,14 +43,9 @@ export class InvoicePickerDialogComponent {
     );
   });
 
-  private initialized = false;
-
   onDialogShow(): void {
-    if (!this.initialized) {
-      this.initialized = true;
-      this.load();
-    }
     this.search.set('');
+    this.load();
   }
 
   onSearchChange(value: string): void {
@@ -67,12 +62,18 @@ export class InvoicePickerDialogComponent {
 
   private load(): void {
     this.loading.set(true);
-    this.invoiceApi.getAll({ orderBy: 'createdAt', orderDir: 'desc' }).subscribe({
-      next: (res) => {
-        this.allInvoices.set(res);
-        this.loading.set(false);
-      },
-      error: () => this.loading.set(false),
-    });
+    this.invoiceApi
+      .getAll({
+        customerId: this.customerId() || undefined,
+        orderBy: 'createdAt',
+        orderDir: 'desc',
+      })
+      .subscribe({
+        next: (res) => {
+          this.allInvoices.set(res);
+          this.loading.set(false);
+        },
+        error: () => this.loading.set(false),
+      });
   }
 }

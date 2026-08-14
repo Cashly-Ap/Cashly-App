@@ -1,11 +1,10 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { MessageService } from 'primeng/api';
-import { AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import {
   FormContainerComponent,
   FormHeaderComponent,
@@ -15,25 +14,19 @@ import {
 import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application.service';
 import { CreditNoteCreate } from '@features/credit-notes/models/interfaces';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
+import { CustomerList } from '@features/customers/models/interfaces';
+import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { InvoiceList } from '@features/invoices/models/interfaces';
+import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog';
 
 interface CreditNoteFormData {
   customerId: string;
   customerName: string;
+  customerRif: string;
   invoiceId: string;
   invoiceNumber: string;
   amount: number;
   reason: string;
-}
-
-interface CustomerOption {
-  id: string;
-  name: string;
-  rif: string;
-}
-
-interface InvoiceOption {
-  id: string;
-  number: string;
 }
 
 @Component({
@@ -43,14 +36,15 @@ interface InvoiceOption {
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    InputTextModule,
+    ButtonModule,
     InputNumberModule,
     TextareaModule,
-    AutoCompleteModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
+    CustomerPickerDialogComponent,
+    InvoicePickerDialogComponent,
   ],
   templateUrl: './credit-note-form-page.component.html',
 })
@@ -62,8 +56,14 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
 
   submitTooltip = signal('');
 
-  filteredCustomers: CustomerOption[] = [];
-  filteredInvoices: InvoiceOption[] = [];
+  readonly selectedCustomer = signal<CustomerList | null>(null);
+  readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
+  readonly pickerVisible = signal(false);
+  readonly showInvoicePicker = signal(false);
+  readonly selectedInvoice = signal<InvoiceList | null>(null);
+  readonly selectedInvoiceLabel = signal<{ invoiceNumber: string; customerName: string } | null>(
+    null,
+  );
 
   private readonly FIELD_LABELS: Record<string, string> = {
     customerName: 'Cliente',
@@ -112,28 +112,63 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
 
   protected override restoreFormData(data: CreditNoteFormData): void {
     this.form.patchValue(data);
+    if (data.customerName) {
+      this.selectedCustomerLabel.set({ alias: data.customerName, legalName: '' });
+    }
+    if (data.invoiceNumber) {
+      this.selectedInvoiceLabel.set({
+        invoiceNumber: data.invoiceNumber,
+        customerName: data.customerName,
+      });
+    }
   }
 
-  searchCustomers(event: AutoCompleteCompleteEvent): void {
-    this.filteredCustomers = [];
+  openPicker(): void {
+    this.pickerVisible.set(true);
   }
 
-  searchInvoices(event: AutoCompleteCompleteEvent): void {
-    this.filteredInvoices = [];
-  }
-
-  onCustomerSelect(customer: CustomerOption): void {
+  onCustomerSelected(customer: CustomerList): void {
+    const invoice = this.selectedInvoice();
+    if (invoice && invoice.customerId !== customer.id) {
+      this.selectedInvoice.set(null);
+      this.selectedInvoiceLabel.set(null);
+      this.form.patchValue({ invoiceId: '', invoiceNumber: '' });
+    }
+    this.selectedCustomer.set(customer);
+    this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({
       customerId: customer.id,
-      customerName: customer.name,
+      customerName: customer.alias || customer.legalName,
+      customerRif: customer.rif,
     });
+    this.pickerVisible.set(false);
   }
 
-  onInvoiceSelect(invoice: InvoiceOption): void {
+  onPickerCancelled(): void {
+    this.pickerVisible.set(false);
+  }
+
+  onInvoiceSelected(invoice: InvoiceList): void {
+    this.selectedInvoice.set(invoice);
+    this.selectedInvoiceLabel.set({
+      invoiceNumber: invoice.invoiceNumber,
+      customerName: invoice.customerName,
+    });
     this.form.patchValue({
       invoiceId: invoice.id,
-      invoiceNumber: invoice.number,
+      invoiceNumber: invoice.invoiceNumber,
+      customerId: invoice.customerId,
+      customerName: invoice.customerName,
     });
+    if (this.selectedCustomer()?.id !== invoice.customerId) {
+      this.selectedCustomer.set(null);
+      this.selectedCustomerLabel.set({ alias: invoice.customerName, legalName: '' });
+    }
+    this.showInvoicePicker.set(false);
+  }
+
+  onInvoiceCancelled(): void {
+    this.showInvoicePicker.set(false);
   }
 
   override onSubmit(): void {
@@ -171,8 +206,8 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
       this.form.markAllAsTouched();
       this.messageService.add({
         severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Por favor, complete todos los campos requeridos.',
+        summary: 'Formulario incompleto',
+        detail: this.submitTooltip() || 'Revise los campos requeridos antes de continuar.',
         life: 5000,
       });
     }

@@ -22,15 +22,11 @@ import { ReturnFormDialogComponent } from '@features/returns/components/return-f
 import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog';
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceDetails } from '@features/invoices/models/interfaces';
+import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
+import { catchError, of } from 'rxjs';
 
 type InvoiceStatusFilter =
-  | 'ALL'
-  | 'PENDING'
-  | 'PARTIAL'
-  | 'PAID'
-  | 'RETURNED'
-  | 'CANCELLED'
-  | 'PARTIAL_RETURN';
+  'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
@@ -73,6 +69,7 @@ export class CustomerDebtDialogComponent {
   private messageService = inject(MessageService);
   private fb = inject(FormBuilder);
   private invoiceApi = inject(InvoiceApiService);
+  private paymentMethodApi = inject(PaymentMethodApiService);
 
   readonly visible = input.required<boolean>();
   readonly customerId = input.required<string>();
@@ -127,8 +124,10 @@ export class CustomerDebtDialogComponent {
 
   protected showAdvanceDialog = signal(false);
   protected creatingAdvance = signal(false);
+  protected paymentMethods = signal<{ label: string; value: string }[]>([]);
   protected advanceForm: FormGroup = this.fb.group({
     amount: [null, [Validators.required, Validators.min(0.01)]],
+    paymentMethodId: [null, Validators.required],
     notes: [''],
   });
 
@@ -136,6 +135,8 @@ export class CustomerDebtDialogComponent {
   protected creatingRefund = signal(false);
   protected refundForm: FormGroup = this.fb.group({
     amount: [null, [Validators.required, Validators.min(0.01)]],
+    paymentMethodId: [null, Validators.required],
+    notes: [''],
   });
 
   protected showReturnDialog = signal(false);
@@ -145,6 +146,7 @@ export class CustomerDebtDialogComponent {
   protected loadingNoteInvoice = signal(false);
 
   constructor() {
+    this.loadPaymentMethods();
     effect(() => {
       const isVisible = this.visible();
       const id = this.customerId();
@@ -385,7 +387,11 @@ export class CustomerDebtDialogComponent {
   }
 
   protected onCreateAdvance(): void {
-    this.advanceForm.reset({ amount: null, notes: '' });
+    this.advanceForm.reset({
+      amount: null,
+      paymentMethodId: this.defaultPaymentMethod(),
+      notes: '',
+    });
     this.showAdvanceDialog.set(true);
   }
 
@@ -404,13 +410,15 @@ export class CustomerDebtDialogComponent {
     if (this.advanceForm.invalid) return;
     const amount = this.advanceForm.get('amount')?.value;
     const notes = this.advanceForm.get('notes')?.value;
+    const paymentMethodId = this.advanceForm.get('paymentMethodId')?.value;
     const customerId = this.customerId();
-    if (!amount || amount <= 0 || !customerId) return;
+    if (!amount || amount <= 0 || !customerId || !paymentMethodId) return;
 
     this.creatingAdvance.set(true);
     this.balanceApi
       .createAdvance(customerId, {
         amount,
+        paymentMethodId,
         notes: notes || undefined,
       })
       .subscribe({
@@ -439,7 +447,11 @@ export class CustomerDebtDialogComponent {
   }
 
   protected onCreateRefund(): void {
-    this.refundForm.reset({ amount: null });
+    this.refundForm.reset({
+      amount: null,
+      paymentMethodId: this.defaultPaymentMethod(),
+      notes: '',
+    });
     this.showRefundDialog.set(true);
   }
 
@@ -457,33 +469,58 @@ export class CustomerDebtDialogComponent {
   protected submitRefund(): void {
     if (this.refundForm.invalid) return;
     const amount = this.refundForm.get('amount')?.value;
+    const paymentMethodId = this.refundForm.get('paymentMethodId')?.value;
+    const notes = this.refundForm.get('notes')?.value;
     const customerId = this.customerId();
-    if (!amount || amount <= 0 || !customerId) return;
+    if (!amount || amount <= 0 || !customerId || !paymentMethodId) return;
 
     this.creatingRefund.set(true);
-    this.balanceApi.createRefund(customerId, { amount }).subscribe({
-      next: (response) => {
-        this.balance.set(response.totalBalance);
-        this.showRefundDialog.set(false);
-        this.service.loadCustomerDebt(customerId).subscribe();
-        this.service.customerDebtChange.next();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Reintegro realizado',
-          detail: `Se reintegraron $${amount.toFixed(2)} al cliente`,
-        });
-        this.loadTransactionsForCurrentFilter();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo realizar el reintegro',
-        });
-        this.creatingRefund.set(false);
-      },
-      complete: () => this.creatingRefund.set(false),
-    });
+    this.balanceApi
+      .createRefund(customerId, { amount, paymentMethodId, notes: notes || undefined })
+      .subscribe({
+        next: (response) => {
+          this.balance.set(response.totalBalance);
+          this.showRefundDialog.set(false);
+          this.service.loadCustomerDebt(customerId).subscribe();
+          this.service.customerDebtChange.next();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Reintegro realizado',
+            detail: `Se reintegraron $${amount.toFixed(2)} al cliente`,
+          });
+          this.loadTransactionsForCurrentFilter();
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo realizar el reintegro',
+          });
+          this.creatingRefund.set(false);
+        },
+        complete: () => this.creatingRefund.set(false),
+      });
+  }
+
+  private loadPaymentMethods(): void {
+    this.paymentMethodApi
+      .getAll({ active: true, size: 100 })
+      .pipe(
+        catchError(() =>
+          of({ content: [] } as unknown as PagedResponse<
+            import('@features/payment-methods/models/interfaces').PaymentMethodList
+          >),
+        ),
+      )
+      .subscribe((response) => {
+        this.paymentMethods.set(
+          response.content.map((method) => ({ label: method.name, value: method.id })),
+        );
+      });
+  }
+
+  private defaultPaymentMethod(): string | null {
+    return this.paymentMethods()[0]?.value ?? null;
   }
 
   private loadCustomerData(customerId: string): void {
