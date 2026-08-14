@@ -20,6 +20,10 @@
   --color-app-bg-primary-to: var(--app-bg-primary-to);
 }
 
+@utility shadow-xxxl {
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.35);
+}
+
 .p-inputtext,
 .p-input-wrapper input,
 .p-inputnumber-input,
