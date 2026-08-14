@@ -1,5 +1,5 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
-import { Observable, tap, catchError, finalize, of } from 'rxjs';
+import { Observable, tap, catchError, finalize, of, switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
@@ -7,6 +7,9 @@ import { PagedResponse } from '@shared/models/interfaces/paged-response.interfac
 import {
   CashRegisterResponse,
   CloseRegisterRequest,
+  CashRegisterHistoryView,
+  CashRegisterReportFormat,
+  CashMovementRequest,
 } from '@features/cash-register/models/interfaces/closure.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -51,11 +54,14 @@ export class CashRegisterApplicationService {
     );
   }
 
-  openRegister(openedByName: string): Observable<CashRegisterResponse | null> {
+  openRegister(
+    openedByName: string,
+    openingBalance: number,
+  ): Observable<CashRegisterResponse | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.open({ openedByName }).pipe(
+    return this.api.open({ openedByName, openingBalance }).pipe(
       tap({
         next: (closure) => {
           this.activeClosure.set(closure);
@@ -90,8 +96,8 @@ export class CashRegisterApplicationService {
 
     return this.api.close(id, request).pipe(
       tap({
-        next: (closure) => {
-          this.activeClosure.set(closure);
+        next: () => {
+          this.activeClosure.set(null);
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',
@@ -114,17 +120,44 @@ export class CashRegisterApplicationService {
     );
   }
 
+  addMovement(id: string, request: CashMovementRequest): Observable<CashRegisterResponse | null> {
+    this.loading.set(true);
+    return this.api.addMovement(id, request).pipe(
+      switchMap(() => this.api.getActive()),
+      tap((register) => {
+        this.activeClosure.set(register);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Movimiento registrado',
+          detail: 'El saldo esperado de la caja fue actualizado',
+          life: 3000,
+        });
+      }),
+      catchError(() => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo registrar el movimiento de caja',
+          life: 5000,
+        });
+        return of(null);
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
   loadHistory(
     page: number,
     size: number,
     dateFrom?: string,
     dateTo?: string,
     sort?: string,
+    view: CashRegisterHistoryView = 'SIMPLE',
   ): Observable<PagedResponse<CashRegisterResponse> | null> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.getHistory(page, size, dateFrom, dateTo, sort).pipe(
+    return this.api.getHistory(page, size, dateFrom, dateTo, sort, view).pipe(
       tap({
         next: (res) => {
           this.history.set(res.content ?? []);
@@ -143,6 +176,30 @@ export class CashRegisterApplicationService {
       catchError(() => of(null)),
       finalize(() => this.loading.set(false)),
     );
+  }
+
+  downloadSession(
+    id: string,
+    format: CashRegisterReportFormat,
+    type: CashRegisterHistoryView,
+  ): void {
+    this.api.exportSession(id, format, type).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = `caja-${id}-${type.toLowerCase()}.${format === 'PDF' ? 'pdf' : 'xlsx'}`;
+        anchor.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: `No se pudo descargar el ${format}`,
+          life: 5000,
+        }),
+    });
   }
 
   downloadExcel(dateFrom: string, dateTo: string): void {

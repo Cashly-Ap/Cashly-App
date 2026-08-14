@@ -1,57 +1,130 @@
 <p-dialog
-  header="Reporte de Caja - Excel"
+  header="Reportes de Caja"
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
-  [style]="{ width: '450px' }"
+  [style]="{ width: 'min(720px, calc(100vw - 2rem))' }"
   [draggable]="false"
   [resizable]="false"
+  (onShow)="loadFilters()"
 >
-  <div class="flex flex-col gap-4 pt-2">
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-        >Tipo de Reporte</label
-      >
-      <p-selectButton
-        [options]="typeOptions"
-        [ngModel]="reportType()"
-        (ngModelChange)="reportType.set($event)"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="w-full"
-      />
+  @if (loading()) {
+    <div class="flex justify-center py-12">
+      <p-progressSpinner strokeWidth="4" styleClass="h-10 w-10" />
     </div>
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde Fecha</label>
-      <p-datepicker
-        [(ngModel)]="dateFrom"
-        dateFormat="dd/mm/yy"
-        placeholder="Seleccione fecha inicial"
-        styleClass="w-full"
-        appendTo="body"
-      />
+  } @else {
+    <div class="flex flex-col gap-5 pt-2">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Formato</label>
+        <p-selectButton
+          [options]="formatOptions"
+          [ngModel]="format()"
+          (ngModelChange)="format.set($event)"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+        />
+      </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-1 sm:col-span-2">
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+            >Tipo de Reporte</label
+          >
+          <p-selectButton
+            [options]="typeOptions"
+            [ngModel]="reportType()"
+            (ngModelChange)="reportType.set($event)"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+            >Desde Fecha</label
+          >
+          <p-datepicker
+            [(ngModel)]="dateFrom"
+            dateFormat="dd/mm/yy"
+            placeholder="Seleccione fecha inicial"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
+            >Hasta Fecha</label
+          >
+          <p-datepicker
+            [(ngModel)]="dateTo"
+            dateFormat="dd/mm/yy"
+            placeholder="Seleccione fecha final"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="flex flex-col gap-2">
+          <label for="cash-report-customer" class="text-sm font-medium">Cliente</label>
+          <p-select
+            id="cash-report-customer"
+            [options]="customerOptions()"
+            [(ngModel)]="customerId"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterPlaceholder="Buscar cliente"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="cash-report-product" class="text-sm font-medium">Producto</label>
+          <p-select
+            id="cash-report-product"
+            [options]="productOptions()"
+            [(ngModel)]="productId"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterPlaceholder="Buscar producto"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+        <div class="flex flex-col gap-2">
+          <label for="cash-report-category" class="text-sm font-medium">Categoría</label>
+          <p-select
+            id="cash-report-category"
+            [options]="categoryOptions()"
+            [(ngModel)]="categoryId"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterPlaceholder="Buscar categoría"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+      </div>
+      @if (invalidDateRange()) {
+        <small class="text-red-600 dark:text-red-400">
+          La fecha inicial no puede ser posterior a la fecha final.
+        </small>
+      }
     </div>
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta Fecha</label>
-      <p-datepicker
-        [(ngModel)]="dateTo"
-        dateFormat="dd/mm/yy"
-        placeholder="Seleccione fecha final"
-        styleClass="w-full"
-        appendTo="body"
-      />
-    </div>
-  </div>
+  }
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
       <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
       <p-button
-        label="Exportar Excel"
-        icon="pi pi-file-excel"
-        (onClick)="generateExcel()"
-        [disabled]="!dateFrom() || !dateTo()"
-        severity="success"
+        [label]="format() === 'PDF' ? 'Generar PDF' : 'Exportar Excel'"
+        [icon]="format() === 'PDF' ? 'pi pi-file-pdf' : 'pi pi-file-excel'"
+        (onClick)="generateReport()"
+        [disabled]="!dateFrom() || !dateTo() || invalidDateRange()"
+        severity="contrast"
       />
     </div>
   </ng-template>

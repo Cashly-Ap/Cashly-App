@@ -78,17 +78,7 @@ import { CashRegisterApiService } from '@features/cash-register/services/api/cas
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 export type ContentMaxWidth =
-  | 'sm'
-  | 'md'
-  | 'lg'
-  | 'xl'
-  | '2xl'
-  | '4xl'
-  | '5xl'
-  | '6xl'
-  | '7xl'
-  | 'full'
-  | 'none';
+  'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
 
 @Component({
   selector: 'app-main-layout',
@@ -452,14 +442,29 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       });
   }
 
-  onCashRegisterExcel(filters: CashRegisterReportFilters): void {
+  onCashRegisterReport(filters: CashRegisterReportFilters): void {
     this.activeModal.set(null);
-    const fileName = `caja-${filters.dateFrom}-${filters.dateTo}-${filters.type.toLowerCase()}.xlsx`;
-    this.cashRegisterApi.exportExcel(filters.dateFrom, filters.dateTo, filters.type).subscribe({
-      next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, fileName);
-      },
-    });
+    const baseName = `caja-${filters.dateFrom}-${filters.dateTo}-${filters.type.toLowerCase()}`;
+    if (filters.format === 'PDF') {
+      this.loadingPdf.set(true);
+      this.pdfTitle.set('Reporte de Caja');
+      this.pdfViewerVisible.set(true);
+    }
+    this.cashRegisterApi
+      .exportReport(filters)
+      .pipe(finalize(() => this.loadingPdf.set(false)))
+      .subscribe({
+        next: (blob) => {
+          if (filters.format === 'EXCEL') {
+            FileDownloadHelper.downloadFromBlob(blob, `${baseName}.xlsx`);
+            return;
+          }
+          this.revokeCurrentUrl();
+          const url = URL.createObjectURL(blob);
+          this.currentObjectUrl = url;
+          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
+        },
+      });
   }
 
   closePdfViewer(): void {

@@ -66,12 +66,33 @@
               </div>
             </p-popover>
           </div>
-          <div class="flex gap-2 items-center">
+          <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+            <div
+              class="grid w-full grid-cols-2 rounded-lg border border-surface-200 p-1 dark:border-surface-700 sm:w-auto"
+            >
+              <p-button
+                label="Simple"
+                size="small"
+                [text]="viewMode() !== 'SIMPLE'"
+                [severity]="viewMode() === 'SIMPLE' ? 'contrast' : 'secondary'"
+                styleClass="w-full"
+                (onClick)="onViewModeChange('SIMPLE')"
+              />
+              <p-button
+                label="Detallado"
+                size="small"
+                [text]="viewMode() !== 'DETAILED'"
+                [severity]="viewMode() === 'DETAILED' ? 'contrast' : 'secondary'"
+                styleClass="w-full"
+                (onClick)="onViewModeChange('DETAILED')"
+              />
+            </div>
             <p-button
               icon="pi pi-arrow-left"
               label="Volver a Caja"
               severity="secondary"
               [outlined]="true"
+              styleClass="w-full sm:w-auto"
               (onClick)="onBack()"
             />
           </div>
@@ -110,14 +131,142 @@
               message="No hay registros que coincidan con los filtros seleccionados."
             />
           } @else {
-            <div class="overflow-x-auto rounded-t-2xl">
-              <p-table [value]="history()" styleClass="p-datatable-striped">
+            <div data-testid="cash-history-compact" class="grid gap-3 p-3 sm:p-4 lg:hidden">
+              @for (register of history(); track register.id) {
+                <article
+                  class="rounded-xl border border-surface-200 bg-surface-0 p-4 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
+                >
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="min-w-0">
+                      <p class="font-semibold text-surface-900 dark:text-surface-0">
+                        {{ register.openedAt | date: 'dd/MM/yyyy HH:mm' }}
+                      </p>
+                      <p class="mt-1 text-xs text-surface-500">
+                        @if (register.closedAt) {
+                          hasta {{ register.closedAt | date: 'dd/MM/yyyy HH:mm' }}
+                        } @else {
+                          {{ register.openedByName }}
+                        }
+                      </p>
+                    </div>
+                    <p-tag
+                      [value]="getStatusLabel(register.status)"
+                      [severity]="getStatusSeverity(register.status)"
+                      styleClass="shrink-0 text-xs font-medium px-2 py-0.5"
+                    />
+                  </div>
+
+                  <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+                    <div>
+                      <dt class="text-xs text-surface-500">Facturación</dt>
+                      <dd class="mt-1 font-medium">
+                        {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">Inicial</dt>
+                      <dd class="mt-1 font-medium">
+                        {{ register.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">Ingresos</dt>
+                      <dd class="mt-1 font-medium text-green-600 dark:text-green-400">
+                        {{ register.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">Egresos</dt>
+                      <dd class="mt-1 font-medium text-red-600 dark:text-red-400">
+                        {{ register.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">Esperado</dt>
+                      <dd class="mt-1 font-medium">
+                        {{ register.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">Diferencia</dt>
+                      <dd
+                        class="mt-1 font-medium"
+                        [class.text-red-600]="(register.difference ?? 0) !== 0"
+                      >
+                        {{ register.difference ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  @if (viewMode() === 'DETAILED') {
+                    <div class="mt-4 border-t border-surface-200 pt-4 dark:border-surface-700">
+                      <div class="mb-3 flex items-center justify-between gap-2">
+                        <span class="text-xs font-semibold uppercase tracking-wide text-surface-500"
+                          >Movimientos</span
+                        >
+                        <span class="text-xs text-surface-500"
+                          >{{ register.movements.length }} operaciones</span
+                        >
+                      </div>
+                      @if (register.movements.length === 0) {
+                        <p class="text-sm text-surface-500">
+                          Esta sesión no tiene movimientos registrados.
+                        </p>
+                      } @else {
+                        <div class="grid gap-2">
+                          @for (movement of register.movements; track movement.id) {
+                            <div
+                              class="grid grid-cols-[auto_1fr] gap-3 rounded-lg bg-surface-50 p-3 dark:bg-surface-800"
+                            >
+                              <i
+                                [class]="
+                                  movement.direction === 'IN'
+                                    ? 'pi pi-arrow-down-left text-green-600'
+                                    : 'pi pi-arrow-up-right text-red-600'
+                                "
+                              ></i>
+                              <div class="min-w-0">
+                                <div class="flex flex-wrap justify-between gap-2">
+                                  <p class="min-w-0 break-words text-sm font-medium">
+                                    {{ movement.description || movement.type }}
+                                  </p>
+                                  <span
+                                    [class]="
+                                      movement.direction === 'IN'
+                                        ? 'font-medium text-green-600'
+                                        : 'font-medium text-red-600'
+                                    "
+                                  >
+                                    {{ movement.direction === 'IN' ? '+' : '-'
+                                    }}{{ movement.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                                  </span>
+                                </div>
+                                <p class="mt-1 break-words text-xs text-surface-500">
+                                  {{ movement.occurredAt | date: 'dd/MM/yyyy HH:mm' }} ·
+                                  {{ movement.paymentMethodName }} ·
+                                  {{ movement.createdByName || 'Sistema' }}
+                                </p>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </article>
+              }
+            </div>
+            <div
+              data-testid="cash-history-desktop"
+              class="hidden overflow-x-auto rounded-t-2xl lg:block"
+            >
+              <p-table [value]="history()" styleClass="p-datatable-striped" [rowHover]="true">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th class="w-36 cursor-pointer select-none" (click)="onSort('closureDate')">
+                    <th class="min-w-44 cursor-pointer select-none" (click)="onSort('openedAt')">
                       <div class="font-semibold inline-flex items-center gap-1">
-                        Fecha
-                        <i [class]="getSortIcon('closureDate')" class="text-xs"></i>
+                        Sesión
+                        <i [class]="getSortIcon('openedAt')" class="text-xs"></i>
                       </div>
                     </th>
                     <th class="w-24 cursor-pointer select-none" (click)="onSort('status')">
@@ -126,56 +275,61 @@
                         <i [class]="getSortIcon('status')" class="text-xs"></i>
                       </div>
                     </th>
-                    <th class="w-auto cursor-pointer select-none" (click)="onSort('openedByName')">
-                      <div class="font-semibold inline-flex items-center gap-1">
-                        Abierto por
-                        <i [class]="getSortIcon('openedByName')" class="text-xs"></i>
-                      </div>
-                    </th>
                     <th
                       class="w-32 text-right cursor-pointer select-none"
-                      (click)="onSort('totalInvoiced')"
+                      (click)="onSort('openingBalance')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Facturado
-                        <i [class]="getSortIcon('totalInvoiced')" class="text-xs"></i>
+                        Inicial
+                        <i [class]="getSortIcon('openingBalance')" class="text-xs"></i>
                       </div>
+                    </th>
+                    <th class="w-32 text-right">
+                      <div class="font-semibold">Facturación</div>
                     </th>
                     <th
                       class="w-32 text-right cursor-pointer select-none"
-                      (click)="onSort('totalRevenue')"
+                      (click)="onSort('totalIncome')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
                         Ingresos
-                        <i [class]="getSortIcon('totalRevenue')" class="text-xs"></i>
+                        <i [class]="getSortIcon('totalIncome')" class="text-xs"></i>
                       </div>
                     </th>
                     <th
                       class="w-32 text-right cursor-pointer select-none"
-                      (click)="onSort('totalExpenses')"
+                      (click)="onSort('totalExpense')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Gastos
-                        <i [class]="getSortIcon('totalExpenses')" class="text-xs"></i>
+                        Egresos
+                        <i [class]="getSortIcon('totalExpense')" class="text-xs"></i>
                       </div>
                     </th>
                     <th
                       class="w-32 text-right cursor-pointer select-none"
-                      (click)="onSort('balance')"
+                      (click)="onSort('expectedClosingBalance')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Balance
-                        <i [class]="getSortIcon('balance')" class="text-xs"></i>
+                        Esperado
+                        <i [class]="getSortIcon('expectedClosingBalance')" class="text-xs"></i>
                       </div>
                     </th>
+                    <th class="w-28 text-right">Diferencia</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-register>
                   <tr class="transition-colors duration-150">
                     <td>
-                      <span class="text-sm font-medium">{{
-                        register.closureDate | date: 'dd/MM/yyyy'
+                      <span class="block text-sm font-medium">{{
+                        register.openedAt | date: 'dd/MM/yyyy HH:mm'
                       }}</span>
+                      <span class="block text-xs text-surface-500">
+                        @if (register.closedAt) {
+                          hasta {{ register.closedAt | date: 'dd/MM/yyyy HH:mm' }}
+                        } @else {
+                          {{ register.openedByName }}
+                        }
+                      </span>
                     </td>
                     <td>
                       <p-tag
@@ -184,39 +338,103 @@
                         styleClass="text-xs font-medium px-2 py-0.5"
                       />
                     </td>
-                    <td>
-                      <span class="text-sm">{{ register.openedByName }}</span>
-                      @if (register.closedByName) {
-                        <span class="text-xs text-surface-400 ml-1"
-                          >/ {{ register.closedByName }}</span
-                        >
-                      }
+                    <td class="text-right">
+                      <span class="text-sm font-medium">
+                        {{ register.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
                     </td>
                     <td class="text-right">
-                      <span class="text-sm font-medium text-sky-600 dark:text-sky-400">
+                      <span class="text-sm font-medium">
                         {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium text-green-600 dark:text-green-400">
-                        {{ register.totalRevenue | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium text-red-600 dark:text-red-400">
-                        {{ register.totalExpenses | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span
                         class="text-sm font-medium"
-                        [class.text-green-600]="register.balance >= 0"
-                        [class.text-red-600]="register.balance < 0"
+                        [class.text-green-600]="register.expectedBalance >= 0"
+                        [class.text-red-600]="register.expectedBalance < 0"
                       >
-                        {{ register.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
+                    <td class="text-right">
+                      <span
+                        class="text-sm font-medium"
+                        [class.text-red-600]="(register.difference ?? 0) !== 0"
+                        >{{ register.difference ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}</span
+                      >
+                    </td>
                   </tr>
+                  @if (viewMode() === 'DETAILED') {
+                    <tr>
+                      <td colspan="8" class="!p-0">
+                        <div
+                          class="border-y border-surface-200 bg-surface-50 px-5 py-4 dark:border-surface-700 dark:bg-surface-900"
+                        >
+                          <div class="mb-3 flex items-center justify-between">
+                            <span
+                              class="text-xs font-semibold uppercase tracking-wide text-surface-500"
+                              >Movimientos de la sesión</span
+                            >
+                            <span class="text-xs text-surface-500"
+                              >{{ register.movements.length }} operaciones</span
+                            >
+                          </div>
+                          @if (register.movements.length === 0) {
+                            <p class="text-sm text-surface-500">
+                              Esta sesión no tiene movimientos registrados.
+                            </p>
+                          } @else {
+                            <div class="grid gap-2">
+                              @for (movement of register.movements; track movement.id) {
+                                <div
+                                  class="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg bg-surface-0 px-3 py-2 dark:bg-surface-800"
+                                >
+                                  <i
+                                    [class]="
+                                      movement.direction === 'IN'
+                                        ? 'pi pi-arrow-down-left text-green-600'
+                                        : 'pi pi-arrow-up-right text-red-600'
+                                    "
+                                  ></i>
+                                  <div>
+                                    <p class="text-sm font-medium">
+                                      {{ movement.description || movement.type }}
+                                    </p>
+                                    <p class="text-xs text-surface-500">
+                                      {{ movement.occurredAt | date: 'dd/MM/yyyy HH:mm' }} ·
+                                      {{ movement.paymentMethodName }} ·
+                                      {{ movement.createdByName || 'Sistema' }}
+                                    </p>
+                                  </div>
+                                  <span
+                                    [class]="
+                                      movement.direction === 'IN'
+                                        ? 'font-medium text-green-600'
+                                        : 'font-medium text-red-600'
+                                    "
+                                  >
+                                    {{ movement.direction === 'IN' ? '+' : '-'
+                                    }}{{ movement.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                                  </span>
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </td>
+                    </tr>
+                  }
                 </ng-template>
               </p-table>
             </div>

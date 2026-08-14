@@ -30,6 +30,7 @@ function createPdfApiMock() {
     getPdf: vi.fn(),
     getExcel: vi.fn(),
     exportExcel: vi.fn(),
+    exportReport: vi.fn(),
     downloadOrdersReportPdf: vi.fn(),
     downloadInvoicesReportPdf: vi.fn(),
     downloadQuotesReportPdf: vi.fn(),

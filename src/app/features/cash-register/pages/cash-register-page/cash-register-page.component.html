@@ -8,7 +8,7 @@
       </div>
       <h1 class="text-3xl sm:text-4xl font-bold mb-2">Caja</h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona la caja del día
+        Controla cada sesión, sus entradas, salidas y saldo esperado
       </p>
     </div>
 
@@ -18,13 +18,36 @@
       </app-content-card>
     } @else if (showEmptyState()) {
       <app-content-card>
-        <app-empty-state
-          icon="pi-calculator"
-          title="No hay caja activa"
-          message="No hay una caja abierta. Inicie una nueva para registrar las operaciones del día."
-          buttonLabel="Abrir Caja"
-          (buttonClick)="onOpenDialogOpen()"
-        />
+        <div class="flex flex-col items-center px-6 py-12 text-center">
+          <div
+            class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+          >
+            <i class="pi pi-lock text-2xl text-surface-600 dark:text-surface-300"></i>
+          </div>
+          <h2 class="mt-5 text-2xl font-semibold">Caja cerrada</h2>
+          <p class="mt-2 max-w-lg text-surface-500 dark:text-surface-400">
+            Abre una sesión para habilitar pagos, anticipos, devoluciones, ingresos y egresos.
+          </p>
+          <div class="mt-7 flex w-full max-w-md flex-col gap-3 sm:flex-row">
+            <p-button
+              label="Abrir caja"
+              icon="pi pi-lock-open"
+              severity="contrast"
+              styleClass="w-full"
+              class="flex-1"
+              (onClick)="onOpenDialogOpen()"
+            />
+            <p-button
+              label="Historial de cajas"
+              icon="pi pi-history"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full"
+              class="flex-1"
+              (onClick)="onViewHistory()"
+            />
+          </div>
+        </div>
       </app-content-card>
     } @else if (closure(); as c) {
       <app-list-container>
@@ -39,45 +62,56 @@
               <div>
                 <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">Caja</h1>
                 <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
-                  {{ c.closureDate | date: 'dd/MM/yyyy' }} &middot; Abierto por {{ c.openedByName }}
+                  Desde {{ c.openedAt | date: 'dd/MM/yyyy HH:mm' }} &middot; {{ c.openedByName }}
                 </p>
               </div>
             </div>
-            <div class="flex items-center gap-2 sm:self-start">
+            <div class="w-full sm:w-auto sm:self-start">
               <p-button
-                label="Ver Detalle"
-                icon="pi pi-table"
-                severity="secondary"
-                [outlined]="true"
-                size="small"
-                (onClick)="onOpenDetailDialog()"
+                label="Acciones"
+                icon="pi pi-ellipsis-v"
+                severity="contrast"
+                styleClass="w-full sm:w-auto"
+                (click)="actionsPopover.toggle($event)"
               />
-              <p-button
-                label="Historial"
-                icon="pi pi-history"
-                severity="secondary"
-                [outlined]="true"
-                size="small"
-                (onClick)="onViewHistory()"
-              />
-              @if (isOpen()) {
-                <p-button
-                  label="Cerrar Caja"
-                  icon="pi pi-lock"
-                  severity="contrast"
-                  size="small"
-                  [disabled]="!canClose() || loading()"
-                  (onClick)="onOpenCloseDialog()"
-                />
-              }
+              <p-popover #actionsPopover>
+                <div class="flex min-w-48 flex-col gap-1 p-1">
+                  <p-button
+                    label="Ver detalles"
+                    icon="pi pi-table"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (click)="actionsPopover.hide(); onOpenDetailDialog()"
+                  />
+                  <p-button
+                    label="Ver historial"
+                    icon="pi pi-history"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (click)="actionsPopover.hide(); onViewHistory()"
+                  />
+                  @if (isOpen()) {
+                    <div class="my-1 border-t border-surface-200 dark:border-surface-700"></div>
+                    <p-button
+                      label="Cerrar caja"
+                      icon="pi pi-lock"
+                      [link]="true"
+                      severity="danger"
+                      styleClass="w-full justify-start text-left text-sm"
+                      [disabled]="!canClose() || loading()"
+                      (click)="actionsPopover.hide(); onOpenCloseDialog()"
+                    />
+                  }
+                </div>
+              </p-popover>
             </div>
           </div>
         </div>
       </app-list-container>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <div
-          class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+          class="rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
         >
           <div class="flex items-center gap-3 mb-3">
             <div
@@ -87,7 +121,25 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Total Facturado</span
+              >Saldo inicial</span
+            >
+          </div>
+          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+            {{ c.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+          </p>
+        </div>
+        <div
+          class="rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
+        >
+          <div class="flex items-center gap-3 mb-3">
+            <div
+              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+            >
+              <i class="pi pi-receipt text-surface-600 dark:text-surface-400"></i>
+            </div>
+            <span
+              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+              >Facturación</span
             >
           </div>
           <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
@@ -95,7 +147,7 @@
           </p>
         </div>
         <div
-          class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+          class="rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
         >
           <div class="flex items-center gap-3 mb-3">
             <div
@@ -105,15 +157,15 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Total Ingresado</span
+              >Ingresos</span
             >
           </div>
           <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-            {{ c.totalRevenue | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
-          class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+          class="rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
         >
           <div class="flex items-center gap-3 mb-3">
             <div
@@ -123,15 +175,15 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Total Gastado</span
+              >Egresos</span
             >
           </div>
           <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-            {{ c.totalExpenses | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
-          class="bg-surface-0 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-5"
+          class="rounded-xl border border-surface-200 bg-surface-0 p-5 shadow-[0_28px_70px_-28px_rgba(15,23,42,0.5)] dark:border-surface-700 dark:bg-surface-900 dark:shadow-[0_28px_70px_-28px_rgba(0,0,0,0.8)]"
         >
           <div class="flex items-center gap-3 mb-3">
             <div
@@ -141,15 +193,15 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Balance Total</span
+              >Saldo esperado</span
             >
           </div>
           <p
             class="text-2xl font-bold"
-            [class.text-green-600]="c.balance >= 0"
-            [class.text-red-600]="c.balance < 0"
+            [class.text-green-600]="c.expectedBalance >= 0"
+            [class.text-red-600]="c.expectedBalance < 0"
           >
-            {{ c.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
       </div>
@@ -161,22 +213,37 @@
   [visible]="openDialogVisible()"
   header="Abrir Caja"
   [modal]="true"
-  [style]="{ width: '450px' }"
+  [style]="{ width: 'min(450px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
   appendTo="body"
   (visibleChange)="onOpenDialogClose()"
 >
   <form [formGroup]="openForm">
-    <div class="flex flex-col gap-1">
-      <label for="openedByName" class="text-xs font-medium text-surface-500">Abierto por</label>
-      <input
-        id="openedByName"
-        pInputText
-        formControlName="openedByName"
-        class="w-full"
-        style="width: 100%"
-        placeholder="Nombre del cajero"
-      />
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label for="openedByName" class="text-xs font-medium text-surface-500">Abierto por</label>
+        <input
+          id="openedByName"
+          pInputText
+          formControlName="openedByName"
+          class="w-full"
+          style="width: 100%"
+          placeholder="Nombre del cajero"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="openingBalance" class="text-xs font-medium text-surface-500"
+          >Saldo inicial</label
+        >
+        <p-inputnumber
+          inputId="openingBalance"
+          formControlName="openingBalance"
+          mode="currency"
+          currency="USD"
+          [min]="0"
+          styleClass="w-full"
+        />
+      </div>
     </div>
   </form>
   <ng-template pTemplate="footer">
@@ -203,7 +270,7 @@
   [visible]="closeDialogVisible()"
   header="Cerrar Caja"
   [modal]="true"
-  [style]="{ width: '500px' }"
+  [style]="{ width: 'min(500px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
   appendTo="body"
   (visibleChange)="onCloseDialogClose()"
@@ -214,15 +281,29 @@
         class="flex gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200 dark:border-surface-700"
       >
         <div class="flex-1">
-          <p class="text-xs text-surface-500 uppercase font-medium mb-1">Balance</p>
+          <p class="text-xs text-surface-500 uppercase font-medium mb-1">Saldo esperado</p>
           <p
             class="text-lg font-bold"
-            [class.text-green-600]="(closure()?.balance ?? 0) >= 0"
-            [class.text-red-600]="(closure()?.balance ?? 0) < 0"
+            [class.text-green-600]="(closure()?.expectedBalance ?? 0) >= 0"
+            [class.text-red-600]="(closure()?.expectedBalance ?? 0) < 0"
           >
-            {{ closure()?.balance ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ closure()?.expectedBalance ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
+      </div>
+      <div>
+        <label for="declaredBalance" class="text-xs font-medium text-surface-500 block mb-1"
+          >Saldo contado <span class="text-red-500">*</span></label
+        >
+        <p-inputnumber
+          inputId="declaredBalance"
+          formControlName="declaredBalance"
+          mode="currency"
+          currency="USD"
+          [min]="0"
+          styleClass="w-full"
+        />
+        <p class="mt-1 text-xs text-surface-500">La diferencia quedará registrada en el cierre.</p>
       </div>
       <div>
         <label for="closedByName" class="text-xs font-medium text-surface-500 block mb-1"
@@ -278,37 +359,53 @@
   [visible]="detailDialogVisible()"
   header="Detalle por Método de Pago"
   [modal]="true"
-  [style]="{ width: '600px' }"
+  [style]="{ width: 'min(600px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
   appendTo="body"
   (visibleChange)="onDetailDialogClose()"
 >
-  <div class="relative overflow-x-auto">
-    <p-table [value]="details()" styleClass="p-datatable-striped">
-      <ng-template pTemplate="header">
-        <tr>
-          <th class="w-auto"><div class="font-semibold">Método de Pago</div></th>
-          <th class="w-24"><div class="font-semibold text-right">Transacciones</div></th>
-          <th class="w-36"><div class="font-semibold text-right">Monto</div></th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-detail>
-        <tr>
-          <td>
-            <div class="font-medium">{{ detail.paymentMethodName }}</div>
-          </td>
-          <td>
-            <div class="text-right">{{ detail.transactionCount }}</div>
-          </td>
-          <td>
-            <div class="text-right font-mono">
-              {{ detail.expectedAmount | currency: 'USD' : 'symbol' : '1.2-2' }}
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </div>
+  @if (details().length === 0) {
+    <div class="flex flex-col items-center px-4 py-10 text-center" role="status">
+      <div
+        class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+      >
+        <i class="pi pi-inbox text-2xl text-surface-500 dark:text-surface-400"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-surface-900 dark:text-surface-0">
+        Sin movimientos
+      </h3>
+      <p class="mt-2 max-w-sm text-sm text-surface-500 dark:text-surface-400">
+        Esta sesión todavía no tiene operaciones agrupadas por método de pago.
+      </p>
+    </div>
+  } @else {
+    <div class="relative overflow-x-auto">
+      <p-table [value]="details()" styleClass="p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="w-auto"><div class="font-semibold">Método de Pago</div></th>
+            <th class="w-24"><div class="font-semibold text-right">Transacciones</div></th>
+            <th class="w-36"><div class="font-semibold text-right">Monto</div></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+          <tr>
+            <td>
+              <div class="font-medium">{{ detail.paymentMethodName }}</div>
+            </td>
+            <td>
+              <div class="text-right">{{ detail.transactionCount }}</div>
+            </td>
+            <td>
+              <div class="text-right font-mono">
+                {{ detail.expectedAmount | currency: 'USD' : 'symbol' : '1.2-2' }}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button

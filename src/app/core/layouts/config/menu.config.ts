@@ -282,12 +282,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           requiredModule: BusinessModule.FINANCE,
           children: [
             {
-              label: 'Caja',
+              label: 'Cajas',
               icon: 'pi pi-calculator',
               children: [
                 {
-                  label: 'Reporte de Caja',
-                  icon: 'pi pi-file-excel',
+                  label: 'Reportes de Caja',
+                  icon: 'pi pi-chart-bar',
                   allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
                   command: () => callbacks.openCashRegisterModal(),
                 },

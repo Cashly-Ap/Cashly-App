@@ -9,27 +9,20 @@ import {
 } from '@angular/core';
 import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
-import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
-import { TooltipModule } from 'primeng/tooltip';
+import { Popover } from 'primeng/popover';
 import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application.service';
 
 @Component({
@@ -38,7 +31,6 @@ import { CashRegisterApplicationService } from '@features/cash-register/services
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     CurrencyPipe,
     DatePipe,
@@ -46,15 +38,14 @@ import { CashRegisterApplicationService } from '@features/cash-register/services
     ContentCardComponent,
     ListContainerComponent,
     LoadingSpinnerComponent,
-    EmptyStateComponent,
     TableModule,
     ButtonModule,
-    CardModule,
     TagModule,
     DialogModule,
     InputTextModule,
+    InputNumberModule,
     TextareaModule,
-    TooltipModule,
+    Popover,
   ],
   templateUrl: './cash-register-page.component.html',
 })
@@ -91,10 +82,12 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly openForm = this.fb.group({
     openedByName: ['', Validators.required],
+    openingBalance: [0, [Validators.required, Validators.min(0)]],
   });
 
   readonly closeForm = this.fb.group({
     closedByName: ['', Validators.required],
+    declaredBalance: [0, [Validators.required, Validators.min(0)]],
     closingNotes: [''],
   });
 
@@ -103,7 +96,7 @@ export class CashRegisterPageComponent implements OnInit {
   }
 
   onOpenDialogOpen(): void {
-    this.openForm.reset({ openedByName: this.currentUserName() });
+    this.openForm.reset({ openedByName: this.currentUserName(), openingBalance: 0 });
     this.openDialogVisible.set(true);
   }
 
@@ -111,16 +104,18 @@ export class CashRegisterPageComponent implements OnInit {
     if (this.openForm.invalid) return;
 
     const openedByName = this.openForm.get('openedByName')?.value ?? '';
+    const openingBalance = this.openForm.get('openingBalance')?.value ?? 0;
     this.isSubmitting.set(true);
 
     this.service
-      .openRegister(openedByName)
+      .openRegister(openedByName, openingBalance)
       .pipe(
         finalize(() => this.isSubmitting.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => {
+        next: (result) => {
+          if (!result) return;
           this.openDialogVisible.set(false);
           this.openForm.reset();
         },
@@ -134,6 +129,7 @@ export class CashRegisterPageComponent implements OnInit {
   onOpenCloseDialog(): void {
     this.closeForm.reset({
       closedByName: this.currentUserName(),
+      declaredBalance: this.closure()?.expectedBalance ?? 0,
       closingNotes: '',
     });
     this.closeDialogVisible.set(true);
@@ -150,6 +146,7 @@ export class CashRegisterPageComponent implements OnInit {
     this.service
       .closeRegister(id, {
         closedByName: this.closeForm.get('closedByName')?.value ?? '',
+        declaredBalance: this.closeForm.get('declaredBalance')?.value ?? 0,
         closingNotes: this.closeForm.get('closingNotes')?.value ?? '',
       })
       .pipe(
@@ -157,7 +154,8 @@ export class CashRegisterPageComponent implements OnInit {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => {
+        next: (result) => {
+          if (!result) return;
           this.closeDialogVisible.set(false);
           this.closeForm.reset();
         },

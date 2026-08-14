@@ -25,6 +25,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application.service';
+import { CashRegisterHistoryView } from '@features/cash-register/models/interfaces/closure.interface';
 
 @Component({
   selector: 'app-cash-register-history-page',
@@ -64,8 +65,9 @@ export class CashRegisterHistoryPageComponent implements OnInit {
   readonly rows = signal(10);
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
-  readonly orderBy = signal('closureDate');
+  readonly orderBy = signal('openedAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
+  readonly viewMode = signal<CashRegisterHistoryView>('SIMPLE');
 
   readonly activeFilterCount = computed(() => {
     let count = 0;
@@ -131,6 +133,13 @@ export class CashRegisterHistoryPageComponent implements OnInit {
     this.loadHistory();
   }
 
+  onViewModeChange(view: CashRegisterHistoryView): void {
+    if (this.viewMode() === view) return;
+    this.viewMode.set(view);
+    this.first.set(0);
+    this.loadHistory();
+  }
+
   onBack(): void {
     this.router.navigate(['/cash-register']);
   }
@@ -171,7 +180,7 @@ export class CashRegisterHistoryPageComponent implements OnInit {
       : undefined;
 
     this.service
-      .loadHistory(this.currentPage, this.rows(), dateFrom, dateTo, sort)
+      .loadHistory(this.currentPage, this.rows(), dateFrom, dateTo, sort, this.viewMode())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }

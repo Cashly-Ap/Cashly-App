@@ -221,7 +221,7 @@
     <app-cash-register-report-modal
       [visible]="activeModal() === 'cashRegister'"
       (visibleChange)="$event === false && activeModal.set(null)"
-      (onGenerateExcel)="onCashRegisterExcel($event)"
+      (onGenerateReport)="onCashRegisterReport($event)"
     />
 
     <app-pdf-viewer-modal
