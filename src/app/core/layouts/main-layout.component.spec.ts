@@ -171,8 +171,8 @@ describe('MainLayoutComponent', () => {
   });
 
   describe('logoSrc', () => {
-    it('should be a fixed string pointing to logo.png', () => {
-      expect(component.logoSrc).toBe('/logo.png');
+    it('should use the display-sized logo asset', () => {
+      expect(component.logoSrc).toBe('/logo-210.webp');
     });
   });
 

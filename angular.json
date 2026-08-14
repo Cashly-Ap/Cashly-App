@@ -58,7 +58,8 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.js",
-            "allowedHosts": [".lhr.life"]
+            "allowedHosts": [".lhr.life"],
+            "hmr": false
           },
           "configurations": {
             "production": {
@@ -66,7 +67,7 @@
             },
             "development": {
               "buildTarget": "Parsun:build:development",
-              "prebundle": true
+              "prebundle": false
             }
           },
           "defaultConfiguration": "development"

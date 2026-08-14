@@ -86,6 +86,10 @@ describe('LoginPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should use the display-sized logo asset', () => {
+    expect(component.logoSrc()).toBe('/logo-210.webp');
+  });
+
   describe('form initialization', () => {
     it('should initialize form with email and password controls', () => {
       expect(component.form.controls.email).toBeDefined();
