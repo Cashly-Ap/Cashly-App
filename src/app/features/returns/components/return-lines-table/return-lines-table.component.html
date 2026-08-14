@@ -22,6 +22,10 @@
       <thead>
         <tr class="border-b border-surface-200 dark:border-surface-700">
           <th class="text-left py-2 font-semibold">Producto</th>
+          <th class="text-center py-2 font-semibold w-20">Fact.</th>
+          <th class="text-center py-2 font-semibold w-20">Dev.</th>
+          <th class="text-center py-2 font-semibold w-20">Pend.</th>
+          <th class="text-center py-2 font-semibold w-20">A dev.</th>
           <th class="text-center py-2 font-semibold w-10">Stock</th>
           <th class="text-right py-2 font-semibold w-24">Precio Unit.</th>
           <th class="text-right py-2 font-semibold w-24">Total</th>
@@ -32,10 +36,11 @@
           <tr class="border-b border-surface-100 dark:border-surface-800">
             <td class="py-2">
               <div class="font-medium">{{ line.productName }}</div>
-              <div class="text-xs text-surface-400">
-                Máx: {{ getMaxQuantity(idx) }} | Cant: {{ line.quantity || 0 }}
-              </div>
             </td>
+            <td class="text-center py-2">{{ invoiceLines()[idx]?.quantity ?? 0 }}</td>
+            <td class="text-center py-2">{{ invoiceLines()[idx]?.returnedQuantity ?? 0 }}</td>
+            <td class="text-center py-2">{{ getMaxQuantity(idx) }}</td>
+            <td class="text-center py-2 font-semibold">{{ line.quantity || 0 }}</td>
             <td class="text-center py-2">
               <button
                 type="button"
@@ -47,13 +52,13 @@
               </button>
             </td>
             <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-            <td class="text-right py-2 font-medium">{{ line.unitPrice | number: '1.2-2' }}</td>
+            <td class="text-right py-2 font-medium">{{ line.quantity * line.unitPrice | number: '1.2-2' }}</td>
           </tr>
         }
       </tbody>
       <tfoot>
         <tr class="border-t border-surface-200 dark:border-surface-700">
-          <td colspan="3" class="text-right py-3 font-semibold">Total:</td>
+          <td colspan="7" class="text-right py-3 font-semibold">Total:</td>
           <td class="text-right py-3 font-bold">{{ totalAmount() | number: '1.2-2' }}</td>
         </tr>
       </tfoot>
