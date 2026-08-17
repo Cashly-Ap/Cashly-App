@@ -11,6 +11,7 @@ import { CustomerBalanceResponse } from '@features/customers/models/interfaces';
 })
 export class BalanceSummaryCardComponent {
   readonly customerBalance = input<CustomerBalanceResponse | null>(null);
+  readonly pendingBalance = input(0);
   readonly customerName = input<string>('');
   readonly customerAlias = input<string>('');
 }

@@ -1,44 +1,182 @@
 <div class="min-h-screen">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
-    @if (loading()) {
-      <app-loading-spinner />
-    } @else {
-      <div class="flex flex-col gap-6">
-        <div class="flex items-center justify-between">
-          <app-page-header title="Saldo del Cliente" subtitle="Resumen de saldo y movimientos" />
-          <p-button
-            label="Volver"
-            icon="pi pi-arrow-left"
-            [outlined]="true"
-            severity="secondary"
-            (onClick)="onBack()"
-          />
-        </div>
-
-        <app-balance-summary-card
-          [customerBalance]="balance()"
-          [customerName]="customerName()"
-          [customerAlias]="customerAlias()"
+  <div class="mx-auto max-w-5xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <app-page-header
+          class="min-w-0"
+          title="Saldo del Cliente"
+          subtitle="Resumen de saldo y movimientos"
         />
+        <p-button
+          label="Volver"
+          icon="pi pi-arrow-left"
+          severity="contrast"
+          styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
+          (onClick)="onBack()"
+        />
+      </div>
 
-        <div
-          class="bg-white dark:bg-surface-900 rounded-xl shadow-2xl border border-surface-100 dark:border-surface-800 overflow-hidden"
-        >
-          <div class="p-4 sm:p-6">
-            <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-4">
+      <app-balance-summary-card
+        [customerBalance]="balance()"
+        [pendingBalance]="pendingBalance()"
+        [customerName]="customerName()"
+        [customerAlias]="customerAlias()"
+      />
+
+      <div
+        class="bg-white dark:bg-surface-900 rounded-xl shadow-2xl border border-surface-100 dark:border-surface-800 overflow-hidden"
+      >
+        <div class="p-3 sm:p-5 lg:p-6">
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100">
               Historial de Movimientos
             </h2>
-            <app-balance-transactions-table
-              [transactions]="transactions()"
-              [loading]="transactionsLoading()"
-              [totalRecords]="totalRecords()"
-              [rows]="pageSize()"
-              [first]="page() * pageSize()"
-              (pageChanged)="onPageChange($event)"
+            <p-button
+              class="ml-auto block shrink-0"
+              icon="pi pi-filter"
+              [outlined]="true"
+              severity="secondary"
+              pTooltip="Filtros"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+              ariaLabel="Filtros"
+              styleClass="shrink-0"
+              (onClick)="filterPopover.toggle($event)"
             />
+            <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
+              <div class="flex w-[calc(100vw-2rem)] max-w-[380px] flex-col gap-4 p-1">
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-sm font-semibold">Filtros de movimientos</span>
+                  @if (activeFilterCount() > 0) {
+                    <p-button
+                      label="Limpiar"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
+                    />
+                  }
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div class="flex flex-col gap-1">
+                    <label for="balance-filter-from" class="text-xs font-medium text-surface-500"
+                      >Desde</label
+                    >
+                    <p-datepicker
+                      inputId="balance-filter-from"
+                      [ngModel]="filterDateFrom()"
+                      (ngModelChange)="filterDateFrom.set($event)"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="Fecha inicial"
+                      styleClass="w-full"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label for="balance-filter-to" class="text-xs font-medium text-surface-500"
+                      >Hasta</label
+                    >
+                    <p-datepicker
+                      inputId="balance-filter-to"
+                      [ngModel]="filterDateTo()"
+                      (ngModelChange)="filterDateTo.set($event)"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      placeholder="Fecha final"
+                      styleClass="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-type" class="text-xs font-medium text-surface-500"
+                    >Tipo</label
+                  >
+                  <p-select
+                    inputId="balance-filter-type"
+                    [options]="transactionTypeOptions"
+                    [ngModel]="filterType()"
+                    (ngModelChange)="filterType.set($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos los tipos"
+                    [showClear]="true"
+                    styleClass="w-full"
+                  />
+                </div>
+
+                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div class="flex flex-col gap-1">
+                    <label for="balance-filter-number" class="text-xs font-medium text-surface-500"
+                      >Número</label
+                    >
+                    <input
+                      id="balance-filter-number"
+                      pInputText
+                      type="text"
+                      [ngModel]="filterNumber()"
+                      (ngModelChange)="filterNumber.set($event)"
+                      placeholder="Ej. INV-001"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label
+                      for="balance-filter-reference"
+                      class="text-xs font-medium text-surface-500"
+                      >Referencia</label
+                    >
+                    <input
+                      id="balance-filter-reference"
+                      pInputText
+                      type="text"
+                      [ngModel]="filterReference()"
+                      (ngModelChange)="filterReference.set($event)"
+                      placeholder="Buscar referencia"
+                    />
+                  </div>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-amount" class="text-xs font-medium text-surface-500"
+                    >Monto</label
+                  >
+                  <p-inputnumber
+                    inputId="balance-filter-amount"
+                    [ngModel]="filterAmount()"
+                    (ngModelChange)="filterAmount.set($event)"
+                    mode="currency"
+                    currency="USD"
+                    locale="en-US"
+                    placeholder="$0.00"
+                    styleClass="w-full"
+                    inputStyleClass="w-full"
+                  />
+                </div>
+
+                <div
+                  class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
+                >
+                  <p-button
+                    label="Aplicar filtros"
+                    icon="pi pi-check"
+                    severity="contrast"
+                    (onClick)="applyFilters(); filterPopover.hide()"
+                  />
+                </div>
+              </div>
+            </p-popover>
           </div>
+          <app-balance-transactions-table
+            [transactions]="transactions()"
+            [loading]="transactionsLoading()"
+            [totalRecords]="totalRecords()"
+            [rows]="pageSize()"
+            [first]="page() * pageSize()"
+            (pageChanged)="onPageChange($event)"
+          />
         </div>
       </div>
-    }
+    </div>
   </div>
 </div>

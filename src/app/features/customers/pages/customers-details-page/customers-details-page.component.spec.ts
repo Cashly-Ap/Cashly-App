@@ -10,6 +10,7 @@ import { CustomerApiService } from '@features/customers/services/api/customer-ap
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerDetails } from '@features/customers/models/interfaces';
+import { AuthService } from '@features/auth/services';
 
 describe('CustomersDetailsPageComponent', () => {
   let component: CustomersDetailsPageComponent;
@@ -17,6 +18,7 @@ describe('CustomersDetailsPageComponent', () => {
   let mockService: Partial<CustomerApplicationService>;
   let mockCustomerApi: Partial<CustomerApiService>;
   let mockPriceTypeService: Partial<PriceTypeApplicationService>;
+  let mockAuthService: { hasModulePermission: ReturnType<typeof vi.fn> };
   let router: Router;
 
   const mockDetails: CustomerDetails = {
@@ -56,6 +58,9 @@ describe('CustomersDetailsPageComponent', () => {
       priceTypes: signal([]),
       loadAll: vi.fn().mockReturnValue(of([])),
     };
+    mockAuthService = {
+      hasModulePermission: vi.fn().mockReturnValue(true),
+    };
 
     await TestBed.configureTestingModule({
       imports: [CustomersDetailsPageComponent],
@@ -64,6 +69,7 @@ describe('CustomersDetailsPageComponent', () => {
         { provide: CustomerApplicationService, useValue: mockService },
         { provide: CustomerApiService, useValue: mockCustomerApi },
         { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
+        { provide: AuthService, useValue: mockAuthService },
         {
           provide: ActivatedRoute,
           useValue: { snapshot: { paramMap: { get: () => 'uuid-001' } } },
@@ -115,6 +121,14 @@ describe('CustomersDetailsPageComponent', () => {
   it('should display customer after loading', () => {
     fixture.detectChanges();
     expect(component.customer()).not.toBeNull();
+  });
+
+  it('should show the balance action even when the customer has no credit limit', () => {
+    vi.mocked(mockService.loadById!).mockReturnValue(of({ ...mockDetails, creditLimit: 0 }));
+
+    fixture.detectChanges();
+
+    expect(component.showBalance()).toBe(true);
   });
 
   it('should show actions dropdown button', () => {
