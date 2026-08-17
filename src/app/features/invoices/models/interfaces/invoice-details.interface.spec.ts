@@ -64,6 +64,7 @@ describe('NoteInfo interface', () => {
   it('should have all required properties', () => {
     const note: NoteInfo = {
       id: 'note-001',
+      noteNumber: 'NC-2026-00001',
       type: 'CREDIT',
       amount: 200,
       reason: 'Damaged goods',
@@ -71,6 +72,7 @@ describe('NoteInfo interface', () => {
     };
 
     expect(note.id).toBe('note-001');
+    expect(note.noteNumber).toBe('NC-2026-00001');
     expect(note.type).toBe('CREDIT');
     expect(note.amount).toBe(200);
     expect(note.reason).toBe('Damaged goods');
@@ -79,6 +81,7 @@ describe('NoteInfo interface', () => {
   it('should accept DEBIT type', () => {
     const note: NoteInfo = {
       id: 'note-002',
+      noteNumber: 'ND-2026-00001',
       type: 'DEBIT',
       amount: 150,
       reason: 'Extra shipping',
@@ -148,6 +151,7 @@ describe('InvoiceDetails interface', () => {
       notesList: [
         {
           id: 'n1',
+          noteNumber: 'NC-2026-00001',
           type: 'CREDIT',
           amount: 200,
           reason: 'Discount',
@@ -155,6 +159,7 @@ describe('InvoiceDetails interface', () => {
         },
         {
           id: 'n2',
+          noteNumber: 'ND-2026-00001',
           type: 'DEBIT',
           amount: 50,
           reason: 'Charge',
@@ -172,6 +177,10 @@ describe('InvoiceDetails interface', () => {
     expect(invoice.debitApplied).toBe(50);
     expect(invoice.total).toBe(850);
     expect(invoice.notesList).toHaveLength(2);
+    expect(invoice.notesList.map((note) => note.noteNumber)).toEqual([
+      'NC-2026-00001',
+      'ND-2026-00001',
+    ]);
   });
 
   it('should accept cancelled invoice fields', () => {

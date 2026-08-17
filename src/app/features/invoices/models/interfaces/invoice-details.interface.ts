@@ -30,6 +30,7 @@ export interface InvoiceLineDetail {
 
 export interface NoteInfo {
   id: string;
+  noteNumber: string;
   type: 'CREDIT' | 'DEBIT';
   amount: number;
   reason: string;

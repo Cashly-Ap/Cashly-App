@@ -23,23 +23,24 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              @if (currentInvoice.status === InvoiceStatus.DRAFT) {
+              <app-detail-actions-menu #actionsMenu>
+                @if (currentInvoice.status === InvoiceStatus.DRAFT) {
+                  <p-button
+                    label="Editar"
+                    icon="pi pi-pencil"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
                 <p-button
-                  label="Editar"
-                  icon="pi pi-pencil"
-                  severity="contrast"
-                  (onClick)="onEdit()"
-                  styleClass="w-full sm:w-auto"
+                  label="Duplicar"
+                  icon="pi pi-copy"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDuplicate()"
+                  styleClass="w-full justify-start text-left text-sm"
                 />
-              }
-              <p-button
-                label="Duplicar"
-                icon="pi pi-copy"
-                severity="info"
-                [outlined]="true"
-                (onClick)="onDuplicate()"
-                styleClass="w-full sm:w-auto"
-              />
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
 
@@ -282,6 +283,7 @@
             <p-table [value]="creditNotes()" styleClass="p-datatable-sm">
               <ng-template pTemplate="header">
                 <tr>
+                  <th>Número</th>
                   <th class="text-right">Monto</th>
                   <th>Motivo</th>
                   <th>Fecha</th>
@@ -289,6 +291,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-note>
                 <tr>
+                  <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                   <td class="text-right font-mono text-green-600 dark:text-green-400">
                     -{{ note.amount | number: '1.2-2' }}
                   </td>
@@ -305,6 +308,7 @@
             <p-table [value]="debitNotes()" styleClass="p-datatable-sm">
               <ng-template pTemplate="header">
                 <tr>
+                  <th>Número</th>
                   <th class="text-right">Monto</th>
                   <th>Motivo</th>
                   <th>Fecha</th>
@@ -312,6 +316,7 @@
               </ng-template>
               <ng-template pTemplate="body" let-note>
                 <tr>
+                  <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                   <td class="text-right font-mono text-red-600 dark:text-red-400">
                     +{{ note.amount | number: '1.2-2' }}
                   </td>

@@ -64,6 +64,7 @@ interface InvoiceDetailApiResponse {
   total: number;
   notesList: {
     id: string;
+    noteNumber: string;
     type: string;
     amount: number;
     reason: string;
@@ -242,6 +243,7 @@ export class InvoiceApiService {
       total: r.total ?? r.subtotal,
       notesList: (r.notesList ?? []).map((n) => ({
         id: n.id,
+        noteNumber: n.noteNumber,
         type: n.type as 'CREDIT' | 'DEBIT',
         amount: n.amount,
         reason: n.reason,

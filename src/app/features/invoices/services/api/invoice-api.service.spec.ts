@@ -104,6 +104,7 @@ describe('InvoiceApiService', () => {
     notesList: [
       {
         id: 'n1',
+        noteNumber: 'NC-2026-00001',
         type: 'CREDIT',
         amount: 200,
         reason: 'Discount',
@@ -111,6 +112,7 @@ describe('InvoiceApiService', () => {
       },
       {
         id: 'n2',
+        noteNumber: 'ND-2026-00001',
         type: 'DEBIT',
         amount: 50,
         reason: 'Charge',
@@ -239,6 +241,8 @@ describe('InvoiceApiService', () => {
         expect(result.notesList).toHaveLength(2);
         expect(result.notesList[0].type).toBe('CREDIT');
         expect(result.notesList[1].type).toBe('DEBIT');
+        expect(result.notesList[0].noteNumber).toBe('NC-2026-00001');
+        expect(result.notesList[1].noteNumber).toBe('ND-2026-00001');
         expect(result.notesList[0].amount).toBe(200);
         expect(result.notesList[1].amount).toBe(50);
       });
