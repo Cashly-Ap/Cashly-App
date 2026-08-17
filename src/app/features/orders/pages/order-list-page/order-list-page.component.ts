@@ -470,10 +470,10 @@ export class OrderListPageComponent implements OnInit {
     return getOrderStatusLabel(status);
   }
 
-  getStatusVariant(status: OrderStatus): 'success' | 'danger' | 'info' | 'label' {
-    const variants: Record<OrderStatus, 'success' | 'danger' | 'info' | 'label'> = {
+  getStatusVariant(status: OrderStatus): 'success' | 'warning' | 'danger' | 'info' | 'label' {
+    const variants: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'info' | 'label'> = {
       [OrderStatus.DRAFT]: 'label',
-      [OrderStatus.CUSTOMER_DRAFT]: 'label',
+      [OrderStatus.CUSTOMER_DRAFT]: 'warning',
       [OrderStatus.CONFIRMED]: 'info',
       [OrderStatus.CANCELLED]: 'danger',
       [OrderStatus.INVOICED]: 'success',

@@ -146,6 +146,7 @@ describe('OrderDetailPageComponent', () => {
   it('should get status variant', () => {
     fixture.detectChanges();
     expect(component.getStatusVariant(OrderStatus.DRAFT)).toBe('label');
+    expect(component.getStatusVariant(OrderStatus.CUSTOMER_DRAFT)).toBe('warning');
     expect(component.getStatusVariant(OrderStatus.CONFIRMED)).toBe('info');
     expect(component.getStatusVariant(OrderStatus.CANCELLED)).toBe('danger');
     expect(component.getStatusVariant(OrderStatus.INVOICED)).toBe('success');
