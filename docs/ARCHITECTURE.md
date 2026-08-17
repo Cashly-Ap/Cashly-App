@@ -114,13 +114,18 @@ Each feature module is self-contained with its own:
 
 Lexand uses **three standardized pages** per module:
 
-1. **List Page** (`pages/<module>-list-page/`) - Displays data in tables using `shared/components/list`
+1. **List Page** (`pages/<module>-list-page/`) - Orchestrates list data, filters, navigation, and feature components using `shared/components/list`
 2. **Form Page** (`pages/<module>-form-page/`) - Handles both create and edit using `core/forms`
-3. **Details Page** (`pages/<module>-details-page/`) - Shows detailed view using `shared/components/details`
+3. **Details Page** (`pages/<module>-details-page/`) - Shows detailed view using `shared/components/details`; record operations use the shared `detail-actions-menu`
+
+Related datasets that need their own filtering or pagination, such as warehouse stock and movement history, use dedicated lazy pages instead of expanding the entity details page.
+
+Search controls reuse `SearchFieldComponent`. The component keeps typed text as an internal draft and emits the applied term only when the user presses its search button or the Enter key, preventing server requests on each ordinary keystroke.
+List toolbars remain rendered during initial loading and empty states so search, filters, and creation actions are always reachable. Icon-only search actions expose an accessible `Buscar` label and the same text through a hover tooltip.
 
 **Components Folder**:
 
-The `components/` folder is **only created when the form requires tab separation**. If the form has multiple tabs (e.g., general info, addresses, contacts), each tab section gets its own component in the `components/` folder.
+The `components/` folder contains reusable feature presentation such as form sections, dialogs, and focused interactive flows. Routable pages compose these components and keep modal markup and validation outside page templates.
 
 **Model Interfaces**:
 
@@ -454,29 +459,30 @@ export class CustomerGeneralSectionComponent {
 
 ### Page Structure
 
-Each module has **exactly three pages**:
+Each module starts with **three standard page roles** and can add focused routed pages for related datasets:
 
-1. **List Page** - Uses `shared/components/list/list-container`
+1. **List Page** - Orchestrates data and navigation with `shared/components/list/list-container` and `list-action-buttons`; row actions are presented through the shared three-dot menu in the stable order `Ver detalle`, `Editar`, `Eliminar` when applicable, followed by module-specific actions
 2. **Form Page** - Uses `core/forms/base/base-form` (handles create AND edit)
-3. **Details Page** - Uses `shared/components/details/*` components
+3. **Details Page** - Uses `shared/components/details/*`; actions are projected into `detail-actions-menu` while the page keeps orchestration and status rules. Because the record is already open, details omit the redundant `Ver detalle` action and prioritize `Editar`, then `Eliminar` when applicable, before module-specific actions
 
 ### Components Folder Usage
 
-Create `components/` folder **only when forms have multiple tabs**:
+Create `components/` for reusable feature presentation, including form sections and dialogs. Routable pages coordinate these components and must not define dialog markup or validation flows inline.
 
 ```
 features/customers/
-├── components/                    # Only if form has tabs!
+├── components/
 │   ├── customer-general-section/  # Tab 1: General info
 │   ├── customer-contact-section/  # Tab 2: Contact details
-│   └── customer-addresses-section/# Tab 3: Addresses
+│   ├── customer-addresses-section/# Tab 3: Addresses
+│   └── change-portal-password-dialog/
 ├── pages/
 │   ├── customers-list-page/
 │   ├── customers-form-page/       # Uses components above
 │   └── customers-details-page/
 ```
 
-If the form doesn't need tabs, **don't create components folder**.
+Keep business messages in the feature `messages/` folder so pages and components reuse the same toast contracts.
 
 ## 🔐 Security Architecture
 

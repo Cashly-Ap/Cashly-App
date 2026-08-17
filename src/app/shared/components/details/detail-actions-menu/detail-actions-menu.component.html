@@ -1,0 +1,12 @@
+<p-button
+  label="Acciones"
+  icon="pi pi-ellipsis-v"
+  severity="contrast"
+  ariaLabel="Abrir acciones del registro"
+  (onClick)="actionsPopover.toggle($event)"
+/>
+<p-popover #actionsPopover appendTo="body">
+  <div class="flex min-w-52 flex-col gap-1 p-1">
+    <ng-content />
+  </div>
+</p-popover>
