@@ -374,7 +374,7 @@
   </ng-template>
 </p-dialog>
 
-<p-popover #filterPopover appendTo="body" (onHide)="filterVisible.set(false)">
+<p-popover #filterPopover appendTo="body" [focusOnShow]="false" (onHide)="filterVisible.set(false)">
   <div class="w-72">
     <div
       class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
