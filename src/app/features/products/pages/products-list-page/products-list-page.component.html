@@ -16,18 +16,12 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex flex-wrap gap-2 items-center w-full sm:w-auto">
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[240px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar producto..."
-                class="w-full"
-              />
-            </p-iconField>
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[240px]"
+              [value]="searchTerm()"
+              placeholder="Buscar producto..."
+              (search)="onSearch($event)"
+            />
             <p-button
               #filterBtn
               icon="pi pi-filter"
@@ -212,34 +206,7 @@
                       <app-status-badge [active]="product.active" />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(product)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-pencil"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onEdit(product)"
-                          pTooltip="Editar"
-                        />
-                        @if (product.deletable) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(product)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(product)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -323,29 +290,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(product)"
-                  />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onEdit(product)"
-                  />
-                  @if (product.deletable) {
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(product)"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(product)" />
                 </div>
               </div>
             }

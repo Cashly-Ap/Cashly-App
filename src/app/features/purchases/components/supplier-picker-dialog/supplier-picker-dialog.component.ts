@@ -16,6 +16,7 @@ import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { SupplierApiService } from '@features/suppliers/services/api/supplier-api.service';
 import { SupplierList } from '@features/suppliers/models/interfaces';
+import { SearchFieldComponent } from '@shared/components/ui';
 import {
   SUPPLIER_TYPES,
   SupplierType,
@@ -28,7 +29,15 @@ const PAGE_SIZE = 10;
   selector: 'app-supplier-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, PopoverModule, SelectModule],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    PopoverModule,
+    SelectModule,
+    SearchFieldComponent,
+  ],
   templateUrl: './supplier-picker-dialog.component.html',
 })
 export class SupplierPickerDialogComponent {

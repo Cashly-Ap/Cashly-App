@@ -16,18 +16,12 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar por número o cliente..."
-                class="w-full"
-              />
-            </p-iconField>
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              placeholder="Buscar por número o cliente..."
+              (search)="onSearch($event)"
+            />
             <p-button
               #filterBtn
               icon="pi pi-filter"
@@ -165,77 +159,8 @@
                       </div>
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(order)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-file-pdf"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="contrast"
-                          (onClick)="onDownloadPdf(order)"
-                          pTooltip="Descargar PDF"
-                        />
-                        @if (order.status === 'DRAFT' || order.status === 'CUSTOMER_DRAFT') {
-                          @if (order.status === 'CUSTOMER_DRAFT') {
-                            <p-button
-                              icon="pi pi-warehouse"
-                              [text]="true"
-                              [rounded]="true"
-                              severity="warn"
-                              (onClick)="onAssignWarehouses(order)"
-                              pTooltip="Asignar Almacenes"
-                            />
-                          }
-                          <p-button
-                            icon="pi pi-pencil"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="info"
-                            (onClick)="onEdit(order)"
-                            pTooltip="Editar"
-                          />
-                          <p-button
-                            icon="pi pi-check"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="success"
-                            (onClick)="onConfirm(order)"
-                            pTooltip="Confirmar"
-                          />
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(order)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                        @if (order.status === 'CONFIRMED') {
-                          <p-button
-                            icon="pi pi-file"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="success"
-                            (onClick)="onConvertToInvoice(order)"
-                            pTooltip="Convertir a Factura"
-                          />
-                          <p-button
-                            icon="pi pi-times"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onCancelOrder(order)"
-                            pTooltip="Cancelar"
-                          />
-                        }
+                      <div class="flex justify-center">
+                        <app-list-action-buttons [actions]="actionsFor(order)" />
                       </div>
                     </td>
                   </tr>
@@ -306,64 +231,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(order)"
-                  />
-                  <p-button
-                    icon="pi pi-file-pdf"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="contrast"
-                    (onClick)="onDownloadPdf(order)"
-                    pTooltip="Descargar PDF"
-                  />
-                  @if (order.status === 'DRAFT') {
-                    <p-button
-                      icon="pi pi-pencil"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="info"
-                      (onClick)="onEdit(order)"
-                      pTooltip="Editar"
-                    />
-                    <p-button
-                      icon="pi pi-check"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="success"
-                      (onClick)="onConfirm(order)"
-                      pTooltip="Confirmar"
-                    />
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(order)"
-                    />
-                  }
-                  @if (order.status === 'CONFIRMED') {
-                    <p-button
-                      icon="pi pi-file"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="success"
-                      (onClick)="onConvertToInvoice(order)"
-                      pTooltip="Convertir a Factura"
-                    />
-                    <p-button
-                      icon="pi pi-times"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onCancelOrder(order)"
-                      pTooltip="Cancelar"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(order)" />
                 </div>
               </div>
             }

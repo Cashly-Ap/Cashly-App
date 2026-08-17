@@ -24,7 +24,12 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { SearchFieldComponent } from '@shared/components/ui';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { ReturnApplicationService } from '@features/returns/services/application/return-application.service';
 import { ReturnFilters } from '@features/returns/services/api/return-api.service';
 import { ReturnList } from '@features/returns/models/interfaces';
@@ -49,8 +54,10 @@ import { ReturnList } from '@features/returns/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     TextBadgeComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
   ],
   templateUrl: './return-list-page.component.html',
   providers: [ConfirmationService],
@@ -123,6 +130,13 @@ export class ReturnListPageComponent implements OnInit {
 
   onDetail(ret: ReturnList): void {
     this.router.navigate(['/returns', ret.id]);
+  }
+
+  actionsFor(ret: ReturnList): ListAction[] {
+    return [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(ret) },
+      { label: 'Eliminar', icon: 'pi pi-trash', danger: true, command: () => this.onDelete(ret) },
+    ];
   }
 
   onDelete(ret: ReturnList): void {

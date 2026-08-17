@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -32,6 +33,7 @@ import {
   imports: [
     CommonModule,
     ButtonModule,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

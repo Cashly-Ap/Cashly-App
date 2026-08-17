@@ -94,6 +94,19 @@ describe('UsersDetailsPageComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/users', '1', 'edit']);
   });
 
+  it('shows edit before user-specific actions', () => {
+    fixture.detectChanges();
+    const actionsTrigger = Array.from<HTMLButtonElement>(
+      fixture.nativeElement.querySelectorAll('button'),
+    ).find((button) => button.textContent?.includes('Acciones'))!;
+    actionsTrigger.click();
+    fixture.detectChanges();
+    const menuText = document.body.textContent ?? '';
+
+    expect(menuText.indexOf('Editar')).toBeLessThan(menuText.indexOf('Cambiar Contraseña'));
+    expect(menuText.indexOf('Editar')).toBeLessThan(menuText.indexOf('Cambiar Correo'));
+  });
+
   it('should navigate back to users list on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();

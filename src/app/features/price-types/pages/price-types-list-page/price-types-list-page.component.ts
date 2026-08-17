@@ -20,8 +20,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeList } from '@features/price-types/models/interfaces';
 
@@ -42,7 +47,9 @@ import { PriceTypeList } from '@features/price-types/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
   ],
   templateUrl: './price-types-list-page.component.html',
@@ -102,6 +109,22 @@ export class PriceTypesListPageComponent implements OnInit {
 
   onEdit(priceType: PriceTypeList): void {
     this.router.navigate(['/price-types', priceType.id, 'edit']);
+  }
+
+  actionsFor(priceType: PriceTypeList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(priceType) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(priceType) },
+    ];
+    if (priceType.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(priceType),
+      });
+    }
+    return actions;
   }
 
   onDelete(priceType: PriceTypeList): void {

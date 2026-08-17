@@ -16,18 +16,12 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar por número o proveedor..."
-                class="w-full"
-              />
-            </p-iconField>
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              placeholder="Buscar por número o proveedor..."
+              (search)="onSearch($event)"
+            />
             <p-button
               #filterBtn
               icon="pi pi-filter"
@@ -165,59 +159,8 @@
                       </div>
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(purchase)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-file-pdf"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="contrast"
-                          (onClick)="onDownloadPdf(purchase)"
-                          pTooltip="Descargar PDF"
-                        />
-                        @if (purchase.status === 'DRAFT') {
-                          <p-button
-                            icon="pi pi-pencil"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="info"
-                            (onClick)="onEdit(purchase)"
-                            pTooltip="Editar"
-                          />
-                          <p-button
-                            icon="pi pi-check"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="success"
-                            (onClick)="onConfirm(purchase)"
-                            pTooltip="Confirmar Compra"
-                          />
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(purchase)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                        @if (purchase.status === 'CONFIRMED') {
-                          <p-button
-                            icon="pi pi-ban"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onCancelPurchase(purchase)"
-                            pTooltip="Cancelar Compra"
-                          />
-                        }
+                      <div class="flex justify-center">
+                        <app-list-action-buttons [actions]="actionsFor(purchase)" />
                       </div>
                     </td>
                   </tr>
@@ -288,52 +231,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(purchase)"
-                  />
-                  <p-button
-                    icon="pi pi-file-pdf"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="contrast"
-                    (onClick)="onDownloadPdf(purchase)"
-                  />
-                  @if (purchase.status === 'DRAFT') {
-                    <p-button
-                      icon="pi pi-pencil"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="info"
-                      (onClick)="onEdit(purchase)"
-                    />
-                    <p-button
-                      icon="pi pi-check"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="success"
-                      (onClick)="onConfirm(purchase)"
-                    />
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(purchase)"
-                    />
-                  }
-                  @if (purchase.status === 'CONFIRMED') {
-                    <p-button
-                      icon="pi pi-ban"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onCancelPurchase(purchase)"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(purchase)" />
                 </div>
               </div>
             }

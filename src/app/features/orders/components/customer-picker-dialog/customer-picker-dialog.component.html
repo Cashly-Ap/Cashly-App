@@ -40,8 +40,18 @@
       </div>
     }
     <div class="flex items-center gap-2">
+      <app-search-field
+        data-testid="desktop-customer-search"
+        class="hidden min-w-0 flex-1 sm:block"
+        [value]="search()"
+        placeholder="Buscar cliente..."
+        (search)="onSearchChange($event)"
+      />
+
       <button
         type="button"
+        aria-label="Filtros"
+        title="Filtros"
         class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors shrink-0"
         [class.border-surface-900]="activeFilterCount() > 0"
         [class.bg-surface-900]="activeFilterCount() > 0"
@@ -89,19 +99,13 @@
         </div>
 
         <div class="px-4 py-3 flex flex-col gap-3">
-          <div class="relative">
-            <i
-              class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none z-10"
-            ></i>
-            <input
-              pInputText
-              type="text"
-              [ngModel]="search()"
-              (ngModelChange)="onSearchChange($event)"
-              placeholder="Buscar cliente..."
-              class="w-full pl-9"
-            />
-          </div>
+          <app-search-field
+            data-testid="mobile-customer-search"
+            class="block sm:hidden"
+            [value]="search()"
+            placeholder="Buscar cliente..."
+            (search)="onSearchChange($event)"
+          />
 
           <div class="flex flex-col gap-1.5">
             <span

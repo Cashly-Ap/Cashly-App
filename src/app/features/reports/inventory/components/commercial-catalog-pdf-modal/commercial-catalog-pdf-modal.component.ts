@@ -17,6 +17,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 @Component({
   selector: 'app-commercial-catalog-pdf-modal',
@@ -30,6 +31,7 @@ import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/
     InputTextModule,
     SelectModule,
     ProgressSpinnerModule,
+    SearchFieldComponent,
   ],
   templateUrl: './commercial-catalog-pdf-modal.component.html',
 })

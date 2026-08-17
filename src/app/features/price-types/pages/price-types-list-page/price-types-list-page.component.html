@@ -10,12 +10,34 @@
       <p class="text-sm sm:text-base">Gestiona los tipos de precio</p>
     </div>
 
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <app-search-field
+            class="flex-1 sm:flex-none sm:min-w-[280px]"
+            [value]="searchTerm()"
+            placeholder="Buscar tipo de precio..."
+            (search)="onSearch($event)"
+          />
+          <p-button
+            label="Nuevo Tipo de Precio"
+            icon="pi pi-plus"
+            (onClick)="onCreate()"
+            severity="contrast"
+            styleClass="font-medium w-full sm:w-auto"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-loading-spinner message="Cargando tipos de precio..." />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-tag"
           title="No hay tipos de precio registrados"
@@ -25,34 +47,6 @@
         />
       </app-content-card>
     } @else {
-      <app-list-container>
-        <div class="px-4 sm:px-6 py-4">
-          <div
-            class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
-          >
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar tipo de precio..."
-                class="w-full"
-              />
-            </p-iconField>
-            <p-button
-              label="Nuevo Tipo de Precio"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-              severity="contrast"
-              styleClass="font-medium w-full sm:w-auto"
-            />
-          </div>
-        </div>
-      </app-list-container>
-
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
           @if (isLoading()) {
@@ -104,34 +98,7 @@
                       />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(priceType)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-pencil"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onEdit(priceType)"
-                          pTooltip="Editar"
-                        />
-                        @if (priceType.deletable) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(priceType)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(priceType)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -182,29 +149,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(priceType)"
-                  />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onEdit(priceType)"
-                  />
-                  @if (priceType.deletable) {
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(priceType)"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(priceType)" />
                 </div>
               </div>
             }

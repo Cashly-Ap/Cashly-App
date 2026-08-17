@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -23,6 +24,7 @@ import { getSupplierTypeLabel } from '@features/suppliers/models/enums';
   imports: [
     CommonModule,
     ButtonModule,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

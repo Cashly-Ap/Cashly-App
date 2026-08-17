@@ -11,11 +11,11 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
+import { SearchFieldComponent } from '@shared/components/ui';
 import {
   CUSTOMER_TYPES,
   CustomerType,
@@ -28,7 +28,14 @@ const PAGE_SIZE = 10;
   selector: 'app-customer-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, PopoverModule, SelectModule],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    PopoverModule,
+    SelectModule,
+    SearchFieldComponent,
+  ],
   templateUrl: './customer-picker-dialog.component.html',
 })
 export class CustomerPickerDialogComponent {

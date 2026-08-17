@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, debounceTime, distinctUntilChanged, takeUntil, finalize } from 'rxjs';
+import { Subject, takeUntil, finalize } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -33,6 +33,7 @@ import { PendingPaymentsTabComponent } from '@features/receivables/components/pe
 import { PaymentSubmitEvent } from '@features/receivables/components/payment-form-dialog/payment-form-dialog.component';
 import { PayPartialDebtRequest } from '@features/receivables/models/interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 @Component({
   selector: 'app-receivables-page',
@@ -56,6 +57,7 @@ import { ActivatedRoute, Router } from '@angular/router';
     PaymentFormDialogComponent,
     PaymentHistoryDialogComponent,
     PendingPaymentsTabComponent,
+    SearchFieldComponent,
   ],
   templateUrl: './receivables-page.component.html',
 })
@@ -66,8 +68,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
 
   private readonly destroy$ = new Subject<void>();
-  private readonly searchSubject = new Subject<string>();
-
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
@@ -120,14 +120,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
       this.service.loadGlobalSummary().pipe(takeUntil(this.destroy$)).subscribe();
       this.loadCustomers();
     });
-
-    this.searchSubject
-      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((term) => {
-        this.searchTerm.set(term);
-        this.first.set(0);
-        this.loadCustomers();
-      });
   }
 
   onPaymentFocusHandled(paymentId: string): void {
@@ -147,7 +139,9 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   }
 
   onSearch(value: string): void {
-    this.searchSubject.next(value);
+    this.searchTerm.set(value);
+    this.first.set(0);
+    this.loadCustomers();
   }
 
   onPageChange(event: { first: number; rows: number }): void {

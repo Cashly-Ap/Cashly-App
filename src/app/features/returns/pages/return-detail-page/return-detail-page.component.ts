@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -28,6 +29,7 @@ import { ReturnApplicationService } from '@features/returns/services/application
     ButtonModule,
     TableModule,
     ConfirmDialogModule,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

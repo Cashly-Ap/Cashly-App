@@ -5,6 +5,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -22,6 +23,7 @@ import { CreditNoteApplicationService } from '@features/credit-notes/services/ap
     DecimalPipe,
     ButtonModule,
     ConfirmDialogModule,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

@@ -25,19 +25,11 @@
   </ng-template>
 
   <div class="flex flex-col gap-4 pt-1">
-    <div class="relative">
-      <i
-        class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none z-10"
-      ></i>
-      <input
-        pInputText
-        type="text"
-        [ngModel]="search()"
-        (ngModelChange)="onSearchChange($event)"
-        placeholder="Buscar por número o cliente..."
-        class="w-full pl-9"
-      />
-    </div>
+    <app-search-field
+      [value]="search()"
+      placeholder="Buscar por número o cliente..."
+      (search)="onSearchChange($event)"
+    />
 
     <div class="text-xs text-surface-500 dark:text-surface-400">
       {{ filteredInvoices().length }} {{ filteredInvoices().length === 1 ? 'factura' : 'facturas' }}

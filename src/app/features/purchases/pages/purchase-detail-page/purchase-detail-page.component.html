@@ -24,13 +24,15 @@
                 styleClass="w-full sm:w-auto"
               />
               @if (currentPurchase.status === PurchaseStatus.DRAFT) {
-                <p-button
-                  label="Editar"
-                  icon="pi pi-pencil"
-                  severity="contrast"
-                  (onClick)="onEdit()"
-                  styleClass="w-full sm:w-auto"
-                />
+                <app-detail-actions-menu #actionsMenu>
+                  <p-button
+                    label="Editar"
+                    icon="pi pi-pencil"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                </app-detail-actions-menu>
               }
             </div>
           </app-details-card-header>

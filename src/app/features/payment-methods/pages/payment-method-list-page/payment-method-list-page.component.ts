@@ -23,8 +23,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { PaymentMethodApplicationService } from '@features/payment-methods/services/application/payment-method-application.service';
 import { PaymentMethodFilters } from '@features/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
@@ -49,7 +54,9 @@ import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
   ],
   templateUrl: './payment-method-list-page.component.html',
@@ -142,6 +149,22 @@ export class PaymentMethodListPageComponent implements OnInit {
 
   onEdit(paymentMethod: PaymentMethodList): void {
     this.router.navigate(['/payment-methods', paymentMethod.id, 'edit']);
+  }
+
+  actionsFor(paymentMethod: PaymentMethodList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(paymentMethod) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(paymentMethod) },
+    ];
+    if (!paymentMethod.hasAssociatedRecords) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(paymentMethod),
+      });
+    }
+    return actions;
   }
 
   onDelete(paymentMethod: PaymentMethodList): void {

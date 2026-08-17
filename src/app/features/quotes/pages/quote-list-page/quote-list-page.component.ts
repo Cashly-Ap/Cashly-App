@@ -23,8 +23,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
@@ -62,7 +67,9 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     TextBadgeComponent,
     ConvertToOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
@@ -172,6 +179,42 @@ export class QuoteListPageComponent implements OnInit {
 
   onEdit(quote: QuoteList): void {
     this.router.navigate(['/quotes', quote.id, 'edit']);
+  }
+
+  actionsFor(quote: QuoteList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(quote) },
+      { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(quote) },
+    ];
+    if (quote.status === 'DRAFT') {
+      actions.push(
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(quote) },
+        {
+          label: 'Convertir a pedido',
+          icon: 'pi pi-shopping-cart',
+          command: () => this.onConvertToOrder(quote),
+        },
+        {
+          label: 'Convertir a factura',
+          icon: 'pi pi-file',
+          command: () => this.onConvertToInvoice(quote),
+        },
+        {
+          label: 'Eliminar',
+          icon: 'pi pi-trash',
+          danger: true,
+          command: () => this.onDelete(quote),
+        },
+      );
+    }
+    if (quote.status === 'CUSTOMER_DRAFT') {
+      actions.push({
+        label: 'Asignar almacenes',
+        icon: 'pi pi-warehouse',
+        command: () => this.onAssignWarehouses(quote),
+      });
+    }
+    return actions;
   }
 
   onDelete(quote: QuoteList): void {

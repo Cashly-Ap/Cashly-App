@@ -24,9 +24,14 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { ProductApplicationService } from '@features/products/services/application';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
@@ -54,7 +59,9 @@ import { ProductList } from '@features/products/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
   ],
@@ -214,6 +221,22 @@ export class ProductsListPageComponent implements OnInit {
 
   onEdit(product: ProductList): void {
     this.router.navigate(['/products', product.id, 'edit']);
+  }
+
+  actionsFor(product: ProductList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(product) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(product) },
+    ];
+    if (product.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(product),
+      });
+    }
+    return actions;
   }
 
   onToggleActive(product: ProductList): void {

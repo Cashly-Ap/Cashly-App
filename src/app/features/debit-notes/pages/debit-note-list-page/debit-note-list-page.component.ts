@@ -23,7 +23,12 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { SearchFieldComponent } from '@shared/components/ui';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { DebitNoteApplicationService } from '@features/debit-notes/services/application/debit-note-application.service';
 import { DebitNoteFilters } from '@features/debit-notes/services/api/debit-note-api.service';
 import { DebitNoteList } from '@features/debit-notes/models/interfaces';
@@ -48,7 +53,9 @@ import { DebitNoteList } from '@features/debit-notes/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
   ],
   templateUrl: './debit-note-list-page.component.html',
   providers: [ConfirmationService],
@@ -121,6 +128,18 @@ export class DebitNoteListPageComponent implements OnInit {
 
   onDetail(debitNote: DebitNoteList): void {
     this.router.navigate(['/debit-notes', debitNote.id]);
+  }
+
+  actionsFor(debitNote: DebitNoteList): ListAction[] {
+    return [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(debitNote) },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(debitNote),
+      },
+    ];
   }
 
   onDelete(debitNote: DebitNoteList): void {

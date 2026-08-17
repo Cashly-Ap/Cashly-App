@@ -10,12 +10,86 @@
       <p class="text-sm sm:text-base">Gestiona los usuarios del sistema</p>
     </div>
 
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              placeholder="Buscar usuarios..."
+              (search)="onSearch($event)"
+            />
+            <p-button
+              #filterBtn
+              icon="pi pi-filter"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="filterPopover.toggle($event)"
+              pTooltip="Filtros"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+            />
+            <p-popover #filterPopover>
+              <div class="flex flex-col gap-4 p-1 min-w-[260px]">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">Filtros</span>
+                  @if (activeFilterCount() > 0) {
+                    <p-button
+                      label="Limpiar"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
+                    />
+                  }
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">Rol</label>
+                  <p-select
+                    [options]="roleOptions"
+                    [ngModel]="filterRole()"
+                    (onChange)="onRoleFilterChange($event.value)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos los roles"
+                    styleClass="w-full"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <p-select
+                    [options]="activeOptions"
+                    [ngModel]="filterActive()"
+                    (onChange)="onActiveFilterChange($event.value)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos"
+                    styleClass="w-full"
+                  />
+                </div>
+              </div>
+            </p-popover>
+          </div>
+          <p-button
+            label="Nuevo Usuario"
+            icon="pi pi-plus"
+            (onClick)="onCreate()"
+            severity="contrast"
+            styleClass="font-medium w-full sm:w-auto"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-loading-spinner message="Cargando usuarios..." />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-users"
           title="No hay usuarios registrados"
@@ -25,86 +99,6 @@
         />
       </app-content-card>
     } @else {
-      <app-list-container>
-        <div class="px-4 sm:px-6 py-4">
-          <div
-            class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
-          >
-            <div class="flex gap-2 items-center w-full sm:w-auto">
-              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                  #searchInput
-                  pInputText
-                  type="text"
-                  [value]="searchTerm()"
-                  (input)="onSearch(searchInput.value)"
-                  placeholder="Buscar usuarios..."
-                  class="w-full"
-                />
-              </p-iconField>
-              <p-button
-                #filterBtn
-                icon="pi pi-filter"
-                [outlined]="true"
-                severity="secondary"
-                (onClick)="filterPopover.toggle($event)"
-                pTooltip="Filtros"
-                [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-                badgeSeverity="contrast"
-              />
-              <p-popover #filterPopover>
-                <div class="flex flex-col gap-4 p-1 min-w-[260px]">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold text-sm">Filtros</span>
-                    @if (activeFilterCount() > 0) {
-                      <p-button
-                        label="Limpiar"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        (onClick)="clearFilters()"
-                      />
-                    }
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Rol</label>
-                    <p-select
-                      [options]="roleOptions"
-                      [ngModel]="filterRole()"
-                      (onChange)="onRoleFilterChange($event.value)"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Todos los roles"
-                      styleClass="w-full"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Estado</label>
-                    <p-select
-                      [options]="activeOptions"
-                      [ngModel]="filterActive()"
-                      (onChange)="onActiveFilterChange($event.value)"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Todos"
-                      styleClass="w-full"
-                    />
-                  </div>
-                </div>
-              </p-popover>
-            </div>
-            <p-button
-              label="Nuevo Usuario"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-              severity="contrast"
-              styleClass="font-medium w-full sm:w-auto"
-            />
-          </div>
-        </div>
-      </app-list-container>
-
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
           @if (loading()) {
@@ -179,34 +173,7 @@
                       <app-status-badge [active]="user.active" />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(user)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-pencil"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onEdit(user)"
-                          pTooltip="Editar"
-                        />
-                        @if (user.deletable) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(user)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(user)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -268,29 +235,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(user)"
-                  />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onEdit(user)"
-                  />
-                  @if (user.deletable) {
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(user)"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(user)" />
                 </div>
               </div>
             }

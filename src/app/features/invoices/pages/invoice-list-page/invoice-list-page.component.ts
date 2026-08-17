@@ -28,8 +28,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { CancelInvoiceDialogComponent } from '@features/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
 import { DuplicateInvoiceDialogComponent } from '@features/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
 import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
@@ -88,7 +93,9 @@ import { CustomerBalanceApiService } from '@features/customers/services/api/cust
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     TextBadgeComponent,
     CancelInvoiceDialogComponent,
     DuplicateInvoiceDialogComponent,
@@ -313,6 +320,43 @@ export class InvoiceListPageComponent implements OnInit {
 
   onEdit(invoice: InvoiceList): void {
     this.router.navigate(['/invoices', invoice.id, 'edit']);
+  }
+
+  actionsFor(invoice: InvoiceList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(invoice) },
+      {
+        label: 'Descargar PDF',
+        icon: 'pi pi-file-pdf',
+        command: () => this.onDownloadPdf(invoice),
+      },
+    ];
+    if (invoice.status === 'DRAFT') {
+      actions.push(
+        { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirmInvoice(invoice) },
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(invoice) },
+        {
+          label: 'Eliminar',
+          icon: 'pi pi-trash',
+          danger: true,
+          command: () => this.onDelete(invoice),
+        },
+      );
+    }
+    if (this.canCancel(invoice.status)) {
+      actions.push({
+        label: 'Cancelar',
+        icon: 'pi pi-times',
+        danger: true,
+        command: () => this.onCancelInvoice(invoice),
+      });
+    }
+    actions.push({
+      label: 'Duplicar',
+      icon: 'pi pi-copy',
+      command: () => this.onDuplicate(invoice),
+    });
+    return actions;
   }
 
   onDelete(invoice: InvoiceList): void {

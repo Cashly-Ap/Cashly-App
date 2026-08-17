@@ -23,8 +23,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { CategoryFilters } from '@features/categories/services/api/category-api.service';
 import { CategoryList } from '@features/categories/models/interfaces';
@@ -49,7 +54,9 @@ import { CategoryList } from '@features/categories/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
   ],
   templateUrl: './categories-list-page.component.html',
@@ -142,6 +149,22 @@ export class CategoriesListPageComponent implements OnInit {
 
   onEdit(category: CategoryList): void {
     this.router.navigate(['/categories', category.id, 'edit']);
+  }
+
+  actionsFor(category: CategoryList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(category) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(category) },
+    ];
+    if (category.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(category),
+      });
+    }
+    return actions;
   }
 
   onToggleActive(category: CategoryList): void {

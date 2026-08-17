@@ -102,17 +102,11 @@
             <div class="p-6">
               <div class="mb-6">
                 <div class="relative">
-                  <p-iconField iconPosition="left" class="w-full">
-                    <p-inputIcon styleClass="pi pi-search" />
-                    <input
-                      #searchInput
-                      pInputText
-                      type="text"
-                      (input)="onSearch(searchInput.value)"
-                      placeholder="Buscar por nombre o RIF..."
-                      class="w-full"
-                    />
-                  </p-iconField>
+                  <app-search-field
+                    [value]="searchTerm()"
+                    placeholder="Buscar por nombre o RIF..."
+                    (search)="onSearch($event)"
+                  />
                 </div>
               </div>
 

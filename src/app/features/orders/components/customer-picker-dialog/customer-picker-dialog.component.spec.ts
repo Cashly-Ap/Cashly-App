@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
@@ -6,6 +7,7 @@ import { CustomerPickerDialogComponent } from '@features/orders/components/custo
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 @Component({
   template: `<app-customer-picker-dialog
@@ -207,6 +209,33 @@ describe('CustomerPickerDialogComponent - visible', () => {
   it('should set loading to false after success', async () => {
     await fixture.whenStable();
     expect(dialog.loading()).toBe(false);
+  });
+
+  it('should render the desktop customer search outside the filter popover', () => {
+    const desktopSearch = fixture.debugElement.query(
+      By.css('[data-testid="desktop-customer-search"]'),
+    );
+
+    expect(desktopSearch).toBeTruthy();
+    expect(desktopSearch.componentInstance).toBeInstanceOf(SearchFieldComponent);
+    expect(desktopSearch.nativeElement.classList).toContain('hidden');
+    expect(desktopSearch.nativeElement.classList).toContain('sm:block');
+  });
+
+  it('should render the mobile customer search inside the filter popover', async () => {
+    const filterButton = fixture.debugElement.query(By.css('button[aria-label="Filtros"]'));
+
+    filterButton.nativeElement.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const mobileSearch = document.body.querySelector(
+      '[data-testid="mobile-customer-search"]',
+    ) as HTMLElement | null;
+
+    expect(mobileSearch).toBeTruthy();
+    expect(mobileSearch?.classList).toContain('sm:hidden');
+    expect(mobileSearch?.closest('.p-popover')).toBeTruthy();
   });
 
   it('should set loading to false on error', async () => {

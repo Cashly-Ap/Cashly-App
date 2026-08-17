@@ -23,8 +23,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { CancelPurchaseDialogComponent } from '@features/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
 import { ConfirmPurchaseDialogComponent } from '@features/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
@@ -58,7 +63,9 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     TextBadgeComponent,
     CancelPurchaseDialogComponent,
     ConfirmPurchaseDialogComponent,
@@ -163,6 +170,38 @@ export class PurchaseListPageComponent implements OnInit {
 
   onEdit(purchase: PurchaseList): void {
     this.router.navigate(['/purchases', purchase.id, 'edit']);
+  }
+
+  actionsFor(purchase: PurchaseList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(purchase) },
+      {
+        label: 'Descargar PDF',
+        icon: 'pi pi-file-pdf',
+        command: () => this.onDownloadPdf(purchase),
+      },
+    ];
+    if (purchase.status === 'DRAFT') {
+      actions.push(
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(purchase) },
+        { label: 'Confirmar compra', icon: 'pi pi-check', command: () => this.onConfirm(purchase) },
+        {
+          label: 'Eliminar',
+          icon: 'pi pi-trash',
+          danger: true,
+          command: () => this.onDelete(purchase),
+        },
+      );
+    }
+    if (purchase.status === 'CONFIRMED') {
+      actions.push({
+        label: 'Cancelar compra',
+        icon: 'pi pi-ban',
+        danger: true,
+        command: () => this.onCancelPurchase(purchase),
+      });
+    }
+    return actions;
   }
 
   onDelete(purchase: PurchaseList): void {

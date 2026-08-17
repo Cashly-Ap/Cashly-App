@@ -23,13 +23,16 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              <p-button
-                label="Eliminar"
-                icon="pi pi-trash"
-                severity="danger"
-                (onClick)="onDelete()"
-                styleClass="w-full sm:w-auto"
-              />
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  label="Eliminar"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
 

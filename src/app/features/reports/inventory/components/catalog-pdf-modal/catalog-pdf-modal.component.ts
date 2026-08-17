@@ -17,6 +17,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CategoryApplicationService } from '@features/categories/services/application';
 import { WarehouseApplicationService } from '@features/warehouses/services/application';
 import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 @Component({
   selector: 'app-catalog-pdf-modal',
@@ -30,6 +31,7 @@ import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces
     InputTextModule,
     SelectModule,
     ProgressSpinnerModule,
+    SearchFieldComponent,
   ],
   templateUrl: './catalog-pdf-modal.component.html',
 })

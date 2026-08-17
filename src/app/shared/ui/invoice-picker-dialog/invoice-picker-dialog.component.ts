@@ -14,12 +14,20 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
 import { InvoiceList } from '@features/invoices/models/interfaces';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 @Component({
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, CurrencyPipe],
+  imports: [
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    CurrencyPipe,
+    SearchFieldComponent,
+  ],
   templateUrl: './invoice-picker-dialog.component.html',
 })
 export class InvoicePickerDialogComponent {

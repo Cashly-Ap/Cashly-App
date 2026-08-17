@@ -7,18 +7,11 @@
   header="Seleccionar Método de Pago"
 >
   <div class="flex flex-col gap-4">
-    <p-iconField iconPosition="left">
-      <p-inputIcon styleClass="pi pi-search" />
-      <input
-        #searchInput
-        pInputText
-        type="text"
-        [value]="searchTerm()"
-        (input)="onSearch(searchInput.value)"
-        placeholder="Buscar método de pago..."
-        class="w-full"
-      />
-    </p-iconField>
+    <app-search-field
+      [value]="searchTerm()"
+      placeholder="Buscar método de pago..."
+      (search)="onSearch($event)"
+    />
 
     @if (loading()) {
       <div class="flex items-center justify-center py-8">

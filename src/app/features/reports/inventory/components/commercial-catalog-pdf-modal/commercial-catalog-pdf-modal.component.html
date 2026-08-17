@@ -16,7 +16,11 @@
     <div class="flex flex-col gap-4 pt-2">
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Búsqueda</label>
-        <input pInputText [(ngModel)]="search" placeholder="Buscar producto..." class="w-full" />
+        <app-search-field
+          [value]="search()"
+          placeholder="Buscar producto..."
+          (search)="search.set($event)"
+        />
       </div>
 
       <div class="flex flex-col gap-1">

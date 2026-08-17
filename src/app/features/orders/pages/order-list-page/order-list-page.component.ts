@@ -23,8 +23,13 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { AssignWarehousesDialogComponent } from '@features/orders/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
@@ -62,7 +67,9 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     TextBadgeComponent,
     CancelOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
@@ -174,6 +181,48 @@ export class OrderListPageComponent implements OnInit {
 
   onEdit(order: OrderList): void {
     this.router.navigate(['/orders', order.id, 'edit']);
+  }
+
+  actionsFor(order: OrderList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(order) },
+      { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(order) },
+    ];
+    if (order.status === 'DRAFT' || order.status === 'CUSTOMER_DRAFT') {
+      if (order.status === 'CUSTOMER_DRAFT') {
+        actions.push({
+          label: 'Asignar almacenes',
+          icon: 'pi pi-warehouse',
+          command: () => this.onAssignWarehouses(order),
+        });
+      }
+      actions.push(
+        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(order) },
+        { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirm(order) },
+        {
+          label: 'Eliminar',
+          icon: 'pi pi-trash',
+          danger: true,
+          command: () => this.onDelete(order),
+        },
+      );
+    }
+    if (order.status === 'CONFIRMED') {
+      actions.push(
+        {
+          label: 'Convertir a factura',
+          icon: 'pi pi-file',
+          command: () => this.onConvertToInvoice(order),
+        },
+        {
+          label: 'Cancelar',
+          icon: 'pi pi-times',
+          danger: true,
+          command: () => this.onCancelOrder(order),
+        },
+      );
+    }
+    return actions;
   }
 
   onDelete(order: OrderList): void {

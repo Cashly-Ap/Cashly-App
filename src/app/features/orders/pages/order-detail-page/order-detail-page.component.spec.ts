@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, signal, NO_ERRORS_SCHEMA } from '@angular/core';
+import { Component, signal, NO_ERRORS_SCHEMA, WritableSignal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -18,6 +18,7 @@ describe('OrderDetailPageComponent', () => {
   let router: Router;
   let messageService: MessageService;
   let httpMock: HttpTestingController;
+  let currentOrderSignal: WritableSignal<OrderDetails>;
 
   const mockOrder: OrderDetails = {
     id: 'ord-001',
@@ -63,9 +64,10 @@ describe('OrderDetailPageComponent', () => {
   };
 
   beforeEach(() => {
+    currentOrderSignal = signal(mockOrder);
     mockService = {
       loadById: vi.fn().mockReturnValue(of(mockOrder)),
-      currentOrder: signal(mockOrder),
+      currentOrder: currentOrderSignal,
       loading: signal(false),
       orders: signal([]),
       totalElements: signal(0),
@@ -118,6 +120,19 @@ describe('OrderDetailPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
     expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001', 'edit']);
+  });
+
+  it('shows edit as the first available record action', () => {
+    currentOrderSignal.set({ ...mockOrder, status: OrderStatus.CUSTOMER_DRAFT });
+    fixture.detectChanges();
+    const actionsTrigger = Array.from<HTMLButtonElement>(
+      fixture.nativeElement.querySelectorAll('button'),
+    ).find((button) => button.textContent?.includes('Acciones'))!;
+    actionsTrigger.click();
+    fixture.detectChanges();
+    const menuText = document.body.textContent ?? '';
+
+    expect(menuText.indexOf('Editar')).toBeLessThan(menuText.indexOf('Asignar Almacenes'));
   });
 
   it('should get status label', () => {

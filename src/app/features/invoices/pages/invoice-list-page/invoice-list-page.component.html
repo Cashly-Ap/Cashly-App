@@ -14,18 +14,12 @@
         <div class="px-4 sm:px-6 py-4">
           <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">
             <div class="flex gap-2 items-center w-full sm:w-auto">
-              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                  #searchInput
-                  pInputText
-                  type="text"
-                  [value]="searchTerm()"
-                  (input)="onSearch(searchInput.value)"
-                  placeholder="Buscar por número o cliente..."
-                  class="w-full"
-                />
-              </p-iconField>
+              <app-search-field
+                class="flex-1 sm:flex-none sm:min-w-[300px]"
+                [value]="searchTerm()"
+                placeholder="Buscar por número o cliente..."
+                (search)="onSearch($event)"
+              />
               <p-button
                 #filterBtn
                 icon="pi pi-filter"
@@ -219,19 +213,7 @@
                         <div class="text-sm text-surface-500">{{ invoice.createdAt | date: 'dd/MM/yyyy' }}</div>
                       </td>
                       <td>
-                        <div class="flex gap-1 justify-center">
-                          <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(invoice)" pTooltip="Ver" />
-                          <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(invoice)" pTooltip="Descargar PDF" />
-                          @if (invoice.status === 'DRAFT') {
-                            <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirmInvoice(invoice)" pTooltip="Confirmar" />
-                            <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(invoice)" pTooltip="Editar" />
-                            <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(invoice)" pTooltip="Eliminar" />
-                          }
-                          @if (canCancel(invoice.status)) {
-                            <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelInvoice(invoice)" pTooltip="Cancelar" />
-                          }
-                          <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
-                        </div>
+                        <app-list-action-buttons [actions]="actionsFor(invoice)" />
                       </td>
                     </tr>
                   </ng-template>
@@ -290,18 +272,8 @@
                     </div>
                     <div class="text-xs text-surface-400 ml-2">{{ invoice.createdAt | date: 'dd/MM/yyyy' }}</div>
                   </div>
-                  <div class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
-                    <p-button icon="pi pi-eye" [text]="true" [rounded]="true" severity="secondary" (onClick)="onView(invoice)" />
-                    <p-button icon="pi pi-file-pdf" [text]="true" [rounded]="true" severity="contrast" (onClick)="onDownloadPdf(invoice)" pTooltip="Descargar PDF" />
-                    @if (invoice.status === 'DRAFT') {
-                      <p-button icon="pi pi-check" [text]="true" [rounded]="true" severity="success" (onClick)="onConfirmInvoice(invoice)" pTooltip="Confirmar" />
-                      <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" severity="info" (onClick)="onEdit(invoice)" pTooltip="Editar" />
-                      <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" (onClick)="onDelete(invoice)" pTooltip="Eliminar" />
-                    }
-                    @if (canCancel(invoice.status)) {
-                      <p-button icon="pi pi-times" [text]="true" [rounded]="true" severity="danger" (onClick)="onCancelInvoice(invoice)" pTooltip="Cancelar" />
-                    }
-                    <p-button icon="pi pi-copy" [text]="true" [rounded]="true" severity="info" (onClick)="onDuplicate(invoice)" pTooltip="Duplicar" />
+                  <div class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700">
+                    <app-list-action-buttons [actions]="actionsFor(invoice)" />
                   </div>
                 </div>
               }

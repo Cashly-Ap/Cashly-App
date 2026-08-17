@@ -19,12 +19,15 @@
                 [outlined]="true"
                 (onClick)="onBack()"
               />
-              <p-button
-                label="Editar"
-                icon="pi pi-pencil"
-                severity="contrast"
-                (onClick)="onEdit()"
-              />
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
           <div class="p-4 sm:p-6">

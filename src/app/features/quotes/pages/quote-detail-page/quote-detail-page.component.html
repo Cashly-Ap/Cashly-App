@@ -23,23 +23,30 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              @if (currentQuote.status === QuoteStatus.DRAFT) {
-                <p-button
-                  label="Editar"
-                  icon="pi pi-pencil"
-                  severity="contrast"
-                  (onClick)="onEdit()"
-                  styleClass="w-full sm:w-auto"
-                />
-              }
-              @if (currentQuote.status === QuoteStatus.CUSTOMER_DRAFT) {
-                <p-button
-                  label="Asignar Almacenes"
-                  icon="pi pi-warehouse"
-                  severity="warn"
-                  (onClick)="onAssignWarehouses()"
-                  styleClass="w-full sm:w-auto"
-                />
+              @if (
+                currentQuote.status === QuoteStatus.DRAFT ||
+                currentQuote.status === QuoteStatus.CUSTOMER_DRAFT
+              ) {
+                <app-detail-actions-menu #actionsMenu>
+                  @if (currentQuote.status === QuoteStatus.DRAFT) {
+                    <p-button
+                      label="Editar"
+                      icon="pi pi-pencil"
+                      [link]="true"
+                      (onClick)="actionsMenu.hide(); onEdit()"
+                      styleClass="w-full justify-start text-left text-sm"
+                    />
+                  }
+                  @if (currentQuote.status === QuoteStatus.CUSTOMER_DRAFT) {
+                    <p-button
+                      label="Asignar Almacenes"
+                      icon="pi pi-warehouse"
+                      [link]="true"
+                      (onClick)="actionsMenu.hide(); onAssignWarehouses()"
+                      styleClass="w-full justify-start text-left text-sm"
+                    />
+                  }
+                </app-detail-actions-menu>
               }
               @if (currentQuote.status === QuoteStatus.CONVERTED_TO_ORDER) {
                 <span

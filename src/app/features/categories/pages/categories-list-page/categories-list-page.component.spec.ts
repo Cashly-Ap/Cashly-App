@@ -227,6 +227,17 @@ describe('CategoriesListPageComponent', () => {
       expect(component.isEmptyDatabase()).toBe(true);
     });
 
+    it('keeps the list header visible when the database is empty', () => {
+      mockService.loading = signal(false);
+      mockService.categories = signal([]);
+      mockService.totalElements = signal(0);
+      fixture = TestBed.createComponent(CategoriesListPageComponent);
+
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('app-search-field')).toBeTruthy();
+    });
+
     it('should show filtered results when not loading, no elements, and search term exists', () => {
       mockService.loading = signal(false);
       mockService.totalElements = signal(0);

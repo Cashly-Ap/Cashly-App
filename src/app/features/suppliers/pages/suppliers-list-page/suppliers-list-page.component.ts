@@ -24,9 +24,14 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { SupplierApplicationService } from '@features/suppliers/services/application';
 import { SupplierFilters } from '@features/suppliers/services/api/supplier-api.service';
 import { SupplierList } from '@features/suppliers/models/interfaces';
@@ -57,7 +62,9 @@ import {
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
   ],
@@ -219,6 +226,22 @@ export class SuppliersListPageComponent implements OnInit {
 
   onEdit(supplier: SupplierList): void {
     this.router.navigate(['/suppliers', supplier.id, 'edit']);
+  }
+
+  actionsFor(supplier: SupplierList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(supplier) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(supplier) },
+    ];
+    if (!supplier.hasPurchases) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(supplier),
+      });
+    }
+    return actions;
   }
 
   onDelete(supplier: SupplierList): void {

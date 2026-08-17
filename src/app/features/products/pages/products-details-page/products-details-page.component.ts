@@ -12,6 +12,7 @@ import { forkJoin, of, catchError } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -32,6 +33,7 @@ import { ProductDetails, ProductStockByWarehouse } from '@features/products/mode
   imports: [
     CommonModule,
     ButtonModule,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,

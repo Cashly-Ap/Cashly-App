@@ -382,19 +382,11 @@
           class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
           >Buscar</span
         >
-        <div class="relative">
-          <i
-            class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm pointer-events-none"
-          ></i>
-          <input
-            pInputText
-            type="text"
-            [ngModel]="search()"
-            (ngModelChange)="onSearchChange($event)"
-            placeholder="Código o nombre..."
-            class="w-full pl-9 text-sm"
-          />
-        </div>
+        <app-search-field
+          [value]="search()"
+          placeholder="Código o nombre..."
+          (search)="onSearchChange($event)"
+        />
       </div>
       <div class="flex flex-col gap-1.5">
         <span

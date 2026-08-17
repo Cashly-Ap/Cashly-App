@@ -24,9 +24,14 @@ import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { UserApplicationService } from '@features/users/services/application';
 import { UserFilters } from '@features/users/services/api/user-api.service';
 import { UserList } from '@features/users/models/interfaces';
@@ -53,7 +58,9 @@ import { getUserTypeLabel, UserType, USER_TYPES } from '@features/users/models/e
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
   ],
@@ -186,6 +193,22 @@ export class UsersListPageComponent implements OnInit {
 
   onEdit(user: UserList): void {
     this.router.navigate(['/users', user.id, 'edit']);
+  }
+
+  actionsFor(user: UserList): ListAction[] {
+    const actions: ListAction[] = [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(user) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(user) },
+    ];
+    if (user.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(user),
+      });
+    }
+    return actions;
   }
 
   onDelete(user: UserList): void {

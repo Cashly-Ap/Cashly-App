@@ -16,18 +16,12 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar devolución..."
-                class="w-full"
-              />
-            </p-iconField>
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[280px]"
+              [value]="searchTerm()"
+              placeholder="Buscar devolución..."
+              (search)="onSearch($event)"
+            />
             <p-button
               #filterBtn
               icon="pi pi-filter"
@@ -157,24 +151,7 @@
                       />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onDetail(ret)"
-                          pTooltip="Ver detalle"
-                        />
-                        <p-button
-                          icon="pi pi-trash"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="danger"
-                          (onClick)="onDelete(ret)"
-                          pTooltip="Eliminar"
-                        />
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(ret)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -234,20 +211,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onDetail(ret)"
-                  />
-                  <p-button
-                    icon="pi pi-trash"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    (onClick)="onDelete(ret)"
-                  />
+                  <app-list-action-buttons [actions]="actionsFor(ret)" />
                 </div>
               </div>
             }

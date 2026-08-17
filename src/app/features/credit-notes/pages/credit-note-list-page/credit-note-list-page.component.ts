@@ -23,7 +23,12 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { SearchFieldComponent } from '@shared/components/ui';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { CreditNoteApplicationService } from '@features/credit-notes/services/application/credit-note-application.service';
 import { CreditNoteFilters } from '@features/credit-notes/services/api/credit-note-api.service';
 import { CreditNoteList } from '@features/credit-notes/models/interfaces';
@@ -48,7 +53,9 @@ import { CreditNoteList } from '@features/credit-notes/models/interfaces';
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
   ],
   templateUrl: './credit-note-list-page.component.html',
   providers: [ConfirmationService],
@@ -121,6 +128,18 @@ export class CreditNoteListPageComponent implements OnInit {
 
   onDetail(creditNote: CreditNoteList): void {
     this.router.navigate(['/credit-notes', creditNote.id]);
+  }
+
+  actionsFor(creditNote: CreditNoteList): ListAction[] {
+    return [
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(creditNote) },
+      {
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(creditNote),
+      },
+    ];
   }
 
   onDelete(creditNote: CreditNoteList): void {

@@ -10,12 +10,84 @@
       <p class="text-sm sm:text-base">Gestiona las notas de crédito emitidas</p>
     </div>
 
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[280px]"
+              [value]="searchTerm()"
+              placeholder="Buscar nota de crédito..."
+              (search)="onSearch($event)"
+            />
+            <p-button
+              #filterBtn
+              icon="pi pi-filter"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="filterPopover.toggle($event)"
+              pTooltip="Filtros"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+            />
+            <p-popover #filterPopover>
+              <div class="flex flex-col gap-4 p-1 min-w-[280px]">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">Filtros</span>
+                  @if (activeFilterCount() > 0) {
+                    <p-button
+                      label="Limpiar"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
+                    />
+                  }
+                </div>
+                <div class="flex flex-col gap-3">
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Fecha Desde</label>
+                    <p-datePicker
+                      [(ngModel)]="dateFrom"
+                      dateFormat="dd/mm/yy"
+                      [showIcon]="true"
+                      styleClass="w-full"
+                      (onSelect)="clearFilters(); clearFilters()"
+                      (onSelect)="dateFrom() ? null : null"
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Fecha Hasta</label>
+                    <p-datePicker
+                      [(ngModel)]="dateTo"
+                      dateFormat="dd/mm/yy"
+                      [showIcon]="true"
+                      styleClass="w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </p-popover>
+          </div>
+          <p-button
+            label="Nueva Nota de Crédito"
+            icon="pi pi-plus"
+            (onClick)="onCreate()"
+            severity="contrast"
+            styleClass="font-medium w-full sm:w-auto"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-loading-spinner message="Cargando notas de crédito..." />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-file"
           title="No hay notas de crédito registradas"
@@ -25,84 +97,6 @@
         />
       </app-content-card>
     } @else {
-      <app-list-container>
-        <div class="px-4 sm:px-6 py-4">
-          <div
-            class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
-          >
-            <div class="flex gap-2 items-center w-full sm:w-auto">
-              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                  #searchInput
-                  pInputText
-                  type="text"
-                  [value]="searchTerm()"
-                  (input)="onSearch(searchInput.value)"
-                  placeholder="Buscar nota de crédito..."
-                  class="w-full"
-                />
-              </p-iconField>
-              <p-button
-                #filterBtn
-                icon="pi pi-filter"
-                [outlined]="true"
-                severity="secondary"
-                (onClick)="filterPopover.toggle($event)"
-                pTooltip="Filtros"
-                [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-                badgeSeverity="contrast"
-              />
-              <p-popover #filterPopover>
-                <div class="flex flex-col gap-4 p-1 min-w-[280px]">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold text-sm">Filtros</span>
-                    @if (activeFilterCount() > 0) {
-                      <p-button
-                        label="Limpiar"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        (onClick)="clearFilters()"
-                      />
-                    }
-                  </div>
-                  <div class="flex flex-col gap-3">
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Fecha Desde</label>
-                      <p-datePicker
-                        [(ngModel)]="dateFrom"
-                        dateFormat="dd/mm/yy"
-                        [showIcon]="true"
-                        styleClass="w-full"
-                        (onSelect)="clearFilters(); clearFilters()"
-                        (onSelect)="dateFrom() ? null : null"
-                      />
-                    </div>
-                    <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Fecha Hasta</label>
-                      <p-datePicker
-                        [(ngModel)]="dateTo"
-                        dateFormat="dd/mm/yy"
-                        [showIcon]="true"
-                        styleClass="w-full"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </p-popover>
-            </div>
-            <p-button
-              label="Nueva Nota de Crédito"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-              severity="contrast"
-              styleClass="font-medium w-full sm:w-auto"
-            />
-          </div>
-        </div>
-      </app-list-container>
-
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
           @if (loading()) {
@@ -147,24 +141,7 @@
                       <div class="font-medium">{{ creditNote.amount | number: '1.2-2' }}</div>
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onDetail(creditNote)"
-                          pTooltip="Ver detalle"
-                        />
-                        <p-button
-                          icon="pi pi-trash"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="danger"
-                          (onClick)="onDelete(creditNote)"
-                          pTooltip="Eliminar"
-                        />
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(creditNote)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -225,20 +202,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onDetail(creditNote)"
-                  />
-                  <p-button
-                    icon="pi pi-trash"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    (onClick)="onDelete(creditNote)"
-                  />
+                  <app-list-action-buttons [actions]="actionsFor(creditNote)" />
                 </div>
               </div>
             }

@@ -28,6 +28,7 @@ import { CategoryApiService } from '@features/categories/services/api/category-a
 import { CategoryList } from '@features/categories/models/interfaces';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
 import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { SearchFieldComponent } from '@shared/components/ui';
 
 const PAGE_SIZE = 10;
 
@@ -61,6 +62,7 @@ export interface ProductSelection {
     DecimalPipe,
     SelectModule,
     WarehouseStockPopoverComponent,
+    SearchFieldComponent,
   ],
   templateUrl: './product-picker-dialog.component.html',
 })
