@@ -21,12 +21,19 @@ import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/users/models/enums';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui';
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerFilters } from '@features/customers/services/api/customer-api.service';
 import { CustomerList } from '@features/customers/models/interfaces';
@@ -35,6 +42,8 @@ import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,
 } from '@features/customers/data/venezuela-geo.data';
+import { ChangePortalPasswordDialogComponent } from '@features/customers/components';
+import { CUSTOMER_ERROR_MESSAGES, CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages';
 
 @Component({
   selector: 'app-customers-list-page',
@@ -57,7 +66,10 @@ import {
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
+    SearchFieldComponent,
     ListContainerComponent,
+    ListActionButtonsComponent,
+    ChangePortalPasswordDialogComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
   ],
@@ -66,6 +78,7 @@ import {
 })
 export class CustomersListPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);
+  private authService = inject(AuthService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
@@ -85,6 +98,9 @@ export class CustomersListPageComponent implements OnInit {
   filterPortalAccess = signal<string>('');
   filterState = signal<string>('');
   filterMunicipality = signal<string>('');
+
+  passwordCustomer = signal<CustomerList | null>(null);
+  showPasswordDialog = signal(false);
 
   activeFilterCount = computed(() => {
     let count = 0;
@@ -238,6 +254,56 @@ export class CustomersListPageComponent implements OnInit {
     this.router.navigate(['/customers', customer.id, 'edit']);
   }
 
+  onViewBalance(customer: CustomerList): void {
+    if (!this.authService.hasModulePermission(BusinessModule.FINANCE)) return;
+    this.router.navigate(['/customers', customer.id, 'balance']);
+  }
+
+  actionsFor(customer: CustomerList): ListAction[] {
+    const actions: ListAction[] = [
+      {
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(customer),
+      },
+      {
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(customer),
+      },
+    ];
+
+    if (this.authService.hasModulePermission(BusinessModule.FINANCE)) {
+      actions.push({
+        label: 'Ver saldo',
+        icon: 'pi pi-wallet',
+        command: () => this.onViewBalance(customer),
+      });
+    }
+
+    actions.push({
+      label: 'Cambiar contraseña',
+      icon: 'pi pi-key',
+      command: () => this.openPasswordDialog(customer),
+    });
+
+    if (customer.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(customer),
+      });
+    }
+
+    return actions;
+  }
+
+  openPasswordDialog(customer: CustomerList): void {
+    this.passwordCustomer.set(customer);
+    this.showPasswordDialog.set(true);
+  }
+
   onDelete(customer: CustomerList): void {
     this.confirmationService.confirm({
       message: `¿Está seguro de que desea eliminar el cliente "${customer.legalName}"?`,
@@ -249,20 +315,10 @@ export class CustomersListPageComponent implements OnInit {
       accept: () => {
         this.service.delete(customer.id).subscribe({
           next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Cliente eliminado exitosamente',
-              life: 3000,
-            });
+            this.messageService.add(CUSTOMER_SUCCESS_MESSAGES.deleted);
           },
           error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el cliente. Por favor, intente nuevamente.',
-              life: 5000,
-            });
+            this.messageService.add(CUSTOMER_ERROR_MESSAGES.delete);
           },
         });
       },

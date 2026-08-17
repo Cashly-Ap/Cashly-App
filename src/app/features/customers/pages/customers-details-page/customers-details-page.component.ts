@@ -1,12 +1,9 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { Popover } from 'primeng/popover';
 import {
+  DetailActionsMenuComponent,
   DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
@@ -27,24 +24,15 @@ import {
 } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
-
-const PASSWORD_MIN_LENGTH = 8;
-const PASSWORD_MAX_LENGTH = 100;
-const UPPERCASE_PATTERN = /[A-Z]/;
-const LOWERCASE_PATTERN = /[a-z]/;
-const DIGIT_PATTERN = /[0-9]/;
-const SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+import { ChangePortalPasswordDialogComponent } from '@features/customers/components';
 
 @Component({
   selector: 'app-customers-details-page',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ButtonModule,
-    DialogModule,
-    InputTextModule,
-    Popover,
+    DetailActionsMenuComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
@@ -53,6 +41,7 @@ const SPECIAL_CHAR_PATTERN = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
     PageHeaderComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
+    ChangePortalPasswordDialogComponent,
   ],
   templateUrl: './customers-details-page.component.html',
 })
@@ -68,12 +57,6 @@ export class CustomersDetailsPageComponent implements OnInit {
   customer = signal<CustomerDetails | null>(null);
   loading = signal(false);
   showPasswordDialog = signal(false);
-  newPassword = signal('');
-  confirmPassword = signal('');
-  changePasswordLoading = signal(false);
-
-  passwordTouched = signal(false);
-  confirmPasswordTouched = signal(false);
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
   warehouseAccessLoading = signal(false);
@@ -84,30 +67,6 @@ export class CustomersDetailsPageComponent implements OnInit {
     const hasBalanceTracking = (currentCustomer?.creditLimit ?? 0) > 0;
     return hasFinancePermission && hasBalanceTracking;
   });
-
-  passwordError = computed(() => {
-    const value = this.newPassword();
-    if (!value) return 'La contraseña es requerida';
-    if (value === this.customer()?.rif) return '';
-    if (value.length < PASSWORD_MIN_LENGTH)
-      return `La contraseña debe tener al menos ${PASSWORD_MIN_LENGTH} caracteres`;
-    if (value.length > PASSWORD_MAX_LENGTH)
-      return `La contraseña no puede exceder ${PASSWORD_MAX_LENGTH} caracteres`;
-    if (!UPPERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra mayúscula';
-    if (!LOWERCASE_PATTERN.test(value)) return 'La contraseña debe contener: letra minúscula';
-    if (!DIGIT_PATTERN.test(value)) return 'La contraseña debe contener: número';
-    if (!SPECIAL_CHAR_PATTERN.test(value)) return 'La contraseña debe contener: carácter especial';
-    return '';
-  });
-
-  confirmPasswordError = computed(() => {
-    const confirm = this.confirmPassword();
-    if (!confirm) return 'La confirmación de contraseña es requerida';
-    if (confirm !== this.newPassword()) return 'Las contraseñas no coinciden';
-    return '';
-  });
-
-  isPasswordFormValid = computed(() => !this.passwordError() && !this.confirmPasswordError());
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -171,47 +130,6 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate(['/customers']);
-  }
-
-  onChangePortalPassword(): void {
-    this.passwordTouched.set(true);
-    this.confirmPasswordTouched.set(true);
-
-    if (!this.isPasswordFormValid()) return;
-
-    const id = this.customer()?.id;
-    if (!id) return;
-
-    this.changePasswordLoading.set(true);
-    this.service.changePortalPassword(id, this.newPassword()).subscribe({
-      next: () => {
-        this.changePasswordLoading.set(false);
-        this.showPasswordDialog.set(false);
-        this.resetPasswordDialog();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Contraseña del portal actualizada exitosamente',
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.changePasswordLoading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cambiar la contraseña. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  resetPasswordDialog(): void {
-    this.newPassword.set('');
-    this.confirmPassword.set('');
-    this.passwordTouched.set(false);
-    this.confirmPasswordTouched.set(false);
   }
 
   getTypeLabel(type: string): string {

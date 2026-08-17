@@ -20,40 +20,31 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              <p-button
-                label="Acciones"
-                icon="pi pi-ellipsis-v"
-                severity="contrast"
-                (click)="actionsPopover.toggle($event)"
-                styleClass="w-full sm:w-auto"
-              />
-              <p-popover #actionsPopover>
-                <div class="flex flex-col gap-1 p-1 min-w-44">
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (showBalance()) {
                   <p-button
-                    label="Editar"
-                    icon="pi pi-pencil"
+                    label="Ver Saldo"
+                    icon="pi pi-wallet"
                     [link]="true"
-                    (click)="actionsPopover.hide(); onEdit()"
+                    (onClick)="actionsMenu.hide(); onViewBalance()"
                     styleClass="w-full justify-start text-left text-sm"
                   />
-                  @if (showBalance()) {
-                    <p-button
-                      label="Ver Saldo"
-                      icon="pi pi-wallet"
-                      [link]="true"
-                      (click)="actionsPopover.hide(); onViewBalance()"
-                      styleClass="w-full justify-start text-left text-sm"
-                    />
-                  }
-                  <p-button
-                    label="Cambiar Contraseña"
-                    icon="pi pi-key"
-                    [link]="true"
-                    (click)="actionsPopover.hide(); showPasswordDialog.set(true)"
-                    styleClass="w-full justify-start text-left text-sm"
-                  />
-                </div>
-              </p-popover>
+                }
+                <p-button
+                  label="Cambiar Contraseña"
+                  icon="pi pi-key"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); showPasswordDialog.set(true)"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
           <div class="p-4 sm:p-6">
@@ -243,68 +234,12 @@
   </div>
 </div>
 
-<p-dialog
-  header="Cambiar Contraseña del Portal"
-  [visible]="showPasswordDialog()"
-  (visibleChange)="showPasswordDialog.set($event)"
-  [modal]="true"
-  [style]="{ width: '400px' }"
-  [draggable]="false"
->
-  <div class="flex flex-col gap-4 py-2">
-    <p class="text-sm text-surface-600 dark:text-surface-400">
-      Ingresa la nueva contraseña para el acceso al portal del cliente.
-    </p>
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium">Nueva contraseña</label>
-      <input
-        pInputText
-        type="password"
-        [ngModel]="newPassword()"
-        (ngModelChange)="newPassword.set($event)"
-        (blur)="passwordTouched.set(true)"
-        placeholder="Ingresa la nueva contraseña"
-        class="w-full"
-        [class.ng-invalid]="passwordTouched() && passwordError()"
-        [class.ng-dirty]="passwordTouched()"
-      />
-      @if (passwordTouched() && passwordError()) {
-        <small class="text-red-500 text-xs">{{ passwordError() }}</small>
-      }
-    </div>
-    <div class="flex flex-col gap-1">
-      <label class="text-sm font-medium">Confirmar contraseña</label>
-      <input
-        pInputText
-        type="password"
-        [ngModel]="confirmPassword()"
-        (ngModelChange)="confirmPassword.set($event)"
-        (blur)="confirmPasswordTouched.set(true)"
-        placeholder="Confirma la nueva contraseña"
-        class="w-full"
-        [class.ng-invalid]="confirmPasswordTouched() && confirmPasswordError()"
-        [class.ng-dirty]="confirmPasswordTouched()"
-      />
-      @if (confirmPasswordTouched() && confirmPasswordError()) {
-        <small class="text-red-500 text-xs">{{ confirmPasswordError() }}</small>
-      }
-    </div>
-  </div>
-  <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <p-button
-        label="Cancelar"
-        [outlined]="true"
-        severity="secondary"
-        (onClick)="showPasswordDialog.set(false); resetPasswordDialog()"
-      />
-      <p-button
-        label="Guardar"
-        severity="contrast"
-        [loading]="changePasswordLoading()"
-        [disabled]="!isPasswordFormValid()"
-        (onClick)="onChangePortalPassword()"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+@if (customer(); as currentCustomer) {
+  <app-change-portal-password-dialog
+    [customerId]="currentCustomer.id"
+    [customerName]="currentCustomer.legalName"
+    [customerRif]="currentCustomer.rif"
+    [visible]="showPasswordDialog()"
+    (visibleChange)="showPasswordDialog.set($event)"
+  />
+}

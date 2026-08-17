@@ -17,4 +17,10 @@ export const CUSTOMER_SUCCESS_MESSAGES = {
     detail: 'Cliente eliminado exitosamente',
     life: 3000,
   },
+  portalPasswordChanged: {
+    severity: 'success' as const,
+    summary: 'Éxito',
+    detail: 'Contraseña del portal actualizada exitosamente',
+    life: 3000,
+  },
 };

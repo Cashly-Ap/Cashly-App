@@ -23,6 +23,12 @@ export const CUSTOMER_ERROR_MESSAGES = {
     detail: 'Error al eliminar el cliente. Por favor, intente nuevamente.',
     life: 5000,
   },
+  changePortalPassword: {
+    severity: 'error' as const,
+    summary: 'Error',
+    detail: 'Error al cambiar la contraseña. Por favor, intente nuevamente.',
+    life: 5000,
+  },
 };
 
 export const CUSTOMER_HTTP_ERRORS: Record<number, string> = {

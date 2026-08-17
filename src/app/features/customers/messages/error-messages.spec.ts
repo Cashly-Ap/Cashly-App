@@ -6,7 +6,13 @@ import {
 
 describe('CUSTOMER_ERROR_MESSAGES', () => {
   it('should have create, update, load, and delete keys', () => {
-    expect(Object.keys(CUSTOMER_ERROR_MESSAGES)).toEqual(['create', 'update', 'load', 'delete']);
+    expect(Object.keys(CUSTOMER_ERROR_MESSAGES)).toEqual([
+      'create',
+      'update',
+      'load',
+      'delete',
+      'changePortalPassword',
+    ]);
   });
 
   it('should have correct structure for each message', () => {

@@ -16,18 +16,12 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
-            <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[300px]">
-              <p-inputIcon styleClass="pi pi-search" />
-              <input
-                #searchInput
-                pInputText
-                type="text"
-                [value]="searchTerm()"
-                (input)="onSearch(searchInput.value)"
-                placeholder="Buscar por nombre, alias o RIF..."
-                class="w-full"
-              />
-            </p-iconField>
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              placeholder="Buscar por nombre, alias o RIF..."
+              (search)="onSearch($event)"
+            />
             <p-button
               #filterBtn
               icon="pi pi-filter"
@@ -203,7 +197,7 @@
                     <th class="w-28">
                       <div class="font-semibold">Portal</div>
                     </th>
-                    <th class="w-40">
+                    <th class="w-20">
                       <div class="font-semibold text-center">Acciones</div>
                     </th>
                   </tr>
@@ -238,33 +232,11 @@
                       />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(customer)"
-                          pTooltip="Ver"
+                      <div class="flex justify-center">
+                        <app-list-action-buttons
+                          [actions]="actionsFor(customer)"
+                          ariaLabel="Abrir acciones del cliente"
                         />
-                        <p-button
-                          icon="pi pi-pencil"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onEdit(customer)"
-                          pTooltip="Editar"
-                        />
-                        @if (customer.deletable) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(customer)"
-                            pTooltip="Eliminar"
-                          />
-                        }
                       </div>
                     </td>
                   </tr>
@@ -334,31 +306,12 @@
                   </div>
                 </div>
                 <div
-                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                  class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(customer)"
+                  <app-list-action-buttons
+                    [actions]="actionsFor(customer)"
+                    ariaLabel="Abrir acciones del cliente"
                   />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onEdit(customer)"
-                  />
-                  @if (customer.deletable) {
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(customer)"
-                    />
-                  }
                 </div>
               </div>
             }
@@ -380,3 +333,13 @@
   </div>
 </div>
 <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
+
+@if (passwordCustomer(); as customer) {
+  <app-change-portal-password-dialog
+    [customerId]="customer.id"
+    [customerName]="customer.legalName"
+    [customerRif]="customer.rif"
+    [visible]="showPasswordDialog()"
+    (visibleChange)="showPasswordDialog.set($event)"
+  />
+}

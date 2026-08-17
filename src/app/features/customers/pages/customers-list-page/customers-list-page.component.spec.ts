@@ -8,12 +8,17 @@ import { CustomersListPageComponent } from '@features/customers/pages/customers-
 import { CustomerApplicationService } from '@features/customers/services/application';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerList } from '@features/customers/models/interfaces';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/users/models/enums';
 
 describe('CustomersListPageComponent', () => {
   let component: CustomersListPageComponent;
   let fixture: ComponentFixture<CustomersListPageComponent>;
   let mockService: Partial<CustomerApplicationService>;
   let router: Router;
+  const mockAuthService = {
+    hasModulePermission: vi.fn().mockReturnValue(true),
+  };
 
   const mockCustomer: CustomerList = {
     id: 'uuid-001',
@@ -23,12 +28,16 @@ describe('CustomersListPageComponent', () => {
     rif: 'J-12345678-9',
     type: CustomerType.BUSINESS,
     active: true,
+    portalAccess: true,
+    deletable: true,
   };
 
   beforeEach(async () => {
+    mockAuthService.hasModulePermission.mockReturnValue(true);
     mockService = {
       loadAll: vi.fn().mockReturnValue(of([mockCustomer])),
       delete: vi.fn().mockReturnValue(of(undefined)),
+      changePortalPassword: vi.fn().mockReturnValue(of(undefined)),
       customers: signal([mockCustomer]),
       loading: signal(false),
       error: signal(null),
@@ -40,6 +49,7 @@ describe('CustomersListPageComponent', () => {
       providers: [
         provideRouter([]),
         { provide: CustomerApplicationService, useValue: mockService },
+        { provide: AuthService, useValue: mockAuthService },
         ConfirmationService,
         MessageService,
       ],
@@ -104,6 +114,40 @@ describe('CustomersListPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockCustomer);
     expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'edit']);
+  });
+
+  it('should navigate to customer balance when finance access is available', () => {
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    component.onViewBalance(mockCustomer);
+
+    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.FINANCE);
+    expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'balance']);
+  });
+
+  it('should expose every available action for a deletable customer', () => {
+    expect(component.actionsFor(mockCustomer).map((action) => action.label)).toEqual([
+      'Ver detalle',
+      'Editar',
+      'Ver saldo',
+      'Cambiar contraseña',
+      'Eliminar',
+    ]);
+  });
+
+  it('should hide delete and balance actions when they are unavailable', () => {
+    mockAuthService.hasModulePermission.mockReturnValue(false);
+
+    expect(
+      component.actionsFor({ ...mockCustomer, deletable: false }).map((action) => action.label),
+    ).toEqual(['Ver detalle', 'Editar', 'Cambiar contraseña']);
+  });
+
+  it('should open the password dialog for the selected customer', () => {
+    component.openPasswordDialog(mockCustomer);
+
+    expect(component.passwordCustomer()).toEqual(mockCustomer);
+    expect(component.showPasswordDialog()).toBe(true);
   });
 
   it('should return correct type label', () => {
