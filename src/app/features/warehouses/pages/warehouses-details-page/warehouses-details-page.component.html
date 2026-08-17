@@ -1,314 +1,112 @@
 <div class="min-h-screen">
-  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+  <div class="mx-auto max-w-5xl px-4 py-4 sm:px-6 sm:py-6">
     @if (loading()) {
       <app-loading-spinner />
     }
-    @if (warehouse(); as w) {
+    @if (warehouse(); as currentWarehouse) {
       <div class="flex flex-col gap-6">
-        <app-page-header
-          title="Detalles del Almacén"
-          subtitle="Información, stock e historial de movimientos"
-        />
+        <app-page-header title="Detalles del Almacén" subtitle="Información general del almacén" />
 
         <app-details-card>
-          <app-details-card-header [title]="w.name" [subtitle]="w.state + ' · ' + w.municipality">
+          <app-details-card-header
+            [title]="currentWarehouse.name"
+            [subtitle]="currentWarehouse.state + ' · ' + currentWarehouse.municipality"
+          >
             <div actions class="flex gap-3">
               <p-button
                 label="Volver"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
-                styleClass="w-full sm:w-auto"
               />
-              <p-button
-                label="Editar"
-                icon="pi pi-pencil"
-                severity="contrast"
-                (onClick)="onEdit()"
-                styleClass="w-full sm:w-auto"
-              />
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  label="Editar"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentWarehouse.deletable) {
+                  <p-button
+                    label="Eliminar"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                <p-button
+                  label="Registrar entrada"
+                  icon="pi pi-arrow-circle-down"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onRegisterEntry()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  label="Registrar salida"
+                  icon="pi pi-arrow-circle-up"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onRegisterExit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  label="Ver stock"
+                  icon="pi pi-box"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onViewStock()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  label="Historial de movimientos"
+                  icon="pi pi-history"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onViewMovements()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
+
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Nombre" [value]="w.name" />
-              <app-details-info-field label="Estado" [value]="w.state" />
-              <app-details-info-field label="Municipio" [value]="w.municipality" />
-              <app-details-info-field label="Dirección" [value]="w.address || '—'" />
-              <app-details-info-field label="Estatus" type="badge"
-                ><app-status-badge [active]="w.active"
-              /></app-details-info-field>
+              <app-details-info-field label="Nombre" [value]="currentWarehouse.name" />
+              <app-details-info-field label="Estado" [value]="currentWarehouse.state" />
+              <app-details-info-field label="Municipio" [value]="currentWarehouse.municipality" />
+              <app-details-info-field label="Dirección" [value]="currentWarehouse.address || '—'" />
+              <app-details-info-field label="Estatus" type="badge">
+                <app-status-badge [active]="currentWarehouse.active" />
+              </app-details-info-field>
               <app-details-info-field
                 label="Fecha de Creación"
-                [value]="(w.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [value]="(currentWarehouse.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
                 label="Última Actualización"
-                [value]="(w.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [value]="(currentWarehouse.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
               />
-              @if (w.description) {
+              @if (currentWarehouse.description) {
                 <app-details-info-field
                   class="col-span-full"
                   label="Descripción"
-                  [value]="w.description"
+                  [value]="currentWarehouse.description"
                 />
               }
             </app-details-info-grid>
           </div>
         </app-details-card>
-
-        <app-details-card>
-          <app-details-card-header title="Stock Actual">
-            <div actions>
-              <span class="text-sm text-surface-500 dark:text-surface-400">
-                {{ filteredStock().length }} producto{{ filteredStock().length !== 1 ? 's' : '' }}
-              </span>
-            </div>
-          </app-details-card-header>
-          <div class="p-4 sm:p-6 flex flex-col gap-4">
-            <div class="relative">
-              <i
-                class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-surface-400 text-sm"
-              ></i>
-              <input
-                pInputText
-                type="text"
-                placeholder="Buscar producto..."
-                class="w-full pl-9 text-sm"
-                [ngModel]="stockSearch()"
-                (ngModelChange)="stockSearch.set($event); onStockSearchChange()"
-              />
-            </div>
-
-            @if (filteredStock().length === 0) {
-              <p class="text-sm text-surface-400 dark:text-surface-500 py-4 text-center">
-                {{
-                  stockSearch()
-                    ? 'Sin resultados para "' + stockSearch() + '"'
-                    : 'Sin stock registrado'
-                }}
-              </p>
-            } @else {
-              <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                  <thead>
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th
-                        class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400"
-                      >
-                        Producto
-                      </th>
-                      <th
-                        class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400"
-                      >
-                        Cantidad
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (item of pagedStock(); track item.productId) {
-                      <tr
-                        class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-900 transition-colors"
-                      >
-                        <td class="px-3 py-3">{{ item.productName }}</td>
-                        <td class="px-3 py-3 text-right font-mono font-medium">
-                          {{ item.quantity | number: '1.0-2' }}
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
-
-              @if (stockTotalPages() > 1) {
-                <div class="flex items-center justify-between pt-2">
-                  <span class="text-xs text-surface-400 dark:text-surface-500">
-                    Página {{ stockPage() + 1 }} de {{ stockTotalPages() }}
-                  </span>
-                  <div class="flex gap-2">
-                    <p-button
-                      icon="pi pi-chevron-left"
-                      [outlined]="true"
-                      size="small"
-                      [disabled]="stockPage() === 0"
-                      (onClick)="onStockPageChange(stockPage() - 1)"
-                    />
-                    <p-button
-                      icon="pi pi-chevron-right"
-                      [outlined]="true"
-                      size="small"
-                      [disabled]="stockPage() >= stockTotalPages() - 1"
-                      (onClick)="onStockPageChange(stockPage() + 1)"
-                    />
-                  </div>
-                </div>
-              }
-            }
-          </div>
-        </app-details-card>
-
-        <app-details-card>
-          <app-details-card-header title="Historial de Movimientos">
-            <div actions>
-              <p-button
-                [label]="showMovements() ? 'Ocultar historial' : 'Ver historial'"
-                [icon]="showMovements() ? 'pi pi-chevron-up' : 'pi pi-history'"
-                [outlined]="true"
-                size="small"
-                (onClick)="onToggleMovements()"
-              />
-            </div>
-          </app-details-card-header>
-
-          @if (showMovements()) {
-            <div class="p-4 sm:p-6 flex flex-col gap-4">
-              <div class="flex items-center gap-3">
-                <p-select
-                  [options]="movementTypeOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  [ngModel]="movementTypeFilter()"
-                  (onChange)="movementTypeFilter.set($event.value); onMovementTypeChange()"
-                  placeholder="Filtrar por tipo"
-                  styleClass="text-sm w-56"
-                />
-                <span class="text-xs text-surface-400 dark:text-surface-500">
-                  {{ movementsTotalElements() }} movimiento{{
-                    movementsTotalElements() !== 1 ? 's' : ''
-                  }}
-                </span>
-              </div>
-
-              @if (movementsLoading()) {
-                <app-loading-spinner />
-              } @else if (movementsList().length === 0) {
-                <p class="text-sm text-surface-400 dark:text-surface-500 py-4 text-center">
-                  Sin movimientos registrados
-                </p>
-              } @else {
-                <div class="overflow-x-auto">
-                  <table class="w-full text-sm">
-                    <thead>
-                      <tr class="border-b border-surface-200 dark:border-surface-700">
-                        <th
-                          class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400"
-                        >
-                          Producto
-                        </th>
-                        <th
-                          class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Tipo
-                        </th>
-                        <th
-                          class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Referencia
-                        </th>
-                        <th
-                          class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Cantidad
-                        </th>
-                        <th
-                          class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Stock anterior
-                        </th>
-                        <th
-                          class="text-right px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Stock nuevo
-                        </th>
-                        <th
-                          class="text-left px-3 py-2 font-medium text-surface-600 dark:text-surface-400 whitespace-nowrap"
-                        >
-                          Fecha
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @for (mov of movementsList(); track mov.id) {
-                        <tr
-                          class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-900 transition-colors"
-                        >
-                          <td class="px-3 py-3">
-                            <div class="font-medium">{{ mov.productName }}</div>
-                            <div class="text-xs text-surface-400">{{ mov.productCode }}</div>
-                          </td>
-                          <td class="px-3 py-3 whitespace-nowrap">
-                            <span [class]="getMovementTypeBadgeClass(mov.movementType)">
-                              {{ getMovementTypeLabel(mov.movementType) }}
-                            </span>
-                          </td>
-                          <td class="px-3 py-3 whitespace-nowrap">
-                            @if (mov.referenceType) {
-                              <div class="flex flex-col gap-1">
-                                <span [class]="getReferenceTypeBadgeClass(mov.referenceType)">
-                                  {{ getReferenceTypeLabel(mov.referenceType) }}
-                                </span>
-                                @if (mov.referenceNumber) {
-                                  <div
-                                    class="text-surface-500 dark:text-surface-400 font-mono text-xs"
-                                  >
-                                    {{ mov.referenceNumber }}
-                                  </div>
-                                }
-                              </div>
-                            } @else {
-                              <span class="text-surface-400 dark:text-surface-500 text-xs">—</span>
-                            }
-                          </td>
-                          <td class="px-3 py-3 text-right font-mono font-medium whitespace-nowrap">
-                            {{ mov.quantity | number: '1.0-2' }}
-                          </td>
-                          <td
-                            class="px-3 py-3 text-right font-mono text-surface-500 whitespace-nowrap"
-                          >
-                            {{ mov.previousStock | number: '1.0-2' }}
-                          </td>
-                          <td
-                            class="px-3 py-3 text-right font-mono text-surface-500 whitespace-nowrap"
-                          >
-                            {{ mov.newStock | number: '1.0-2' }}
-                          </td>
-                          <td class="px-3 py-3 text-surface-500 whitespace-nowrap">
-                            {{ mov.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                          </td>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                </div>
-
-                @if (movementsTotalPages() > 1) {
-                  <div class="flex items-center justify-between pt-2">
-                    <span class="text-xs text-surface-400 dark:text-surface-500">
-                      Página {{ movementsPage() + 1 }} de {{ movementsTotalPages() }}
-                    </span>
-                    <div class="flex gap-2">
-                      <p-button
-                        icon="pi pi-chevron-left"
-                        [outlined]="true"
-                        size="small"
-                        [disabled]="movementsPage() === 0"
-                        (onClick)="onMovementsPageChange(movementsPage() - 1)"
-                      />
-                      <p-button
-                        icon="pi pi-chevron-right"
-                        [outlined]="true"
-                        size="small"
-                        [disabled]="movementsPage() >= movementsTotalPages() - 1"
-                        (onClick)="onMovementsPageChange(movementsPage() + 1)"
-                      />
-                    </div>
-                  </div>
-                }
-              }
-            </div>
-          }
-        </app-details-card>
       </div>
     }
   </div>
 </div>
+
+<p-confirmDialog styleClass="max-w-md" />
+
+<app-warehouse-stock-operation-dialog
+  [warehouseId]="warehouse()?.id ?? null"
+  [warehouseName]="warehouse()?.name ?? ''"
+  [operation]="selectedOperation()"
+  [visible]="operationDialogVisible()"
+  (visibleChange)="operationDialogVisible.set($event)"
+/>

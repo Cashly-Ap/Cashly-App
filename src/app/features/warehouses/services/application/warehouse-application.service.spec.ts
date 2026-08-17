@@ -347,7 +347,7 @@ describe('WarehouseApplicationService', () => {
   describe('getStock()', () => {
     it('should delegate to api.getStock', () => {
       const mockStock: WarehouseStockItem[] = [
-        { productId: 'p1', productName: 'Motor 10HP', unit: '', quantity: 50 },
+        { productId: 'p1', productName: 'Motor 10HP', composite: false, quantity: 50 },
       ];
       mockApiService.getStock.mockReturnValue(of(mockStock));
 

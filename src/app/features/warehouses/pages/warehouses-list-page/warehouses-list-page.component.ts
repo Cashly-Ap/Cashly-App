@@ -1,241 +1,119 @@
 import {
-  Component,
-  inject,
-  OnInit,
-  signal,
-  computed,
   ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  FormBuilder,
-  FormArray,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
-import { of, catchError } from 'rxjs';
-import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { PaginatorModule } from 'primeng/paginator';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorModule } from 'primeng/paginator';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
+import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
-import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
-import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
-import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
-import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import {
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+} from '@shared/components/list';
+import {
+  ContentCardComponent,
+  EmptyStateComponent,
+  LoadingSpinnerComponent,
+  SearchFieldComponent,
+  StatusBadgeComponent,
+} from '@shared/components/ui';
+import {
+  WarehouseStockOperation,
+  WarehouseStockOperationDialogComponent,
+} from '@features/warehouses/components';
+import { WarehouseList } from '@features/warehouses/models/interfaces';
 import { WarehouseFilters } from '@features/warehouses/services/api/warehouse-api.service';
-import { WarehouseList, WarehouseStockItem } from '@features/warehouses/models/interfaces';
-import { ProductApplicationService } from '@features/products/services/application';
-import { ProductDetails } from '@features/products/models/interfaces';
+import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import {
+  WAREHOUSE_ERROR_MESSAGES,
+  WAREHOUSE_SUCCESS_MESSAGES,
+} from '@features/warehouses/messages';
 
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
-    TableModule,
     ButtonModule,
-    InputTextModule,
-    InputNumberModule,
-    PaginatorModule,
+    ConfirmDialogModule,
     IconFieldModule,
     InputIconModule,
-    ConfirmDialogModule,
-    DialogModule,
+    InputTextModule,
+    PaginatorModule,
     PopoverModule,
     SelectModule,
+    TableModule,
     TooltipModule,
-    ContentCardComponent,
-    LoadingSpinnerComponent,
-    EmptyStateComponent,
+    ListActionButtonsComponent,
     ListContainerComponent,
+    ContentCardComponent,
+    EmptyStateComponent,
+    LoadingSpinnerComponent,
+    SearchFieldComponent,
     StatusBadgeComponent,
-    CurrencyPipe,
+    WarehouseStockOperationDialogComponent,
   ],
-  templateUrl: './warehouses-list-page.component.html',
   providers: [ConfirmationService],
+  templateUrl: './warehouses-list-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehousesListPageComponent implements OnInit {
-  private service = inject(WarehouseApplicationService);
-  private productService = inject(ProductApplicationService);
-  private router = inject(Router);
-  private confirmationService = inject(ConfirmationService);
-  private messageService = inject(MessageService);
-  private fb = inject(FormBuilder);
+  private readonly service = inject(WarehouseApplicationService);
+  private readonly router = inject(Router);
+  private readonly confirmationService = inject(ConfirmationService);
+  private readonly messageService = inject(MessageService);
 
-  warehouses = this.service.warehouses;
-  loading = this.service.loading;
-  totalElements = this.service.totalElements;
-
-  searchTerm = signal('');
-  first = signal(0);
-  rows = signal(10);
-  orderBy = signal('name');
-  orderDir = signal<'asc' | 'desc'>('asc');
-  filterActive = signal('true');
-
-  showEntryDialog = signal(false);
-  showExitDialog = signal(false);
-  entryLoading = signal(false);
-  exitLoading = signal(false);
-  stockLoading = signal(false);
-  selectedWarehouseId = signal<string | null>(null);
-  cachedStock = signal<WarehouseStockItem[]>([]);
-
-  entryForm: FormGroup = this.fb.group({ lines: this.fb.array([this.createEntryLine()]) });
-  exitForm: FormGroup = this.fb.group({ lines: this.fb.array([this.createExitLine()]) });
-
-  get entryLines(): FormArray {
-    return this.entryForm.get('lines') as FormArray;
-  }
-
-  get exitLines(): FormArray {
-    return this.exitForm.get('lines') as FormArray;
-  }
-
-  private compositeDetailsCache = new Map<string, ProductDetails>();
-
-  productOptions = computed(() =>
-    this.productService.simpleProducts().map((p) => ({
-      value: p.id,
-      label: p.composite ? `${p.name} [Compuesto]` : p.name,
-      composite: p.composite,
-    })),
-  );
-
-  exitProductOptions = computed(() => {
-    const stockMap = new Map(this.cachedStock().map((s) => [s.productId, s.quantity]));
-    return this.productService
-      .simpleProducts()
-      .filter((p) => (stockMap.get(p.id) ?? 0) > 0)
-      .map((p) => ({
-        value: p.id,
-        label: p.composite ? `${p.name} [Compuesto]` : p.name,
-        composite: p.composite,
-      }));
-  });
-
-  isProductComposite(productId: string | null): boolean {
-    if (!productId) return false;
-    return this.productService.simpleProducts().find((p) => p.id === productId)?.composite ?? false;
-  }
-
-  onEntryProductSelected(productId: string | null): void {
-    if (!productId || !this.isProductComposite(productId)) return;
-    if (this.compositeDetailsCache.has(productId)) return;
-    this.productService.getById(productId).subscribe({
-      next: (details) => this.compositeDetailsCache.set(productId, details),
-    });
-  }
-
-  getComponentStockImpact(
-    productId: string | null,
-    quantity: number | null,
-  ): { name: string; current: number; resulting: number }[] {
-    if (!productId || !quantity) return [];
-    const details = this.compositeDetailsCache.get(productId);
-    if (!details?.composite) return [];
-    return details.components.map((c) => {
-      const current = this.getCurrentStock(c.componentProductId);
-      return {
-        name: c.componentProductName,
-        current,
-        resulting: current - c.quantity * quantity,
-      };
-    });
-  }
-
-  activeFilterOptions = [
+  readonly warehouses = this.service.warehouses;
+  readonly loading = this.service.loading;
+  readonly totalElements = this.service.totalElements;
+  readonly searchTerm = signal('');
+  readonly first = signal(0);
+  readonly rows = signal(10);
+  readonly orderBy = signal('name');
+  readonly orderDir = signal<'asc' | 'desc'>('asc');
+  readonly filterActive = signal('true');
+  readonly operationDialogVisible = signal(false);
+  readonly selectedWarehouse = signal<WarehouseList | null>(null);
+  readonly selectedOperation = signal<WarehouseStockOperation>('entry');
+  readonly activeFilterOptions = [
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
 
-  showInitialLoading = computed(() => this.loading() && this.warehouses().length === 0);
-  isEmptyDatabase = computed(
+  readonly showInitialLoading = computed(() => this.loading() && this.warehouses().length === 0);
+  readonly isEmptyDatabase = computed(
     () =>
       !this.loading() &&
       this.totalElements() === 0 &&
       this.filterActive() === 'true' &&
       !this.searchTerm(),
   );
-  hasFilteredResults = computed(
+  readonly hasFilteredResults = computed(
     () =>
       !this.loading() &&
       this.totalElements() === 0 &&
       (this.filterActive() !== 'true' || !!this.searchTerm()),
   );
-  activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
+  readonly activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
 
   ngOnInit(): void {
     this.loadWithFilters();
-    this.productService.loadSimpleProducts().subscribe();
-  }
-
-  getEntrySubtotal(index: number): number {
-    const line = this.entryLines.at(index);
-    const quantity = line.get('quantity')?.value ?? 0;
-    const unitPrice = line.get('unitPrice')?.value ?? 0;
-    return quantity * unitPrice;
-  }
-
-  private createEntryLine(): FormGroup {
-    return this.fb.group({
-      productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(0.01)]],
-      unitPrice: [null],
-      notes: [''],
-    });
-  }
-
-  private createExitLine(): FormGroup {
-    return this.fb.group({
-      productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(0.01)]],
-      notes: [''],
-    });
-  }
-
-  getCurrentStock(productId: string | null): number {
-    if (!productId) return 0;
-    return this.cachedStock().find((s) => s.productId === productId)?.quantity ?? 0;
-  }
-
-  getResultingStock(productId: string | null, quantity: number | null, isEntry: boolean): number {
-    const current = this.getCurrentStock(productId);
-    const qty = quantity ?? 0;
-    return isEntry ? current + qty : current - qty;
-  }
-
-  addEntryLine(): void {
-    this.entryLines.push(this.createEntryLine());
-  }
-
-  removeEntryLine(index: number): void {
-    if (this.entryLines.length > 1) this.entryLines.removeAt(index);
-  }
-
-  addExitLine(): void {
-    this.exitLines.push(this.createExitLine());
-  }
-
-  removeExitLine(index: number): void {
-    if (this.exitLines.length > 1) this.exitLines.removeAt(index);
   }
 
   onSearch(value: string): void {
@@ -251,11 +129,11 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   onSort(event: SortEvent): void {
-    const newField = event.field ?? 'name';
-    const newDir = event.order === 1 ? 'asc' : 'desc';
-    if (newField === this.orderBy() && newDir === this.orderDir()) return;
-    this.orderBy.set(newField);
-    this.orderDir.set(newDir);
+    const field = event.field ?? 'name';
+    const direction = event.order === 1 ? 'asc' : 'desc';
+    if (field === this.orderBy() && direction === this.orderDir()) return;
+    this.orderBy.set(field);
+    this.orderDir.set(direction);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -284,140 +162,70 @@ export class WarehousesListPageComponent implements OnInit {
     this.router.navigate(['/warehouses', warehouse.id, 'edit']);
   }
 
+  onViewStock(warehouse: WarehouseList): void {
+    this.router.navigate(['/warehouses', warehouse.id, 'stock']);
+  }
+
+  onViewMovements(warehouse: WarehouseList): void {
+    this.router.navigate(['/warehouses', warehouse.id, 'movements']);
+  }
+
   onOpenEntry(warehouse: WarehouseList): void {
-    this.selectedWarehouseId.set(warehouse.id);
-    this.entryForm.setControl('lines', this.fb.array([this.createEntryLine()]));
-    this.cachedStock.set([]);
-    this.showEntryDialog.set(true);
-    this.loadCachedStock(warehouse.id);
+    this.openOperation(warehouse, 'entry');
   }
 
   onOpenExit(warehouse: WarehouseList): void {
-    this.selectedWarehouseId.set(warehouse.id);
-    this.exitForm.setControl('lines', this.fb.array([this.createExitLine()]));
-    this.cachedStock.set([]);
-    this.showExitDialog.set(true);
-    this.loadCachedStock(warehouse.id);
+    this.openOperation(warehouse, 'exit');
   }
 
-  private loadCachedStock(warehouseId: string): void {
-    this.stockLoading.set(true);
-    this.service
-      .getStock(warehouseId)
-      .pipe(catchError(() => of([])))
-      .subscribe({
-        next: (stock) => {
-          this.cachedStock.set(stock);
-          this.stockLoading.set(false);
-        },
-        error: () => this.stockLoading.set(false),
+  actionsFor(warehouse: WarehouseList): ListAction[] {
+    const actions: ListAction[] = [
+      {
+        label: 'Registrar entrada',
+        icon: 'pi pi-arrow-circle-down',
+        command: () => this.onOpenEntry(warehouse),
+      },
+      {
+        label: 'Registrar salida',
+        icon: 'pi pi-arrow-circle-up',
+        command: () => this.onOpenExit(warehouse),
+      },
+      { label: 'Ver stock', icon: 'pi pi-box', command: () => this.onViewStock(warehouse) },
+      {
+        label: 'Historial de movimientos',
+        icon: 'pi pi-history',
+        command: () => this.onViewMovements(warehouse),
+      },
+      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(warehouse) },
+      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(warehouse) },
+    ];
+    if (warehouse.deletable) {
+      actions.push({
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(warehouse),
       });
-  }
-
-  onSubmitEntry(): void {
-    if (this.entryForm.invalid) {
-      this.entryForm.markAllAsTouched();
-      return;
     }
-    const warehouseId = this.selectedWarehouseId();
-    if (!warehouseId) return;
-
-    type LineValue = {
-      productId: string;
-      quantity: number;
-      unitPrice: number | null;
-      notes: string;
-    };
-    const lines = this.entryForm.getRawValue().lines as LineValue[];
-    const items = lines.map((line) => ({
-      productId: line.productId,
-      quantity: line.quantity,
-      ...(line.unitPrice != null && line.unitPrice > 0 ? { unitPrice: line.unitPrice } : {}),
-      notes: line.notes || undefined,
-    }));
-
-    this.entryLoading.set(true);
-    this.service.addEntry(warehouseId, { items }).subscribe({
-      next: () => {
-        this.showEntryDialog.set(false);
-        this.entryLoading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Entradas registradas exitosamente',
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.entryLoading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al registrar las entradas.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onSubmitExit(): void {
-    if (this.exitForm.invalid) {
-      this.exitForm.markAllAsTouched();
-      return;
-    }
-    const warehouseId = this.selectedWarehouseId();
-    if (!warehouseId) return;
-
-    type LineValue = { productId: string; quantity: number; notes: string };
-    const lines = this.exitForm.getRawValue().lines as LineValue[];
-    const items = lines.map((line) => ({
-      productId: line.productId,
-      quantity: line.quantity,
-      notes: line.notes || undefined,
-    }));
-
-    this.exitLoading.set(true);
-    this.service.addExit(warehouseId, { items }).subscribe({
-      next: () => {
-        this.showExitDialog.set(false);
-        this.exitLoading.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Salidas registradas exitosamente',
-          life: 3000,
-        });
-      },
-      error: () => {
-        this.exitLoading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al registrar las salidas.',
-          life: 5000,
-        });
-      },
-    });
+    return actions;
   }
 
   onToggleActive(warehouse: WarehouseList): void {
     this.service.toggleActive(warehouse.id, !warehouse.active).subscribe({
-      next: () => {
+      next: () =>
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: `Almacén ${!warehouse.active ? 'activado' : 'desactivado'} exitosamente`,
+          detail: WAREHOUSE_SUCCESS_MESSAGES.toggleStatus(!warehouse.active),
           life: 3000,
-        });
-      },
-      error: () => {
+        }),
+      error: () =>
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al cambiar el estado del almacén.',
+          detail: WAREHOUSE_ERROR_MESSAGES.toggleStatus,
           life: 5000,
-        });
-      },
+        }),
     });
   }
 
@@ -431,25 +239,29 @@ export class WarehousesListPageComponent implements OnInit {
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
         this.service.delete(warehouse.id).subscribe({
-          next: () => {
+          next: () =>
             this.messageService.add({
               severity: 'success',
               summary: 'Éxito',
-              detail: 'Almacén eliminado exitosamente',
+              detail: WAREHOUSE_SUCCESS_MESSAGES.delete,
               life: 3000,
-            });
-          },
-          error: () => {
+            }),
+          error: () =>
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'Error al eliminar el almacén.',
+              detail: WAREHOUSE_ERROR_MESSAGES.delete,
               life: 5000,
-            });
-          },
+            }),
         });
       },
     });
+  }
+
+  private openOperation(warehouse: WarehouseList, operation: WarehouseStockOperation): void {
+    this.selectedWarehouse.set(warehouse);
+    this.selectedOperation.set(operation);
+    this.operationDialogVisible.set(true);
   }
 
   private loadWithFilters(): void {

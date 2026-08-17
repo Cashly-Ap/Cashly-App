@@ -10,7 +10,7 @@ export interface WarehouseList {
 export interface WarehouseStockItem {
   productId: string;
   productName: string;
-  unit: string;
+  composite: boolean;
   quantity: number;
 }
 
@@ -46,6 +46,7 @@ export interface WarehouseDetails {
   address?: string;
   description?: string;
   active: boolean;
+  deletable?: boolean;
   stock: WarehouseStockItem[];
   recentMovements: WarehouseMovementItem[];
   createdAt: string;

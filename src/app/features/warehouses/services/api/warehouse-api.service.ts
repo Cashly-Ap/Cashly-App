@@ -79,14 +79,19 @@ export class WarehouseApiService {
     const params = new HttpParams().set('size', '1000');
     return this.http
       .get<
-        PagedResponse<{ productId: string; productName: string; quantity: number }>
+        PagedResponse<{
+          productId: string;
+          productName: string;
+          composite: boolean;
+          quantity: number;
+        }>
       >(`${this.baseUrl}/${id}/stock`, { params })
       .pipe(
         map((res) =>
           (res.content ?? []).map((s) => ({
             productId: s.productId,
             productName: s.productName,
-            unit: '',
+            composite: s.composite,
             quantity: s.quantity,
           })),
         ),
@@ -99,6 +104,7 @@ export class WarehouseApiService {
   ): Observable<PagedResponse<WarehouseMovementItem>> {
     let params = new HttpParams();
     if (filters?.productId) params = params.set('productId', filters.productId);
+    if (filters?.movementType) params = params.set('movementType', filters.movementType);
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));
     return this.http.get<PagedResponse<WarehouseMovementItem>>(`${this.baseUrl}/${id}/movements`, {

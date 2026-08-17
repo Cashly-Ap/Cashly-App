@@ -40,7 +40,7 @@ describe('WarehouseApiService', () => {
     address: 'Av. Principal #123',
     description: 'Almacén principal',
     active: true,
-    stock: [{ productId: 'p1', productName: 'Motor 10HP', unit: '', quantity: 50 }],
+    stock: [{ productId: 'p1', productName: 'Motor 10HP', composite: false, quantity: 50 }],
     recentMovements: [
       {
         id: 'm1',
@@ -277,7 +277,7 @@ describe('WarehouseApiService', () => {
   describe('getStock()', () => {
     it('should GET /api/warehouses/:id/stock with size 1000', () => {
       const mockStock: WarehouseStockItem[] = [
-        { productId: 'p1', productName: 'Motor 10HP', unit: '', quantity: 50 },
+        { productId: 'p1', productName: 'Motor 10HP', composite: true, quantity: 50 },
       ];
 
       service.getStock('wh-001').subscribe((result) => {
@@ -288,7 +288,11 @@ describe('WarehouseApiService', () => {
         (r) => r.url === '/api/warehouses/wh-001/stock' && r.method === 'GET',
       );
       expect(req.request.params.get('size')).toBe('1000');
-      req.flush(mockPagedResponse([{ productId: 'p1', productName: 'Motor 10HP', quantity: 50 }]));
+      req.flush(
+        mockPagedResponse([
+          { productId: 'p1', productName: 'Motor 10HP', composite: true, quantity: 50 },
+        ]),
+      );
     });
 
     it('should return empty array when content is null', () => {
@@ -330,7 +334,12 @@ describe('WarehouseApiService', () => {
     });
 
     it('should GET /api/warehouses/:id/movements with filters', () => {
-      const filters: MovementFilters = { productId: 'p1', page: 1, size: 20 };
+      const filters: MovementFilters = {
+        productId: 'p1',
+        movementType: 'EXIT',
+        page: 1,
+        size: 20,
+      };
 
       service.getMovements('wh-001', filters).subscribe();
 
@@ -338,6 +347,7 @@ describe('WarehouseApiService', () => {
         (r) => r.url === '/api/warehouses/wh-001/movements' && r.method === 'GET',
       );
       expect(req.request.params.get('productId')).toBe('p1');
+      expect(req.request.params.get('movementType')).toBe('EXIT');
       expect(req.request.params.get('page')).toBe('1');
       expect(req.request.params.get('size')).toBe('20');
       req.flush(mockPagedResponse([]));

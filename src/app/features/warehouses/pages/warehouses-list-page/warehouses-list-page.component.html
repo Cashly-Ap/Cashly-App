@@ -10,12 +10,74 @@
       <p class="text-sm sm:text-base">Gestiona los almacenes y su inventario</p>
     </div>
 
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[280px]"
+              [value]="searchTerm()"
+              placeholder="Buscar almacén..."
+              (search)="onSearch($event)"
+            />
+            <p-button
+              #filterBtn
+              icon="pi pi-filter"
+              [outlined]="true"
+              severity="secondary"
+              (onClick)="filterPopover.toggle($event)"
+              pTooltip="Filtros"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+            />
+            <p-popover #filterPopover>
+              <div class="flex flex-col gap-4 p-1 min-w-[220px]">
+                <div class="flex items-center justify-between">
+                  <span class="font-semibold text-sm">Filtros</span>
+                  @if (activeFilterCount() > 0) {
+                    <p-button
+                      label="Limpiar"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
+                    />
+                  }
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <p-select
+                    [options]="activeFilterOptions"
+                    [ngModel]="filterActive()"
+                    (onChange)="onActiveFilterChange($event.value)"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Todos"
+                    styleClass="w-full"
+                  />
+                </div>
+              </div>
+            </p-popover>
+          </div>
+          <p-button
+            label="Nuevo Almacén"
+            icon="pi pi-plus"
+            (onClick)="onCreate()"
+            severity="contrast"
+            styleClass="font-medium w-full sm:w-auto"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-loading-spinner message="Cargando almacenes..." />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card>
+      <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-warehouse"
           title="No hay almacenes registrados"
@@ -25,74 +87,6 @@
         />
       </app-content-card>
     } @else {
-      <app-list-container>
-        <div class="px-4 sm:px-6 py-4">
-          <div
-            class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
-          >
-            <div class="flex gap-2 items-center w-full sm:w-auto">
-              <p-iconField iconPosition="left" class="flex-1 sm:flex-none sm:min-w-[280px]">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input
-                  #searchInput
-                  pInputText
-                  type="text"
-                  [value]="searchTerm()"
-                  (input)="onSearch(searchInput.value)"
-                  placeholder="Buscar almacén..."
-                  class="w-full"
-                />
-              </p-iconField>
-              <p-button
-                #filterBtn
-                icon="pi pi-filter"
-                [outlined]="true"
-                severity="secondary"
-                (onClick)="filterPopover.toggle($event)"
-                pTooltip="Filtros"
-                [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-                badgeSeverity="contrast"
-              />
-              <p-popover #filterPopover>
-                <div class="flex flex-col gap-4 p-1 min-w-[220px]">
-                  <div class="flex items-center justify-between">
-                    <span class="font-semibold text-sm">Filtros</span>
-                    @if (activeFilterCount() > 0) {
-                      <p-button
-                        label="Limpiar"
-                        [text]="true"
-                        size="small"
-                        severity="secondary"
-                        (onClick)="clearFilters()"
-                      />
-                    }
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Estado</label>
-                    <p-select
-                      [options]="activeFilterOptions"
-                      [ngModel]="filterActive()"
-                      (onChange)="onActiveFilterChange($event.value)"
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Todos"
-                      styleClass="w-full"
-                    />
-                  </div>
-                </div>
-              </p-popover>
-            </div>
-            <p-button
-              label="Nuevo Almacén"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-              severity="contrast"
-              styleClass="font-medium w-full sm:w-auto"
-            />
-          </div>
-        </div>
-      </app-list-container>
-
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
           @if (loading()) {
@@ -157,50 +151,7 @@
                       <app-status-badge [active]="warehouse.active" />
                     </td>
                     <td>
-                      <div class="flex gap-1 justify-center">
-                        <p-button
-                          icon="pi pi-arrow-circle-down"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="success"
-                          (onClick)="onOpenEntry(warehouse)"
-                          pTooltip="Registrar Entrada"
-                        />
-                        <p-button
-                          icon="pi pi-arrow-circle-up"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="danger"
-                          (onClick)="onOpenExit(warehouse)"
-                          pTooltip="Registrar Salida"
-                        />
-                        <p-button
-                          icon="pi pi-eye"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="secondary"
-                          (onClick)="onView(warehouse)"
-                          pTooltip="Ver"
-                        />
-                        <p-button
-                          icon="pi pi-pencil"
-                          [text]="true"
-                          [rounded]="true"
-                          severity="info"
-                          (onClick)="onEdit(warehouse)"
-                          pTooltip="Editar"
-                        />
-                        @if (warehouse.deletable) {
-                          <p-button
-                            icon="pi pi-trash"
-                            [text]="true"
-                            [rounded]="true"
-                            severity="danger"
-                            (onClick)="onDelete(warehouse)"
-                            pTooltip="Eliminar"
-                          />
-                        }
-                      </div>
+                      <app-list-action-buttons [actions]="actionsFor(warehouse)" />
                     </td>
                   </tr>
                 </ng-template>
@@ -264,45 +215,7 @@
                 <div
                   class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
-                  <p-button
-                    icon="pi pi-arrow-circle-down"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="success"
-                    (onClick)="onOpenEntry(warehouse)"
-                    pTooltip="Entrada"
-                  />
-                  <p-button
-                    icon="pi pi-arrow-circle-up"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    (onClick)="onOpenExit(warehouse)"
-                    pTooltip="Salida"
-                  />
-                  <p-button
-                    icon="pi pi-eye"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="secondary"
-                    (onClick)="onView(warehouse)"
-                  />
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="info"
-                    (onClick)="onEdit(warehouse)"
-                  />
-                  @if (warehouse.deletable) {
-                    <p-button
-                      icon="pi pi-trash"
-                      [text]="true"
-                      [rounded]="true"
-                      severity="danger"
-                      (onClick)="onDelete(warehouse)"
-                    />
-                  }
+                  <app-list-action-buttons [actions]="actionsFor(warehouse)" />
                 </div>
               </div>
             }
@@ -326,315 +239,10 @@
 
 <p-confirmDialog styleClass="max-w-md" />
 
-<p-dialog
-  header="Registrar Entrada de Stock"
-  [visible]="showEntryDialog()"
-  (visibleChange)="showEntryDialog.set($event)"
-  [modal]="true"
-  [style]="{ width: '680px' }"
-  [breakpoints]="{ '768px': '95vw' }"
-  [draggable]="false"
->
-  <form [formGroup]="entryForm" class="flex flex-col gap-4 py-2">
-    @if (stockLoading()) {
-      <div class="flex items-center gap-2 text-sm text-surface-500">
-        <i class="pi pi-spin pi-spinner"></i>
-        <span>Cargando stock actual...</span>
-      </div>
-    }
-    <div formArrayName="lines" class="flex flex-col gap-3">
-      @for (line of entryLines.controls; track $index; let i = $index) {
-        <div
-          [formGroupName]="i"
-          class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
-        >
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <div class="flex items-center justify-between">
-                <label class="text-sm font-medium"
-                  >Producto <span class="text-red-500">*</span></label
-                >
-                @if (entryLines.length > 1) {
-                  <p-button
-                    icon="pi pi-times"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    size="small"
-                    (onClick)="removeEntryLine(i)"
-                  />
-                }
-              </div>
-              <p-select
-                formControlName="productId"
-                [options]="productOptions()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Selecciona un producto"
-                [filter]="true"
-                filterPlaceholder="Buscar producto..."
-                styleClass="w-full"
-                appendTo="body"
-                (onChange)="onEntryProductSelected($event.value)"
-              />
-              @if (line.get('productId')?.errors?.['required'] && line.get('productId')?.touched) {
-                <small class="text-red-500 text-xs">El producto es requerido</small>
-              }
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-sm font-medium"
-                >Cantidad <span class="text-red-500">*</span></label
-              >
-              <p-inputnumber
-                formControlName="quantity"
-                [min]="0.01"
-                [minFractionDigits]="0"
-                [maxFractionDigits]="2"
-                fluid
-              />
-              @if (line.get('quantity')?.errors?.['required'] && line.get('quantity')?.touched) {
-                <small class="text-red-500 text-xs">La cantidad es requerida</small>
-              }
-              @if (line.get('quantity')?.errors?.['min'] && line.get('quantity')?.touched) {
-                <small class="text-red-500 text-xs">La cantidad debe ser mayor a 0</small>
-              }
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-sm font-medium">Precio Unitario</label>
-              <p-inputnumber
-                formControlName="unitPrice"
-                [min]="0"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-                mode="currency"
-                currency="USD"
-                locale="es-VE"
-                fluid
-                placeholder="0.00"
-              />
-            </div>
-            <div class="flex flex-col gap-1 justify-end">
-              <label class="text-sm font-medium text-surface-500">Stock actual → resultante</label>
-              @if (line.get('productId')?.value) {
-                <div class="flex items-center gap-2 text-sm font-medium">
-                  <span>{{ getCurrentStock(line.get('productId')?.value) }}</span>
-                  <i class="pi pi-arrow-right text-xs text-surface-400"></i>
-                  <span class="text-surface-900 dark:text-surface-0 font-semibold">
-                    {{
-                      getResultingStock(
-                        line.get('productId')?.value,
-                        line.get('quantity')?.value,
-                        true
-                      )
-                    }}
-                  </span>
-                </div>
-              } @else {
-                <span class="text-sm text-surface-400">—</span>
-              }
-            </div>
-            <div class="flex flex-col gap-1 justify-end">
-              <label class="text-sm font-medium text-surface-500">Subtotal</label>
-              <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">
-                {{ getEntrySubtotal(i) | currency: 'USD' : 'symbol' : '1.2-2' }}
-              </span>
-            </div>
-            @if (
-              isProductComposite(line.get('productId')?.value) &&
-              getComponentStockImpact(line.get('productId')?.value, line.get('quantity')?.value)
-                .length > 0
-            ) {
-              <div
-                class="sm:col-span-2 flex flex-col gap-1 border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800 rounded-lg p-3"
-              >
-                <span
-                  class="text-xs font-semibold text-surface-600 dark:text-surface-400 uppercase tracking-wide"
-                  >Consumo de componentes</span
-                >
-                @for (
-                  comp of getComponentStockImpact(
-                    line.get('productId')?.value,
-                    line.get('quantity')?.value
-                  );
-                  track comp.name
-                ) {
-                  <div class="flex items-center justify-between text-sm">
-                    <span class="text-surface-700 dark:text-surface-300">{{ comp.name }}</span>
-                    <div class="flex items-center gap-2 font-medium">
-                      <span>{{ comp.current }}</span>
-                      <i class="pi pi-arrow-right text-xs text-surface-400"></i>
-                      <span class="text-surface-900 dark:text-surface-0 font-semibold">
-                        {{ comp.resulting }}
-                      </span>
-                    </div>
-                  </div>
-                }
-              </div>
-            }
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <label class="text-sm font-medium">Notas</label>
-              <input pInputText formControlName="notes" placeholder="Opcional" class="w-full" />
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-    <p-button
-      label="Agregar línea"
-      icon="pi pi-plus"
-      [text]="true"
-      severity="secondary"
-      size="small"
-      (onClick)="addEntryLine()"
-    />
-  </form>
-  <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <p-button
-        label="Cancelar"
-        icon="pi pi-times"
-        [outlined]="true"
-        severity="secondary"
-        (onClick)="showEntryDialog.set(false)"
-      />
-      <p-button
-        label="Registrar Entradas"
-        icon="pi pi-check"
-        severity="contrast"
-        [loading]="entryLoading()"
-        [disabled]="entryForm.invalid"
-        (onClick)="onSubmitEntry()"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
-
-<p-dialog
-  header="Registrar Salida de Stock"
-  [visible]="showExitDialog()"
-  (visibleChange)="showExitDialog.set($event)"
-  [modal]="true"
-  [style]="{ width: '680px' }"
-  [breakpoints]="{ '768px': '95vw' }"
-  [draggable]="false"
->
-  <form [formGroup]="exitForm" class="flex flex-col gap-4 py-2">
-    @if (stockLoading()) {
-      <div class="flex items-center gap-2 text-sm text-surface-500">
-        <i class="pi pi-spin pi-spinner"></i>
-        <span>Cargando stock actual...</span>
-      </div>
-    }
-    <div formArrayName="lines" class="flex flex-col gap-3">
-      @for (line of exitLines.controls; track $index; let i = $index) {
-        <div
-          [formGroupName]="i"
-          class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
-        >
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <div class="flex items-center justify-between">
-                <label class="text-sm font-medium"
-                  >Producto <span class="text-red-500">*</span></label
-                >
-                @if (exitLines.length > 1) {
-                  <p-button
-                    icon="pi pi-times"
-                    [text]="true"
-                    [rounded]="true"
-                    severity="danger"
-                    size="small"
-                    (onClick)="removeExitLine(i)"
-                  />
-                }
-              </div>
-              <p-select
-                formControlName="productId"
-                [options]="exitProductOptions()"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Selecciona un producto"
-                [filter]="true"
-                filterPlaceholder="Buscar producto..."
-                styleClass="w-full"
-                appendTo="body"
-              />
-              @if (line.get('productId')?.errors?.['required'] && line.get('productId')?.touched) {
-                <small class="text-red-500 text-xs">El producto es requerido</small>
-              }
-            </div>
-            <div class="flex flex-col gap-1">
-              <label class="text-sm font-medium"
-                >Cantidad <span class="text-red-500">*</span></label
-              >
-              <p-inputnumber
-                formControlName="quantity"
-                [min]="0.01"
-                [minFractionDigits]="0"
-                [maxFractionDigits]="2"
-                fluid
-              />
-              @if (line.get('quantity')?.errors?.['required'] && line.get('quantity')?.touched) {
-                <small class="text-red-500 text-xs">La cantidad es requerida</small>
-              }
-              @if (line.get('quantity')?.errors?.['min'] && line.get('quantity')?.touched) {
-                <small class="text-red-500 text-xs">La cantidad debe ser mayor a 0</small>
-              }
-            </div>
-            <div class="flex flex-col gap-1 justify-end">
-              <label class="text-sm font-medium text-surface-500">Stock actual → resultante</label>
-              @if (line.get('productId')?.value) {
-                <div class="flex items-center gap-2 text-sm font-medium">
-                  <span>{{ getCurrentStock(line.get('productId')?.value) }}</span>
-                  <i class="pi pi-arrow-right text-xs text-surface-400"></i>
-                  <span class="text-surface-900 dark:text-surface-0 font-semibold">
-                    {{
-                      getResultingStock(
-                        line.get('productId')?.value,
-                        line.get('quantity')?.value,
-                        false
-                      )
-                    }}
-                  </span>
-                </div>
-              } @else {
-                <span class="text-sm text-surface-400">—</span>
-              }
-            </div>
-            <div class="flex flex-col gap-1 sm:col-span-2">
-              <label class="text-sm font-medium">Notas</label>
-              <input pInputText formControlName="notes" placeholder="Opcional" class="w-full" />
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-    <p-button
-      label="Agregar línea"
-      icon="pi pi-plus"
-      [text]="true"
-      severity="secondary"
-      size="small"
-      (onClick)="addExitLine()"
-    />
-  </form>
-  <ng-template pTemplate="footer">
-    <div class="flex gap-2 justify-end">
-      <p-button
-        label="Cancelar"
-        icon="pi pi-times"
-        [outlined]="true"
-        severity="secondary"
-        (onClick)="showExitDialog.set(false)"
-      />
-      <p-button
-        label="Registrar Salidas"
-        icon="pi pi-check"
-        severity="contrast"
-        [loading]="exitLoading()"
-        [disabled]="exitForm.invalid"
-        (onClick)="onSubmitExit()"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+<app-warehouse-stock-operation-dialog
+  [warehouseId]="selectedWarehouse()?.id ?? null"
+  [warehouseName]="selectedWarehouse()?.name ?? ''"
+  [operation]="selectedOperation()"
+  [visible]="operationDialogVisible()"
+  (visibleChange)="operationDialogVisible.set($event)"
+/>

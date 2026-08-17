@@ -19,9 +19,9 @@ describe('WAREHOUSE_ROUTES', () => {
     expect(parent.data?.module).toBe(BusinessModule.INVENTORY);
   });
 
-  it('should have 4 child routes', () => {
+  it('should have 6 child routes', () => {
     const children = WAREHOUSE_ROUTES[0].children;
-    expect(children).toHaveLength(4);
+    expect(children).toHaveLength(6);
   });
 
   it('should have list route at empty path', () => {
@@ -39,17 +39,26 @@ describe('WAREHOUSE_ROUTES', () => {
   });
 
   it('should have details route with :id param', () => {
-    const detailsRoute = WAREHOUSE_ROUTES[0].children?.[2];
+    const detailsRoute = WAREHOUSE_ROUTES[0].children?.[4];
     expect(detailsRoute?.path).toBe(':id');
     expect(detailsRoute?.title).toBe('Detalles de Almacén');
     expect(detailsRoute?.loadComponent).toBeDefined();
   });
 
   it('should have edit route with :id/edit param', () => {
-    const editRoute = WAREHOUSE_ROUTES[0].children?.[3];
+    const editRoute = WAREHOUSE_ROUTES[0].children?.[5];
     expect(editRoute?.path).toBe(':id/edit');
     expect(editRoute?.title).toBe('Editar Almacén');
     expect(editRoute?.loadComponent).toBeDefined();
+  });
+
+  it('should have dedicated stock and movements routes', () => {
+    const children = WAREHOUSE_ROUTES[0].children;
+
+    expect(children?.[2].path).toBe(':id/stock');
+    expect(children?.[2].title).toBe('Stock de Almacén');
+    expect(children?.[3].path).toBe(':id/movements');
+    expect(children?.[3].title).toBe('Movimientos de Almacén');
   });
 
   it('should lazy load list component', async () => {
@@ -67,14 +76,14 @@ describe('WAREHOUSE_ROUTES', () => {
   });
 
   it('should lazy load details component', async () => {
-    const detailsRoute = WAREHOUSE_ROUTES[0].children?.[2];
+    const detailsRoute = WAREHOUSE_ROUTES[0].children?.[4];
     const mod = await detailsRoute?.loadComponent!();
     expect(typeof mod).toBe('function');
     expect(mod.name).toContain('WarehousesDetailsPageComponent');
   });
 
   it('should lazy load form component for edit', async () => {
-    const editRoute = WAREHOUSE_ROUTES[0].children?.[3];
+    const editRoute = WAREHOUSE_ROUTES[0].children?.[5];
     const mod = await editRoute?.loadComponent!();
     expect(typeof mod).toBe('function');
     expect(mod.name).toContain('WarehousesFormPageComponent');

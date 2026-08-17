@@ -142,15 +142,44 @@ src/app/features/warehouses/
 
 **Component**: `WarehousesDetailsPageComponent`
 
-**Purpose**: Display complete warehouse information and stock overview.
+**Purpose**: Display the warehouse's general information and expose its record actions.
 
 **Features**:
 
 - Complete warehouse data display
-- Stock summary per product
-- Recent movements history
-- Edit and Delete actions
-- Quick links to stock operations
+- Actions for entry, exit, stock, movement history, edit, and delete
+- The details and list action menus expose the same applicable operations; delete is hidden when the API marks the warehouse as non-deletable
+- Stock and movement data are kept out of the details page and opened in dedicated pages
+
+### Warehouse Stock Page
+
+**Route**: `/warehouses/:id/stock`
+
+**Component**: `WarehouseStockPageComponent`
+
+**Purpose**: Display and search the current product stock for one warehouse. The table identifies
+each product as `Simple` or `Compuesto`; unit data is not shown because the inventory contract does
+not provide a warehouse-specific unit.
+
+### Warehouse Movements Page
+
+**Route**: `/warehouses/:id/movements`
+
+**Component**: `WarehouseMovementsPageComponent`
+
+**Purpose**: Display the paginated movement history with movement-type filtering.
+
+Movement-type filtering is sent to the API so totals and pagination describe the filtered result set.
+
+### Stock Operation Dialog
+
+**Component**: `WarehouseStockOperationDialogComponent`
+
+**Purpose**: Reusable entry/exit dialog composed by both the warehouse list and details pages. Form state, validation, API calls, and warehouse messages remain outside the page orchestrators.
+
+Composite products are labeled in the selector. Before an entry is submitted, the dialog displays
+the components and calculated quantities that the backend will consume to assemble the requested
+stock.
 
 ### Stock Entry Page
 

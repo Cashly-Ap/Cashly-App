@@ -34,7 +34,7 @@ describe('WarehouseStockItem interface', () => {
     const item: WarehouseStockItem = {
       productId: 'p1',
       productName: 'Motor 10HP',
-      unit: 'unidad',
+      composite: false,
       quantity: 50,
     };
     expect(item.productId).toBe('p1');
