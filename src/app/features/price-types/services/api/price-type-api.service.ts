@@ -7,17 +7,31 @@ import {
   PriceTypeCreate,
   PriceTypeUpdate,
 } from '@features/price-types/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+
+export interface PriceTypeFilters {
+  search?: string;
+  active?: boolean;
+  page?: number;
+  size?: number;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
+}
 
 @Injectable({ providedIn: 'root' })
 export class PriceTypeApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/price-types';
 
-  findAll(orderBy?: string, orderDir?: string): Observable<PriceTypeList[]> {
+  getAll(filters?: PriceTypeFilters): Observable<PagedResponse<PriceTypeList>> {
     let params = new HttpParams();
-    if (orderBy) params = params.set('orderBy', orderBy);
-    if (orderDir) params = params.set('orderDir', orderDir);
-    return this.http.get<PriceTypeList[]>(this.baseUrl, { params });
+    if (filters?.search) params = params.set('search', filters.search);
+    if (filters?.active !== undefined) params = params.set('active', String(filters.active));
+    if (filters?.page !== undefined) params = params.set('page', String(filters.page));
+    if (filters?.size !== undefined) params = params.set('size', String(filters.size));
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
+    return this.http.get<PagedResponse<PriceTypeList>>(this.baseUrl, { params });
   }
 
   findById(id: string): Observable<PriceTypeDetails> {

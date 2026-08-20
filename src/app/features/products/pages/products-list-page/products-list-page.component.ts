@@ -144,7 +144,7 @@ export class ProductsListPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoryService.loadAll({ size: 1000 }).subscribe();
-    this.priceTypeService.loadAll().subscribe(() => {
+    this.priceTypeService.loadAll({ size: 1000 }).subscribe(() => {
       const types = this.priceTypeService.priceTypes().filter((pt) => pt.active);
       if (types.length > 0) {
         this.selectedPriceTypeId.set(types[0].id);

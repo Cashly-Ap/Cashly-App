@@ -83,7 +83,7 @@ export class CommercialCatalogPdfModalComponent {
       completed++;
     }
     if (needsPriceTypes) {
-      this.priceTypeService.loadAll().subscribe({ next: checkDone, error: checkDone });
+      this.priceTypeService.loadAll({ size: 1000 }).subscribe({ next: checkDone, error: checkDone });
     } else {
       completed++;
     }

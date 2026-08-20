@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
-import { PriceTypeDetails, PriceTypeList } from '@features/price-types/models/interfaces';
+import { PriceTypeDetails } from '@features/price-types/models/interfaces';
 
 describe('PriceTypeApplicationService', () => {
   let service: PriceTypeApplicationService;
@@ -15,14 +15,23 @@ describe('PriceTypeApplicationService', () => {
     active: true,
   };
 
-  const mockList: PriceTypeList[] = [
-    { id: '1', name: 'Precio Mayorista', active: true },
-    { id: '2', name: 'Precio Minorista', active: true },
-  ];
+  const mockPage = {
+    content: [
+      { id: '1', name: 'Precio Mayorista', active: true, deletable: true },
+      { id: '2', name: 'Precio Minorista', active: true, deletable: true },
+    ],
+    totalElements: 2,
+    totalPages: 1,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: false,
+  };
 
   beforeEach(() => {
     apiMock = {
-      findAll: vi.fn().mockReturnValue(of(mockList)),
+      getAll: vi.fn().mockReturnValue(of(mockPage)),
       findById: vi.fn().mockReturnValue(of(mockDetails)),
       create: vi.fn().mockReturnValue(of(mockDetails)),
       update: vi.fn().mockReturnValue(of(mockDetails)),
@@ -36,10 +45,16 @@ describe('PriceTypeApplicationService', () => {
     service = TestBed.inject(PriceTypeApplicationService);
   });
 
-  it('should_load_all_price_types_and_update_signal', () => {
+  it('should_load_all_price_types_and_update_signals', () => {
     service.loadAll().subscribe();
     expect(service.priceTypes()).toHaveLength(2);
+    expect(service.totalElements()).toBe(2);
     expect(service.isLoading()).toBe(false);
+  });
+
+  it('should_pass_filters_to_api', () => {
+    service.loadAll({ size: 1000 }).subscribe();
+    expect(apiMock.getAll).toHaveBeenCalledWith({ size: 1000 });
   });
 
   it('should_load_price_type_by_id_and_update_selected', () => {
@@ -60,7 +75,7 @@ describe('PriceTypeApplicationService', () => {
   });
 
   it('should_set_error_signal_on_load_failure', () => {
-    apiMock.findAll = vi.fn().mockReturnValue(throwError(() => new Error('Network error')));
+    apiMock.getAll = vi.fn().mockReturnValue(throwError(() => new Error('Network error')));
     service.loadAll().subscribe({ error: () => {} });
     expect(service.error()).toBe('Network error');
     expect(service.isLoading()).toBe(false);

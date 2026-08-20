@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { of } from 'rxjs';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { PriceTypesListPageComponent } from '@features/price-types/pages/price-types-list-page/price-types-list-page.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeList } from '@features/price-types/models/interfaces';
@@ -26,6 +26,7 @@ describe('PriceTypesListPageComponent', () => {
     id: 'pt-001',
     name: 'Retail',
     active: true,
+    deletable: true,
   };
 
   const pdfMocks = [
@@ -39,11 +40,16 @@ describe('PriceTypesListPageComponent', () => {
 
   beforeEach(async () => {
     mockService = {
-      loadAll: vi.fn().mockReturnValue(of([mockPriceType])),
+      loadAll: vi
+        .fn()
+        .mockReturnValue(
+          of({ content: [mockPriceType], totalElements: 1, totalPages: 1, size: 10, number: 0 }),
+        ),
       remove: vi.fn().mockReturnValue(of(undefined)),
       priceTypes: signal([mockPriceType]),
       isLoading: signal(false),
       error: signal(null),
+      totalElements: signal(1),
     };
 
     await TestBed.configureTestingModule({
@@ -69,33 +75,46 @@ describe('PriceTypesListPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load all price types on init', () => {
+  it('should load price types on init', () => {
     fixture.detectChanges();
-    expect(mockService.loadAll).toHaveBeenCalledWith('name', 'asc');
+    expect(mockService.loadAll).toHaveBeenCalledWith({
+      page: 0,
+      size: 10,
+      orderBy: 'name',
+      orderDir: 'asc',
+    });
   });
 
-  it('should filter price types by name', () => {
+  it('should update searchTerm and call loadAll on onSearch', () => {
     fixture.detectChanges();
     component.onSearch('Retail');
-    expect(component.filteredPriceTypes()).toHaveLength(1);
-    expect(component.filteredPriceTypes()[0].name).toBe('Retail');
+    expect(component.searchTerm()).toBe('Retail');
+    expect(mockService.loadAll).toHaveBeenLastCalledWith(
+      expect.objectContaining({ search: 'Retail' }),
+    );
   });
 
-  it('should return empty filtered list when no match', () => {
+  it('should reset first to 0 on onSearch', () => {
     fixture.detectChanges();
-    component.onSearch('nonexistent');
-    expect(component.filteredPriceTypes()).toHaveLength(0);
+    component.first.set(20);
+    component.onSearch('Retail');
+    expect(component.first()).toBe(0);
   });
 
-  it('should return all price types when search term is empty', () => {
+  it('should update pagination and call loadAll on onPageChange', () => {
     fixture.detectChanges();
-    component.onSearch('');
-    expect(component.filteredPriceTypes()).toEqual([mockPriceType]);
+    component.onPageChange({ first: 20, rows: 25 });
+    expect(component.first()).toBe(20);
+    expect(component.rows()).toBe(25);
+    expect(mockService.loadAll).toHaveBeenLastCalledWith(
+      expect.objectContaining({ page: 0, size: 25 }),
+    );
   });
 
   it('should show initial loading when loading and no data', () => {
     mockService.isLoading = signal(true);
     mockService.priceTypes = signal([]);
+    mockService.totalElements = signal(0);
     fixture = TestBed.createComponent(PriceTypesListPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -104,6 +123,7 @@ describe('PriceTypesListPageComponent', () => {
 
   it('should show empty state when not loading and no data', () => {
     mockService.priceTypes = signal([]);
+    mockService.totalElements = signal(0);
     fixture = TestBed.createComponent(PriceTypesListPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -111,6 +131,9 @@ describe('PriceTypesListPageComponent', () => {
   });
 
   it('should show filtered results message when search has no matches', () => {
+    mockService.totalElements = signal(0);
+    fixture = TestBed.createComponent(PriceTypesListPageComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
     component.onSearch('nonexistent');
     expect(component.hasFilteredResults()).toBe(true);
@@ -136,7 +159,7 @@ describe('PriceTypesListPageComponent', () => {
 
   it('should update order by and order dir on sort', () => {
     fixture.detectChanges();
-    component.onSort({ field: 'name', order: -1 } as any);
+    component.onSort({ field: 'name', order: -1 } as SortEvent);
     expect(component.orderBy()).toBe('name');
     expect(component.orderDir()).toBe('desc');
   });
@@ -145,7 +168,23 @@ describe('PriceTypesListPageComponent', () => {
     fixture.detectChanges();
     const loadAllSpy = mockService.loadAll as ReturnType<typeof vi.fn>;
     loadAllSpy.mockClear();
-    component.onSort({ field: 'name', order: 1 } as any);
+    component.onSort({ field: 'name', order: 1 } as SortEvent);
     expect(loadAllSpy).not.toHaveBeenCalled();
+  });
+
+  it('should call service.remove when confirm accept is called', () => {
+    fixture.detectChanges();
+    component.onDelete(mockPriceType);
+    const confirmCall = (confirmationService.confirm as any).mock?.calls?.[0]?.[0];
+    if (confirmCall) {
+      confirmCall.accept();
+      expect(mockService.remove).toHaveBeenCalledWith('pt-001');
+    }
+  });
+
+  it('should only offer delete action when price type is deletable', () => {
+    const nonDeletable: PriceTypeList = { ...mockPriceType, deletable: false };
+    const actions = component.actionsFor(nonDeletable);
+    expect(actions.some((a) => a.label === 'Eliminar')).toBe(false);
   });
 });

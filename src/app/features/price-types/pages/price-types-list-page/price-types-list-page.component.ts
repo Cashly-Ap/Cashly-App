@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -28,6 +29,7 @@ import {
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeFilters } from '@features/price-types/services/api/price-type-api.service';
 import { PriceTypeList } from '@features/price-types/models/interfaces';
 
 @Component({
@@ -40,6 +42,7 @@ import { PriceTypeList } from '@features/price-types/models/interfaces';
     TableModule,
     ButtonModule,
     InputTextModule,
+    PaginatorModule,
     IconFieldModule,
     InputIconModule,
     ConfirmDialogModule,
@@ -63,31 +66,36 @@ export class PriceTypesListPageComponent implements OnInit {
 
   priceTypes = this.service.priceTypes;
   isLoading = this.service.isLoading;
+  totalElements = this.service.totalElements;
 
   searchTerm = signal('');
+  first = signal(0);
+  rows = signal(10);
   orderBy = signal('name');
   orderDir = signal<'asc' | 'desc'>('asc');
 
-  filteredPriceTypes = computed(() => {
-    const term = this.searchTerm().toLowerCase().trim();
-    if (!term) return this.priceTypes();
-    return this.priceTypes().filter((pt) => pt.name.toLowerCase().includes(term));
-  });
-
   showInitialLoading = computed(() => this.isLoading() && this.priceTypes().length === 0);
   isEmptyDatabase = computed(
-    () => !this.isLoading() && this.priceTypes().length === 0 && !this.searchTerm(),
+    () => !this.isLoading() && this.totalElements() === 0 && !this.searchTerm(),
   );
   hasFilteredResults = computed(
-    () => !this.isLoading() && this.filteredPriceTypes().length === 0 && !!this.searchTerm(),
+    () => !this.isLoading() && this.totalElements() === 0 && !!this.searchTerm(),
   );
 
   ngOnInit(): void {
-    this.service.loadAll(this.orderBy(), this.orderDir()).subscribe();
+    this.loadWithFilters();
   }
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onPageChange(event: { first: number; rows: number }): void {
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
   }
 
   onSort(event: SortEvent): void {
@@ -96,7 +104,8 @@ export class PriceTypesListPageComponent implements OnInit {
     if (newField === this.orderBy() && newDir === this.orderDir()) return;
     this.orderBy.set(newField);
     this.orderDir.set(newDir);
-    this.service.loadAll(this.orderBy(), this.orderDir()).subscribe();
+    this.first.set(0);
+    this.loadWithFilters();
   }
 
   onCreate(): void {
@@ -156,5 +165,16 @@ export class PriceTypesListPageComponent implements OnInit {
         });
       },
     });
+  }
+
+  private loadWithFilters(): void {
+    const filters: PriceTypeFilters = {
+      page: Math.floor(this.first() / this.rows()),
+      size: this.rows(),
+      orderBy: this.orderBy(),
+      orderDir: this.orderDir(),
+    };
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    this.service.loadAll(filters).subscribe();
   }
 }

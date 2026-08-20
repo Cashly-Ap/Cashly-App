@@ -71,7 +71,7 @@ export class CustomersDetailsPageComponent implements OnInit {
       this.loadCustomer(id);
       this.loadWarehouseAccess(id);
     }
-    this.priceTypeService.loadAll().subscribe();
+    this.priceTypeService.loadAll({ size: 1000 }).subscribe();
   }
 
   priceTypeName = computed(() => {

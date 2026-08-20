@@ -144,7 +144,7 @@ export class ProductsFormPageComponent
   override ngOnInit(): void {
     super.ngOnInit?.();
 
-    this.priceTypeService.loadAll().subscribe();
+    this.priceTypeService.loadAll({ size: 1000 }).subscribe();
     this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
     this.updateSubmitTooltip();
 

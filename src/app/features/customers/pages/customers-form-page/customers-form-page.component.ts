@@ -122,7 +122,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
   override ngOnInit(): void {
     super.ngOnInit();
     this.warehouseService.loadSimpleWarehouses().subscribe();
-    this.priceTypeService.loadAll().subscribe();
+    this.priceTypeService.loadAll({ size: 1000 }).subscribe();
     this.updateSubmitTooltip();
     this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
   }

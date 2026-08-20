@@ -1,12 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
+import {
+  PriceTypeApiService,
+  PriceTypeFilters,
+} from '@features/price-types/services/api/price-type-api.service';
 import {
   PriceTypeList,
   PriceTypeDetails,
   PriceTypeCreate,
   PriceTypeUpdate,
 } from '@features/price-types/models/interfaces';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
 export class PriceTypeApplicationService {
@@ -16,22 +20,22 @@ export class PriceTypeApplicationService {
   readonly selectedPriceType = signal<PriceTypeDetails | null>(null);
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly totalElements = signal(0);
 
-  loadAll(orderBy?: string, orderDir?: string): Observable<PriceTypeList[]> {
+  loadAll(filters?: PriceTypeFilters): Observable<PagedResponse<PriceTypeList>> {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return this.api.findAll(orderBy, orderDir).pipe(
+    return this.api.getAll(filters).pipe(
       tap({
-        next: (types) => this.priceTypes.set(types),
+        next: (res) => {
+          this.priceTypes.set(res.content ?? []);
+          this.totalElements.set(res.totalElements ?? 0);
+        },
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.isLoading.set(false)),
     );
-  }
-
-  loadAllActive(): Observable<PriceTypeList[]> {
-    return this.loadAll();
   }
 
   loadById(id: string): Observable<PriceTypeDetails> {
