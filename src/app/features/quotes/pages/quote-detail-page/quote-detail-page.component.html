@@ -115,7 +115,45 @@
 
         <app-details-section-card title="Líneas del Presupuesto" icon="pi-list">
           @if (currentQuote.lines && currentQuote.lines.length > 0) {
-            <div class="overflow-x-auto">
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (line of currentQuote.lines; track line.id) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
+                >
+                  <div class="flex flex-col gap-1">
+                    <span class="font-medium text-sm">{{ line.productName }}</span>
+                    <span
+                      class="font-mono text-xs bg-blue-100 dark:bg-blue-800 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded w-fit"
+                    >
+                      {{ line.productCode }}
+                    </span>
+                  </div>
+                  <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Cantidad</span>
+                      <span class="font-mono">{{ line.quantity | number: '1.0-3' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Precio Unit.</span>
+                      <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Subtotal</span>
+                      <span class="font-mono font-semibold">{{
+                        line.subtotal | number: '1.2-2'
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+              <div
+                class="flex justify-between text-sm font-semibold pt-2 border-t border-surface-200 dark:border-surface-700"
+              >
+                <span>Total:</span>
+                <span class="font-mono text-lg">{{ currentQuote.subtotal | number: '1.2-2' }}</span>
+              </div>
+            </div>
+            <div class="hidden md:block overflow-x-auto">
               <p-table [value]="currentQuote.lines" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>

@@ -149,56 +149,104 @@
                     <span>Creado por: {{ ret.createdByName }}</span>
                     <span>{{ ret.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
                   </div>
-                  <p-table [value]="ret.lines" styleClass="p-datatable-sm">
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th>Producto</th>
-                        <th class="w-24 text-right">Cantidad</th>
-                        <th class="w-32 text-right">Precio Unit.</th>
-                        <th class="w-32 text-right">Subtotal</th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-line>
-                      <tr>
-                        <td>
-                          <div class="flex flex-col gap-1">
-                            <span class="font-medium text-sm">{{ line.productName }}</span>
-                            <span
-                              class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
-                            >
-                              {{ line.productCode }}
-                            </span>
+                  <div class="flex flex-col gap-3 md:hidden">
+                    @for (line of ret.lines; track line.productCode) {
+                      <div
+                        class="border border-surface-200 dark:border-surface-700 rounded-lg p-3 flex flex-col gap-2"
+                      >
+                        <div class="flex flex-col gap-1">
+                          <span class="font-medium text-sm">{{ line.productName }}</span>
+                          <span
+                            class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
+                          >
+                            {{ line.productCode }}
+                          </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
+                          <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400">Cantidad</span>
+                            <span class="font-mono">{{ line.quantity }}</span>
                           </div>
-                        </td>
-                        <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
-                        <td class="text-right font-mono text-sm">
-                          {{ line.unitPrice | number: '1.2-2' }}
-                        </td>
-                        <td class="text-right font-mono font-semibold text-sm">
-                          {{ line.subtotal | number: '1.2-2' }}
-                        </td>
-                      </tr>
-                      @if (line.allocations.length > 0) {
-                        <tr>
-                          <td colspan="4" class="pb-2 pt-0">
-                            <div
-                              class="flex flex-col gap-1 pl-4 border-l-2 border-surface-200 dark:border-surface-700 ml-2"
+                          <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400">Precio Unit.</span>
+                            <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                          </div>
+                          <div class="flex flex-col gap-0.5">
+                            <span class="text-xs text-surface-400">Subtotal</span>
+                            <span class="font-mono font-semibold">{{
+                              line.subtotal | number: '1.2-2'
+                            }}</span>
+                          </div>
+                        </div>
+                        @if (line.allocations.length > 0) {
+                          <div
+                            class="flex flex-col gap-1 pl-3 border-l-2 border-surface-200 dark:border-surface-700"
+                          >
+                            <span class="text-xs font-medium text-surface-500 dark:text-surface-400"
+                              >Asignaciones a almacén:</span
                             >
+                            @for (alloc of line.allocations; track alloc.warehouseId) {
+                              <span class="text-xs text-surface-600 dark:text-surface-400">
+                                {{ alloc.warehouseName }}: {{ alloc.allocated }}
+                              </span>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </div>
+                  <div class="hidden md:block overflow-x-auto">
+                    <p-table [value]="ret.lines" styleClass="p-datatable-sm">
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th>Producto</th>
+                          <th class="w-24 text-right">Cantidad</th>
+                          <th class="w-32 text-right">Precio Unit.</th>
+                          <th class="w-32 text-right">Subtotal</th>
+                        </tr>
+                      </ng-template>
+                      <ng-template pTemplate="body" let-line>
+                        <tr>
+                          <td>
+                            <div class="flex flex-col gap-1">
+                              <span class="font-medium text-sm">{{ line.productName }}</span>
                               <span
-                                class="text-xs font-medium text-surface-500 dark:text-surface-400"
-                                >Asignaciones a almacén:</span
+                                class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
                               >
-                              @for (alloc of line.allocations; track alloc.warehouseId) {
-                                <span class="text-xs text-surface-600 dark:text-surface-400">
-                                  {{ alloc.warehouseName }}: {{ alloc.allocated }}
-                                </span>
-                              }
+                                {{ line.productCode }}
+                              </span>
                             </div>
                           </td>
+                          <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                          <td class="text-right font-mono text-sm">
+                            {{ line.unitPrice | number: '1.2-2' }}
+                          </td>
+                          <td class="text-right font-mono font-semibold text-sm">
+                            {{ line.subtotal | number: '1.2-2' }}
+                          </td>
                         </tr>
-                      }
-                    </ng-template>
-                  </p-table>
+                        @if (line.allocations.length > 0) {
+                          <tr>
+                            <td colspan="4" class="pb-2 pt-0">
+                              <div
+                                class="flex flex-col gap-1 pl-4 border-l-2 border-surface-200 dark:border-surface-700 ml-2"
+                              >
+                                <span
+                                  class="text-xs font-medium text-surface-500 dark:text-surface-400"
+                                  >Asignaciones a almacén:</span
+                                >
+                                @for (alloc of line.allocations; track alloc.warehouseId) {
+                                  <span class="text-xs text-surface-600 dark:text-surface-400">
+                                    {{ alloc.warehouseName }}: {{ alloc.allocated }}
+                                  </span>
+                                }
+                              </div>
+                            </td>
+                          </tr>
+                        }
+                      </ng-template>
+                    </p-table>
+                  </div>
                 </div>
               }
             </div>
@@ -207,22 +255,12 @@
 
         <app-details-section-card title="Líneas de la Factura" icon="pi-list">
           @if (currentInvoice.lines && currentInvoice.lines.length > 0) {
-            <p-table [value]="currentInvoice.lines" styleClass="p-datatable-sm">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th class="w-12">#</th>
-                  <th>Producto</th>
-                  <th class="w-32 text-right">Cantidad</th>
-                  <th class="w-32 text-right">Devuelto</th>
-                  <th class="w-40 text-right">Precio Unit.</th>
-                  <th class="w-40 text-right">Subtotal</th>
-                  <th class="w-40 text-right">Total Neto</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-line let-index="rowIndex">
-                <tr>
-                  <td class="text-surface-400 text-sm">{{ index + 1 }}</td>
-                  <td>
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (line of currentInvoice.lines; track $index; let i = $index) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
+                >
+                  <div class="flex items-start justify-between gap-2">
                     <div class="flex flex-col gap-1">
                       <span class="font-medium text-sm">{{ line.productName }}</span>
                       <span
@@ -231,48 +269,133 @@
                         {{ line.productCode }}
                       </span>
                     </div>
-                  </td>
-                  <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
-                  <td class="text-right font-mono text-sm text-amber-600 dark:text-amber-400">
-                    @if (line.returnedQuantity > 0) {
-                      {{ line.returnedQuantity }}
-                    } @else {
-                      <span class="text-surface-300 dark:text-surface-600">-</span>
-                    }
-                  </td>
-                  <td class="text-right font-mono text-sm">
-                    {{ line.unitPrice | number: '1.2-2' }}
-                  </td>
-                  <td class="text-right font-mono font-semibold text-sm">
-                    {{ line.lineTotal | number: '1.2-2' }}
-                  </td>
-                  <td class="text-right font-mono text-sm">
-                    {{ line.lineTotal - line.returnedQuantity * line.unitPrice | number: '1.2-2' }}
-                  </td>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="footer">
-                <tr>
-                  <td colspan="6" class="text-right font-semibold">Subtotal:</td>
-                  <td class="text-right font-mono text-sm">
-                    {{ currentInvoice.subtotal | number: '1.2-2' }}
-                  </td>
-                </tr>
+                    <span class="text-xs text-surface-400 shrink-0">#{{ i + 1 }}</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Cantidad</span>
+                      <span class="font-mono">{{ line.quantity }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Devuelto</span>
+                      @if (line.returnedQuantity > 0) {
+                        <span class="font-mono text-amber-600 dark:text-amber-400">{{
+                          line.returnedQuantity
+                        }}</span>
+                      } @else {
+                        <span class="font-mono text-surface-300 dark:text-surface-600">-</span>
+                      }
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Precio Unit.</span>
+                      <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Subtotal</span>
+                      <span class="font-mono font-semibold">{{
+                        line.lineTotal | number: '1.2-2'
+                      }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">Total Neto</span>
+                      <span class="font-mono">{{
+                        line.lineTotal - line.returnedQuantity * line.unitPrice | number: '1.2-2'
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+              <div
+                class="flex flex-col gap-1 pt-2 border-t border-surface-200 dark:border-surface-700"
+              >
+                <div class="flex justify-between text-sm font-semibold">
+                  <span>Subtotal:</span>
+                  <span class="font-mono">{{ currentInvoice.subtotal | number: '1.2-2' }}</span>
+                </div>
                 @if (currentInvoice.returnedTotal > 0) {
+                  <div
+                    class="flex justify-between text-sm font-semibold text-amber-600 dark:text-amber-400"
+                  >
+                    <span>Total Neto:</span>
+                    <span class="font-mono">{{
+                      currentInvoice.subtotal - currentInvoice.returnedTotal | number: '1.2-2'
+                    }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="hidden md:block overflow-x-auto">
+              <p-table [value]="currentInvoice.lines" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
                   <tr>
-                    <td
-                      colspan="6"
-                      class="text-right font-semibold text-amber-600 dark:text-amber-400"
-                    >
-                      Total Neto:
+                    <th class="w-12">#</th>
+                    <th>Producto</th>
+                    <th class="w-32 text-right">Cantidad</th>
+                    <th class="w-32 text-right">Devuelto</th>
+                    <th class="w-40 text-right">Precio Unit.</th>
+                    <th class="w-40 text-right">Subtotal</th>
+                    <th class="w-40 text-right">Total Neto</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-line let-index="rowIndex">
+                  <tr>
+                    <td class="text-surface-400 text-sm">{{ index + 1 }}</td>
+                    <td>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium text-sm">{{ line.productName }}</span>
+                        <span
+                          class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
+                        >
+                          {{ line.productCode }}
+                        </span>
+                      </div>
                     </td>
-                    <td class="text-right font-mono text-sm font-semibold">
-                      {{ currentInvoice.subtotal - currentInvoice.returnedTotal | number: '1.2-2' }}
+                    <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                    <td class="text-right font-mono text-sm text-amber-600 dark:text-amber-400">
+                      @if (line.returnedQuantity > 0) {
+                        {{ line.returnedQuantity }}
+                      } @else {
+                        <span class="text-surface-300 dark:text-surface-600">-</span>
+                      }
+                    </td>
+                    <td class="text-right font-mono text-sm">
+                      {{ line.unitPrice | number: '1.2-2' }}
+                    </td>
+                    <td class="text-right font-mono font-semibold text-sm">
+                      {{ line.lineTotal | number: '1.2-2' }}
+                    </td>
+                    <td class="text-right font-mono text-sm">
+                      {{
+                        line.lineTotal - line.returnedQuantity * line.unitPrice | number: '1.2-2'
+                      }}
                     </td>
                   </tr>
-                }
-              </ng-template>
-            </p-table>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="6" class="text-right font-semibold">Subtotal:</td>
+                    <td class="text-right font-mono text-sm">
+                      {{ currentInvoice.subtotal | number: '1.2-2' }}
+                    </td>
+                  </tr>
+                  @if (currentInvoice.returnedTotal > 0) {
+                    <tr>
+                      <td
+                        colspan="6"
+                        class="text-right font-semibold text-amber-600 dark:text-amber-400"
+                      >
+                        Total Neto:
+                      </td>
+                      <td class="text-right font-mono text-sm font-semibold">
+                        {{
+                          currentInvoice.subtotal - currentInvoice.returnedTotal | number: '1.2-2'
+                        }}
+                      </td>
+                    </tr>
+                  }
+                </ng-template>
+              </p-table>
+            </div>
           } @else {
             <app-empty-state icon="pi-inbox" message="No hay líneas en esta factura" />
           }
@@ -280,51 +403,97 @@
 
         @if (creditNotes().length > 0) {
           <app-details-section-card title="Notas de Crédito" icon="pi-arrow-down">
-            <p-table [value]="creditNotes()" styleClass="p-datatable-sm">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Número</th>
-                  <th class="text-right">Monto</th>
-                  <th>Motivo</th>
-                  <th>Fecha</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-note>
-                <tr>
-                  <td class="font-mono text-sm">{{ note.noteNumber }}</td>
-                  <td class="text-right font-mono text-green-600 dark:text-green-400">
-                    -{{ note.amount | number: '1.2-2' }}
-                  </td>
-                  <td class="text-sm">{{ note.reason }}</td>
-                  <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-              </ng-template>
-            </p-table>
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (note of creditNotes(); track note.id) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-2"
+                >
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="font-mono text-sm">{{ note.noteNumber }}</span>
+                    <span class="font-mono text-sm text-green-600 dark:text-green-400">
+                      -{{ note.amount | number: '1.2-2' }}
+                    </span>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <span class="text-xs text-surface-400">Motivo</span>
+                    <span class="text-sm">{{ note.reason }}</span>
+                  </div>
+                  <span class="text-xs text-surface-400">{{
+                    note.applicationDate | date: 'dd/MM/yyyy'
+                  }}</span>
+                </div>
+              }
+            </div>
+            <div class="hidden md:block overflow-x-auto">
+              <p-table [value]="creditNotes()" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Número</th>
+                    <th class="text-right">Monto</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-note>
+                  <tr>
+                    <td class="font-mono text-sm">{{ note.noteNumber }}</td>
+                    <td class="text-right font-mono text-green-600 dark:text-green-400">
+                      -{{ note.amount | number: '1.2-2' }}
+                    </td>
+                    <td class="text-sm">{{ note.reason }}</td>
+                    <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
           </app-details-section-card>
         }
 
         @if (debitNotes().length > 0) {
           <app-details-section-card title="Notas de Débito" icon="pi-arrow-up">
-            <p-table [value]="debitNotes()" styleClass="p-datatable-sm">
-              <ng-template pTemplate="header">
-                <tr>
-                  <th>Número</th>
-                  <th class="text-right">Monto</th>
-                  <th>Motivo</th>
-                  <th>Fecha</th>
-                </tr>
-              </ng-template>
-              <ng-template pTemplate="body" let-note>
-                <tr>
-                  <td class="font-mono text-sm">{{ note.noteNumber }}</td>
-                  <td class="text-right font-mono text-red-600 dark:text-red-400">
-                    +{{ note.amount | number: '1.2-2' }}
-                  </td>
-                  <td class="text-sm">{{ note.reason }}</td>
-                  <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
-                </tr>
-              </ng-template>
-            </p-table>
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (note of debitNotes(); track note.id) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-2"
+                >
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="font-mono text-sm">{{ note.noteNumber }}</span>
+                    <span class="font-mono text-sm text-red-600 dark:text-red-400">
+                      +{{ note.amount | number: '1.2-2' }}
+                    </span>
+                  </div>
+                  <div class="flex flex-col gap-0.5">
+                    <span class="text-xs text-surface-400">Motivo</span>
+                    <span class="text-sm">{{ note.reason }}</span>
+                  </div>
+                  <span class="text-xs text-surface-400">{{
+                    note.applicationDate | date: 'dd/MM/yyyy'
+                  }}</span>
+                </div>
+              }
+            </div>
+            <div class="hidden md:block overflow-x-auto">
+              <p-table [value]="debitNotes()" styleClass="p-datatable-sm">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>Número</th>
+                    <th class="text-right">Monto</th>
+                    <th>Motivo</th>
+                    <th>Fecha</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-note>
+                  <tr>
+                    <td class="font-mono text-sm">{{ note.noteNumber }}</td>
+                    <td class="text-right font-mono text-red-600 dark:text-red-400">
+                      +{{ note.amount | number: '1.2-2' }}
+                    </td>
+                    <td class="text-sm">{{ note.reason }}</td>
+                    <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
           </app-details-section-card>
         }
       </div>
