@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, switchMap, catchError, filter, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { tap, finalize, shareReplay } from 'rxjs/operators';
 import { AuthApiService } from '@features/auth/services/api';
 import { AUTH_HTTP_ERRORS, AUTH_DEFAULT_ERROR_MESSAGE } from '@features/auth/messages';
 import {
@@ -27,8 +27,7 @@ export class AuthService {
   error = signal<string | null>(null);
 
   private tokenExpirationTimer: ReturnType<typeof setTimeout> | null = null;
-  private isRefreshingToken = false;
-  private refreshTokenSubject = new BehaviorSubject<string | null>(null);
+  private refreshInFlight$: Observable<AuthenticationResponse> | null = null;
 
   constructor() {
     this.loadAuthFromStorage();
@@ -184,6 +183,10 @@ export class AuthService {
   }
 
   refreshTokenSilently(): Observable<AuthenticationResponse> {
+    if (this.refreshInFlight$) {
+      return this.refreshInFlight$;
+    }
+
     const currentRefreshToken = this.refreshToken();
     if (!currentRefreshToken) {
       return new Observable((subscriber) => {
@@ -191,13 +194,19 @@ export class AuthService {
       });
     }
 
-    return this.apiService.refresh({ refreshToken: currentRefreshToken }).pipe(
+    this.refreshInFlight$ = this.apiService.refresh({ refreshToken: currentRefreshToken }).pipe(
       tap({
         next: (response) => {
           this.setAuthState(response);
         },
       }),
+      finalize(() => {
+        this.refreshInFlight$ = null;
+      }),
+      shareReplay(1),
     );
+
+    return this.refreshInFlight$;
   }
 
   getUserType(): string | null {
@@ -213,6 +222,7 @@ export class AuthService {
     this.accessToken.set(response.accessToken);
     this.refreshToken.set(response.refreshToken);
     this.saveAuthToStorage(response);
+    this.scheduleTokenRefresh(response.expiresIn);
   }
 
   clearAuthState(): void {
@@ -261,7 +271,6 @@ export class AuthService {
       const accessToken = localStorage.getItem('accessToken');
       const refreshToken = localStorage.getItem('refreshToken');
       const userStr = localStorage.getItem('currentUser');
-      const expiresAtStr = localStorage.getItem('tokenExpiresAt');
 
       if (accessToken && refreshToken && userStr) {
         const user = JSON.parse(userStr);
@@ -274,23 +283,6 @@ export class AuthService {
         this.accessToken.set(accessToken);
         this.refreshToken.set(refreshToken);
         this.currentUser.set(user);
-
-        if (expiresAtStr) {
-          const expiresAt = parseInt(expiresAtStr, 10);
-          const timeRemaining = expiresAt - Date.now();
-
-          if (timeRemaining > 60000) {
-            this.scheduleTokenRefresh(timeRemaining);
-          } else if (timeRemaining > 0) {
-            this.refreshTokenSilently().subscribe({
-              error: () => {
-                this.clearAuthState();
-              },
-            });
-          } else {
-            this.clearAuthState();
-          }
-        }
       }
     } catch {
       this.clearAuthFromStorage();
