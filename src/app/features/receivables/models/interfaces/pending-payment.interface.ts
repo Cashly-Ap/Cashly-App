@@ -10,7 +10,7 @@ export interface PendingPayment {
   paymentDate: string;
   createdAt: string;
   invoiceNumber: string;
-  voucherPath: string | null;
+  voucherUrl: string | null;
   referenceNumber?: string;
   notes?: string;
   createdByName?: string;

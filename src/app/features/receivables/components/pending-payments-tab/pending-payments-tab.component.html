@@ -70,6 +70,15 @@
                 (onClick)="openReject(payment)"
                 pTooltip="Rechazar"
               />
+              <p-button
+                icon="pi pi-paperclip"
+                [text]="true"
+                [rounded]="true"
+                severity="info"
+                [disabled]="!payment.voucherUrl"
+                (onClick)="openVoucher(payment)"
+                pTooltip="Ver justificante"
+              />
             </div>
           </td>
         </tr>
@@ -91,6 +100,52 @@
       <strong>{{ selectedPayment()?.amount | currency: 'USD' : 'symbol' }}</strong
       >.
     </p>
+    @if (selectedPayment(); as payment) {
+      <div
+        class="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg border border-surface-200 bg-surface-50 p-3 text-sm dark:border-surface-700 dark:bg-surface-800/50"
+      >
+        <div>
+          <span class="block text-xs text-surface-500">Cliente</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.customerName || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Factura</span>
+          <span class="font-mono font-medium text-surface-900 dark:text-surface-0">{{
+            payment.invoiceNumber || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Método de pago</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">
+            {{
+              payment.source === 'CUSTOMER_BALANCE'
+                ? 'Saldo a favor'
+                : payment.paymentMethodName || '-'
+            }}
+          </span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Fecha de pago</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.paymentDate | date: 'dd/MM/yyyy'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Referencia</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.referenceNumber || '-'
+          }}</span>
+        </div>
+        @if (payment.notes) {
+          <div class="col-span-2">
+            <span class="block text-xs text-surface-500">Notas</span>
+            <span class="text-surface-900 dark:text-surface-0">{{ payment.notes }}</span>
+          </div>
+        }
+      </div>
+    }
     <div class="flex flex-col gap-1">
       <label class="text-sm font-medium text-surface-700"
         >Razón de aprobación <span class="text-red-500">*</span></label
@@ -136,6 +191,52 @@
       Estás por rechazar el pago <strong>{{ selectedPayment()?.paymentNumber }}</strong
       >.
     </p>
+    @if (selectedPayment(); as payment) {
+      <div
+        class="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg border border-surface-200 bg-surface-50 p-3 text-sm dark:border-surface-700 dark:bg-surface-800/50"
+      >
+        <div>
+          <span class="block text-xs text-surface-500">Cliente</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.customerName || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Factura</span>
+          <span class="font-mono font-medium text-surface-900 dark:text-surface-0">{{
+            payment.invoiceNumber || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Método de pago</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">
+            {{
+              payment.source === 'CUSTOMER_BALANCE'
+                ? 'Saldo a favor'
+                : payment.paymentMethodName || '-'
+            }}
+          </span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Fecha de pago</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.paymentDate | date: 'dd/MM/yyyy'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">Referencia</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.referenceNumber || '-'
+          }}</span>
+        </div>
+        @if (payment.notes) {
+          <div class="col-span-2">
+            <span class="block text-xs text-surface-500">Notas</span>
+            <span class="text-surface-900 dark:text-surface-0">{{ payment.notes }}</span>
+          </div>
+        }
+      </div>
+    }
     <div class="flex flex-col gap-1">
       <label class="text-sm font-medium text-surface-700"
         >Motivo de rechazo <span class="text-red-500">*</span></label
@@ -168,3 +269,10 @@
     />
   </ng-template>
 </p-dialog>
+
+<app-image-viewer-dialog
+  [visible]="voucherViewerVisible()"
+  [imageUrl]="voucherViewerUrl()"
+  title="Justificante de pago"
+  (visibleChange)="voucherViewerVisible.set($event)"
+/>

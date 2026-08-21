@@ -433,6 +433,7 @@
           <app-pending-payments-tab
             [focusPaymentId]="focusPaymentId()"
             (focusHandled)="onPaymentFocusHandled($event)"
+            (paymentValidated)="onPaymentValidated()"
           />
         </p-tabpanel>
       </p-tabpanels>

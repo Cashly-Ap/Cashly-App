@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of } from 'rxjs';
 import { environment } from '@env/environment';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
@@ -103,7 +103,29 @@ export class ReceivablesApiService {
   }
 
   listPendingPayments(): Observable<PendingPayment[]> {
-    return this.http.get<PendingPayment[]>(`${this.paymentsBaseUrl}?status=PENDING`);
+    return forkJoin({
+      payments: this.http.get<PendingPayment[]>(`${this.paymentsBaseUrl}?status=PENDING`),
+      details: this.getPaymentHistory({ page: 0, size: 100 }).pipe(
+        map((response) => response.content ?? []),
+        catchError(() => of([])),
+      ),
+    }).pipe(
+      map(({ payments, details }) => {
+        const detailsById = new Map(details.map((payment) => [payment.id, payment]));
+        return payments.map((payment) => {
+          const detail = detailsById.get(payment.id);
+          return detail
+            ? {
+                ...payment,
+                ...detail,
+                referenceNumber: payment.referenceNumber,
+                notes: payment.notes,
+                voucherUrl: payment.voucherUrl,
+              }
+            : payment;
+        });
+      }),
+    );
   }
 
   approvePayment(id: string, reason: string): Observable<any> {

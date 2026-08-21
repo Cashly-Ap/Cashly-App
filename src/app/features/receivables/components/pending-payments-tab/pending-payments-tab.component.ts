@@ -22,6 +22,9 @@ import { MessageService } from 'primeng/api';
 import { Subject, takeUntil } from 'rxjs';
 import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/receivables/models/interfaces';
+import { ImageViewerDialogComponent } from '@shared/components/ui/image-viewer-dialog/image-viewer-dialog.component';
+
+const IMAGE_EXTENSION_PATTERN = /\.(png|jpe?g|gif|webp|svg|bmp)(\?.*)?$/i;
 
 @Component({
   selector: 'app-pending-payments-tab',
@@ -38,6 +41,7 @@ import { PendingPayment } from '@features/receivables/models/interfaces';
     InputTextModule,
     TextareaModule,
     TooltipModule,
+    ImageViewerDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './pending-payments-tab.component.html',
@@ -51,12 +55,15 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
   readonly loading = signal(false);
   readonly focusPaymentId = input<string | null>(null);
   readonly focusHandled = output<string>();
+  readonly paymentValidated = output<void>();
 
   readonly approveDialogVisible = signal(false);
   readonly rejectDialogVisible = signal(false);
   readonly selectedPayment = signal<PendingPayment | null>(null);
   readonly reason = signal('');
   readonly submitting = signal(false);
+  readonly voucherViewerVisible = signal(false);
+  readonly voucherViewerUrl = signal<string | null>(null);
   private readonly handledFocusId = signal<string | null>(null);
 
   constructor() {
@@ -121,6 +128,7 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
             summary: 'Pago aprobado',
             detail: 'El pago ha sido verificado y aprobado.',
           });
+          this.paymentValidated.emit();
           this.load();
         },
         error: () => {
@@ -149,6 +157,7 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
             summary: 'Pago rechazado',
             detail: 'El pago ha sido rechazado.',
           });
+          this.paymentValidated.emit();
           this.load();
         },
         error: () => {
@@ -165,5 +174,16 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
   formatCustomer(payment: PendingPayment): string {
     if (payment.customerName) return payment.customerName;
     return payment.createdByName || 'Portal';
+  }
+
+  openVoucher(payment: PendingPayment): void {
+    const url = payment.voucherUrl;
+    if (!url) return;
+    if (IMAGE_EXTENSION_PATTERN.test(url)) {
+      this.voucherViewerUrl.set(url);
+      this.voucherViewerVisible.set(true);
+      return;
+    }
+    window.open(url, '_blank');
   }
 }

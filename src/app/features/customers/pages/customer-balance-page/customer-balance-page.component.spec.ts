@@ -195,7 +195,7 @@ describe('CustomerBalancePageComponent', () => {
             paymentDate: '2026-08-02',
             createdAt: '2026-08-02T09:00:00',
             invoiceNumber: 'INV-001',
-            voucherPath: null,
+            voucherUrl: null,
           },
         ],
         totalElements: 1,

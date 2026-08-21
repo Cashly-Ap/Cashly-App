@@ -133,6 +133,10 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  onPaymentValidated(): void {
+    this.service.customerDebtChange.next();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
