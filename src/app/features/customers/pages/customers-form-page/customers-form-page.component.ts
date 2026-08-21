@@ -325,14 +325,11 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
               },
             });
           },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar el cliente. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
+          error: (error: unknown) =>
+            this.handleSaveError(
+              error,
+              'Error al actualizar el cliente. Por favor, intente nuevamente.',
+            ),
         });
       } else {
         const warehouseIds = this.warehouseAccess().map((w) => w.warehouseId);
@@ -358,15 +355,8 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
             });
             this.router.navigate(['/customers']);
           },
-          error: (err: { error?: { message?: string } }) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail:
-                err?.error?.message || 'Error al crear el cliente. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
+          error: (error: unknown) =>
+            this.handleSaveError(error, 'Error al crear el cliente. Por favor, intente nuevamente.'),
         });
       }
     } else {
@@ -378,6 +368,33 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         life: 5000,
       });
     }
+  }
+
+  private handleSaveError(error: unknown, fallbackMessage: string): void {
+    const response = error as {
+      status?: number;
+      error?: { error?: string; message?: string };
+    };
+
+    if (response.status === 409 && response.error?.error === 'Duplicate customer RIF') {
+      const rifControl = this.form.get('rif');
+      rifControl?.setErrors({ ...rifControl.errors, duplicateRif: true });
+      rifControl?.markAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'RIF ya registrado',
+        detail: `Ya existe un cliente registrado con el RIF ${rifControl?.value}.`,
+        life: 5000,
+      });
+      return;
+    }
+
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: response.error?.message || fallbackMessage,
+      life: 5000,
+    });
   }
 
   loadWarehouseAccess(id: string): void {

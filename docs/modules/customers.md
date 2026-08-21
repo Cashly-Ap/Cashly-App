@@ -124,6 +124,7 @@ src/app/features/customers/
 - Real-time validation feedback
 - Pending changes guard
 - Dynamic arrays for emails, phones, addresses
+- Portal access can be enabled or revoked when creating or editing a customer
 
 ### Details Page
 
@@ -951,7 +952,7 @@ export const CUSTOMER_ROUTES: Routes = [
 ### Component Tests
 
 - [ ] List page renders correctly
-- [ ] Form page validates correctly
+- [x] Form page reports a duplicate RIF returned by create or update
 - [ ] Details page displays data correctly
 - [ ] Navigation works correctly
 
@@ -977,7 +978,7 @@ export const CUSTOMER_ROUTES: Routes = [
 1. **Nested Entity Management**: Backend uses "Replace All" strategy. Frontend must always send complete arrays when updating.
 2. **ID Handling**: New nested entities don't need IDs. Existing ones can include IDs but backend ignores them during update.
 3. **Form State**: Use pending changes guard to prevent data loss on navigation.
-4. **Error Handling**: All HTTP errors display user-friendly messages via toast notifications.
+4. **Error Handling**: All HTTP errors display user-friendly messages via toast notifications. A duplicate RIF conflict also marks the RIF field and keeps the form open for correction.
 5. **RIF Validation**: Venezuelan format includes letters J (Business), V (Individual), E (Foreign), G (Government), P (Passport).
 6. **Phone Format**: Standard Venezuelan format 0XXX-XXXXXXX (e.g., 0212-1234567 or 0414-1234567).
 

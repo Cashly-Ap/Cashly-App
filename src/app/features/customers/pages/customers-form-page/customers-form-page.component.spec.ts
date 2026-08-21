@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, ActivatedRoute, provideRouter, convertToParamMap } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -11,6 +11,7 @@ import { CustomerApplicationService } from '@features/customers/services/applica
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerType } from '@features/customers/models/enums';
 import { CustomerDetails } from '@features/customers/models/interfaces';
+import { FormMode } from '@core/forms/enums/form-mode.enum';
 
 describe('CustomersFormPageComponent', () => {
   let component: CustomersFormPageComponent;
@@ -150,5 +151,62 @@ describe('CustomersFormPageComponent', () => {
 
     expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ warehouseIds: ['wh-001'] }));
     expect(grantSpy).not.toHaveBeenCalled();
+  });
+
+  it('should identify a duplicate RIF when customer creation returns a conflict', () => {
+    const messageService = fixture.debugElement.injector.get(MessageService);
+    const addSpy = vi.spyOn(messageService, 'add');
+    vi.mocked(mockService.create!).mockReturnValue(
+      throwError(() => ({
+        status: 409,
+        error: { error: 'Duplicate customer RIF' },
+      })),
+    );
+
+    component.form.get('legalName')?.setValue('Duplicate Corp');
+    component.form.get('rif')?.setValue('J-12345678-9');
+    component.form.get('priceTypeId')?.setValue('pt-001');
+    (component.form.get('addresses') as any).at(0).get('address')?.setValue('Av. Principal');
+    component.warehouseAccess.set([
+      { id: '', customerId: '', warehouseId: 'wh-001', warehouseName: 'Almacén 1' },
+    ]);
+
+    component.onSubmit();
+
+    expect(component.form.get('rif')?.hasError('duplicateRif')).toBe(true);
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'warn',
+        detail: 'Ya existe un cliente registrado con el RIF J-12345678-9.',
+      }),
+    );
+  });
+
+  it('should identify a duplicate RIF when customer update returns a conflict', () => {
+    const messageService = fixture.debugElement.injector.get(MessageService);
+    const addSpy = vi.spyOn(messageService, 'add');
+    vi.mocked(mockService.update!).mockReturnValue(
+      throwError(() => ({
+        status: 409,
+        error: { error: 'Duplicate customer RIF' },
+      })),
+    );
+
+    component.mode.set(FormMode.EDIT);
+    component.entityId.set('uuid-001');
+    component.form.get('legalName')?.setValue('Duplicate Corp');
+    component.form.get('rif')?.setValue('J-12345678-9');
+    component.form.get('priceTypeId')?.setValue('pt-001');
+    (component.form.get('addresses') as any).at(0).get('address')?.setValue('Av. Principal');
+
+    component.onSubmit();
+
+    expect(component.form.get('rif')?.hasError('duplicateRif')).toBe(true);
+    expect(addSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'warn',
+        detail: 'Ya existe un cliente registrado con el RIF J-12345678-9.',
+      }),
+    );
   });
 });

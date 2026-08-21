@@ -2,16 +2,17 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CustomerGeneralSectionComponent } from '@features/customers/components/customer-general-section/customer-general-section.component';
 import { CustomerType, PaymentType } from '@features/customers/models/enums';
 
 @Component({
-  template: `<app-customer-general-section [form]="form" />`,
+  template: `<app-customer-general-section [form]="form" [isEditMode]="isEditMode()" />`,
   imports: [CustomerGeneralSectionComponent, ReactiveFormsModule],
 })
 class HostComponent {
   fb = new FormBuilder();
+  isEditMode = signal(false);
   form = this.fb.group({
     legalName: ['', Validators.required],
     rif: ['', Validators.required],
@@ -65,6 +66,14 @@ describe('CustomerGeneralSectionComponent', () => {
     expect(ctrl.value).toBe(false);
     host.form.get('portalAccess')?.setValue(true);
     expect(ctrl.value).toBe(true);
+  });
+
+  it('should allow portal access to be changed in edit mode', () => {
+    host.isEditMode.set(true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Acceso al Portal');
+    expect(component.control('portalAccess').enabled).toBe(true);
   });
 
   it('should show initial password hint when portal access is enabled', () => {
