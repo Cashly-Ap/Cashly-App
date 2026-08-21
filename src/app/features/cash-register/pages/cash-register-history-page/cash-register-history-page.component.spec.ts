@@ -4,11 +4,13 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CashRegisterResponse } from '@features/cash-register/models/interfaces/closure.interface';
+import { getCashMovementTypeLabel } from '@features/cash-register/models/enums';
 import { CashRegisterHistoryPageComponent } from './cash-register-history-page.component';
 import { CashRegisterApplicationService } from '../../services/application/cash-register-application.service';
 
 describe('CashRegisterHistoryPageComponent', () => {
   let fixture: ComponentFixture<CashRegisterHistoryPageComponent>;
+  let component: CashRegisterHistoryPageComponent;
   const history = signal<CashRegisterResponse[]>([]);
   const service = {
     history,
@@ -28,6 +30,7 @@ describe('CashRegisterHistoryPageComponent', () => {
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(CashRegisterHistoryPageComponent);
+    component = fixture.componentInstance;
   });
 
   it('does not show per-session report actions', () => {
@@ -48,6 +51,22 @@ describe('CashRegisterHistoryPageComponent', () => {
     expect(
       fixture.nativeElement.querySelector('[data-testid="cash-history-desktop"]'),
     ).not.toBeNull();
+  });
+
+  it.each([
+    ['PAYMENT', 'Pago'],
+    ['ADVANCE', 'Anticipo'],
+    ['REFUND', 'Reembolso'],
+    ['INVOICE', 'Factura'],
+    ['CREDIT_NOTE', 'Nota de crédito'],
+    ['DEBIT_NOTE', 'Nota de débito'],
+    ['RETURN', 'Devolución'],
+    ['MANUAL_INCOME', 'Ingreso manual'],
+    ['EXPENSE', 'Gasto'],
+    ['WITHDRAWAL', 'Retiro'],
+    ['ADJUSTMENT', 'Ajuste'],
+  ])('translates movement type %s to %s', (type, label) => {
+    expect(getCashMovementTypeLabel(type)).toBe(label);
   });
 });
 

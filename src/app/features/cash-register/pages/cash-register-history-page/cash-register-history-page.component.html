@@ -228,7 +228,9 @@
                               <div class="min-w-0">
                                 <div class="flex flex-wrap justify-between gap-2">
                                   <p class="min-w-0 break-words text-sm font-medium">
-                                    {{ movement.description || movement.type }}
+                                    {{
+                                      movement.description || getMovementTypeLabel(movement.type)
+                                    }}
                                   </p>
                                   <span
                                     [class]="
@@ -409,7 +411,9 @@
                                   ></i>
                                   <div>
                                     <p class="text-sm font-medium">
-                                      {{ movement.description || movement.type }}
+                                      {{
+                                        movement.description || getMovementTypeLabel(movement.type)
+                                      }}
                                     </p>
                                     <p class="text-xs text-surface-500">
                                       {{ movement.occurredAt | date: 'dd/MM/yyyy HH:mm' }} ·

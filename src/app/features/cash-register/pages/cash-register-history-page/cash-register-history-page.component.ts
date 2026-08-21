@@ -26,6 +26,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { CashRegisterApplicationService } from '@features/cash-register/services/application/cash-register-application.service';
 import { CashRegisterHistoryView } from '@features/cash-register/models/interfaces/closure.interface';
+import { getCashMovementTypeLabel } from '@features/cash-register/models/enums';
 
 @Component({
   selector: 'app-cash-register-history-page',
@@ -164,6 +165,10 @@ export class CashRegisterHistoryPageComponent implements OnInit {
       default:
         return 'contrast';
     }
+  }
+
+  getMovementTypeLabel(type: string): string {
+    return getCashMovementTypeLabel(type);
   }
 
   get currentPage(): number {
