@@ -7,6 +7,8 @@ This folder contains all raw project information, client requirements, functiona
 | File                                       | Description                                                 |
 | ------------------------------------------ | ----------------------------------------------------------- |
 | [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | Full project vision, functional scope, and module breakdown |
+| [E2E_TEST_PROPOSAL.md](E2E_TEST_PROPOSAL.md) | Back-office Playwright coverage proposal by module and workflow |
+| [E2E_TEST_CHECKLIST.md](E2E_TEST_CHECKLIST.md) | Implementation checklist for delivering the back-office E2E suite |
 
 ---
 
