@@ -1,89 +1,73 @@
-# Parsun
+# Parsun App
 
-**Parsun** is a comprehensive invoicing and business management system designed to streamline operations for businesses. It provides a cloud-based database solution where sales representatives can connect and create orders, manage inventory, track customers, and handle financial transactions.
+Parsun App is the private Angular single-page application for internal business operations. It provides the back-office interface for managing customers, catalog data, inventory, sales, billing, payments, purchasing, cash registers, reports, and user access. The repository exists to implement the operational UI and consume the contracts exposed by `parsun-api`.
 
-## 🚀 Quick Start
+## Scope and modules
+
+| Area | Responsibility |
+| --- | --- |
+| Authentication and users | Login, session handling, user administration, roles, and permissions. |
+| Dashboard | Operational summaries, indicators, and low-stock visibility. |
+| Customers and merchants | Customer records, contacts, merchants, and commercial history. |
+| Catalog | Categories, products, price types, and differential pricing. |
+| Inventory | Warehouses, stock movements, transfers, and availability. |
+| Sales | Quotes, orders, invoices, returns, credit notes, and debit notes. |
+| Payments and collections | Payment methods, receivables, payables, collections, and payment validation. |
+| Purchasing | Suppliers and purchase workflows. |
+| Cash register | Cash-register sessions, movements, opening, closing, and history. |
+| Reports and notifications | Operational reports and user notifications. |
+
+The module index and implementation references are in [docs/modules/README.md](docs/modules/README.md).
+
+## Frontend architecture
+
+- Angular standalone components with lazy-loaded feature routes.
+- Feature boundaries under `src/app/features`.
+- Shared presentation components, utilities, and design primitives under `src/app/shared`.
+- Cross-cutting services, guards, interceptors, and configuration under `src/app/core`.
+- Signals for local and derived UI state, with RxJS for asynchronous API flows.
+- `ChangeDetectionStrategy.OnPush`, external templates, and Angular's modern control-flow syntax.
+- PrimeNG components and Tailwind CSS utilities for the visual layer.
+
+## Runtime stack
+
+| Concern | Technology |
+| --- | --- |
+| Framework | Angular 21 with standalone components |
+| Language | TypeScript 5.9 in strict mode |
+| UI | PrimeNG 21, PrimeIcons, Tailwind CSS 4 |
+| State and async flows | Angular Signals and RxJS |
+| Charts | Chart.js and ng2-charts |
+| Package manager | Bun 1.3.3 |
+| Testing | Vitest with jsdom |
+| Runtime | Docker Compose or Angular CLI |
+
+## Local runtime
+
+Prerequisites: Bun and, for the container workflow, Docker with Compose.
 
 ```bash
-# Clone the repository
-git clone https://gitlab.com/projects-clients/parsun/parsun-app.git
-cd parsun-app
-
-# Development with Docker (recommended)
-docker-compose --profile dev up
-
-# Or local installation
 bun install
 bun start
 ```
 
-The application will be available at `http://localhost:4200/`
+The development server is available at `http://localhost:4200`.
 
-## 📚 Documentation
+The equivalent Docker profile is:
 
-### Getting Started
+```bash
+docker compose --profile dev up --build
+```
 
-- **[Getting Started](docs/GETTING_STARTED.md)** - Installation and initial setup
-- **[Docker Development](docs/DOCKER.md)** - Container setup and development
-- **[Testing](docs/TESTING.md)** - Running tests with Vitest
-- **[Environment Variables](docs/ENVIRONMENT.md)** - Environment configuration
-- **[Architecture](docs/ARCHITECTURE.md)** - Project structure and modules
+Configuration and backend connectivity are described in [docs/ENVIRONMENT.md](docs/ENVIRONMENT.md), [docs/DOCKER.md](docs/DOCKER.md), and [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 
-### AI Agents
+## Verification
 
-Parsun uses specialized AI agents to maintain code quality, security, and documentation:
+```bash
+bun run test:run
+bun run build
+bun run format:check
+bun run e2e
+```
 
-- **[🤖 Agents Overview](docs/agents/README.md)** - Integration guide for all agents
-- **[🏗️ Angular Architecture](docs/agents/master-angular-architecture.md)** - Module development with TDD, SOLID, DRY, DDD
-- **[📝 Master Documentation](docs/agents/master-documentation.md)** - Technical documentation specialist
-- **[🔒 Master Security](docs/agents/master-security.md)** - Security auditing and compliance
-- **[⚡ Master Optimization](docs/agents/master-optimization.md)** - Performance and code quality
-
-### Module Documentation
-
-- **[📚 Modules Index](docs/modules/README.md)** - All modules with status overview
-- **[🔐 Authentication](docs/modules/auth.md)** - User authentication and authorization
-- **[📊 Dashboard](docs/modules/dashboard.md)** - Dashboard and analytics
-- **[👥 Customers](docs/modules/customers.md)** - Customer management with contacts
-- **[📦 Products](docs/modules/products.md)** - Product catalog (simple/composite types)
-- **[📍 Warehouses](docs/modules/warehouses.md)** - Warehouse and stock operations
-- **[💰 Differentials](docs/modules/differentials.md)** - Price percentage adjustments
-
-## ✨ Key Features
-
-### System Modules
-
-- **👥 Customer Management** - Customer database with order and invoice history
-- **👤 User Management** - Authentication and role-based access control
-- **📋 Order Management** - Order and quote handling convertible to invoices
-- **🧾 Invoice Management** - Billing and payment tracking
-- **🏷️ Product Management** - Inventory control with categories and stock
-- **🏭 Warehouse Management** - Multi-warehouse stock control with transfers
-
-## 🛠 Technology Stack
-
-### Frontend
-
-- **Framework**: Angular 21 (Standalone components)
-- **UI Library**: PrimeNG 21
-- **Language**: TypeScript 5.8
-- **Styling**: Tailwind CSS
-- **State Management**: Signals + RxJS
-- **Testing**: Vitest
-- **Architecture**: Single Page Application (SPA)
-
-### Backend
-
-- **Language**: Java
-- **Framework**: Spring
-- **Database**: MySQL
-
-### DevOps
-
-- **CI/CD**: GitLab Pipeline
-- **Cloud**: AWS
-- **Containers**: Docker
-
----
-
-Built with ❤️ using Angular 21 and PrimeNG 21
+See [docs/TESTING.md](docs/TESTING.md) for the repository test strategy and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for implementation conventions.

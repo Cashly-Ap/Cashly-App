@@ -11,16 +11,26 @@ This directory contains documentation for all frontend modules in the Lexand app
 | [Auth](./auth.md)                   | Auth         | Implemented | Authentication, JWT tokens, and user profile management                    |
 | [Dashboard](./dashboard.md)         | Display-only | Implemented | Business metrics, charts, and analytics overview                           |
 | [Customers](./customers.md)         | CRUD         | Implemented | Customer management with contacts and addresses                            |
-| [Products](./products.md)           | CRUD         | Planned     | Product catalog with simple/composite types and compositions               |
-| [Differentials](./differentials.md) | CRUD         | Planned     | Price percentage adjustments (surcharges/discounts)                        |
-| [Warehouses](./warehouses.md)       | CRUD         | Planned     | Warehouse management with stock operations                                 |
-| [Merchants](./merchants.md)         | CRUD         | Planned     | Merchant management with commission tracking                               |
-| [Orders](./orders.md)               | CRUD         | Planned     | Order management with line items and status workflow                       |
-| [Invoices](./invoices.md)           | CRUD         | Planned     | Invoice management with payments and due dates                             |
-| [Collections](./collections.md)     | Display-only | Planned     | Commission records (auto-generated from invoice payments)                  |
+| [Products](./products.md)           | CRUD         | Implemented | Product catalog with simple/composite types and compositions               |
+| [Differentials](./differentials.md) | CRUD         | Implemented | Price percentage adjustments (surcharges/discounts)                        |
+| [Warehouses](./warehouses.md)       | CRUD         | Implemented | Warehouse management with stock operations                                 |
+| [Merchants](./merchants.md)         | CRUD         | Implemented | Merchant management with commission tracking                               |
+| [Orders](./orders.md)               | CRUD         | Implemented | Order management with line items and status workflow                       |
+| [Invoices](./invoices.md)           | CRUD         | Implemented | Invoice management with payments and due dates                             |
+| [Collections](./collections.md)     | Display-only | Implemented | Commission records (auto-generated from invoice payments)                  |
 | [Receivables](./receivables.md)     | Special      | Implemented | Customer debt management and payment registration with validation workflow |
-| [Payables](./payables.md)           | Special      | Planned     | Merchant commission payments tracking and settlement                       |
-| [Notifications](./notifications.md) | Display-only | Planned     | In-app notifications system with role-based routing                        |
+| [Payables](./payables.md)           | Special      | Implemented | Merchant commission payments tracking and settlement                       |
+| [Notifications](./notifications.md) | Display-only | Implemented | In-app notifications system with role-based routing                        |
+| [Cash Register](./cash-register.md) | Special | Implemented | Session-based opening, movements, closing, and history |
+| [Credit Notes](./credit-notes.md) | CRUD | Implemented | Customer credit adjustments |
+| [Debit Notes](./debit-notes.md) | CRUD | Implemented | Customer debit adjustments |
+| [Payment Methods](./payment-methods.md) | CRUD | Implemented | Available payment instruments |
+| [Payments](./payments.md) | Special | Implemented | Payment administration and detail views |
+| [Price Types](./price-types.md) | CRUD | Implemented | Product price classifications |
+| [Purchases](./purchases.md) | Special | Implemented | Supplier purchases and stock confirmation |
+| [Quotes](./quotes.md) | Special | Implemented | Quote allocation and conversion |
+| [Returns](./returns.md) | Special | Implemented | Customer returns and stock effects |
+| [Suppliers](./suppliers.md) | CRUD | Implemented | Supplier management |
 
 ---
 
