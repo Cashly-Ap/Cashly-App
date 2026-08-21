@@ -1,6 +1,17 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('Back-office authentication entry point', () => {
+  const authenticatedUser = {
+    id: 'user-e2e-1',
+    email: 'e2e-admin@example.com',
+    userName: 'E2E Admin',
+    type: 'SUPER_ADMIN',
+    role: 'SUPER_ADMIN',
+    active: true,
+    createdAt: '2026-08-21T00:00:00Z',
+    modulePermissions: ['SALES', 'FINANCES', 'INVENTORY', 'PURCHASES', 'DASHBOARD'],
+  };
+
   test('renders the login form for an unauthenticated visitor', async ({ page }) => {
     await page.goto('/');
 
@@ -16,5 +27,75 @@ test.describe('Back-office authentication entry point', () => {
 
     await expect(page).toHaveURL(/\/auth\/login$/);
     await expect(page.getByRole('heading', { name: 'Bienvenido de nuevo' })).toBeVisible();
+  });
+
+  test('logs in and persists the authenticated user', async ({ page }) => {
+    await page.route('**/api/auth/login', async (route) => {
+      expect(route.request().method()).toBe('POST');
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          accessToken: 'e2e-access-token',
+          refreshToken: 'e2e-refresh-token',
+          tokenType: 'Bearer',
+          expiresIn: 3_600_000,
+          entity: authenticatedUser,
+        }),
+      });
+    });
+    await page.route('**/api/notifications/unread-count', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(0) });
+    });
+    await page.route('**/api/customers*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          content: [],
+          totalElements: 0,
+          totalPages: 0,
+          size: 10,
+          number: 0,
+          first: true,
+          last: true,
+          empty: true,
+        }),
+      });
+    });
+
+    await page.goto('/auth/login');
+    await page.getByLabel('Email').fill('e2e-admin@example.com');
+    await page.locator('input[type="password"]').fill('ValidPassword1!');
+    await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+
+    await expect(page).toHaveURL(/\/customers$/);
+    await expect(page).toHaveTitle('Clientes');
+    await expect(page.evaluate(() => localStorage.getItem('accessToken'))).resolves.toBe(
+      'e2e-access-token',
+    );
+    await expect(page.evaluate(() => JSON.parse(localStorage.getItem('currentUser') ?? '{}'))).resolves.toMatchObject({
+      email: 'e2e-admin@example.com',
+      role: 'SUPER_ADMIN',
+    });
+  });
+
+  test('shows the API error when credentials are rejected', async ({ page }) => {
+    await page.route('**/api/auth/login', async (route) => {
+      await route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Credenciales incorrectas' }),
+      });
+    });
+
+    await page.goto('/auth/login');
+    await page.getByLabel('Email').fill('e2e-admin@example.com');
+    await page.locator('input[type="password"]').fill('WrongPassword1!');
+    await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
+
+    await expect(page).toHaveURL(/\/auth\/login$/);
+    await expect(page.getByText('Credenciales incorrectas')).toBeVisible();
+    await expect(page.evaluate(() => localStorage.getItem('accessToken'))).resolves.toBeNull();
   });
 });
