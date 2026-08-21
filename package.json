@@ -10,6 +10,10 @@
     "test:run": "bun run vitest --run",
     "test:watch": "bun run vitest --watch",
     "test:coverage": "bun run vitest --coverage",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
@@ -42,6 +46,7 @@
     "@angular/cli": "^21.0.0",
     "@angular/compiler-cli": "^21.0.0",
     "@angular/platform-browser-dynamic": "^21.0.3",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",

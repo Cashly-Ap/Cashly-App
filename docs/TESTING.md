@@ -591,6 +591,19 @@ test:
 
 ## 📚 Additional Resources
 
+## End-to-end testing with Playwright
+
+Playwright runs browser tests against a local Angular development server. The smoke suite verifies the login entry point and redirects unauthenticated users away from protected routes without requiring backend credentials.
+
+```bash
+bun run e2e
+bun run e2e:headed
+bun run e2e:ui
+bun run e2e:report
+```
+
+Tests are located in `e2e/`, and the browser configuration is in `playwright.config.ts`. Playwright starts the application on port `4300` when no existing server is available. Install the browser binaries once with `bunx playwright install chromium`.
+
 - [Vitest Documentation](https://vitest.dev/)
 - [Testing Angular](https://angular.io/guide/testing)
 - [Analog Vite Plugin Angular](https://analogjs.org/docs/packages/vite-plugin-angular/overview)
