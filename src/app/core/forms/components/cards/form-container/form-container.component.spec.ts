@@ -21,7 +21,7 @@ describe('FormContainerComponent', () => {
   });
 
   it('should have default maxWidth', () => {
-    expect(component.maxWidth()).toBe('max-w-6xl');
+    expect(component.maxWidth()).toBe('max-w-[1800px]');
   });
 
   it('should accept custom maxWidth', () => {

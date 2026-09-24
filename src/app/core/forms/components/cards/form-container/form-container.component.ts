@@ -6,5 +6,5 @@ import { Component, input } from '@angular/core';
   templateUrl: './form-container.component.html',
 })
 export class FormContainerComponent {
-  maxWidth = input<string>('max-w-6xl');
+  maxWidth = input<string>('max-w-[1800px]');
 }
