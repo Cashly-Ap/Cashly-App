@@ -29,6 +29,15 @@ export interface RecentActivity {
   created_at: string;
 }
 
+export interface InvoiceDue {
+  invoiceId: string;
+  invoiceNumber: string;
+  customerId: string;
+  customerName: string;
+  dueDate: string;
+  amount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class DashboardApiService {
   private readonly http = inject(HttpClient);
@@ -52,5 +61,9 @@ export class DashboardApiService {
 
   getRecentActivity(): Observable<RecentActivity[]> {
     return this.http.get<RecentActivity[]>(`${this.baseUrl}/recent-activity`);
+  }
+
+  getInvoiceDueSchedule(): Observable<InvoiceDue[]> {
+    return this.http.get<InvoiceDue[]>(`${this.baseUrl}/invoice-due-schedule`);
   }
 }

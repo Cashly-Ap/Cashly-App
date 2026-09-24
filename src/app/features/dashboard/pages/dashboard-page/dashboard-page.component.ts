@@ -6,6 +6,7 @@ import {
   MonthlySales,
   TopItem,
   RecentActivity,
+  InvoiceDue,
 } from '@features/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
@@ -25,10 +26,12 @@ export class DashboardPageComponent implements OnInit {
   readonly topProducts = signal<TopItem[]>([]);
   readonly topCustomers = signal<TopItem[]>([]);
   readonly recentActivity = signal<RecentActivity[]>([]);
+  readonly invoiceDueSchedule = signal<InvoiceDue[]>([]);
   readonly loading = signal(true);
 
   readonly barChartType: ChartType = 'bar';
   readonly horizontalBarChartType: ChartType = 'bar';
+  readonly lineChartType = 'line' as const;
 
   salesChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
   salesChartOptions: ChartConfiguration['options'] = {
@@ -63,6 +66,17 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
+  dueChartData = signal<ChartData<'line'>>({ labels: [], datasets: [] });
+  dueChartOptions: ChartConfiguration<'line'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: { intersect: false, mode: 'index' },
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: (v) => '$' + Number(v).toLocaleString() } },
+    },
+  };
+
   ngOnInit(): void {
     this.api.getSummary().subscribe((s) => this.summary.set(s));
 
@@ -94,6 +108,27 @@ export class DashboardPageComponent implements OnInit {
       this.recentActivity.set(data);
       this.loading.set(false);
     });
+
+    this.api.getInvoiceDueSchedule().subscribe((data) => {
+      this.invoiceDueSchedule.set(data);
+      const byDate = new Map<string, number>();
+      for (const invoice of data) {
+        byDate.set(invoice.dueDate, (byDate.get(invoice.dueDate) ?? 0) + invoice.amount);
+      }
+      const dates = [...byDate.keys()].sort();
+      this.dueChartData.set({
+        labels: dates.map((date) => this.formatDate(date)),
+        datasets: [{
+          data: dates.map((date) => byDate.get(date) ?? 0),
+          borderColor: '#ef4444',
+          backgroundColor: 'rgba(239, 68, 68, 0.14)',
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4,
+          pointBackgroundColor: '#ef4444',
+        }],
+      });
+    });
   }
 
   activityLabel(type: string): string {
@@ -119,5 +154,17 @@ export class DashboardPageComponent implements OnInit {
     const [year, m] = month.split('-');
     const monthIndex = parseInt(m, 10) - 1;
     return months[monthIndex] + ' ' + year;
+  }
+
+  formatDueDate(date: string): string {
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(`${date}T00:00:00`));
+  }
+
+  isOverdue(date: string): boolean {
+    return date < new Date().toISOString().slice(0, 10);
+  }
+
+  private formatDate(date: string): string {
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(new Date(`${date}T00:00:00`));
   }
 }
