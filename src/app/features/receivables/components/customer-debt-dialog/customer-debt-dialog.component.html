@@ -211,6 +211,9 @@
                 <div class="font-semibold text-surface-700 dark:text-surface-200">Fecha</div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
+                <div class="font-semibold text-surface-700 dark:text-surface-200">Vencimiento</div>
+              </th>
+              <th class="bg-surface-50 dark:bg-surface-800">
                 <div class="font-semibold text-surface-700 dark:text-surface-200">Estado</div>
               </th>
               <th class="text-right bg-surface-50 dark:bg-surface-800">
@@ -240,6 +243,16 @@
                 <span class="text-sm text-surface-600 dark:text-surface-400">
                   {{ invoice.invoiceDate | date: 'dd/MM/yyyy' }}
                 </span>
+              </td>
+              <td>
+                <span [class.text-red-600]="invoice.dueDate < todayDate" [class.font-semibold]="invoice.dueDate < todayDate" class="text-sm text-surface-600 dark:text-surface-400">
+                  {{ invoice.dueDate | date: 'dd/MM/yyyy' }}
+                </span>
+                @if (invoice.dueDate < todayDate) {
+                  <p-tag value="Vencida" severity="danger" class="ml-2" />
+                } @else {
+                  <p-tag value="Al día" severity="success" class="ml-2" />
+                }
               </td>
               <td>
                 <p-tag

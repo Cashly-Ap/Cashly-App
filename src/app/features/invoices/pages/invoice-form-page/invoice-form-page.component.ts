@@ -7,12 +7,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { DatePickerModule } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
@@ -31,6 +32,7 @@ import { INVOICE_SUCCESS_MESSAGES } from '@features/invoices/messages';
 import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
 import { CreditStatusResponse } from '@features/receivables/models/interfaces';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { ToastModule } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import { InvoiceSourcePickerDialogComponent, InvoiceSourceSelection } from '@features/invoices/components/invoice-source-picker-dialog/invoice-source-picker-dialog.component';
@@ -42,9 +44,11 @@ import { InvoiceCreate } from '@features/invoices/models/interfaces/invoice-crea
   imports: [
     ReactiveFormsModule,
     DecimalPipe,
+    DatePipe,
     ButtonModule,
     TextareaModule,
     SelectModule,
+    DatePickerModule,
     ToastModule,
     FormContainerComponent,
     FormHeaderComponent,
@@ -67,6 +71,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   private readonly pendingTabsService = inject(PendingTabsService);
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
+  private readonly customerApi = inject(CustomerApiService);
 
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   private isSubmitted = false;
@@ -89,7 +94,13 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   readonly submitTooltip = signal('');
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);
+  readonly creditStatusByCustomer = signal<Record<string, CreditStatusResponse>>({});
   readonly customerBalance = signal(0);
+  readonly customerCreditDays = signal<number | null>(null);
+  readonly creditDaysByCustomer = signal<Record<string, number>>({});
+  readonly dueDate = signal<Date | null>(null);
+  readonly dueDatesByCustomer = signal<Record<string, Date>>({});
+  readonly isCreditPayment = signal(false);
 
   readonly creditInfo = computed(() => {
     const s = this.creditStatus();
@@ -108,6 +119,19 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     if (!status || paymentType !== PaymentType.CREDIT) return null;
     if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice)
       return null;
+    return this.buildCreditWarning(status, total);
+  });
+
+  creditWarningForCustomer(customerId: string) {
+    if (!this.isCreditPayment()) return null;
+    const status = this.creditStatusByCustomer()[customerId];
+    if (!status || (status.availableCredit >= this.total() && !status.hasOverdue && status.canCreateCreditInvoice)) {
+      return null;
+    }
+    return this.buildCreditWarning(status, this.total());
+  }
+
+  private buildCreditWarning(status: CreditStatusResponse, total: number) {
     return {
       hasOverdue: status.hasOverdue,
       canCreateCreditInvoice: status.canCreateCreditInvoice,
@@ -116,7 +140,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       invoiceTotal: total,
       message: this.buildCreditWarningMessage(status, total),
     };
-  });
+  }
 
   private buildCreditWarningMessage(status: CreditStatusResponse, total: number): string {
     const parts: string[] = [];
@@ -161,6 +185,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     customerId: ['', [Validators.required]],
     paymentType: [PaymentType.CASH, [Validators.required]],
     notes: [''],
+    issueDate: [new Date(), [Validators.required]],
   });
 
   ngOnInit(): void {
@@ -178,7 +203,15 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       this.restoreFromPendingTab();
     }
     this.form.controls.notes.valueChanges.subscribe(() => this.scheduleAutoSave());
+    this.form.controls.issueDate.valueChanges.subscribe(() => {
+      this.recalculateDueDate();
+      this.recalculateAllCustomerDueDates();
+      this.scheduleAutoSave();
+    });
     this.form.controls.paymentType.valueChanges.subscribe((paymentType) => {
+      this.isCreditPayment.set(paymentType === PaymentType.CREDIT);
+      this.recalculateDueDate();
+      this.recalculateAllCustomerDueDates();
       const customerId = this.selectedCustomerId();
       if (customerId) {
         this.loadCreditStatus(customerId);
@@ -205,6 +238,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       customerAlias: label?.alias ?? '',
       customerLegalName: label?.legalName ?? '',
       notes: this.form.value.notes ?? '',
+      issueDate: this.toIsoDate(this.form.value.issueDate),
       items: this.items(),
       orderIds: this.sourceOrderIds(),
       quoteIds: this.sourceQuoteIds(),
@@ -230,7 +264,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   private restoreFromPendingTab(): void {
     const tab = this.pendingTabsService.get<InvoiceFormData>(this.tabId);
     if (!tab) return;
-    this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
+    this.form.patchValue({
+      customerId: tab.formData.customerId,
+      notes: tab.formData.notes,
+      issueDate: tab.formData.issueDate ? this.fromIsoDate(tab.formData.issueDate) : new Date(),
+    });
     this.items.set(tab.formData.items);
     this.sourceOrderIds.set(tab.formData.orderIds ?? []);
     this.sourceQuoteIds.set(tab.formData.quoteIds ?? []);
@@ -240,6 +278,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         alias: tab.formData.customerAlias,
         legalName: tab.formData.customerLegalName,
       });
+      this.loadCustomerDetails(tab.formData.customerId);
     }
   }
 
@@ -259,13 +298,20 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.invoiceService.loadById(id).subscribe({
       next: (invoice) => {
         this.invoiceNumber.set(invoice.invoiceNumber ?? null);
-        this.form.patchValue({ notes: invoice.notes ?? '', paymentType: invoice.paymentType });
+        this.form.patchValue({
+          notes: invoice.notes ?? '',
+          paymentType: invoice.paymentType,
+          issueDate: invoice.issueDate ? this.fromIsoDate(invoice.issueDate) : new Date(),
+        });
+        this.isCreditPayment.set(invoice.paymentType === PaymentType.CREDIT);
         this.selectedCustomerLabel.set({
           alias: invoice.customerName,
           legalName: invoice.customerName,
         });
         this.form.patchValue({ customerId: invoice.customerId });
         this.selectedCustomer.set({ id: invoice.customerId } as CustomerList);
+        this.dueDate.set(invoice.dueDate ? this.fromIsoDate(invoice.dueDate) : null);
+        this.loadCustomerDetails(invoice.customerId);
         this.items.set(
           invoice.lines.map((item) => ({
             productId: item.productId,
@@ -297,8 +343,35 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   private loadCreditStatus(customerId: string): void {
     this.receivablesApi.getCreditStatus(customerId).subscribe({
-      next: (status) => this.creditStatus.set(status),
-      error: () => this.creditStatus.set(null),
+      next: (status) => {
+        this.creditStatus.set(status);
+        this.creditStatusByCustomer.update((current) => ({ ...current, [customerId]: status }));
+      },
+      error: () => {
+        this.creditStatus.set(null);
+        this.creditStatusByCustomer.update((current) => {
+          const next = { ...current };
+          delete next[customerId];
+          return next;
+        });
+      },
+    });
+  }
+
+  private loadCreditStatusForBulk(customers: CustomerList[]): void {
+    forkJoin(customers.map((customer) => this.receivablesApi.getCreditStatus(customer.id))).subscribe({
+      next: (statuses) => {
+        const statusByCustomer = statuses.reduce<Record<string, CreditStatusResponse>>((result, status) => {
+          result[status.customerId] = status;
+          return result;
+        }, {});
+        this.creditStatusByCustomer.set(statusByCustomer);
+        this.creditStatus.set(statusByCustomer[customers[0].id] ?? null);
+      },
+      error: () => {
+        this.creditStatusByCustomer.set({});
+        this.creditStatus.set(null);
+      },
     });
   }
 
@@ -307,6 +380,93 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       next: (balance) => this.customerBalance.set(balance.totalBalance),
       error: () => this.customerBalance.set(0),
     });
+  }
+
+  private loadCustomerDetails(customerId: string): void {
+    this.customerApi.getById(customerId).subscribe({
+      next: (customer) => {
+        this.customerCreditDays.set(customer.creditDays ?? 0);
+        this.creditDaysByCustomer.update((current) => ({ ...current, [customerId]: customer.creditDays ?? 0 }));
+        this.recalculateDueDate();
+        this.setCustomerDueDate(customerId, customer.creditDays ?? 0);
+      },
+      error: () => {
+        this.customerCreditDays.set(null);
+        this.creditDaysByCustomer.update((current) => {
+          const next = { ...current };
+          delete next[customerId];
+          return next;
+        });
+        this.dueDate.set(null);
+        this.removeCustomerDueDate(customerId);
+      },
+    });
+  }
+
+  private loadCustomerDetailsForBulk(customers: CustomerList[]): void {
+    forkJoin(customers.map((customer) => this.customerApi.getById(customer.id))).subscribe({
+      next: (details) => {
+        const creditDaysByCustomer = details.reduce<Record<string, number>>((result, customer) => {
+          result[customer.id] = customer.creditDays ?? 0;
+          return result;
+        }, {});
+        this.creditDaysByCustomer.set(creditDaysByCustomer);
+        this.recalculateAllCustomerDueDates();
+      },
+      error: () => {
+        this.creditDaysByCustomer.set({});
+        this.dueDatesByCustomer.set({});
+      },
+    });
+  }
+
+  private setCustomerDueDate(customerId: string, creditDays: number): void {
+    this.dueDatesByCustomer.update((current) => ({
+      ...current,
+      [customerId]: this.calculateDueDate(creditDays),
+    }));
+  }
+
+  private removeCustomerDueDate(customerId: string): void {
+    this.dueDatesByCustomer.update((current) => {
+      const next = { ...current };
+      delete next[customerId];
+      return next;
+    });
+  }
+
+  private recalculateAllCustomerDueDates(): void {
+    const creditDaysByCustomer = this.creditDaysByCustomer();
+    this.dueDatesByCustomer.update(() =>
+      Object.entries(creditDaysByCustomer).reduce<Record<string, Date>>((result, [customerId, creditDays]) => {
+        result[customerId] = this.calculateDueDate(creditDays);
+        return result;
+      }, {}),
+    );
+  }
+
+  private calculateDueDate(creditDays: number): Date {
+    const issueDate = this.form.controls.issueDate.value;
+    const dueDate = issueDate instanceof Date ? new Date(issueDate) : new Date();
+    dueDate.setDate(dueDate.getDate() + creditDays);
+    return dueDate;
+  }
+
+  dueDateForCustomer(customerId: string): Date | null {
+    return this.dueDatesByCustomer()[customerId] ?? null;
+  }
+
+  private recalculateDueDate(): void {
+    const issueDate = this.form.controls.issueDate.value;
+    const creditDays = this.customerCreditDays();
+    if (!(issueDate instanceof Date) || Number.isNaN(issueDate.getTime()) || creditDays === null) {
+      this.dueDate.set(null);
+      return;
+    }
+
+    const dueDate = new Date(issueDate);
+    dueDate.setDate(dueDate.getDate() + creditDays);
+    this.dueDate.set(dueDate);
   }
 
   openPicker(): void {
@@ -336,6 +496,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.scheduleAutoSave();
     this.loadCreditStatus(customer.id);
     this.loadCustomerBalance(customer.id);
+    this.loadCustomerDetails(customer.id);
   }
 
   onCustomersSelected(customers: CustomerList[]): void {
@@ -349,8 +510,9 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.pickerVisible.set(false);
     this.form.patchValue({ paymentType: PaymentType.CASH });
     this.scheduleAutoSave();
-    this.loadCreditStatus(primary.id);
     this.loadCustomerBalance(primary.id);
+    this.loadCreditStatusForBulk(customers);
+    this.loadCustomerDetailsForBulk(customers);
   }
 
   onPickerCancelled(): void {
@@ -371,8 +533,19 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.selectedCustomer.set(null);
     this.selectedCustomerLabel.set(null);
     this.creditStatus.set(null);
+    this.creditStatusByCustomer.set({});
     this.customerBalance.set(0);
-    this.form.reset({ customerId: '', paymentType: PaymentType.CASH, notes: '' });
+    this.customerCreditDays.set(null);
+    this.creditDaysByCustomer.set({});
+    this.dueDate.set(null);
+    this.dueDatesByCustomer.set({});
+    this.isCreditPayment.set(false);
+    this.form.reset({
+      customerId: '',
+      paymentType: PaymentType.CASH,
+      notes: '',
+      issueDate: this.form.controls.issueDate.value ?? new Date(),
+    });
 
     if (notify && hadInvoiceData) {
       this.messageService.add({
@@ -474,7 +647,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       customerId: formValue.customerId ?? '',
       orderIds: this.sourceOrderIds(),
       quoteIds: this.sourceQuoteIds(),
-      paymentType: formValue.paymentType as PaymentType,
+        paymentType: formValue.paymentType as PaymentType,
+        issueDate: this.toIsoDate(formValue.issueDate),
       notes: formValue.notes ?? '',
       lines: this.items().map((i) => ({
         productId: i.productId,
@@ -509,6 +683,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     } else if (this.isEditMode() && this.invoiceId()) {
       this.invoiceService.update(this.invoiceId()!, {
         paymentType: baseData.paymentType,
+        issueDate: baseData.issueDate,
         notes: baseData.notes ?? null,
         lines: baseData.lines,
       }).subscribe({
@@ -551,5 +726,19 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   cancel(): void {
     this.router.navigate(['/invoices']);
+  }
+
+  private toIsoDate(value: Date | string | null | undefined): string {
+    if (!value) return new Date().toISOString().slice(0, 10);
+    if (typeof value === 'string') return value;
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private fromIsoDate(value: string): Date {
+    const [year, month, day] = value.split('-').map(Number);
+    return new Date(year, month - 1, day);
   }
 }

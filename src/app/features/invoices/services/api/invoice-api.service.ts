@@ -19,6 +19,7 @@ export interface InvoiceFilters {
   paymentType?: string;
   dateFrom?: string;
   dateTo?: string;
+  dueStatus?: 'OVERDUE' | 'CURRENT';
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
 }
@@ -40,8 +41,11 @@ interface InvoiceListApiResponse {
   orderId: string | null;
   orderNumber: string | null;
   createdAt: string;
+  issueDate?: string;
+  dueDate?: string;
   returnedTotal: number;
   returnStatus: string | null;
+  overdue: boolean;
 }
 
 interface InvoiceDetailApiResponse {
@@ -74,6 +78,8 @@ interface InvoiceDetailApiResponse {
   cancelledReason: string | null;
   createdAt: string;
   updatedAt: string;
+  issueDate?: string;
+  dueDate?: string;
   lines: {
     id: string;
     productId: string;
@@ -144,6 +150,7 @@ export class InvoiceApiService {
     if (filters?.paymentType) params = params.set('paymentType', filters.paymentType);
     if (filters?.dateFrom) params = params.set('fromDate', filters.dateFrom);
     if (filters?.dateTo) params = params.set('toDate', filters.dateTo);
+    if (filters?.dueStatus) params = params.set('dueStatus', filters.dueStatus);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
     return this.http
@@ -169,7 +176,10 @@ export class InvoiceApiService {
       orderId: r.orderId,
       orderNumber: r.orderNumber,
       createdAt: r.createdAt,
+      issueDate: r.issueDate,
+      dueDate: r.dueDate,
       returnStatus: r.returnStatus as 'PARTIAL' | 'FULL' | null,
+      overdue: r.overdue,
     };
   }
 
@@ -253,6 +263,8 @@ export class InvoiceApiService {
       cancelledReason: r.cancelledReason,
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
+      issueDate: r.issueDate,
+      dueDate: r.dueDate,
       lines: r.lines.map((l) => ({
         id: l.id,
         productId: l.productId,

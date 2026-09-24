@@ -121,6 +121,7 @@ export class InvoiceListPageComponent implements OnInit {
   readonly rows = signal(10);
   readonly selectedStatus = signal('');
   readonly selectedReturnStatus = signal('');
+  readonly selectedDueStatus = signal('');
   readonly filterPaymentType = signal('');
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
@@ -211,12 +212,19 @@ export class InvoiceListPageComponent implements OnInit {
     { label: 'Totalmente Devuelta', value: 'FULL' },
   ];
 
+  readonly dueStatusOptions = [
+    { label: 'Todas las fechas', value: '' },
+    { label: 'Vencidas', value: 'OVERDUE' },
+    { label: 'Al día', value: 'CURRENT' },
+  ];
+
   readonly activeFilterCount = computed(() => {
     let count = 0;
     const statuses = this.filterStatus();
     if (statuses.length > 0) count++;
     if (this.filterPaymentType()) count++;
     if (this.selectedReturnStatus()) count++;
+    if (this.selectedDueStatus()) count++;
     if (this.filterDateFrom()) count++;
     if (this.filterDateTo()) count++;
     return count;
@@ -273,6 +281,14 @@ export class InvoiceListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
+  onDueStatusFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.selectedDueStatus()) return;
+    this.selectedDueStatus.set(normalized);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
   onDateFromChange(value: Date | null): void {
     this.filterDateFrom.set(value);
     this.first.set(0);
@@ -303,6 +319,7 @@ export class InvoiceListPageComponent implements OnInit {
   clearFilters(): void {
     this.selectedStatus.set('');
     this.selectedReturnStatus.set('');
+    this.selectedDueStatus.set('');
     this.filterPaymentType.set('');
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
@@ -621,6 +638,7 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
     if (this.selectedReturnStatus()) filters.returnStatus = [this.selectedReturnStatus()];
+    if (this.selectedDueStatus()) filters.dueStatus = this.selectedDueStatus() as 'OVERDUE' | 'CURRENT';
     if (this.filterPaymentType()) filters.paymentType = this.filterPaymentType();
     if (this.filterDateFrom())
       filters.dateFrom = this.filterDateFrom()!.toISOString().split('T')[0];

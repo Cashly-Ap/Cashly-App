@@ -17,7 +17,7 @@
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
-            class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+            class="col-span-full lg:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
               >Cliente *</label
@@ -31,6 +31,34 @@
                       <div class="flex flex-col min-w-0 flex-1">
                         <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
                         <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
+                        @if (isCreditPayment()) {
+                          @if (dueDateForCustomer(customer.id); as customerDueDate) {
+                            <span class="text-xs text-surface-500 dark:text-surface-400 mt-1">
+                              Vence: <strong class="text-surface-700 dark:text-surface-200">{{ customerDueDate | date: 'dd/MM/yyyy' }}</strong>
+                            </span>
+                          } @else {
+                            <span class="text-xs text-surface-400 mt-1">Calculando vencimiento...</span>
+                          }
+                        }
+                        @if (creditWarningForCustomer(customer.id); as warning) {
+                          <div class="mt-2 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2">
+                            <div class="flex items-start gap-2">
+                              <i class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"></i>
+                              <div class="min-w-0">
+                                <span class="font-semibold text-xs text-amber-800 dark:text-amber-300">Advertencia de Crédito</span>
+                                <p class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed mt-1">{{ warning.message }}</p>
+                                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[11px] text-amber-600 dark:text-amber-400">
+                                  <span>Límite: <strong>${{ warning.creditLimit | number: '1.2-2' }}</strong></span>
+                                  <span>Disponible: <strong>${{ warning.availableCredit | number: '1.2-2' }}</strong></span>
+                                  <span>Total: <strong>${{ warning.invoiceTotal | number: '1.2-2' }}</strong></span>
+                                </div>
+                                <p class="text-[11px] text-amber-600 dark:text-amber-400 mt-1">
+                                  <i class="pi pi-info-circle mr-1"></i>La factura se creará como borrador. Al confirmarla deberá ingresar su contraseña.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        }
                       </div>
                     </div>
                   }
@@ -115,6 +143,35 @@
             }
           </div>
 
+          <div
+            class="col-span-full lg:col-span-1 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label for="issueDate" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >Fecha de emisión *</label
+            >
+            <p-datepicker
+              inputId="issueDate"
+              formControlName="issueDate"
+              dateFormat="dd/mm/yy"
+              [showIcon]="true"
+              styleClass="w-full"
+            />
+            @if (isCreditPayment() && !bulkMode()) {
+              @if (dueDate(); as calculatedDueDate) {
+                <div class="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 px-3 py-2">
+                  <span class="text-sm text-surface-600 dark:text-surface-400">Fecha de vencimiento</span>
+                  <strong class="text-sm text-surface-900 dark:text-surface-0">{{ calculatedDueDate | date: 'dd/MM/yyyy' }}</strong>
+                </div>
+              } @else if (selectedCustomer()) {
+                <p class="text-xs text-surface-500 mt-1">Calculando vencimiento según los días de crédito del cliente...</p>
+              }
+            } @else if (isCreditPayment() && bulkMode()) {
+              <p class="text-xs text-surface-500 mt-1">El vencimiento se calcula individualmente para cada cliente seleccionado.</p>
+            } @else if (!isCreditPayment()) {
+              <p class="text-xs text-surface-500 mt-1">El vencimiento no aplica para pagos de contado.</p>
+            }
+          </div>
+
           @if (!isEditMode() && !bulkCreationStarted()) {
             <div class="col-span-full flex flex-wrap gap-2">
               <p-button
@@ -178,7 +235,7 @@
             }
           </div>
 
-          @if (creditWarningMessage(); as warning) {
+          @if (!bulkMode() && creditWarningMessage(); as warning) {
             <div
               class="col-span-full rounded-xl p-4 border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20"
             >

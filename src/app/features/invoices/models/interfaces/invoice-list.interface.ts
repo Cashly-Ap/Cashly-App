@@ -18,5 +18,8 @@ export interface InvoiceList {
   orderId: string | null;
   orderNumber: string | null;
   createdAt: string;
+  issueDate?: string;
+  dueDate?: string;
   returnStatus: 'PARTIAL' | 'FULL' | null;
+  overdue?: boolean;
 }

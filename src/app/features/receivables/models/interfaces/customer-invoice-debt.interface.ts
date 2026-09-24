@@ -11,6 +11,7 @@ export interface CustomerInvoiceDebt {
   status: string;
   displayStatus: string;
   invoiceDate: string;
+  dueDate?: string;
   subtotal: number;
   returnedTotal: number;
   totalPaid: number;

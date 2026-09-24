@@ -9,6 +9,7 @@ export interface InvoiceLineCreate {
 
 export interface InvoiceCreate {
   customerId: string;
+  issueDate?: string;
   orderIds?: string[];
   quoteIds?: string[];
   paymentType: PaymentType;

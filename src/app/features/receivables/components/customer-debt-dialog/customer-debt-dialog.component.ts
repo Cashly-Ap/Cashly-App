@@ -26,7 +26,7 @@ import { PaymentMethodApiService } from '@features/payment-methods/services/api/
 import { catchError, of } from 'rxjs';
 
 type InvoiceStatusFilter =
-  'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN';
+  'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN' | 'OVERDUE' | 'CURRENT';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
@@ -88,6 +88,7 @@ export class CustomerDebtDialogComponent {
   protected initialLoadComplete = signal(false);
   protected loadingInvoices = signal(false);
   protected selectedStatusFilter = signal<InvoiceStatusFilter>('ALL');
+  protected readonly todayDate = new Date().toISOString().slice(0, 10);
 
   protected invoiceFirst = signal(0);
   protected invoiceRows = signal(10);
@@ -106,6 +107,8 @@ export class CustomerDebtDialogComponent {
     { label: 'Devueltas', value: 'RETURNED' },
     { label: 'Parcialmente Devueltas', value: 'PARTIAL_RETURN' },
     { label: 'Canceladas', value: 'CANCELLED' },
+    { label: 'Vencidas', value: 'OVERDUE' },
+    { label: 'Al día', value: 'CURRENT' },
   ];
 
   protected balance = signal<number>(0);

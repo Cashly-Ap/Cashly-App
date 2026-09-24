@@ -69,6 +69,18 @@
                     />
                   </div>
                   <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Vencimiento</label>
+                    <p-select
+                      [options]="dueStatusOptions"
+                      [ngModel]="selectedDueStatus()"
+                      (onChange)="onDueStatusFilterChange($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Todas las fechas"
+                      fluid
+                    />
+                  </div>
+                  <div class="flex flex-col gap-1">
                     <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
                     <p-datepicker
                       [ngModel]="filterDateFrom()"
@@ -174,7 +186,7 @@
                         <div class="font-semibold">Pendiente de pagar</div>
                       </th>
                       <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
-                        <div class="font-semibold">Fecha <p-sortIcon field="createdAt" /></div>
+                        <div class="font-semibold">Vence</div>
                       </th>
                       <th class="w-28">
                         <div class="font-semibold text-center">Acciones</div>
@@ -201,6 +213,11 @@
                           @if (invoice.returnStatus === 'PARTIAL') {
                             <app-text-badge label="Parcialmente Devuelta" variant="warning" />
                           }
+                          @if (invoice.overdue) {
+                            <app-text-badge label="Vencida" variant="danger" />
+                          } @else if (invoice.status === 'PENDING_PAYMENT' || invoice.status === 'PARTIALLY_PAID') {
+                            <app-text-badge label="Al día" variant="success" />
+                          }
                         </div>
                       </td>
                       <td class="text-right">
@@ -210,7 +227,7 @@
                         <span class="text-sm font-medium">{{ pendingAmount(invoice) | number: '1.2-2' }}</span>
                       </td>
                       <td class="hidden lg:table-cell">
-                        <div class="text-sm text-surface-500">{{ invoice.createdAt | date: 'dd/MM/yyyy' }}</div>
+                        <div class="text-sm text-surface-500">{{ invoice.dueDate | date: 'dd/MM/yyyy' }}</div>
                       </td>
                       <td>
                         <app-list-action-buttons [actions]="actionsFor(invoice)" />
@@ -267,6 +284,11 @@
                         <app-text-badge [label]="getStatusLabel(invoice.status)" [variant]="getStatusVariant(invoice.status)" />
                         @if (invoice.returnStatus === 'PARTIAL') {
                           <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                        }
+                        @if (invoice.overdue) {
+                          <app-text-badge label="Vencida" variant="danger" />
+                        } @else if (invoice.status === 'PENDING_PAYMENT' || invoice.status === 'PARTIALLY_PAID') {
+                          <app-text-badge label="Al día" variant="success" />
                         }
                       </div>
                     </div>

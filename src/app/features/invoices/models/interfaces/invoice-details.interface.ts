@@ -60,6 +60,8 @@ export interface InvoiceDetails {
   cancelledReason: string | null;
   createdAt: string;
   updatedAt: string;
+  issueDate?: string;
+  dueDate?: string;
   lines: InvoiceLineDetail[];
   returnedTotal: number;
   returnStatus: 'PARTIAL' | 'FULL' | null;

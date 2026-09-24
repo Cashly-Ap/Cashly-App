@@ -94,6 +94,14 @@
                 label="Fecha de Creación"
                 [value]="(currentInvoice.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
               />
+              <app-details-info-field
+                label="Fecha de Emisión"
+                [value]="(currentInvoice.issueDate | date: 'dd/MM/yyyy') || ''"
+              />
+              <app-details-info-field
+                label="Fecha de Vencimiento"
+                [value]="(currentInvoice.dueDate | date: 'dd/MM/yyyy') || ''"
+              />
               @if (currentInvoice.orderNumber) {
                 <app-details-info-field
                   label="Pedido Origen"

@@ -232,6 +232,21 @@ describe('InvoiceFormPageComponent', () => {
       expect(component.pickerVisible()).toBe(false);
     });
 
+    it('should calculate and show the due date from the issue date and customer credit days', () => {
+      fixture.detectChanges();
+      const issueDate = new Date(2026, 0, 1);
+      component.form.controls.issueDate.setValue(issueDate);
+
+      component.onCustomerSelected({ id: 'c1', alias: 'Test', legalName: 'Test C.A.' } as any);
+      httpMock.expectOne('/api/customers/c1').flush({ creditDays: 29 });
+
+      expect(component.selectedCustomer()?.id).toBe('c1');
+      expect(component.form.controls.issueDate.value).toEqual(issueDate);
+      expect(component.dueDate()?.getFullYear()).toBe(2026);
+      expect(component.dueDate()?.getMonth()).toBe(0);
+      expect(component.dueDate()?.getDate()).toBe(30);
+    });
+
     it('should close picker on cancel', () => {
       fixture.detectChanges();
       component.pickerVisible.set(true);
