@@ -21,6 +21,14 @@ The Invoices module manages sales invoices (facturas) in the invoicing system. I
 
 ---
 
+## Invoice creation improvements
+
+- The invoice form can load multiple eligible orders and quotes for the selected customer. Their lines are added to the invoice and their relationships are persisted.
+- A dedicated multi-customer mode creates the same invoice lines for all selected customers.
+- Invoice search supports customer name, customer RIF, and invoice number.
+
+---
+
 ## Invoice Status Flow
 
 > **Important**: `OVERDUE` is **NOT** a status. Overdue detection is done via a query filter (`dueDate < today AND balance > 0`). Invoices remain in `DELIVERED` or `PARTIALLY_PAID` status even when past their due date.

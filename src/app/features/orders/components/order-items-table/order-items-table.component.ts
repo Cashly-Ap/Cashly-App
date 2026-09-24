@@ -45,7 +45,9 @@ export class OrderItemsTableComponent {
   readonly items = input<OrderItemFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly customerId = input<string | null>(null);
+  readonly customerIds = input<string[]>([]);
   readonly readonly = input<boolean>(false);
+  readonly stockMultiplier = input<number>(1);
   readonly itemsChange = output<OrderItemFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
@@ -208,6 +210,10 @@ export class OrderItemsTableComponent {
 
   isItemOverAllocated(item: OrderItemFormData): boolean {
     const totalAvailable = this.getItemTotalAvailable(item);
-    return item.quantity > totalAvailable && totalAvailable > 0;
+    return item.quantity * this.stockMultiplier() > totalAvailable;
+  }
+
+  getItemRequiredStock(item: OrderItemFormData): number {
+    return item.quantity * this.stockMultiplier();
   }
 }

@@ -32,6 +32,9 @@ import { ReceivablesApiService } from '@features/receivables/services/api/receiv
 import { CreditStatusResponse } from '@features/receivables/models/interfaces';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
 import { ToastModule } from 'primeng/toast';
+import { forkJoin } from 'rxjs';
+import { InvoiceSourcePickerDialogComponent, InvoiceSourceSelection } from '@features/invoices/components/invoice-source-picker-dialog/invoice-source-picker-dialog.component';
+import { InvoiceCreate } from '@features/invoices/models/interfaces/invoice-create.interface';
 
 @Component({
   selector: 'app-invoice-form-page',
@@ -49,6 +52,7 @@ import { ToastModule } from 'primeng/toast';
     FormActionsComponent,
     OrderItemsTableComponent,
     CustomerPickerDialogComponent,
+    InvoiceSourcePickerDialogComponent,
   ],
   providers: [MessageService],
   templateUrl: './invoice-form-page.component.html',
@@ -74,7 +78,14 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   readonly selectedCustomer = signal<CustomerList | null>(null);
   readonly selectedCustomerLabel = signal<{ alias: string; legalName: string } | null>(null);
   readonly pickerVisible = signal<boolean>(false);
+  readonly sourcePickerVisible = signal(false);
+  readonly bulkMode = signal(false);
+  readonly bulkCreationStarted = signal(false);
+  readonly selectedCustomers = signal<CustomerList[]>([]);
+  readonly sourceOrderIds = signal<string[]>([]);
+  readonly sourceQuoteIds = signal<string[]>([]);
   readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
+  readonly selectedCustomerIds = computed(() => this.selectedCustomers().map((customer) => customer.id));
   readonly submitTooltip = signal('');
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);
@@ -195,6 +206,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       customerLegalName: label?.legalName ?? '',
       notes: this.form.value.notes ?? '',
       items: this.items(),
+      orderIds: this.sourceOrderIds(),
+      quoteIds: this.sourceQuoteIds(),
     };
     const title = this.invoiceNumber()
       ? `Editar Factura ${this.invoiceNumber()}`
@@ -219,6 +232,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     if (!tab) return;
     this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
     this.items.set(tab.formData.items);
+    this.sourceOrderIds.set(tab.formData.orderIds ?? []);
+    this.sourceQuoteIds.set(tab.formData.quoteIds ?? []);
     if (tab.formData.customerId) {
       this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
       this.selectedCustomerLabel.set({
@@ -298,11 +313,24 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.pickerVisible.set(true);
   }
 
+  toggleBulkMode(): void {
+    if (this.isEditMode()) return;
+    this.resetInvoiceForCustomerChange();
+    this.bulkMode.update((value) => !value);
+    this.pickerVisible.set(true);
+  }
+
+  openSourcePicker(): void {
+    if (this.selectedCustomerId() && !this.bulkMode() && !this.isEditMode()) {
+      this.sourcePickerVisible.set(true);
+    }
+  }
+
   onCustomerSelected(customer: CustomerList): void {
+    this.resetInvoiceForCustomerChange(false);
     this.selectedCustomer.set(customer);
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
-    this.items.set([]);
     this.pickerVisible.set(false);
     this.form.patchValue({ paymentType: PaymentType.CASH });
     this.scheduleAutoSave();
@@ -310,8 +338,87 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.loadCustomerBalance(customer.id);
   }
 
+  onCustomersSelected(customers: CustomerList[]): void {
+    if (customers.length === 0) return;
+    this.resetInvoiceForCustomerChange(false);
+    this.selectedCustomers.set(customers);
+    const primary = customers[0];
+    this.selectedCustomer.set(primary);
+    this.selectedCustomerLabel.set({ alias: primary.alias, legalName: primary.legalName });
+    this.form.patchValue({ customerId: primary.id });
+    this.pickerVisible.set(false);
+    this.form.patchValue({ paymentType: PaymentType.CASH });
+    this.scheduleAutoSave();
+    this.loadCreditStatus(primary.id);
+    this.loadCustomerBalance(primary.id);
+  }
+
   onPickerCancelled(): void {
     this.pickerVisible.set(false);
+  }
+
+  private resetInvoiceForCustomerChange(notify = true): void {
+    const hadInvoiceData = this.items().length > 0
+      || this.sourceOrderIds().length > 0
+      || this.sourceQuoteIds().length > 0
+      || this.selectedCustomer() !== null
+      || this.selectedCustomers().length > 0;
+
+    this.items.set([]);
+    this.sourceOrderIds.set([]);
+    this.sourceQuoteIds.set([]);
+    this.selectedCustomers.set([]);
+    this.selectedCustomer.set(null);
+    this.selectedCustomerLabel.set(null);
+    this.creditStatus.set(null);
+    this.customerBalance.set(0);
+    this.form.reset({ customerId: '', paymentType: PaymentType.CASH, notes: '' });
+
+    if (notify && hadInvoiceData) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Factura reiniciada',
+        detail: 'Al cambiar entre factura individual y varios clientes se han eliminado el cliente, las líneas y los documentos cargados.',
+        life: 5000,
+      });
+    }
+  }
+
+  onSourcesSelected(selection: InvoiceSourceSelection): void {
+    this.sourceOrderIds.update((ids) => [...new Set([...ids, ...selection.orderIds])]);
+    this.sourceQuoteIds.update((ids) => [...new Set([...ids, ...selection.quoteIds])]);
+    this.items.update((items) => [...items, ...selection.items]);
+    this.sourcePickerVisible.set(false);
+    this.scheduleAutoSave();
+  }
+
+  private hasInvalidSourceAllocation(): boolean {
+    if (this.sourceOrderIds().length === 0 && this.sourceQuoteIds().length === 0) return false;
+    return this.items().some((item) => {
+      const allocated = item.warehouseAllocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
+      return Math.abs(allocated - item.quantity) > 0.0001;
+    });
+  }
+
+  private hasInsufficientBulkStock(): boolean {
+    const customerCount = this.selectedCustomers().length;
+    if (!this.bulkMode() || customerCount < 2) return false;
+
+    return this.items().some((item) => {
+      const required = item.quantity * customerCount;
+      const available = item.stock.reduce((sum, stock) => sum + stock.available, 0);
+      if (available < required) return true;
+
+      return item.warehouseAllocations.some((allocation) => {
+        const stock = item.stock.find((entry) => entry.warehouseId === allocation.warehouseId);
+        const availableInWarehouse = stock?.available ?? allocation.available;
+        return allocation.allocated * customerCount > availableInWarehouse;
+      });
+    });
+  }
+
+  onSourcePickerCancelled(): void {
+    this.sourcePickerVisible.set(false);
   }
   onItemsChange(updated: OrderItemFormData[]): void {
     this.items.set(updated);
@@ -332,6 +439,25 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       });
       return;
     }
+    if (this.hasInvalidSourceAllocation()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Stock insuficiente',
+        detail: 'Revisa la distribución por almacén: no hay stock suficiente para cubrir todos los productos cargados.',
+        life: 5000,
+      });
+      return;
+    }
+    if (this.hasInsufficientBulkStock()) {
+      const customerCount = this.selectedCustomers().length;
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Stock insuficiente',
+        detail: `La cantidad de cada producto se multiplica por los ${customerCount} clientes. Revisa el stock total y la distribución por almacén antes de crear las facturas.`,
+        life: 6000,
+      });
+      return;
+    }
     if (this.items().filter((i) => i.warehouseAllocations.length === 0).length > 0) {
       this.messageService.add({
         severity: 'warn',
@@ -344,8 +470,10 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
     this.isSubmitting.set(true);
     const formValue = this.form.value;
-    const baseData = {
+    const baseData: InvoiceCreate = {
       customerId: formValue.customerId ?? '',
+      orderIds: this.sourceOrderIds(),
+      quoteIds: this.sourceQuoteIds(),
       paymentType: formValue.paymentType as PaymentType,
       notes: formValue.notes ?? '',
       lines: this.items().map((i) => ({
@@ -358,8 +486,32 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       })),
     };
 
-    if (this.isEditMode() && this.invoiceId()) {
-      this.invoiceService.update(this.invoiceId()!, baseData).subscribe({
+    if (this.bulkMode() && !this.isEditMode()) {
+      const customers = this.selectedCustomers();
+      if (customers.length < 2) {
+        this.isSubmitting.set(false);
+        this.messageService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Selecciona al menos dos clientes.', life: 4000 });
+        return;
+      }
+      this.bulkCreationStarted.set(true);
+      forkJoin(customers.map((customer) => this.invoiceService.create({ ...baseData, customerId: customer.id, orderIds: [], quoteIds: [] }))).subscribe({
+        next: () => {
+          this.isSubmitting.set(false);
+          this.markAsSubmitted();
+          this.messageService.add({ severity: 'success', summary: 'Éxito', detail: `Se crearon ${customers.length} facturas.`, life: 4000 });
+          this.router.navigate(['/invoices']);
+        },
+        error: () => {
+          this.isSubmitting.set(false);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron crear todas las facturas.', life: 5000 });
+        },
+      });
+    } else if (this.isEditMode() && this.invoiceId()) {
+      this.invoiceService.update(this.invoiceId()!, {
+        paymentType: baseData.paymentType,
+        notes: baseData.notes ?? null,
+        lines: baseData.lines,
+      }).subscribe({
         next: (inv) => {
           this.isSubmitting.set(false);
           this.markAsSubmitted();

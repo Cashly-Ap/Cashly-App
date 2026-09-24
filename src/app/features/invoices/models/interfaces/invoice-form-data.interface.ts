@@ -6,4 +6,6 @@ export interface InvoiceFormData {
   customerLegalName: string;
   notes: string;
   items: OrderItemFormData[];
+  orderIds?: string[];
+  quoteIds?: string[];
 }

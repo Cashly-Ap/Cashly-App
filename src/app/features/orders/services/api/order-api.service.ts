@@ -30,6 +30,7 @@ export interface AssignOrderWarehousesRequest {
 
 export interface OrderProductFilters {
   customerId: string;
+  customerIds?: string[];
   search?: string;
   categoryId?: string;
   composite?: boolean;
@@ -195,6 +196,9 @@ export class OrderApiService {
 
   getProductsForOrder(filters: OrderProductFilters): Observable<PageResponse<OrderProduct>> {
     let params = new HttpParams().set('customerId', filters.customerId);
+    for (const customerId of filters.customerIds ?? []) {
+      params = params.append('customerIds', customerId);
+    }
     if (filters.search) params = params.set('search', filters.search);
     if (filters.categoryId) params = params.set('categoryId', filters.categoryId);
     if (filters.composite !== undefined)

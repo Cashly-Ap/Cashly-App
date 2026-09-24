@@ -22,6 +22,7 @@
     <app-product-picker-dialog
       [visible]="pickerVisible()"
       [customerId]="customerId()!"
+      [customerIds]="customerIds()"
       [excludedProductIds]="excludedProductIds()"
       (productsAdded)="onProductsAdded($event)"
       (cancelled)="onPickerCancelled()"
@@ -51,6 +52,11 @@
                 @if (item.stock && item.stock.length > 0) {
                   <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
                     disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
+                    @if (stockMultiplier() > 1) {
+                      <span class="ml-1" [class.text-red-600]="isItemOverAllocated(item)" [class.dark:text-red-400]="isItemOverAllocated(item)">
+                        | necesario: {{ getItemRequiredStock(item) | number: '1.0-3' }}
+                      </span>
+                    }
                     @if (getItemTotalReserved(item) > 0) {
                       <span class="text-amber-500 dark:text-amber-400 ml-1"
                         >| res: {{ getItemTotalReserved(item) | number: '1.0-3' }}</span

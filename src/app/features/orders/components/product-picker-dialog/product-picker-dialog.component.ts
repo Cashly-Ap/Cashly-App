@@ -75,6 +75,7 @@ export class ProductPickerDialogComponent {
 
   readonly visible = input<boolean>(false);
   readonly customerId = input.required<string>();
+  readonly customerIds = input<string[]>([]);
   readonly excludedProductIds = input<Set<string>>(new Set());
   readonly productsAdded = output<OrderItemFormData[]>();
   readonly cancelled = output<void>();
@@ -365,6 +366,7 @@ export class ProductPickerDialogComponent {
     this.orderApi
       .getProductsForOrder({
         customerId: this.customerId(),
+        customerIds: this.customerIds(),
         search: this.search() || undefined,
         categoryId: this.filterCategoryId() ?? undefined,
         composite: this.filterComposite() ?? undefined,

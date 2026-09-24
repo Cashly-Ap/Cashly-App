@@ -9,6 +9,8 @@ export interface InvoiceLineCreate {
 
 export interface InvoiceCreate {
   customerId: string;
+  orderIds?: string[];
+  quoteIds?: string[];
   paymentType: PaymentType;
   notes?: string;
   useBalance?: boolean;

@@ -246,6 +246,7 @@ describe('OrderItemsTableComponent', () => {
     };
     expect(component.isItemOverAllocated(item)).toBe(false);
   });
+
 });
 
 describe('OrderItemsTableComponent - with items', () => {

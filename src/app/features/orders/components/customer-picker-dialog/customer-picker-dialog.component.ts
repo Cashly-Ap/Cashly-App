@@ -45,7 +45,10 @@ export class CustomerPickerDialogComponent {
 
   readonly visible = input<boolean>(false);
   readonly hasExistingItems = input<boolean>(false);
+  readonly multiple = input<boolean>(false);
+  readonly initialSelected = input<CustomerList[]>([]);
   readonly customerSelected = output<CustomerList>();
+  readonly customersSelected = output<CustomerList[]>();
   readonly cancelled = output<void>();
 
   readonly search = signal<string>('');
@@ -54,6 +57,7 @@ export class CustomerPickerDialogComponent {
   readonly totalPages = signal<number>(0);
   readonly currentPage = signal<number>(0);
   readonly loading = signal<boolean>(false);
+  readonly selected = signal<CustomerList[]>([]);
 
   readonly filterType = signal<CustomerType | null>(null);
 
@@ -99,7 +103,23 @@ export class CustomerPickerDialogComponent {
   }
 
   onSelect(customer: CustomerList): void {
-    this.customerSelected.emit(customer);
+    if (!this.multiple()) {
+      this.customerSelected.emit(customer);
+      return;
+    }
+    this.selected.update((current) =>
+      current.some((item) => item.id === customer.id)
+        ? current.filter((item) => item.id !== customer.id)
+        : [...current, customer],
+    );
+  }
+
+  isSelected(customer: CustomerList): boolean {
+    return this.multiple() && this.selected().some((item) => item.id === customer.id);
+  }
+
+  confirmMultiple(): void {
+    if (this.selected().length > 0) this.customersSelected.emit(this.selected());
   }
 
   onCancel(): void {
@@ -144,5 +164,6 @@ export class CustomerPickerDialogComponent {
   private resetSelectionState(): void {
     this.search.set('');
     this.currentPage.set(0);
+    this.selected.set(this.multiple() ? [...this.initialSelected()] : []);
   }
 }

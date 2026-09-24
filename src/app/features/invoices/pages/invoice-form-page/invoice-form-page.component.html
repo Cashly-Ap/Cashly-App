@@ -22,7 +22,37 @@
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
               >Cliente *</label
             >
-            @if (selectedCustomerLabel(); as customer) {
+            @if (bulkMode()) {
+              @if (selectedCustomers().length > 0) {
+                <div class="flex flex-col gap-2">
+                  @for (customer of selectedCustomers(); track customer.id) {
+                    <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                      <i class="pi pi-check-circle text-primary"></i>
+                      <div class="flex flex-col min-w-0 flex-1">
+                        <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
+                        <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
+                      </div>
+                    </div>
+                  }
+                  <button
+                    type="button"
+                    class="self-start text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                    (click)="openPicker()"
+                  >
+                    Cambiar selección
+                  </button>
+                </div>
+              } @else {
+                <button
+                  type="button"
+                  class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 text-surface-400 text-sm transition-colors"
+                  (click)="openPicker()"
+                >
+                  <i class="pi pi-users text-sm"></i>
+                  Seleccionar varios clientes...
+                </button>
+              }
+            } @else if (selectedCustomerLabel(); as customer) {
               <div
                 class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700"
               >
@@ -84,6 +114,29 @@
               >
             }
           </div>
+
+          @if (!isEditMode() && !bulkCreationStarted()) {
+            <div class="col-span-full flex flex-wrap gap-2">
+              <p-button
+                type="button"
+                [label]="bulkMode() ? 'Modo factura individual' : 'Crear factura para varios clientes'"
+                [icon]="bulkMode() ? 'pi pi-user' : 'pi pi-users'"
+                severity="secondary"
+                [outlined]="true"
+                (onClick)="toggleBulkMode()"
+              />
+              @if (selectedCustomerId() && !bulkMode()) {
+                <p-button
+                  type="button"
+                  label="Cargar pedidos y presupuestos"
+                  icon="pi pi-download"
+                  severity="secondary"
+                  [outlined]="true"
+                  (onClick)="openSourcePicker()"
+                />
+              }
+            </div>
+          }
 
           <div
             class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
@@ -167,6 +220,8 @@
           context="invoice"
           [items]="items()"
           [customerId]="selectedCustomerId()"
+          [customerIds]="selectedCustomerIds()"
+          [stockMultiplier]="bulkMode() ? selectedCustomers().length : 1"
           [readonly]="false"
           (itemsChange)="onItemsChange($event)"
         />
@@ -185,7 +240,19 @@
 
 <app-customer-picker-dialog
   [visible]="pickerVisible()"
+  [multiple]="bulkMode()"
+  [initialSelected]="selectedCustomers()"
   [hasExistingItems]="items().length > 0"
   (customerSelected)="onCustomerSelected($event)"
+  (customersSelected)="onCustomersSelected($event)"
   (cancelled)="onPickerCancelled()"
+/>
+
+<app-invoice-source-picker-dialog
+  [visible]="sourcePickerVisible()"
+  [customerId]="selectedCustomerId()"
+  [loadedOrderIds]="sourceOrderIds()"
+  [loadedQuoteIds]="sourceQuoteIds()"
+  (sourceSelected)="onSourcesSelected($event)"
+  (cancelled)="onSourcePickerCancelled()"
 />
