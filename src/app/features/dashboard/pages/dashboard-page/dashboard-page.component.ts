@@ -1,5 +1,6 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { PaginatorModule } from 'primeng/paginator';
 import {
   DashboardApiService,
   DashboardSummary,
@@ -15,7 +16,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DecimalPipe, BaseChartDirective],
+  imports: [CommonModule, DecimalPipe, BaseChartDirective, PaginatorModule],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {
@@ -27,6 +28,11 @@ export class DashboardPageComponent implements OnInit {
   readonly topCustomers = signal<TopItem[]>([]);
   readonly recentActivity = signal<RecentActivity[]>([]);
   readonly invoiceDueSchedule = signal<InvoiceDue[]>([]);
+  readonly dueFirst = signal(0);
+  readonly dueRows = signal(10);
+  readonly invoiceDueSchedulePage = computed(() =>
+    this.invoiceDueSchedule().slice(this.dueFirst(), this.dueFirst() + this.dueRows()),
+  );
   readonly loading = signal(true);
 
   readonly barChartType: ChartType = 'bar';
@@ -129,6 +135,11 @@ export class DashboardPageComponent implements OnInit {
         }],
       });
     });
+  }
+
+  onDuePageChange(event: { first?: number; rows?: number }): void {
+    this.dueFirst.set(event.first ?? 0);
+    this.dueRows.set(event.rows ?? 10);
   }
 
   activityLabel(type: string): string {

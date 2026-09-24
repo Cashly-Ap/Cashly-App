@@ -145,7 +145,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (invoice of invoiceDueSchedule(); track invoice.invoiceId) {
+              @for (invoice of invoiceDueSchedulePage(); track invoice.invoiceId) {
                 <tr class="border-b border-surface-50 dark:border-surface-800">
                   <td class="py-2" [class.text-red-600]="isOverdue(invoice.dueDate)">
                     {{ formatDueDate(invoice.dueDate) }}
@@ -158,6 +158,14 @@
               }
             </tbody>
           </table>
+          <p-paginator
+            [first]="dueFirst()"
+            [rows]="dueRows()"
+            [totalRecords]="invoiceDueSchedule().length"
+            [rowsPerPageOptions]="[5, 10, 20]"
+            (onPageChange)="onDuePageChange($event)"
+            styleClass="mt-2"
+          />
         </div>
       } @else {
         <p class="text-sm text-surface-400 py-8 text-center">No hay facturas pendientes de cobro.</p>
