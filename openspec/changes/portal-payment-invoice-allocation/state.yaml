@@ -1,5 +1,5 @@
 change: portal-payment-invoice-allocation
-repo: parsun-app
+repo: cashly-app
 mode: light
 current_phase: apply
 phases_completed:
@@ -12,5 +12,5 @@ phases_pending:
   - verify
 persistence_mode: openspec
 notes: |
-  Sibling to parsun-api and parsun-portal-web changes of the same name.
+  Sibling to cashly-api and cashly-portal-web changes of the same name.
   Small, additive UI slice; no Explore/Archive artifact needed given scope.

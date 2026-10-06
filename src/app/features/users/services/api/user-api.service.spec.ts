@@ -13,7 +13,7 @@ describe('UserApiService', () => {
 
   const mockUserDetails: UserDetails = {
     id: '1',
-    email: 'test@parsun.com',
+    email: 'test@cashly.com',
     userName: 'Test User',
     role: UserType.OPERATOR,
     active: true,
@@ -24,7 +24,7 @@ describe('UserApiService', () => {
 
   const mockUserList: UserList = {
     id: '1',
-    email: 'test@parsun.com',
+    email: 'test@cashly.com',
     userName: 'Test User',
     role: UserType.OPERATOR,
     active: true,
@@ -117,7 +117,7 @@ describe('UserApiService', () => {
   describe('create', () => {
     it('should create a new user', async () => {
       const createData: UserCreate = {
-        email: 'new@parsun.com',
+        email: 'new@cashly.com',
         password: 'Password1!',
         userName: 'New User',
         role: UserType.OPERATOR,
@@ -134,7 +134,7 @@ describe('UserApiService', () => {
       req.flush({ ...mockUserDetails, ...createData });
 
       const user = await promise;
-      expect(user.email).toBe('new@parsun.com');
+      expect(user.email).toBe('new@cashly.com');
     });
 
     it('should handle validation errors on create', async () => {
@@ -162,7 +162,7 @@ describe('UserApiService', () => {
     it('should update existing user', async () => {
       const editData: UserEdit = {
         id: '1',
-        email: 'updated@parsun.com',
+        email: 'updated@cashly.com',
         userName: 'Updated User',
         role: UserType.ADMIN,
         active: false,

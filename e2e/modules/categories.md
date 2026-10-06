@@ -26,7 +26,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/categories`
-- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@parsun.com)
+- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/categories`
   2. Wait for page to load
@@ -212,7 +212,7 @@
 #### CAT-033 — Delete category (admin)
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as admin@parsun.com (ADMIN role)
+- **Prerequisites**: Logged in as admin@cashly.com (ADMIN role)
 - **URL**: `/categories`
 - **Steps**:
   1. Find a deletable category (with 0 products)
@@ -240,7 +240,7 @@
 #### CAT-036 — Delete button hidden/disabled for OPERATOR
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **URL**: `/categories`
 - **Steps**:
   1. Check if delete button is visible/disabled
@@ -278,7 +278,7 @@
 #### CAT-040 — OPERATOR cannot access new/edit
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **URL**: `/categories/new`
 - **Steps**:
   1. Navigate to create page

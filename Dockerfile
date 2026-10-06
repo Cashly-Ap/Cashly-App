@@ -9,9 +9,9 @@ RUN apk add --no-cache git wget unzip bash curl
 RUN wget -qO- https://bun.sh/install | bash -s "bun-v1.3.3"
 ENV PATH="/root/.bun/bin:${PATH}"
 
-COPY package.json bunfig.toml ./
+COPY package.json bunfig.toml bun.lock ./
 
-RUN bun install
+RUN bun install --frozen-lockfile
 
 COPY . .
 
@@ -28,7 +28,7 @@ ENV PATH="/root/.bun/bin:${PATH}"
 
 RUN bun add -g serve
 
-COPY --from=builder /app/dist/parsun-app/browser ./dist
+COPY --from=builder /app/dist/cashly-app/browser ./dist
 
 EXPOSE 8080
 

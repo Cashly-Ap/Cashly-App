@@ -1,6 +1,6 @@
 # Back-office End-to-End Testing Proposal by Module
 
-This proposal defines the Playwright end-to-end testing program for the Parsun back-office application. It converts the existing module test-plan drafts into one executable coverage model, verifies complete operational workflows against the real API, and identifies the data, route, and authorization prerequisites required to test every implemented back-office function reliably. Portal-specific coverage is defined in `parsun-portal-web/docs/project/E2E_TEST_PROPOSAL.md`.
+This proposal defines the Playwright end-to-end testing program for the Cashly back-office application. It converts the existing module test-plan drafts into one executable coverage model, verifies complete operational workflows against the real API, and identifies the data, route, and authorization prerequisites required to test every implemented back-office function reliably. Portal-specific coverage is defined in `cashly-portal-web/docs/project/E2E_TEST_PROPOSAL.md`.
 
 ## Outcome
 
@@ -32,7 +32,7 @@ The live acceptance suite must use the real API for business behavior. Playwrigh
 
 ### Required services
 
-- Parsun API on `http://localhost:8080` with MySQL, Flyway schema, storage, and deterministic test seed.
+- Cashly API on `http://localhost:8080` with MySQL, Flyway schema, storage, and deterministic test seed.
 - Back-office app on `http://localhost:4200`.
 - Customer portal on `http://localhost:4000` (or an explicit alternate port in CI).
 - A disposable database or resettable tenant for every test run.
@@ -91,7 +91,7 @@ Each module below must have at least one route smoke test, one successful workfl
 
 ### Modules requiring route or contract confirmation
 
-The documentation lists Collections, Payables, Merchants, and Notifications, but the current `parsun-app/src/app/app.routes.ts` does not expose routes for those feature folders. The proposal treats them as API/contract verification first and UI E2E only after one of these conditions is met:
+The documentation lists Collections, Payables, Merchants, and Notifications, but the current `cashly-app/src/app/app.routes.ts` does not expose routes for those feature folders. The proposal treats them as API/contract verification first and UI E2E only after one of these conditions is met:
 
 - a frontend route and page are added;
 - the existing functionality is intentionally owned by another screen and documented as such; or

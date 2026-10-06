@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/orders`
-- **Prerequisites**: Logged in with MODULE_SALES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_SALES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/orders`
   2. Wait for page to load
@@ -222,7 +222,7 @@
 #### ORD-028 — Cannot convert OPERATOR order to invoice
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **Steps**:
   1. Confirm an order
   2. Try to convert to invoice
@@ -370,7 +370,7 @@
 #### ORD-046 — OPERATOR can create orders
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **Expected**: Can create, edit DRAFT, confirm, cancel orders. Cannot convert to invoice.
 
 #### ORD-047 — Insufficient stock during confirm — blocked

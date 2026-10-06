@@ -19,7 +19,7 @@ describe('UsersDetailsPageComponent', () => {
 
   const mockUser: UserDetails = {
     id: '1',
-    email: 'test@parsun.com',
+    email: 'test@cashly.com',
     userName: 'Test User',
     role: UserType.OPERATOR,
     active: true,

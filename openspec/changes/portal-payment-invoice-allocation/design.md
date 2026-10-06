@@ -1,4 +1,4 @@
-# Design: Portal Payment Invoice Allocation — parsun-app slice
+# Design: Portal Payment Invoice Allocation — cashly-app slice
 
 - `features/receivables/models/interfaces/pending-payment.interface.ts`: rename `voucherPath: string | null` → `voucherUrl: string | null`.
 - `pending-payments-tab.component.html`: add an icon button after the existing Aprobar/Rechazar actions, following the exact PrimeNG pattern already used for "Ver detalle" in `merchant-payments-tab.component.html` (`p-button icon="pi pi-eye"`, or a file/paperclip icon such as `pi pi-paperclip`, `[rounded]="true" [text]="true" severity="info"`), bound `[disabled]="!payment.voucherUrl"`.

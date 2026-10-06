@@ -27,7 +27,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/suppliers`
-- **Prerequisites**: Logged in as user with MODULE_PURCHASES (admin@parsun.com)
+- **Prerequisites**: Logged in as user with MODULE_PURCHASES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/suppliers`
   2. Wait for page to load
@@ -49,12 +49,12 @@
 #### SUPPLIER-003 — Permission denied for non-PURCHASES user ✅
 
 - **Severity**: CRITICAL
-- **Prerequisites**: Logged in as sales@parsun.com (only SALES module)
+- **Prerequisites**: Logged in as sales@cashly.com (only SALES module)
 - **URL**: `/suppliers`
 - **Steps**:
   1. Navigate to `/suppliers`
 - **Expected**: User is redirected away from `/suppliers` (to `/` or `/customers`). `GET /api/suppliers` is never called.
-- **Result**: ✅ PASS — sales@parsun.com redirected from `/suppliers` to `/customers`. Menu "Compras" not visible. No supplier data loaded. modulePermissionGuard works.
+- **Result**: ✅ PASS — sales@cashly.com redirected from `/suppliers` to `/customers`. Menu "Compras" not visible. No supplier data loaded. modulePermissionGuard works.
 
 ---
 
@@ -360,7 +360,7 @@
 #### SUPPLIER-032 — Delete supplier (ADMIN)
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as admin@parsun.com (ADMIN role)
+- **Prerequisites**: Logged in as admin@cashly.com (ADMIN role)
 - **URL**: `/suppliers`
 - **Steps**:
   1. Find a deletable supplier
@@ -371,7 +371,7 @@
 #### SUPPLIER-033 — Delete supplier (OPERATOR) — should be blocked
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com (OPERATOR role)
+- **Prerequisites**: Logged in as operator@cashly.com (OPERATOR role)
 - **URL**: `/suppliers`
 - **Steps**:
   1. Check if delete button is visible/disabled for OPERATOR

@@ -432,4 +432,4 @@ console.log('Image loaded:', this.isImageLoaded());
 
 ## 📄 Licencia
 
-Este componente es parte del proyecto Parsun y sigue las mismas políticas de licencia del proyecto principal.
+Este componente es parte del proyecto Cashly y sigue las mismas políticas de licencia del proyecto principal.

@@ -23,9 +23,9 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 | Email                 | Password           | Role        | Permissions                                                  |
 | --------------------- | ------------------ | ----------- | ------------------------------------------------------------ |
 | `gabriel@gmail.com`   | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
-| `admin@parsun.com`    | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
-| `operator@parsun.com` | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
-| `testuser@parsun.com` | `Test1234!`        | OPERATOR    | INVENTORY (can be created for testing)                       |
+| `admin@cashly.com`    | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
+| `operator@cashly.com` | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
+| `testuser@cashly.com` | `Test1234!`        | OPERATOR    | INVENTORY (can be created for testing)                       |
 
 ---
 
@@ -49,7 +49,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 - **Severity**: HIGH
 - **URL**: `http://localhost:4200/users`
-- **Prerequisites**: Authenticated as ADMIN (`admin@parsun.com`)
+- **Prerequisites**: Authenticated as ADMIN (`admin@cashly.com`)
 - **Given** I am authenticated as ADMIN (has USERS permission)
 - **When** I navigate to `/users`
 - **Then** I should be redirected away from `/users` (frontend `adminGuard` blocks ADMIN)
@@ -63,7 +63,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 - **Severity**: HIGH
 - **URL**: `http://localhost:4200/users`
-- **Prerequisites**: Authenticated as OPERATOR (`operator@parsun.com`)
+- **Prerequisites**: Authenticated as OPERATOR (`operator@cashly.com`)
 - **Given** I am authenticated as OPERATOR
 - **When** I navigate to `/users`
 - **Then** I should be redirected (either by `adminGuard` or `modulePermissionGuard`)
@@ -95,7 +95,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 - **Then** the user should be created and I should be redirected to the users list
 - **And** the new user should appear in the list
 - **And** the API call `POST /api/users` should return 201
-- **Note**: Use a unique email like `test-{timestamp}@parsun.com` to avoid duplicates
+- **Note**: Use a unique email like `test-{timestamp}@cashly.com` to avoid duplicates
 
 ---
 
@@ -117,7 +117,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 - **URL**: `http://localhost:4200/users/new`
 - **Prerequisites**: Authenticated as SUPER_ADMIN (`gabriel@gmail.com`)
 - **Given** I am on the create user page
-- **When** I enter an email that already exists (e.g. `admin@parsun.com`)
+- **When** I enter an email that already exists (e.g. `admin@cashly.com`)
 - **Then** the API should return 409 (Conflict)
 - **And** I should see an error message like "Email already registered"
 
@@ -283,7 +283,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 - **Severity**: CRITICAL
 - **URL**: `http://localhost:4200/users`
-- **Prerequisites**: Authenticated as OPERATOR (`operator@parsun.com`)
+- **Prerequisites**: Authenticated as OPERATOR (`operator@cashly.com`)
 - **Given** I am authenticated as OPERATOR
 - **When** I try to navigate to `/users`
 - **Then** I should be blocked by `adminGuard` (redirects to `/`)
@@ -320,12 +320,12 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 
 - **Severity**: CRITICAL
 - **URL**: `http://localhost:4200/customers`
-- **Prerequisites**: A user with known restricted permissions (e.g., `operator@parsun.com` has INVENTORY, SALES, PURCHASES but NOT USERS)
-- **Given** I am authenticated as `operator@parsun.com` (has INVENTORY, SALES, PURCHASES)
+- **Prerequisites**: A user with known restricted permissions (e.g., `operator@cashly.com` has INVENTORY, SALES, PURCHASES but NOT USERS)
+- **Given** I am authenticated as `operator@cashly.com` (has INVENTORY, SALES, PURCHASES)
 - **When** I navigate directly to `/users` via URL
 - **Then** the frontend guard should block access (redirect to `/` or `/customers`)
 - **And** the menu should NOT show "Gestión de Usuarios"
-- **Given** I am authenticated as `sales@parsun.com` (only SALES)
+- **Given** I am authenticated as `sales@cashly.com` (only SALES)
 - **When** I navigate directly to `/inventory` via URL
 - **Then** the frontend guard should block access
 - **And** the menu should NOT show "Inventario" or "Compras" or "Proveedores"
@@ -337,11 +337,11 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 - **Severity**: HIGH
 - **URL**: `http://localhost:4200/`
 - **Prerequisites**: Authenticated as a non-SUPER_ADMIN user with limited permissions
-- **Given** I am authenticated as `sales@parsun.com` (only SALES)
+- **Given** I am authenticated as `sales@cashly.com` (only SALES)
 - **When** I inspect the sidebar menu
 - **Then** the menu should ONLY show: "Gestión Comercial" (or SALES-related)
 - **And** should NOT show: "Gestión de Usuarios", "Inventario", "Compras", "Finanzas", "Reportes"
-- **Given** I am authenticated as `operator@parsun.com` (INVENTORY, SALES, PURCHASES)
+- **Given** I am authenticated as `operator@cashly.com` (INVENTORY, SALES, PURCHASES)
 - **When** I inspect the sidebar menu
 - **Then** the menu should only show: "Gestión Comercial", "Inventario", "Compras" (or "Proveedores")
 - **And** should NOT show: "Gestión de Usuarios", "Finanzas", "Reportes"
@@ -370,7 +370,7 @@ The Users module handles: listing, creating, editing, deleting users, managing t
 - **Severity**: CRITICAL
 - **URL**: `http://localhost:4200/api/`
 - **Prerequisites**: Authenticated as a user with limited permissions
-- **Given** I have an access token for `nosales@parsun.com` (INVENTORY, PURCHASES — no SALES)
+- **Given** I have an access token for `nosales@cashly.com` (INVENTORY, PURCHASES — no SALES)
 - **When** I call `GET /api/customers`
 - **Then** the API should return 403 (Forbidden)
 - **When** I call `GET /api/products`

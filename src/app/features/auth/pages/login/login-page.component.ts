@@ -34,7 +34,7 @@ export class LoginPageComponent {
   private messageService = inject(MessageService);
   protected authService = inject(AuthService);
 
-  logoSrc = computed(() => '/logo-210.webp');
+  logoSrc = computed(() => '/cashly-logo.svg');
 
   form = this.fb.group({
     email: ['', AuthValidators.email],

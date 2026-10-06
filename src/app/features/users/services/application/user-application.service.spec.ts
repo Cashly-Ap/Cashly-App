@@ -19,7 +19,7 @@ describe('UserApplicationService', () => {
 
   const mockUserDetails: UserDetails = {
     id: '1',
-    email: 'test@parsun.com',
+    email: 'test@cashly.com',
     userName: 'Test User',
     role: UserType.OPERATOR,
     active: true,
@@ -30,7 +30,7 @@ describe('UserApplicationService', () => {
 
   const mockUserList: UserList = {
     id: '1',
-    email: 'test@parsun.com',
+    email: 'test@cashly.com',
     userName: 'Test User',
     role: UserType.OPERATOR,
     active: true,
@@ -146,7 +146,7 @@ describe('UserApplicationService', () => {
       service.loadUsers().subscribe();
 
       const createData: UserCreate = {
-        email: 'new@parsun.com',
+        email: 'new@cashly.com',
         password: 'Password1!',
         userName: 'New User',
         role: UserType.OPERATOR,
@@ -165,7 +165,7 @@ describe('UserApplicationService', () => {
       mockApiService.create.mockReturnValue(throwError(() => new Error('Conflict')));
 
       const createData: UserCreate = {
-        email: 'duplicate@parsun.com',
+        email: 'duplicate@cashly.com',
         password: 'Password1!',
         userName: 'Duplicate User',
         role: UserType.OPERATOR,
@@ -196,7 +196,7 @@ describe('UserApplicationService', () => {
 
       const editData: UserEdit = {
         id: '1',
-        email: 'test@parsun.com',
+        email: 'test@cashly.com',
         userName: 'Updated User',
         role: UserType.ADMIN,
         active: true,
@@ -222,7 +222,7 @@ describe('UserApplicationService', () => {
 
       const editData: UserEdit = {
         id: '1',
-        email: 'test@parsun.com',
+        email: 'test@cashly.com',
         userName: 'New Name',
         role: UserType.OPERATOR,
         active: true,
@@ -238,7 +238,7 @@ describe('UserApplicationService', () => {
 
       const editData: UserEdit = {
         id: '1',
-        email: 'test@parsun.com',
+        email: 'test@cashly.com',
         userName: 'Test',
         role: UserType.OPERATOR,
         active: true,

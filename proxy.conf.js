@@ -1,6 +1,6 @@
 const PROXY_CONFIG = {
   '/api': {
-    target: 'http://parsun-api-app:8080',
+    target: 'http://cashly-api-app:8080',
     secure: false,
     changeOrigin: true,
     configure: (proxy, options) => {
@@ -14,7 +14,7 @@ const PROXY_CONFIG = {
     },
   },
   '/ws': {
-    target: 'ws://parsun-api-app:8080',
+    target: 'ws://cashly-api-app:8080',
     ws: true,
     secure: false,
     changeOrigin: true,

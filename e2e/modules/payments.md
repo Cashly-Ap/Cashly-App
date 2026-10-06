@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/payments`
-- **Prerequisites**: Logged in with MODULE_SALES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_SALES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/payments`
   2. Wait for page to load

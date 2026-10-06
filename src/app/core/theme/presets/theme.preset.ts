@@ -1,7 +1,7 @@
 import { definePreset } from '@primeuix/themes';
 import Aura from '@primeuix/themes/aura';
 
-export const ParsunPreset = definePreset(Aura, {
+export const CashlyPreset = definePreset(Aura, {
   semantic: {
     primary: {
       50: '{zinc.50}',

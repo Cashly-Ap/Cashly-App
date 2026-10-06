@@ -1,6 +1,6 @@
-# Tasks: Portal Payment Invoice Allocation (parsun-app)
+# Tasks: Portal Payment Invoice Allocation (cashly-app)
 
-TDD throughout. Run `bun run test:run` from `parsun-app/`.
+TDD throughout. Run `bun run test:run` from `cashly-app/`.
 
 1. [ ] Confirm whether `ReceivablesApplicationService.loadPendingPayments()` / paged `GET /receivables/payments/pending` path shares `PendingPayment` and needs the same field; adjust if so.
 2. [ ] Rename `voucherPath` → `voucherUrl` in `pending-payment.interface.ts` and update the 2 existing spec mocks.

@@ -1,4 +1,4 @@
-export const PENDING_TABS_STORAGE_KEY = 'parsun_pending_tabs';
+export const PENDING_TABS_STORAGE_KEY = 'cashly_pending_tabs';
 
 export const PENDING_TABS_CONFIG = {
   DEBOUNCE_TIME: 1000,

@@ -1,4 +1,4 @@
-# Test Sprite Protocol — Parsun
+# Test Sprite Protocol — Cashly
 
 > Master protocol for exploratory integration testing assisted by Gabriel-Orchestrator.
 > Version: 1.0

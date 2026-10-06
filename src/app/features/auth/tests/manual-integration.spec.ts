@@ -127,7 +127,7 @@ describe('Auth Integration - Form to API', () => {
 
     it('should handle complete login flow with validation', () => {
       const form = formBuilder.group({
-        email: ['admin@parsun.com', AuthValidators.email],
+        email: ['admin@cashly.com', AuthValidators.email],
         password: ['SecurePass123!', AuthValidators.loginPassword],
       });
 
@@ -141,16 +141,16 @@ describe('Auth Integration - Form to API', () => {
       };
 
       authService.login(loginRequest).subscribe((response) => {
-        expect(response.user.email).toBe('admin@parsun.com');
+        expect(response.user.email).toBe('admin@cashly.com');
         expect(response.accessToken).toBe('jwt-token');
-        expect(authService.currentUser()?.email).toBe('admin@parsun.com');
+        expect(authService.currentUser()?.email).toBe('admin@cashly.com');
         expect(authService.accessToken()).toBe('jwt-token');
         expect(authService.isAuthenticated()).toBe(true);
       });
 
       const req = httpMock.expectOne(`${environment.apiUrl}/auth/login`);
       expect(req.request.method).toBe('POST');
-      expect(req.request.body.email).toBe('admin@parsun.com');
+      expect(req.request.body.email).toBe('admin@cashly.com');
       expect(req.request.body.password).toBe('SecurePass123!');
 
       req.flush({
@@ -160,7 +160,7 @@ describe('Auth Integration - Form to API', () => {
         expiresIn: 3600,
         user: {
           id: '1',
-          email: 'admin@parsun.com',
+          email: 'admin@cashly.com',
           active: true,
           emailVerified: true,
           createdAt: new Date(),

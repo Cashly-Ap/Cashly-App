@@ -143,7 +143,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   currentUser = this.authService.currentUser;
 
-  logoSrc = '/logo-210.webp';
+  logoSrc = '/cashly-logo.svg';
 
   readonly activeModal = signal<
     | 'catalog'

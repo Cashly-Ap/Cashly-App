@@ -1,10 +1,10 @@
 services:
   # Development service
-  parsun-app-dev:
+  cashly-app-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: parsun-app-dev
+    container_name: cashly-app-dev
     ports:
       - '4200:4200'
     volumes:
@@ -12,12 +12,12 @@ services:
       - /app/node_modules
     environment:
       - NODE_ENV=development
-      - BACKEND_URL=http://parsun-api-app:8080
+      - BACKEND_URL=http://cashly-api-app:8080
     profiles:
       - dev
     restart: unless-stopped
     networks:
-      - parsun-network
+      - cashly-network
     healthcheck:
       test: ['CMD', 'wget', '--no-verbose', '--tries=1', '--spider', 'http://localhost:4200']
       interval: 30s
@@ -26,11 +26,11 @@ services:
       start_period: 120s
 
   # Production service
-  parsun-app-prod:
+  cashly-app-prod:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: parsun-app-prod
+    container_name: cashly-app-prod
     ports:
       - '4200:4200'
     environment:
@@ -40,11 +40,11 @@ services:
       - prod
     restart: unless-stopped
 
-  parsun-app-test:
+  cashly-app-test:
     build:
       context: .
       dockerfile: Dockerfile.test
-    container_name: parsun-app-test
+    container_name: cashly-app-test
     volumes:
       - .:/app
       - /app/node_modules
@@ -56,6 +56,6 @@ services:
     restart: 'no'
 
 networks:
-  parsun-network:
+  cashly-network:
     external: true
-    name: parsun-api_parsun-network
+    name: cashly-api_cashly-network

@@ -87,7 +87,7 @@ describe('LoginPageComponent', () => {
   });
 
   it('should use the display-sized logo asset', () => {
-    expect(component.logoSrc()).toBe('/logo-210.webp');
+    expect(component.logoSrc()).toBe('/cashly-logo.svg');
   });
 
   describe('form initialization', () => {

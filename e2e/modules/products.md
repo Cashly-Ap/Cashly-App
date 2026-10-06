@@ -27,7 +27,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/products`
-- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@parsun.com)
+- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/products`
   2. Wait for page to load
@@ -49,7 +49,7 @@
 #### PROD-003 — Permission denied for non-INVENTORY user
 
 - **Severity**: CRITICAL
-- **Prerequisites**: Logged in as sales@parsun.com (only SALES module)
+- **Prerequisites**: Logged in as sales@cashly.com (only SALES module)
 - **URL**: `/products`
 - **Steps**:
   1. Navigate to `/products`
@@ -515,7 +515,7 @@
 #### PROD-049 — OPERATOR can view but not create/edit
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **URL**: `/products`
 - **Steps**:
   1. Navigate to `/products`

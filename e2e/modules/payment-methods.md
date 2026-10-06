@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/payment-methods`
-- **Prerequisites**: Logged in with MODULE_SALES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_SALES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/payment-methods`
   2. Wait for page to load
@@ -159,7 +159,7 @@
 #### PM-017 — Only ADMIN can manage payment methods
 
 - **Severity**: HIGH
-- **Prerequisites**: operator@parsun.com
+- **Prerequisites**: operator@cashly.com
 - **Expected**: Cannot access payment methods CRUD.
 
 #### PM-018 — 401 handling

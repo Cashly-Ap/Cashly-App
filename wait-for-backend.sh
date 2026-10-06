@@ -3,7 +3,7 @@
 # Wait for the backend API to be ready before starting the frontend
 # ============================================================================
 
-BACKEND_URL="${BACKEND_URL:-http://parsun-api-app:8080}"
+BACKEND_URL="${BACKEND_URL:-http://cashly-api-app:8080}"
 MAX_RETRIES="${MAX_RETRIES:-60}"
 RETRY_INTERVAL="${RETRY_INTERVAL:-5}"
 

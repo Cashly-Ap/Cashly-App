@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/price-types`
-- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@parsun.com)
+- **Prerequisites**: Logged in as user with MODULE_INVENTORY (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/price-types`
   2. Wait for page to load
@@ -211,7 +211,7 @@
 #### PRT-024 — Delete button hidden for OPERATOR
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **Expected**: Delete button hidden or disabled.
 
 ---
@@ -242,6 +242,6 @@
 #### PRT-028 — OPERATOR cannot create/edit
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **URL**: `/price-types/new`
 - **Expected**: Create button hidden or 403 if attempting POST.

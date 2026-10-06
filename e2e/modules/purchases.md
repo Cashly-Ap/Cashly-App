@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/purchases`
-- **Prerequisites**: Logged in with MODULE_PURCHASES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_PURCHASES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/purchases`
   2. Wait for page to load
@@ -324,13 +324,13 @@
 #### PUR-043 — OPERATOR can manage purchases
 
 - **Severity**: HIGH
-- **Prerequisites**: operator@parsun.com
+- **Prerequisites**: operator@cashly.com
 - **Expected**: Full purchase management.
 
 #### PUR-044 — SUPERVISOR can approve purchases
 
 - **Severity**: HIGH
-- **Prerequisites**: supervisor@parsun.com
+- **Prerequisites**: supervisor@cashly.com
 - **Expected**: Can approve PENDING purchases.
 
 ---

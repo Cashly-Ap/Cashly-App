@@ -24,11 +24,11 @@ The Auth module handles: login, logout, token refresh, password change, username
 | Email                   | Password           | Role        | Permissions                                                  |
 | ----------------------- | ------------------ | ----------- | ------------------------------------------------------------ |
 | `gabriel@gmail.com`     | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
-| `superadmin@parsun.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
-| `admin@parsun.com`      | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
-| `operator@parsun.com`   | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
-| `sales@parsun.com`      | `49510561Gabriel.` | OPERATOR    | SALES                                                        |
-| `nosales@parsun.com`    | `49510561Gabriel.` | OPERATOR    | INVENTORY, PURCHASES                                         |
+| `superadmin@cashly.com` | `49510561Gabriel.` | SUPER_ADMIN | All modules                                                  |
+| `admin@cashly.com`      | `49510561Gabriel.` | ADMIN       | USERS, INVENTORY, SALES, FINANCES, PURCHASES, DOCUMENT_ADMIN |
+| `operator@cashly.com`   | `49510561Gabriel.` | OPERATOR    | INVENTORY, SALES, PURCHASES                                  |
+| `sales@cashly.com`      | `49510561Gabriel.` | OPERATOR    | SALES                                                        |
+| `nosales@cashly.com`    | `49510561Gabriel.` | OPERATOR    | INVENTORY, PURCHASES                                         |
 
 ---
 
@@ -77,7 +77,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 - **Severity**: HIGH
 - **URL**: `http://localhost:4200/auth/login`
 - **Prerequisites**: Not authenticated
-- **Given** I authenticate as `admin@parsun.com` / `49510561Gabriel.`
+- **Given** I authenticate as `admin@cashly.com` / `49510561Gabriel.`
 - **When** I enter valid credentials
 - **Then** I should be redirected to `/customers`
 - **And** the menu should show only the modules ADMIN is allowed to access (NO Customer Portal)
@@ -89,7 +89,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 - **Severity**: HIGH
 - **URL**: `http://localhost:4200/auth/login`
 - **Prerequisites**: Not authenticated
-- **Given** I authenticate as `operator@parsun.com` / `49510561Gabriel.`
+- **Given** I authenticate as `operator@cashly.com` / `49510561Gabriel.`
 - **When** I enter valid credentials
 - **Then** I should be redirected to `/customers`
 - **And** the menu should show only INVENTORY, SALES, PURCHASES
@@ -221,7 +221,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 - **Severity**: MEDIUM
 - **URL**: `http://localhost:4200/`
 - **Prerequisites**: Authenticated
-- **Given** I authenticate as `sales@parsun.com` (SALES only)
+- **Given** I authenticate as `sales@cashly.com` (SALES only)
 - **When** I check the menu
 - **Then** I should NOT see links to Users, Purchases, Warehouses, etc.
 - **And** I should only see modules related to SALES
@@ -342,7 +342,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 
 - **Result**: ✅ PASS
 - **Evidence**: `../reports/screenshots/AUTH-016-sales-user.png`
-- **Findings**: sales@parsun.com has only SALES. Menu shows "Gestión de Usuarios" (⚠️ same bug as AUTH-005) and "Gestión Comercial". Backend correctly returns 403 for inventory/purchases endpoints.
+- **Findings**: sales@cashly.com has only SALES. Menu shows "Gestión de Usuarios" (⚠️ same bug as AUTH-005) and "Gestión Comercial". Backend correctly returns 403 for inventory/purchases endpoints.
 
 ### AUTH-017 — 401 error on requests with invalid token
 

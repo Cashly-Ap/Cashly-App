@@ -1,5 +1,5 @@
 variables:
-  RAILWAY_SERVICE: 'parsun-app'
+  RAILWAY_SERVICE: 'cashly-app'
 
 stages:
   - build
@@ -57,7 +57,7 @@ deploy:railway:
     - sh scripts/railway-deploy.sh
   environment:
     name: production
-    url: https://parsun-app-production.up.railway.app
+    url: https://cashly-app-production.up.railway.app
   when: manual
   only:
     - main

@@ -1,10 +1,10 @@
-# Proposal: Portal Payment Invoice Allocation — parsun-app slice
+# Proposal: Portal Payment Invoice Allocation — cashly-app slice
 
 ## Intent
 
 Wire up the already-declared-but-dead `voucherPath` field in the admin receivables "pending payments" tab to real backend data, so staff can view the voucher/receipt file a customer attached to a payment before approving it.
 
-This is the `parsun-app` slice of a larger cross-repo change; the backend contract change (`parsun-api`, same change name) adds `voucherUrl`/`targetInvoiceId` to `PaymentResponse`/`PaymentListResponse`.
+This is the `cashly-app` slice of a larger cross-repo change; the backend contract change (`cashly-api`, same change name) adds `voucherUrl`/`targetInvoiceId` to `PaymentResponse`/`PaymentListResponse`.
 
 ## Why
 

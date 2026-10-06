@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/invoices`
-- **Prerequisites**: Logged in with MODULE_SALES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_SALES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/invoices`
   2. Wait for page to load
@@ -232,7 +232,7 @@
 #### INV-030 — OPERATOR cannot duplicate
 
 - **Severity**: HIGH
-- **Prerequisites**: Logged in as operator@parsun.com
+- **Prerequisites**: Logged in as operator@cashly.com
 - **Expected**: Duplicate button hidden.
 
 ---
@@ -346,7 +346,7 @@
 #### INV-043 — OPERATOR can create invoices
 
 - **Severity**: HIGH
-- **Prerequisites**: operator@parsun.com
+- **Prerequisites**: operator@cashly.com
 - **Expected**: Can create and manage own invoices. Cannot duplicate.
 
 #### INV-044 — Insufficient stock during confirm — blocked

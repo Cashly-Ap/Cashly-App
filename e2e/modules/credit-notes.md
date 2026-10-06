@@ -25,7 +25,7 @@
 
 - **Severity**: CRITICAL
 - **URL**: `/credit-notes`
-- **Prerequisites**: Logged in with MODULE_SALES (admin@parsun.com)
+- **Prerequisites**: Logged in with MODULE_SALES (admin@cashly.com)
 - **Steps**:
   1. Navigate to `/credit-notes`
   2. Wait for page to load
@@ -201,5 +201,5 @@
 #### CN-024 — Only ADMIN/SUPERVISOR can void credit notes
 
 - **Severity**: HIGH
-- **Prerequisites**: operator@parsun.com
+- **Prerequisites**: operator@cashly.com
 - **Expected**: OPERATOR cannot void credit notes.

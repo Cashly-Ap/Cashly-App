@@ -1,4 +1,4 @@
-# Spec: Portal Payment Invoice Allocation — parsun-app slice
+# Spec: Portal Payment Invoice Allocation — cashly-app slice
 
 ## Requirement: Voucher button visibility follows data availability
 
