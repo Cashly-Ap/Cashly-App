@@ -10,12 +10,11 @@ describe('BusinessModule', () => {
     expect(BusinessModule.SALES).toBe('SALES');
     expect(BusinessModule.FINANCE).toBe('FINANCES');
     expect(BusinessModule.PURCHASES).toBe('PURCHASES');
-    expect(BusinessModule.CUSTOMER_PORTAL).toBe('CUSTOMER_PORTAL');
     expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');
   });
 
-  it('should have exactly 8 enum values', () => {
-    expect(Object.keys(BusinessModule).length).toBe(8);
+  it('should have exactly 7 enum values', () => {
+    expect(Object.keys(BusinessModule).length).toBe(7);
   });
 });
 
@@ -26,7 +25,6 @@ describe('BUSINESS_MODULE_LABELS', () => {
     expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('Gestión Comercial');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('Compras');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.CUSTOMER_PORTAL]).toBe('Portal Web de Clientes');
     expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('Reportes');
   });
 
