@@ -326,7 +326,6 @@ describe('DuplicateInvoiceDialogComponent - visible', () => {
       rif: 'J-22222222-2',
       type: 'BUSINESS',
       active: true,
-      portalAccess: false,
     });
     dialog.hasAnyNegativeStock.set(false);
     dialog.onConfirm();

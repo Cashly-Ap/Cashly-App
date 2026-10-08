@@ -92,10 +92,9 @@ export class InvoiceSourcePickerDialogComponent {
       draftOrders: this.orderApi.getAll({ customerId, status: 'DRAFT' }),
       confirmedOrders: this.orderApi.getAll({ customerId, status: 'CONFIRMED' }),
       draftQuotes: this.quoteApi.getAll({ customerId, status: 'DRAFT' }),
-      customerDraftQuotes: this.quoteApi.getAll({ customerId, status: 'CUSTOMER_DRAFT' }),
     })
       .pipe(
-        map(({ draftOrders, confirmedOrders, draftQuotes, customerDraftQuotes }) => [
+        map(({ draftOrders, confirmedOrders, draftQuotes }) => [
           ...[...draftOrders, ...confirmedOrders].map((item) => ({
             key: `ORDER:${item.id}`,
             type: 'ORDER' as const,
@@ -105,7 +104,7 @@ export class InvoiceSourcePickerDialogComponent {
             statusLabel: getOrderStatusLabel(item.status),
             total: item.totalAmount,
           })),
-          ...[...draftQuotes, ...customerDraftQuotes].map((item) => ({
+          ...draftQuotes.map((item) => ({
             key: `QUOTE:${item.id}`,
             type: 'QUOTE' as const,
             id: item.id,
