@@ -9,7 +9,6 @@ const customers = [
     rif: 'J-12345678-9',
     type: 'BUSINESS',
     active: true,
-    portalAccess: true,
     deletable: true,
   },
   {
@@ -20,7 +19,6 @@ const customers = [
     rif: 'J-98765432-1',
     type: 'BUSINESS',
     active: true,
-    portalAccess: false,
     deletable: false,
   },
 ];
@@ -84,7 +82,6 @@ test.describe('Customers module', () => {
     await expect(page.getByText('Inversiones Global S.A.').first()).toBeVisible();
     await expect(page.getByText('Servicios del Centro C.A.').first()).toBeVisible();
     await expect(page.getByText('Activo').first()).toBeVisible();
-    await expect(page.getByText('Sin acceso').first()).toBeVisible();
   });
 
   test('filters customers by legal name and sends the search query', async ({ page }) => {

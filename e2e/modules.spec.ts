@@ -43,7 +43,6 @@ async function authenticate(page: Page): Promise<void> {
           'SALES',
           'FINANCES',
           'PURCHASES',
-          'CUSTOMER_PORTAL',
           'DOCUMENT_ADMIN',
           'DASHBOARD',
         ],
