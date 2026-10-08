@@ -173,7 +173,7 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
 
   formatCustomer(payment: PendingPayment): string {
     if (payment.customerName) return payment.customerName;
-    return payment.createdByName || 'Portal';
+    return payment.createdByName || 'Automático';
   }
 
   openVoucher(payment: PendingPayment): void {
