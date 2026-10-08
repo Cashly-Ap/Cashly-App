@@ -475,7 +475,6 @@ features/customers/
 │   ├── customer-general-section/  # Tab 1: General info
 │   ├── customer-contact-section/  # Tab 2: Contact details
 │   ├── customer-addresses-section/# Tab 3: Addresses
-│   └── change-portal-password-dialog/
 ├── pages/
 │   ├── customers-list-page/
 │   ├── customers-form-page/       # Uses components above

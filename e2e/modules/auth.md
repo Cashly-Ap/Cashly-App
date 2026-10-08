@@ -80,7 +80,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 - **Given** I authenticate as `admin@cashly.com` / `49510561Gabriel.`
 - **When** I enter valid credentials
 - **Then** I should be redirected to `/customers`
-- **And** the menu should show only the modules ADMIN is allowed to access (NO Customer Portal)
+- **And** the menu should show only the modules ADMIN is allowed to access
 
 ---
 
@@ -264,7 +264,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 
 - **Result**: ✅ PASS
 - **Evidence**: `../reports/screenshots/AUTH-001-login-exitoso.png`
-- **Findings**: Redirects to `/customers`, menu with 5 modules (Gestión de Usuarios, Gestión Comercial, Inventario, Finanzas, Reportes), name "Gabriel" visible. No Customer Portal for SUPER_ADMIN.
+- **Findings**: Redirects to `/customers`, menu with 5 modules (Gestión de Usuarios, Gestión Comercial, Inventario, Finanzas, Reportes), name "Gabriel" visible.
 
 ### AUTH-002 — Failed login with wrong credentials
 
@@ -281,7 +281,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 
 - **Result**: ✅ PASS
 - **Evidence**: `../reports/screenshots/AUTH-004-admin-menu.png`
-- **Findings**: Admin sees: Gestión de Usuarios, Gestión Comercial, Inventario, Finanzas, Reportes. No Customer Portal. Correct.
+- **Findings**: Admin sees: Gestión de Usuarios, Gestión Comercial, Inventario, Finanzas, Reportes. Correct.
 
 ### AUTH-005 — Login with different roles (OPERATOR)
 

@@ -124,7 +124,6 @@ src/app/features/customers/
 - Real-time validation feedback
 - Pending changes guard
 - Dynamic arrays for emails, phones, addresses
-- Portal access can be enabled or revoked when creating or editing a customer
 
 ### Details Page
 

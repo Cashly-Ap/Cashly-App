@@ -1,6 +1,6 @@
 # Back-office End-to-End Testing Proposal by Module
 
-This proposal defines the Playwright end-to-end testing program for the Cashly back-office application. It converts the existing module test-plan drafts into one executable coverage model, verifies complete operational workflows against the real API, and identifies the data, route, and authorization prerequisites required to test every implemented back-office function reliably. Portal-specific coverage is defined in `cashly-portal-web/docs/project/E2E_TEST_PROPOSAL.md`.
+This proposal defines the Playwright end-to-end testing program for Cashly. It converts the existing module test-plan drafts into one executable coverage model, verifies complete operational workflows against the real API, and identifies the data, route, and authorization prerequisites required to test every implemented function reliably.
 
 ## Outcome
 
@@ -11,7 +11,6 @@ The target state is a repeatable browser test suite that can prove:
 3. Every business state transition is tested from its allowed starting state and rejected from invalid states.
 4. Role and customer ownership rules are enforced in both navigation and API responses.
 5. The main business chains work across modules: catalog → quote → order → invoice → payment → collection, and supplier purchase → stock.
-6. The back-office remains compatible with the portal's shared API boundaries.
 
 The current smoke tests cover only unauthenticated login-page rendering and protected-route redirects. They are the foundation, not the complete module suite.
 
@@ -22,7 +21,7 @@ The current smoke tests cover only unauthenticated login-page rendering and prot
 | Smoke | Confirm the back-office frontend starts, public routes render, and guards redirect unauthenticated users. | Angular dev server; API may be unavailable. | Any startup, routing, or login-shell failure. |
 | Module acceptance | Exercise each page, form, filter, action, validation rule, and error state. | Seeded API and isolated test database. | Any core module function is unavailable or unverifiable. |
 | Workflow | Prove state transitions across two or more modules. | Seeded API with controlled fixtures. | A downstream module cannot consume an upstream result. |
-| Authorization | Verify role permissions, customer ownership, route guards, and 401/403 handling. | Dedicated users and portal customers. | UI/API authorization differs from the declared policy. |
+| Authorization | Verify role permissions, route guards, and 401/403 handling. | Dedicated users with restricted permissions. | UI/API authorization differs from the declared policy. |
 | Resilience | Verify loading, empty, delayed, failed, expired-token, and duplicate-submit behavior. | API fault injection or deterministic route interception. | Unhandled error, stuck spinner, duplicate mutation, or data loss. |
 | Presentation | Verify responsive layouts, accessible names, keyboard interactions, dialogs, downloads, and localized status labels. | Chromium at desktop and mobile viewports. | A critical action is inaccessible or unreadable. |
 
@@ -34,7 +33,6 @@ The live acceptance suite must use the real API for business behavior. Playwrigh
 
 - Cashly API on `http://localhost:8080` with MySQL, Flyway schema, storage, and deterministic test seed.
 - Back-office app on `http://localhost:4200`.
-- Customer portal on `http://localhost:4000` (or an explicit alternate port in CI).
 - A disposable database or resettable tenant for every test run.
 - Playwright Chromium installed in the CI image.
 
@@ -49,8 +47,6 @@ Credentials must come from CI secrets or a local untracked environment file; the
 | Sales operator | Sales and permitted inventory actions | Quote, order, invoice, and stock authorization. |
 | Inventory operator | Inventory and purchasing actions | Warehouse, product, and purchase workflows. |
 | Restricted operator | Deliberately incomplete permission set | Negative route and API authorization cases. |
-| Portal customer with access | Customer-owned portal resources | Portal happy paths and payment registration. |
-| Portal customer without access | No portal access | Portal login denial. |
 
 ### Fixture rules
 
@@ -70,7 +66,7 @@ Each module below must have at least one route smoke test, one successful workfl
 | Authentication `/`, `/auth/*` | Login, logout, refresh, session reload, account configuration, change username, change password, commission-deduction preference. | Empty/invalid credentials, weak or mismatched passwords, expired access token, refresh failure, protected-route redirect, role landing route. | Critical |
 | Users `/users/*` | List, search/filter/sort/pagination, details, create, edit, delete, password, email, and module-permission changes. | Duplicate email, invalid fields, protected super-admin deletion, operator/admin route restrictions, API 403. | Critical |
 | Dashboard `/dashboard` | Summary cards, monthly sales, top products/customers, recent activity, low-stock indicator, loading and refresh. | Empty metrics, one failed widget request, unauthorized dashboard access, stale data after a mutation. | High |
-| Customers `/customers/*` | List and picker, CRUD, contacts, phones, addresses, billing address, credit days/limit, portal access/password, warehouse access, customer balance, advance, refund, transaction history. | Duplicate RIF/email, invalid RIF and credit values, deleting referenced customer, unauthorized customer access, negative/over-limit balance operation. | Critical |
+| Customers `/customers/*` | List and picker, CRUD, contacts, phones, addresses, billing address, credit days/limit, warehouse access, customer balance, advance, refund, transaction history. | Duplicate RIF/email, invalid RIF and credit values, deleting referenced customer, negative/over-limit balance operation. | Critical |
 | Suppliers `/suppliers/*` | List/filter/sort/pagination, natural/legal supplier forms, contacts/addresses, details, edit, delete. | Duplicate RIF, invalid required fields, deleting supplier with purchases, permission denial, API error recovery. | High |
 | Categories `/categories/*` | List/search/status filter/pagination, create, details, edit, activate/deactivate, delete. | Duplicate name, length/required validation, deleting category with products, inactive-state display, permission denial. | High |
 | Price types `/price-types/*` | List/filter/pagination, create, edit, details, activate/deactivate, use in customer/product pricing. | Duplicate name/code, invalid percentage or priority, deactivation while referenced, unauthorized mutation. | High |
@@ -118,15 +114,7 @@ These journeys are the release gates because isolated module tests can pass whil
 4. Convert/confirm the order into an invoice and verify stock deduction.
 5. Register a partial payment and verify invoice balance, receivable summary, and cash movement.
 6. Register the final payment and verify `PAID` state and collection creation when a merchant is attached.
-7. Verify the same invoice, payment, and balance in the portal when the customer has portal access.
-
-### Pending portal payment validation
-
-1. Portal customer registers a payment with method, amount, reference, date, and proof.
-2. Back-office receivables pending tab displays the payment and complete invoice/customer details.
-3. Approve with a reason; verify status, invoice balance, cash/collection effects, summary refresh, and history.
-4. Reject with a reason; verify no financial application and visible rejection status.
-5. Repeat approval/rejection attempt and verify idempotent error handling.
+7. Verify the invoice, payment, customer balance, cash movement, and receivables summary in the back-office.
 
 ### Purchasing-to-stock journey
 
@@ -189,16 +177,8 @@ e2e/
 │   ├── finance.spec.ts
 │   ├── purchasing.spec.ts
 │   └── administration.spec.ts
-├── portal/
-│   ├── auth.spec.ts
-│   ├── catalog.spec.ts
-│   ├── commercial.spec.ts
-│   ├── invoices.spec.ts
-│   ├── payments.spec.ts
-│   └── profile.spec.ts
 └── workflows/
     ├── sales-to-cash.spec.ts
-    ├── portal-payment-validation.spec.ts
     ├── purchasing-to-stock.spec.ts
     ├── return-to-credit.spec.ts
     └── cash-reconciliation.spec.ts
@@ -206,7 +186,7 @@ e2e/
 
 ### Fixtures and isolation
 
-- Add Playwright projects for `super-admin`, `operator`, and `portal-customer` storage states.
+- Add Playwright projects for `super-admin`, `operator`, and restricted-user storage states.
 - Generate storage state through API login, not through UI login in every test.
 - Keep one UI login test per identity to verify the login experience itself.
 - Expose API fixture factories for customers, products, warehouses, invoices, payments, and sessions.
@@ -228,7 +208,6 @@ e2e/
 | 1. Foundation | Fixtures, storage states, API helpers, error interception, CI project matrix. | Smoke suite and one authenticated module pass in both frontends. |
 | 2. Critical operations | Auth, users, customers, catalog, warehouses, purchases, quotes, orders, invoices. | All critical happy paths and invalid transitions pass. |
 | 3. Finance | Payments, receivables, cash register, credit/debit notes, returns, reports. | Sales-to-cash, pending payment validation, return-to-credit, and reconciliation pass. |
-| 4. Portal | Portal auth, catalog, quotes, orders, invoices, payments, profile. | Portal ownership and shared back-office/portal journeys pass. |
 | 5. Hardening | Resilience, accessibility, responsive, downloads, cross-browser smoke, and flaky-test cleanup. | No unexplained retries; failures have traceable evidence. |
 
 ## Definition of done
@@ -245,7 +224,7 @@ e2e/
 ## Open decisions before implementation
 
 1. Confirm whether Collections, Payables, Merchants, and Notifications require new back-office routes or are intentionally API-only.
-2. Provide non-production test identities through CI secrets and define the portal customer seed contract.
+2. Provide non-production test identities through CI secrets.
 3. Choose database reset strategy: disposable schema per run, transaction rollback, or API cleanup factory.
 4. Confirm whether PDF/Excel content must be byte-validated, text-validated, or only checked for successful download and MIME type.
 5. Confirm the supported CI browser matrix beyond Chromium.
