@@ -207,7 +207,7 @@ export class QuoteListPageComponent implements OnInit {
         },
       );
     }
-    if (quote.status === 'CUSTOMER_DRAFT') {
+    if (quote.status === 'DRAFT') {
       actions.push({
         label: 'Asignar almacenes',
         icon: 'pi pi-warehouse',
@@ -414,7 +414,6 @@ export class QuoteListPageComponent implements OnInit {
   getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
     const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
       [QuoteStatus.DRAFT]: 'label',
-      [QuoteStatus.CUSTOMER_DRAFT]: 'warning',
       [QuoteStatus.CANCELLED]: 'danger',
       [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
       [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',

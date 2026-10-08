@@ -355,6 +355,12 @@ describe('QuoteListPageComponent', () => {
   });
 
   describe('assign warehouses dialog', () => {
+    it('should offer warehouse assignment for a draft quote', () => {
+      const actions = component.actionsFor(mockQuotes[0]).map((action) => action.label);
+
+      expect(actions).toContain('Asignar almacenes');
+    });
+
     it('should open assign warehouses dialog', () => {
       fixture.detectChanges();
       component.onAssignWarehouses(mockQuotes[0]);
@@ -405,7 +411,6 @@ describe('QuoteListPageComponent', () => {
     it('should get status label', () => {
       fixture.detectChanges();
       expect(component.getStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
-      expect(component.getStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
       expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
       expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe(
         'Convertido a Factura',
@@ -416,7 +421,6 @@ describe('QuoteListPageComponent', () => {
     it('should get status variant', () => {
       fixture.detectChanges();
       expect(component.getStatusVariant(QuoteStatus.DRAFT)).toBe('label');
-      expect(component.getStatusVariant(QuoteStatus.CUSTOMER_DRAFT)).toBe('warning');
       expect(component.getStatusVariant(QuoteStatus.CANCELLED)).toBe('danger');
       expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_ORDER)).toBe('success');
       expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('success');
@@ -431,13 +435,5 @@ describe('QuoteListPageComponent', () => {
       expect(component.statusOptions[0].value).toBe('');
     });
 
-    it('should include CUSTOMER_DRAFT in status options', () => {
-      fixture.detectChanges();
-      const customerDraft = component.statusOptions.find(
-        (o) => o.value === QuoteStatus.CUSTOMER_DRAFT,
-      );
-      expect(customerDraft).toBeDefined();
-      expect(customerDraft?.label).toBe('Borrador de Cliente');
-    });
   });
 });

@@ -131,7 +131,6 @@ export class QuoteDetailPageComponent implements OnInit {
   getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
     const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
       [QuoteStatus.DRAFT]: 'label',
-      [QuoteStatus.CUSTOMER_DRAFT]: 'warning',
       [QuoteStatus.CANCELLED]: 'danger',
       [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
       [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',

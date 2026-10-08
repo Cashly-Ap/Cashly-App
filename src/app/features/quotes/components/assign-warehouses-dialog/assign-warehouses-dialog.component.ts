@@ -81,7 +81,6 @@ export class AssignWarehousesDialogComponent implements OnChanges {
     number: string;
     customerName: string;
     subtotal: number;
-    isCustomerDraft: boolean;
   } | null>(null);
   readonly conversionOption = signal<ConversionOption>('none');
 
@@ -117,7 +116,6 @@ export class AssignWarehousesDialogComponent implements OnChanges {
               number: quote.quoteNumber,
               customerName: quote.customerName,
               subtotal: quote.subtotal,
-              isCustomerDraft: quote.status === 'CUSTOMER_DRAFT',
             });
             this.lines.set(
               this.buildLines(

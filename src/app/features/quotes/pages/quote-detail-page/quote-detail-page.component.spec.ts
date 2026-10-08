@@ -116,7 +116,6 @@ describe('QuoteDetailPageComponent', () => {
   it('should get status label', () => {
     fixture.detectChanges();
     expect(component.getStatusLabel(QuoteStatus.DRAFT)).toBe('Borrador');
-    expect(component.getStatusLabel(QuoteStatus.CUSTOMER_DRAFT)).toBe('Borrador de Cliente');
     expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_ORDER)).toBe('Convertido a Pedido');
     expect(component.getStatusLabel(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('Convertido a Factura');
     expect(component.getStatusLabel(QuoteStatus.CANCELLED)).toBe('Cancelado');
@@ -125,7 +124,6 @@ describe('QuoteDetailPageComponent', () => {
   it('should get status variant', () => {
     fixture.detectChanges();
     expect(component.getStatusVariant(QuoteStatus.DRAFT)).toBe('label');
-    expect(component.getStatusVariant(QuoteStatus.CUSTOMER_DRAFT)).toBe('warning');
     expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_ORDER)).toBe('success');
     expect(component.getStatusVariant(QuoteStatus.CONVERTED_TO_INVOICE)).toBe('success');
     expect(component.getStatusVariant(QuoteStatus.CANCELLED)).toBe('danger');
@@ -135,6 +133,12 @@ describe('QuoteDetailPageComponent', () => {
     fixture.detectChanges();
     component.onAssignWarehouses();
     expect(component.assignDialogVisible()).toBe(true);
+  });
+
+  it('should show warehouse assignment for draft quotes', () => {
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-detail-actions-menu')).not.toBeNull();
   });
 
   it('should close assign warehouses dialog on dismissed', () => {

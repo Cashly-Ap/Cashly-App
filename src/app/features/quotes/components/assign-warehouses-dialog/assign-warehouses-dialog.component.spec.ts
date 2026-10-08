@@ -39,7 +39,7 @@ describe('AssignWarehousesDialogComponent', () => {
     customerRif: 'J-12345678-9',
     createdBy: 'u1',
     createdByName: 'Admin',
-    status: 'CUSTOMER_DRAFT' as any,
+    status: 'DRAFT' as any,
     notes: null,
     subtotal: 1500,
     lines: [
@@ -118,7 +118,7 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
     customerRif: 'J-12345678-9',
     createdBy: 'u1',
     createdByName: 'Admin',
-    status: 'CUSTOMER_DRAFT' as any,
+    status: 'DRAFT' as any,
     notes: null,
     subtotal: 1500,
     lines: [
@@ -177,7 +177,6 @@ describe('AssignWarehousesDialogComponent - visible with data', () => {
       number: 'QT-001',
       customerName: 'Test Customer',
       subtotal: 1500,
-      isCustomerDraft: true,
     });
     expect(dialog.lines()).toHaveLength(1);
     expect(dialog.lines()[0].warehouses).toHaveLength(2);

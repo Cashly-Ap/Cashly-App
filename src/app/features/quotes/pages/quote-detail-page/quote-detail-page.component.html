@@ -24,8 +24,7 @@
                 styleClass="w-full sm:w-auto"
               />
               @if (
-                currentQuote.status === QuoteStatus.DRAFT ||
-                currentQuote.status === QuoteStatus.CUSTOMER_DRAFT
+                currentQuote.status === QuoteStatus.DRAFT
               ) {
                 <app-detail-actions-menu #actionsMenu>
                   @if (currentQuote.status === QuoteStatus.DRAFT) {
@@ -37,7 +36,7 @@
                       styleClass="w-full justify-start text-left text-sm"
                     />
                   }
-                  @if (currentQuote.status === QuoteStatus.CUSTOMER_DRAFT) {
+                  @if (currentQuote.status === QuoteStatus.DRAFT) {
                     <p-button
                       label="Asignar Almacenes"
                       icon="pi pi-warehouse"
