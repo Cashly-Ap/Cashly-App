@@ -25,7 +25,6 @@ export interface CustomerCreate {
   creditDays: number;
   creditLimit: number;
   active: boolean;
-  portalAccess?: boolean;
   emails: CustomerCreateEmail[];
   phones: CustomerCreatePhone[];
   addresses: CustomerCreateAddress[];

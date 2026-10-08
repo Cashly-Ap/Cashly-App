@@ -7,7 +7,6 @@ describe('CUSTOMER_SUCCESS_MESSAGES', () => {
       'created',
       'updated',
       'deleted',
-      'portalPasswordChanged',
     ]);
   });
 

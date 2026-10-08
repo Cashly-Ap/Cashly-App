@@ -82,7 +82,6 @@ describe('CustomerDetails interface', () => {
       creditDays: 30,
       creditLimit: 10000,
       active: true,
-      portalAccess: false,
       createdAt: '2025-01-01T00:00:00Z',
       emails: [],
       phones: [],
@@ -98,7 +97,6 @@ describe('CustomerDetails interface', () => {
     expect(customer.creditDays).toBe(30);
     expect(customer.creditLimit).toBe(10000);
     expect(customer.active).toBe(true);
-    expect(customer.portalAccess).toBe(false);
     expect(customer.createdAt).toBe('2025-01-01T00:00:00Z');
     expect(customer.emails).toEqual([]);
     expect(customer.phones).toEqual([]);
@@ -116,7 +114,6 @@ describe('CustomerDetails interface', () => {
       creditDays: 0,
       creditLimit: 0,
       active: true,
-      portalAccess: true,
       createdAt: '2025-01-01T00:00:00Z',
       emails: [],
       phones: [],

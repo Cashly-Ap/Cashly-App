@@ -44,7 +44,6 @@ interface CustomerFormData {
   creditDays: number | null;
   creditLimit: number | null;
   active: boolean;
-  portalAccess: boolean;
   emails: string[];
   phones: string[];
   addresses: CustomerAddressFormData[];
@@ -159,7 +158,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       ],
       creditLimit: [{ value: null, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
-      portalAccess: [false],
       emails: this.fb.array([]),
       phones: this.fb.array([]),
       addresses: this.fb.array([this.createAddressGroup()], [CustomerValidators.minLengthArray(1)]),
@@ -202,7 +200,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       creditDays: data.creditDays,
       creditLimit: data.creditLimit,
       active: data.active,
-      portalAccess: data.portalAccess ?? false,
       notes: data.notes ?? '',
       priceTypeId: data.priceTypeId ?? null,
     });
@@ -245,7 +242,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
           creditDays: formModel.creditDays,
           creditLimit: formModel.creditLimit,
           active: formModel.active,
-          portalAccess: formModel.portalAccess ?? false,
           notes: formModel.notes ?? '',
           priceTypeId: formModel.priceTypeId ?? null,
         });
@@ -276,7 +272,6 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
         creditDays: formValue.creditDays ?? 0,
         creditLimit: formValue.creditLimit ?? 0,
         active: formValue.active,
-        portalAccess: formValue.portalAccess,
         emails: formValue.emails.map((email) => ({ id: '', customerId: '', email })),
         phones: formValue.phones.map((phone) => ({ id: '', customerId: '', phone })),
         addresses: formValue.addresses.map((a) => ({ id: '', customerId: '', ...a })),

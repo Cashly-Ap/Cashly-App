@@ -12,7 +12,6 @@ describe('CustomerList interface', () => {
       rif: 'J-12345678-9',
       type: CustomerType.BUSINESS,
       active: true,
-      portalAccess: false,
     };
 
     expect(customer.id).toBe('cust-001');
@@ -22,7 +21,6 @@ describe('CustomerList interface', () => {
     expect(customer.rif).toBe('J-12345678-9');
     expect(customer.type).toBe(CustomerType.BUSINESS);
     expect(customer.active).toBe(true);
-    expect(customer.portalAccess).toBe(false);
   });
 
   it('should accept all CustomerType values', () => {
@@ -42,7 +40,6 @@ describe('CustomerList interface', () => {
         rif: 'J-12345678-9',
         type,
         active: true,
-        portalAccess: false,
       };
       expect(customer.type).toBe(type);
     });

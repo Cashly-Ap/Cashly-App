@@ -33,7 +33,6 @@ export interface CustomerDetails {
   creditDays: number;
   creditLimit: number;
   active: boolean;
-  portalAccess: boolean;
   createdAt: string;
   emails: CustomerEmail[];
   phones: CustomerPhone[];

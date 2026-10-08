@@ -16,7 +16,6 @@ describe('CustomerMapper', () => {
     creditDays: 30,
     creditLimit: 50000,
     active: true,
-    portalAccess: false,
     deletable: true,
     createdAt: '2025-01-15T10:30:00Z',
     emails: [
@@ -51,7 +50,6 @@ describe('CustomerMapper', () => {
         rif: 'J-12345678-9',
         type: CustomerType.BUSINESS,
         active: true,
-        portalAccess: false,
         deletable: true,
       });
     });

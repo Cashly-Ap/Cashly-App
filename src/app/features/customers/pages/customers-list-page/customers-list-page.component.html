@@ -71,18 +71,6 @@
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Portal del cliente</label>
-                  <p-select
-                    [options]="portalAccessOptions"
-                    [ngModel]="filterPortalAccess()"
-                    (onChange)="onPortalAccessFilterChange($event.value)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Todos"
-                    styleClass="w-full"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
                   <label class="text-xs font-medium text-surface-500">Estado venezolano</label>
                   <p-select
                     [options]="stateOptions"
@@ -194,9 +182,6 @@
                     <th class="w-24">
                       <div class="font-semibold">Estado</div>
                     </th>
-                    <th class="w-28">
-                      <div class="font-semibold">Portal</div>
-                    </th>
                     <th class="w-20">
                       <div class="font-semibold text-center">Acciones</div>
                     </th>
@@ -223,13 +208,6 @@
                     </td>
                     <td>
                       <app-status-badge [active]="customer.active" />
-                    </td>
-                    <td>
-                      <app-status-badge
-                        [active]="customer.portalAccess"
-                        activeLabel="Activo"
-                        inactiveLabel="Sin acceso"
-                      />
                     </td>
                     <td>
                       <div class="flex justify-center">
@@ -297,11 +275,6 @@
                     <div class="flex flex-wrap gap-2">
                       <app-text-badge [label]="getTypeLabel(customer.type)" variant="label" />
                       <app-status-badge [active]="customer.active" />
-                      <app-status-badge
-                        [active]="customer.portalAccess"
-                        activeLabel="Portal activo"
-                        inactiveLabel="Sin portal"
-                      />
                     </div>
                   </div>
                 </div>
@@ -333,13 +306,3 @@
   </div>
 </div>
 <p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />
-
-@if (passwordCustomer(); as customer) {
-  <app-change-portal-password-dialog
-    [customerId]="customer.id"
-    [customerName]="customer.legalName"
-    [customerRif]="customer.rif"
-    [visible]="showPasswordDialog()"
-    (visibleChange)="showPasswordDialog.set($event)"
-  />
-}

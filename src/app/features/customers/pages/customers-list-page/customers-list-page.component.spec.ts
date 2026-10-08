@@ -28,7 +28,6 @@ describe('CustomersListPageComponent', () => {
     rif: 'J-12345678-9',
     type: CustomerType.BUSINESS,
     active: true,
-    portalAccess: true,
     deletable: true,
   };
 
@@ -37,7 +36,6 @@ describe('CustomersListPageComponent', () => {
     mockService = {
       loadAll: vi.fn().mockReturnValue(of([mockCustomer])),
       delete: vi.fn().mockReturnValue(of(undefined)),
-      changePortalPassword: vi.fn().mockReturnValue(of(undefined)),
       customers: signal([mockCustomer]),
       loading: signal(false),
       error: signal(null),
@@ -130,7 +128,6 @@ describe('CustomersListPageComponent', () => {
       'Ver detalle',
       'Editar',
       'Ver saldo',
-      'Cambiar contraseña',
       'Eliminar',
     ]);
   });
@@ -140,14 +137,7 @@ describe('CustomersListPageComponent', () => {
 
     expect(
       component.actionsFor({ ...mockCustomer, deletable: false }).map((action) => action.label),
-    ).toEqual(['Ver detalle', 'Editar', 'Cambiar contraseña']);
-  });
-
-  it('should open the password dialog for the selected customer', () => {
-    component.openPasswordDialog(mockCustomer);
-
-    expect(component.passwordCustomer()).toEqual(mockCustomer);
-    expect(component.showPasswordDialog()).toBe(true);
+    ).toEqual(['Ver detalle', 'Editar']);
   });
 
   it('should return correct type label', () => {

@@ -31,7 +31,6 @@ describe('CustomersDetailsPageComponent', () => {
     creditDays: 30,
     creditLimit: 50000,
     active: true,
-    portalAccess: true,
     createdAt: '2025-01-15T10:30:00Z',
     emails: [{ id: 'e1', customerId: 'uuid-001', email: 'contact@acme.com' }],
     phones: [{ id: 'p1', customerId: 'uuid-001', phone: '0212-1234567' }],
@@ -44,7 +43,6 @@ describe('CustomersDetailsPageComponent', () => {
     mockService = {
       loadById: vi.fn().mockReturnValue(of(mockDetails)),
       delete: vi.fn().mockReturnValue(of(undefined)),
-      changePortalPassword: vi.fn().mockReturnValue(of(undefined)),
       loading: signal(false),
       error: signal(null),
       currentCustomer: signal(null),
@@ -135,12 +133,5 @@ describe('CustomersDetailsPageComponent', () => {
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('p-button[label="Acciones"]');
     expect(button).not.toBeNull();
-  });
-
-  it('should open password dialog when button is clicked', () => {
-    fixture.detectChanges();
-    expect(component.showPasswordDialog()).toBe(false);
-    component.showPasswordDialog.set(true);
-    expect(component.showPasswordDialog()).toBe(true);
   });
 });

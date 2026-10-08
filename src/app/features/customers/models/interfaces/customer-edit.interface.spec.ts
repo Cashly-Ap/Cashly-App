@@ -117,7 +117,6 @@ describe('CustomerEdit interface', () => {
       creditDays: 0,
       creditLimit: 0,
       active: true,
-      portalAccess: true,
       emails: [],
       phones: [],
       addresses: [],
@@ -125,7 +124,6 @@ describe('CustomerEdit interface', () => {
       priceTypeId: 'pt-001',
     };
 
-    expect(customer.portalAccess).toBe(true);
     expect(customer.notes).toBe('Updated notes');
     expect(customer.priceTypeId).toBe('pt-001');
   });
@@ -161,7 +159,6 @@ describe('CustomerFormData interface', () => {
       creditDays: 0,
       creditLimit: 0,
       active: true,
-      portalAccess: false,
       emails: [{ email: 'test@example.com' }],
       phones: [{ phone: '+58 412-1234567' }],
       addresses: [{ address: 'Av. Principal', billing: true, active: true }],
@@ -172,7 +169,6 @@ describe('CustomerFormData interface', () => {
     expect(formData.id).toBe('cust-001');
     expect(formData.code).toBe(1001);
     expect(formData.active).toBe(true);
-    expect(formData.portalAccess).toBe(false);
     expect(formData.emails).toHaveLength(1);
     expect(formData.phones).toHaveLength(1);
     expect(formData.addresses).toHaveLength(1);

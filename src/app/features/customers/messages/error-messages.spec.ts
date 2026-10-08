@@ -11,7 +11,6 @@ describe('CUSTOMER_ERROR_MESSAGES', () => {
       'update',
       'load',
       'delete',
-      'changePortalPassword',
     ]);
   });
 

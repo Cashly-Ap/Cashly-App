@@ -24,7 +24,6 @@ import {
 } from '@features/customers/models/interfaces';
 import { getCustomerTypeLabel } from '@features/customers/models/enums';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
-import { ChangePortalPasswordDialogComponent } from '@features/customers/components';
 
 @Component({
   selector: 'app-customers-details-page',
@@ -41,7 +40,6 @@ import { ChangePortalPasswordDialogComponent } from '@features/customers/compone
     PageHeaderComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
-    ChangePortalPasswordDialogComponent,
   ],
   templateUrl: './customers-details-page.component.html',
 })
@@ -56,7 +54,6 @@ export class CustomersDetailsPageComponent implements OnInit {
 
   customer = signal<CustomerDetails | null>(null);
   loading = signal(false);
-  showPasswordDialog = signal(false);
 
   warehouseAccess = signal<CustomerWarehouseAccessItem[]>([]);
   warehouseAccessLoading = signal(false);

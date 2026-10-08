@@ -42,7 +42,6 @@ import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,
 } from '@features/customers/data/venezuela-geo.data';
-import { ChangePortalPasswordDialogComponent } from '@features/customers/components';
 import { CUSTOMER_ERROR_MESSAGES, CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages';
 
 @Component({
@@ -69,7 +68,6 @@ import { CUSTOMER_ERROR_MESSAGES, CUSTOMER_SUCCESS_MESSAGES } from '@features/cu
     SearchFieldComponent,
     ListContainerComponent,
     ListActionButtonsComponent,
-    ChangePortalPasswordDialogComponent,
     StatusBadgeComponent,
     TextBadgeComponent,
   ],
@@ -95,18 +93,14 @@ export class CustomersListPageComponent implements OnInit {
 
   filterType = signal<string>('');
   filterActive = signal<string>('true');
-  filterPortalAccess = signal<string>('');
   filterState = signal<string>('');
   filterMunicipality = signal<string>('');
 
-  passwordCustomer = signal<CustomerList | null>(null);
-  showPasswordDialog = signal(false);
 
   activeFilterCount = computed(() => {
     let count = 0;
     if (this.filterType()) count++;
     if (this.filterActive() !== 'true') count++;
-    if (this.filterPortalAccess()) count++;
     if (this.filterState()) count++;
     if (this.filterMunicipality()) count++;
     return count;
@@ -124,12 +118,6 @@ export class CustomersListPageComponent implements OnInit {
   activeOptions = [
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
-  ];
-
-  portalAccessOptions = [
-    { label: 'Todos', value: '' },
-    { label: 'Con acceso', value: 'true' },
-    { label: 'Sin acceso', value: 'false' },
   ];
 
   stateOptions = VENEZUELA_STATE_NAMES;
@@ -194,13 +182,6 @@ export class CustomersListPageComponent implements OnInit {
     this.applyFilters();
   }
 
-  onPortalAccessFilterChange(value: string | null): void {
-    const normalized = value ?? '';
-    if (normalized === this.filterPortalAccess()) return;
-    this.filterPortalAccess.set(normalized);
-    this.applyFilters();
-  }
-
   onStateFilterChange(value: string | null): void {
     const normalized = value ?? '';
     if (normalized === this.filterState()) return;
@@ -219,7 +200,6 @@ export class CustomersListPageComponent implements OnInit {
   clearFilters(): void {
     this.filterType.set('');
     this.filterActive.set('true');
-    this.filterPortalAccess.set('');
     this.filterState.set('');
     this.filterMunicipality.set('');
     this.first.set(0);
@@ -236,7 +216,6 @@ export class CustomersListPageComponent implements OnInit {
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (this.filterType()) filters.type = this.filterType();
     if (this.filterActive()) filters.active = this.filterActive() === 'true';
-    if (this.filterPortalAccess()) filters.portalAccess = this.filterPortalAccess() === 'true';
     if (this.filterState()) filters.state = this.filterState();
     if (this.filterMunicipality()) filters.municipality = this.filterMunicipality();
     this.service.loadAll(filters).subscribe();
@@ -281,12 +260,6 @@ export class CustomersListPageComponent implements OnInit {
       });
     }
 
-    actions.push({
-      label: 'Cambiar contraseña',
-      icon: 'pi pi-key',
-      command: () => this.openPasswordDialog(customer),
-    });
-
     if (customer.deletable) {
       actions.push({
         label: 'Eliminar',
@@ -297,11 +270,6 @@ export class CustomersListPageComponent implements OnInit {
     }
 
     return actions;
-  }
-
-  openPasswordDialog(customer: CustomerList): void {
-    this.passwordCustomer.set(customer);
-    this.showPasswordDialog.set(true);
   }
 
   onDelete(customer: CustomerList): void {

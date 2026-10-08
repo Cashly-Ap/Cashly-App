@@ -22,7 +22,6 @@ class HostComponent {
     creditDays: [{ value: 0, disabled: true }],
     creditLimit: [{ value: 0, disabled: true }],
     active: [true],
-    portalAccess: [false],
     notes: [''],
   });
 }
@@ -59,32 +58,6 @@ describe('CustomerGeneralSectionComponent', () => {
 
   it('should expose payment types', () => {
     expect(component.paymentTypes.length).toBe(2);
-  });
-
-  it('should bind portal access toggle to form control', () => {
-    const ctrl = component.control('portalAccess');
-    expect(ctrl.value).toBe(false);
-    host.form.get('portalAccess')?.setValue(true);
-    expect(ctrl.value).toBe(true);
-  });
-
-  it('should allow portal access to be changed in edit mode', () => {
-    host.isEditMode.set(true);
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.textContent).toContain('Acceso al Portal');
-    expect(component.control('portalAccess').enabled).toBe(true);
-  });
-
-  it('should show initial password hint when portal access is enabled', () => {
-    expect(fixture.nativeElement.textContent).not.toContain(
-      'La contraseña inicial del portal será el RIF del cliente',
-    );
-    host.form.get('portalAccess')?.setValue(true);
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain(
-      'La contraseña inicial del portal será el RIF del cliente',
-    );
   });
 
   it('should disable credit fields when payment type is CASH', () => {

@@ -37,13 +37,6 @@
                     styleClass="w-full justify-start text-left text-sm"
                   />
                 }
-                <p-button
-                  label="Cambiar Contraseña"
-                  icon="pi pi-key"
-                  [link]="true"
-                  (onClick)="actionsMenu.hide(); showPasswordDialog.set(true)"
-                  styleClass="w-full justify-start text-left text-sm"
-                />
               </app-detail-actions-menu>
             </div>
           </app-details-card-header>
@@ -58,12 +51,6 @@
               /></app-details-info-field>
               <app-details-info-field label="Estado" type="badge"
                 ><app-status-badge [active]="currentCustomer.active"
-              /></app-details-info-field>
-              <app-details-info-field label="Acceso al Portal" type="badge"
-                ><app-status-badge
-                  [active]="currentCustomer.portalAccess"
-                  activeLabel="Habilitado"
-                  inactiveLabel="Deshabilitado"
               /></app-details-info-field>
               <app-details-info-field
                 label="Días de Crédito"
@@ -233,13 +220,3 @@
     }
   </div>
 </div>
-
-@if (customer(); as currentCustomer) {
-  <app-change-portal-password-dialog
-    [customerId]="currentCustomer.id"
-    [customerName]="currentCustomer.legalName"
-    [customerRif]="currentCustomer.rif"
-    [visible]="showPasswordDialog()"
-    (visibleChange)="showPasswordDialog.set($event)"
-  />
-}

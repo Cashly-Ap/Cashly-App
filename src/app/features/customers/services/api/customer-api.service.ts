@@ -14,7 +14,6 @@ export interface CustomerFilters {
   search?: string;
   type?: string;
   active?: boolean;
-  portalAccess?: boolean;
   state?: string;
   municipality?: string;
   page?: number;
@@ -44,8 +43,6 @@ export class CustomerApiService {
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.type) params = params.set('type', filters.type);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
-    if (filters?.portalAccess !== undefined)
-      params = params.set('portalAccess', String(filters.portalAccess));
     if (filters?.state) params = params.set('state', filters.state);
     if (filters?.municipality) params = params.set('municipality', filters.municipality);
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
@@ -78,10 +75,6 @@ export class CustomerApiService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
-  }
-
-  changePortalPassword(id: string, newPassword: string): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${id}/portal-password`, { newPassword });
   }
 
   getWarehouseAccess(id: string): Observable<CustomerWarehouseAccessItem[]> {

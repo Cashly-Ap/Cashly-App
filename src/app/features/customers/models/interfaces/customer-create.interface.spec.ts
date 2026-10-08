@@ -94,7 +94,6 @@ describe('CustomerCreate interface', () => {
       creditDays: 0,
       creditLimit: 0,
       active: true,
-      portalAccess: true,
       emails: [],
       phones: [],
       addresses: [],
@@ -103,7 +102,6 @@ describe('CustomerCreate interface', () => {
       priceTypeId: 'pt-001',
     };
 
-    expect(customer.portalAccess).toBe(true);
     expect(customer.warehouseIds).toEqual(['wh-001', 'wh-002']);
     expect(customer.notes).toBe('New customer');
     expect(customer.priceTypeId).toBe('pt-001');

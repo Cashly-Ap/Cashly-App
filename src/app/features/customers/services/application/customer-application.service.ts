@@ -98,15 +98,4 @@ export class CustomerApplicationService {
     );
   }
 
-  changePortalPassword(id: string, newPassword: string): Observable<void> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.api.changePortalPassword(id, newPassword).pipe(
-      tap({
-        error: (err: Error) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
-  }
 }
