@@ -166,6 +166,12 @@ describe('OrderListPageComponent', () => {
     });
   });
 
+  it('should offer warehouse assignment for draft orders', () => {
+    const actions = component.actionsFor(mockOrders[0]).map((action) => action.label);
+
+    expect(actions).toContain('Asignar almacenes');
+  });
+
   describe('navigation', () => {
     it('should navigate to /orders/new on create', () => {
       fixture.detectChanges();
@@ -328,7 +334,6 @@ describe('OrderListPageComponent', () => {
     it('should get status variant', () => {
       fixture.detectChanges();
       expect(component.getStatusVariant(OrderStatus.DRAFT)).toBe('label');
-      expect(component.getStatusVariant(OrderStatus.CUSTOMER_DRAFT)).toBe('warning');
       expect(component.getStatusVariant(OrderStatus.CONFIRMED)).toBe('info');
       expect(component.getStatusVariant(OrderStatus.CANCELLED)).toBe('danger');
       expect(component.getStatusVariant(OrderStatus.INVOICED)).toBe('success');

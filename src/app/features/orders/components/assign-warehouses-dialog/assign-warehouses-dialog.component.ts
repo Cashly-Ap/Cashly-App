@@ -85,7 +85,6 @@ export class AssignWarehousesDialogComponent implements OnChanges {
     number: string;
     customerName: string;
     subtotal: number;
-    isCustomerDraft: boolean;
     creditLimit?: number;
     availableCredit?: number;
   } | null>(null);
@@ -133,7 +132,6 @@ export class AssignWarehousesDialogComponent implements OnChanges {
           number: order.orderNumber,
           customerName: order.customerAlias,
           subtotal: order.totalAmount,
-          isCustomerDraft: order.status === 'CUSTOMER_DRAFT',
           creditLimit: order.creditLimit,
           availableCredit: order.availableCredit,
         });

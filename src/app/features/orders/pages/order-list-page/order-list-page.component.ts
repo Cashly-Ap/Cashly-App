@@ -188,14 +188,12 @@ export class OrderListPageComponent implements OnInit {
       { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(order) },
       { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(order) },
     ];
-    if (order.status === 'DRAFT' || order.status === 'CUSTOMER_DRAFT') {
-      if (order.status === 'CUSTOMER_DRAFT') {
-        actions.push({
-          label: 'Asignar almacenes',
-          icon: 'pi pi-warehouse',
-          command: () => this.onAssignWarehouses(order),
-        });
-      }
+    if (order.status === 'DRAFT') {
+      actions.push({
+        label: 'Asignar almacenes',
+        icon: 'pi pi-warehouse',
+        command: () => this.onAssignWarehouses(order),
+      });
       actions.push(
         { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(order) },
         { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirm(order) },
@@ -473,7 +471,6 @@ export class OrderListPageComponent implements OnInit {
   getStatusVariant(status: OrderStatus): 'success' | 'warning' | 'danger' | 'info' | 'label' {
     const variants: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'info' | 'label'> = {
       [OrderStatus.DRAFT]: 'label',
-      [OrderStatus.CUSTOMER_DRAFT]: 'warning',
       [OrderStatus.CONFIRMED]: 'info',
       [OrderStatus.CANCELLED]: 'danger',
       [OrderStatus.INVOICED]: 'success',

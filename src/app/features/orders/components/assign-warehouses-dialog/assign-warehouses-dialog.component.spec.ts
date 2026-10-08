@@ -31,7 +31,7 @@ const apiOrderResponse = {
   customerRif: 'J-12345678-9',
   createdBy: 'u1',
   createdByName: 'Admin',
-  status: 'CUSTOMER_DRAFT',
+  status: 'DRAFT',
   deliveryDate: '2025-02-01',
   notes: null,
   subtotal: 1500,

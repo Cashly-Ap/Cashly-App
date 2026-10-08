@@ -22,8 +22,8 @@ describe('OrderStatus', () => {
     expect(OrderStatus.INVOICED).toBe('INVOICED');
   });
 
-  it('should have 5 values', () => {
-    expect(Object.keys(OrderStatus).filter((k) => isNaN(Number(k)))).toHaveLength(5);
+  it('should have 4 values', () => {
+    expect(Object.keys(OrderStatus).filter((k) => isNaN(Number(k)))).toHaveLength(4);
   });
 });
 

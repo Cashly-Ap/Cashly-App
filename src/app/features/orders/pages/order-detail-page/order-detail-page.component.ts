@@ -87,7 +87,6 @@ export class OrderDetailPageComponent implements OnInit {
   getStatusVariant(status: OrderStatus): 'success' | 'warning' | 'danger' | 'info' | 'label' {
     const variants: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'info' | 'label'> = {
       [OrderStatus.DRAFT]: 'label',
-      [OrderStatus.CUSTOMER_DRAFT]: 'warning',
       [OrderStatus.CONFIRMED]: 'info',
       [OrderStatus.CANCELLED]: 'danger',
       [OrderStatus.INVOICED]: 'success',

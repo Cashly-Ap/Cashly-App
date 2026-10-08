@@ -123,7 +123,7 @@ describe('OrderDetailPageComponent', () => {
   });
 
   it('shows edit as the first available record action', () => {
-    currentOrderSignal.set({ ...mockOrder, status: OrderStatus.CUSTOMER_DRAFT });
+    currentOrderSignal.set({ ...mockOrder, status: OrderStatus.DRAFT });
     fixture.detectChanges();
     const actionsTrigger = Array.from<HTMLButtonElement>(
       fixture.nativeElement.querySelectorAll('button'),
@@ -146,7 +146,6 @@ describe('OrderDetailPageComponent', () => {
   it('should get status variant', () => {
     fixture.detectChanges();
     expect(component.getStatusVariant(OrderStatus.DRAFT)).toBe('label');
-    expect(component.getStatusVariant(OrderStatus.CUSTOMER_DRAFT)).toBe('warning');
     expect(component.getStatusVariant(OrderStatus.CONFIRMED)).toBe('info');
     expect(component.getStatusVariant(OrderStatus.CANCELLED)).toBe('danger');
     expect(component.getStatusVariant(OrderStatus.INVOICED)).toBe('success');
