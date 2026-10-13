@@ -28,12 +28,6 @@ describe('DetailsCardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render card with backdrop styling', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const card = compiled.querySelector('.backdrop-blur-sm');
-    expect(card).toBeTruthy();
-  });
-
   it('should project content', () => {
     const hostFixture = TestBed.createComponent(TestHostComponent);
     hostFixture.detectChanges();

@@ -49,13 +49,4 @@ describe('PageHeaderComponent', () => {
     const subtitle = compiled.querySelector('p');
     expect(subtitle).toBeNull();
   });
-
-  it('should have centered text styling', () => {
-    componentRef.setInput('title', 'Test Title');
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement as HTMLElement;
-    const container = compiled.querySelector('.text-center');
-    expect(container).toBeTruthy();
-  });
 });

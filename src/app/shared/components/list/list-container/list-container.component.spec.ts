@@ -1,6 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { Component } from '@angular/core';
+
+@Component({
+  standalone: true,
+  imports: [ListContainerComponent],
+  template: '<app-list-container><p>Customer list</p></app-list-container>',
+})
+class TestHostComponent {}
 
 describe('ListContainerComponent', () => {
   let component: ListContainerComponent;
@@ -20,17 +28,11 @@ describe('ListContainerComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have container with correct styles', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const container = compiled.querySelector('div');
-    expect(container).toBeTruthy();
-    expect(container?.classList.contains('bg-surface-0/80')).toBe(true);
-    expect(container?.classList.contains('rounded-2xl')).toBe(true);
-  });
+  it('should project content through the content card', () => {
+    const hostFixture = TestBed.createComponent(TestHostComponent);
+    hostFixture.detectChanges();
 
-  it('should project content', () => {
-    const compiled = fixture.nativeElement as HTMLElement;
-    const container = compiled.querySelector('div');
-    expect(container).toBeTruthy();
+    const compiled = hostFixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-content-card p')?.textContent).toBe('Customer list');
   });
 });

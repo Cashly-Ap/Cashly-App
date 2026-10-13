@@ -1,6 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+import { Component } from '@angular/core';
+
+@Component({
+  standalone: true,
+  imports: [ContentCardComponent],
+  template: '<app-content-card><p>Account overview</p></app-content-card>',
+})
+class TestHostComponent {}
 
 describe('ContentCardComponent', () => {
   let component: ContentCardComponent;
@@ -20,17 +28,12 @@ describe('ContentCardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have correct base styling', () => {
-    const compiled = fixture.nativeElement;
-    const container = compiled.querySelector('div');
+  it('should project content', () => {
+    const hostFixture = TestBed.createComponent(TestHostComponent);
+    hostFixture.detectChanges();
 
-    expect(container).toBeTruthy();
-    expect(container.className).toContain('bg-surface-0/80');
-    expect(container.className).toContain('dark:bg-surface-900/80');
-    expect(container.className).toContain('backdrop-blur-sm');
-    expect(container.className).toContain('rounded-2xl');
-    expect(container.className).toContain('shadow-2xl');
-    expect(container.className).toContain('border-2');
+    const compiled = hostFixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('app-content-card p')?.textContent).toBe('Account overview');
   });
 
   it('should not have margin by default', () => {

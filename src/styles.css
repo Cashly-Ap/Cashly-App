@@ -262,3 +262,231 @@ body:not(.p-overflow-hidden) .p-drawer-mask {
   width: 1.25rem !important;
   height: 1.25rem !important;
 }
+
+:root {
+  --cashly-canvas: #f5f5f3;
+  --cashly-panel: #ffffff;
+  --cashly-ink: #171715;
+  --cashly-muted: #64645e;
+  --cashly-line: #deded9;
+  --cashly-dot: #c5c5bf;
+  --app-bg-primary: var(--cashly-canvas);
+  --app-bg-primary-via: var(--cashly-canvas);
+  --app-bg-primary-to: var(--cashly-canvas);
+}
+
+.my-app-dark {
+  --cashly-canvas: #0b0b0a;
+  --cashly-panel: #171715;
+  --cashly-ink: #f5f5f3;
+  --cashly-muted: #a5a59d;
+  --cashly-line: #393935;
+  --cashly-dot: #54544e;
+  --app-bg-primary: var(--cashly-canvas);
+  --app-bg-primary-via: var(--cashly-canvas);
+  --app-bg-primary-to: var(--cashly-canvas);
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--cashly-canvas);
+  color: var(--cashly-ink);
+}
+
+.cashly-panel,
+app-details-card > div,
+app-details-section-card > div,
+app-loading-spinner > div {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 28px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.cashly-form-container {
+  background: var(--cashly-canvas);
+}
+app-list-container > app-content-card > .cashly-panel {
+  overflow: hidden;
+}
+.cashly-page-header {
+  text-align: left;
+  padding: 0.5rem 0;
+}
+.cashly-page-header h1 {
+  letter-spacing: -0.045em;
+}
+.cashly-page-header:has(> h1:first-child)::before,
+.dashboard-kicker {
+  display: block;
+  color: var(--cashly-muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cashly-page-header:has(> h1:first-child)::before {
+  content: 'Cashly / Gestión';
+  margin-bottom: 0.75rem;
+}
+.cashly-topbar {
+  box-shadow: none;
+  background: var(--cashly-panel);
+}
+.cashly-brand {
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.cashly-workspace {
+  background: var(--cashly-canvas);
+}
+.main-menubar.p-menubar {
+  --p-menubar-base-item-border-radius: 999px;
+}
+.main-menubar .p-menubar-item-link {
+  font-size: 0.8125rem;
+}
+.main-menubar .p-menubar-submenu {
+  border-radius: 20px;
+  padding: 0.5rem;
+}
+.p-datatable {
+  --p-datatable-header-cell-background: var(--cashly-canvas);
+}
+.p-datatable-thead > tr > th {
+  font-size: 0.75rem;
+  letter-spacing: 0.035em;
+}
+.p-datatable-tbody > tr > td {
+  border-color: var(--cashly-line);
+}
+.p-paginator {
+  padding: 1rem;
+}
+.p-dialog {
+  box-shadow: 0 24px 80px #00000026;
+}
+.p-dialog-header {
+  border-bottom: 1px solid var(--cashly-line);
+}
+.p-dialog-content {
+  padding-top: 1.5rem;
+}
+.p-tabs {
+  --p-tabs-tablist-background: transparent;
+}
+.p-tablist {
+  border-bottom: 1px solid var(--cashly-line);
+}
+.p-tab {
+  letter-spacing: 0.02em;
+}
+.p-inputtext:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--cashly-ink);
+  outline-offset: 3px;
+}
+
+.dashboard-widget {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 28px;
+  box-shadow: none;
+  padding: 1.5rem;
+}
+.dashboard-metric {
+  min-height: 170px;
+}
+.dashboard-metric-primary {
+  background: var(--cashly-ink);
+  color: var(--cashly-panel);
+}
+.dashboard-metric-primary p,
+.dashboard-metric-primary span {
+  color: inherit;
+}
+.dashboard-empty {
+  border: 1px dashed var(--cashly-line);
+  border-radius: 18px;
+}
+
+.cashly-login {
+  background: var(--cashly-canvas);
+  color: var(--cashly-ink);
+}
+.login-panel {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 32px;
+}
+.login-artwork {
+  background: #171715;
+  color: #f5f5f3;
+}
+
+@media (max-width: 767px) {
+  .cashly-panel {
+    border-radius: 20px;
+  }
+  .dashboard-widget {
+    border-radius: 22px;
+    padding: 1.25rem;
+  }
+  .cashly-page-header h1 {
+    font-size: 2rem;
+  }
+  .p-dialog {
+    max-width: calc(100vw - 1.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+.dashboard-metric-primary .dashboard-metric-icon {
+  background: #ffffff20;
+  color: inherit;
+}
+.dashboard-metric-primary .dashboard-metric-icon i {
+  color: inherit;
+}
+.dashboard-activity-label {
+  background: var(--cashly-canvas);
+  color: var(--cashly-ink);
+  border: 1px solid var(--cashly-line);
+}
+app-section-card > div {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 20px;
+}
+.cashly-login .login-panel {
+  border-radius: 0;
+  border: 0;
+}
+.my-app-dark .cashly-login .text-surface-500 {
+  color: var(--cashly-muted);
+}
+.cashly-workspace .shadow-lg,
+.cashly-workspace .shadow-xl,
+.cashly-workspace .shadow-2xl,
+.cashly-workspace .shadow-xxxl {
+  box-shadow: none;
+}
+
+.my-app-dark img[src$='cashly-logo.svg'],
+.my-app-dark img[src$='cashly-icon.svg'] {
+  filter: invert(1);
+}

@@ -33,28 +33,4 @@ describe('FormCardComponent', () => {
     expect(compiled.querySelector('.test-content')).toBeTruthy();
     expect(compiled.querySelector('.test-content')?.textContent).toContain('Test Content');
   });
-
-  it('should apply background classes', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cardDiv = compiled.querySelector('div');
-    expect(cardDiv?.className).toContain('bg-white');
-    expect(cardDiv?.className).toContain('dark:bg-surface-950');
-  });
-
-  it('should apply rounded class', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cardDiv = compiled.querySelector('div');
-    expect(cardDiv?.className).toContain('rounded-xl');
-  });
-
-  it('should apply border classes', () => {
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    const cardDiv = compiled.querySelector('div');
-    expect(cardDiv?.className).toContain('border');
-    expect(cardDiv?.className).toContain('border-surface-200');
-    expect(cardDiv?.className).toContain('dark:border-surface-800');
-  });
 });

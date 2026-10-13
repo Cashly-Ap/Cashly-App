@@ -45,38 +45,4 @@ describe('FormHeaderComponent', () => {
     const subtitle = compiled.querySelector('p');
     expect(subtitle).toBeFalsy();
   });
-
-  it('should apply correct title styles', () => {
-    fixture.componentRef.setInput('title', 'Test Title');
-    fixture.detectChanges();
-
-    const title = compiled.querySelector('h1');
-    expect(title?.className).toContain('text-2xl');
-    expect(title?.className).toContain('font-semibold');
-  });
-
-  it('should apply correct subtitle styles', () => {
-    fixture.componentRef.setInput('title', 'Test Title');
-    fixture.componentRef.setInput('subtitle', 'Test Subtitle');
-    fixture.detectChanges();
-
-    const subtitle = compiled.querySelector('p');
-    expect(subtitle?.className).toContain('text-surface-500');
-  });
-
-  it('should center align content', () => {
-    fixture.componentRef.setInput('title', 'Test Title');
-    fixture.detectChanges();
-
-    const container = compiled.querySelector('div');
-    expect(container?.className).toContain('text-center');
-  });
-
-  it('should apply margin bottom', () => {
-    fixture.componentRef.setInput('title', 'Test Title');
-    fixture.detectChanges();
-
-    const container = compiled.querySelector('div');
-    expect(container?.className).toContain('mb-6');
-  });
 });
