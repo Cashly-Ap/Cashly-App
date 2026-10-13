@@ -23,6 +23,9 @@ import { FinancePdfApiService } from '@features/reports/finance/services/api/fin
 import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
 import { NotificationApiService } from '@core/notifications/services/api/notification-api.service';
 import { NotificationWebSocketService } from '@core/notifications/services/websocket/notification-websocket.service';
+import { MenuItem } from '@core/layouts/models';
+import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
+import { BusinessModule } from '@features/users/models/enums';
 
 function createPdfApiMock() {
   return {
@@ -150,6 +153,101 @@ describe('MainLayoutComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('ERP permission filtering', () => {
+    function menu(): MenuItem[] {
+      const callbacks: MenuCallbacks = {
+        openCatalogModal: vi.fn(),
+        openCommercialCatalogModal: vi.fn(),
+        openStockModal: vi.fn(),
+        openMovementsModal: vi.fn(),
+        openOrdersPdfModal: vi.fn(),
+        openInvoicesPdfModal: vi.fn(),
+        openQuotesPdfModal: vi.fn(),
+        openAccountsReceivablePdfModal: vi.fn(),
+        openCashRegisterModal: vi.fn(),
+        openPurchasesPdfModal: vi.fn(),
+      };
+      return buildMenuItems(callbacks);
+    }
+
+    function routes(items: MenuItem[]): string[] {
+      return items.flatMap((item) => [
+        ...(item.routerLink ? [item.routerLink] : []),
+        ...routes(item.children ?? []),
+      ]);
+    }
+
+    it('should hide all areas for an operator without business module permissions', () => {
+      authServiceMock.hasModulePermission.mockReturnValue(false);
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      expect(items).toEqual([]);
+      expect(routes(items)).toEqual([]);
+    });
+
+    it('should prune recursively empty report areas and preserve actionable leaves', () => {
+      authServiceMock.hasModulePermission.mockImplementation(
+        (module: BusinessModule) => module === BusinessModule.DOCUMENT_ADMIN,
+      );
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      expect(items).toEqual([]);
+      const action = vi.fn();
+      expect(
+        component['filterMenuByRole'](
+          [
+            { label: 'Empty', icon: '', children: [] },
+            { label: 'Report', icon: '', command: action, children: [] },
+            { label: 'Page', icon: '', routerLink: '/page', children: [] },
+          ],
+          'OPERATOR',
+        ).map((item) => item.label),
+      ).toEqual(['Report', 'Page']);
+    });
+
+    it('should keep inventory pricing accessible without sales permission', () => {
+      authServiceMock.hasModulePermission.mockImplementation(
+        (module: BusinessModule) => module === BusinessModule.INVENTORY,
+      );
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      expect(routes(items).sort()).toEqual(
+        ['/price-types', '/products', '/categories', '/warehouses'].sort(),
+      );
+      expect(items.map((item) => item.label)).toEqual(['Ventas', 'Inventario']);
+    });
+
+    it('should expose administration only to a super administrator with users permission', () => {
+      expect(
+        component['filterMenuByRole'](menu(), 'ADMIN').some(
+          (item) => item.label === 'Administración',
+        ),
+      ).toBe(false);
+      expect(routes(component['filterMenuByRole'](menu(), 'SUPER_ADMIN'))).toContain('/users');
+      authServiceMock.hasModulePermission.mockImplementation(
+        (module: BusinessModule) => module !== BusinessModule.USERS,
+      );
+      expect(
+        component['filterMenuByRole'](menu(), 'SUPER_ADMIN').some(
+          (item) => item.label === 'Administración',
+        ),
+      ).toBe(false);
+    });
+
+    it('should require both document access and the corresponding area for report actions', () => {
+      authServiceMock.hasModulePermission.mockImplementation((module: BusinessModule) =>
+        [BusinessModule.SALES, BusinessModule.DOCUMENT_ADMIN].includes(module),
+      );
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      const reports = items.find((item) => item.label === 'Reportes');
+      expect(reports?.children?.map((item) => item.label)).toEqual(['Ventas']);
+      expect(reports?.children?.[0].children).toHaveLength(3);
+      authServiceMock.hasModulePermission.mockImplementation(
+        (module: BusinessModule) => module === BusinessModule.SALES,
+      );
+      expect(
+        component['filterMenuByRole'](menu(), 'OPERATOR').some((item) => item.label === 'Reportes'),
+      ).toBe(false);
+    });
   });
 
   describe('initialization', () => {

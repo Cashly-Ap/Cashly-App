@@ -78,7 +78,17 @@ import { CashRegisterApiService } from '@features/cash-register/services/api/cas
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 export type ContentMaxWidth =
-  'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+  | '7xl'
+  | 'full'
+  | 'none';
 
 @Component({
   selector: 'app-main-layout',
@@ -241,7 +251,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           };
         }
         return item;
-      });
+      })
+      .filter(
+        (item) => !item.children || item.children.length > 0 || !!item.routerLink || !!item.command,
+      );
   }
 
   private convertMenuItem(item: MenuItem): PrimeMenuItem {
