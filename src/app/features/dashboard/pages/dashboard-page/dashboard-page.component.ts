@@ -1,5 +1,6 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import {
   DashboardApiService,
   DashboardSummary,
@@ -9,7 +10,17 @@ import {
   InvoiceDue,
 } from '@features/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData } from 'chart.js';
+
+const DASHBOARD_CHART_COLORS = {
+  neutral: '#777777',
+  overdue: '#ef4444',
+  overdueFill: 'rgba(239, 68, 68, 0.14)',
+  lightTicks: '#525252',
+  lightGrid: '#e5e5e5',
+  darkTicks: '#d4d4d4',
+  darkGrid: '#404040',
+} as const;
 
 @Component({
   selector: 'app-dashboard-page',
@@ -20,6 +31,7 @@ import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 })
 export class DashboardPageComponent implements OnInit {
   private readonly api = inject(DashboardApiService);
+  private readonly themeService = inject(ThemeService);
 
   readonly summary = signal<DashboardSummary | null>(null);
   readonly monthlySales = signal<MonthlySales[]>([]);
@@ -29,12 +41,12 @@ export class DashboardPageComponent implements OnInit {
   readonly invoiceDueSchedule = signal<InvoiceDue[]>([]);
   readonly loading = signal(true);
 
-  readonly barChartType: ChartType = 'bar';
-  readonly horizontalBarChartType: ChartType = 'bar';
+  readonly barChartType = 'bar' as const;
+  readonly horizontalBarChartType = 'bar' as const;
   readonly lineChartType = 'line' as const;
 
   salesChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  salesChartOptions: ChartConfiguration['options'] = {
+  salesChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
@@ -43,7 +55,7 @@ export class DashboardPageComponent implements OnInit {
   };
 
   productsChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  productsChartOptions: ChartConfiguration['options'] = {
+  productsChartOptions: ChartConfiguration<'bar'>['options'] = {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
@@ -55,7 +67,7 @@ export class DashboardPageComponent implements OnInit {
   };
 
   customersChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  customersChartOptions: ChartConfiguration['options'] = {
+  customersChartOptions: ChartConfiguration<'bar'>['options'] = {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
@@ -77,6 +89,50 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
+  constructor() {
+    effect(() => {
+      const isDark = this.themeService.isDarkMode();
+      this.salesChartOptions = {
+        ...this.salesChartOptions,
+        scales: this.themedScales(this.salesChartOptions?.scales, isDark),
+      };
+      this.productsChartOptions = {
+        ...this.productsChartOptions,
+        scales: this.themedScales(this.productsChartOptions?.scales, isDark),
+      };
+      this.customersChartOptions = {
+        ...this.customersChartOptions,
+        scales: this.themedScales(this.customersChartOptions?.scales, isDark),
+      };
+      this.dueChartOptions = {
+        ...this.dueChartOptions,
+        scales: this.themedScales(this.dueChartOptions?.scales, isDark),
+      };
+    });
+  }
+
+  private themedScales(
+    scales: NonNullable<ChartConfiguration<'bar'>['options']>['scales'],
+    isDark: boolean,
+  ): NonNullable<ChartConfiguration<'bar'>['options']>['scales'] {
+    const tickColor = isDark ? DASHBOARD_CHART_COLORS.darkTicks : DASHBOARD_CHART_COLORS.lightTicks;
+    const gridColor = isDark ? DASHBOARD_CHART_COLORS.darkGrid : DASHBOARD_CHART_COLORS.lightGrid;
+    return {
+      ...scales,
+      x: {
+        ...scales?.['x'],
+        ticks: { ...scales?.['x']?.ticks, color: tickColor },
+        grid: { ...scales?.['x']?.grid, color: gridColor },
+        border: { ...scales?.['x']?.border, color: gridColor },
+      },
+      y: {
+        ...scales?.['y'],
+        ticks: { ...scales?.['y']?.ticks, color: tickColor },
+        grid: { ...scales?.['y']?.grid, color: gridColor },
+        border: { ...scales?.['y']?.border, color: gridColor },
+      },
+    };
+  }
   ngOnInit(): void {
     this.api.getSummary().subscribe((s) => this.summary.set(s));
 
@@ -84,7 +140,13 @@ export class DashboardPageComponent implements OnInit {
       this.monthlySales.set(data);
       this.salesChartData.set({
         labels: data.map((d) => this.formatMonth(d.month)),
-        datasets: [{ data: data.map((d) => d.total), backgroundColor: '#2196F3', borderRadius: 6 }],
+        datasets: [
+          {
+            data: data.map((d) => d.total),
+            backgroundColor: DASHBOARD_CHART_COLORS.neutral,
+            borderRadius: 6,
+          },
+        ],
       });
     });
 
@@ -92,7 +154,13 @@ export class DashboardPageComponent implements OnInit {
       this.topProducts.set(data);
       this.productsChartData.set({
         labels: data.map((d) => d.name),
-        datasets: [{ data: data.map((d) => d.total), backgroundColor: '#4CAF50', borderRadius: 6 }],
+        datasets: [
+          {
+            data: data.map((d) => d.total),
+            backgroundColor: DASHBOARD_CHART_COLORS.neutral,
+            borderRadius: 6,
+          },
+        ],
       });
     });
 
@@ -100,7 +168,13 @@ export class DashboardPageComponent implements OnInit {
       this.topCustomers.set(data);
       this.customersChartData.set({
         labels: data.map((d) => d.name),
-        datasets: [{ data: data.map((d) => d.total), backgroundColor: '#FF9800', borderRadius: 6 }],
+        datasets: [
+          {
+            data: data.map((d) => d.total),
+            backgroundColor: DASHBOARD_CHART_COLORS.neutral,
+            borderRadius: 6,
+          },
+        ],
       });
     });
 
@@ -119,15 +193,17 @@ export class DashboardPageComponent implements OnInit {
       const dates = [...byDate.keys()].sort();
       this.dueChartData.set({
         labels: dates.map((date) => this.formatDate(date)),
-        datasets: [{
-          data: dates.map((date) => byDate.get(date) ?? 0),
-          borderColor: '#ef4444',
-          backgroundColor: 'rgba(239, 68, 68, 0.14)',
-          fill: true,
-          tension: 0.3,
-          pointRadius: 4,
-          pointBackgroundColor: '#ef4444',
-        }],
+        datasets: [
+          {
+            data: dates.map((date) => byDate.get(date) ?? 0),
+            borderColor: DASHBOARD_CHART_COLORS.overdue,
+            backgroundColor: DASHBOARD_CHART_COLORS.overdueFill,
+            fill: true,
+            tension: 0.3,
+            pointRadius: 4,
+            pointBackgroundColor: DASHBOARD_CHART_COLORS.overdue,
+          },
+        ],
       });
     });
   }
@@ -158,7 +234,11 @@ export class DashboardPageComponent implements OnInit {
   }
 
   formatDueDate(date: string): string {
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(`${date}T00:00:00`));
+    return new Intl.DateTimeFormat('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(new Date(`${date}T00:00:00`));
   }
 
   isOverdue(date: string): boolean {
@@ -166,6 +246,8 @@ export class DashboardPageComponent implements OnInit {
   }
 
   private formatDate(date: string): string {
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(new Date(`${date}T00:00:00`));
+    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(
+      new Date(`${date}T00:00:00`),
+    );
   }
 }
