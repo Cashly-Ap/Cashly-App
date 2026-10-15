@@ -5,7 +5,7 @@
     class="cashly-topbar fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800"
   >
     <div class="flex items-center justify-between gap-3 px-4 sm:px-6 h-20">
-      <div class="2xl:hidden">
+      <div class="xl:hidden">
         <p-button
           icon="pi pi-bars"
           [text]="true"
@@ -17,14 +17,14 @@
       </div>
 
       <div
-        class="cashly-brand flex items-center gap-3 shrink-0 mr-auto 2xl:mr-2"
+        class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2"
         aria-label="Cashly"
       >
         <img ngSrc="/cashly-icon.svg" width="32" height="32" alt="" />
-        <span class="text-lg font-bold tracking-tight">Cashly</span>
+        <span class="xl:hidden 2xl:inline text-lg font-bold tracking-tight">Cashly</span>
       </div>
 
-      <div class="hidden 2xl:flex flex-1 min-w-0">
+      <div class="hidden xl:flex flex-1 min-w-0">
         <p-menubar
           [model]="primeMenuItems()"
           styleClass="border-0 bg-transparent main-menubar"
