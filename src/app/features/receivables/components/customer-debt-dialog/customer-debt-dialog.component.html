@@ -92,7 +92,7 @@
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">Saldo a Favor</span>
-            <span class="font-mono text-base font-bold text-green-600 dark:text-green-400">
+            <span class="font-mono text-base font-bold text-blue-600 dark:text-blue-400">
               {{ customer()!.customerBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
@@ -127,28 +127,18 @@
             <p-button
               label="Pagar Todo"
               icon="pi pi-check-circle"
-              severity="success"
+              severity="contrast"
               [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
-              [pTooltip]="
-                allInvoicesFullyBlocked() ? 'Todos los pagos están en espera de validación' : ''
-              "
-              tooltipPosition="top"
               (onClick)="onPayAll()"
               styleClass="flex-1 sm:flex-none font-medium"
-              [outlined]="true"
             />
             <p-button
               label="Pago Parcial"
               icon="pi pi-percentage"
               severity="contrast"
               [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
-              [pTooltip]="
-                allInvoicesFullyBlocked() ? 'Todos los pagos están en espera de validación' : ''
-              "
-              tooltipPosition="top"
               (onClick)="onPayPartial()"
               styleClass="flex-1 sm:flex-none font-medium"
-              [outlined]="true"
             />
           </div>
         </div>
@@ -164,31 +154,18 @@
               {{ invoices().length }} factura{{ invoices().length !== 1 ? 's' : '' }}
             </span>
           </div>
-          <div class="hidden sm:flex flex-wrap gap-2">
-            @for (option of statusFilterOptions; track option.value) {
-              <button
-                type="button"
-                (click)="onStatusFilterChange(option.value)"
-                [class]="
-                  selectedStatusFilter() === option.value
-                    ? 'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900 font-semibold'
-                    : 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700'
-                "
-                class="px-4 py-2 rounded-lg text-sm transition-all duration-200 border border-surface-200 dark:border-surface-600"
-              >
-                {{ option.label }}
-              </button>
-            }
-          </div>
-          <div class="sm:hidden">
+          <div class="flex flex-col gap-1 w-full sm:max-w-xs">
+            <label for="status-filter" class="text-xs font-medium text-surface-500">Estado</label>
             <p-select
+              inputId="status-filter"
               [options]="statusFilterOptions"
               [ngModel]="selectedStatusFilter()"
+              (onChange)="onStatusFilterChange($event.value)"
               optionLabel="label"
               optionValue="value"
-              placeholder="Filtrar por estado"
-              (ngModelChange)="onStatusFilterChange($event)"
-              class="w-full"
+              placeholder="Todos"
+              appendTo="body"
+              styleClass="w-full"
             />
           </div>
         </div>
@@ -254,8 +231,6 @@
                 </span>
                 @if (invoice.dueDate < todayDate) {
                   <p-tag value="Vencida" severity="danger" class="ml-2" />
-                } @else {
-                  <p-tag value="Al día" severity="success" class="ml-2" />
                 }
               </td>
               <td>
@@ -280,61 +255,10 @@
                 </span>
               </td>
               <td class="text-center">
-                <div class="flex gap-2 justify-center">
-                  <p-button
-                    icon="pi pi-file-pdf"
-                    size="small"
-                    severity="secondary"
-                    [outlined]="true"
-                    pTooltip="Ver factura"
-                    tooltipPosition="top"
-                    (onClick)="onViewInvoicePdf(invoice)"
-                  />
-                  <p-button
-                    icon="pi pi-history"
-                    size="small"
-                    severity="secondary"
-                    [outlined]="true"
-                    pTooltip="Ver historial de pagos"
-                    tooltipPosition="top"
-                    (onClick)="onViewInvoicePaymentHistory(invoice)"
-                  />
-                  @if (canReturnInvoice(invoice)) {
-                    <p-button
-                      icon="pi pi-undo"
-                      size="small"
-                      severity="contrast"
-                      [outlined]="true"
-                      [loading]="loadingReturnInvoice()"
-                      pTooltip="Devolución"
-                      tooltipPosition="top"
-                      (onClick)="onViewInvoiceReturns(invoice)"
-                    />
-                  }
-                  @if (canReturnInvoice(invoice)) {
-                    <p-button
-                      icon="pi pi-file-edit"
-                      size="small"
-                      severity="contrast"
-                      [outlined]="true"
-                      [loading]="loadingNoteInvoice()"
-                      pTooltip="Nota"
-                      tooltipPosition="top"
-                      (onClick)="onViewInvoiceNotes(invoice)"
-                    />
-                  }
-                  @if (invoice.balance > 0 && !isInvoiceFullyBlocked(invoice)) {
-                    <p-button
-                      icon="pi pi-dollar"
-                      size="small"
-                      severity="contrast"
-                      [outlined]="true"
-                      [pTooltip]="getPayTooltip(invoice)"
-                      tooltipPosition="top"
-                      (onClick)="onPayInvoice(invoice)"
-                    />
-                  }
-                </div>
+                <app-list-action-buttons
+                  [actions]="invoiceActions(invoice)"
+                  ariaLabel="Abrir acciones de la factura"
+                />
               </td>
             </tr>
           </ng-template>
@@ -345,7 +269,9 @@
                   <div
                     class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
                   >
-                    <i class="pi pi-check-circle text-3xl text-green-500"></i>
+                    <i
+                      class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"
+                    ></i>
                   </div>
                   <p class="text-surface-600 dark:text-surface-400">No hay facturas</p>
                 </div>
@@ -403,7 +329,7 @@
             <div
               class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
             >
-              <i class="pi pi-check-circle text-3xl text-green-500"></i>
+              <i class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"></i>
             </div>
             <p class="text-surface-600 dark:text-surface-400">
               No hay facturas con saldo pendiente
@@ -450,61 +376,10 @@
                   </span>
                 </div>
               </div>
-              <div class="flex gap-2">
-                <p-button
-                  icon="pi pi-file-pdf"
-                  size="small"
-                  severity="secondary"
-                  [outlined]="true"
-                  pTooltip="Ver factura"
-                  (onClick)="onViewInvoicePdf(invoice)"
-                  styleClass="flex-shrink-0"
-                />
-                <p-button
-                  icon="pi pi-history"
-                  size="small"
-                  severity="secondary"
-                  [outlined]="true"
-                  pTooltip="Ver historial"
-                  (onClick)="onViewInvoicePaymentHistory(invoice)"
-                  styleClass="flex-shrink-0"
-                />
-                @if (canReturnInvoice(invoice)) {
-                  <p-button
-                    icon="pi pi-undo"
-                    size="small"
-                    severity="contrast"
-                    [outlined]="true"
-                    [loading]="loadingReturnInvoice()"
-                    pTooltip="Devolución"
-                    (onClick)="onViewInvoiceReturns(invoice)"
-                    styleClass="flex-shrink-0"
-                  />
-                }
-                @if (canReturnInvoice(invoice)) {
-                  <p-button
-                    icon="pi pi-file-edit"
-                    size="small"
-                    severity="contrast"
-                    [outlined]="true"
-                    [loading]="loadingNoteInvoice()"
-                    pTooltip="Nota"
-                    (onClick)="onViewInvoiceNotes(invoice)"
-                    styleClass="flex-shrink-0"
-                  />
-                }
-                @if (invoice.balance > 0 && !isInvoiceFullyBlocked(invoice)) {
-                  <p-button
-                    label="Pagar"
-                    icon="pi pi-dollar"
-                    size="small"
-                    severity="contrast"
-                    [outlined]="true"
-                    (onClick)="onPayInvoice(invoice)"
-                    styleClass="flex-1 font-medium"
-                  />
-                }
-              </div>
+              <app-list-action-buttons
+                [actions]="invoiceActions(invoice)"
+                ariaLabel="Abrir acciones de la factura"
+              />
             </div>
           }
         }
@@ -530,46 +405,34 @@
             <p-button
               label="Reintegro"
               icon="pi pi-undo"
-              severity="danger"
-              [outlined]="true"
-              styleClass="w-full sm:w-auto font-medium"
+              severity="contrast"
+              [disabled]="balance() <= 0"
               (onClick)="onCreateRefund()"
+              styleClass="w-full sm:w-auto font-medium"
             />
             <p-button
               label="Generar Anticipo"
               icon="pi pi-plus-circle"
-              severity="info"
-              [outlined]="true"
-              styleClass="w-full sm:w-auto font-medium"
+              severity="contrast"
               (onClick)="onCreateAdvance()"
+              styleClass="w-full sm:w-auto font-medium"
             />
           </div>
         </div>
-        <div class="hidden sm:flex flex-wrap gap-2">
-          @for (option of balanceFilterOptions; track option.value) {
-            <button
-              type="button"
-              (click)="onBalanceFilterChange(option.value)"
-              [class]="
-                selectedBalanceFilter() === option.value
-                  ? 'bg-surface-900 dark:bg-surface-100 text-surface-0 dark:text-surface-900 font-semibold'
-                  : 'bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300 hover:bg-surface-200 dark:hover:bg-surface-700'
-              "
-              class="px-4 py-2 rounded-lg text-sm transition-all duration-200 border border-surface-200 dark:border-surface-600"
-            >
-              {{ option.label }}
-            </button>
-          }
-        </div>
-        <div class="sm:hidden">
+        <div class="flex flex-col gap-1 w-full sm:max-w-xs">
+          <label for="balance-filter" class="text-xs font-medium text-surface-500"
+            >Tipo de movimiento</label
+          >
           <p-select
+            inputId="balance-filter"
             [options]="balanceFilterOptions"
             [ngModel]="selectedBalanceFilter()"
+            (onChange)="onBalanceFilterChange($event.value)"
             optionLabel="label"
             optionValue="value"
-            placeholder="Filtrar movimientos"
-            (ngModelChange)="onBalanceFilterChange($event)"
-            class="w-full"
+            placeholder="Todos"
+            appendTo="body"
+            styleClass="w-full"
           />
         </div>
       </div>
@@ -756,11 +619,10 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end">
       <p-button
+        severity="secondary"
         label="Cerrar"
         icon="pi pi-times"
         (onClick)="onClose()"
-        severity="secondary"
-        [outlined]="true"
         styleClass="font-medium"
       />
     </div>
@@ -787,7 +649,7 @@
           <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
             >Balance Actual del Cliente</span
           >
-          <span class="font-mono text-lg font-bold text-green-600 dark:text-green-400">
+          <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
             {{ balance() | currency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
@@ -854,21 +716,20 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
+        severity="secondary"
         label="Cancelar"
         icon="pi pi-times"
         (onClick)="onCancelRefund()"
         [disabled]="creatingRefund()"
-        severity="secondary"
-        [outlined]="true"
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
+        severity="contrast"
         label="Reintegrar"
         icon="pi pi-undo"
         (onClick)="submitRefund()"
         [disabled]="refundForm.invalid || creatingRefund()"
         [loading]="creatingRefund()"
-        severity="danger"
         styleClass="font-medium w-full sm:w-auto"
       />
     </div>
@@ -896,7 +757,7 @@
           <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
             >Balance Actual del Cliente</span
           >
-          <span class="font-mono text-lg font-bold text-green-600 dark:text-green-400">
+          <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
             {{ balance() | currency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
@@ -972,21 +833,20 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
+        severity="secondary"
         label="Cancelar"
         icon="pi pi-times"
         (onClick)="onCancelAdvance()"
         [disabled]="creatingAdvance()"
-        severity="secondary"
-        [outlined]="true"
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
+        severity="contrast"
         label="Registrar Anticipo"
         icon="pi pi-plus-circle"
         (onClick)="submitAdvance()"
         [disabled]="advanceForm.invalid || creatingAdvance()"
         [loading]="creatingAdvance()"
-        severity="info"
         styleClass="font-medium w-full sm:w-auto"
       />
     </div>

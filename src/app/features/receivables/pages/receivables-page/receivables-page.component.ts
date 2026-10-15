@@ -1,5 +1,10 @@
 import {
+  ListActionButtonsComponent,
+  ListAction,
+} from '@shared/components/list/list-action-buttons/list-action-buttons.component';
+import {
   Component,
+  viewChild,
   inject,
   OnInit,
   OnDestroy,
@@ -40,6 +45,7 @@ import { SearchFieldComponent } from '@shared/components/ui';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListActionButtonsComponent,
     CommonModule,
     FormsModule,
     CurrencyPipe,
@@ -174,6 +180,54 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
       : 'pi pi-fw pi-sort-down font-bold text-primary';
   }
 
+  private readonly debtDialog = viewChild.required(CustomerDebtDialogComponent);
+
+  customerActions(customer: CustomerDebtList): ListAction[] {
+    return [
+      { label: 'Ver deuda', icon: 'pi pi-eye', command: () => this.onViewCustomerDebt(customer) },
+      {
+        label: 'Pagar todo',
+        icon: 'pi pi-check-circle',
+        disabled: customer.totalDebt <= 0,
+        command: () => this.openCustomerPayment(customer, 'all'),
+      },
+      {
+        label: 'Pago parcial',
+        icon: 'pi pi-percentage',
+        disabled: customer.totalDebt <= 0,
+        command: () => this.openCustomerPayment(customer, 'partial'),
+      },
+      {
+        label: 'Reintegro',
+        icon: 'pi pi-undo',
+        disabled: customer.customerBalance <= 0,
+        command: () => this.openBalanceAction(customer, 'refund'),
+      },
+      {
+        label: 'Generar anticipo',
+        icon: 'pi pi-plus-circle',
+        command: () => this.openBalanceAction(customer, 'advance'),
+      },
+    ];
+  }
+
+  private openCustomerPayment(customer: CustomerDebtList, mode: 'all' | 'partial'): void {
+    this.selectedCustomer.set(customer);
+    this.service
+      .loadCustomerDebt(customer.customerId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (mode === 'all') this.onCustomerDebtPayAll();
+        else this.onCustomerDebtPayPartial();
+      });
+  }
+
+  private openBalanceAction(customer: CustomerDebtList, action: 'refund' | 'advance'): void {
+    this.selectedCustomer.set(customer);
+    this.customerDebtVisible.set(false);
+    this.debtDialog().openBalanceAction(action, customer.customerId);
+  }
+
   onViewCustomerDebt(customer: CustomerDebtList): void {
     this.selectedCustomer.set(customer);
     this.customerDebtVisible.set(true);
@@ -190,7 +244,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.paymentFormMode.set('single');
     this.paymentCustomerName.set(this.selectedCustomer()?.customerName ?? '');
     this.paymentTotalDebt.set(invoice.balance);
-    this.customerDebtVisible.set(false);
     this.paymentFormVisible.set(true);
   }
 
@@ -201,7 +254,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.paymentFormMode.set('all');
     this.paymentCustomerName.set(customer.customerName);
     this.paymentTotalDebt.set(summary?.totalDebt ?? 0);
-    this.customerDebtVisible.set(false);
     this.paymentFormVisible.set(true);
   }
 
@@ -212,7 +264,6 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     this.paymentFormMode.set('partial');
     this.paymentCustomerName.set(customer.customerName);
     this.paymentTotalDebt.set(summary?.totalDebt ?? 0);
-    this.customerDebtVisible.set(false);
     this.paymentFormVisible.set(true);
   }
 
@@ -240,7 +291,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
           next: () => {
             this.onClosePaymentFormDialog();
             this.service.customerDebtChange.next();
-            this.onViewCustomerDebt(customer);
+            this.debtDialog().refreshVisibleDetails();
             this.loadCustomers();
           },
         });
@@ -255,6 +306,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
           next: () => {
             this.onClosePaymentFormDialog();
             this.service.customerDebtChange.next();
+            this.debtDialog().refreshVisibleDetails();
             this.loadCustomers();
           },
         });
@@ -269,6 +321,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
           next: () => {
             this.onClosePaymentFormDialog();
             this.service.customerDebtChange.next();
+            this.debtDialog().refreshVisibleDetails();
             this.loadCustomers();
           },
         });

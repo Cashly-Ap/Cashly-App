@@ -13,64 +13,55 @@
     </div>
 
     @if (service.globalSummary(); as summary) {
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div
-          class="cashly-panel relative overflow-hidden bg-surface-0 dark:bg-surface-900 rounded-3xl p-6 border border-surface-200 dark:border-surface-800"
+          class="dashboard-metric-primary dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
-              <i class="pi pi-dollar text-surface-700 dark:text-surface-300 text-2xl"></i>
-            </div>
-            <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
-              <span class="text-xs font-semibold text-surface-700 dark:text-surface-300"
-                >Total</span
-              >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Deuda Total</span>
+            <div
+              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+            >
+              <i class="pi pi-dollar text-surface-700 dark:text-surface-200 text-base"></i>
             </div>
           </div>
-          <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">Deuda Total</p>
-          <p class="text-3xl font-bold text-red-600 dark:text-red-400">
+          <p
+            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
+          >
             {{ summary.totalDebt | currency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
-
         <div
-          class="cashly-panel relative overflow-hidden bg-surface-0 dark:bg-surface-900 rounded-3xl p-6 border border-surface-200 dark:border-surface-800"
+          class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
-              <i class="pi pi-file text-surface-700 dark:text-surface-300 text-2xl"></i>
-            </div>
-            <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
-              <span class="text-xs font-semibold text-surface-700 dark:text-surface-300"
-                >Facturas</span
-              >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Facturas Pendientes</span>
+            <div
+              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+            >
+              <i class="pi pi-file text-surface-700 dark:text-surface-200 text-base"></i>
             </div>
           </div>
-          <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">
-            Facturas Pendientes
-          </p>
-          <p class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+          <p
+            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
+          >
             {{ summary.totalInvoicesWithDebt }}
           </p>
         </div>
-
         <div
-          class="cashly-panel relative overflow-hidden bg-surface-0 dark:bg-surface-900 rounded-3xl p-6 border border-surface-200 dark:border-surface-800"
+          class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
-          <div class="flex items-center justify-between mb-4">
-            <div class="p-3 bg-surface-100 dark:bg-surface-700 rounded-xl">
-              <i class="pi pi-users text-surface-700 dark:text-surface-300 text-2xl"></i>
-            </div>
-            <div class="px-3 py-1 bg-surface-100 dark:bg-surface-700 rounded-full">
-              <span class="text-xs font-semibold text-surface-700 dark:text-surface-300"
-                >Clientes</span
-              >
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-surface-500 dark:text-surface-400">Clientes con Deuda</span>
+            <div
+              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
+            >
+              <i class="pi pi-users text-surface-700 dark:text-surface-200 text-base"></i>
             </div>
           </div>
-          <p class="text-sm font-medium text-surface-500 dark:text-surface-400 mb-2">
-            Clientes con Deuda
-          </p>
-          <p class="text-3xl font-bold text-surface-900 dark:text-surface-0">
+          <p
+            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
+          >
             {{ summary.totalCustomersWithDebt }}
           </p>
         </div>
@@ -262,20 +253,15 @@
                         </td>
                         <td class="text-center">
                           <span
-                            class="inline-flex items-center justify-center px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-sm font-semibold rounded-full"
+                            class="inline-flex items-center justify-center px-3 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-sm font-semibold rounded-full"
                           >
                             {{ customer.pendingInvoicesCount }}
                           </span>
                         </td>
                         <td class="text-center">
-                          <p-button
-                            label="Ver Deuda"
-                            icon="pi pi-eye"
-                            size="small"
-                            severity="contrast"
-                            [outlined]="true"
-                            (onClick)="onViewCustomerDebt(customer)"
-                            styleClass="font-medium"
+                          <app-list-action-buttons
+                            [actions]="customerActions(customer)"
+                            ariaLabel="Abrir acciones del cliente"
                           />
                         </td>
                       </tr>
@@ -334,7 +320,7 @@
                         </div>
                         <div class="space-y-2 mb-3">
                           <div
-                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-red-500"
+                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
                           >
                             <span class="text-xs font-medium text-surface-600 dark:text-surface-400"
                               >Deuda Total</span
@@ -356,9 +342,7 @@
                             </span>
                           </div>
                           <div
-                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4"
-                            [class.border-green-500]="customer.availableCredit > 0"
-                            [class.border-red-500]="customer.availableCredit <= 0"
+                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
                           >
                             <span class="text-xs font-medium text-surface-600 dark:text-surface-400"
                               >Crédito Disponible</span
@@ -366,14 +350,16 @@
                             <span
                               class="font-mono font-semibold"
                               [class.text-green-600]="customer.availableCredit > 0"
+ [class.dark:text-green-400]="customer.availableCredit > 0"
                               [class.text-red-600]="customer.availableCredit <= 0"
+ [class.dark:text-red-400]="customer.availableCredit <= 0"
                             >
                               {{ customer.availableCredit | currency: 'USD' : 'symbol' : '1.2-2' }}
                             </span>
                           </div>
                           @if (customer.customerBalance > 0) {
                             <div
-                              class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-blue-500"
+                              class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
                             >
                               <span
                                 class="text-xs font-medium text-surface-600 dark:text-surface-400"
@@ -393,19 +379,15 @@
                               >Facturas Pendientes</span
                             >
                             <span
-                              class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 text-xs font-semibold rounded-full"
+                              class="px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-xs font-semibold rounded-full"
                             >
                               {{ customer.pendingInvoicesCount }}
                             </span>
                           </div>
                         </div>
-                        <p-button
-                          label="Ver Deuda"
-                          icon="pi pi-eye"
-                          size="small"
-                          severity="contrast"
-                          (onClick)="onViewCustomerDebt(customer)"
-                          styleClass="w-full font-medium"
+                        <app-list-action-buttons
+                          [actions]="customerActions(customer)"
+                          ariaLabel="Abrir acciones del cliente"
                         />
                       </div>
                     }

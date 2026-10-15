@@ -1,3 +1,7 @@
+import {
+  ListActionButtonsComponent,
+  ListAction,
+} from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { Component, input, output, inject, signal, computed, effect } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
@@ -26,7 +30,15 @@ import { PaymentMethodApiService } from '@features/payment-methods/services/api/
 import { catchError, of } from 'rxjs';
 
 type InvoiceStatusFilter =
-  'ALL' | 'PENDING' | 'PARTIAL' | 'PAID' | 'RETURNED' | 'CANCELLED' | 'PARTIAL_RETURN' | 'OVERDUE' | 'CURRENT';
+  | 'ALL'
+  | 'PENDING'
+  | 'PARTIAL'
+  | 'PAID'
+  | 'RETURNED'
+  | 'CANCELLED'
+  | 'PARTIAL_RETURN'
+  | 'OVERDUE'
+  | 'CURRENT';
 type BalanceFilter = 'ALL' | 'CREDITS' | 'USES';
 
 interface StatusFilterOption {
@@ -43,6 +55,7 @@ interface BalanceFilterOption {
   selector: 'app-customer-debt-dialog',
   standalone: true,
   imports: [
+    ListActionButtonsComponent,
     DialogModule,
     ButtonModule,
     TableModule,
@@ -169,6 +182,69 @@ export class CustomerDebtDialogComponent {
     if (!isVisible) {
       this.onClose();
     }
+  }
+
+  refreshVisibleDetails(): void {
+    if (this.visible() && this.customerId()) {
+      this.loadCustomerData(this.customerId());
+      this.loadBalanceData(this.customerId());
+    }
+  }
+
+  openBalanceAction(action: 'refund' | 'advance', customerId: string): void {
+    this.balanceApi.getBalance(customerId).subscribe({
+      next: (response) => {
+        this.balance.set(response.totalBalance);
+        if (action === 'refund') this.onCreateRefund();
+        else this.onCreateAdvance();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo cargar el saldo del cliente',
+        });
+      },
+    });
+  }
+
+  protected invoiceActions(invoice: CustomerInvoiceDebt): ListAction[] {
+    const actions: ListAction[] = [
+      {
+        label: 'Ver factura',
+        icon: 'pi pi-file-pdf',
+        command: () => this.onViewInvoicePdf(invoice),
+      },
+      {
+        label: 'Ver historial de pagos',
+        icon: 'pi pi-history',
+        command: () => this.onViewInvoicePaymentHistory(invoice),
+      },
+    ];
+    if (this.canReturnInvoice(invoice)) {
+      actions.push(
+        {
+          label: 'Devolución',
+          icon: 'pi pi-undo',
+          disabled: this.loadingReturnInvoice(),
+          command: () => this.onViewInvoiceReturns(invoice),
+        },
+        {
+          label: 'Nota',
+          icon: 'pi pi-file-edit',
+          disabled: this.loadingNoteInvoice(),
+          command: () => this.onViewInvoiceNotes(invoice),
+        },
+      );
+    }
+    if (invoice.balance > 0 && !this.isInvoiceFullyBlocked(invoice)) {
+      actions.push({
+        label: 'Registrar pago',
+        icon: 'pi pi-dollar',
+        command: () => this.onPayInvoice(invoice),
+      });
+    }
+    return actions;
   }
 
   protected onPayInvoice(invoice: CustomerInvoiceDebt): void {

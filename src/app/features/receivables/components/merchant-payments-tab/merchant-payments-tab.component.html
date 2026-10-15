@@ -7,10 +7,9 @@
       </p>
     </div>
     <p-button
+      severity="contrast"
       label="Actualizar"
       icon="pi pi-refresh"
-      severity="secondary"
-      [text]="true"
       (onClick)="loadPayments()"
       [loading]="loading()"
     />
@@ -18,22 +17,22 @@
 
   <div class="flex flex-wrap gap-2 mb-4">
     <p-button
-      label="Todos"
       severity="contrast"
+      label="Todos"
       [outlined]="statusFilter() !== null"
       size="small"
       (onClick)="filterByStatus(null)"
     />
     <p-button
+      severity="contrast"
       label="Aplicados"
-      severity="success"
       [outlined]="statusFilter() !== 'APPLIED'"
       size="small"
       (onClick)="filterByStatus('APPLIED')"
     />
     <p-button
+      severity="contrast"
       label="Cancelados"
-      severity="danger"
       [outlined]="statusFilter() !== 'CANCELLED'"
       size="small"
       (onClick)="filterByStatus('CANCELLED')"
@@ -109,7 +108,7 @@
               icon="pi pi-eye"
               [rounded]="true"
               [text]="true"
-              severity="info"
+              severity="contrast"
               pTooltip="Ver detalle"
               tooltipPosition="top"
               (onClick)="onViewDetail(payment)"
