@@ -1,4 +1,11 @@
-import { Component, inject, signal, effect, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  inject,
+  signal,
+  computed,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import {
@@ -14,8 +21,10 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 
 const DASHBOARD_CHART_COLORS = {
   neutral: '#777777',
-  overdue: '#ef4444',
-  overdueFill: 'rgba(239, 68, 68, 0.14)',
+  lightSeries: '#171717',
+  darkSeries: '#f5f5f5',
+  lightFill: 'rgba(23, 23, 23, 0.12)',
+  darkFill: 'rgba(245, 245, 245, 0.12)',
   lightTicks: '#525252',
   lightGrid: '#e5e5e5',
   darkTicks: '#d4d4d4',
@@ -45,8 +54,8 @@ export class DashboardPageComponent implements OnInit {
   readonly horizontalBarChartType = 'bar' as const;
   readonly lineChartType = 'line' as const;
 
-  salesChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  salesChartOptions: ChartConfiguration<'bar'>['options'] = {
+  private readonly salesChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
+  private readonly salesChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
@@ -54,8 +63,8 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  productsChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  productsChartOptions: ChartConfiguration<'bar'>['options'] = {
+  private readonly productsChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
+  private readonly productsChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
@@ -66,8 +75,8 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  customersChartData = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  customersChartOptions: ChartConfiguration<'bar'>['options'] = {
+  private readonly customersChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
+  private readonly customersChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
     indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
@@ -78,8 +87,8 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  dueChartData = signal<ChartData<'line'>>({ labels: [], datasets: [] });
-  dueChartOptions: ChartConfiguration<'line'>['options'] = {
+  private readonly dueChartSource = signal<ChartData<'line'>>({ labels: [], datasets: [] });
+  private readonly dueChartBaseOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
     interaction: { intersect: false, mode: 'index' },
@@ -89,27 +98,97 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  constructor() {
-    effect(() => {
-      const isDark = this.themeService.isDarkMode();
-      this.salesChartOptions = {
-        ...this.salesChartOptions,
-        scales: this.themedScales(this.salesChartOptions?.scales, isDark),
-      };
-      this.productsChartOptions = {
-        ...this.productsChartOptions,
-        scales: this.themedScales(this.productsChartOptions?.scales, isDark),
-      };
-      this.customersChartOptions = {
-        ...this.customersChartOptions,
-        scales: this.themedScales(this.customersChartOptions?.scales, isDark),
-      };
-      this.dueChartOptions = {
-        ...this.dueChartOptions,
-        scales: this.themedScales(this.dueChartOptions?.scales, isDark),
-      };
-    });
-  }
+  readonly salesChartData = computed(() => {
+    const isDark = this.themeService.isDarkMode();
+    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const source = this.salesChartSource();
+    return {
+      ...source,
+      datasets: source.datasets.map((dataset) => ({
+        ...dataset,
+        backgroundColor: color,
+        borderColor: color,
+        pointBackgroundColor: color,
+      })),
+    };
+  });
+
+  readonly salesChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
+    ...this.salesChartBaseOptions,
+    animation: false,
+    scales: this.themedScales(this.salesChartBaseOptions?.scales, this.themeService.isDarkMode()),
+  }));
+
+  readonly productsChartData = computed(() => {
+    const isDark = this.themeService.isDarkMode();
+    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const source = this.productsChartSource();
+    return {
+      ...source,
+      datasets: source.datasets.map((dataset) => ({
+        ...dataset,
+        backgroundColor: color,
+        borderColor: color,
+        pointBackgroundColor: color,
+      })),
+    };
+  });
+
+  readonly productsChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
+    ...this.productsChartBaseOptions,
+    animation: false,
+    scales: this.themedScales(
+      this.productsChartBaseOptions?.scales,
+      this.themeService.isDarkMode(),
+    ),
+  }));
+
+  readonly customersChartData = computed(() => {
+    const isDark = this.themeService.isDarkMode();
+    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const source = this.customersChartSource();
+    return {
+      ...source,
+      datasets: source.datasets.map((dataset) => ({
+        ...dataset,
+        backgroundColor: color,
+        borderColor: color,
+        pointBackgroundColor: color,
+      })),
+    };
+  });
+
+  readonly customersChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
+    ...this.customersChartBaseOptions,
+    animation: false,
+    scales: this.themedScales(
+      this.customersChartBaseOptions?.scales,
+      this.themeService.isDarkMode(),
+    ),
+  }));
+
+  readonly dueChartData = computed(() => {
+    const isDark = this.themeService.isDarkMode();
+    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const source = this.dueChartSource();
+    return {
+      ...source,
+      datasets: source.datasets.map((dataset) => ({
+        ...dataset,
+        backgroundColor: isDark
+          ? DASHBOARD_CHART_COLORS.darkFill
+          : DASHBOARD_CHART_COLORS.lightFill,
+        borderColor: color,
+        pointBackgroundColor: color,
+      })),
+    };
+  });
+
+  readonly dueChartOptions = computed<ChartConfiguration<'line'>['options']>(() => ({
+    ...this.dueChartBaseOptions,
+    animation: false,
+    scales: this.themedScales(this.dueChartBaseOptions?.scales, this.themeService.isDarkMode()),
+  }));
 
   private themedScales(
     scales: NonNullable<ChartConfiguration<'bar'>['options']>['scales'],
@@ -138,7 +217,7 @@ export class DashboardPageComponent implements OnInit {
 
     this.api.getMonthlySales().subscribe((data) => {
       this.monthlySales.set(data);
-      this.salesChartData.set({
+      this.salesChartSource.set({
         labels: data.map((d) => this.formatMonth(d.month)),
         datasets: [
           {
@@ -152,7 +231,7 @@ export class DashboardPageComponent implements OnInit {
 
     this.api.getTopProducts(5).subscribe((data) => {
       this.topProducts.set(data);
-      this.productsChartData.set({
+      this.productsChartSource.set({
         labels: data.map((d) => d.name),
         datasets: [
           {
@@ -166,7 +245,7 @@ export class DashboardPageComponent implements OnInit {
 
     this.api.getTopCustomers(5).subscribe((data) => {
       this.topCustomers.set(data);
-      this.customersChartData.set({
+      this.customersChartSource.set({
         labels: data.map((d) => d.name),
         datasets: [
           {
@@ -191,17 +270,17 @@ export class DashboardPageComponent implements OnInit {
         byDate.set(invoice.dueDate, (byDate.get(invoice.dueDate) ?? 0) + invoice.amount);
       }
       const dates = [...byDate.keys()].sort();
-      this.dueChartData.set({
+      this.dueChartSource.set({
         labels: dates.map((date) => this.formatDate(date)),
         datasets: [
           {
             data: dates.map((date) => byDate.get(date) ?? 0),
-            borderColor: DASHBOARD_CHART_COLORS.overdue,
-            backgroundColor: DASHBOARD_CHART_COLORS.overdueFill,
+            borderColor: DASHBOARD_CHART_COLORS.lightSeries,
+            backgroundColor: DASHBOARD_CHART_COLORS.lightFill,
             fill: true,
             tension: 0.3,
             pointRadius: 4,
-            pointBackgroundColor: DASHBOARD_CHART_COLORS.overdue,
+            pointBackgroundColor: DASHBOARD_CHART_COLORS.lightSeries,
           },
         ],
       });

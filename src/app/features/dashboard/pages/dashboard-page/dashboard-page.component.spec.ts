@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { DashboardApiService } from '@features/dashboard/services/api/dashboard-api.service';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { of } from 'rxjs';
 import { DashboardPageComponent } from './dashboard-page.component';
 
 describe('Dashboard chart theme', () => {
@@ -30,10 +31,10 @@ describe('Dashboard chart theme', () => {
     gridColor: string,
   ): void {
     const options = [
-      component.salesChartOptions,
-      component.productsChartOptions,
-      component.customersChartOptions,
-      component.dueChartOptions,
+      component.salesChartOptions(),
+      component.productsChartOptions(),
+      component.customersChartOptions(),
+      component.dueChartOptions(),
     ];
     for (const chartOptions of options) {
       for (const axis of ['x', 'y']) {
@@ -52,32 +53,63 @@ describe('Dashboard chart theme', () => {
     expectChartPalette(createComponent(), '#d4d4d4', '#404040');
   });
 
+  it('recolors loaded datasets on repeated theme changes without losing values', () => {
+    TestBed.overrideProvider(DashboardApiService, {
+      useValue: {
+        getSummary: () => of(null),
+        getMonthlySales: () => of([{ month: '2026-10', total: 100 }]),
+        getTopProducts: () => of([{ id: '1', name: 'Product', total: 100 }]),
+        getTopCustomers: () => of([{ id: '1', name: 'Customer', total: 100 }]),
+        getRecentActivity: () => of([]),
+        getInvoiceDueSchedule: () => of([{ dueDate: '2026-11-14', amount: 100 }]),
+      },
+    });
+    const component = createComponent();
+    component.ngOnInit();
+
+    for (const dark of [false, true, false]) {
+      isDarkMode.set(dark);
+      const color = dark ? '#f5f5f5' : '#171717';
+      for (const data of [
+        component.salesChartData(),
+        component.productsChartData(),
+        component.customersChartData(),
+      ]) {
+        expect(data.datasets[0].backgroundColor).toBe(color);
+        expect(data.datasets[0].data).toEqual([100]);
+      }
+      expect(component.dueChartData().datasets[0].borderColor).toBe(color);
+      expect(component.dueChartData().datasets[0].data).toEqual([100]);
+      expectChartPalette(component, dark ? '#d4d4d4' : '#525252', dark ? '#404040' : '#e5e5e5');
+    }
+  });
+
   it('replaces every chart configuration after a theme toggle and preserves chart behavior', () => {
     const component = createComponent();
     const previousOptions = [
-      component.salesChartOptions,
-      component.productsChartOptions,
-      component.customersChartOptions,
-      component.dueChartOptions,
+      component.salesChartOptions(),
+      component.productsChartOptions(),
+      component.customersChartOptions(),
+      component.dueChartOptions(),
     ];
-    const currencyFormatter = component.salesChartOptions?.scales?.['y']?.ticks?.callback;
+    const currencyFormatter = component.salesChartOptions()?.scales?.['y']?.ticks?.callback;
 
     isDarkMode.set(true);
     TestBed.tick();
 
     expectChartPalette(component, '#d4d4d4', '#404040');
     const updatedOptions = [
-      component.salesChartOptions,
-      component.productsChartOptions,
-      component.customersChartOptions,
-      component.dueChartOptions,
+      component.salesChartOptions(),
+      component.productsChartOptions(),
+      component.customersChartOptions(),
+      component.dueChartOptions(),
     ];
     updatedOptions.forEach((options, index) => expect(options).not.toBe(previousOptions[index]));
-    expect(component.salesChartOptions?.scales?.['y']?.ticks?.callback).toBe(currencyFormatter);
-    expect(component.productsChartOptions?.indexAxis).toBe('y');
-    expect(component.productsChartOptions?.maintainAspectRatio).toBe(false);
-    expect(component.productsChartOptions?.scales?.['y']?.ticks?.font).toEqual({ size: 11 });
-    expect(component.dueChartOptions?.interaction).toEqual({ intersect: false, mode: 'index' });
+    expect(component.salesChartOptions()?.scales?.['y']?.ticks?.callback).toBe(currencyFormatter);
+    expect(component.productsChartOptions()?.indexAxis).toBe('y');
+    expect(component.productsChartOptions()?.maintainAspectRatio).toBe(false);
+    expect(component.productsChartOptions()?.scales?.['y']?.ticks?.font).toEqual({ size: 11 });
+    expect(component.dueChartOptions()?.interaction).toEqual({ intersect: false, mode: 'index' });
 
     isDarkMode.set(false);
     TestBed.tick();

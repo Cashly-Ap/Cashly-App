@@ -114,7 +114,7 @@
             baseChart
             [type]="barChartType"
             [data]="salesChartData()"
-            [options]="salesChartOptions"
+            [options]="salesChartOptions()"
           ></canvas>
         } @else {
           <p
@@ -137,7 +137,7 @@
               baseChart
               [type]="horizontalBarChartType"
               [data]="productsChartData()"
-              [options]="productsChartOptions"
+              [options]="productsChartOptions()"
             ></canvas>
           </div>
         } @else {
@@ -164,7 +164,7 @@
         </div>
         @if (invoiceDueSchedule().length) {
           <span
-            class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300"
+            class="text-xs px-2 py-1 rounded-full bg-surface-100 text-surface-900 dark:bg-surface-800 dark:text-surface-100"
           >
             {{ invoiceDueSchedule().length }} facturas pendientes
           </span>
@@ -176,7 +176,7 @@
             baseChart
             [type]="lineChartType"
             [data]="dueChartData()"
-            [options]="dueChartOptions"
+            [options]="dueChartOptions()"
           ></canvas>
         </div>
         <div class="mt-5 overflow-x-auto">
@@ -192,7 +192,7 @@
             <tbody>
               @for (invoice of invoiceDueSchedule(); track invoice.invoiceId) {
                 <tr class="border-b border-surface-50 dark:border-surface-800">
-                  <td class="py-3" [class.text-red-600]="isOverdue(invoice.dueDate)">
+                  <td class="py-3">
                     {{ formatDueDate(invoice.dueDate) }}
                     @if (isOverdue(invoice.dueDate)) {
                       <span class="text-xs ml-1">(vencida)</span>
@@ -228,7 +228,7 @@
             baseChart
             [type]="horizontalBarChartType"
             [data]="customersChartData()"
-            [options]="customersChartOptions"
+            [options]="customersChartOptions()"
           ></canvas>
         </div>
       } @else {
