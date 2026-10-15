@@ -304,7 +304,7 @@ app-loading-spinner > div {
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
   border-radius: 28px;
-  box-shadow: none;
+  @apply shadow-xl;
   backdrop-filter: none;
 }
 
@@ -368,7 +368,7 @@ app-list-container > app-content-card > .cashly-panel {
   padding: 1rem;
 }
 .p-dialog {
-  box-shadow: 0 24px 80px #00000026;
+  @apply shadow-xl;
 }
 .p-dialog-header {
   border-bottom: 1px solid var(--cashly-line);
@@ -396,7 +396,7 @@ a:focus-visible {
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
   border-radius: 28px;
-  box-shadow: none;
+  @apply shadow-xl;
   padding: 1.5rem;
 }
 .dashboard-metric {
@@ -420,6 +420,7 @@ a:focus-visible {
   color: var(--cashly-ink);
 }
 .login-panel {
+  @apply shadow-xl;
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
   border-radius: 32px;
@@ -468,6 +469,7 @@ a:focus-visible {
   border: 1px solid var(--cashly-line);
 }
 app-section-card > div {
+  @apply shadow-xl;
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
   border-radius: 20px;
@@ -479,11 +481,25 @@ app-section-card > div {
 .my-app-dark .cashly-login .text-surface-500 {
   color: var(--cashly-muted);
 }
+.cashly-workspace .shadow-sm,
+.cashly-workspace .shadow-md,
 .cashly-workspace .shadow-lg,
 .cashly-workspace .shadow-xl,
 .cashly-workspace .shadow-2xl,
 .cashly-workspace .shadow-xxxl {
-  box-shadow: none;
+  @apply shadow-xl;
+}
+
+.p-card,
+.p-panel,
+.p-popover,
+.p-drawer,
+.p-select-overlay,
+.p-multiselect-overlay,
+.p-datepicker-panel,
+.p-menu-overlay,
+.main-menubar .p-menubar-submenu {
+  @apply shadow-xl;
 }
 
 .my-app-dark img[src$='cashly-logo.svg'],
