@@ -364,6 +364,29 @@ app-list-container > app-content-card > .cashly-panel {
 .p-datatable-tbody > tr > td {
   border-color: var(--cashly-line);
 }
+
+:root:not(.my-app-dark) .p-datatable {
+  --p-datatable-header-cell-background: #ebebe8;
+  --p-datatable-header-cell-color: #171715;
+  --p-datatable-header-cell-hover-background: #deded9;
+  --p-datatable-header-cell-hover-color: #171715;
+  --p-datatable-row-background: #ffffff;
+  --p-datatable-row-color: #252522;
+  --p-datatable-row-striped-background: #fafaf9;
+  --p-datatable-row-hover-background: #f0f0ed;
+  --p-datatable-row-hover-color: #171715;
+  --p-datatable-body-cell-border-color: #deded9;
+}
+
+:root:not(.my-app-dark) .p-datatable-thead > tr > th {
+  border-bottom: 1px solid #c5c5bf;
+}
+
+:root:not(.my-app-dark) .p-datatable-tbody > tr:not(.p-datatable-row-selected):hover {
+  background: #f0f0ed;
+  color: #171715;
+}
+
 .p-paginator {
   padding: 1rem;
 }
