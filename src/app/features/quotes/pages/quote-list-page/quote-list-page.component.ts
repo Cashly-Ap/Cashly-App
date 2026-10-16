@@ -32,12 +32,10 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { SearchFieldComponent } from '@shared/components/ui';
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
-import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import {
   QuoteFilters,
   ConvertToInvoiceRequest,
-  AssignQuoteWarehousesRequest,
 } from '@features/quotes/services/api/quote-api.service';
 import {
   QuoteStatus,
@@ -73,7 +71,6 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     TextBadgeComponent,
     ConvertToOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
-    AssignWarehousesDialogComponent,
   ],
   templateUrl: './quote-list-page.component.html',
   providers: [ConfirmationService],
@@ -99,9 +96,6 @@ export class QuoteListPageComponent implements OnInit {
 
   readonly invoiceDialogVisible = signal(false);
   readonly quoteToConvertToInvoice = signal<QuoteList | null>(null);
-
-  readonly assignDialogVisible = signal(false);
-  readonly quoteToAssignWarehouses = signal<QuoteList | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -207,13 +201,6 @@ export class QuoteListPageComponent implements OnInit {
         },
       );
     }
-    if (quote.status === 'DRAFT') {
-      actions.push({
-        label: 'Asignar almacenes',
-        icon: 'pi pi-warehouse',
-        command: () => this.onAssignWarehouses(quote),
-      });
-    }
     return actions;
   }
 
@@ -269,12 +256,14 @@ export class QuoteListPageComponent implements OnInit {
         });
         this.loadWithFilters();
       },
-      error: () => {
+      error: (err) => {
         this.quoteToConvertToOrder.set(null);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al convertir el presupuesto a pedido. Por favor, intente nuevamente.',
+          detail:
+            err?.error?.message ||
+            'Error al convertir el presupuesto a pedido. Por favor, intente nuevamente.',
           life: 5000,
         });
       },
@@ -306,12 +295,14 @@ export class QuoteListPageComponent implements OnInit {
         });
         this.loadWithFilters();
       },
-      error: () => {
+      error: (err) => {
         this.quoteToConvertToInvoice.set(null);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al convertir el presupuesto a factura. Por favor, intente nuevamente.',
+          detail:
+            err?.error?.message ||
+            'Error al convertir el presupuesto a factura. Por favor, intente nuevamente.',
           life: 5000,
         });
       },
@@ -321,81 +312,6 @@ export class QuoteListPageComponent implements OnInit {
   onInvoiceDialogDismissed(): void {
     this.invoiceDialogVisible.set(false);
     this.quoteToConvertToInvoice.set(null);
-  }
-
-  onAssignWarehouses(quote: QuoteList): void {
-    this.quoteToAssignWarehouses.set(quote);
-    this.assignDialogVisible.set(true);
-  }
-
-  onConvertToOrderFromAssign(quoteId: string): void {
-    this.assignDialogVisible.set(false);
-    this.quoteToAssignWarehouses.set(null);
-    this.quoteService.convertToOrder(quoteId).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Almacenes asignados y convertido a pedido.',
-          life: 3000,
-        });
-        this.loadWithFilters();
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err?.error?.message || 'Error al convertir a pedido.',
-          life: 5000,
-        });
-        this.loadWithFilters();
-      },
-    });
-  }
-
-  onConvertToInvoiceFromAssign(quoteId: string): void {
-    this.assignDialogVisible.set(false);
-    this.quoteToAssignWarehouses.set(null);
-    this.quoteService.convertToInvoice(quoteId, { paymentType: 'CASH' }).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Almacenes asignados y convertido a factura.',
-          life: 3000,
-        });
-        this.loadWithFilters();
-      },
-      error: (err) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err?.error?.message || 'Error al convertir a factura.',
-          life: 5000,
-        });
-        this.loadWithFilters();
-      },
-    });
-  }
-
-  onAssignFinished(): void {
-    const quote = this.quoteToAssignWarehouses();
-    this.assignDialogVisible.set(false);
-    this.quoteToAssignWarehouses.set(null);
-    if (quote) {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Éxito',
-        detail: `Presupuesto #${quote.quoteNumber} con almacenes asignados.`,
-        life: 3000,
-      });
-    }
-    this.loadWithFilters();
-  }
-
-  onAssignWarehousesDismissed(): void {
-    this.assignDialogVisible.set(false);
-    this.quoteToAssignWarehouses.set(null);
   }
 
   onDownloadPdf(quote: QuoteList): void {

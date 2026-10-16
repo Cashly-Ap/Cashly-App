@@ -166,10 +166,10 @@ describe('OrderListPageComponent', () => {
     });
   });
 
-  it('should offer warehouse assignment for draft orders', () => {
+  it('should omit warehouse reassignment for draft orders', () => {
     const actions = component.actionsFor(mockOrders[0]).map((action) => action.label);
 
-    expect(actions).toContain('Asignar almacenes');
+    expect(actions).not.toContain('Asignar almacenes');
   });
 
   describe('navigation', () => {

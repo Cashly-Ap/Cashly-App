@@ -20,9 +20,7 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              @if (
-                currentOrder.status === OrderStatus.DRAFT
-              ) {
+              @if (currentOrder.status === OrderStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   <p-button
                     label="Editar"
@@ -31,15 +29,6 @@
                     (onClick)="actionsMenu.hide(); onEdit()"
                     styleClass="w-full justify-start text-left text-sm"
                   />
-                  @if (currentOrder.status === OrderStatus.DRAFT) {
-                    <p-button
-                      label="Asignar Almacenes"
-                      icon="pi pi-warehouse"
-                      [link]="true"
-                      (onClick)="actionsMenu.hide(); onEdit()"
-                      styleClass="w-full justify-start text-left text-sm"
-                    />
-                  }
                 </app-detail-actions-menu>
               }
             </div>

@@ -60,7 +60,6 @@ describe('QuoteListPageComponent', () => {
       delete: vi.fn().mockReturnValue(of(undefined)),
       convertToOrder: vi.fn().mockReturnValue(of({})),
       convertToInvoice: vi.fn().mockReturnValue(of({})),
-      assignWarehouses: vi.fn().mockReturnValue(of({})),
       quotes: signal(mockQuotes),
       currentQuote: signal(null),
       loading: signal(false),
@@ -283,7 +282,6 @@ describe('QuoteListPageComponent', () => {
         delete: vi.fn().mockReturnValue(of(undefined)),
         convertToOrder: vi.fn().mockReturnValue(throwError(() => new Error('Fail'))),
         convertToInvoice: vi.fn().mockReturnValue(of({})),
-        assignWarehouses: vi.fn().mockReturnValue(of({})),
         quotes: signal(mockQuotes),
         currentQuote: signal(null),
         loading: signal(false),
@@ -354,43 +352,25 @@ describe('QuoteListPageComponent', () => {
     });
   });
 
-  describe('assign warehouses dialog', () => {
-    it('should offer warehouse assignment for a draft quote', () => {
-      const actions = component.actionsFor(mockQuotes[0]).map((action) => action.label);
+  it('should keep direct conversions and omit warehouse reassignment for drafts', () => {
+    const actions = component.actionsFor(mockQuotes[0]);
+    expect(actions.map((action) => action.label)).not.toContain('Asignar almacenes');
+    actions.find((action) => action.label === 'Convertir a pedido')?.command();
+    expect(component.orderDialogVisible()).toBe(true);
+    expect(component.quoteToConvertToOrder()).toEqual(mockQuotes[0]);
+    actions.find((action) => action.label === 'Convertir a factura')?.command();
+    expect(component.invoiceDialogVisible()).toBe(true);
+  });
 
-      expect(actions).toContain('Asignar almacenes');
-    });
-
-    it('should open assign warehouses dialog', () => {
-      fixture.detectChanges();
-      component.onAssignWarehouses(mockQuotes[0]);
-      expect(component.assignDialogVisible()).toBe(true);
-      expect(component.quoteToAssignWarehouses()).toEqual(mockQuotes[0]);
-    });
-
-    it('should close dialog on dismissed', () => {
-      fixture.detectChanges();
-      component.assignDialogVisible.set(true);
-      component.onAssignWarehousesDismissed();
-      expect(component.assignDialogVisible()).toBe(false);
-      expect(component.quoteToAssignWarehouses()).toBeNull();
-    });
-
-    it('should handle convert to order from assign dialog', () => {
-      fixture.detectChanges();
-      const addSpy = vi.spyOn(messageService, 'add');
-      component.onConvertToOrderFromAssign('q-001');
-      expect(component.assignDialogVisible()).toBe(false);
-      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
-    });
-
-    it('should handle convert to invoice from assign dialog', () => {
-      fixture.detectChanges();
-      const addSpy = vi.spyOn(messageService, 'add');
-      component.onConvertToInvoiceFromAssign('q-001');
-      expect(component.assignDialogVisible()).toBe(false);
-      expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
-    });
+  it('should show the conversion conflict returned by the backend', () => {
+    const message = 'Stock insuficiente para convertir el presupuesto';
+    vi.mocked(mockService.convertToInvoice!).mockReturnValue(
+      throwError(() => ({ status: 409, error: { message } })),
+    );
+    component.quoteToConvertToInvoice.set(mockQuotes[0]);
+    const addSpy = vi.spyOn(messageService, 'add');
+    component.onInvoiceDialogConfirmed({ paymentType: 'CASH' });
+    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ detail: message }));
   });
 
   describe('PDF download', () => {
@@ -434,6 +414,5 @@ describe('QuoteListPageComponent', () => {
       expect(component.statusOptions[0].label).toBe('Todos (Borradores)');
       expect(component.statusOptions[0].value).toBe('');
     });
-
   });
 });

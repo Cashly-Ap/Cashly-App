@@ -270,11 +270,3 @@
   (confirmed)="onInvoiceDialogConfirmed($event)"
   (cancelled)="onInvoiceDialogDismissed()"
 />
-<app-assign-warehouses-dialog
-  [visible]="assignDialogVisible()"
-  [orderId]="orderToAssign()?.id ?? null"
-  (confirmed)="onAssignConfirmed($event)"
-  (convertToInvoice)="onAssignToInvoice($event)"
-  (finished)="onAssignFinished()"
-  (cancelled)="onAssignDismissed()"
-/>

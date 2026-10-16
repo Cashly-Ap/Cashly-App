@@ -32,7 +32,6 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { SearchFieldComponent } from '@shared/components/ui';
 import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
-import { AssignWarehousesDialogComponent } from '@features/orders/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import {
   OrderFilters,
@@ -73,7 +72,6 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     TextBadgeComponent,
     CancelOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
-    AssignWarehousesDialogComponent,
   ],
   templateUrl: './order-list-page.component.html',
   providers: [ConfirmationService],
@@ -100,9 +98,6 @@ export class OrderListPageComponent implements OnInit {
 
   readonly invoiceDialogVisible = signal(false);
   readonly orderToInvoice = signal<OrderList | null>(null);
-
-  readonly assignDialogVisible = signal(false);
-  readonly orderToAssign = signal<OrderList | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -189,11 +184,6 @@ export class OrderListPageComponent implements OnInit {
       { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(order) },
     ];
     if (order.status === 'DRAFT') {
-      actions.push({
-        label: 'Asignar almacenes',
-        icon: 'pi pi-warehouse',
-        command: () => this.onAssignWarehouses(order),
-      });
       actions.push(
         { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(order) },
         { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirm(order) },
@@ -322,102 +312,6 @@ export class OrderListPageComponent implements OnInit {
     this.orderToCancel.set(null);
   }
 
-  onAssignWarehouses(order: OrderList): void {
-    this.orderToAssign.set(order);
-    this.assignDialogVisible.set(true);
-  }
-
-  onAssignConfirmed(orderId: string): void {
-    this.assignDialogVisible.set(false);
-    this.orderService.confirm(orderId).subscribe({
-      next: () => {
-        this.orderToAssign.set(null);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Pedido confirmado y stock descontado',
-          life: 3000,
-        });
-        this.loadWithFilters();
-      },
-      error: () => {
-        this.orderToAssign.set(null);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al confirmar el pedido',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onAssignToInvoice(event: {
-    orderId: string;
-    paymentType: string;
-    confirmationPassword?: string;
-  }): void {
-    this.assignDialogVisible.set(false);
-    const order = this.orderToAssign();
-    if (!order) return;
-    this.orderService.confirm(event.orderId).subscribe({
-      next: () => {
-        this.orderService
-          .convertToInvoice(event.orderId, {
-            paymentType: event.paymentType,
-            confirmationPassword: event.confirmationPassword,
-          })
-          .subscribe({
-            next: () => {
-              this.orderToAssign.set(null);
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Éxito',
-                detail: 'Pedido convertido a factura exitosamente',
-                life: 3000,
-              });
-              this.loadWithFilters();
-            },
-            error: () => {
-              this.orderToAssign.set(null);
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Error al convertir a factura',
-                life: 5000,
-              });
-            },
-          });
-      },
-      error: () => {
-        this.orderToAssign.set(null);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al confirmar el pedido',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onAssignFinished(): void {
-    this.assignDialogVisible.set(false);
-    this.orderToAssign.set(null);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: 'Almacenes asignados correctamente',
-      life: 3000,
-    });
-    this.loadWithFilters();
-  }
-
-  onAssignDismissed(): void {
-    this.assignDialogVisible.set(false);
-    this.orderToAssign.set(null);
-  }
-
   onConvertToInvoice(order: OrderList): void {
     this.orderToInvoice.set(order);
     this.invoiceDialogVisible.set(true);
@@ -438,12 +332,14 @@ export class OrderListPageComponent implements OnInit {
         });
         this.loadWithFilters();
       },
-      error: () => {
+      error: (err) => {
         this.orderToInvoice.set(null);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al convertir el pedido a factura. Por favor, intente nuevamente.',
+          detail:
+            err?.error?.message ||
+            'Error al convertir el pedido a factura. Por favor, intente nuevamente.',
           life: 5000,
         });
       },

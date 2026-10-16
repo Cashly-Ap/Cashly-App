@@ -132,7 +132,8 @@ describe('OrderDetailPageComponent', () => {
     fixture.detectChanges();
     const menuText = document.body.textContent ?? '';
 
-    expect(menuText.indexOf('Editar')).toBeLessThan(menuText.indexOf('Asignar Almacenes'));
+    expect(menuText).toContain('Editar');
+    expect(menuText).not.toContain('Asignar Almacenes');
   });
 
   it('should get status label', () => {

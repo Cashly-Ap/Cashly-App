@@ -23,9 +23,7 @@
                 (onClick)="onBack()"
                 styleClass="w-full sm:w-auto"
               />
-              @if (
-                currentQuote.status === QuoteStatus.DRAFT
-              ) {
+              @if (currentQuote.status === QuoteStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   @if (currentQuote.status === QuoteStatus.DRAFT) {
                     <p-button
@@ -33,15 +31,6 @@
                       icon="pi pi-pencil"
                       [link]="true"
                       (onClick)="actionsMenu.hide(); onEdit()"
-                      styleClass="w-full justify-start text-left text-sm"
-                    />
-                  }
-                  @if (currentQuote.status === QuoteStatus.DRAFT) {
-                    <p-button
-                      label="Asignar Almacenes"
-                      icon="pi pi-warehouse"
-                      [link]="true"
-                      (onClick)="actionsMenu.hide(); onAssignWarehouses()"
                       styleClass="w-full justify-start text-left text-sm"
                     />
                   }
@@ -207,11 +196,3 @@
     }
   </div>
 </div>
-<app-assign-warehouses-dialog
-  [visible]="assignDialogVisible()"
-  [quoteId]="quote()?.id ?? null"
-  (convertToOrder)="onConvertToOrderFromAssign($event)"
-  (convertToInvoice)="onConvertToInvoiceFromAssign($event)"
-  (finished)="onAssignFinished()"
-  (cancelled)="onAssignWarehousesDismissed()"
-/>

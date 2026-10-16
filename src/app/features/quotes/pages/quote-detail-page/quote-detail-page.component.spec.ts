@@ -57,7 +57,6 @@ describe('QuoteDetailPageComponent', () => {
   beforeEach(() => {
     mockService = {
       loadById: vi.fn().mockReturnValue(of(mockQuote)),
-      assignWarehouses: vi.fn().mockReturnValue(of(mockQuote)),
       currentQuote: signal(mockQuote),
       loading: signal(false),
       quotes: signal([]),
@@ -129,39 +128,9 @@ describe('QuoteDetailPageComponent', () => {
     expect(component.getStatusVariant(QuoteStatus.CANCELLED)).toBe('danger');
   });
 
-  it('should open assign warehouses dialog', () => {
+  it('should not render the warehouse reassignment modal', () => {
     fixture.detectChanges();
-    component.onAssignWarehouses();
-    expect(component.assignDialogVisible()).toBe(true);
-  });
-
-  it('should show warehouse assignment for draft quotes', () => {
-    fixture.detectChanges();
-
-    expect(fixture.nativeElement.querySelector('app-detail-actions-menu')).not.toBeNull();
-  });
-
-  it('should close assign warehouses dialog on dismissed', () => {
-    fixture.detectChanges();
-    component.assignDialogVisible.set(true);
-    component.onAssignWarehousesDismissed();
-    expect(component.assignDialogVisible()).toBe(false);
-  });
-
-  it('should handle convert to order from assign dialog', () => {
-    fixture.detectChanges();
-    const addSpy = vi.spyOn(messageService, 'add');
-    component.onConvertToOrderFromAssign('q-001');
-    expect(component.assignDialogVisible()).toBe(false);
-    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
-  });
-
-  it('should handle convert to invoice from assign dialog', () => {
-    fixture.detectChanges();
-    const addSpy = vi.spyOn(messageService, 'add');
-    component.onConvertToInvoiceFromAssign('q-001');
-    expect(component.assignDialogVisible()).toBe(false);
-    expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'success' }));
+    expect(fixture.nativeElement.querySelector('app-assign-warehouses-dialog')).toBeNull();
   });
 
   it('should expose QuoteStatus enum', () => {

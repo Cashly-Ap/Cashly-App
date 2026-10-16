@@ -312,29 +312,6 @@ describe('QuoteApiService', () => {
     });
   });
 
-  describe('assignWarehouses()', () => {
-    it('should PUT /api/quotes/:id/allocations with request body', () => {
-      const request = {
-        lines: [
-          {
-            lineId: 'line-001',
-            allocations: [{ warehouseId: 'wh-001', allocatedQuantity: 5 }],
-          },
-        ],
-      };
-      service.assignWarehouses('q-001', request).subscribe((result) => {
-        expect(result.id).toBe('q-001');
-        expect(result.status).toBe(QuoteStatus.DRAFT);
-        expect(result.lines[0].allocations).toHaveLength(1);
-      });
-
-      const req = httpMock.expectOne('/api/quotes/q-001/allocations');
-      expect(req.request.method).toBe('PUT');
-      expect(req.request.body).toEqual(request);
-      req.flush(mockDetails);
-    });
-  });
-
   describe('convertToOrder()', () => {
     it('should POST /api/quotes/:id/convert-to-order', () => {
       service.convertToOrder('q-001').subscribe((result) => {

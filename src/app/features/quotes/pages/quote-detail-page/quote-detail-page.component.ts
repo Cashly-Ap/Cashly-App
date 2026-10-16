@@ -20,9 +20,6 @@ import {
 } from '@shared/components/ui';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus, getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
-import { AssignWarehousesDialogComponent } from '@features/quotes/components/assign-warehouses-dialog/assign-warehouses-dialog.component';
-import { AssignQuoteWarehousesRequest } from '@features/quotes/services/api/quote-api.service';
-import { signal } from '@angular/core';
 
 @Component({
   selector: 'app-quote-detail-page',
@@ -43,7 +40,6 @@ import { signal } from '@angular/core';
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
-    AssignWarehousesDialogComponent,
   ],
   templateUrl: './quote-detail-page.component.html',
 })
@@ -55,8 +51,6 @@ export class QuoteDetailPageComponent implements OnInit {
 
   readonly quote = this.quoteService.currentQuote;
   readonly loading = this.quoteService.loading;
-
-  readonly assignDialogVisible = signal(false);
 
   readonly QuoteStatus = QuoteStatus;
 
@@ -88,44 +82,6 @@ export class QuoteDetailPageComponent implements OnInit {
 
   getStatusLabel(status: QuoteStatus): string {
     return getQuoteStatusLabel(status);
-  }
-
-  onAssignWarehouses(): void {
-    this.assignDialogVisible.set(true);
-  }
-
-  onConvertToOrderFromAssign(_quoteId: string): void {
-    this.assignDialogVisible.set(false);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Almacenes asignados',
-      detail: 'Presupuesto listo. Use la lista de presupuestos para convertir a pedido.',
-      life: 5000,
-    });
-  }
-
-  onConvertToInvoiceFromAssign(_quoteId: string): void {
-    this.assignDialogVisible.set(false);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Almacenes asignados',
-      detail: 'Presupuesto listo. Use la lista de presupuestos para convertir a factura.',
-      life: 5000,
-    });
-  }
-
-  onAssignFinished(): void {
-    this.assignDialogVisible.set(false);
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: 'Almacenes asignados al presupuesto.',
-      life: 3000,
-    });
-  }
-
-  onAssignWarehousesDismissed(): void {
-    this.assignDialogVisible.set(false);
   }
 
   getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
