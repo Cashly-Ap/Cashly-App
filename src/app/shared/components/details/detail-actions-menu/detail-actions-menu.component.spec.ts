@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DetailActionsMenuComponent } from './detail-actions-menu.component';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
 
 describe('DetailActionsMenuComponent', () => {
   let fixture: ComponentFixture<DetailActionsMenuComponent>;

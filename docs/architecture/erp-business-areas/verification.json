@@ -1,0 +1,1345 @@
+{
+  "scope": "Complete final frontend Vitest suite and production build",
+  "command": "bun run test:run --maxWorkers=2 --minWorkers=1 --reporter=default --reporter=json",
+  "tests": 2529,
+  "passed": 2529,
+  "failures": 0,
+  "skipped": 0,
+  "testFiles": 260,
+  "allFilesPassed": true,
+  "testedSourceFiles": 1007,
+  "currentSourceMatchesFrozenFinalSnapshot": true,
+  "productionBuild": "passed",
+  "knownBuildWarning": "Existing @stomp/stompjs CommonJS dependency optimization warning",
+  "rawArtifactHashes": {
+    "vitestJson": "4e8d4589f2cdfbbc9658e9eb8cf49a0278894f91c4f4cb5fcc5ef3c0cbd28fdc",
+    "vitestLog": "ab671d6f2ec5df6bb18344c24a16a7ffd6a5bfe998c89a8e517dd1010d912fdd",
+    "buildLog": "e0d3e02e4a3c7a4a57d985b32548f85ea215c4c9e4805753302a0bcee40245f3",
+    "sourceManifest": "eb959a7a89a915effbb0720f9015428186f754b7d93598a876b8339f176837ba"
+  },
+  "repairs": [
+    "One relocated notification test import fixed; its three tests and the complete suite pass."
+  ],
+  "suites": [
+    {
+      "file": "src/app/app.routes.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/erp-area-structure.spec.ts",
+      "status": "passed",
+      "tests": 27
+    },
+    {
+      "file": "src/app/core/exceptions/http-error.handler.spec.ts",
+      "status": "passed",
+      "tests": 25
+    },
+    {
+      "file": "src/app/core/layouts/main-layout.component.spec.ts",
+      "status": "passed",
+      "tests": 21
+    },
+    {
+      "file": "src/app/core/pending-tabs/pending-tabs.service.spec.ts",
+      "status": "passed",
+      "tests": 22
+    },
+    {
+      "file": "src/app/shared/pipes/currency.pipe.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/shared/pipes/date-format.pipe.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/shared/utils/date.utils.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/shared/utils/file-download.helper.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/core/layouts/config/menu.config.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/core/pdf-viewer/services/pdf-viewer.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/shared/components/pdf-viewer-modal/pdf-viewer-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/shared/ui/note-form-dialog/note-form-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/shared/ui/invoice-picker-dialog/invoice-picker-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/shared/ui/payment-method-picker/payment-method-picker.component.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/core/pending-tabs/components/pending-tabs-dropdown/pending-tabs-dropdown.component.spec.ts",
+      "status": "passed",
+      "tests": 20
+    },
+    {
+      "file": "src/app/shared/components/details/detail-actions-menu/detail-actions-menu.component.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/shared/components/details/details-card-header/details-card-header.component.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/shared/components/details/details-card/details-card.component.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/shared/components/details/details-info-field/details-info-field.component.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/shared/components/details/details-info-grid/details-info-grid.component.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/shared/components/details/details-list-item/details-list-item.component.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/shared/components/details/details-section-card/details-section-card.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/shared/components/list/list-action-buttons/list-action-buttons.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/shared/components/list/list-container/list-container.component.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/shared/components/ui/content-card/content-card.component.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/shared/components/ui/empty-state/empty-state.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/shared/components/ui/image-viewer-dialog/image-viewer-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/shared/components/ui/loading-spinner/loading-spinner.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/shared/components/ui/search-field/search-field.component.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/shared/components/ui/page-header/page-header.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/shared/components/ui/status-badge/status-badge.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/core/theme/components/theme-toggle/theme-toggle.component.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/core/theme/components/theme-toggle/theme.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/shared/components/ui/text-badge/text-badge.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/catalog/price-types/routing/price-type.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/analytics/reporting/routing/reports.routes.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/catalog/categories/routing/category.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/catalog/products/routing/product.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/routing/warehouse.routes.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/partners/customers/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/partners/customers/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/partners/customers/routing/customer.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/platform/auth/guards/admin.guard.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/platform/auth/guards/auth.guard.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/platform/auth/guards/home-redirect.guard.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/platform/auth/guards/module-permission.guard.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/partners/customers/validators/customer.validators.spec.ts",
+      "status": "passed",
+      "tests": 39
+    },
+    {
+      "file": "src/app/features/platform/auth/interceptors/auth.interceptor.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/platform/auth/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/platform/auth/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/platform/auth/routing/auth.routes.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/platform/auth/tests/manual-integration.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/platform/auth/validators/auth-validators.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/features/partners/suppliers/validators/supplier.validators.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/sales/orders/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/sales/orders/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/sales/orders/routing/orders.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/sales/quotes/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/sales/quotes/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/sales/quotes/routing/quotes.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/core/forms/components/cards/field-group/field-group.component.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/core/forms/components/cards/form-card/form-card.component.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/core/forms/components/cards/form-container/form-container.component.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/core/forms/components/cards/section-card/section-card.component.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/core/forms/components/cards/tab-content/tab-content.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/core/forms/components/dynamic-lists/list-item/list-item.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/core/forms/components/dynamic-lists/list-section/list-section.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/core/forms/components/headers/form-actions/form-actions.component.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/core/forms/components/headers/form-header/form-header.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/core/forms/components/headers/section-header/section-header.component.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/core/forms/components/inputs/checkbox-input/checkbox-input.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/core/forms/components/inputs/file-input/file-input.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/core/forms/components/inputs/number-input/number-input.component.spec.ts",
+      "status": "passed",
+      "tests": 29
+    },
+    {
+      "file": "src/app/core/forms/components/inputs/select-input/select-input.component.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/core/forms/components/inputs/text-input/text-input.component.spec.ts",
+      "status": "passed",
+      "tests": 16
+    },
+    {
+      "file": "src/app/features/analytics/dashboard/pages/dashboard-page/dashboard-page.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/catalog/price-types/pages/price-types-form-page/price-types-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 23
+    },
+    {
+      "file": "src/app/features/catalog/price-types/models/interfaces/price-type-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/price-types/models/interfaces/price-type-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/price-types/models/interfaces/price-type-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/price-types/models/interfaces/price-type-update.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/price-types/pages/price-types-details-page/price-types-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/catalog/price-types/pages/price-types-list-page/price-types-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/catalog/price-types/services/application/price-type-application.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/catalog/categories/models/interfaces/category-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/catalog/categories/models/interfaces/category-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/catalog/categories/models/interfaces/category-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/catalog/categories/models/interfaces/category-update.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/catalog/price-types/services/api/price-type-api.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/catalog/categories/pages/categories-details-page/categories-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/catalog/categories/pages/categories-list-page/categories-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 26
+    },
+    {
+      "file": "src/app/features/catalog/categories/services/api/category-api.service.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/catalog/categories/pages/categories-form-page/categories-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 23
+    },
+    {
+      "file": "src/app/features/catalog/categories/services/application/category-application.service.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-create-update.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-price-form-item.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-price-item.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/catalog/products/models/interfaces/product-stock-by-warehouse.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/catalog/products/models/enums/product-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/catalog/products/components/product-composition-section/product-composition-section.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/catalog/products/components/product-general-section/product-general-section.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/catalog/products/components/product-prices-section/product-prices-section.component.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/catalog/products/pages/products-form-page/products-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 30
+    },
+    {
+      "file": "src/app/features/catalog/products/pages/products-details-page/products-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "file": "src/app/features/catalog/products/pages/products-list-page/products-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 28
+    },
+    {
+      "file": "src/app/features/catalog/products/services/api/product-api.service.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/catalog/products/services/api/product-photo.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/catalog/products/services/application/product-application.service.spec.ts",
+      "status": "passed",
+      "tests": 25
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/routing/invoices.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/pages/warehouse-stock-page/warehouse-stock-page.component.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/pages/warehouses-details-page/warehouses-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/pages/warehouse-movements-page/warehouse-movements-page.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/pages/warehouses-form-page/warehouses-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 30
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/pages/warehouses-list-page/warehouses-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/models/enums/movement-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/models/interfaces/warehouse.interfaces.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/routing/inventory-reports.routes.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/partners/customers/components/customer-addresses-section/customer-addresses-section.component.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/partners/customers/components/balance-transactions-table/balance-transactions-table.component.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/partners/customers/components/customer-contact-section/customer-contact-section.component.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/partners/customers/components/customer-general-section/customer-general-section.component.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/services/application/warehouse-application.service.spec.ts",
+      "status": "passed",
+      "tests": 24
+    },
+    {
+      "file": "src/app/features/partners/customers/models/enums/customer-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/partners/customers/models/enums/payment-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/services/api/warehouse-api.service.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/features/partners/customers/pages/customer-balance-page/customer-balance-page.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/partners/customers/models/interfaces/customer-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/partners/customers/models/interfaces/customer-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/partners/customers/models/interfaces/customer-edit.interface.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/partners/customers/models/interfaces/customer-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/partners/customers/models/interfaces/customer-warehouse-access.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/partners/customers/pages/customers-details-page/customers-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/partners/customers/pages/customers-form-page/customers-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/partners/customers/pages/customers-list-page/customers-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/partners/customers/services/api/customer-api.service.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/partners/customers/services/application/customer-application.service.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/partners/customers/services/mappers/customer.mapper.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/platform/auth/models/interfaces/auth-request.interface.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/platform/auth/models/interfaces/auth-response.interface.spec.ts",
+      "status": "passed",
+      "tests": 1
+    },
+    {
+      "file": "src/app/features/platform/auth/models/interfaces/user.interface.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/platform/auth/pages/change-commission-deduction/change-commission-deduction-page.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/platform/auth/pages/change-password/change-password-page.component.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/platform/auth/pages/change-username/change-username-page.component.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/platform/auth/pages/configuration/configuration-page.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/platform/auth/pages/login/login-page.component.spec.ts",
+      "status": "passed",
+      "tests": 21
+    },
+    {
+      "file": "src/app/features/platform/auth/services/api/auth-api.service.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/platform/auth/services/application/auth-application.service.spec.ts",
+      "status": "passed",
+      "tests": 33
+    },
+    {
+      "file": "src/app/features/platform/auth/user/messages/error-messages.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/platform/auth/user/messages/success-messages.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/platform/auth/user/routing/users.routes.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/platform/auth/user/validators/user.validators.spec.ts",
+      "status": "passed",
+      "tests": 18
+    },
+    {
+      "file": "src/app/features/platform/notifications/services/api/notification-api.service.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/platform/notifications/components/notification-bell/notification-bell.component.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/platform/notifications/services/navigation/notification-destination.resolver.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/sales/orders/components/cancel-order-dialog/cancel-order-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/features/sales/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/sales/orders/components/order-items-table/order-items-table.component.spec.ts",
+      "status": "passed",
+      "tests": 41
+    },
+    {
+      "file": "src/app/features/sales/orders/components/product-picker-dialog/product-picker-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 49
+    },
+    {
+      "file": "src/app/features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 32
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-edit.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-form-data.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-item-allocation.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/sales/orders/models/interfaces/order-product.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/orders/pages/order-detail-page/order-detail-page.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/sales/orders/pages/order-form-page/order-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 29
+    },
+    {
+      "file": "src/app/features/sales/orders/models/enums/order-status.enum.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/sales/orders/pages/order-list-page/order-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 32
+    },
+    {
+      "file": "src/app/features/sales/orders/services/mappers/order.mapper.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/orders/services/api/order-api.service.spec.ts",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "file": "src/app/features/sales/orders/services/application/order-application.service.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/sales/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/enums/quote-status.enum.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-edit.interface.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-form-data.interface.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-product.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/sales/quotes/models/interfaces/quote-warehouse.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/sales/quotes/pages/quote-form-page/quote-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 28
+    },
+    {
+      "file": "src/app/features/sales/quotes/pages/quote-detail-page/quote-detail-page.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/sales/quotes/pages/quote-list-page/quote-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 34
+    },
+    {
+      "file": "src/app/features/sales/quotes/services/api/quote-api.service.spec.ts",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "file": "src/app/features/sales/quotes/services/application/quote-application.service.spec.ts",
+      "status": "passed",
+      "tests": 17
+    },
+    {
+      "file": "src/app/features/sales/quotes/services/mappers/quote.mapper.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/components/catalog-pdf-modal/catalog-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/components/commercial-catalog-pdf-modal/commercial-catalog-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/models/interfaces/catalog-filters.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/models/interfaces/catalog-item.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/models/interfaces/catalog-pdf-filters.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/services/api/catalog-api.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/services/api/catalog-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/services/api/commercial-catalog-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 5
+    },
+    {
+      "file": "src/app/features/catalog/products/reporting/services/application/catalog-application.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/finance/treasury/cash-register/models/enums/cash-movement-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/treasury/cash-register/pages/cash-register-page/cash-register-page.component.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/treasury/cash-register/pages/cash-register-history-page/cash-register-history-page.component.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/finance/treasury/cash-register/services/api/cash-register-api.service.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/finance/treasury/receivables/components/pending-payments-tab/pending-payments-tab.component.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/finance/billing/credit-notes/pages/credit-note-form-page/credit-note-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/enums/invoice-status.enum.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/enums/payment-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/pages/invoice-detail-page/invoice-detail-page.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-edit.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-form-data.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/pages/invoice-form-page/invoice-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 27
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/pages/invoice-list-page/invoice-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 29
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/services/api/invoice-api.service.spec.ts",
+      "status": "passed",
+      "tests": 15
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/services/mappers/invoice.mapper.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/services/application/invoice-application.service.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/finance/billing/returns/components/return-lines-table/return-lines-table.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/components/stock-pdf-modal/stock-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 14
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/models/interfaces/movements-pdf-filters.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/models/interfaces/stock-pdf-filters.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/components/movements-pdf-modal/movements-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 13
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/services/api/movements-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/inventory/warehouses/reporting/services/api/stock-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/platform/auth/user/components/change-email-dialog/change-email-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/enums/business-module.enum.spec.ts",
+      "status": "passed",
+      "tests": 4
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/enums/user-type.enum.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/platform/auth/user/components/change-password-dialog/change-password-dialog.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/interfaces/user-create.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/interfaces/user-details.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/interfaces/user-edit.interface.spec.ts",
+      "status": "passed",
+      "tests": 2
+    },
+    {
+      "file": "src/app/features/platform/auth/user/models/interfaces/user-list.interface.spec.ts",
+      "status": "passed",
+      "tests": 3
+    },
+    {
+      "file": "src/app/features/platform/auth/user/pages/users-details-page/users-details-page.component.spec.ts",
+      "status": "passed",
+      "tests": 9
+    },
+    {
+      "file": "src/app/features/platform/auth/user/pages/users-list-page/users-list-page.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/platform/auth/user/pages/users-form-page/users-form-page.component.spec.ts",
+      "status": "passed",
+      "tests": 12
+    },
+    {
+      "file": "src/app/features/platform/auth/user/services/api/user-api.service.spec.ts",
+      "status": "passed",
+      "tests": 11
+    },
+    {
+      "file": "src/app/features/platform/auth/user/services/application/user-application.service.spec.ts",
+      "status": "passed",
+      "tests": 16
+    },
+    {
+      "file": "src/app/features/platform/auth/user/services/mappers/user.mapper.spec.ts",
+      "status": "passed",
+      "tests": 7
+    },
+    {
+      "file": "src/app/features/sales/orders/reporting/models/interfaces/index.spec.ts",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "file": "src/app/features/sales/orders/reporting/components/order-pdf-modal/order-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "file": "src/app/features/sales/orders/reporting/services/api/order-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/sales/quotes/reporting/components/quote-pdf-modal/quote-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 20
+    },
+    {
+      "file": "src/app/features/finance/treasury/cash-register/reporting/components/cash-register-report-modal/cash-register-report-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/sales/quotes/reporting/services/api/quote-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/finance/treasury/payments/reporting/components/payment-pdf-modal/payment-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/finance/treasury/payments/reporting/services/api/payment-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 8
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component.spec.ts",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service.spec.ts",
+      "status": "passed",
+      "tests": 10
+    },
+    {
+      "file": "src/app/features/finance/billing/invoices/reporting/models/interfaces/index.spec.ts",
+      "status": "passed",
+      "tests": 4
+    }
+  ],
+  "browser": {
+    "scope": "Real headless system Chromium with existing mocked API fixtures; no development business writes",
+    "command": "bun x playwright test --config output/playwright/erp.config.ts --workers=2",
+    "passed": 89,
+    "failures": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "durationMs": 96045.385,
+    "rawJsonSha256": "1b1584270ff8f91cb12563cb1eb8c3bffd2c776b3b2fdb07e03572eb50cc4067",
+    "rawLogSha256": "75afb8872806f9a7a55857b12104f3b0a92a616923b81fba528b6b0ee18f0a58",
+    "testSources": {
+      "e2e/auth.spec.ts": "b816043f2dc3ebc3eaa0e184a0903b311c6ebcf6fca6ac3858d76c544b1b0177",
+      "e2e/customers.spec.ts": "70152382525a9b2eb5482f55cb0631d6ecdc9228e57f459a186a6e5040c0e14f",
+      "e2e/design.spec.ts": "ee76a37f33cee3b9c624eabe724392387321a73b940eb94cb7d731a1f69f5377",
+      "e2e/modules.spec.ts": "cafddba0703e37e25e574ee10a39120dffe7cf35daea303b63a4f5791c769a38",
+      "e2e/navigation.spec.ts": "1d5400cdd1c65d679e3108f628313cabbc987d07dbe7c94312a04e2f7a441b0a"
+    },
+    "configSha256": "9029633ed68e1afafc473859697912f2dc5b8e23ead31914428d679cb38d078b",
+    "repairs": "Scope desktop selectors to the active nested menu and mobile selectors to their accessible roles, avoiding duplicate-label races."
+  }
+}

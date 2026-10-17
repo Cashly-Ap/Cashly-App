@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { MenuItem } from '@core/layouts/models';
-import { buildMenuItems, MenuCallbacks } from './menu.config';
+import { buildMenuItems, MenuCallbacks } from '@app/core/layouts/config/menu.config';
 
 function createCallbacks(): MenuCallbacks {
   return {
