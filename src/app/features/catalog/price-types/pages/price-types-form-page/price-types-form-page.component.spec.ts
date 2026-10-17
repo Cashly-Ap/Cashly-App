@@ -11,9 +11,9 @@ import { PriceTypeDetails } from '@features/catalog/price-types/models/interface
 import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
-import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
+import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
-import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
+import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
 
 describe('PriceTypesFormPageComponent', () => {
   let component: PriceTypesFormPageComponent;

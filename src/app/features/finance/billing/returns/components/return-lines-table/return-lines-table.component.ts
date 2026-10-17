@@ -14,8 +14,8 @@ import { Popover, PopoverModule } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { InvoiceLineDetail } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
-import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
 
 export interface WarehouseAlloc {

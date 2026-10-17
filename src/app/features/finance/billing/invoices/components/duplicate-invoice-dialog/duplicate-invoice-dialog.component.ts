@@ -18,7 +18,7 @@ import {
   InvoiceLineDetail,
 } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
 import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
-import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 
 interface AllocationWithStock {
   warehouseName: string;

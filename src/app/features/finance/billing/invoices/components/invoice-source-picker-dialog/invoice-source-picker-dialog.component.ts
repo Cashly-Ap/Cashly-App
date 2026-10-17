@@ -3,13 +3,13 @@ import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DecimalPipe } from '@angular/common';
-import { OrderApiService } from '@features/orders/services/api/order-api.service';
-import { QuoteApiService } from '@features/quotes/services/api/quote-api.service';
-import { OrderDetails } from '@features/orders/models/interfaces/order-details.interface';
-import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
-import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
-import { getOrderStatusLabel } from '@features/orders/models/enums/order-status.enum';
-import { getQuoteStatusLabel } from '@features/quotes/models/enums/quote-status.enum';
+import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
+import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
+import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
+import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
+import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
+import { getOrderStatusLabel } from '@features/sales/orders/models/enums/order-status.enum';
+import { getQuoteStatusLabel } from '@features/sales/quotes/models/enums/quote-status.enum';
 
 export interface InvoiceSourceSelection {
   orderIds: string[];

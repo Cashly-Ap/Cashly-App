@@ -45,21 +45,21 @@ import { CatalogPdfFilters } from '@features/catalog/products/reporting/models/i
 import { CommercialCatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/commercial-catalog-pdf-filters.interface';
 import { StockPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/stock-pdf-filters.interface';
 import { MovementsPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/movements-pdf-filters.interface';
-import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
+import { OrderPdfModalComponent } from '@features/sales/orders/reporting/components/order-pdf-modal/order-pdf-modal.component';
 import {
   OrderPdfApiService,
   OrdersPdfFilters,
-} from '@features/reports/orders/services/api/order-pdf-api.service';
+} from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
 import { InvoicePdfModalComponent } from '@features/finance/billing/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component';
 import {
   InvoicePdfApiService,
   InvoicesPdfFilters,
 } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
-import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
+import { QuotePdfModalComponent } from '@features/sales/quotes/reporting/components/quote-pdf-modal/quote-pdf-modal.component';
 import {
   QuotePdfApiService,
   QuotesPdfFilters,
-} from '@features/reports/quotes/services/api/quote-pdf-api.service';
+} from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
 import { PurchasePdfModalComponent } from '@features/reports/purchases/components/purchase-pdf-modal/purchase-pdf-modal.component';
 import {
   PurchasePdfApiService,

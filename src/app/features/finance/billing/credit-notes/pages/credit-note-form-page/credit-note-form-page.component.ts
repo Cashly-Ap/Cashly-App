@@ -15,7 +15,7 @@ import { CreditNoteApplicationService } from '@features/finance/billing/credit-n
 import { CreditNoteCreate } from '@features/finance/billing/credit-notes/models/interfaces/credit-note.interface';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
-import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog.component';
 

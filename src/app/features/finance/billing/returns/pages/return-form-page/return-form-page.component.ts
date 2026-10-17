@@ -18,7 +18,7 @@ import { FormContainerComponent } from '@core/forms/components/cards/form-contai
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
 import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
-import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog.component';
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';

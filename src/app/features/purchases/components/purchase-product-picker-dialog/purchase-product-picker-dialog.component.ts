@@ -23,8 +23,8 @@ import { PurchaseProduct } from '@features/purchases/models/interfaces/purchase-
 import { PurchaseLineFormData } from '@features/purchases/models/interfaces/purchase-form-data.interface';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
-import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 const PAGE_SIZE = 10;

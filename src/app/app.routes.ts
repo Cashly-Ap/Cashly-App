@@ -79,11 +79,11 @@ export const routes: Routes = [
       },
       {
         path: 'orders',
-        loadChildren: () => import('@features/orders/router').then((m) => m.ORDER_ROUTES),
+        loadChildren: () => import('@features/sales/orders/routing').then((m) => m.ORDER_ROUTES),
       },
       {
         path: 'quotes',
-        loadChildren: () => import('@features/quotes/router').then((m) => m.QUOTE_ROUTES),
+        loadChildren: () => import('@features/sales/quotes/routing').then((m) => m.QUOTE_ROUTES),
       },
       {
         path: 'invoices',

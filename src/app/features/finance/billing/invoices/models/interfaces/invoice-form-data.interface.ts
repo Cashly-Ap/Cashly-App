@@ -1,4 +1,4 @@
-import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
+import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 
 export interface InvoiceFormData {
   customerId: string;

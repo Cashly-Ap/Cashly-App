@@ -17,9 +17,9 @@ import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-sta
 import { PurchaseLineFormData } from '@features/purchases/models/interfaces/purchase-form-data.interface';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 import { PurchaseProductPickerDialogComponent } from '@features/purchases/components/purchase-product-picker-dialog/purchase-product-picker-dialog.component';
-import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
-import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
+import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
+import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
 
 @Component({
   selector: 'app-purchase-items-table',

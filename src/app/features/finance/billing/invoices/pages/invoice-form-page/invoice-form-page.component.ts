@@ -22,10 +22,10 @@ import { FormActionsComponent } from '@core/forms/components/headers/form-action
 import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
-import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
-import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
+import { OrderItemsTableComponent } from '@features/sales/orders/components/order-items-table/order-items-table.component';
+import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
-import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import {
   PaymentType,
   PAYMENT_TYPE_LABELS,
