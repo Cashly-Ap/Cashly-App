@@ -34,7 +34,7 @@ export const routes: Routes = [
         data: { module: BusinessModule.DASHBOARD },
         loadComponent: () =>
           import(
-            '@features/dashboard/pages/dashboard-page/dashboard-page.component'
+            '@features/analytics/dashboard/pages/dashboard-page/dashboard-page.component'
           ).then((m) => m.DashboardPageComponent),
       },
       {
@@ -93,7 +93,7 @@ export const routes: Routes = [
       {
         path: 'reports',
         loadChildren: () =>
-          import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
+          import('@features/analytics/reporting/routing').then((m) => m.REPORTS_ROUTES),
       },
       {
         path: 'payment-methods',

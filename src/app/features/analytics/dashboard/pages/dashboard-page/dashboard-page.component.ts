@@ -15,7 +15,7 @@ import {
   TopItem,
   RecentActivity,
   InvoiceDue,
-} from '@features/dashboard/services/api/dashboard-api.service';
+} from '@features/analytics/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { REPORTS_ROUTES } from '@features/reports/router/reports.routes';
+import { REPORTS_ROUTES } from '@features/analytics/reporting/routing/reports.routes';
 import { INVENTORY_REPORTS_ROUTES } from '@features/inventory/warehouses/reporting/routing/inventory-reports.routes';
 
 describe('Reports Routes', () => {

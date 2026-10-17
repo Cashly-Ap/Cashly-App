@@ -1,10 +1,10 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
-import { DashboardApiService } from '@features/dashboard/services/api/dashboard-api.service';
+import { DashboardApiService } from '@features/analytics/dashboard/services/api/dashboard-api.service';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { of } from 'rxjs';
-import { DashboardPageComponent } from './dashboard-page.component';
+import { DashboardPageComponent } from '@features/analytics/dashboard/pages/dashboard-page/dashboard-page.component';
 
 describe('Dashboard chart theme', () => {
   const isDarkMode = signal(false);
