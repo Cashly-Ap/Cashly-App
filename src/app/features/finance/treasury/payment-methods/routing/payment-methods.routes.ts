@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@features/auth/guards/auth.guard';
-import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export const PAYMENT_METHOD_ROUTES: Routes = [
   {

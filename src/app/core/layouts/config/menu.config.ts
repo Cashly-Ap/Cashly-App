@@ -1,5 +1,5 @@
 import { MenuItem } from '@core/layouts/models';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export interface MenuCallbacks {
   openCatalogModal: () => void;

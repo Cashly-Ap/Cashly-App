@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, tap, catchError, finalize, of, switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {

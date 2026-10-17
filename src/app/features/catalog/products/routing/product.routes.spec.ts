@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { PRODUCT_ROUTES } from '@features/catalog/products/routing/product.routes';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('Product Routes', () => {
   it('should have a parent route with children', () => {

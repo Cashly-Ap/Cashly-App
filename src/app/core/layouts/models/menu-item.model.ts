@@ -1,5 +1,5 @@
-import { UserType } from '@features/auth/models/interfaces/user.interface';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export interface MenuItem {
   label: string;

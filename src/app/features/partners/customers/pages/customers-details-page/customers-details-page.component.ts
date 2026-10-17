@@ -12,8 +12,8 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { CustomerApplicationService } from '@features/partners/customers/services/application/customer-application.service';
 import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { CustomerDetails } from '@features/partners/customers/models/interfaces/customer-details.interface';

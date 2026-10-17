@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '@features/auth/guards/auth.guard';
-import { homeRedirectGuard } from '@features/auth/guards/home-redirect.guard';
-import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { homeRedirectGuard } from '@features/platform/auth/guards/home-redirect.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export const routes: Routes = [
   {
@@ -10,13 +10,13 @@ export const routes: Routes = [
     pathMatch: 'full',
     canActivate: [homeRedirectGuard],
     loadComponent: () =>
-      import('@features/auth/pages/login/login-page.component').then(
+      import('@features/platform/auth/pages/login/login-page.component').then(
         (m) => m.LoginPageComponent,
       ),
   },
   {
     path: 'auth',
-    loadChildren: () => import('@features/auth/router').then((m) => m.AUTH_ROUTES),
+    loadChildren: () => import('@features/platform/auth/routing').then((m) => m.AUTH_ROUTES),
   },
   {
     path: '',
@@ -26,7 +26,7 @@ export const routes: Routes = [
       {
         path: 'auth',
         loadChildren: () =>
-          import('@features/auth/router').then((m) => m.AUTHENTICATED_AUTH_ROUTES),
+          import('@features/platform/auth/routing').then((m) => m.AUTHENTICATED_AUTH_ROUTES),
       },
       {
         path: 'dashboard',
@@ -40,7 +40,7 @@ export const routes: Routes = [
       {
         path: 'users',
         loadChildren: () =>
-          import('@features/users/router').then((m) => m.USER_ROUTES),
+          import('@features/platform/auth/user/routing').then((m) => m.USER_ROUTES),
       },
       {
         path: 'customers',

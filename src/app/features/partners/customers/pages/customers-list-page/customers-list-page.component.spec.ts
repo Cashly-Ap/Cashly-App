@@ -8,8 +8,8 @@ import { CustomersListPageComponent } from '@features/partners/customers/pages/c
 import { CustomerApplicationService } from '@features/partners/customers/services/application/customer-application.service';
 import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('CustomersListPageComponent', () => {
   let component: CustomersListPageComponent;

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, Subject, tap, catchError, finalize, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import {
   ReceivablesApiService,
   ReceivablesSearchParams,

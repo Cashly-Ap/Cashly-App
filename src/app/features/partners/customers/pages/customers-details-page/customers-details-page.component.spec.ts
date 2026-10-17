@@ -10,7 +10,7 @@ import { CustomerApiService } from '@features/partners/customers/services/api/cu
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { CustomerDetails } from '@features/partners/customers/models/interfaces/customer-details.interface';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
 describe('CustomersDetailsPageComponent', () => {
   let component: CustomersDetailsPageComponent;

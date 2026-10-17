@@ -6,7 +6,7 @@ import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { routes } from '@app/app.routes';
-import { authInterceptor } from '@features/auth/interceptors/auth.interceptor';
+import { authInterceptor } from '@features/platform/auth/interceptors/auth.interceptor';
 import { CashlyPreset } from '@core/theme/presets';
 
 export const appConfig: ApplicationConfig = {

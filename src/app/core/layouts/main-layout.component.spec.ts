@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EMPTY, of } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { MessageService } from 'primeng/api';
 import { PdfViewerService } from '@core/pdf-viewer/services';
@@ -21,11 +21,11 @@ import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/ap
 import { PurchasePdfApiService } from '@features/procurement/purchases/reporting/services/api/purchase-pdf-api.service';
 import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
-import { NotificationApiService } from '@core/notifications/services/api/notification-api.service';
-import { NotificationWebSocketService } from '@core/notifications/services/websocket/notification-websocket.service';
+import { NotificationApiService } from '@features/platform/notifications/services/api/notification-api.service';
+import { NotificationWebSocketService } from '@features/platform/notifications/services/websocket/notification-websocket.service';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
-import { BusinessModule } from '@features/users/models/enums/business-module.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 function createPdfApiMock() {
   return {
