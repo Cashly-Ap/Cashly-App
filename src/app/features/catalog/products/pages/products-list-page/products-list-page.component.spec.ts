@@ -10,8 +10,8 @@ import { CategoryApplicationService } from '@features/catalog/categories/service
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
-import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
+import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';

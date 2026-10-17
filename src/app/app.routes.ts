@@ -75,7 +75,7 @@ export const routes: Routes = [
       {
         path: 'warehouses',
         loadChildren: () =>
-          import('@features/warehouses/router').then((m) => m.WAREHOUSE_ROUTES),
+          import('@features/inventory/warehouses/routing').then((m) => m.WAREHOUSE_ROUTES),
       },
       {
         path: 'orders',

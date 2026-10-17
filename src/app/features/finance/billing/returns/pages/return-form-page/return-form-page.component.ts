@@ -22,7 +22,7 @@ import { CustomerPickerDialogComponent } from '@features/orders/components/custo
 import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog.component';
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
-import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
+import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
 import {
   ReturnType,
   RETURN_TYPE_LABELS,

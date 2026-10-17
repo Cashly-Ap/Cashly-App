@@ -9,7 +9,7 @@ export const REPORTS_ROUTES: Routes = [
   {
     path: 'inventory',
     loadChildren: () =>
-      import('@features/reports/inventory/router').then(
+      import('@features/inventory/warehouses/reporting/routing').then(
         (m) => m.INVENTORY_REPORTS_ROUTES,
       ),
   },

@@ -21,7 +21,7 @@ import { MessageService } from 'primeng/api';
 import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
 import { InvoiceDetails } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
 import { ReturnType } from '@features/finance/billing/returns/models/enums/return-type.enum';
-import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
+import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
 import { ReturnLinesTableComponent } from '@features/finance/billing/returns/components/return-lines-table/return-lines-table.component';
 import { ToastModule } from 'primeng/toast';
 

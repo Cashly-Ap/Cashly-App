@@ -15,7 +15,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
-import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { CatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/catalog-pdf-filters.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 

@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { CatalogPdfModalComponent } from '@features/catalog/products/reporting/components/catalog-pdf-modal/catalog-pdf-modal.component';
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
-import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 
 @Component({
   template: `<app-catalog-pdf-modal

@@ -32,19 +32,19 @@ import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@core/notifications/components/notification-bell/notification-bell.component';
 import { CatalogPdfModalComponent } from '@features/catalog/products/reporting/components/catalog-pdf-modal/catalog-pdf-modal.component';
 import { CommercialCatalogPdfModalComponent } from '@features/catalog/products/reporting/components/commercial-catalog-pdf-modal/commercial-catalog-pdf-modal.component';
-import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal/stock-pdf-modal.component';
-import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal/movements-pdf-modal.component';
+import { StockPdfModalComponent } from '@features/inventory/warehouses/reporting/components/stock-pdf-modal/stock-pdf-modal.component';
+import { MovementsPdfModalComponent } from '@features/inventory/warehouses/reporting/components/movements-pdf-modal/movements-pdf-modal.component';
 import { PdfViewerModalComponent } from '@shared/components/pdf-viewer-modal/pdf-viewer-modal.component';
 import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
 import { CommercialCatalogPdfApiService } from '@features/catalog/products/reporting/services/api/commercial-catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
-import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
-import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
-import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
+import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
+import { StockExcelApiService } from '@features/inventory/warehouses/reporting/services/api/stock-excel-api.service';
+import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
+import { MovementsExcelApiService } from '@features/inventory/warehouses/reporting/services/api/movements-excel-api.service';
 import { CatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/catalog-pdf-filters.interface';
 import { CommercialCatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/commercial-catalog-pdf-filters.interface';
-import { StockPdfFilters } from '@features/reports/inventory/models/interfaces/stock-pdf-filters.interface';
-import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces/movements-pdf-filters.interface';
+import { StockPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/stock-pdf-filters.interface';
+import { MovementsPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/movements-pdf-filters.interface';
 import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
 import {
   OrderPdfApiService,

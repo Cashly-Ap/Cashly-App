@@ -5,7 +5,7 @@ import {
   ReturnLinesTableComponent,
   ReturnLineFormData,
 } from '@features/finance/billing/returns/components/return-lines-table/return-lines-table.component';
-import { WarehouseApiService } from '@features/warehouses/services/api/warehouse-api.service';
+import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
 
 @Component({
   template: `<app-return-lines-table

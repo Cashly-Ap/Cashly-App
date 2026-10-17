@@ -8,8 +8,8 @@ import { CategoriesDetailsPageComponent } from '@features/catalog/categories/pag
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
 import { CategoryDetails } from '@features/catalog/categories/models/interfaces/category-details.interface';
 import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
-import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
+import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
