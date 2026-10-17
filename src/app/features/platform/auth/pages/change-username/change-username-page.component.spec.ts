@@ -79,7 +79,7 @@ describe('ChangeUsernamePageComponent', () => {
 
     expect(mockAuthService.changeUsername).toHaveBeenCalledWith({ username: 'New Name' });
     expect(addSpy).toHaveBeenCalledWith(AUTH_SUCCESS_MESSAGES.usernameChanged);
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should show error message on changeUsername failure', () => {
@@ -99,7 +99,7 @@ describe('ChangeUsernamePageComponent', () => {
   it('should navigate to configuration on cancel', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should return required error when userName is empty', () => {

@@ -496,17 +496,17 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   goToDashboard(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/analytics/dashboard']);
   }
 
   goToConfiguration(): void {
-    this.router.navigate(['/auth/configuration']);
+    this.router.navigate(['/platform/auth/configuration']);
     this.userMenu?.hide();
   }
 
   logout(): void {
     this.authService.clearAuthState();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/platform/auth/login']);
     this.userMenu?.hide();
   }
 

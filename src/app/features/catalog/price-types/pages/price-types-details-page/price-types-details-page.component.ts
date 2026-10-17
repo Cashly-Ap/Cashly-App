@@ -63,7 +63,7 @@ export class PriceTypesDetailsPageComponent implements OnInit {
           detail: 'Error al cargar el tipo de precio.',
           life: 5000,
         });
-        this.router.navigate(['/price-types']);
+        this.router.navigate(['/catalog/price-types']);
       },
     });
   }
@@ -71,11 +71,11 @@ export class PriceTypesDetailsPageComponent implements OnInit {
   onEdit(): void {
     const id = this.priceType()?.id;
     if (id) {
-      this.router.navigate(['/price-types', id, 'edit']);
+      this.router.navigate(['/catalog/price-types', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/price-types']);
+    this.router.navigate(['/catalog/price-types']);
   }
 }

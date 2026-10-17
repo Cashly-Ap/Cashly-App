@@ -58,14 +58,14 @@ export class ReturnDetailPageComponent implements OnInit {
             detail: 'Error al cargar la devolución. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/returns']);
+          this.router.navigate(['/finance/billing/returns']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/returns']);
+    this.router.navigate(['/finance/billing/returns']);
   }
 
   onDelete(): void {
@@ -88,7 +88,7 @@ export class ReturnDetailPageComponent implements OnInit {
               detail: 'Devolución eliminada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/returns']);
+            this.router.navigate(['/finance/billing/returns']);
           },
           error: (err) => {
             this.messageService.add({

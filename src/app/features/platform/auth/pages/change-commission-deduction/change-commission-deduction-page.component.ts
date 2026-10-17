@@ -58,14 +58,14 @@ export class ChangeCommissionDeductionPageComponent implements OnInit {
     this.authService.changeCommissionDeduction({ commissionDeductionPercentage }).subscribe({
       next: () => {
         this.messageService.add(AUTH_SUCCESS_MESSAGES.commissionDeductionChanged);
-        this.router.navigate(['/auth/configuration']);
+        this.router.navigate(['/platform/auth/configuration']);
       },
       error: () => this.messageService.add(AUTH_ERROR_MESSAGES.changeCommissionDeduction),
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/auth/configuration']);
+    this.router.navigate(['/platform/auth/configuration']);
   }
 
   getCommissionDeductionError(): string {

@@ -63,19 +63,19 @@ describe('UsersListPageComponent', () => {
   it('should navigate to new user on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/users', 'new']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users', 'new']);
   });
 
   it('should navigate to user detail on onView', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onView(mockUser);
-    expect(navigateSpy).toHaveBeenCalledWith(['/users', mockUser.id]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users', mockUser.id]);
   });
 
   it('should navigate to user edit on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockUser);
-    expect(navigateSpy).toHaveBeenCalledWith(['/users', mockUser.id, 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users', mockUser.id, 'edit']);
   });
 
   it('should filter users based on search term', () => {

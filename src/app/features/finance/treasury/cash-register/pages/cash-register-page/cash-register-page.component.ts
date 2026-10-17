@@ -175,7 +175,7 @@ export class CashRegisterPageComponent implements OnInit {
   }
 
   onViewHistory(): void {
-    this.router.navigate(['/cash-register/history']);
+    this.router.navigate(['/finance/treasury/cash-register/history']);
   }
 
   getStatusLabel(status: string | undefined): string {

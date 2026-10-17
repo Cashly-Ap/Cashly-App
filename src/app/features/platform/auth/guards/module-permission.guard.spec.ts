@@ -41,7 +41,7 @@ describe('modulePermissionGuard', () => {
     );
 
     expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
   });
 
   it('should return true when no module is specified in route data', () => {

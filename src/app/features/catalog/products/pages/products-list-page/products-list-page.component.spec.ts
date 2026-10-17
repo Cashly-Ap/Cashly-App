@@ -268,19 +268,19 @@ describe('ProductsListPageComponent', () => {
   it('should navigate to new product on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/products', 'new']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products', 'new']);
   });
 
   it('should navigate to product detail on onView', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onView(mockProduct);
-    expect(navigateSpy).toHaveBeenCalledWith(['/products', 'prod-001']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products', 'prod-001']);
   });
 
   it('should navigate to product edit on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockProduct);
-    expect(navigateSpy).toHaveBeenCalledWith(['/products', 'prod-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products', 'prod-001', 'edit']);
   });
 
   it('should show success message on toggleActive success', () => {

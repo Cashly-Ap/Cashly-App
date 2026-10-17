@@ -93,7 +93,7 @@ export class WarehousesFormPageComponent
       entityDisplayName: 'Almacén',
       entityArticle: 'del',
       module: 'warehouses',
-      routeBase: '/warehouses',
+      routeBase: '/inventory/warehouses',
     };
   }
 
@@ -163,7 +163,7 @@ export class WarehousesFormPageComponent
           detail: 'Error al cargar el almacén.',
           life: 5000,
         });
-        this.router.navigate(['/warehouses']);
+        this.router.navigate(['/inventory/warehouses']);
       },
     });
   }
@@ -190,7 +190,7 @@ export class WarehousesFormPageComponent
               detail: 'Almacén actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/warehouses']);
+            this.router.navigate(['/inventory/warehouses']);
           },
           error: () => {
             this.messageService.add({
@@ -211,7 +211,7 @@ export class WarehousesFormPageComponent
               detail: 'Almacén creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/warehouses']);
+            this.router.navigate(['/inventory/warehouses']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

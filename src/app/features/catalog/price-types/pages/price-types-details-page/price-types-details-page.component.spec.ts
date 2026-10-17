@@ -124,14 +124,14 @@ describe('PriceTypesDetailsPageComponent', () => {
       detail: 'Error al cargar el tipo de precio.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types']);
   });
 
   it('should navigate to /price-types/{id}/edit on onEdit', () => {
     component.priceType.set(mockPriceType);
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types', 'pt-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types', 'pt-001', 'edit']);
   });
 
   it('should not navigate on onEdit if priceType is null', () => {
@@ -144,7 +144,7 @@ describe('PriceTypesDetailsPageComponent', () => {
   it('should navigate to /price-types on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types']);
   });
 
   it('should not load price type if id is null', () => {

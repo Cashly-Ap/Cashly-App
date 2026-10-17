@@ -36,7 +36,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         life: 5000,
       });
       authService.clearAuthState();
-      router.navigate(['/auth/login']);
+      router.navigate(['/platform/auth/login']);
       return throwError(() => error);
     }
 
@@ -61,7 +61,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               life: 5000,
             });
             authService.clearAuthState();
-            router.navigate(['/auth/login']);
+            router.navigate(['/platform/auth/login']);
             return throwError(() => refreshError);
           }),
         );
@@ -74,7 +74,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         life: 5000,
       });
       authService.clearAuthState();
-      router.navigate(['/auth/login']);
+      router.navigate(['/platform/auth/login']);
       return throwError(() => error);
     }
 

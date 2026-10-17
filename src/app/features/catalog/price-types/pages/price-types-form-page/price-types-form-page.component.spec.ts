@@ -116,7 +116,7 @@ describe('PriceTypesFormPageComponent', () => {
     expect(config.entityDisplayName).toBe('Tipo de Precio');
     expect(config.entityArticle).toBe('del');
     expect(config.module).toBe('price-types');
-    expect(config.routeBase).toBe('/price-types');
+    expect(config.routeBase).toBe('/catalog/price-types');
   });
 
   it('should be in create mode by default', () => {
@@ -147,7 +147,7 @@ describe('PriceTypesFormPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('New Price Type');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types']);
   });
 
   it('should show success message on create success', () => {
@@ -256,7 +256,7 @@ describe('PriceTypesFormPageComponent', () => {
       detail: 'Error al cargar el tipo de precio.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types']);
   });
 
   it('should restore form data from pending tab', () => {

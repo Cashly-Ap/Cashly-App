@@ -34,7 +34,7 @@ describe('adminGuard', () => {
     const result = TestBed.runInInjectionContext(() => adminGuard({} as any, {} as any));
 
     expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/auth/login']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
   });
 
   it('should redirect to / when authenticated but not super admin', () => {

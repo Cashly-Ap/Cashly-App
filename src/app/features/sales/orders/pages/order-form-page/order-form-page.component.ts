@@ -282,7 +282,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(ORDER_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/orders', order.id]);
+            this.router.navigate(['/sales/orders', order.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -316,7 +316,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(ORDER_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/orders', order.id]);
+            this.router.navigate(['/sales/orders', order.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -332,6 +332,6 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/orders']);
+    this.router.navigate(['/sales/orders']);
   }
 }

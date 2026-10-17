@@ -147,19 +147,19 @@ describe('CategoriesListPageComponent', () => {
   it('should navigate to /categories/new on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories', 'new']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories', 'new']);
   });
 
   it('should navigate to /categories/{id} on onView', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onView(mockCategory);
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories', mockCategory.id]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories', mockCategory.id]);
   });
 
   it('should navigate to /categories/{id}/edit on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockCategory);
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories', mockCategory.id, 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories', mockCategory.id, 'edit']);
   });
 
   it('should call service.toggleActive on onToggleActive', () => {

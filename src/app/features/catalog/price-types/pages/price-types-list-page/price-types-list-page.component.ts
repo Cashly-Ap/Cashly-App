@@ -109,15 +109,15 @@ export class PriceTypesListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/price-types', 'new']);
+    this.router.navigate(['/catalog/price-types', 'new']);
   }
 
   onView(priceType: PriceTypeList): void {
-    this.router.navigate(['/price-types', priceType.id]);
+    this.router.navigate(['/catalog/price-types', priceType.id]);
   }
 
   onEdit(priceType: PriceTypeList): void {
-    this.router.navigate(['/price-types', priceType.id, 'edit']);
+    this.router.navigate(['/catalog/price-types', priceType.id, 'edit']);
   }
 
   actionsFor(priceType: PriceTypeList): ListAction[] {

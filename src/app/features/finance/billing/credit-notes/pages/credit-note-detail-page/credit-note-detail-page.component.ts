@@ -54,14 +54,14 @@ export class CreditNoteDetailPageComponent implements OnInit {
             detail: 'Error al cargar la nota de crédito. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/credit-notes']);
+          this.router.navigate(['/finance/billing/credit-notes']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/credit-notes']);
+    this.router.navigate(['/finance/billing/credit-notes']);
   }
 
   onDelete(): void {
@@ -84,7 +84,7 @@ export class CreditNoteDetailPageComponent implements OnInit {
               detail: 'Nota de crédito eliminada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/credit-notes']);
+            this.router.navigate(['/finance/billing/credit-notes']);
           },
           error: (err) => {
             this.messageService.add({

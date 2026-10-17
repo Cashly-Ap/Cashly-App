@@ -161,15 +161,15 @@ export class PurchaseListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/purchases/new']);
+    this.router.navigate(['/procurement/purchases/new']);
   }
 
   onView(purchase: PurchaseList): void {
-    this.router.navigate(['/purchases', purchase.id]);
+    this.router.navigate(['/procurement/purchases', purchase.id]);
   }
 
   onEdit(purchase: PurchaseList): void {
-    this.router.navigate(['/purchases', purchase.id, 'edit']);
+    this.router.navigate(['/procurement/purchases', purchase.id, 'edit']);
   }
 
   actionsFor(purchase: PurchaseList): ListAction[] {

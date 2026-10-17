@@ -123,11 +123,11 @@ export class DebitNoteListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/debit-notes/new']);
+    this.router.navigate(['/finance/billing/debit-notes/new']);
   }
 
   onDetail(debitNote: DebitNoteList): void {
-    this.router.navigate(['/debit-notes', debitNote.id]);
+    this.router.navigate(['/finance/billing/debit-notes', debitNote.id]);
   }
 
   actionsFor(debitNote: DebitNoteList): ListAction[] {

@@ -63,8 +63,12 @@ describe('WarehousesDetailsPageComponent', () => {
     component.onViewStock();
     component.onViewMovements();
 
-    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/warehouses', 'wh-001', 'stock']);
-    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/warehouses', 'wh-001', 'movements']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses', 'wh-001', 'stock']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(2, [
+      '/inventory/warehouses',
+      'wh-001',
+      'movements',
+    ]);
   });
 
   it('opens the shared stock operation dialog for entries and exits', () => {

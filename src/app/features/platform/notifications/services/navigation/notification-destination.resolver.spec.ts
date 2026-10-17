@@ -16,11 +16,11 @@ describe('NotificationDestinationResolver', () => {
     [
       'PAYMENT',
       'payment-1',
-      ['/receivables'],
+      ['/finance/treasury/receivables'],
       { queryParams: { tab: 'pending', focus: 'payment-1' } },
     ],
-    ['QUOTE', 'quote-1', ['/quotes', 'quote-1']],
-    ['ORDER', 'order-1', ['/orders', 'order-1']],
+    ['QUOTE', 'quote-1', ['/sales/quotes', 'quote-1']],
+    ['ORDER', 'order-1', ['/sales/orders', 'order-1']],
   ])(
     'should navigate a %s reference to its detail route',
     async (referenceType, referenceId, commands, extras) => {
@@ -37,7 +37,7 @@ describe('NotificationDestinationResolver', () => {
 
     await resolver.navigate('QUOTE', 'quote-origin');
 
-    expect(navigate).toHaveBeenCalledWith(['/quotes', 'quote-origin']);
+    expect(navigate).toHaveBeenCalledWith(['/sales/quotes', 'quote-origin']);
   });
 
   it('should fall back to the known collection when the id is absent', async () => {
@@ -45,7 +45,9 @@ describe('NotificationDestinationResolver', () => {
 
     await resolver.navigate('PAYMENT', null);
 
-    expect(navigate).toHaveBeenCalledWith(['/receivables'], { queryParams: { tab: 'pending' } });
+    expect(navigate).toHaveBeenCalledWith(['/finance/treasury/receivables'], {
+      queryParams: { tab: 'pending' },
+    });
   });
 
   it('should fall back to the collection when detail navigation is rejected', async () => {
@@ -56,8 +58,8 @@ describe('NotificationDestinationResolver', () => {
 
     await resolver.navigate('ORDER', 'order-1');
 
-    expect(navigate).toHaveBeenNthCalledWith(1, ['/orders', 'order-1']);
-    expect(navigate).toHaveBeenNthCalledWith(2, ['/orders']);
+    expect(navigate).toHaveBeenNthCalledWith(1, ['/sales/orders', 'order-1']);
+    expect(navigate).toHaveBeenNthCalledWith(2, ['/sales/orders']);
   });
 
   it('should not navigate for an unknown reference type', async () => {

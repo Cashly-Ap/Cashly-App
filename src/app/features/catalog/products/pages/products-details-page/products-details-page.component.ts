@@ -82,14 +82,14 @@ export class ProductsDetailsPageComponent implements OnInit {
           detail: 'Error al cargar el producto.',
           life: 5000,
         });
-        this.router.navigate(['/products']);
+        this.router.navigate(['/catalog/products']);
       },
     });
   }
 
   onEdit(): void {
     const id = this.product()?.id;
-    if (id) this.router.navigate(['/products', id, 'edit']);
+    if (id) this.router.navigate(['/catalog/products', id, 'edit']);
   }
 
   onToggleActive(): void {
@@ -117,6 +117,6 @@ export class ProductsDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/products']);
+    this.router.navigate(['/catalog/products']);
   }
 }

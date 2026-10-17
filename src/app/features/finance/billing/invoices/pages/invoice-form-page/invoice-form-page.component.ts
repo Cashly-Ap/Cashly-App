@@ -350,7 +350,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           })),
         );
       },
-      error: () => this.router.navigate(['/invoices']),
+      error: () => this.router.navigate(['/finance/billing/invoices']),
     });
   }
 
@@ -722,7 +722,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             detail: `Se crearon ${customers.length} facturas.`,
             life: 4000,
           });
-          this.router.navigate(['/invoices']);
+          this.router.navigate(['/finance/billing/invoices']);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -747,7 +747,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(INVOICE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/invoices', inv.id]);
+            this.router.navigate(['/finance/billing/invoices', inv.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -765,7 +765,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           this.isSubmitting.set(false);
           this.markAsSubmitted();
           this.messageService.add(INVOICE_SUCCESS_MESSAGES.created);
-          this.router.navigate(['/invoices', inv.id]);
+          this.router.navigate(['/finance/billing/invoices', inv.id]);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -781,7 +781,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/invoices']);
+    this.router.navigate(['/finance/billing/invoices']);
   }
 
   private toIsoDate(value: Date | string | null | undefined): string {

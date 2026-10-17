@@ -120,7 +120,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
       entityDisplayName: 'Usuario',
       entityArticle: 'del',
       module: 'users',
-      routeBase: '/users',
+      routeBase: '/platform/users',
     };
   }
 
@@ -170,7 +170,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
           detail: 'Error al cargar el usuario. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/users']);
+        this.router.navigate(['/platform/users']);
       },
     });
   }
@@ -222,7 +222,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
             detail: 'Usuario actualizado exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/users']);
+          this.router.navigate(['/platform/users']);
         },
         error: () => {
           this.messageService.add({
@@ -261,7 +261,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
               detail: 'Usuario creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/users']);
+            this.router.navigate(['/platform/users']);
           },
           error: (err) => {
             this.messageService.add({

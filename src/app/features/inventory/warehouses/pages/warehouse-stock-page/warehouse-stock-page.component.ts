@@ -81,7 +81,7 @@ export class WarehouseStockPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/warehouses', this.warehouseId()]);
+    this.router.navigate(['/inventory/warehouses', this.warehouseId()]);
   }
 
   private load(id: string): void {
@@ -103,7 +103,7 @@ export class WarehouseStockPageComponent implements OnInit {
           detail: WAREHOUSE_ERROR_MESSAGES.loadStock,
           life: 5000,
         });
-        this.router.navigate(['/warehouses']);
+        this.router.navigate(['/inventory/warehouses']);
       },
     });
   }

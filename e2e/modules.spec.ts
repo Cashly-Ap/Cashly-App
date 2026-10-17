@@ -1,28 +1,37 @@
 import { expect, test, type Page, type Route } from '@playwright/test';
 
 const appRoutes = [
-  { path: '/dashboard' },
-  { path: '/users' },
-  { path: '/suppliers' },
-  { path: '/purchases' },
-  { path: '/categories' },
-  { path: '/price-types' },
-  { path: '/products' },
-  { path: '/warehouses' },
-  { path: '/orders' },
-  { path: '/quotes' },
-  { path: '/invoices' },
-  { path: '/reports/inventory' },
-  { path: '/payment-methods' },
-  { path: '/credit-notes' },
-  { path: '/debit-notes' },
-  { path: '/returns' },
-  { path: '/cash-register' },
-  { path: '/cash-register/history' },
-  { path: '/receivables' },
+  { path: '/analytics/dashboard' },
+  { path: '/platform/users' },
+  { path: '/partners/suppliers' },
+  { path: '/procurement/purchases' },
+  { path: '/catalog/categories' },
+  { path: '/catalog/price-types' },
+  { path: '/catalog/products' },
+  { path: '/inventory/warehouses' },
+  { path: '/sales/orders' },
+  { path: '/sales/quotes' },
+  { path: '/finance/billing/invoices' },
+  { path: '/analytics/reports/inventory' },
+  { path: '/finance/treasury/payment-methods' },
+  { path: '/finance/billing/credit-notes' },
+  { path: '/finance/billing/debit-notes' },
+  { path: '/finance/billing/returns' },
+  { path: '/finance/treasury/cash-register' },
+  { path: '/finance/treasury/cash-register/history' },
+  { path: '/finance/treasury/receivables' },
 ] as const;
 
-const pageResponse = { content: [], totalElements: 0, totalPages: 0, size: 10, number: 0, first: true, last: true, empty: true };
+const pageResponse = {
+  content: [],
+  totalElements: 0,
+  totalPages: 0,
+  size: 10,
+  number: 0,
+  first: true,
+  last: true,
+  empty: true,
+};
 
 async function authenticate(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -60,7 +69,11 @@ async function fulfillApi(route: Route): Promise<void> {
   }
 
   if (path.includes('/reports/') || path.endsWith('/pdf') || path.endsWith('/excel')) {
-    await route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'e2e-report' });
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/octet-stream',
+      body: 'e2e-report',
+    });
     return;
   }
 
@@ -92,7 +105,11 @@ async function fulfillApi(route: Route): Promise<void> {
     return;
   }
 
-  await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(pageResponse) });
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(pageResponse),
+  });
 }
 
 for (const moduleRoute of appRoutes) {

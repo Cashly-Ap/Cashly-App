@@ -74,7 +74,7 @@ describe('ChangePasswordPageComponent', () => {
 
     expect(mockAuthService.changePassword).toHaveBeenCalledWith({ newPassword: 'Test1234' });
     expect(addSpy).toHaveBeenCalledWith(AUTH_SUCCESS_MESSAGES.passwordChanged);
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should show error message on changePassword failure', () => {
@@ -95,7 +95,7 @@ describe('ChangePasswordPageComponent', () => {
   it('should navigate to configuration on cancel', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should return empty string for getPasswordError when no errors', () => {

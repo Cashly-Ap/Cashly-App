@@ -125,11 +125,11 @@ export class ReturnListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/returns/new']);
+    this.router.navigate(['/finance/billing/returns/new']);
   }
 
   onDetail(ret: ReturnList): void {
-    this.router.navigate(['/returns', ret.id]);
+    this.router.navigate(['/finance/billing/returns', ret.id]);
   }
 
   actionsFor(ret: ReturnList): ListAction[] {

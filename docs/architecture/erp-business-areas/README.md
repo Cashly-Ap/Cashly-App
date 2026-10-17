@@ -1,6 +1,6 @@
 # ERP business areas
 
-The Angular feature tree mirrors the backend business ownership. Public browser URLs, HTTP API URLs, permission identifiers and lazy loading remain unchanged.
+The Angular feature tree mirrors the backend business ownership. This directory records the source regrouping, which originally preserved public browser URLs. The subsequent [ERP area navigation change](../erp-area-navigation.md) groups browser URLs and visible menus by area, retaining legacy redirects. HTTP API URLs, permission identifiers and lazy loading retain their contracts.
 
 | Area | Features |
 | --- | --- |

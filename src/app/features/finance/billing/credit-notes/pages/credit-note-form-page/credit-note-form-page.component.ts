@@ -90,7 +90,7 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
       entityDisplayName: 'Nota de Crédito',
       entityArticle: 'la',
       module: 'finances',
-      routeBase: '/credit-notes',
+      routeBase: '/finance/billing/credit-notes',
     };
   }
 
@@ -191,7 +191,7 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
             detail: 'Nota de crédito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/credit-notes']);
+          this.router.navigate(['/finance/billing/credit-notes']);
         },
         error: (err: { error?: { message?: string } }) => {
           this.messageService.add({

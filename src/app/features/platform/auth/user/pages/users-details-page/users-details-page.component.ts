@@ -83,7 +83,7 @@ export class UsersDetailsPageComponent implements OnInit {
           detail: 'Error al cargar el usuario. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/users']);
+        this.router.navigate(['/platform/users']);
       },
     });
   }
@@ -91,12 +91,12 @@ export class UsersDetailsPageComponent implements OnInit {
   onEdit(): void {
     const id = this.user()?.id;
     if (id) {
-      this.router.navigate(['/users', id, 'edit']);
+      this.router.navigate(['/platform/users', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/users']);
+    this.router.navigate(['/platform/users']);
   }
 
   onEmailChanged(newEmail: string): void {

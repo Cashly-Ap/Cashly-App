@@ -212,15 +212,15 @@ export class ProductsListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/products', 'new']);
+    this.router.navigate(['/catalog/products', 'new']);
   }
 
   onView(product: ProductList): void {
-    this.router.navigate(['/products', product.id]);
+    this.router.navigate(['/catalog/products', product.id]);
   }
 
   onEdit(product: ProductList): void {
-    this.router.navigate(['/products', product.id, 'edit']);
+    this.router.navigate(['/catalog/products', product.id, 'edit']);
   }
 
   actionsFor(product: ProductList): ListAction[] {

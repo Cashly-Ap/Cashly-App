@@ -40,6 +40,6 @@ describe('authGuard', () => {
     const result = TestBed.runInInjectionContext(() => authGuard({} as any, {} as any));
 
     expect(result).toBe(false);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
   });
 });

@@ -158,7 +158,7 @@ export class CustomerBalancePageComponent implements OnInit {
   ngOnInit(): void {
     const customerId = this.route.snapshot.paramMap.get('id');
     if (!customerId) {
-      this.router.navigate(['/customers']);
+      this.router.navigate(['/partners/customers']);
       return;
     }
 
@@ -374,9 +374,9 @@ export class CustomerBalancePageComponent implements OnInit {
   onBack(): void {
     const customerId = this.route.snapshot.paramMap.get('id');
     if (customerId) {
-      this.router.navigate(['/customers', customerId]);
+      this.router.navigate(['/partners/customers', customerId]);
     } else {
-      this.router.navigate(['/customers']);
+      this.router.navigate(['/partners/customers']);
     }
   }
 }

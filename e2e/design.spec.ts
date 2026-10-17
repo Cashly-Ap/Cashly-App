@@ -122,7 +122,7 @@ for (const theme of ['light', 'dark'] as const) {
     test(`dashboard loaded ${size} ${theme} remains inside the viewport`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await prepare(page, theme, true, true);
-      await page.goto('/dashboard');
+      await page.goto('/analytics/dashboard');
       await page.locator('canvas').last().waitFor();
       await waitForImages(page);
       await page.screenshot({
@@ -137,7 +137,7 @@ for (const theme of ['light', 'dark'] as const) {
     test(`login ${size} ${theme} keeps the existing font family`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await prepare(page, theme, false);
-      await page.goto('/auth/login');
+      await page.goto('/platform/auth/login');
       await page.getByRole('heading', { name: 'Bienvenido de nuevo' }).waitFor();
       await page.waitForFunction(() => {
         const logo = document.querySelector<HTMLImageElement>('img[alt="Logo Cashly"]');
@@ -152,7 +152,7 @@ for (const theme of ['light', 'dark'] as const) {
 
 test('dashboard explains the empty state for every data widget', async ({ page }) => {
   await prepare(page, 'light');
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await expect(page.locator('.dashboard-empty')).toHaveText([
     'Sin datos de ventas',
     'Sin datos de productos',
@@ -164,19 +164,19 @@ test('dashboard explains the empty state for every data widget', async ({ page }
 
 test('dashboard renders all four charts when data arrives', async ({ page }) => {
   await prepare(page, 'dark', true, true);
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await expect(page.locator('canvas')).toHaveCount(4);
 });
 
 test('login disables submission while required credentials are empty', async ({ page }) => {
   await prepare(page, 'light', false);
-  await page.goto('/auth/login');
+  await page.goto('/platform/auth/login');
   await expect(page.getByRole('button', { name: 'Iniciar Sesión' })).toBeDisabled();
 });
 
 test('login links an invalid email to its visible validation message', async ({ page }) => {
   await prepare(page, 'light', false);
-  await page.goto('/auth/login');
+  await page.goto('/platform/auth/login');
   await page.getByLabel('Email', { exact: true }).fill('invalid-email');
   await page.getByLabel('Contraseña', { exact: true }).focus();
   await expect(page.getByLabel('Email', { exact: true })).toHaveAccessibleDescription(
@@ -187,22 +187,26 @@ test('login links an invalid email to its visible validation message', async ({ 
 test('mobile menu navigates to customers and closes the drawer', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await prepare(page, 'light');
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await page.getByRole('button', { name: 'Menú', exact: true }).click();
   await page
     .locator('.cashly-navigation-drawer')
-    .getByText('Ventas', { exact: true })
+    .getByText('Contactos', { exact: true })
     .filter({ visible: true })
     .click();
   await page.locator('.cashly-navigation-drawer').getByText('Clientes', { exact: true }).click();
-  await expect(page).toHaveURL(/\/customers$/);
+  await expect(page).toHaveURL(/\/partners\/customers$/);
 });
 
 test('mobile menu closes after choosing a destination', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await prepare(page, 'dark');
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await page.getByRole('button', { name: 'Menú', exact: true }).click();
+  await page
+    .locator('.cashly-navigation-drawer')
+    .getByRole('button', { name: 'Análisis', exact: true })
+    .click();
   await page.locator('.cashly-navigation-drawer').getByText('Dashboard', { exact: true }).click();
   await expect(page.locator('.cashly-navigation-drawer')).not.toBeVisible();
 });
@@ -216,7 +220,7 @@ test('login presents the rejected credentials in an accessible notification', as
       body: JSON.stringify({ message: 'Credenciales incorrectas' }),
     }),
   );
-  await page.goto('/auth/login');
+  await page.goto('/platform/auth/login');
   await page.getByLabel('Email', { exact: true }).fill('design@example.com');
   await page.getByLabel('Contraseña', { exact: true }).fill('WrongPassword1!');
   await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
@@ -237,7 +241,7 @@ test('login shows progress while the authentication request is pending', async (
       body: '{"message":"Credenciales incorrectas"}',
     });
   });
-  await page.goto('/auth/login');
+  await page.goto('/platform/auth/login');
   await page.getByLabel('Email', { exact: true }).fill('design@example.com');
   await page.getByLabel('Contraseña', { exact: true }).fill('ValidPassword1!');
   await page.getByRole('button', { name: 'Iniciar Sesión' }).click();
@@ -250,14 +254,14 @@ test('login shows progress while the authentication request is pending', async (
 
 test('dark theme persists after reloading the dashboard', async ({ page }) => {
   await prepare(page, 'dark');
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await page.reload();
   await expect(page.locator('html')).toHaveClass(/my-app-dark/);
 });
 
 test('login loads the Cashly logo with a visible image area', async ({ page }) => {
   await prepare(page, 'light', false);
-  await page.goto('/auth/login');
+  await page.goto('/platform/auth/login');
   await expect
     .poll(() =>
       page.getByRole('img', { name: 'Logo Cashly' }).evaluate((image) => {
@@ -296,7 +300,7 @@ for (const theme of ['light', 'dark'] as const) {
         }),
       }),
     );
-    await page.goto('/customers');
+    await page.goto('/partners/customers');
     await page.getByText('Cashly Design S.A.').first().waitFor();
     await waitForImages(page);
     await page.screenshot({ path: `output/design/customers-desktop-${theme}.png`, fullPage: true });
@@ -309,7 +313,7 @@ for (const theme of ['light', 'dark'] as const) {
 test('customer form mobile keeps fields inside the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await prepare(page, 'light');
-  await page.goto('/customers');
+  await page.goto('/partners/customers');
   await page.getByRole('button', { name: 'Nuevo Cliente' }).click();
   await page.getByRole('tab', { name: /General/ }).waitFor();
   await waitForImages(page);
@@ -322,7 +326,7 @@ test('customer form mobile keeps fields inside the viewport', async ({ page }) =
 for (const theme of ['light', 'dark'] as const) {
   test(`shell icon loads with ${theme} contrast`, async ({ page }, testInfo) => {
     await prepare(page, theme);
-    await page.goto('/dashboard');
+    await page.goto('/analytics/dashboard');
     await waitForImages(page);
     const icon = page.locator('.cashly-brand img');
     const imageState = await icon.evaluate((image) => {

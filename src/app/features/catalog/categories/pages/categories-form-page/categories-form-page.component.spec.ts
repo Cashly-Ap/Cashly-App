@@ -124,7 +124,7 @@ describe('CategoriesFormPageComponent', () => {
     expect(config.entityDisplayName).toBe('Categoría');
     expect(config.entityArticle).toBe('de la');
     expect(config.module).toBe('categories');
-    expect(config.routeBase).toBe('/categories');
+    expect(config.routeBase).toBe('/catalog/categories');
   });
 
   it('should be in create mode by default', () => {
@@ -159,7 +159,7 @@ describe('CategoriesFormPageComponent', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('New Category');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories']);
   });
 
   it('should show success message on create success', () => {
@@ -270,7 +270,7 @@ describe('CategoriesFormPageComponent', () => {
       detail: 'Error al cargar la categoría.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories']);
   });
 
   it('should restore form data from pending tab', () => {

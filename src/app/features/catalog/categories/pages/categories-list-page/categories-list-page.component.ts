@@ -140,15 +140,15 @@ export class CategoriesListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/categories', 'new']);
+    this.router.navigate(['/catalog/categories', 'new']);
   }
 
   onView(category: CategoryList): void {
-    this.router.navigate(['/categories', category.id]);
+    this.router.navigate(['/catalog/categories', category.id]);
   }
 
   onEdit(category: CategoryList): void {
-    this.router.navigate(['/categories', category.id, 'edit']);
+    this.router.navigate(['/catalog/categories', category.id, 'edit']);
   }
 
   actionsFor(category: CategoryList): ListAction[] {

@@ -86,19 +86,19 @@ export class InvoiceDetailPageComponent implements OnInit {
             detail: 'Error al cargar la factura. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/invoices']);
+          this.router.navigate(['/finance/billing/invoices']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/invoices']);
+    this.router.navigate(['/finance/billing/invoices']);
   }
 
   onEdit(): void {
     const id = this.invoice()?.id;
-    if (id) this.router.navigate(['/invoices', id, 'edit']);
+    if (id) this.router.navigate(['/finance/billing/invoices', id, 'edit']);
   }
 
   onDuplicate(): void {
@@ -115,7 +115,7 @@ export class InvoiceDetailPageComponent implements OnInit {
           detail: 'Factura duplicada exitosamente',
           life: 3000,
         });
-        this.router.navigate(['/invoices']);
+        this.router.navigate(['/finance/billing/invoices']);
       },
       error: () => {
         this.messageService.add({

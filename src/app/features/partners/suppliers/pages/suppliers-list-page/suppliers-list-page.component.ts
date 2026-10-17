@@ -220,15 +220,15 @@ export class SuppliersListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/suppliers', 'new']);
+    this.router.navigate(['/partners/suppliers', 'new']);
   }
 
   onView(supplier: SupplierList): void {
-    this.router.navigate(['/suppliers', supplier.id]);
+    this.router.navigate(['/partners/suppliers', supplier.id]);
   }
 
   onEdit(supplier: SupplierList): void {
-    this.router.navigate(['/suppliers', supplier.id, 'edit']);
+    this.router.navigate(['/partners/suppliers', supplier.id, 'edit']);
   }
 
   actionsFor(supplier: SupplierList): ListAction[] {

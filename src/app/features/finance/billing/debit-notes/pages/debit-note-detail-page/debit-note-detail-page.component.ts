@@ -54,14 +54,14 @@ export class DebitNoteDetailPageComponent implements OnInit {
             detail: 'Error al cargar la nota de débito. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/debit-notes']);
+          this.router.navigate(['/finance/billing/debit-notes']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/debit-notes']);
+    this.router.navigate(['/finance/billing/debit-notes']);
   }
 
   onDelete(): void {
@@ -84,7 +84,7 @@ export class DebitNoteDetailPageComponent implements OnInit {
               detail: 'Nota de débito eliminada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/debit-notes']);
+            this.router.navigate(['/finance/billing/debit-notes']);
           },
           error: (err) => {
             this.messageService.add({

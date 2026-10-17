@@ -107,7 +107,7 @@ export class WarehouseMovementsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/warehouses', this.warehouseId()]);
+    this.router.navigate(['/inventory/warehouses', this.warehouseId()]);
   }
 
   getMovementTypeLabel(type: string): string {

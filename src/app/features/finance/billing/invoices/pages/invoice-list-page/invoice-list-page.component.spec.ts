@@ -142,21 +142,21 @@ describe('InvoiceListPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onCreate();
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices/new']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices/new']);
     });
 
     it('should navigate to /facturas/{id} on view', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onView(mockInvoices[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices', 'inv-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001']);
     });
 
     it('should navigate to /invoices/{id}/edit on edit', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onEdit(mockInvoices[0]);
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices', 'inv-001', 'edit']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001', 'edit']);
     });
   });
 

@@ -28,28 +28,29 @@ function depth(items: MenuItem[]): number {
 describe('ERP navigation', () => {
   it('should order business areas by the operational workflow', () => {
     expect(buildMenuItems(createCallbacks()).map((item) => item.label)).toEqual([
-      'Dashboard',
       'Ventas',
       'Compras',
+      'Catálogo',
       'Inventario',
       'Finanzas',
-      'Reportes',
-      'Administración',
+      'Contactos',
+      'Análisis',
+      'Plataforma',
     ]);
   });
 
-  it('should group sales documents, inventory and finance with at most three levels', () => {
+  it('should group sales documents, inventory and finance with at most four levels', () => {
     const menu = buildMenuItems(createCallbacks());
     expect(
       menu.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
-    ).toEqual(['Clientes', 'Documentos de venta', 'Tipos de precios']);
+    ).toEqual(['Presupuestos', 'Pedidos', 'Reportes']);
     expect(
       menu.find((item) => item.label === 'Inventario')?.children?.map((item) => item.label),
-    ).toEqual(['Catálogo', 'Logística']);
+    ).toEqual(['Almacenes', 'Reportes']);
     expect(
       menu.find((item) => item.label === 'Finanzas')?.children?.map((item) => item.label),
-    ).toEqual(['Tesorería', 'Cartera', 'Ajustes documentales', 'Configuración']);
-    expect(depth(menu)).toBeLessThanOrEqual(3);
+    ).toEqual(['Facturación', 'Tesorería']);
+    expect(depth(menu)).toBeLessThanOrEqual(4);
   });
 
   it('should preserve every destination exactly once and expose existing cash history', () => {
@@ -58,25 +59,27 @@ describe('ERP navigation', () => {
     );
     expect(routes.sort()).toEqual(
       [
-        '/dashboard',
-        '/customers',
-        '/quotes',
-        '/orders',
-        '/invoices',
-        '/price-types',
-        '/suppliers',
-        '/purchases',
-        '/products',
-        '/categories',
-        '/warehouses',
-        '/cash-register',
-        '/cash-register/history',
-        '/receivables',
-        '/credit-notes',
-        '/debit-notes',
-        '/returns',
-        '/payment-methods',
-        '/users',
+        '/analytics/dashboard',
+        '/partners/customers',
+        '/sales/quotes',
+        '/sales/orders',
+        '/finance/billing/invoices',
+        '/catalog/price-types',
+        '/partners/suppliers',
+        '/procurement/purchases',
+        '/catalog/products',
+        '/catalog/categories',
+        '/inventory/warehouses',
+        '/finance/treasury/cash-register',
+        '/finance/treasury/cash-register/history',
+        '/finance/treasury/receivables',
+        '/finance/billing/credit-notes',
+        '/finance/billing/debit-notes',
+        '/finance/billing/returns',
+        '/finance/treasury/payment-methods',
+        '/platform/users',
+        '/platform/auth/configuration',
+        '/analytics/reports/inventory',
       ].sort(),
     );
     expect(new Set(routes).size).toBe(routes.length);

@@ -195,9 +195,9 @@ describe('PendingTabsService', () => {
 
   describe('getByModule', () => {
     it('should return tabs filtered by module', () => {
-      service.save('1', 'Customer Tab', '/customers/1', {}, 'create', 'customers');
-      service.save('2', 'Another Customer Tab', '/customers/2', {}, 'edit', 'customers');
-      service.save('3', 'Warehouse Tab', '/warehouses/3', {}, 'create', 'warehouses');
+      service.save('1', 'Customer Tab', '/partners/customers/1', {}, 'create', 'customers');
+      service.save('2', 'Another Customer Tab', '/partners/customers/2', {}, 'edit', 'customers');
+      service.save('3', 'Warehouse Tab', '/inventory/warehouses/3', {}, 'create', 'warehouses');
 
       const customerTabs = service.getByModule('customers');
 
@@ -206,7 +206,7 @@ describe('PendingTabsService', () => {
     });
 
     it('should return empty array if no tabs match module', () => {
-      service.save('1', 'Customer Tab', '/customers/1', {}, 'create', 'customers');
+      service.save('1', 'Customer Tab', '/partners/customers/1', {}, 'create', 'customers');
 
       const result = service.getByModule('other-module');
 

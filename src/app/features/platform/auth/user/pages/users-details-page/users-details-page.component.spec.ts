@@ -84,14 +84,14 @@ describe('UsersDetailsPageComponent', () => {
     fixture.detectChanges();
 
     expect(addSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(['/users']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users']);
   });
 
   it('should navigate to edit page on onEdit', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/users', '1', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users', '1', 'edit']);
   });
 
   it('shows edit before user-specific actions', () => {
@@ -110,7 +110,7 @@ describe('UsersDetailsPageComponent', () => {
   it('should navigate back to users list on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/users']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/users']);
   });
 
   it('should return correct type label for OPERATOR', () => {

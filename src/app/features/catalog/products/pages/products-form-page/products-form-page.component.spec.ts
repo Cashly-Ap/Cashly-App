@@ -154,7 +154,7 @@ describe('ProductsFormPageComponent', () => {
     expect(config.entityDisplayName).toBe('Producto');
     expect(config.entityArticle).toBe('del');
     expect(config.module).toBe('products');
-    expect(config.routeBase).toBe('/products');
+    expect(config.routeBase).toBe('/catalog/products');
   });
 
   it('should create form with correct controls', () => {
@@ -224,7 +224,7 @@ describe('ProductsFormPageComponent', () => {
     component.form.get('name')?.setValue('New Product');
     component.form.get('categoryId')?.setValue('cat-001');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/products']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products']);
   });
 
   it('should show success message on create success', () => {
@@ -391,7 +391,7 @@ describe('ProductsFormPageComponent', () => {
       detail: 'Error al cargar el producto.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/products']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products']);
   });
 
   it('should call update on submit with valid form in edit mode', () => {

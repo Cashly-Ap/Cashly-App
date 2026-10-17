@@ -131,8 +131,8 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
         ? 'Editar Compra'
         : 'Nueva Compra';
     const route = this.isEditMode()
-      ? `/purchases/${this.purchaseId()}/edit`
-      : `/purchases/new?tabId=${this.tabId}`;
+      ? `/procurement/purchases/${this.purchaseId()}/edit`
+      : `/procurement/purchases/new?tabId=${this.tabId}`;
 
     this.pendingTabsService.save(
       this.tabId,
@@ -273,7 +273,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(PURCHASE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/purchases']);
+            this.router.navigate(['/procurement/purchases']);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -307,7 +307,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(PURCHASE_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/purchases']);
+            this.router.navigate(['/procurement/purchases']);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -323,6 +323,6 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/purchases']);
+    this.router.navigate(['/procurement/purchases']);
   }
 }

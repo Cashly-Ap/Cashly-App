@@ -106,7 +106,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
       entityDisplayName: 'Proveedor',
       entityArticle: 'del',
       module: 'suppliers',
-      routeBase: '/suppliers',
+      routeBase: '/partners/suppliers',
     };
   }
 
@@ -202,7 +202,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
           detail: 'Error al cargar el proveedor. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/suppliers']);
+        this.router.navigate(['/partners/suppliers']);
       },
     });
   }
@@ -236,7 +236,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
               detail: 'Proveedor actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/suppliers']);
+            this.router.navigate(['/partners/suppliers']);
           },
           error: () => {
             this.messageService.add({
@@ -258,7 +258,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
               detail: 'Proveedor creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/suppliers']);
+            this.router.navigate(['/partners/suppliers']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

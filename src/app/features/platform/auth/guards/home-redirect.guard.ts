@@ -2,15 +2,21 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
-export const homeRedirectGuard: CanActivateFn = () => {
+import { authorizedDestination } from '@features/platform/auth/routing/authorized-destination';
+
+export const homeRedirectGuard: CanActivateFn = (route) => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
   if (!authService.isAuthenticated()) {
-    router.navigate(['/auth/login']);
+    router.navigate(['/platform/auth/login']);
     return false;
   }
 
-  router.navigate(['/customers']);
+  const area = route.pathFromRoot
+    .map((snapshot) => snapshot.data['navigationArea'])
+    .reverse()
+    .find(Boolean) as string | undefined;
+  router.navigate([authorizedDestination(authService, area)]);
   return false;
 };

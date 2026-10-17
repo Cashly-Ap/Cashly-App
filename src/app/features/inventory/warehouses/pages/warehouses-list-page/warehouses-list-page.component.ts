@@ -147,23 +147,23 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/warehouses', 'new']);
+    this.router.navigate(['/inventory/warehouses', 'new']);
   }
 
   onView(warehouse: WarehouseList): void {
-    this.router.navigate(['/warehouses', warehouse.id]);
+    this.router.navigate(['/inventory/warehouses', warehouse.id]);
   }
 
   onEdit(warehouse: WarehouseList): void {
-    this.router.navigate(['/warehouses', warehouse.id, 'edit']);
+    this.router.navigate(['/inventory/warehouses', warehouse.id, 'edit']);
   }
 
   onViewStock(warehouse: WarehouseList): void {
-    this.router.navigate(['/warehouses', warehouse.id, 'stock']);
+    this.router.navigate(['/inventory/warehouses', warehouse.id, 'stock']);
   }
 
   onViewMovements(warehouse: WarehouseList): void {
-    this.router.navigate(['/warehouses', warehouse.id, 'movements']);
+    this.router.navigate(['/inventory/warehouses', warehouse.id, 'movements']);
   }
 
   onOpenEntry(warehouse: WarehouseList): void {

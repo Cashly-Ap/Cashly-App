@@ -102,13 +102,13 @@ describe('CustomersDetailsPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers', 'uuid-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', 'uuid-001', 'edit']);
   });
 
   it('should navigate to list on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers']);
   });
 
   it('should return correct type label', () => {

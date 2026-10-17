@@ -61,6 +61,6 @@ describe('WarehouseStockPageComponent', () => {
 
     component.onBack();
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/warehouses', 'wh-1']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses', 'wh-1']);
   });
 });

@@ -168,7 +168,7 @@ describe('WarehousesFormPageComponent', () => {
     expect(config.entityDisplayName).toBe('Almacén');
     expect(config.entityArticle).toBe('del');
     expect(config.module).toBe('warehouses');
-    expect(config.routeBase).toBe('/warehouses');
+    expect(config.routeBase).toBe('/inventory/warehouses');
   });
 
   it('should have state options', () => {
@@ -248,7 +248,7 @@ describe('WarehousesFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onSubmit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/warehouses']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses']);
     });
 
     it('should show error message on create failure', () => {
@@ -345,7 +345,7 @@ describe('WarehousesFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onSubmit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/warehouses']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses']);
     });
 
     it('should show error message on update failure', () => {
@@ -396,7 +396,7 @@ describe('WarehousesFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       fixture.detectChanges();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/warehouses']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses']);
     });
 
     it('should show error message on load failure', () => {

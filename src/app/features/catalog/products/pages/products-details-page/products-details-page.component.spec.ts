@@ -194,7 +194,7 @@ describe('ProductsDetailsPageComponent', () => {
       detail: 'Error al cargar el producto.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/products']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products']);
   });
 
   it('should handle getStock error gracefully', () => {
@@ -224,7 +224,7 @@ describe('ProductsDetailsPageComponent', () => {
     component.product.set(mockProduct);
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/products', 'prod-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products', 'prod-001', 'edit']);
   });
 
   it('should not navigate on onEdit if product is null', () => {
@@ -281,6 +281,6 @@ describe('ProductsDetailsPageComponent', () => {
   it('should navigate to /products on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/products']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products']);
   });
 });

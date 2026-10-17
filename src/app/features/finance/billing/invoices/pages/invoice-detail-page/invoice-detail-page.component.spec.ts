@@ -81,14 +81,14 @@ describe('InvoiceDetailPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices']);
   });
 
   it('should navigate to edit route', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/invoices', 'inv-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001', 'edit']);
   });
 
   it('should open duplicate dialog', () => {
@@ -107,7 +107,7 @@ describe('InvoiceDetailPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onDuplicateDialogConfirmed({ invoiceId: 'inv-001' });
-    expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices']);
   });
 
   it('should close duplicate dialog on dismissed', () => {

@@ -64,7 +64,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
       entityDisplayName: 'Tipo de Precio',
       entityArticle: 'del',
       module: 'price-types',
-      routeBase: '/price-types',
+      routeBase: '/catalog/price-types',
     };
   }
 
@@ -95,7 +95,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
           detail: 'Error al cargar el tipo de precio.',
           life: 5000,
         });
-        this.router.navigate(['/price-types']);
+        this.router.navigate(['/catalog/price-types']);
       },
     });
   }
@@ -116,7 +116,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
                 detail: 'Tipo de precio actualizado exitosamente',
                 life: 3000,
               });
-              this.router.navigate(['/price-types']);
+              this.router.navigate(['/catalog/price-types']);
             },
             error: () => {
               this.messageService.add({
@@ -137,7 +137,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
               detail: 'Tipo de precio creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/price-types']);
+            this.router.navigate(['/catalog/price-types']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

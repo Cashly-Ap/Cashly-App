@@ -98,7 +98,7 @@ describe('CustomersFormPageComponent', () => {
   it('should navigate to /customers on cancel', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers']);
   });
 
   it('should mark form as touched and show warning when submitting invalid form', () => {

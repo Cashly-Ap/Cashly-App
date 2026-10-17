@@ -94,12 +94,12 @@ describe('ConfigurationPageComponent', () => {
   it('should navigate to /auth/change-username on onEditName', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEditName();
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/change-username']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/change-username']);
   });
 
   it('should navigate to /auth/change-password onChangePassword', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onChangePassword();
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/change-password']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/change-password']);
   });
 });

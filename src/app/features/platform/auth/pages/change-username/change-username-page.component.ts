@@ -56,14 +56,14 @@ export class ChangeUsernamePageComponent implements OnInit {
     this.authService.changeUsername({ username }).subscribe({
       next: () => {
         this.messageService.add(AUTH_SUCCESS_MESSAGES.usernameChanged);
-        this.router.navigate(['/auth/configuration']);
+        this.router.navigate(['/platform/auth/configuration']);
       },
       error: () => this.messageService.add(AUTH_ERROR_MESSAGES.changeUsername),
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/auth/configuration']);
+    this.router.navigate(['/platform/auth/configuration']);
   }
 
   getUserNameError(): string {

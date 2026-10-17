@@ -225,20 +225,20 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/customers', 'new']);
+    this.router.navigate(['/partners/customers', 'new']);
   }
 
   onView(customer: CustomerList): void {
-    this.router.navigate(['/customers', customer.id]);
+    this.router.navigate(['/partners/customers', customer.id]);
   }
 
   onEdit(customer: CustomerList): void {
-    this.router.navigate(['/customers', customer.id, 'edit']);
+    this.router.navigate(['/partners/customers', customer.id, 'edit']);
   }
 
   onViewBalance(customer: CustomerList): void {
     if (!this.authService.hasModulePermission(BusinessModule.FINANCE)) return;
-    this.router.navigate(['/customers', customer.id, 'balance']);
+    this.router.navigate(['/partners/customers', customer.id, 'balance']);
   }
 
   actionsFor(customer: CustomerList): ListAction[] {

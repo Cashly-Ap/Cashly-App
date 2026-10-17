@@ -9,9 +9,9 @@ interface NotificationDestination {
 }
 
 const COLLECTION_BY_REFERENCE_TYPE: Record<NotificationReferenceType, string> = {
-  PAYMENT: '/receivables',
-  QUOTE: '/quotes',
-  ORDER: '/orders',
+  PAYMENT: '/finance/treasury/receivables',
+  QUOTE: '/sales/quotes',
+  ORDER: '/sales/orders',
 };
 
 @Injectable({ providedIn: 'root' })
@@ -62,7 +62,7 @@ export class NotificationDestinationResolver {
   private async navigateToReceivables(resourceId: string | null): Promise<void> {
     const queryParams = resourceId ? { tab: 'pending', focus: resourceId } : { tab: 'pending' };
     try {
-      await this.router.navigate(['/receivables'], { queryParams });
+      await this.router.navigate(['/finance/treasury/receivables'], { queryParams });
     } catch {
       return;
     }

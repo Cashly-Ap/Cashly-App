@@ -63,7 +63,7 @@ export class CategoriesDetailsPageComponent implements OnInit {
           detail: 'Error al cargar la categoría.',
           life: 5000,
         });
-        this.router.navigate(['/categories']);
+        this.router.navigate(['/catalog/categories']);
       },
     });
   }
@@ -71,11 +71,11 @@ export class CategoriesDetailsPageComponent implements OnInit {
   onEdit(): void {
     const id = this.category()?.id;
     if (id) {
-      this.router.navigate(['/categories', id, 'edit']);
+      this.router.navigate(['/catalog/categories', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/categories']);
+    this.router.navigate(['/catalog/categories']);
   }
 }

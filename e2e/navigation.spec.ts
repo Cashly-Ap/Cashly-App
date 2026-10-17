@@ -10,13 +10,14 @@ const allModules = [
   'USERS',
 ];
 const rootLabels = [
-  'Dashboard',
   'Ventas',
   'Compras',
+  'Catálogo',
   'Inventario',
   'Finanzas',
-  'Reportes',
-  'Administración',
+  'Contactos',
+  'Análisis',
+  'Plataforma',
 ];
 const emptyPage = {
   content: [],
@@ -99,10 +100,21 @@ async function openMobile(page: Page, labels: readonly string[]): Promise<void> 
   await page.getByRole('button', { name: 'Menú', exact: true }).click();
   const drawer = page.locator('.cashly-navigation-drawer');
   for (const [index, label] of labels.entries()) {
-    const item = index === 0
-      ? drawer.getByRole('button', { name: label, exact: true })
-      : drawer.getByRole('treeitem', { name: label, exact: true });
-    await item.click();
+    const item =
+      index === 0
+        ? drawer.getByRole('button', { name: label, exact: true })
+        : drawer.getByRole('treeitem', { name: label, exact: true });
+    await drawer.evaluate(async (element) => {
+      await Promise.all(
+        element
+          .getAnimations({ subtree: true })
+          .map((animation) => animation.finished.catch(() => undefined)),
+      );
+    });
+    const target = index === 0 ? item : item.getByText(label, { exact: true });
+    await target.scrollIntoViewIfNeeded();
+    await expect(target).toBeInViewport({ ratio: 1 });
+    await target.click();
   }
 }
 
@@ -110,31 +122,97 @@ test('given a super administrator when navigation loads then ERP root groups fol
   page,
 }) => {
   await authenticate(page);
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await expect(
     page.locator('.p-menubar-root-list > li > .p-menubar-item-content .p-menubar-item-label'),
   ).toHaveText(rootLabels);
 });
 
 const destinations = [
-  { labels: ['Ventas', 'Clientes'], path: '/customers' },
-  { labels: ['Ventas', 'Documentos de venta', 'Presupuestos'], path: '/quotes' },
-  { labels: ['Ventas', 'Documentos de venta', 'Pedidos'], path: '/orders' },
-  { labels: ['Ventas', 'Documentos de venta', 'Facturas'], path: '/invoices' },
-  { labels: ['Ventas', 'Tipos de precios'], path: '/price-types' },
-  { labels: ['Compras', 'Proveedores'], path: '/suppliers' },
-  { labels: ['Compras', 'Abastecimiento', 'Compras'], path: '/purchases' },
-  { labels: ['Inventario', 'Catálogo', 'Productos'], path: '/products' },
-  { labels: ['Inventario', 'Catálogo', 'Categorías'], path: '/categories' },
-  { labels: ['Inventario', 'Logística', 'Almacenes'], path: '/warehouses' },
-  { labels: ['Finanzas', 'Tesorería', 'Caja'], path: '/cash-register' },
-  { labels: ['Finanzas', 'Tesorería', 'Historial de caja'], path: '/cash-register/history' },
-  { labels: ['Finanzas', 'Cartera', 'Cuentas por cobrar'], path: '/receivables' },
-  { labels: ['Finanzas', 'Ajustes documentales', 'Notas de crédito'], path: '/credit-notes' },
-  { labels: ['Finanzas', 'Ajustes documentales', 'Notas de débito'], path: '/debit-notes' },
-  { labels: ['Finanzas', 'Ajustes documentales', 'Devoluciones'], path: '/returns' },
-  { labels: ['Finanzas', 'Configuración', 'Métodos de pago'], path: '/payment-methods' },
-  { labels: ['Administración', 'Seguridad y acceso', 'Usuarios'], path: '/users' },
+  {
+    labels: ['Ventas', 'Presupuestos'],
+    path: '/sales/quotes',
+  },
+  {
+    labels: ['Ventas', 'Pedidos'],
+    path: '/sales/orders',
+  },
+  {
+    labels: ['Compras', 'Compras'],
+    path: '/procurement/purchases',
+  },
+  {
+    labels: ['Catálogo', 'Productos'],
+    path: '/catalog/products',
+  },
+  {
+    labels: ['Catálogo', 'Categorías'],
+    path: '/catalog/categories',
+  },
+  {
+    labels: ['Catálogo', 'Tipos de precios'],
+    path: '/catalog/price-types',
+  },
+  {
+    labels: ['Inventario', 'Almacenes'],
+    path: '/inventory/warehouses',
+  },
+  {
+    labels: ['Finanzas', 'Facturación', 'Facturas'],
+    path: '/finance/billing/invoices',
+  },
+  {
+    labels: ['Finanzas', 'Facturación', 'Devoluciones'],
+    path: '/finance/billing/returns',
+  },
+  {
+    labels: ['Finanzas', 'Facturación', 'Notas de crédito'],
+    path: '/finance/billing/credit-notes',
+  },
+  {
+    labels: ['Finanzas', 'Facturación', 'Notas de débito'],
+    path: '/finance/billing/debit-notes',
+  },
+  {
+    labels: ['Finanzas', 'Tesorería', 'Caja'],
+    path: '/finance/treasury/cash-register',
+  },
+  {
+    labels: ['Finanzas', 'Tesorería', 'Historial de caja'],
+    path: '/finance/treasury/cash-register/history',
+  },
+  {
+    labels: ['Finanzas', 'Tesorería', 'Cuentas por cobrar'],
+    path: '/finance/treasury/receivables',
+  },
+  {
+    labels: ['Finanzas', 'Tesorería', 'Métodos de pago'],
+    path: '/finance/treasury/payment-methods',
+  },
+  {
+    labels: ['Contactos', 'Clientes'],
+    path: '/partners/customers',
+  },
+  {
+    labels: ['Contactos', 'Proveedores'],
+    path: '/partners/suppliers',
+  },
+  {
+    labels: ['Análisis', 'Dashboard'],
+    path: '/analytics/dashboard',
+  },
+  {
+    labels: ['Análisis', 'Reportes', 'Inventario consolidado'],
+    path: '/analytics/reports/inventory',
+  },
+  {
+    labels: ['Plataforma', 'Usuarios'],
+    path: '/platform/users',
+  },
+  {
+    labels: ['Plataforma', 'Configuración'],
+    path: '/platform/auth/configuration',
+  },
 ] as const;
 
 for (const destination of destinations) {
@@ -142,25 +220,19 @@ for (const destination of destinations) {
     page,
   }) => {
     await authenticate(page);
-    await page.goto('/dashboard');
+    await page.goto('/analytics/dashboard');
     await openDesktop(page, destination.labels);
     await expect(page).toHaveURL(new RegExp(`${destination.path.replaceAll('/', '\\/')}$`));
   });
 }
 
-for (const destination of [
-  destinations[1],
-  destinations[6],
-  destinations[9],
-  destinations[11],
-  destinations[17],
-]) {
+for (const destination of [...destinations]) {
   test(`given mobile navigation when selecting ${destination.labels.join(' / ')} then the existing route opens`, async ({
     page,
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await authenticate(page);
-    await page.goto('/dashboard');
+    await page.goto('/analytics/dashboard');
     await openMobile(page, destination.labels);
     await expect(page).toHaveURL(new RegExp(`${destination.path.replaceAll('/', '\\/')}$`));
   });
@@ -169,14 +241,29 @@ for (const destination of [
 const reports = [
   { group: 'Ventas', label: 'Reporte de Presupuestos PDF', title: 'Reporte de Presupuestos - PDF' },
   { group: 'Ventas', label: 'Reporte de Pedidos PDF', title: 'Reporte de Pedidos - PDF' },
-  { group: 'Ventas', label: 'Reporte de Facturas PDF', title: 'Reporte de Facturas - PDF' },
+  {
+    group: 'Finanzas',
+    subgroup: 'Facturación',
+    label: 'Reporte de Facturas PDF',
+    title: 'Reporte de Facturas - PDF',
+  },
   { group: 'Compras', label: 'Reporte de Compras PDF', title: 'Reporte de Compras - PDF' },
   { group: 'Inventario', label: 'Stock PDF', title: 'Stock de Almacenes' },
   { group: 'Inventario', label: 'Movimientos PDF', title: 'Historial de Movimientos' },
-  { group: 'Inventario', label: 'Reporte de Productos PDF', title: 'Catálogo de Productos' },
-  { group: 'Inventario', label: 'Catálogo Comercial PDF', title: 'Catálogo Comercial' },
-  { group: 'Finanzas', label: 'Reportes de Caja', title: 'Reportes de Caja' },
-  { group: 'Finanzas', label: 'Cuentas por Cobrar PDF', title: 'Cuentas por Cobrar - PDF' },
+  { group: 'Catálogo', label: 'Reporte de Productos PDF', title: 'Catálogo de Productos' },
+  { group: 'Catálogo', label: 'Catálogo Comercial PDF', title: 'Catálogo Comercial' },
+  {
+    group: 'Finanzas',
+    subgroup: 'Tesorería',
+    label: 'Reportes de Caja',
+    title: 'Reportes de Caja',
+  },
+  {
+    group: 'Finanzas',
+    subgroup: 'Tesorería',
+    label: 'Cuentas por Cobrar PDF',
+    title: 'Cuentas por Cobrar - PDF',
+  },
 ] as const;
 
 for (const report of reports) {
@@ -184,8 +271,13 @@ for (const report of reports) {
     page,
   }) => {
     await authenticate(page);
-    await page.goto('/dashboard');
-    await openDesktop(page, ['Reportes', report.group, report.label]);
+    await page.goto('/analytics/dashboard');
+    await openDesktop(page, [
+      report.group,
+      ...('subgroup' in report ? [report.subgroup] : []),
+      'Reportes',
+      report.label,
+    ]);
     await expect(page.getByRole('dialog', { name: report.title, exact: true })).toBeVisible();
   });
 }
@@ -194,58 +286,56 @@ test('given desktop keyboard navigation when opening sales documents then Enter 
   page,
 }) => {
   await authenticate(page);
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await page.locator('.p-menubar-root-list').focus();
   await page.keyboard.press('Home');
-  await page.keyboard.press('ArrowRight');
   await page.keyboard.press('ArrowDown');
-  await page.keyboard.press('ArrowDown');
-  await page.keyboard.press('ArrowRight');
   await page.keyboard.press('Enter');
-  await expect(page).toHaveURL(/\/quotes$/);
+  await expect(page).toHaveURL(/\/sales\/quotes$/);
 });
 
 test('given a finance operator when root navigation loads then unrelated groups are absent', async ({
   page,
 }) => {
   await authenticate(page, ['FINANCES', 'DOCUMENT_ADMIN'], 'OPERATOR');
-  await page.goto('/receivables');
+  await page.goto('/finance/treasury/receivables');
   await expect(
     page.locator('.p-menubar-root-list > li > .p-menubar-item-content .p-menubar-item-label'),
-  ).toHaveText(['Finanzas', 'Reportes']);
+  ).toHaveText(['Finanzas', 'Plataforma']);
 });
 
 test('given a finance operator when opening reports then only authorized finance reports remain', async ({
   page,
 }) => {
   await authenticate(page, ['FINANCES', 'DOCUMENT_ADMIN'], 'OPERATOR');
-  await page.goto('/receivables');
-  await openDesktop(page, ['Reportes']);
+  await page.goto('/finance/treasury/receivables');
+  await openDesktop(page, ['Finanzas', 'Tesorería', 'Reportes']);
   await expect(
-    page.locator(
-      'p-menubar .p-menubar-submenu:visible > li > .p-menubar-item-content .p-menubar-item-label',
-    ),
-  ).toHaveText(['Finanzas']);
+    page
+      .locator('p-menubar .p-menubar-submenu:visible')
+      .last()
+      .locator(':scope > li > .p-menubar-item-content .p-menubar-item-label'),
+  ).toHaveText(['Reportes de Caja', 'Cuentas por Cobrar PDF']);
 });
 
-test('given an inventory operator when opening sales then the pricing leaf remains without sales documents', async ({
+test('given an inventory operator when opening catalog then products categories and pricing remain without sales documents', async ({
   page,
 }) => {
   await authenticate(page, ['INVENTORY'], 'OPERATOR');
-  await page.goto('/products');
-  await openDesktop(page, ['Ventas']);
+  await page.goto('/catalog/products');
+  await openDesktop(page, ['Catálogo']);
   await expect(
     page.locator(
       'p-menubar .p-menubar-submenu:visible > li > .p-menubar-item-content .p-menubar-item-label',
     ),
-  ).toHaveText(['Tipos de precios']);
+  ).toHaveText(['Productos', 'Categorías', 'Tipos de precios']);
 });
 
 test('given finance navigation when viewing treasury then all groups fit on desktop', async ({
   page,
 }) => {
   await authenticate(page);
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await openDesktop(page, ['Finanzas', 'Tesorería']);
   await page.screenshot({ path: 'output/design/navigation-finance-desktop.png' });
   await expect(page.locator('p-menubar .p-menubar-submenu:visible').last()).toBeInViewport();
@@ -256,7 +346,7 @@ test('given mobile navigation when opening treasury then nested destinations sta
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await authenticate(page);
-  await page.goto('/dashboard');
+  await page.goto('/analytics/dashboard');
   await openMobile(page, ['Finanzas', 'Tesorería']);
   const history = page
     .locator('.cashly-navigation-drawer')
@@ -273,3 +363,111 @@ test('given mobile navigation when opening treasury then nested destinations sta
   await expect(history).toBeInViewport({ ratio: 1 });
   await page.screenshot({ path: 'output/design/navigation-finance-mobile.png' });
 });
+
+for (const [legacy, canonical] of [
+  ['/quotes?search=legacy#documents', '/sales/quotes?search=legacy#documents'],
+  ['/orders', '/sales/orders'],
+  ['/invoices', '/finance/billing/invoices'],
+  [
+    '/cash-register/history?closed=true#sessions',
+    '/finance/treasury/cash-register/history?closed=true#sessions',
+  ],
+  ['/reports/inventory?warehouse=main#stock', '/analytics/reports/inventory?warehouse=main#stock'],
+  ['/auth/configuration', '/platform/auth/configuration'],
+] as const) {
+  test(`legacy bookmark ${legacy} opens the canonical ERP screen`, async ({ page }) => {
+    await authenticate(page);
+    await page.goto(legacy);
+    await expect(page).toHaveURL(new URL(canonical, 'http://127.0.0.1:4300').href);
+    await expect(page.locator('app-main-layout')).toBeVisible();
+  });
+}
+
+test('an inventory operator cannot bypass invoice permission through a legacy bookmark', async ({
+  page,
+}) => {
+  const invoiceRequests: string[] = [];
+  await authenticate(page, ['INVENTORY'], 'OPERATOR');
+  page.on('request', (request) => {
+    if (new URL(request.url()).pathname.startsWith('/api/invoices'))
+      invoiceRequests.push(request.url());
+  });
+  await page.goto('/invoices');
+  await expect(page).toHaveURL(/\/catalog\/products$/);
+  expect(invoiceRequests).toEqual([]);
+});
+
+test('an operator without business permissions reaches account configuration without a redirect loop', async ({
+  page,
+}) => {
+  await authenticate(page, [], 'OPERATOR');
+  await page.goto('/');
+  await expect(page).toHaveURL(/\/platform\/auth\/configuration$/);
+  await expect(
+    page.locator('.p-menubar-root-list > li > .p-menubar-item-content .p-menubar-item-label'),
+  ).toHaveText(['Plataforma']);
+});
+
+test('all ERP roots fit in the desktop header at 1280 pixels', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await authenticate(page);
+  await page.goto('/analytics/dashboard');
+  const labels = page.locator(
+    '.p-menubar-root-list > li > .p-menubar-item-content .p-menubar-item-label',
+  );
+  await expect(labels).toHaveText(rootLabels);
+  for (const label of await labels.all()) await expect(label).toBeInViewport({ ratio: 1 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  await page.screenshot({
+    path: 'output/playwright/area-navigation/desktop-1280.png',
+    fullPage: true,
+  });
+});
+
+test('mobile drawer exposes the same eight ERP roots', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await authenticate(page);
+  await page.goto('/analytics/dashboard');
+  await page.getByRole('button', { name: 'Menú', exact: true }).click();
+  const drawer = page.locator('.cashly-navigation-drawer');
+  for (const label of rootLabels) {
+    const area = drawer.getByRole('button', { name: label, exact: true });
+    await area.scrollIntoViewIfNeeded();
+    await expect(area).toBeInViewport({ ratio: 1 });
+  }
+  await page.screenshot({
+    path: 'output/playwright/area-navigation/mobile-390-bottom.png',
+    fullPage: true,
+  });
+});
+
+for (const [modules, destination] of [
+  [['INVENTORY'], '/catalog/products'],
+  [['DOCUMENT_ADMIN'], '/platform/auth/configuration'],
+] as const) {
+  test(`consolidated reporting rejects users with only ${modules[0]} permission`, async ({
+    page,
+  }) => {
+    await authenticate(page, [...modules], 'OPERATOR');
+    await page.goto('/analytics/reports/inventory');
+    await expect(page).toHaveURL(new URL(destination, 'http://127.0.0.1:4300').href);
+  });
+}
+
+for (const [area, modules, destination] of [
+  ['/sales', ['SALES'], '/sales/quotes'],
+  ['/inventory', ['INVENTORY'], '/inventory/warehouses'],
+  ['/finance/billing', ['FINANCES'], '/finance/billing/credit-notes'],
+  ['/finance/treasury', ['FINANCES'], '/finance/treasury/cash-register'],
+  ['/platform', ['SALES'], '/platform/auth/configuration'],
+] as const) {
+  test(`area root ${area} opens an authorized screen inside the requested area`, async ({
+    page,
+  }) => {
+    await authenticate(page, [...modules], 'OPERATOR');
+    await page.goto(area);
+    await expect(page).toHaveURL(new URL(destination, 'http://127.0.0.1:4300').href);
+  });
+}

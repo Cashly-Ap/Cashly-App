@@ -51,14 +51,14 @@ export class ChangePasswordPageComponent {
       next: () => {
         this.messageService.add(AUTH_SUCCESS_MESSAGES.passwordChanged);
         this.form.reset();
-        this.router.navigate(['/auth/configuration']);
+        this.router.navigate(['/platform/auth/configuration']);
       },
       error: () => this.messageService.add(AUTH_ERROR_MESSAGES.changePassword),
     });
   }
 
   onCancel(): void {
-    this.router.navigate(['/auth/configuration']);
+    this.router.navigate(['/platform/auth/configuration']);
   }
 
   getPasswordError(): string {

@@ -145,7 +145,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       entityDisplayName: 'Cliente',
       entityArticle: 'del',
       module: 'customers',
-      routeBase: '/customers',
+      routeBase: '/partners/customers',
     };
   }
 
@@ -257,7 +257,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
           detail: 'Error al cargar el cliente. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/customers']);
+        this.router.navigate(['/partners/customers']);
       },
     });
   }
@@ -310,7 +310,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
                   detail: 'Cliente actualizado exitosamente',
                   life: 3000,
                 });
-                this.router.navigate(['/customers']);
+                this.router.navigate(['/partners/customers']);
               },
               error: () => {
                 this.markAsSubmitted();
@@ -320,7 +320,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
                   detail: 'Cliente actualizado, pero hubo un error al sincronizar los almacenes',
                   life: 5000,
                 });
-                this.router.navigate(['/customers']);
+                this.router.navigate(['/partners/customers']);
               },
             });
           },
@@ -352,7 +352,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
               detail: 'Cliente creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/customers']);
+            this.router.navigate(['/partners/customers']);
           },
           error: (error: unknown) =>
             this.handleSaveError(

@@ -96,7 +96,7 @@ describe('authInterceptor', () => {
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
             resolve(undefined);
           },
         });
@@ -121,7 +121,7 @@ describe('authInterceptor', () => {
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
             resolve(undefined);
           },
         });
@@ -146,7 +146,7 @@ describe('authInterceptor', () => {
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
             resolve(undefined);
           },
         });
@@ -213,7 +213,7 @@ describe('authInterceptor', () => {
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
             resolve(undefined);
           },
         });
@@ -258,7 +258,7 @@ describe('authInterceptor', () => {
               life: 5000,
             });
             expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-            expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+            expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
             resolve(undefined);
           },
         });

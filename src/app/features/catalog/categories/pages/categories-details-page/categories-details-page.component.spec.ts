@@ -131,14 +131,14 @@ describe('CategoriesDetailsPageComponent', () => {
       detail: 'Error al cargar la categoría.',
       life: 5000,
     });
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories']);
   });
 
   it('should navigate to /categories/{id}/edit on onEdit', () => {
     component.category.set(mockCategory);
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories', 'cat-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories', 'cat-001', 'edit']);
   });
 
   it('should not navigate on onEdit if category is null', () => {
@@ -151,7 +151,7 @@ describe('CategoriesDetailsPageComponent', () => {
   it('should navigate to /categories on onBack', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/categories']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories']);
   });
 
   it('should not load category if id is null', () => {

@@ -50,7 +50,7 @@ describe('PendingTabsDropdownComponent', () => {
     routerMock = {
       navigate: vi.fn().mockResolvedValue(true),
       navigateByUrl: vi.fn().mockResolvedValue(true),
-      url: '/dashboard',
+      url: '/analytics/dashboard',
     };
 
     await TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('PendingTabsDropdownComponent', () => {
 
   describe('goToTab', () => {
     it('should navigate to tab route', async () => {
-      const tab = createMockTab({ route: '/customers/create?tabId=123' });
+      const tab = createMockTab({ route: '/partners/customers/create?tabId=123' });
       component.tabsMenu = {
         hide: vi.fn(),
         overlayVisible: false,
@@ -90,7 +90,9 @@ describe('PendingTabsDropdownComponent', () => {
       component.goToTab(tab);
 
       await vi.waitFor(() => {
-        expect(routerMock.navigateByUrl).toHaveBeenCalledWith('/customers/create?tabId=123');
+        expect(routerMock.navigateByUrl).toHaveBeenCalledWith(
+          '/partners/customers/create?tabId=123',
+        );
       });
     });
 

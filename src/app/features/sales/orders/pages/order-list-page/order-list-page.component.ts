@@ -167,15 +167,15 @@ export class OrderListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/orders/new']);
+    this.router.navigate(['/sales/orders/new']);
   }
 
   onView(order: OrderList): void {
-    this.router.navigate(['/orders', order.id]);
+    this.router.navigate(['/sales/orders', order.id]);
   }
 
   onEdit(order: OrderList): void {
-    this.router.navigate(['/orders', order.id, 'edit']);
+    this.router.navigate(['/sales/orders', order.id, 'edit']);
   }
 
   actionsFor(order: OrderList): ListAction[] {

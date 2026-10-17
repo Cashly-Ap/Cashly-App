@@ -81,7 +81,7 @@ describe('ChangeCommissionDeductionPageComponent', () => {
       commissionDeductionPercentage: 25,
     });
     expect(addSpy).toHaveBeenCalledWith(AUTH_SUCCESS_MESSAGES.commissionDeductionChanged);
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should show error message on changeCommissionDeduction failure', () => {
@@ -101,7 +101,7 @@ describe('ChangeCommissionDeductionPageComponent', () => {
   it('should navigate to configuration on cancel', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/auth/configuration']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
 
   it('should return required error when control is empty', () => {

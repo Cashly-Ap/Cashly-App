@@ -99,19 +99,19 @@ describe('CustomersListPageComponent', () => {
   it('should navigate to new customer on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers', 'new']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', 'new']);
   });
 
   it('should navigate to customer detail on onView', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onView(mockCustomer);
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', mockCustomer.id]);
   });
 
   it('should navigate to customer edit on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockCustomer);
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', mockCustomer.id, 'edit']);
   });
 
   it('should navigate to customer balance when finance access is available', () => {
@@ -120,7 +120,7 @@ describe('CustomersListPageComponent', () => {
     component.onViewBalance(mockCustomer);
 
     expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.FINANCE);
-    expect(navigateSpy).toHaveBeenCalledWith(['/customers', mockCustomer.id, 'balance']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', mockCustomer.id, 'balance']);
   });
 
   it('should expose every available action for a deletable customer', () => {

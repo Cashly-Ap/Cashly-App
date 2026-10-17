@@ -88,7 +88,7 @@ export class CustomersDetailsPageComponent implements OnInit {
           detail: 'Error al cargar el cliente. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/customers']);
+        this.router.navigate(['/partners/customers']);
       },
     });
   }
@@ -107,19 +107,19 @@ export class CustomersDetailsPageComponent implements OnInit {
   onViewBalance(): void {
     const id = this.customer()?.id;
     if (id) {
-      this.router.navigate(['/customers', id, 'balance']);
+      this.router.navigate(['/partners/customers', id, 'balance']);
     }
   }
 
   onEdit(): void {
     const id = this.customer()?.id;
     if (id) {
-      this.router.navigate(['/customers', id, 'edit']);
+      this.router.navigate(['/partners/customers', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/customers']);
+    this.router.navigate(['/partners/customers']);
   }
 
   getTypeLabel(type: string): string {

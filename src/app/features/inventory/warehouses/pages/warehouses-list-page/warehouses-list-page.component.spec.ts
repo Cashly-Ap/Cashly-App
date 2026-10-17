@@ -95,10 +95,10 @@ describe('WarehousesListPageComponent', () => {
     component.onView(warehouse);
     component.onEdit(warehouse);
 
-    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/warehouses', 'wh-1', 'stock']);
-    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/warehouses', 'wh-1', 'movements']);
-    expect(navigateSpy).toHaveBeenNthCalledWith(3, ['/warehouses', 'wh-1']);
-    expect(navigateSpy).toHaveBeenNthCalledWith(4, ['/warehouses', 'wh-1', 'edit']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses', 'wh-1', 'stock']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/inventory/warehouses', 'wh-1', 'movements']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(3, ['/inventory/warehouses', 'wh-1']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(4, ['/inventory/warehouses', 'wh-1', 'edit']);
   });
 
   it('reloads with search, pagination, and active filters', () => {

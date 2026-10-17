@@ -123,11 +123,11 @@ export class CreditNoteListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/credit-notes/new']);
+    this.router.navigate(['/finance/billing/credit-notes/new']);
   }
 
   onDetail(creditNote: CreditNoteList): void {
-    this.router.navigate(['/credit-notes', creditNote.id]);
+    this.router.navigate(['/finance/billing/credit-notes', creditNote.id]);
   }
 
   actionsFor(creditNote: CreditNoteList): ListAction[] {

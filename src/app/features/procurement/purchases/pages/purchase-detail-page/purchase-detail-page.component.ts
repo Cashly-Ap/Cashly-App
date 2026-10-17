@@ -64,19 +64,19 @@ export class PurchaseDetailPageComponent implements OnInit {
             detail: 'Error al cargar la compra. Es posible que no exista.',
             life: 5000,
           });
-          this.router.navigate(['/purchases']);
+          this.router.navigate(['/procurement/purchases']);
         },
       });
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/purchases']);
+    this.router.navigate(['/procurement/purchases']);
   }
 
   onEdit(): void {
     const id = this.purchase()?.id;
-    if (id) this.router.navigate(['/purchases', id, 'edit']);
+    if (id) this.router.navigate(['/procurement/purchases', id, 'edit']);
   }
 
   getStatusLabel(status: PurchaseStatus): string {

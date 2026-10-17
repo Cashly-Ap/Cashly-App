@@ -77,7 +77,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
 
   onEdit(): void {
     const id = this.warehouse()?.id;
-    if (id) this.router.navigate(['/warehouses', id, 'edit']);
+    if (id) this.router.navigate(['/inventory/warehouses', id, 'edit']);
   }
 
   onDelete(): void {
@@ -99,7 +99,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
               detail: WAREHOUSE_SUCCESS_MESSAGES.delete,
               life: 3000,
             });
-            this.router.navigate(['/warehouses']);
+            this.router.navigate(['/inventory/warehouses']);
           },
           error: () =>
             this.messageService.add({
@@ -114,7 +114,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/warehouses']);
+    this.router.navigate(['/inventory/warehouses']);
   }
 
   private loadWarehouse(id: string): void {
@@ -132,7 +132,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
           detail: WAREHOUSE_ERROR_MESSAGES.loadWarehouse,
           life: 5000,
         });
-        this.router.navigate(['/warehouses']);
+        this.router.navigate(['/inventory/warehouses']);
       },
     });
   }
@@ -144,6 +144,6 @@ export class WarehousesDetailsPageComponent implements OnInit {
 
   private navigateToChild(path: 'stock' | 'movements'): void {
     const id = this.warehouse()?.id;
-    if (id) this.router.navigate(['/warehouses', id, path]);
+    if (id) this.router.navigate(['/inventory/warehouses', id, path]);
   }
 }

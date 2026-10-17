@@ -27,26 +27,26 @@ const modulePaths = [
   'platform/notifications',
 ];
 const publicScreens = [
-  'auth',
-  'dashboard',
-  'users',
-  'customers',
-  'suppliers',
-  'purchases',
-  'categories',
-  'price-types',
-  'products',
-  'warehouses',
-  'orders',
-  'quotes',
-  'invoices',
-  'reports',
-  'payment-methods',
-  'credit-notes',
-  'debit-notes',
-  'returns',
-  'cash-register',
-  'receivables',
+  'platform/auth',
+  'analytics/dashboard',
+  'platform/users',
+  'partners/customers',
+  'partners/suppliers',
+  'procurement/purchases',
+  'catalog/categories',
+  'catalog/price-types',
+  'catalog/products',
+  'inventory/warehouses',
+  'sales/orders',
+  'sales/quotes',
+  'finance/billing/invoices',
+  'analytics/reports',
+  'finance/treasury/payment-methods',
+  'finance/billing/credit-notes',
+  'finance/billing/debit-notes',
+  'finance/billing/returns',
+  'finance/treasury/cash-register',
+  'finance/treasury/receivables',
 ];
 const shell = routes.find((route) => route.path === '' && route.children)!;
 
@@ -118,15 +118,33 @@ describe('ERP business areas', () => {
     expect(reports.filter((path) => !featureSources.includes(`./features/${path}`))).toEqual([]);
   });
 
-  it('preserves the public screen URLs despite changing the feature directories', () => {
-    expect(shell.children!.map((route) => route.path).sort()).toEqual([...publicScreens].sort());
+  it('exposes all eight ERP areas in the authenticated route tree', () => {
+    expect(shell.children!.map((route) => route.path).sort()).toEqual(
+      [
+        'sales',
+        'procurement',
+        'catalog',
+        'inventory',
+        'finance',
+        'partners',
+        'analytics',
+        'platform',
+      ].sort(),
+    );
   });
 
   it.each(publicScreens)('resolves the complete lazy route tree for /%s', async (path) => {
-    await resolveDeferredPages(shell.children!.find((route) => route.path === path)!);
+    let children = shell.children!;
+    let selected: Route | undefined;
+    for (const segment of path.split('/')) {
+      selected = children.find((route) => route.path === segment);
+      expect(selected).toBeDefined();
+      children = selected!.children ?? [];
+    }
+    await resolveDeferredPages(selected!);
   });
 
   it('preserves the public login route outside the authenticated shell', async () => {
-    await resolveDeferredPages(routes.find((route) => route.path === 'auth')!);
+    await resolveDeferredPages(routes.find((route) => route.path === 'platform/auth')!);
   });
 });

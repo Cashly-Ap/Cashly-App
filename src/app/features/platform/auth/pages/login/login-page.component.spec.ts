@@ -20,6 +20,8 @@ describe('LoginPageComponent', () => {
   let fixture: ComponentFixture<LoginPageComponent>;
   let authServiceMock: {
     login: ReturnType<typeof vi.fn>;
+    hasModulePermission: ReturnType<typeof vi.fn>;
+    isSuperAdmin: ReturnType<typeof vi.fn>;
     loading: ReturnType<typeof signal<boolean>>;
     error: ReturnType<typeof signal<string | null>>;
   };
@@ -48,6 +50,8 @@ describe('LoginPageComponent', () => {
   beforeEach(async () => {
     authServiceMock = {
       login: vi.fn(),
+      hasModulePermission: vi.fn().mockReturnValue(true),
+      isSuperAdmin: vi.fn().mockReturnValue(true),
       loading: signal(false),
       error: signal<string | null>(null),
     };
@@ -207,7 +211,7 @@ describe('LoginPageComponent', () => {
       component.onSubmit();
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/customers']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers']);
     });
 
     it('should handle login error', async () => {
@@ -263,7 +267,7 @@ describe('LoginPageComponent', () => {
       expect(authServiceMock.login).toHaveBeenCalledWith(credentials);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/customers']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers']);
     });
 
     it('should maintain form values after failed submission', () => {

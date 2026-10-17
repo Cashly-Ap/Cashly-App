@@ -106,7 +106,7 @@ export class ProductsFormPageComponent
       entityDisplayName: 'Producto',
       entityArticle: 'del',
       module: 'products',
-      routeBase: '/products',
+      routeBase: '/catalog/products',
     };
   }
 
@@ -283,7 +283,7 @@ export class ProductsFormPageComponent
           detail: 'Error al cargar el producto.',
           life: 5000,
         });
-        this.router.navigate(['/products']);
+        this.router.navigate(['/catalog/products']);
       },
     });
   }
@@ -344,7 +344,7 @@ export class ProductsFormPageComponent
               detail: 'Producto actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/products']);
+            this.router.navigate(['/catalog/products']);
           },
           error: () => {
             this.messageService.add({
@@ -375,7 +375,7 @@ export class ProductsFormPageComponent
               detail: 'Producto creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/products']);
+            this.router.navigate(['/catalog/products']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

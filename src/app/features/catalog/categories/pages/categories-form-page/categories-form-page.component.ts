@@ -67,7 +67,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
       entityDisplayName: 'Categoría',
       entityArticle: 'de la',
       module: 'categories',
-      routeBase: '/categories',
+      routeBase: '/catalog/categories',
     };
   }
 
@@ -103,7 +103,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
           detail: 'Error al cargar la categoría.',
           life: 5000,
         });
-        this.router.navigate(['/categories']);
+        this.router.navigate(['/catalog/categories']);
       },
     });
   }
@@ -127,7 +127,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
               detail: 'Categoría actualizada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/categories']);
+            this.router.navigate(['/catalog/categories']);
           },
           error: () => {
             this.messageService.add({
@@ -148,7 +148,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
               detail: 'Categoría creada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/categories']);
+            this.router.navigate(['/catalog/categories']);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

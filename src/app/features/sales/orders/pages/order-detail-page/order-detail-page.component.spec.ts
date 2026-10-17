@@ -112,14 +112,14 @@ describe('OrderDetailPageComponent', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onBack();
-    expect(navigateSpy).toHaveBeenCalledWith(['/orders']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/sales/orders']);
   });
 
   it('should navigate to edit route', () => {
     fixture.detectChanges();
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/orders', 'ord-001', 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/sales/orders', 'ord-001', 'edit']);
   });
 
   it('shows edit as the first available record action', () => {

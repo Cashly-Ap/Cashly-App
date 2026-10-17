@@ -1,8 +1,8 @@
 # Angular ERP business areas
 
-Current implementation mirrors backend business ownership: sales, procurement, catalog, inventory, finance/billing, finance/treasury, partners, analytics and platform. Returns is finance/billing/returns. Existing public browser/API URLs and permission values are unchanged.
+Current implementation mirrors backend business ownership: sales, procurement, catalog, inventory, finance/billing, finance/treasury, partners, analytics and platform. Returns is finance/billing/returns. Browser navigation now follows these areas; see [ERP area navigation](erp-area-navigation.md). HTTP API URLs and permission values are unchanged.
 
-Reports are implemented inside their owner's reporting capability. analytics/reporting/routing is a thin composition layer for existing /reports URLs. Core remains technical and notifications belong to platform/notifications. Tests stay beside the source they exercise.
+Reports are implemented inside their owner's reporting capability. analytics/reporting/routing is a thin composition layer for `/analytics/reports` URLs, with redirects from legacy `/reports` URLs. Core remains technical and notifications belong to platform/notifications. Tests stay beside the source they exercise.
 
 The source tree below contains 1001 files. The full previous-to-current comparison is in [structure-before-after.md](erp-business-areas/structure-before-after.md).
 
@@ -993,6 +993,8 @@ The source tree below contains 1001 files. The full previous-to-current comparis
     │   │   │   │   ├── routing
     │   │   │   │   │   ├── auth.routes.spec.ts
     │   │   │   │   │   ├── auth.routes.ts
+    │   │   │   │   │   ├── authorized-destination.spec.ts
+    │   │   │   │   │   ├── authorized-destination.ts
     │   │   │   │   │   └── index.ts
     │   │   │   │   ├── services
     │   │   │   │   │   ├── api

@@ -65,7 +65,7 @@ export class SuppliersDetailsPageComponent implements OnInit {
           detail: 'Error al cargar el proveedor. Es posible que no exista.',
           life: 5000,
         });
-        this.router.navigate(['/suppliers']);
+        this.router.navigate(['/partners/suppliers']);
       },
     });
   }
@@ -73,12 +73,12 @@ export class SuppliersDetailsPageComponent implements OnInit {
   onEdit(): void {
     const id = this.supplier()?.id;
     if (id) {
-      this.router.navigate(['/suppliers', id, 'edit']);
+      this.router.navigate(['/partners/suppliers', id, 'edit']);
     }
   }
 
   onBack(): void {
-    this.router.navigate(['/suppliers']);
+    this.router.navigate(['/partners/suppliers']);
   }
 
   getTypeLabel(type: string): string {

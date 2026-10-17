@@ -334,7 +334,7 @@ describe('InvoiceFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices', 'inv-001']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001']);
     });
 
     it('should show error on create failure', () => {
@@ -500,7 +500,7 @@ describe('InvoiceFormPageComponent', () => {
       fixture.detectChanges();
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.cancel();
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices']);
     });
   });
 
@@ -530,7 +530,7 @@ describe('InvoiceFormPageComponent', () => {
 
       httpMock.match(() => true).forEach((req) => req.flush([]));
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/invoices']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices']);
     });
   });
 });

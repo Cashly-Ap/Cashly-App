@@ -142,19 +142,19 @@ describe('PriceTypesListPageComponent', () => {
   it('should navigate to new price type on onCreate', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCreate();
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types', 'new']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types', 'new']);
   });
 
   it('should navigate to price type detail on onView', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onView(mockPriceType);
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types', mockPriceType.id]);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types', mockPriceType.id]);
   });
 
   it('should navigate to price type edit on onEdit', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onEdit(mockPriceType);
-    expect(navigateSpy).toHaveBeenCalledWith(['/price-types', mockPriceType.id, 'edit']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types', mockPriceType.id, 'edit']);
   });
 
   it('should update order by and order dir on sort', () => {

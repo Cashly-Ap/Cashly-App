@@ -32,10 +32,10 @@ export class ConfigurationPageComponent {
   }
 
   onEditName(): void {
-    this.router.navigate(['/auth/change-username']);
+    this.router.navigate(['/platform/auth/change-username']);
   }
 
   onChangePassword(): void {
-    this.router.navigate(['/auth/change-password']);
+    this.router.navigate(['/platform/auth/change-password']);
   }
 }

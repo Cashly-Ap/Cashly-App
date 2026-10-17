@@ -188,15 +188,15 @@ export class UsersListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    this.router.navigate(['/users', 'new']);
+    this.router.navigate(['/platform/users', 'new']);
   }
 
   onView(user: UserList): void {
-    this.router.navigate(['/users', user.id]);
+    this.router.navigate(['/platform/users', user.id]);
   }
 
   onEdit(user: UserList): void {
-    this.router.navigate(['/users', user.id, 'edit']);
+    this.router.navigate(['/platform/users', user.id, 'edit']);
   }
 
   actionsFor(user: UserList): ListAction[] {

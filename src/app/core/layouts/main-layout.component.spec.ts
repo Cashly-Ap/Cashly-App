@@ -182,8 +182,8 @@ describe('MainLayoutComponent', () => {
     it('should hide all areas for an operator without business module permissions', () => {
       authServiceMock.hasModulePermission.mockReturnValue(false);
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      expect(items).toEqual([]);
-      expect(routes(items)).toEqual([]);
+      expect(items.map((item) => item.label)).toEqual(['Plataforma']);
+      expect(routes(items)).toEqual(['/platform/auth/configuration']);
     });
 
     it('should prune recursively empty report areas and preserve actionable leaves', () => {
@@ -191,7 +191,7 @@ describe('MainLayoutComponent', () => {
         (module: BusinessModule) => module === BusinessModule.DOCUMENT_ADMIN,
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      expect(items).toEqual([]);
+      expect(items.map((item) => item.label)).toEqual(['Plataforma']);
       const action = vi.fn();
       expect(
         component['filterMenuByRole'](
@@ -211,25 +211,33 @@ describe('MainLayoutComponent', () => {
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
-        ['/price-types', '/products', '/categories', '/warehouses'].sort(),
+        [
+          '/catalog/price-types',
+          '/catalog/products',
+          '/catalog/categories',
+          '/inventory/warehouses',
+          '/platform/auth/configuration',
+        ].sort(),
       );
-      expect(items.map((item) => item.label)).toEqual(['Ventas', 'Inventario']);
+      expect(items.map((item) => item.label)).toEqual(['Catálogo', 'Inventario', 'Plataforma']);
     });
 
     it('should expose administration only to a super administrator with users permission', () => {
       expect(
-        component['filterMenuByRole'](menu(), 'ADMIN').some(
-          (item) => item.label === 'Administración',
-        ),
+        component['filterMenuByRole'](menu(), 'ADMIN')
+          .flatMap((item) => item.children ?? [])
+          .some((item) => item.routerLink === '/platform/users'),
       ).toBe(false);
-      expect(routes(component['filterMenuByRole'](menu(), 'SUPER_ADMIN'))).toContain('/users');
+      expect(routes(component['filterMenuByRole'](menu(), 'SUPER_ADMIN'))).toContain(
+        '/platform/users',
+      );
       authServiceMock.hasModulePermission.mockImplementation(
         (module: BusinessModule) => module !== BusinessModule.USERS,
       );
       expect(
-        component['filterMenuByRole'](menu(), 'SUPER_ADMIN').some(
-          (item) => item.label === 'Administración',
-        ),
+        component['filterMenuByRole'](menu(), 'SUPER_ADMIN')
+          .flatMap((item) => item.children ?? [])
+          .some((item) => item.routerLink === '/platform/users'),
       ).toBe(false);
     });
 
@@ -238,14 +246,17 @@ describe('MainLayoutComponent', () => {
         [BusinessModule.SALES, BusinessModule.DOCUMENT_ADMIN].includes(module),
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      const reports = items.find((item) => item.label === 'Reportes');
-      expect(reports?.children?.map((item) => item.label)).toEqual(['Ventas']);
-      expect(reports?.children?.[0].children).toHaveLength(3);
+      const reports = items
+        .find((item) => item.label === 'Ventas')
+        ?.children?.find((item) => item.label === 'Reportes');
+      expect(reports?.children).toHaveLength(2);
       authServiceMock.hasModulePermission.mockImplementation(
         (module: BusinessModule) => module === BusinessModule.SALES,
       );
       expect(
-        component['filterMenuByRole'](menu(), 'OPERATOR').some((item) => item.label === 'Reportes'),
+        component['filterMenuByRole'](menu(), 'OPERATOR')
+          .flatMap((item) => item.children ?? [])
+          .some((item) => item.label === 'Reportes'),
       ).toBe(false);
     });
   });
@@ -321,7 +332,7 @@ describe('MainLayoutComponent', () => {
       component.userMenu = { hide: vi.fn() } as unknown as typeof component.userMenu;
       component.goToConfiguration();
 
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/configuration']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/configuration']);
       expect(component.userMenu.hide).toHaveBeenCalled();
     });
 
@@ -330,7 +341,7 @@ describe('MainLayoutComponent', () => {
       component.logout();
 
       expect(authServiceMock.clearAuthState).toHaveBeenCalled();
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/auth/login']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
       expect(component.userMenu.hide).toHaveBeenCalled();
     });
 

@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { AuthValidators } from '@features/platform/auth/validators/auth-validators';
 import { AUTH_SESSION_MESSAGES } from '@features/platform/auth/messages/error-messages';
+import { authorizedDestination } from '@features/platform/auth/routing/authorized-destination';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 @Component({
@@ -72,6 +73,6 @@ export class LoginPageComponent {
   }
 
   private getRedirectPath(): string {
-    return '/customers';
+    return authorizedDestination(this.authService);
   }
 }
