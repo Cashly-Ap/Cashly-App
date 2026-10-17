@@ -18,7 +18,7 @@ import { MovementsExcelApiService } from '@features/inventory/warehouses/reporti
 import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
-import { PurchasePdfApiService } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
+import { PurchasePdfApiService } from '@features/procurement/purchases/reporting/services/api/purchase-pdf-api.service';
 import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { NotificationApiService } from '@core/notifications/services/api/notification-api.service';

@@ -60,11 +60,11 @@ import {
   QuotePdfApiService,
   QuotesPdfFilters,
 } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
-import { PurchasePdfModalComponent } from '@features/reports/purchases/components/purchase-pdf-modal/purchase-pdf-modal.component';
+import { PurchasePdfModalComponent } from '@features/procurement/purchases/reporting/components/purchase-pdf-modal/purchase-pdf-modal.component';
 import {
   PurchasePdfApiService,
   PurchasesPdfFilters,
-} from '@features/reports/purchases/services/api/purchase-pdf-api.service';
+} from '@features/procurement/purchases/reporting/services/api/purchase-pdf-api.service';
 import { CashRegisterReportModalComponent } from '@features/finance/treasury/cash-register/reporting/components/cash-register-report-modal/cash-register-report-modal.component';
 import { AccountsReceivablePdfModalComponent } from '@features/finance/treasury/receivables/reporting/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
 import { CashRegisterReportFilters } from '@features/finance/treasury/cash-register/reporting/models/interfaces';

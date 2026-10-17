@@ -55,7 +55,7 @@ export const routes: Routes = [
       {
         path: 'purchases',
         loadChildren: () =>
-          import('@features/purchases/router').then((m) => m.PURCHASE_ROUTES),
+          import('@features/procurement/purchases/routing').then((m) => m.PURCHASE_ROUTES),
       },
       {
         path: 'categories',
