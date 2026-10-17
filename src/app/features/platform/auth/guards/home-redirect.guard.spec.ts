@@ -41,7 +41,7 @@ describe('homeRedirectGuard', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
   });
 
-  it('should redirect to /customers when authenticated', () => {
+  it('should redirect to dashboard when authenticated', () => {
     mockAuthService.isAuthenticated.mockReturnValue(true);
 
     const result = TestBed.runInInjectionContext(() =>
@@ -49,6 +49,6 @@ describe('homeRedirectGuard', () => {
     );
 
     expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/partners/customers']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/analytics/dashboard']);
   });
 });

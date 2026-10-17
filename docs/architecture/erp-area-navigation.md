@@ -46,6 +46,10 @@ The previous source-reorganization verification remains historical evidence for 
 
 `platform/auth/routing/authorized-destination.ts` selects an accessible page for application and area entry points. Account configuration is the fallback when no business module is available. Moving an invoice screen beneath finance does not rename its existing sales permission.
 
+After login, and on application root entry, the dashboard is the preferred destination when its permission is available. Users without dashboard access retain an authorized fallback, and explicit area entry points still prefer their own area.
+
+Dashboard landing follow-up verification: all 36 affected unit tests and all four browser authentication scenarios passed; the production build passed.
+
 `core/layouts/config/menu.config.ts` supplies both desktop and mobile navigation. Report entries retain the existing report permission in addition to their owner's permission. Consolidated inventory analysis checks both inventory and report permissions on direct navigation as well.
 
 ## Visual inspection

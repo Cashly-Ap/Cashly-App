@@ -202,7 +202,7 @@ describe('LoginPageComponent', () => {
       });
     });
 
-    it('should navigate to customers on successful login', async () => {
+    it('should navigate to dashboard on successful login', async () => {
       authServiceMock.login.mockReturnValue(of(mockAuthResponse));
 
       component.form.controls.email.setValue('test@example.com');
@@ -211,7 +211,7 @@ describe('LoginPageComponent', () => {
       component.onSubmit();
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/analytics/dashboard']);
     });
 
     it('should handle login error', async () => {
@@ -267,7 +267,7 @@ describe('LoginPageComponent', () => {
       expect(authServiceMock.login).toHaveBeenCalledWith(credentials);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers']);
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/analytics/dashboard']);
     });
 
     it('should maintain form values after failed submission', () => {

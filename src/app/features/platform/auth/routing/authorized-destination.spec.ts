@@ -10,6 +10,12 @@ function auth(modules: BusinessModule[], superAdmin = false) {
 }
 
 describe('authorizedDestination', () => {
+  it('opens the dashboard before other permitted business modules after login', () => {
+    expect(authorizedDestination(auth(Object.values(BusinessModule), true))).toBe(
+      '/analytics/dashboard',
+    );
+  });
+
   it.each([
     [BusinessModule.SALES, '/partners/customers'],
     [BusinessModule.INVENTORY, '/catalog/products'],

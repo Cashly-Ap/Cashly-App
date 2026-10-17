@@ -8,6 +8,7 @@ interface Destination {
 }
 
 const destinations: Destination[] = [
+  { path: '/analytics/dashboard', modules: [BusinessModule.DASHBOARD] },
   { path: '/partners/customers', modules: [BusinessModule.SALES] },
   { path: '/sales/quotes', modules: [BusinessModule.SALES] },
   { path: '/catalog/products', modules: [BusinessModule.INVENTORY] },
@@ -17,7 +18,6 @@ const destinations: Destination[] = [
   { path: '/finance/billing/invoices', modules: [BusinessModule.SALES] },
   { path: '/finance/billing/credit-notes', modules: [BusinessModule.FINANCE] },
   { path: '/finance/treasury/cash-register', modules: [BusinessModule.FINANCE] },
-  { path: '/analytics/dashboard', modules: [BusinessModule.DASHBOARD] },
   {
     path: '/analytics/reports/inventory',
     modules: [BusinessModule.DOCUMENT_ADMIN, BusinessModule.INVENTORY],
