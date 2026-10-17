@@ -28,7 +28,7 @@ import {
   RETURN_TYPE_LABELS,
 } from '@features/finance/billing/returns/models/enums/return-type.enum';
 import { ReturnCreate } from '@features/finance/billing/returns/models/interfaces/return.interface';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import {
   InvoiceDetails,

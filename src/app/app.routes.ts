@@ -45,12 +45,12 @@ export const routes: Routes = [
       {
         path: 'customers',
         loadChildren: () =>
-          import('@features/customers/router').then((m) => m.CUSTOMER_ROUTES),
+          import('@features/partners/customers/routing').then((m) => m.CUSTOMER_ROUTES),
       },
       {
         path: 'suppliers',
         loadChildren: () =>
-          import('@features/suppliers/router').then((m) => m.SUPPLIER_ROUTES),
+          import('@features/partners/suppliers/routing').then((m) => m.SUPPLIER_ROUTES),
       },
       {
         path: 'purchases',

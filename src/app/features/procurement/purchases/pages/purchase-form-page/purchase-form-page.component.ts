@@ -25,7 +25,7 @@ import {
   PurchaseFormData,
   PurchaseLineFormData,
 } from '@features/procurement/purchases/models/interfaces/purchase-form-data.interface';
-import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
 import { SupplierPickerDialogComponent } from '@features/procurement/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
 

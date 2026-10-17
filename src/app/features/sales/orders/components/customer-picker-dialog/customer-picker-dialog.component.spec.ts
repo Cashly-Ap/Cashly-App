@@ -4,9 +4,9 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
-import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
+import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 @Component({

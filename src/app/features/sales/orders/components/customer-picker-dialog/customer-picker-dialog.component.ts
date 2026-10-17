@@ -13,14 +13,14 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   CUSTOMER_TYPES,
   CustomerType,
   getCustomerTypeLabel,
-} from '@features/customers/models/enums/customer-type.enum';
+} from '@features/partners/customers/models/enums/customer-type.enum';
 
 const PAGE_SIZE = 10;
 

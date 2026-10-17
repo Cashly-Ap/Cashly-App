@@ -5,7 +5,7 @@ import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PendingTabsService } from '@core/pending-tabs';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
 import { CreditNoteFormPageComponent } from '@features/finance/billing/credit-notes/pages/credit-note-form-page/credit-note-form-page.component';

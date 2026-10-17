@@ -19,7 +19,7 @@ import { FormHeaderComponent } from '@core/forms/components/headers/form-header/
 import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 

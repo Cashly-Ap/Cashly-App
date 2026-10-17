@@ -24,7 +24,7 @@ import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
 import { OrderItemsTableComponent } from '@features/sales/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import {
   PaymentType,
@@ -34,8 +34,8 @@ import { InvoiceFormData } from '@features/finance/billing/invoices/models/inter
 import { INVOICE_SUCCESS_MESSAGES } from '@features/finance/billing/invoices/messages/success-messages';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
-import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
+import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { ToastModule } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import {

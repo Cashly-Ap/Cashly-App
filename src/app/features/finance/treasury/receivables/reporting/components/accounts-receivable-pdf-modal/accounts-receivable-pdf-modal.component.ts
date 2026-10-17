@@ -6,7 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { CheckboxModule } from 'primeng/checkbox';
 import { AccountsReceivableFilters } from '@features/finance/treasury/receivables/reporting/models/interfaces';
-import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 
 interface SelectOption {
   value: string | null;

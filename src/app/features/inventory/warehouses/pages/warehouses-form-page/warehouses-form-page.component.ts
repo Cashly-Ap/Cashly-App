@@ -25,7 +25,7 @@ import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.compon
 import {
   VENEZUELA_STATES,
   VenezuelaState,
-} from '@features/customers/data/venezuela-geo.data';
+} from '@features/partners/customers/data/venezuela-geo.data';
 
 interface WarehouseFormData {
   name: string;

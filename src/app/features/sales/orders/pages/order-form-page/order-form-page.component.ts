@@ -24,7 +24,7 @@ import {
   OrderFormData,
   OrderItemFormData,
 } from '@features/sales/orders/models/interfaces/order-form-data.interface';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { ORDER_SUCCESS_MESSAGES } from '@features/sales/orders/messages/success-messages';
 

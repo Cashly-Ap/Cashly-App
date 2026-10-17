@@ -24,7 +24,7 @@ import { ReceivablesApiService } from '@features/finance/treasury/receivables/se
 import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
-import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
+import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/order-api.service';
 
 @Component({

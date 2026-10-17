@@ -8,7 +8,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
-import { SupplierApiService } from '@features/suppliers/services/api/supplier-api.service';
+import { SupplierApiService } from '@features/partners/suppliers/services/api/supplier-api.service';
 
 export interface PurchasesPdfFilters {
   dateFrom?: string;

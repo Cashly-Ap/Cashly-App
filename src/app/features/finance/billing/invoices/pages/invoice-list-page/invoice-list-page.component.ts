@@ -53,7 +53,7 @@ import {
 } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
-import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
+import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 
 @Component({
   selector: 'app-invoice-list-page',

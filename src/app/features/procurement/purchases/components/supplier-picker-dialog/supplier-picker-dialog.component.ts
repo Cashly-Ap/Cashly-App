@@ -14,14 +14,14 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
-import { SupplierApiService } from '@features/suppliers/services/api/supplier-api.service';
-import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import { SupplierApiService } from '@features/partners/suppliers/services/api/supplier-api.service';
+import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   SUPPLIER_TYPES,
   SupplierType,
   getSupplierTypeLabel,
-} from '@features/suppliers/models/enums/supplier-type.enum';
+} from '@features/partners/suppliers/models/enums/supplier-type.enum';
 
 const PAGE_SIZE = 10;
 

@@ -23,7 +23,7 @@ import { QuoteApplicationService } from '@features/sales/quotes/services/applica
 import { OrderItemsTableComponent } from '@features/sales/orders/components/order-items-table/order-items-table.component';
 import { QuoteFormData } from '@features/sales/quotes/models/interfaces/quote-form-data.interface';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
-import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { QUOTE_SUCCESS_MESSAGES } from '@features/sales/quotes/messages/success-messages';
 
