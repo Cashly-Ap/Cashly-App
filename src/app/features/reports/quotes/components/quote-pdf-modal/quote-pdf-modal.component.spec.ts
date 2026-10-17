@@ -4,8 +4,8 @@ import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 
 @Component({
   template: `<app-quote-pdf-modal

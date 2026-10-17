@@ -10,8 +10,8 @@ import {
   OrderPdfApiService,
   OrdersPdfFilters,
 } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 
 interface SelectOption {
   value: string | null;

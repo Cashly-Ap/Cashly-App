@@ -19,7 +19,7 @@ import { CustomerApiService } from '@features/customers/services/api/customer-ap
 import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
 import { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces/customer-warehouse-access.interface';
 import { getCustomerTypeLabel } from '@features/customers/models/enums/customer-type.enum';
-import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 
 @Component({
   selector: 'app-customers-details-page',

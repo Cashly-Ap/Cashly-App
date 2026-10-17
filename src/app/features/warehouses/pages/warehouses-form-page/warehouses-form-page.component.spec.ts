@@ -7,7 +7,7 @@ import { MessageService } from 'primeng/api';
 import { WarehousesFormPageComponent } from '@features/warehouses/pages/warehouses-form-page/warehouses-form-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 import { WarehouseDetails } from '@features/warehouses/models/interfaces/warehouse.interfaces';
-import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
+import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';

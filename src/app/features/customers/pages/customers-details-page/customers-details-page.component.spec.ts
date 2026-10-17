@@ -7,7 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { CustomersDetailsPageComponent } from '@features/customers/pages/customers-details-page/customers-details-page.component';
 import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
 import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
 import { AuthService } from '@features/auth/services/application/auth-application.service';

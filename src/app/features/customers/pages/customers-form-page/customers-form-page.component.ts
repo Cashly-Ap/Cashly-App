@@ -28,7 +28,7 @@ import { CustomerContactSectionComponent } from '@features/customers/components/
 import { CustomerAddressesSectionComponent } from '@features/customers/components/customer-addresses-section/customer-addresses-section.component';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
-import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
+import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 
 interface CustomerAddressFormData {
   address: string;

@@ -15,7 +15,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { PurchaseLineFormData } from '@features/purchases/models/interfaces/purchase-form-data.interface';
-import { ProductList } from '@features/products/models/interfaces/product-list.interface';
+import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 import { PurchaseProductPickerDialogComponent } from '@features/purchases/components/purchase-product-picker-dialog/purchase-product-picker-dialog.component';
 import { WarehouseAllocation } from '@features/orders/models/interfaces/order-item-allocation.interface';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';

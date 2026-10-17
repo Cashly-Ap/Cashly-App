@@ -3,7 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
-import { ProductList } from '@features/products/models/interfaces/product-list.interface';
+import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 
 @Component({
   template: `<app-order-items-table

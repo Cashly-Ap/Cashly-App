@@ -11,7 +11,7 @@ import {
   ReturnCreate,
 } from '@features/finance/billing/returns/models/interfaces/return.interface';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ReturnApplicationService {

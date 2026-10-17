@@ -7,8 +7,8 @@ import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { InvoicesPdfFilters } from '@features/finance/billing/invoices/reporting/models/interfaces';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 
 interface SelectOption {
   value: string | null;

@@ -1,1 +1,1 @@
-export * from '@features/reports/inventory/services/application/catalog-application.service';
+export * from '@features/catalog/products/reporting/services/application/catalog-application.service';

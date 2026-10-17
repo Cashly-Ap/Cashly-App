@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { WarehousesListPageComponent } from '@features/warehouses/pages/warehouses-list-page/warehouses-list-page.component';
 import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 import { WarehouseList } from '@features/warehouses/models/interfaces/warehouse.interfaces';
-import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
 
 describe('WarehousesListPageComponent', () => {
   let fixture: ComponentFixture<WarehousesListPageComponent>;

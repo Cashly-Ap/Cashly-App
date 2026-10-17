@@ -20,8 +20,8 @@ import {
   ReportType,
 } from '@features/finance/treasury/cash-register/reporting/models/interfaces';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { ProductApiService } from '@features/products/services/api/product-api.service';
-import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { forkJoin } from 'rxjs';
 
 interface SelectOption {

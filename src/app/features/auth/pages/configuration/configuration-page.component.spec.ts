@@ -5,7 +5,7 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ConfigurationPageComponent } from '@features/auth/pages/configuration/configuration-page.component';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { MessageService } from 'primeng/api';
-import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
+import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';

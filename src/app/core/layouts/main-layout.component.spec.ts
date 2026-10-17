@@ -9,8 +9,8 @@ import { AuthService } from '@features/auth/services/application/auth-applicatio
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { MessageService } from 'primeng/api';
 import { PdfViewerService } from '@core/pdf-viewer/services';
-import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
-import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
+import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
+import { CommercialCatalogPdfApiService } from '@features/catalog/products/reporting/services/api/commercial-catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';

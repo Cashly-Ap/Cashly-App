@@ -4,9 +4,9 @@ import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { ProductPickerDialogComponent } from '@features/orders/components/product-picker-dialog/product-picker-dialog.component';
 import { OrderApiService } from '@features/orders/services/api/order-api.service';
-import { CategoryApiService } from '@features/categories/services/api/category-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { OrderProduct } from '@features/orders/models/interfaces/order-product.interface';
-import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
+import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
 
 @Component({
   template: `<app-product-picker-dialog
