@@ -5,17 +5,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
-import { DetailsCardComponent, DetailsCardHeaderComponent } from '@shared/components/details';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import {
-  EmptyStateComponent,
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
   TextBadgeComponent,
   TextBadgeVariant,
-} from '@shared/components/ui';
-import { WarehouseMovementItem } from '@features/warehouses/models/interfaces';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages';
+} from '@shared/components/ui/text-badge/text-badge.component';
+import { WarehouseMovementItem } from '@features/warehouses/models/interfaces/warehouse.interfaces';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages/error-messages';
 
 const PAGE_SIZE = 15;
 const MOVEMENT_TYPE_OPTIONS = [

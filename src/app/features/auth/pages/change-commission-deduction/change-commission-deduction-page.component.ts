@@ -5,8 +5,9 @@ import { MessageService } from 'primeng/api';
 import { FormContainerComponent, FormCardComponent } from '@core/forms/components/cards';
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
 import { NumberInputComponent } from '@core/forms/components/inputs';
-import { AuthService } from '@features/auth/services/application';
-import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AUTH_SUCCESS_MESSAGES } from '@features/auth/messages/success-messages';
+import { AUTH_ERROR_MESSAGES } from '@features/auth/messages/error-messages';
 import { createCommissionDeductionForm } from '@features/auth/pages/change-commission-deduction/change-commission-deduction-page.config';
 
 @Component({

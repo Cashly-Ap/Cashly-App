@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
-import { CategoryDetails } from '@features/categories/models/interfaces';
+import { CategoryDetails } from '@features/categories/models/interfaces/category-details.interface';
 
 describe('CategoryApplicationService', () => {
   let service: CategoryApplicationService;

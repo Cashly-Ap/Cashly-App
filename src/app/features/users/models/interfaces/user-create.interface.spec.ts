@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { UserCreate } from '@features/users/models/interfaces/user-create.interface';
-import { UserType } from '@features/users/models/enums';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 
 describe('UserCreate interface', () => {
   it('should have all required properties', () => {

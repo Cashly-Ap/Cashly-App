@@ -1,14 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import {
-  PurchaseList,
-  PurchaseDetails,
-  PurchaseCreate,
-  PurchaseEdit,
-  PurchaseProduct,
-  PurchaseWarehouse,
-} from '@features/purchases/models/interfaces';
+import { PurchaseList } from '@features/purchases/models/interfaces/purchase-list.interface';
+import { PurchaseDetails } from '@features/purchases/models/interfaces/purchase-details.interface';
+import { PurchaseCreate } from '@features/purchases/models/interfaces/purchase-create.interface';
+import { PurchaseEdit } from '@features/purchases/models/interfaces/purchase-edit.interface';
+import { PurchaseProduct } from '@features/purchases/models/interfaces/purchase-product.interface';
+import { PurchaseWarehouse } from '@features/purchases/models/interfaces/purchase-warehouse.interface';
 import { PurchaseStatus } from '@features/purchases/models/enums/purchase-status.enum';
 
 export interface CancelPurchaseRequest {

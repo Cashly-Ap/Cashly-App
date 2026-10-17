@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces/commercial-catalog-pdf-filters.interface';
 
 @Injectable({ providedIn: 'root' })
 export class CommercialCatalogPdfApiService {

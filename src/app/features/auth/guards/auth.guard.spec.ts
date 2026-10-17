@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { authGuard } from '@features/auth/guards/auth.guard';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('authGuard', () => {

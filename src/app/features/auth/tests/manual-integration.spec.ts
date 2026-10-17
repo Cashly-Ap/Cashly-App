@@ -3,9 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '@features/auth/services/application';
-import { AuthApiService } from '@features/auth/services/api';
-import { AuthValidators } from '@features/auth/validators';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthApiService } from '@features/auth/services/api/auth-api.service';
+import { AuthValidators } from '@features/auth/validators/auth-validators';
 import { environment } from '@env/environment';
 
 describe('Auth Integration - Form to API', () => {

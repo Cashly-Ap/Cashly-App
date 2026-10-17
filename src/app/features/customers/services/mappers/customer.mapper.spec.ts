@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { CustomerMapper } from '@features/customers/services/mappers/customer.mapper';
-import { CustomerType } from '@features/customers/models/enums';
-import { CustomerDetails } from '@features/customers/models/interfaces';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
 
 describe('CustomerMapper', () => {
   let mapper: CustomerMapper;

@@ -2,7 +2,7 @@ import { Component, input, output, ChangeDetectionStrategy } from '@angular/core
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
-import { BalanceTransactionResponse } from '@features/customers/models/interfaces';
+import { BalanceTransactionResponse } from '@features/customers/models/interfaces/balance-transaction.interface';
 
 const TYPE_TRANSLATIONS: Record<string, string> = {
   ADVANCED: 'Anticipo',

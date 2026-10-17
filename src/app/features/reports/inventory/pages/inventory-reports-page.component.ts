@@ -3,19 +3,16 @@ import { CommonModule } from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
-import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
-import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
-import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
-import { StockPdfApiService, StockExcelApiService } from '@features/reports/inventory/services/api';
-import {
-  MovementsPdfApiService,
-  MovementsExcelApiService,
-} from '@features/reports/inventory/services/api';
+import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal/stock-pdf-modal.component';
+import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal/movements-pdf-modal.component';
+import { PdfViewerModalComponent } from '@shared/components/pdf-viewer-modal/pdf-viewer-modal.component';
+import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
+import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
+import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
+import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
-import type {
-  StockPdfFilters,
-  MovementsPdfFilters,
-} from '@features/reports/inventory/models/interfaces';
+import type { StockPdfFilters } from '@features/reports/inventory/models/interfaces/stock-pdf-filters.interface';
+import type { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces/movements-pdf-filters.interface';
 
 @Component({
   selector: 'app-inventory-reports-page',

@@ -1,6 +1,6 @@
 import { FormArray, FormControl } from '@angular/forms';
 import { describe, expect, it } from 'vitest';
-import { SupplierValidators } from './supplier.validators';
+import { SupplierValidators } from '@features/suppliers/validators/supplier.validators';
 
 describe('SupplierValidators', () => {
   it('accepts empty optional values and validates RIF format', () => {
@@ -13,7 +13,9 @@ describe('SupplierValidators', () => {
   it('validates supplier legal names and aliases', () => {
     expect(SupplierValidators.legalName()(new FormControl('Acme S.A.'))).toBeNull();
     expect(SupplierValidators.legalName()(new FormControl(' '))).toHaveProperty('legalNameBlank');
-    expect(SupplierValidators.legalName()(new FormControl('A'))).toHaveProperty('legalNameMinLength');
+    expect(SupplierValidators.legalName()(new FormControl('A'))).toHaveProperty(
+      'legalNameMinLength',
+    );
     expect(SupplierValidators.legalName()(new FormControl('x'.repeat(301)))).toHaveProperty(
       'legalNameMaxLength',
     );
@@ -30,7 +32,9 @@ describe('SupplierValidators', () => {
   it('validates email, phone, and address values and their length limits', () => {
     expect(SupplierValidators.email()(new FormControl('supplier@example.com'))).toBeNull();
     expect(SupplierValidators.email()(new FormControl(' '))).toHaveProperty('emailBlank');
-    expect(SupplierValidators.email()(new FormControl('invalid'))).toHaveProperty('emailInvalidFormat');
+    expect(SupplierValidators.email()(new FormControl('invalid'))).toHaveProperty(
+      'emailInvalidFormat',
+    );
     expect(SupplierValidators.email()(new FormControl('x'.repeat(256)))).toHaveProperty(
       'emailMaxLength',
     );

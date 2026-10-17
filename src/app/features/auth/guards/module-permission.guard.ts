@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { AuthService } from '@features/auth/services';
-import { BusinessModule } from '@features/users/models/enums';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export const modulePermissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);

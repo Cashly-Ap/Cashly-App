@@ -5,7 +5,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { EMPTY, of } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { MessageService } from 'primeng/api';
 import { PdfViewerService } from '@core/pdf-viewer/services';
@@ -16,16 +16,16 @@ import { StockExcelApiService } from '@features/reports/inventory/services/api/s
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 import { PurchasePdfApiService } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
-import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
-import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
+import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
+import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { NotificationApiService } from '@core/notifications/services/api/notification-api.service';
 import { NotificationWebSocketService } from '@core/notifications/services/websocket/notification-websocket.service';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 function createPdfApiMock() {
   return {
@@ -130,7 +130,7 @@ describe('MainLayoutComponent', () => {
         { provide: InvoicePdfApiService, useValue: pdfApiMock },
         { provide: QuotePdfApiService, useValue: pdfApiMock },
         { provide: PurchasePdfApiService, useValue: pdfApiMock },
-        { provide: FinancePdfApiService, useValue: pdfApiMock },
+        { provide: ReceivablesPdfApiService, useValue: pdfApiMock },
         { provide: CashRegisterApiService, useValue: pdfApiMock },
         { provide: NotificationApiService, useValue: notificationApiMock },
         { provide: NotificationWebSocketService, useValue: notificationWebSocketMock },

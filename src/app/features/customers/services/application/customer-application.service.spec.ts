@@ -2,15 +2,13 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
-import { CustomerApiService } from '@features/customers/services/api';
-import { CustomerMapper } from '@features/customers/services/mappers';
-import { CustomerType } from '@features/customers/models/enums';
-import {
-  CustomerList,
-  CustomerDetails,
-  CustomerCreate,
-  CustomerEdit,
-} from '@features/customers/models/interfaces';
+import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
+import { CustomerMapper } from '@features/customers/services/mappers/customer.mapper';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
+import { CustomerCreate } from '@features/customers/models/interfaces/customer-create.interface';
+import { CustomerEdit } from '@features/customers/models/interfaces/customer-edit.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('CustomerApplicationService', () => {

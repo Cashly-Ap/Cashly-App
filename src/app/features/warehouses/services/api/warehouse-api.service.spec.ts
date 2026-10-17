@@ -16,7 +16,7 @@ import {
   WarehouseStockItem,
   WarehouseMovementItem,
   MovementFilters,
-} from '@features/warehouses/models/interfaces';
+} from '@features/warehouses/models/interfaces/warehouse.interfaces';
 
 describe('WarehouseApiService', () => {
   let service: WarehouseApiService;

@@ -20,10 +20,13 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
-import { OrderFormData, OrderItemFormData } from '@features/orders/models/interfaces';
-import { CustomerList } from '@features/customers/models/interfaces';
+import {
+  OrderFormData,
+  OrderItemFormData,
+} from '@features/orders/models/interfaces/order-form-data.interface';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
-import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages';
+import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages/success-messages';
 
 @Component({
   selector: 'app-order-form-page',

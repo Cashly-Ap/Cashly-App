@@ -1,6 +1,6 @@
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CustomerBalanceResponse } from '@features/customers/models/interfaces';
+import { CustomerBalanceResponse } from '@features/customers/models/interfaces/customer-balance.interface';
 
 @Component({
   selector: 'app-balance-summary-card',

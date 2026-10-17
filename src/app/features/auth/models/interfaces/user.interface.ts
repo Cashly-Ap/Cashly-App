@@ -1,4 +1,4 @@
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export type UserType = 'OPERATOR' | 'ADMIN' | 'SUPER_ADMIN';
 

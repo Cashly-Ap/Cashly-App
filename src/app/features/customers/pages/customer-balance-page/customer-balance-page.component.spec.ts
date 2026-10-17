@@ -8,13 +8,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CustomerBalancePageComponent } from '@features/customers/pages/customer-balance-page/customer-balance-page.component';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
-import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
-import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
-import { CreditNoteApiService } from '@features/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/debit-notes/services/api/debit-note-api.service';
-import { ReturnApiService } from '@features/returns/services/api/return-api.service';
-import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
-import { PaymentType } from '@features/invoices/models/enums/payment-type.enum';
+import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
+import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
+import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
+import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
+import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 
 describe('CustomerBalancePageComponent', () => {
   let fixture: ComponentFixture<CustomerBalancePageComponent>;

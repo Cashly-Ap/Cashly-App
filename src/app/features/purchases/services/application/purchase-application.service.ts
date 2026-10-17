@@ -6,12 +6,10 @@ import {
   CancelPurchaseRequest,
 } from '@features/purchases/services/api/purchase-api.service';
 import { PurchaseMapper } from '@features/purchases/services/mappers/purchase.mapper';
-import {
-  PurchaseList,
-  PurchaseDetails,
-  PurchaseCreate,
-  PurchaseEdit,
-} from '@features/purchases/models/interfaces';
+import { PurchaseList } from '@features/purchases/models/interfaces/purchase-list.interface';
+import { PurchaseDetails } from '@features/purchases/models/interfaces/purchase-details.interface';
+import { PurchaseCreate } from '@features/purchases/models/interfaces/purchase-create.interface';
+import { PurchaseEdit } from '@features/purchases/models/interfaces/purchase-edit.interface';
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseApplicationService {

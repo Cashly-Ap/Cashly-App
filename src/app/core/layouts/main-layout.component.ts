@@ -25,38 +25,36 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { finalize } from 'rxjs';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
-import { AuthService } from '@features/auth/services';
-import { UserType } from '@features/auth/models';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { UserType } from '@features/auth/models/interfaces/user.interface';
 import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@core/notifications/components/notification-bell/notification-bell.component';
-import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
-import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal';
-import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
-import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
-import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
+import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal/catalog-pdf-modal.component';
+import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal/commercial-catalog-pdf-modal.component';
+import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal/stock-pdf-modal.component';
+import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal/movements-pdf-modal.component';
+import { PdfViewerModalComponent } from '@shared/components/pdf-viewer-modal/pdf-viewer-modal.component';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
-import {
-  CatalogPdfFilters,
-  CommercialCatalogPdfFilters,
-  StockPdfFilters,
-  MovementsPdfFilters,
-} from '@features/reports/inventory/models/interfaces';
+import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces/catalog-pdf-filters.interface';
+import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces/commercial-catalog-pdf-filters.interface';
+import { StockPdfFilters } from '@features/reports/inventory/models/interfaces/stock-pdf-filters.interface';
+import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces/movements-pdf-filters.interface';
 import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
 import {
   OrderPdfApiService,
   OrdersPdfFilters,
 } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
+import { InvoicePdfModalComponent } from '@features/finance/billing/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component';
 import {
   InvoicePdfApiService,
   InvoicesPdfFilters,
-} from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+} from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
 import {
   QuotePdfApiService,
@@ -67,14 +65,12 @@ import {
   PurchasePdfApiService,
   PurchasesPdfFilters,
 } from '@features/reports/purchases/services/api/purchase-pdf-api.service';
-import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
-import { AccountsReceivablePdfModalComponent } from '@features/reports/finance/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
-import {
-  CashRegisterReportFilters,
-  AccountsReceivableFilters,
-} from '@features/reports/finance/models/interfaces';
-import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
-import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
+import { CashRegisterReportModalComponent } from '@features/finance/treasury/cash-register/reporting/components/cash-register-report-modal/cash-register-report-modal.component';
+import { AccountsReceivablePdfModalComponent } from '@features/finance/treasury/receivables/reporting/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
+import { CashRegisterReportFilters } from '@features/finance/treasury/cash-register/reporting/models/interfaces';
+import { AccountsReceivableFilters } from '@features/finance/treasury/receivables/reporting/models/interfaces';
+import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
+import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 export type ContentMaxWidth =
@@ -143,7 +139,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private invoicePdfApi = inject(InvoicePdfApiService);
   private quotePdfApi = inject(QuotePdfApiService);
   private purchasePdfApi = inject(PurchasePdfApiService);
-  private financePdfApi = inject(FinancePdfApiService);
+  private financePdfApi = inject(ReceivablesPdfApiService);
   private cashRegisterApi = inject(CashRegisterApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;

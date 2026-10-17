@@ -15,8 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { SupplierApiService } from '@features/suppliers/services/api/supplier-api.service';
-import { SupplierList } from '@features/suppliers/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   SUPPLIER_TYPES,
   SupplierType,

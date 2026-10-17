@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
 import type { UserResponse } from '@features/auth/models/interfaces/user.interface';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('AuthenticationResponse interface', () => {
   it('should have all required properties', () => {

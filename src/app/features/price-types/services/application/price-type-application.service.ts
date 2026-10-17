@@ -4,12 +4,10 @@ import {
   PriceTypeApiService,
   PriceTypeFilters,
 } from '@features/price-types/services/api/price-type-api.service';
-import {
-  PriceTypeList,
-  PriceTypeDetails,
-  PriceTypeCreate,
-  PriceTypeUpdate,
-} from '@features/price-types/models/interfaces';
+import { PriceTypeList } from '@features/price-types/models/interfaces/price-type-list.interface';
+import { PriceTypeDetails } from '@features/price-types/models/interfaces/price-type-details.interface';
+import { PriceTypeCreate } from '@features/price-types/models/interfaces/price-type-create.interface';
+import { PriceTypeUpdate } from '@features/price-types/models/interfaces/price-type-update.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

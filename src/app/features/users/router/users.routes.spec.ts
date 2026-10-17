@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { USER_ROUTES } from '@features/users/router/users.routes';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('User Routes', () => {
   it('should have a parent route with children', () => {

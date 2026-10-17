@@ -1,7 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { UserMapper } from '@features/users/services/mappers/user.mapper';
-import { UserDetails, UserList, UserEdit } from '@features/users/models/interfaces';
-import { UserType, BusinessModule } from '@features/users/models/enums';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
+import { UserType } from '@features/users/models/enums/user-type.enum';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('UserMapper', () => {
   const mockUserDetails: UserDetails = {

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
-import { InvoicePickerDialogComponent } from './invoice-picker-dialog.component';
+import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog.component';
 
 describe('InvoicePickerDialogComponent', () => {
   let fixture: ComponentFixture<InvoicePickerDialogComponent>;

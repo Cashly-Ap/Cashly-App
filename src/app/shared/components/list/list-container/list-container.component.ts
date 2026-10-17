@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ContentCardComponent } from '@shared/components/ui';
+import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 
 @Component({
   selector: 'app-list-container',

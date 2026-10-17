@@ -4,7 +4,7 @@ import { inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
-import { OrderList } from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
 
 @Component({
   selector: 'app-cancel-order-dialog',

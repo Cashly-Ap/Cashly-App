@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
-import { PriceTypeDetails } from '@features/price-types/models/interfaces';
+import { PriceTypeDetails } from '@features/price-types/models/interfaces/price-type-details.interface';
 
 describe('PriceTypeApplicationService', () => {
   let service: PriceTypeApplicationService;

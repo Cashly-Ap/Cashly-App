@@ -3,9 +3,9 @@ import { signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { WarehouseStockOperationDialogComponent } from './warehouse-stock-operation-dialog.component';
-import { ProductApplicationService } from '@features/products/services/application';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import { WarehouseStockOperationDialogComponent } from '@features/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 
 describe('WarehouseStockOperationDialogComponent', () => {
   let fixture: ComponentFixture<WarehouseStockOperationDialogComponent>;

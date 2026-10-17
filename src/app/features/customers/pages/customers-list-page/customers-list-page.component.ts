@@ -22,7 +22,7 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -33,16 +33,20 @@ import {
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
-import { CustomerApplicationService } from '@features/customers/services/application';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
 import { CustomerFilters } from '@features/customers/services/api/customer-api.service';
-import { CustomerList } from '@features/customers/models/interfaces';
-import { getCustomerTypeLabel, CUSTOMER_TYPES } from '@features/customers/models/enums';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import {
+  getCustomerTypeLabel,
+  CUSTOMER_TYPES,
+} from '@features/customers/models/enums/customer-type.enum';
 import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,
 } from '@features/customers/data/venezuela-geo.data';
-import { CUSTOMER_ERROR_MESSAGES, CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages';
+import { CUSTOMER_ERROR_MESSAGES } from '@features/customers/messages/error-messages';
+import { CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages/success-messages';
 
 @Component({
   selector: 'app-customers-list-page',
@@ -95,7 +99,6 @@ export class CustomersListPageComponent implements OnInit {
   filterActive = signal<string>('true');
   filterState = signal<string>('');
   filterMunicipality = signal<string>('');
-
 
   activeFilterCount = computed(() => {
     let count = 0;

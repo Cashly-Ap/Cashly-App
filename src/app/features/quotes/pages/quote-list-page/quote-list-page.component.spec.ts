@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { QuoteListPageComponent } from '@features/quotes/pages/quote-list-page/quote-list-page.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
-import { QuoteList } from '@features/quotes/models/interfaces';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
 import { PdfViewerService } from '@core/pdf-viewer';
 
 describe('QuoteListPageComponent', () => {

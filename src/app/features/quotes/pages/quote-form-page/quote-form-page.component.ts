@@ -21,11 +21,11 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { OrderItemsTableComponent } from '@features/orders/components/order-items-table/order-items-table.component';
-import { QuoteFormData } from '@features/quotes/models/interfaces';
-import { OrderItemFormData } from '@features/orders/models/interfaces';
-import { CustomerList } from '@features/customers/models/interfaces';
+import { QuoteFormData } from '@features/quotes/models/interfaces/quote-form-data.interface';
+import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/orders/components/customer-picker-dialog/customer-picker-dialog.component';
-import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages';
+import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages/success-messages';
 
 @Component({
   selector: 'app-quote-form-page',

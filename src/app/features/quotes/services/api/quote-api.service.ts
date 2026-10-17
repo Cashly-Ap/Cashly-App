@@ -1,14 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import {
-  QuoteList,
-  QuoteDetails,
-  QuoteCreate,
-  QuoteEdit,
-  QuoteProduct,
-  QuoteWarehouse,
-} from '@features/quotes/models/interfaces';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
+import { QuoteCreate } from '@features/quotes/models/interfaces/quote-create.interface';
+import { QuoteEdit } from '@features/quotes/models/interfaces/quote-edit.interface';
+import { QuoteProduct } from '@features/quotes/models/interfaces/quote-product.interface';
+import { QuoteWarehouse } from '@features/quotes/models/interfaces/quote-warehouse.interface';
 import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
 
 export interface ConvertToInvoiceRequest {

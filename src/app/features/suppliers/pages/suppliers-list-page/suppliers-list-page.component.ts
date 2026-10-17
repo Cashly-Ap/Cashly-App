@@ -31,11 +31,14 @@ import {
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
-import { SupplierApplicationService } from '@features/suppliers/services/application';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { SupplierApplicationService } from '@features/suppliers/services/application/supplier-application.service';
 import { SupplierFilters } from '@features/suppliers/services/api/supplier-api.service';
-import { SupplierList } from '@features/suppliers/models/interfaces';
-import { getSupplierTypeLabel, SUPPLIER_TYPES } from '@features/suppliers/models/enums';
+import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import {
+  getSupplierTypeLabel,
+  SUPPLIER_TYPES,
+} from '@features/suppliers/models/enums/supplier-type.enum';
 import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,

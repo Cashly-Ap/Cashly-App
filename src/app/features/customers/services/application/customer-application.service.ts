@@ -6,12 +6,10 @@ import {
   CustomerCreatedResponse,
 } from '@features/customers/services/api/customer-api.service';
 import { CustomerMapper } from '@features/customers/services/mappers/customer.mapper';
-import {
-  CustomerList,
-  CustomerDetails,
-  CustomerCreate,
-  CustomerEdit,
-} from '@features/customers/models/interfaces';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
+import { CustomerCreate } from '@features/customers/models/interfaces/customer-create.interface';
+import { CustomerEdit } from '@features/customers/models/interfaces/customer-edit.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -97,5 +95,4 @@ export class CustomerApplicationService {
       finalize(() => this.loading.set(false)),
     );
   }
-
 }

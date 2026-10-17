@@ -29,7 +29,7 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import { CancelOrderDialogComponent } from '@features/orders/components/cancel-order-dialog/cancel-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
@@ -43,7 +43,7 @@ import {
   ORDER_STATUS_LABELS,
   getOrderStatusLabel,
 } from '@features/orders/models/enums/order-status.enum';
-import { OrderList } from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
 @Component({

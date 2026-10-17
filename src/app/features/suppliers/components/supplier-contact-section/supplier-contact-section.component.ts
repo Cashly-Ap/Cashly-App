@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ListSectionComponent, ListItemComponent } from '@core/forms/components';
-import { SupplierValidators } from '@features/suppliers/validators';
+import { SupplierValidators } from '@features/suppliers/validators/supplier.validators';
 
 @Component({
   selector: 'app-supplier-contact-section',

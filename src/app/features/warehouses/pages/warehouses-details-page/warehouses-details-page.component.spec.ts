@@ -3,9 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { WarehousesDetailsPageComponent } from './warehouses-details-page.component';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { WarehouseDetails } from '@features/warehouses/models/interfaces';
+import { WarehousesDetailsPageComponent } from '@features/warehouses/pages/warehouses-details-page/warehouses-details-page.component';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WarehouseDetails } from '@features/warehouses/models/interfaces/warehouse.interfaces';
 
 describe('WarehousesDetailsPageComponent', () => {
   let fixture: ComponentFixture<WarehousesDetailsPageComponent>;

@@ -11,7 +11,7 @@ import {
   WarehouseStockItem,
   WarehouseMovementItem,
   MovementFilters,
-} from '@features/warehouses/models/interfaces';
+} from '@features/warehouses/models/interfaces/warehouse.interfaces';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface WarehouseFilters {

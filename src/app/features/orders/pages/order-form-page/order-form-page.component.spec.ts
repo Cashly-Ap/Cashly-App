@@ -9,10 +9,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { OrderFormPageComponent } from '@features/orders/pages/order-form-page/order-form-page.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
-import { OrderDetails } from '@features/orders/models/interfaces';
+import { OrderDetails } from '@features/orders/models/interfaces/order-details.interface';
 import { PendingTabsService } from '@core/pending-tabs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages';
+import { ORDER_SUCCESS_MESSAGES } from '@features/orders/messages/success-messages';
 
 describe('OrderFormPageComponent', () => {
   let component: OrderFormPageComponent;

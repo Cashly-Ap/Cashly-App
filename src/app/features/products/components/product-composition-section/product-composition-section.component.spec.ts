@@ -4,8 +4,8 @@ import { NO_ERRORS_SCHEMA, Component, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { of } from 'rxjs';
 import { ProductCompositionSectionComponent } from '@features/products/components/product-composition-section/product-composition-section.component';
-import { ProductApplicationService } from '@features/products/services/application';
-import { ProductList } from '@features/products/models/interfaces';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { ProductList } from '@features/products/models/interfaces/product-list.interface';
 
 const mockSimpleProducts: ProductList[] = [
   {

@@ -31,12 +31,12 @@ import {
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
-import { ProductApplicationService } from '@features/products/services/application';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { ProductFilters } from '@features/products/services/api/product-api.service';
-import { ProductList } from '@features/products/models/interfaces';
+import { ProductList } from '@features/products/models/interfaces/product-list.interface';
 
 @Component({
   selector: 'app-products-list-page',

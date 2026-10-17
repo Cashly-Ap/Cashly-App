@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { AuthApiService } from '@features/auth/services/api';
+import { AuthApiService } from '@features/auth/services/api/auth-api.service';
 import {
   RegisterUserRequest,
   LoginRequest,
@@ -10,9 +10,9 @@ import {
   LogoutRequest,
   ChangeUsernameRequest,
   ChangePasswordRequest,
-  UserResponse,
-  AuthenticationResponse,
-} from '@features/auth/models';
+} from '@features/auth/models/interfaces/auth-request.interface';
+import { UserResponse } from '@features/auth/models/interfaces/user.interface';
+import { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
 
 describe('AuthService', () => {
   let service: AuthService;

@@ -31,11 +31,15 @@ import {
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
-import { UserApplicationService } from '@features/users/services/application';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
 import { UserFilters } from '@features/users/services/api/user-api.service';
-import { UserList } from '@features/users/models/interfaces';
-import { getUserTypeLabel, UserType, USER_TYPES } from '@features/users/models/enums';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import {
+  getUserTypeLabel,
+  UserType,
+  USER_TYPES,
+} from '@features/users/models/enums/user-type.enum';
 
 @Component({
   selector: 'app-users-list-page',

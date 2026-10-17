@@ -5,13 +5,13 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { CategoriesListPageComponent } from '@features/categories/pages/categories-list-page/categories-list-page.component';
-import { CategoryApplicationService } from '@features/categories/services/application';
-import { CategoryList } from '@features/categories/models/interfaces';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 
 describe('CategoriesListPageComponent', () => {

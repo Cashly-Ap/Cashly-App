@@ -11,7 +11,7 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 
 interface CategoryFormData {

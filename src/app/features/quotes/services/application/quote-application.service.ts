@@ -6,12 +6,10 @@ import {
   ConvertToInvoiceRequest,
 } from '@features/quotes/services/api/quote-api.service';
 import { QuoteMapper } from '@features/quotes/services/mappers/quote.mapper';
-import {
-  QuoteList,
-  QuoteDetails,
-  QuoteCreate,
-  QuoteEdit,
-} from '@features/quotes/models/interfaces';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
+import { QuoteCreate } from '@features/quotes/models/interfaces/quote-create.interface';
+import { QuoteEdit } from '@features/quotes/models/interfaces/quote-edit.interface';
 
 @Injectable({ providedIn: 'root' })
 export class QuoteApplicationService {

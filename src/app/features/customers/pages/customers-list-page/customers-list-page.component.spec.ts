@@ -5,11 +5,11 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { CustomersListPageComponent } from '@features/customers/pages/customers-list-page/customers-list-page.component';
-import { CustomerApplicationService } from '@features/customers/services/application';
-import { CustomerType } from '@features/customers/models/enums';
-import { CustomerList } from '@features/customers/models/interfaces';
+import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
 import { AuthService } from '@features/auth/services/application/auth-application.service';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('CustomersListPageComponent', () => {
   let component: CustomersListPageComponent;

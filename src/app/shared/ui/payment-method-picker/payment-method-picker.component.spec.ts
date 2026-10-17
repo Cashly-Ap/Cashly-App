@@ -3,8 +3,8 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { PaymentMethodPickerComponent } from '@shared/ui/payment-method-picker/payment-method-picker.component';
-import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
-import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
+import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
+import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 
 describe('PaymentMethodPickerComponent', () => {
   let component: PaymentMethodPickerComponent;

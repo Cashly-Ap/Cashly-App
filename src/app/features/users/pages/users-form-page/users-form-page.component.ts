@@ -14,20 +14,17 @@ import {
   TextInputComponent,
   SelectInputComponent,
 } from '@core/forms/components';
-import { UserApplicationService } from '@features/users/services/application';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
+import { UserType, USER_TYPES } from '@features/users/models/enums/user-type.enum';
 import {
-  UserType,
-  USER_TYPES,
   BusinessModule,
   BUSINESS_MODULE_LABELS,
-} from '@features/users/models/enums';
-import { UserValidators } from '@features/users/validators';
-import {
-  ChangePasswordDialogComponent,
-  ChangeEmailDialogComponent,
-} from '@features/users/components';
+} from '@features/users/models/enums/business-module.enum';
+import { UserValidators } from '@features/users/validators/user.validators';
+import { ChangePasswordDialogComponent } from '@features/users/components/change-password-dialog/change-password-dialog.component';
+import { ChangeEmailDialogComponent } from '@features/users/components/change-email-dialog/change-email-dialog.component';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { forkJoin, of, switchMap } from 'rxjs';
 
 interface UserFormData {

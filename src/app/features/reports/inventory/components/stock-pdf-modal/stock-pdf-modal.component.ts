@@ -13,9 +13,9 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CategoryApplicationService } from '@features/categories/services/application';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { StockPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { StockPdfFilters } from '@features/reports/inventory/models/interfaces/stock-pdf-filters.interface';
 
 @Component({
   selector: 'app-stock-pdf-modal',

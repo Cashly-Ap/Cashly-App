@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA, signal, Component } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ChangeEmailDialogComponent } from '@features/users/components/change-email-dialog/change-email-dialog.component';
-import { UserApplicationService } from '@features/users/services/application';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
 
 @Component({
   standalone: true,

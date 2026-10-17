@@ -29,10 +29,10 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { CategoryFilters } from '@features/categories/services/api/category-api.service';
-import { CategoryList } from '@features/categories/models/interfaces';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
 
 @Component({
   selector: 'app-categories-list-page',

@@ -7,9 +7,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '@features/auth/services';
-import { AuthValidators } from '@features/auth/validators';
-import { AUTH_SESSION_MESSAGES } from '@features/auth/messages';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AuthValidators } from '@features/auth/validators/auth-validators';
+import { AUTH_SESSION_MESSAGES } from '@features/auth/messages/error-messages';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 @Component({

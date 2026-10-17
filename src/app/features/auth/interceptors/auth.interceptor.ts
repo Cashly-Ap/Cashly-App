@@ -4,8 +4,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { catchError, throwError, switchMap } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '@features/auth/services';
-import { AUTH_SESSION_MESSAGES } from '@features/auth/messages';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AUTH_SESSION_MESSAGES } from '@features/auth/messages/error-messages';
 
 const isAuthEndpoint = (url: string): boolean => {
   return (

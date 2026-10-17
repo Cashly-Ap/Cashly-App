@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard, modulePermissionGuard } from '@features/auth/guards';
-import { BusinessModule } from '@features/users/models/enums';
+import { authGuard } from '@features/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export const PURCHASE_ROUTES: Routes = [
   {
@@ -11,17 +12,17 @@ export const PURCHASE_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('@features/purchases/pages/purchase-list-page/purchase-list-page.component').then(
-            (m) => m.PurchaseListPageComponent,
-          ),
+          import(
+            '@features/purchases/pages/purchase-list-page/purchase-list-page.component'
+          ).then((m) => m.PurchaseListPageComponent),
         title: 'Compras',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('@features/purchases/pages/purchase-form-page/purchase-form-page.component').then(
-            (m) => m.PurchaseFormPageComponent,
-          ),
+          import(
+            '@features/purchases/pages/purchase-form-page/purchase-form-page.component'
+          ).then((m) => m.PurchaseFormPageComponent),
         title: 'Nueva Compra',
       },
       {
@@ -35,9 +36,9 @@ export const PURCHASE_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('@features/purchases/pages/purchase-form-page/purchase-form-page.component').then(
-            (m) => m.PurchaseFormPageComponent,
-          ),
+          import(
+            '@features/purchases/pages/purchase-form-page/purchase-form-page.component'
+          ).then((m) => m.PurchaseFormPageComponent),
         title: 'Editar Compra',
       },
     ],

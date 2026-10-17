@@ -9,10 +9,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { QuoteFormPageComponent } from '@features/quotes/pages/quote-form-page/quote-form-page.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
-import { QuoteDetails } from '@features/quotes/models/interfaces';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
 import { PendingTabsService } from '@core/pending-tabs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages';
+import { QUOTE_SUCCESS_MESSAGES } from '@features/quotes/messages/success-messages';
 
 describe('QuoteFormPageComponent', () => {
   let component: QuoteFormPageComponent;

@@ -5,8 +5,9 @@ import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ChangeUsernamePageComponent } from '@features/auth/pages/change-username/change-username-page.component';
-import { AuthService } from '@features/auth/services/application';
-import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AUTH_SUCCESS_MESSAGES } from '@features/auth/messages/success-messages';
+import { AUTH_ERROR_MESSAGES } from '@features/auth/messages/error-messages';
 
 describe('ChangeUsernamePageComponent', () => {
   let component: ChangeUsernamePageComponent;

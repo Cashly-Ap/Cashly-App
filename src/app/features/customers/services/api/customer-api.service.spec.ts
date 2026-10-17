@@ -3,13 +3,11 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerType } from '@features/customers/models/enums';
-import {
-  CustomerList,
-  CustomerDetails,
-  CustomerCreate,
-  CustomerEdit,
-} from '@features/customers/models/interfaces';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
+import { CustomerCreate } from '@features/customers/models/interfaces/customer-create.interface';
+import { CustomerEdit } from '@features/customers/models/interfaces/customer-edit.interface';
 
 describe('CustomerApiService', () => {
   let service: CustomerApiService;

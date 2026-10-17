@@ -11,20 +11,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { forkJoin, of, catchError } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
-import {
-  DetailActionsMenuComponent,
-  DetailsCardComponent,
-  DetailsCardHeaderComponent,
-  DetailsInfoFieldComponent,
-  DetailsInfoGridComponent,
-} from '@shared/components/details';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { ProductApplicationService } from '@features/products/services/application';
-import { ProductPhotoService } from '@features/products/services/api';
-import { ProductDetails, ProductStockByWarehouse } from '@features/products/models/interfaces';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { ProductPhotoService } from '@features/products/services/api/product-photo.service';
+import { ProductDetails } from '@features/products/models/interfaces/product-details.interface';
+import { ProductStockByWarehouse } from '@features/products/models/interfaces/product-stock-by-warehouse.interface';
 
 @Component({
   selector: 'app-products-details-page',

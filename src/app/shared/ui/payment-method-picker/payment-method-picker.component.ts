@@ -7,9 +7,9 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
-import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
-import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
+import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 @Component({
   selector: 'app-payment-method-picker',

@@ -7,7 +7,7 @@ import {
   TextInputComponent,
   SelectInputComponent,
 } from '@core/forms/components';
-import { SUPPLIER_TYPES } from '@features/suppliers/models/enums';
+import { SUPPLIER_TYPES } from '@features/suppliers/models/enums/supplier-type.enum';
 
 @Component({
   selector: 'app-supplier-general-section',

@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { ProductList } from '@features/products/models/interfaces/product-list.interface';
+import { ProductDetails } from '@features/products/models/interfaces/product-details.interface';
 import {
-  ProductList,
-  ProductDetails,
   ProductCreate,
   ProductUpdate,
-  ProductStockByWarehouse,
-} from '@features/products/models/interfaces';
+} from '@features/products/models/interfaces/product-create-update.interface';
+import { ProductStockByWarehouse } from '@features/products/models/interfaces/product-stock-by-warehouse.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ProductFilters {

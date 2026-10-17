@@ -20,20 +20,18 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import {
-  CustomerBalanceResponse,
-  BalanceTransactionResponse,
-} from '@features/customers/models/interfaces';
+import { CustomerBalanceResponse } from '@features/customers/models/interfaces/customer-balance.interface';
+import { BalanceTransactionResponse } from '@features/customers/models/interfaces/balance-transaction.interface';
 import { BalanceSummaryCardComponent } from '@features/customers/components/balance-summary-card/balance-summary-card.component';
 import { BalanceTransactionsTableComponent } from '@features/customers/components/balance-transactions-table/balance-transactions-table.component';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
-import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
-import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
-import { PendingPayment } from '@features/receivables/models/interfaces';
-import { CreditNoteApiService } from '@features/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/debit-notes/services/api/debit-note-api.service';
-import { ReturnApiService } from '@features/returns/services/api/return-api.service';
-import { InvoiceStatus } from '@features/invoices/models/enums/invoice-status.enum';
+import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
+import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
+import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
+import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
+import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
 import { catchError, forkJoin, of } from 'rxjs';
 
 interface BalanceTransactionFilters {

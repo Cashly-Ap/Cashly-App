@@ -3,11 +3,7 @@ import { CUSTOMER_SUCCESS_MESSAGES } from '@features/customers/messages/success-
 
 describe('CUSTOMER_SUCCESS_MESSAGES', () => {
   it('should have created, updated, and deleted keys', () => {
-    expect(Object.keys(CUSTOMER_SUCCESS_MESSAGES)).toEqual([
-      'created',
-      'updated',
-      'deleted',
-    ]);
+    expect(Object.keys(CUSTOMER_SUCCESS_MESSAGES)).toEqual(['created', 'updated', 'deleted']);
   });
 
   it('should have correct structure for each message', () => {

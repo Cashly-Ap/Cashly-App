@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { REPORTS_ROUTES } from '@features/reports/router/reports.routes';
-import { INVENTORY_REPORTS_ROUTES } from '@features/reports/inventory/router';
+import { INVENTORY_REPORTS_ROUTES } from '@features/reports/inventory/router/inventory-reports.routes';
 
 describe('Reports Routes', () => {
   it('should have 2 top-level routes', () => {

@@ -6,8 +6,9 @@ import { FormContainerComponent, FormCardComponent } from '@core/forms/component
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { AuthValidators } from '@features/auth/validators/auth-validators';
-import { AuthService } from '@features/auth/services/application';
-import { AUTH_SUCCESS_MESSAGES, AUTH_ERROR_MESSAGES } from '@features/auth/messages';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { AUTH_SUCCESS_MESSAGES } from '@features/auth/messages/success-messages';
+import { AUTH_ERROR_MESSAGES } from '@features/auth/messages/error-messages';
 import { createPasswordForm } from '@features/auth/pages/change-password/change-password-page.config';
 
 @Component({

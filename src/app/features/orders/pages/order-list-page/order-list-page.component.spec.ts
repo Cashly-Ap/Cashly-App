@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { OrderListPageComponent } from '@features/orders/pages/order-list-page/order-list-page.component';
 import { OrderApplicationService } from '@features/orders/services/application/order-application.service';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
-import { OrderList } from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
 import { PdfViewerService } from '@core/pdf-viewer';
 

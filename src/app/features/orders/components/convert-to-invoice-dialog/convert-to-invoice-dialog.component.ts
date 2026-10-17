@@ -19,11 +19,11 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import {
   PaymentType,
   PAYMENT_TYPE_LABELS,
-} from '@features/invoices/models/enums/payment-type.enum';
-import { ReceivablesApiService } from '@features/receivables/services/api/receivables-api.service';
-import { CreditStatusResponse } from '@features/receivables/models/interfaces';
-import { PaymentMethodApiService } from '@features/payment-methods/services/api/payment-method-api.service';
-import { PaymentMethodList } from '@features/payment-methods/models/interfaces';
+} from '@features/finance/billing/invoices/models/enums/payment-type.enum';
+import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
+import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
+import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
+import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 import { CustomerBalanceApiService } from '@features/customers/services/api/customer-balance-api.service';
 import { ConvertToInvoiceRequest } from '@features/orders/services/api/order-api.service';
 

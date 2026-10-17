@@ -3,7 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
-import { CategoryList, CategoryDetails } from '@features/categories/models/interfaces';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
+import { CategoryDetails } from '@features/categories/models/interfaces/category-details.interface';
 
 describe('CategoryApiService', () => {
   let service: CategoryApiService;

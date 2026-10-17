@@ -13,7 +13,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { QuoteApiService } from '@features/quotes/services/api/quote-api.service';
-import { QuoteDetails } from '@features/quotes/models/interfaces';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
 
 interface AllocationWithStock {
   warehouseName: string;

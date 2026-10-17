@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { WAREHOUSE_ROUTES } from '@features/warehouses/router/warehouse.routes';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('WAREHOUSE_ROUTES', () => {
   it('should define routes array', () => {

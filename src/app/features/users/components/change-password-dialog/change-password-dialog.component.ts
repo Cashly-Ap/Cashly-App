@@ -10,8 +10,8 @@ import { NgClass } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { PasswordModule } from 'primeng/password';
-import { UserApplicationService } from '@features/users/services/application';
-import { UserValidators } from '@features/users/validators';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
+import { UserValidators } from '@features/users/validators/user.validators';
 import { MessageService } from 'primeng/api';
 
 @Component({

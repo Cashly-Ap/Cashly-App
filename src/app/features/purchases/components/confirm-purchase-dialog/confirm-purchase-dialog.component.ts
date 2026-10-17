@@ -12,7 +12,7 @@ import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { PurchaseApiService } from '@features/purchases/services/api/purchase-api.service';
-import { PurchaseDetails } from '@features/purchases/models/interfaces';
+import { PurchaseDetails } from '@features/purchases/models/interfaces/purchase-details.interface';
 import { PurchaseStatus } from '@features/purchases/models/enums/purchase-status.enum';
 @Component({
   selector: 'app-confirm-purchase-dialog',

@@ -7,9 +7,9 @@ import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { UsersFormPageComponent } from '@features/users/pages/users-form-page/users-form-page.component';
-import { UserApplicationService } from '@features/users/services/application';
-import { UserDetails } from '@features/users/models/interfaces';
-import { UserType } from '@features/users/models/enums';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 
 describe('UsersFormPageComponent', () => {
   let component: UsersFormPageComponent;

@@ -6,12 +6,10 @@ import {
   ConvertToInvoiceRequest,
 } from '@features/orders/services/api/order-api.service';
 import { OrderMapper } from '@features/orders/services/mappers/order.mapper';
-import {
-  OrderList,
-  OrderDetails,
-  OrderCreate,
-  OrderEdit,
-} from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
+import { OrderDetails } from '@features/orders/models/interfaces/order-details.interface';
+import { OrderCreate } from '@features/orders/models/interfaces/order-create.interface';
+import { OrderEdit } from '@features/orders/models/interfaces/order-edit.interface';
 
 @Injectable({ providedIn: 'root' })
 export class OrderApplicationService {

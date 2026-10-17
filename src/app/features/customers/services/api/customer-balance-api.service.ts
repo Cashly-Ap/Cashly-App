@@ -2,10 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import {
-  CustomerBalanceResponse,
-  BalanceTransactionResponse,
-} from '@features/customers/models/interfaces';
+import { CustomerBalanceResponse } from '@features/customers/models/interfaces/customer-balance.interface';
+import { BalanceTransactionResponse } from '@features/customers/models/interfaces/balance-transaction.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CreateAdvanceRequest {

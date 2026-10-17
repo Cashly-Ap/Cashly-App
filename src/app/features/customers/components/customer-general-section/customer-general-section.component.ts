@@ -8,7 +8,11 @@ import {
   SelectInputComponent,
   NumberInputComponent,
 } from '@core/forms/components';
-import { CUSTOMER_TYPES, PaymentType, PAYMENT_TYPES } from '@features/customers/models/enums';
+import { CUSTOMER_TYPES } from '@features/customers/models/enums/customer-type.enum';
+import {
+  PaymentType,
+  PAYMENT_TYPES,
+} from '@features/customers/models/enums/payment-type.enum';
 
 interface SelectOption {
   label: string;

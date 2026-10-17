@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA, Component, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { of } from 'rxjs';
 import { ProductGeneralSectionComponent } from '@features/products/components/product-general-section/product-general-section.component';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
 
 @Component({

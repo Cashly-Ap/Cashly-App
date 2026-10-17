@@ -14,8 +14,8 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { MovementsPdfFilters } from '@features/reports/inventory/models/interfaces/movements-pdf-filters.interface';
 
 @Component({
   selector: 'app-movements-pdf-modal',

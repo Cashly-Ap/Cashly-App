@@ -10,9 +10,9 @@ import {
   LogoutRequest,
   ChangeUsernameRequest,
   ChangePasswordRequest,
-  UserResponse,
-  AuthenticationResponse,
-} from '@features/auth/models';
+} from '@features/auth/models/interfaces/auth-request.interface';
+import { UserResponse } from '@features/auth/models/interfaces/user.interface';
+import { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
 import { environment } from '@env/environment';
 
 describe('AuthApiService', () => {

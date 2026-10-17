@@ -13,7 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { CheckboxModule } from 'primeng/checkbox';
 import { SelectModule } from 'primeng/select';
 import { ListSectionComponent } from '@core/forms/components';
-import { CustomerValidators } from '@features/customers/validators';
+import { CustomerValidators } from '@features/customers/validators/customer.validators';
 import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,

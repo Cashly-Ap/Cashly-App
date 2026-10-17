@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { PRICE_TYPE_ROUTES } from '@features/price-types/router/price-type.routes';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('Price Type Routes', () => {
   it('should have a parent route with children', () => {

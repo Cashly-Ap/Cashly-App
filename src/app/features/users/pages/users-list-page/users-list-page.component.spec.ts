@@ -5,9 +5,9 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UsersListPageComponent } from '@features/users/pages/users-list-page/users-list-page.component';
-import { UserApplicationService } from '@features/users/services/application';
-import { UserType } from '@features/users/models/enums';
-import { UserList } from '@features/users/models/interfaces';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
+import { UserType } from '@features/users/models/enums/user-type.enum';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
 
 describe('UsersListPageComponent', () => {
   let component: UsersListPageComponent;

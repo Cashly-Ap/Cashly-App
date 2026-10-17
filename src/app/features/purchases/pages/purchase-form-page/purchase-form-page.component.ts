@@ -21,10 +21,13 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
 import { PurchaseItemsTableComponent } from '@features/purchases/components/purchase-items-table/purchase-items-table.component';
-import { PurchaseFormData, PurchaseLineFormData } from '@features/purchases/models/interfaces';
-import { SupplierList } from '@features/suppliers/models/interfaces';
+import {
+  PurchaseFormData,
+  PurchaseLineFormData,
+} from '@features/purchases/models/interfaces/purchase-form-data.interface';
+import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
 import { SupplierPickerDialogComponent } from '@features/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
-import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
+import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages/success-messages';
 
 @Component({
   selector: 'app-purchase-form-page',

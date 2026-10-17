@@ -1,8 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap, finalize, shareReplay } from 'rxjs/operators';
-import { AuthApiService } from '@features/auth/services/api';
-import { AUTH_HTTP_ERRORS, AUTH_DEFAULT_ERROR_MESSAGE } from '@features/auth/messages';
+import { AuthApiService } from '@features/auth/services/api/auth-api.service';
+import {
+  AUTH_HTTP_ERRORS,
+  AUTH_DEFAULT_ERROR_MESSAGE,
+} from '@features/auth/messages/error-messages';
 import {
   RegisterUserRequest,
   LoginRequest,
@@ -11,10 +14,10 @@ import {
   ChangeUsernameRequest,
   ChangePasswordRequest,
   ChangeCommissionDeductionRequest,
-  UserResponse,
-  AuthenticationResponse,
-} from '@features/auth/models';
-import { BusinessModule } from '@features/users/models/enums';
+} from '@features/auth/models/interfaces/auth-request.interface';
+import { UserResponse } from '@features/auth/models/interfaces/user.interface';
+import { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {

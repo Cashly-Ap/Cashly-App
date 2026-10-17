@@ -10,7 +10,7 @@ import { PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { authInterceptor } from '@features/auth/interceptors/auth.interceptor';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { signal } from '@angular/core';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { of, throwError } from 'rxjs';

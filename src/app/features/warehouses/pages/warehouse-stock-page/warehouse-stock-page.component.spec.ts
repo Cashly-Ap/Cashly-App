@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { WarehouseStockPageComponent } from './warehouse-stock-page.component';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import { WarehouseStockPageComponent } from '@features/warehouses/pages/warehouse-stock-page/warehouse-stock-page.component';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 
 describe('WarehouseStockPageComponent', () => {
   let fixture: ComponentFixture<WarehouseStockPageComponent>;

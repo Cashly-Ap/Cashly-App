@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import {
-  SupplierList,
-  SupplierDetails,
-  SupplierCreate,
-  SupplierEdit,
-} from '@features/suppliers/models/interfaces';
+import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import { SupplierDetails } from '@features/suppliers/models/interfaces/supplier-details.interface';
+import { SupplierCreate } from '@features/suppliers/models/interfaces/supplier-create.interface';
+import { SupplierEdit } from '@features/suppliers/models/interfaces/supplier-edit.interface';
 
 export interface SupplierFormModel {
   id?: string;

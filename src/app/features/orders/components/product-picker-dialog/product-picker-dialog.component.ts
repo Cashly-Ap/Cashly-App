@@ -22,13 +22,13 @@ import { OrderApiService } from '@features/orders/services/api/order-api.service
 import {
   OrderProduct,
   OrderProductStockItem,
-  OrderItemFormData,
-} from '@features/orders/models/interfaces';
+} from '@features/orders/models/interfaces/order-product.interface';
+import { OrderItemFormData } from '@features/orders/models/interfaces/order-form-data.interface';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
-import { CategoryList } from '@features/categories/models/interfaces';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
 import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 const PAGE_SIZE = 10;
 

@@ -1,4 +1,5 @@
-import { QuoteList, QuoteDetails } from '@features/quotes/models/interfaces';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
 
 export interface QuoteFormItem {
   productId: string;

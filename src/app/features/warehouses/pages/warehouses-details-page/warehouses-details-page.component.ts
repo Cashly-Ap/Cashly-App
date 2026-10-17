@@ -4,28 +4,22 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import {
-  DetailActionsMenuComponent,
-  DetailsCardComponent,
-  DetailsCardHeaderComponent,
-  DetailsInfoFieldComponent,
-  DetailsInfoGridComponent,
-} from '@shared/components/details';
-import {
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
-  StatusBadgeComponent,
-} from '@shared/components/ui';
-import { WarehouseDetails } from '@features/warehouses/models/interfaces';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { WarehouseDetails } from '@features/warehouses/models/interfaces/warehouse.interfaces';
 import {
   WarehouseStockOperation,
   WarehouseStockOperationDialogComponent,
-} from '@features/warehouses/components';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import {
-  WAREHOUSE_ERROR_MESSAGES,
-  WAREHOUSE_SUCCESS_MESSAGES,
-} from '@features/warehouses/messages';
+} from '@features/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages/error-messages';
+import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/warehouses/messages/success-messages';
 
 @Component({
   selector: 'app-warehouses-details-page',

@@ -5,17 +5,17 @@ import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ProductsFormPageComponent } from '@features/products/pages/products-form-page/products-form-page.component';
-import { ProductApplicationService } from '@features/products/services/application';
-import { ProductPhotoService } from '@features/products/services/api';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { ProductPhotoService } from '@features/products/services/api/product-photo.service';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
-import { ProductDetails } from '@features/products/models/interfaces';
+import { ProductDetails } from '@features/products/models/interfaces/product-details.interface';
 import { PendingTabsService } from '@core/pending-tabs';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 
 describe('ProductsFormPageComponent', () => {

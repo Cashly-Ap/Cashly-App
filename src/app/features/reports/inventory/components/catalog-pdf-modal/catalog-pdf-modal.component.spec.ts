@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal/catalog-pdf-modal.component';
-import { CategoryApplicationService } from '@features/categories/services/application';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 
 @Component({
   template: `<app-catalog-pdf-modal

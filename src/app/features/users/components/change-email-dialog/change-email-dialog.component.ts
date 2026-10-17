@@ -10,7 +10,7 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { TextInputComponent } from '@core/forms/components';
-import { UserApplicationService } from '@features/users/services/application';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
 import { MessageService } from 'primeng/api';
 
 function emailsMatch(group: AbstractControl): ValidationErrors | null {

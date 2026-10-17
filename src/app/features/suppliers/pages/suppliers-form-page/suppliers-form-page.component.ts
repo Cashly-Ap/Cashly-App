@@ -13,10 +13,13 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { SupplierApplicationService } from '@features/suppliers/services/application';
-import { SupplierMapper } from '@features/suppliers/services/mappers';
-import { SupplierType, SUPPLIER_TYPES } from '@features/suppliers/models/enums';
-import { SupplierValidators } from '@features/suppliers/validators';
+import { SupplierApplicationService } from '@features/suppliers/services/application/supplier-application.service';
+import { SupplierMapper } from '@features/suppliers/services/mappers/supplier.mapper';
+import {
+  SupplierType,
+  SUPPLIER_TYPES,
+} from '@features/suppliers/models/enums/supplier-type.enum';
+import { SupplierValidators } from '@features/suppliers/validators/supplier.validators';
 import { SupplierGeneralSectionComponent } from '@features/suppliers/components/supplier-general-section/supplier-general-section.component';
 import { SupplierContactSectionComponent } from '@features/suppliers/components/supplier-contact-section/supplier-contact-section.component';
 import { SupplierAddressesSectionComponent } from '@features/suppliers/components/supplier-addresses-section/supplier-addresses-section.component';

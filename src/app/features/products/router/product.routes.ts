@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard, modulePermissionGuard } from '@features/auth/guards';
-import { BusinessModule } from '@features/users/models/enums';
+import { authGuard } from '@features/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export const PRODUCT_ROUTES: Routes = [
   {
@@ -11,17 +12,17 @@ export const PRODUCT_ROUTES: Routes = [
       {
         path: '',
         loadComponent: () =>
-          import('@features/products/pages/products-list-page/products-list-page.component').then(
-            (m) => m.ProductsListPageComponent,
-          ),
+          import(
+            '@features/products/pages/products-list-page/products-list-page.component'
+          ).then((m) => m.ProductsListPageComponent),
         title: 'Productos',
       },
       {
         path: 'new',
         loadComponent: () =>
-          import('@features/products/pages/products-form-page/products-form-page.component').then(
-            (m) => m.ProductsFormPageComponent,
-          ),
+          import(
+            '@features/products/pages/products-form-page/products-form-page.component'
+          ).then((m) => m.ProductsFormPageComponent),
         title: 'Nuevo Producto',
       },
       {
@@ -35,9 +36,9 @@ export const PRODUCT_ROUTES: Routes = [
       {
         path: ':id/edit',
         loadComponent: () =>
-          import('@features/products/pages/products-form-page/products-form-page.component').then(
-            (m) => m.ProductsFormPageComponent,
-          ),
+          import(
+            '@features/products/pages/products-form-page/products-form-page.component'
+          ).then((m) => m.ProductsFormPageComponent),
         title: 'Editar Producto',
       },
     ],

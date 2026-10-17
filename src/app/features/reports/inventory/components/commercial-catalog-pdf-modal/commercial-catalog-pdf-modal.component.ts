@@ -14,10 +14,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
-import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { CommercialCatalogPdfFilters } from '@features/reports/inventory/models/interfaces/commercial-catalog-pdf-filters.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 @Component({
   selector: 'app-commercial-catalog-pdf-modal',
@@ -83,7 +83,9 @@ export class CommercialCatalogPdfModalComponent {
       completed++;
     }
     if (needsPriceTypes) {
-      this.priceTypeService.loadAll({ size: 1000 }).subscribe({ next: checkDone, error: checkDone });
+      this.priceTypeService
+        .loadAll({ size: 1000 })
+        .subscribe({ next: checkDone, error: checkDone });
     } else {
       completed++;
     }

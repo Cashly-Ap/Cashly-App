@@ -1,4 +1,5 @@
-import { PurchaseList, PurchaseDetails } from '@features/purchases/models/interfaces';
+import { PurchaseList } from '@features/purchases/models/interfaces/purchase-list.interface';
+import { PurchaseDetails } from '@features/purchases/models/interfaces/purchase-details.interface';
 
 export interface PurchaseFormItem {
   productId: string;

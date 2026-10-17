@@ -27,10 +27,10 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 import { PriceTypeFilters } from '@features/price-types/services/api/price-type-api.service';
-import { PriceTypeList } from '@features/price-types/models/interfaces';
+import { PriceTypeList } from '@features/price-types/models/interfaces/price-type-list.interface';
 
 @Component({
   selector: 'app-price-types-list-page',

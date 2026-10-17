@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { authGuard, modulePermissionGuard } from '@features/auth/guards';
-import { BusinessModule } from '@features/users/models/enums';
+import { authGuard } from '@features/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export const CATEGORY_ROUTES: Routes = [
   {

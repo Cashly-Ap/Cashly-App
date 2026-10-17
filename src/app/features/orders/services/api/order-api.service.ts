@@ -1,13 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import {
-  OrderList,
-  OrderDetails,
-  OrderCreate,
-  OrderEdit,
-  OrderProduct,
-} from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
+import { OrderDetails } from '@features/orders/models/interfaces/order-details.interface';
+import { OrderCreate } from '@features/orders/models/interfaces/order-create.interface';
+import { OrderEdit } from '@features/orders/models/interfaces/order-edit.interface';
+import { OrderProduct } from '@features/orders/models/interfaces/order-product.interface';
 import { OrderStatus } from '@features/orders/models/enums/order-status.enum';
 
 export interface ConvertToInvoiceRequest {

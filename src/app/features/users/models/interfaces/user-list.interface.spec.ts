@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import type { UserList } from '@features/users/models/interfaces/user-list.interface';
-import { UserType, BusinessModule } from '@features/users/models/enums';
+import { UserType } from '@features/users/models/enums/user-type.enum';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('UserList interface', () => {
   it('should have all required properties', () => {

@@ -14,8 +14,8 @@ import { DialogModule } from 'primeng/dialog';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerList } from '@features/customers/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   CUSTOMER_TYPES,
   CustomerType,

@@ -1,4 +1,6 @@
-import { UserList, UserDetails, UserEdit } from '@features/users/models/interfaces';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
 
 export class UserMapper {
   static toList(user: UserDetails): UserList {

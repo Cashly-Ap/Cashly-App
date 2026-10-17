@@ -18,14 +18,15 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { ProductApplicationService } from '@features/products/services/application';
-import { ProductPhotoService } from '@features/products/services/api';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { ProductPhotoService } from '@features/products/services/api/product-photo.service';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { ProductComponentInput, ProductPriceItem } from '@features/products/models/interfaces';
+import { ProductComponentInput } from '@features/products/models/interfaces/product-create-update.interface';
+import { ProductPriceItem } from '@features/products/models/interfaces/product-price-item.interface';
 import { ProductGeneralSectionComponent } from '@features/products/components/product-general-section/product-general-section.component';
 import { ProductCompositionSectionComponent } from '@features/products/components/product-composition-section/product-composition-section.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
-import { PriceTypeList } from '@features/price-types/models/interfaces';
+import { PriceTypeList } from '@features/price-types/models/interfaces/price-type-list.interface';
 import { switchMap, of, combineLatest, filter, take } from 'rxjs';
 
 interface ProductFormData {

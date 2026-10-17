@@ -2,30 +2,28 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import {
-  DetailActionsMenuComponent,
-  DetailsCardComponent,
-  DetailsCardHeaderComponent,
-  DetailsInfoFieldComponent,
-  DetailsInfoGridComponent,
-} from '@shared/components/details';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { UserApplicationService } from '@features/users/services/application';
-import { UserDetails } from '@features/users/models/interfaces';
+import { UserApplicationService } from '@features/users/services/application/user-application.service';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
 import {
   getUserTypeLabel,
   UserType,
+} from '@features/users/models/enums/user-type.enum';
+import {
   BusinessModule,
   BUSINESS_MODULE_LABELS,
-} from '@features/users/models/enums';
+} from '@features/users/models/enums/business-module.enum';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import {
-  ChangePasswordDialogComponent,
-  ChangeEmailDialogComponent,
-} from '@features/users/components';
+import { ChangePasswordDialogComponent } from '@features/users/components/change-password-dialog/change-password-dialog.component';
+import { ChangeEmailDialogComponent } from '@features/users/components/change-email-dialog/change-email-dialog.component';
 
 @Component({
   selector: 'app-users-details-page',

@@ -14,10 +14,10 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { CategoryApplicationService } from '@features/categories/services/application';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { CatalogPdfFilters } from '@features/reports/inventory/models/interfaces/catalog-pdf-filters.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 @Component({
   selector: 'app-catalog-pdf-modal',

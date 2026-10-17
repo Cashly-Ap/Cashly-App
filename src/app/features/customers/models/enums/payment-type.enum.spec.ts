@@ -1,4 +1,7 @@
-import { PaymentType, PAYMENT_TYPES } from '@features/customers/models/enums/payment-type.enum';
+import {
+  PaymentType,
+  PAYMENT_TYPES,
+} from '@features/customers/models/enums/payment-type.enum';
 
 describe('PaymentType', () => {
   it('should have all expected enum values', () => {

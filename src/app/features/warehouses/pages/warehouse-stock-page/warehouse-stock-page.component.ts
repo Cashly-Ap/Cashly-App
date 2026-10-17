@@ -13,16 +13,15 @@ import { catchError, forkJoin, of } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
-import { DetailsCardComponent, DetailsCardHeaderComponent } from '@shared/components/details';
-import {
-  EmptyStateComponent,
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
-  SearchFieldComponent,
-} from '@shared/components/ui';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import { WarehouseStockItem } from '@features/warehouses/models/interfaces';
-import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WarehouseStockItem } from '@features/warehouses/models/interfaces/warehouse.interfaces';
+import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages/error-messages';
 
 const PAGE_SIZE = 10;
 

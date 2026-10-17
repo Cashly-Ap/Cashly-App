@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ListSectionComponent, ListItemComponent } from '@core/forms/components';
-import { CustomerValidators } from '@features/customers/validators';
+import { CustomerValidators } from '@features/customers/validators/customer.validators';
 
 @Component({
   selector: 'app-customer-contact-section',

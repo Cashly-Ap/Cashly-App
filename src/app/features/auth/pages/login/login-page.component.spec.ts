@@ -5,14 +5,15 @@ import { of, throwError } from 'rxjs';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { signal } from '@angular/core';
 import { LoginPageComponent } from '@features/auth/pages/login/login-page.component';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { CardModule } from 'primeng/card';
 import { ButtonModule } from 'primeng/button';
 import { MessageModule } from 'primeng/message';
 import { MessageService } from 'primeng/api';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
-import { AuthenticationResponse, UserResponse } from '@features/auth/models';
+import { AuthenticationResponse } from '@features/auth/models/interfaces/auth-response.interface';
+import { UserResponse } from '@features/auth/models/interfaces/user.interface';
 
 describe('LoginPageComponent', () => {
   let component: LoginPageComponent;

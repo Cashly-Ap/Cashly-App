@@ -21,7 +21,7 @@ import {
   FileInputComponent,
 } from '@core/forms/components/inputs';
 import { TabContentComponent } from '@core/forms/components/cards';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
 import { ProductPricesSectionComponent } from '@features/products/components/product-prices-section/product-prices-section.component';
 

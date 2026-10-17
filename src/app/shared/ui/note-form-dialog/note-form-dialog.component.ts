@@ -14,9 +14,9 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { CreditNoteApiService } from '@features/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/debit-notes/services/api/debit-note-api.service';
-import { InvoiceDetails } from '@features/invoices/models/interfaces';
+import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
+import { InvoiceDetails } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
 
 type NoteType = 'CREDIT' | 'DEBIT';
 

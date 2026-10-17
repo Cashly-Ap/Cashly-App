@@ -20,9 +20,12 @@ import {
   FormActionsComponent,
 } from '@core/forms/components';
 import { TextInputComponent, SelectInputComponent } from '@core/forms/components/inputs';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { VENEZUELA_STATES, VenezuelaState } from '@features/customers/data/venezuela-geo.data';
+import {
+  VENEZUELA_STATES,
+  VenezuelaState,
+} from '@features/customers/data/venezuela-geo.data';
 
 interface WarehouseFormData {
   name: string;

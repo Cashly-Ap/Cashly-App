@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
-import { authGuard, homeRedirectGuard } from '@features/auth/guards';
+import { authGuard } from '@features/auth/guards/auth.guard';
+import { homeRedirectGuard } from '@features/auth/guards/home-redirect.guard';
 import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 export const routes: Routes = [
   {
@@ -9,7 +10,9 @@ export const routes: Routes = [
     pathMatch: 'full',
     canActivate: [homeRedirectGuard],
     loadComponent: () =>
-      import('@features/auth/pages/login/login-page.component').then((m) => m.LoginPageComponent),
+      import('@features/auth/pages/login/login-page.component').then(
+        (m) => m.LoginPageComponent,
+      ),
   },
   {
     path: 'auth',
@@ -30,41 +33,49 @@ export const routes: Routes = [
         canActivate: [authGuard, modulePermissionGuard],
         data: { module: BusinessModule.DASHBOARD },
         loadComponent: () =>
-          import('@features/dashboard/pages/dashboard-page/dashboard-page.component').then(
-            (m) => m.DashboardPageComponent,
-          ),
+          import(
+            '@features/dashboard/pages/dashboard-page/dashboard-page.component'
+          ).then((m) => m.DashboardPageComponent),
       },
       {
         path: 'users',
-        loadChildren: () => import('@features/users/router').then((m) => m.USER_ROUTES),
+        loadChildren: () =>
+          import('@features/users/router').then((m) => m.USER_ROUTES),
       },
       {
         path: 'customers',
-        loadChildren: () => import('@features/customers/router').then((m) => m.CUSTOMER_ROUTES),
+        loadChildren: () =>
+          import('@features/customers/router').then((m) => m.CUSTOMER_ROUTES),
       },
       {
         path: 'suppliers',
-        loadChildren: () => import('@features/suppliers/router').then((m) => m.SUPPLIER_ROUTES),
+        loadChildren: () =>
+          import('@features/suppliers/router').then((m) => m.SUPPLIER_ROUTES),
       },
       {
         path: 'purchases',
-        loadChildren: () => import('@features/purchases/router').then((m) => m.PURCHASE_ROUTES),
+        loadChildren: () =>
+          import('@features/purchases/router').then((m) => m.PURCHASE_ROUTES),
       },
       {
         path: 'categories',
-        loadChildren: () => import('@features/categories/router').then((m) => m.CATEGORY_ROUTES),
+        loadChildren: () =>
+          import('@features/categories/router').then((m) => m.CATEGORY_ROUTES),
       },
       {
         path: 'price-types',
-        loadChildren: () => import('@features/price-types/router').then((m) => m.PRICE_TYPE_ROUTES),
+        loadChildren: () =>
+          import('@features/price-types/router').then((m) => m.PRICE_TYPE_ROUTES),
       },
       {
         path: 'products',
-        loadChildren: () => import('@features/products/router').then((m) => m.PRODUCT_ROUTES),
+        loadChildren: () =>
+          import('@features/products/router').then((m) => m.PRODUCT_ROUTES),
       },
       {
         path: 'warehouses',
-        loadChildren: () => import('@features/warehouses/router').then((m) => m.WAREHOUSE_ROUTES),
+        loadChildren: () =>
+          import('@features/warehouses/router').then((m) => m.WAREHOUSE_ROUTES),
       },
       {
         path: 'orders',
@@ -76,39 +87,51 @@ export const routes: Routes = [
       },
       {
         path: 'invoices',
-        loadChildren: () => import('@features/invoices/router').then((m) => m.INVOICE_ROUTES),
+        loadChildren: () =>
+          import('@features/finance/billing/invoices/routing').then((m) => m.INVOICE_ROUTES),
       },
       {
         path: 'reports',
-        loadChildren: () => import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
+        loadChildren: () =>
+          import('@features/reports/router').then((m) => m.REPORTS_ROUTES),
       },
       {
         path: 'payment-methods',
         loadChildren: () =>
-          import('@features/payment-methods/router').then((m) => m.PAYMENT_METHOD_ROUTES),
+          import('@features/finance/treasury/payment-methods/routing').then(
+            (m) => m.PAYMENT_METHOD_ROUTES,
+          ),
       },
       {
         path: 'credit-notes',
         loadChildren: () =>
-          import('@features/credit-notes/router').then((m) => m.CREDIT_NOTE_ROUTES),
+          import('@features/finance/billing/credit-notes/routing').then(
+            (m) => m.CREDIT_NOTE_ROUTES,
+          ),
       },
       {
         path: 'debit-notes',
-        loadChildren: () => import('@features/debit-notes/router').then((m) => m.DEBIT_NOTE_ROUTES),
+        loadChildren: () =>
+          import('@features/finance/billing/debit-notes/routing').then((m) => m.DEBIT_NOTE_ROUTES),
       },
       {
         path: 'returns',
-        loadChildren: () => import('@features/returns/router').then((m) => m.RETURN_ROUTES),
+        loadChildren: () =>
+          import('@features/finance/billing/returns/routing').then((m) => m.RETURN_ROUTES),
       },
       {
         path: 'cash-register',
         loadChildren: () =>
-          import('@features/cash-register/router').then((m) => m.CASH_REGISTER_ROUTES),
+          import('@features/finance/treasury/cash-register/routing').then(
+            (m) => m.CASH_REGISTER_ROUTES,
+          ),
       },
       {
         path: 'receivables',
         loadChildren: () =>
-          import('@features/receivables/router').then((m) => m.RECEIVABLES_ROUTES),
+          import('@features/finance/treasury/receivables/routing').then(
+            (m) => m.RECEIVABLES_ROUTES,
+          ),
       },
     ],
   },

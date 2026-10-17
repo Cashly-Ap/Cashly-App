@@ -3,7 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { PriceTypeApiService } from '@features/price-types/services/api/price-type-api.service';
-import { PriceTypeList, PriceTypeDetails } from '@features/price-types/models/interfaces';
+import { PriceTypeList } from '@features/price-types/models/interfaces/price-type-list.interface';
+import { PriceTypeDetails } from '@features/price-types/models/interfaces/price-type-details.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('PriceTypeApiService', () => {
@@ -55,7 +56,14 @@ describe('PriceTypeApiService', () => {
 
     it('should_send_pagination_and_filter_params', () => {
       service
-        .getAll({ search: 'Mayo', active: true, page: 1, size: 25, orderBy: 'name', orderDir: 'desc' })
+        .getAll({
+          search: 'Mayo',
+          active: true,
+          page: 1,
+          size: 25,
+          orderBy: 'name',
+          orderDir: 'desc',
+        })
         .subscribe();
       const req = httpMock.expectOne(
         (r) =>

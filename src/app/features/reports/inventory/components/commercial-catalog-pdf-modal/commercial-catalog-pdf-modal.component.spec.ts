@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal/commercial-catalog-pdf-modal.component';
-import { CategoryApplicationService } from '@features/categories/services/application';
+import { CategoryApplicationService } from '@features/categories/services/application/category-application.service';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
 
 @Component({

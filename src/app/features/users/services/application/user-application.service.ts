@@ -1,9 +1,15 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
-import { UserApiService, UserFilters } from '@features/users/services/api/user-api.service';
+import {
+  UserApiService,
+  UserFilters,
+} from '@features/users/services/api/user-api.service';
 import { UserMapper } from '@features/users/services/mappers/user.mapper';
-import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
-import { BusinessModule } from '@features/users/models/enums';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserCreate } from '@features/users/models/interfaces/user-create.interface';
+import { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

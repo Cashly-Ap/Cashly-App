@@ -6,12 +6,10 @@ import {
   SupplierCreatedResponse,
 } from '@features/suppliers/services/api/supplier-api.service';
 import { SupplierMapper } from '@features/suppliers/services/mappers/supplier.mapper';
-import {
-  SupplierList,
-  SupplierDetails,
-  SupplierCreate,
-  SupplierEdit,
-} from '@features/suppliers/models/interfaces';
+import { SupplierList } from '@features/suppliers/models/interfaces/supplier-list.interface';
+import { SupplierDetails } from '@features/suppliers/models/interfaces/supplier-details.interface';
+import { SupplierCreate } from '@features/suppliers/models/interfaces/supplier-create.interface';
+import { SupplierEdit } from '@features/suppliers/models/interfaces/supplier-edit.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

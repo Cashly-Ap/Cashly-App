@@ -6,12 +6,12 @@ import { of } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { PriceTypesListPageComponent } from '@features/price-types/pages/price-types-list-page/price-types-list-page.component';
 import { PriceTypeApplicationService } from '@features/price-types/services/application/price-type-application.service';
-import { PriceTypeList } from '@features/price-types/models/interfaces';
+import { PriceTypeList } from '@features/price-types/models/interfaces/price-type-list.interface';
 import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
 import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
 import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
 import { OrderPdfApiService } from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/reports/invoices/services/api/invoice-pdf-api.service';
+import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/reports/quotes/services/api/quote-pdf-api.service';
 
 describe('PriceTypesListPageComponent', () => {

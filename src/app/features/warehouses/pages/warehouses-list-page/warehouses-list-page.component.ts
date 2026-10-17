@@ -25,24 +25,20 @@ import {
   ListActionButtonsComponent,
   ListContainerComponent,
 } from '@shared/components/list';
-import {
-  ContentCardComponent,
-  EmptyStateComponent,
-  LoadingSpinnerComponent,
-  SearchFieldComponent,
-  StatusBadgeComponent,
-} from '@shared/components/ui';
+import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import {
   WarehouseStockOperation,
   WarehouseStockOperationDialogComponent,
-} from '@features/warehouses/components';
-import { WarehouseList } from '@features/warehouses/models/interfaces';
+} from '@features/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component';
+import { WarehouseList } from '@features/warehouses/models/interfaces/warehouse.interfaces';
 import { WarehouseFilters } from '@features/warehouses/services/api/warehouse-api.service';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
-import {
-  WAREHOUSE_ERROR_MESSAGES,
-  WAREHOUSE_SUCCESS_MESSAGES,
-} from '@features/warehouses/messages';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
+import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages/error-messages';
+import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/warehouses/messages/success-messages';
 
 @Component({
   selector: 'app-warehouses-list-page',

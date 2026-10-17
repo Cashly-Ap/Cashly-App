@@ -19,14 +19,12 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
-import { ProductDetails } from '@features/products/models/interfaces';
-import { ProductApplicationService } from '@features/products/services/application';
-import { WarehouseStockItem } from '@features/warehouses/models/interfaces';
-import {
-  WAREHOUSE_ERROR_MESSAGES,
-  WAREHOUSE_SUCCESS_MESSAGES,
-} from '@features/warehouses/messages';
-import { WarehouseApplicationService } from '@features/warehouses/services/application';
+import { ProductDetails } from '@features/products/models/interfaces/product-details.interface';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { WarehouseStockItem } from '@features/warehouses/models/interfaces/warehouse.interfaces';
+import { WAREHOUSE_ERROR_MESSAGES } from '@features/warehouses/messages/error-messages';
+import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/warehouses/messages/success-messages';
+import { WarehouseApplicationService } from '@features/warehouses/services/application/warehouse-application.service';
 
 export type WarehouseStockOperation = 'entry' | 'exit';
 

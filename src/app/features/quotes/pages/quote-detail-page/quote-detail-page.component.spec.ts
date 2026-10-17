@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { QuoteDetailPageComponent } from '@features/quotes/pages/quote-detail-page/quote-detail-page.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
 import { QuoteStatus } from '@features/quotes/models/enums/quote-status.enum';
-import { QuoteDetails } from '@features/quotes/models/interfaces';
+import { QuoteDetails } from '@features/quotes/models/interfaces/quote-details.interface';
 
 describe('QuoteDetailPageComponent', () => {
   let component: QuoteDetailPageComponent;

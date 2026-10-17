@@ -1,4 +1,5 @@
-import { OrderList, OrderDetails } from '@features/orders/models/interfaces';
+import { OrderList } from '@features/orders/models/interfaces/order-list.interface';
+import { OrderDetails } from '@features/orders/models/interfaces/order-details.interface';
 
 export interface OrderFormItem {
   productId: string;

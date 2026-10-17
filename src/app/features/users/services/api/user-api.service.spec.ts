@@ -3,8 +3,11 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { UserApiService } from '@features/users/services/api/user-api.service';
-import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
-import { UserType } from '@features/users/models/enums';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserCreate } from '@features/users/models/interfaces/user-create.interface';
+import { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 
 describe('UserApiService', () => {
   let service: UserApiService;

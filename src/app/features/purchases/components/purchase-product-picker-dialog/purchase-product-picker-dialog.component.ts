@@ -19,13 +19,13 @@ import { TooltipModule } from 'primeng/tooltip';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { PurchaseApiService } from '@features/purchases/services/api/purchase-api.service';
-import { PurchaseProduct } from '@features/purchases/models/interfaces';
-import { PurchaseLineFormData } from '@features/purchases/models/interfaces';
+import { PurchaseProduct } from '@features/purchases/models/interfaces/purchase-product.interface';
+import { PurchaseLineFormData } from '@features/purchases/models/interfaces/purchase-form-data.interface';
 import { CategoryApiService } from '@features/categories/services/api/category-api.service';
-import { CategoryList } from '@features/categories/models/interfaces';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
 import { WarehouseStockPopoverComponent } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
 import { WarehouseStockEntry } from '@features/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 const PAGE_SIZE = 10;
 

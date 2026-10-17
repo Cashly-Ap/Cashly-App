@@ -4,7 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Component, signal } from '@angular/core';
 import { CustomerGeneralSectionComponent } from '@features/customers/components/customer-general-section/customer-general-section.component';
-import { CustomerType, PaymentType } from '@features/customers/models/enums';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { PaymentType } from '@features/customers/models/enums/payment-type.enum';
 
 @Component({
   template: `<app-customer-general-section [form]="form" [isEditMode]="isEditMode()" />`,

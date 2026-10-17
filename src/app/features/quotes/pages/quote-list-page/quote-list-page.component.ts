@@ -29,7 +29,7 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import { ConvertToOrderDialogComponent } from '@features/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 import { ConvertToInvoiceDialogComponent } from '@features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { QuoteApplicationService } from '@features/quotes/services/application/quote-application.service';
@@ -42,7 +42,7 @@ import {
   QUOTE_STATUS_LABELS,
   getQuoteStatusLabel,
 } from '@features/quotes/models/enums/quote-status.enum';
-import { QuoteList } from '@features/quotes/models/interfaces';
+import { QuoteList } from '@features/quotes/models/interfaces/quote-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 
 @Component({

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
-import { UserType } from '@features/users/models/enums';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 
 describe('UserEdit interface', () => {
   it('should have all required properties', () => {

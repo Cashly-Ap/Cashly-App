@@ -2,9 +2,12 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { UserApplicationService } from '@features/users/services/application/user-application.service';
-import { UserApiService } from '@features/users/services/api';
-import { UserList, UserDetails, UserCreate, UserEdit } from '@features/users/models/interfaces';
-import { UserType } from '@features/users/models/enums';
+import { UserApiService } from '@features/users/services/api/user-api.service';
+import { UserList } from '@features/users/models/interfaces/user-list.interface';
+import { UserDetails } from '@features/users/models/interfaces/user-details.interface';
+import { UserCreate } from '@features/users/models/interfaces/user-create.interface';
+import { UserEdit } from '@features/users/models/interfaces/user-edit.interface';
+import { UserType } from '@features/users/models/enums/user-type.enum';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 describe('UserApplicationService', () => {

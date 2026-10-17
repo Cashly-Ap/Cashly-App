@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
-import { AuthService } from '@features/auth/services';
-import { UserType } from '@features/auth/models';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
+import { UserType } from '@features/auth/models/interfaces/user.interface';
 
 @Component({
   selector: 'app-configuration-page',

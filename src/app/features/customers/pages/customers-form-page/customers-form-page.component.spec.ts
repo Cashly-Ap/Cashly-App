@@ -7,10 +7,10 @@ import { MessageService } from 'primeng/api';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CustomersFormPageComponent } from '@features/customers/pages/customers-form-page/customers-form-page.component';
-import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerType } from '@features/customers/models/enums';
-import { CustomerDetails } from '@features/customers/models/interfaces';
+import { CustomerType } from '@features/customers/models/enums/customer-type.enum';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
 
 describe('CustomersFormPageComponent', () => {

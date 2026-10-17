@@ -4,20 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
-import {
-  DetailActionsMenuComponent,
-  DetailsCardComponent,
-  DetailsCardHeaderComponent,
-  DetailsInfoFieldComponent,
-  DetailsInfoGridComponent,
-  DetailsSectionCardComponent,
-} from '@shared/components/details';
-import {
-  EmptyStateComponent,
-  LoadingSpinnerComponent,
-  PageHeaderComponent,
-  TextBadgeComponent,
-} from '@shared/components/ui';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
+import { DetailsSectionCardComponent } from '@shared/components/details/details-section-card/details-section-card.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
 import {
   PurchaseStatus,

@@ -14,8 +14,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { ProductApplicationService } from '@features/products/services/application';
-import { EmptyStateComponent } from '@shared/components';
+import { ProductApplicationService } from '@features/products/services/application/product-application.service';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 
 interface ProductOption {
   id: string;

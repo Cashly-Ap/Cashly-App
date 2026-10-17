@@ -4,12 +4,10 @@ import {
   CategoryApiService,
   CategoryFilters,
 } from '@features/categories/services/api/category-api.service';
-import {
-  CategoryList,
-  CategoryDetails,
-  CategoryCreate,
-  CategoryUpdate,
-} from '@features/categories/models/interfaces';
+import { CategoryList } from '@features/categories/models/interfaces/category-list.interface';
+import { CategoryDetails } from '@features/categories/models/interfaces/category-details.interface';
+import { CategoryCreate } from '@features/categories/models/interfaces/category-create.interface';
+import { CategoryUpdate } from '@features/categories/models/interfaces/category-update.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 @Injectable({ providedIn: 'root' })

@@ -29,7 +29,7 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import { CancelPurchaseDialogComponent } from '@features/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
 import { ConfirmPurchaseDialogComponent } from '@features/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApplicationService } from '@features/purchases/services/application/purchase-application.service';
@@ -39,9 +39,9 @@ import {
   PURCHASE_STATUS_LABELS,
   getPurchaseStatusLabel,
 } from '@features/purchases/models/enums/purchase-status.enum';
-import { PurchaseList } from '@features/purchases/models/interfaces';
+import { PurchaseList } from '@features/purchases/models/interfaces/purchase-list.interface';
 import { PdfViewerService } from '@core/pdf-viewer';
-import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages';
+import { PURCHASE_SUCCESS_MESSAGES } from '@features/purchases/messages/success-messages';
 
 @Component({
   selector: 'app-purchase-list-page',

@@ -1,13 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  CustomerList,
-  CustomerDetails,
-  CustomerCreate,
-  CustomerEdit,
-  CustomerWarehouseAccessItem,
-} from '@features/customers/models/interfaces';
+import { CustomerList } from '@features/customers/models/interfaces/customer-list.interface';
+import { CustomerDetails } from '@features/customers/models/interfaces/customer-details.interface';
+import { CustomerCreate } from '@features/customers/models/interfaces/customer-create.interface';
+import { CustomerEdit } from '@features/customers/models/interfaces/customer-edit.interface';
+import { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces/customer-warehouse-access.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CustomerFilters {

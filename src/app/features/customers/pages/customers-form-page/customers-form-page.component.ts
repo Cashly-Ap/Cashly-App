@@ -13,12 +13,16 @@ import {
   FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
-import { CustomerApplicationService } from '@features/customers/services/application';
+import { CustomerApplicationService } from '@features/customers/services/application/customer-application.service';
 import { CustomerApiService } from '@features/customers/services/api/customer-api.service';
-import { CustomerMapper } from '@features/customers/services/mappers';
-import { CustomerType, CUSTOMER_TYPES, PaymentType } from '@features/customers/models/enums';
-import { CustomerValidators } from '@features/customers/validators';
-import { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces';
+import { CustomerMapper } from '@features/customers/services/mappers/customer.mapper';
+import {
+  CustomerType,
+  CUSTOMER_TYPES,
+} from '@features/customers/models/enums/customer-type.enum';
+import { PaymentType } from '@features/customers/models/enums/payment-type.enum';
+import { CustomerValidators } from '@features/customers/validators/customer.validators';
+import { CustomerWarehouseAccessItem } from '@features/customers/models/interfaces/customer-warehouse-access.interface';
 import { CustomerGeneralSectionComponent } from '@features/customers/components/customer-general-section/customer-general-section.component';
 import { CustomerContactSectionComponent } from '@features/customers/components/customer-contact-section/customer-contact-section.component';
 import { CustomerAddressesSectionComponent } from '@features/customers/components/customer-addresses-section/customer-addresses-section.component';
@@ -351,7 +355,10 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
             this.router.navigate(['/customers']);
           },
           error: (error: unknown) =>
-            this.handleSaveError(error, 'Error al crear el cliente. Por favor, intente nuevamente.'),
+            this.handleSaveError(
+              error,
+              'Error al crear el cliente. Por favor, intente nuevamente.',
+            ),
         });
       }
     } else {

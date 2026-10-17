@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { modulePermissionGuard } from '@features/auth/guards/module-permission.guard';
-import { AuthService } from '@features/auth/services';
+import { AuthService } from '@features/auth/services/application/auth-application.service';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/users/models/enums/business-module.enum';
 
 describe('modulePermissionGuard', () => {
   let mockAuthService: {
