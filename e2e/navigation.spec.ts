@@ -78,35 +78,31 @@ async function authenticate(page: Page, modules = allModules, role = 'SUPER_ADMI
   });
 }
 
-function desktopLabel(page: Page, label: string) {
-  return page
-    .locator('p-menubar')
-    .getByText(label, { exact: true })
-    .filter({ visible: true })
-    .last();
-}
-
 async function openDesktop(page: Page, labels: readonly string[]): Promise<void> {
+  let menu = page.locator('p-menubar .p-menubar-root-list');
   for (const [index, label] of labels.entries()) {
-    const item = desktopLabel(page, label);
-    const submenu = await item.locator('xpath=ancestor::li[1]').getAttribute('aria-haspopup');
+    const item = menu
+      .locator(':scope > li > .p-menubar-item-content')
+      .getByText(label, { exact: true });
+    const entry = item.locator('xpath=ancestor::li[1]');
+    const submenu = await entry.getAttribute('aria-haspopup');
     if (index > 0 && submenu) {
       await item.hover();
     } else {
       await item.click();
     }
+    if (submenu) menu = entry.getByRole('menubar').first();
   }
 }
 
 async function openMobile(page: Page, labels: readonly string[]): Promise<void> {
   await page.getByRole('button', { name: 'Menú', exact: true }).click();
-  for (const label of labels) {
-    await page
-      .locator('.cashly-navigation-drawer')
-      .getByText(label, { exact: true })
-      .filter({ visible: true })
-      .last()
-      .click();
+  const drawer = page.locator('.cashly-navigation-drawer');
+  for (const [index, label] of labels.entries()) {
+    const item = index === 0
+      ? drawer.getByRole('button', { name: label, exact: true })
+      : drawer.getByRole('treeitem', { name: label, exact: true });
+    await item.click();
   }
 }
 
