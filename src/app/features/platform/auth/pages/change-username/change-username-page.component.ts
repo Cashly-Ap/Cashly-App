@@ -1,14 +1,21 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { FormContainerComponent, FormCardComponent } from '@core/forms/components/cards';
-import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
-import { TextInputComponent } from '@core/forms/components/inputs';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { AUTH_SUCCESS_MESSAGES } from '@features/platform/auth/messages/success-messages';
-import { AUTH_ERROR_MESSAGES } from '@features/platform/auth/messages/error-messages';
-import { createUserNameForm } from '@features/platform/auth/pages/change-username/change-username-page.config';
+import { ButtonModule } from 'primeng/button';
+import { TabsModule } from 'primeng/tabs';
+import {
+  FormContainerComponent,
+  FormCardComponent,
+  FormHeaderComponent,
+  FormActionsComponent,
+  TextInputComponent,
+  TabContentComponent,
+} from '@core/forms/components';
+import { AuthService } from '../../services/application/auth-application.service';
+import { SelfProfileService } from '../../services/api/self-profile.service';
+import { createUserNameForm } from './change-username-page.config';
 
 @Component({
   selector: 'app-change-username-page',
@@ -20,60 +27,117 @@ import { createUserNameForm } from '@features/platform/auth/pages/change-usernam
     FormHeaderComponent,
     FormActionsComponent,
     TextInputComponent,
+    TabContentComponent,
+    TabsModule,
+    ButtonModule,
   ],
   templateUrl: './change-username-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ChangeUsernamePageComponent implements OnInit {
-  private router = inject(Router);
-  protected authService = inject(AuthService);
-  private messageService = inject(MessageService);
-
-  form: FormGroup = createUserNameForm();
-
-  protected control(field: string): AbstractControl | null {
-    return this.form.get(field);
+export class ChangeUsernamePageComponent {
+  private readonly router = inject(Router);
+  private readonly auth = inject(AuthService);
+  private readonly profiles = inject(SelfProfileService);
+  private readonly messages = inject(MessageService);
+  private readonly destroyRef = inject(DestroyRef);
+  readonly form = createUserNameForm();
+  readonly loading = signal(false);
+  readonly saving = signal(false);
+  readonly error = signal(false);
+  readonly activeTab = signal('general');
+  readonly addressFields = [
+    { key: 'street', label: 'Calle y número' },
+    { key: 'city', label: 'Ciudad' },
+    { key: 'region', label: 'Provincia o región' },
+    { key: 'country', label: 'País' },
+    { key: 'postalCode', label: 'Código postal' },
+  ];
+  constructor() {
+    this.loadProfile();
   }
-
-  protected asFormControl(control: AbstractControl | null): FormControl {
-    return control as FormControl;
+  control(field: string): FormControl {
+    return this.form.get(field) as FormControl;
   }
-
-  ngOnInit(): void {
-    const currentUser = this.authService.currentUser();
-    if (currentUser) {
-      this.form.patchValue({ userName: currentUser.userName });
-    }
+  loadProfile(): void {
+    this.loading.set(true);
+    this.error.set(false);
+    this.profiles
+      .getProfile()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (user) => {
+          this.form.patchValue({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            userName: user.userName,
+            email: user.email,
+            phone: user.phone,
+            street: user.address?.street ?? '',
+            city: user.address?.city ?? '',
+            region: user.address?.region ?? '',
+            country: user.address?.country ?? '',
+            postalCode: user.address?.postalCode ?? '',
+          });
+          this.loading.set(false);
+        },
+        error: () => {
+          this.error.set(true);
+          this.loading.set(false);
+        },
+      });
   }
-
   onSubmit(): void {
-    if (!this.form.valid) {
+    if (this.loading() || this.error() || this.saving()) return;
+    if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.activeTab.set(
+        ['firstName', 'lastName', 'userName'].some((field) => this.control(field).invalid)
+          ? 'general'
+          : 'contact',
+      );
       return;
     }
-
-    const username = this.form.value.userName!;
-
-    this.authService.changeUsername({ username }).subscribe({
-      next: () => {
-        this.messageService.add(AUTH_SUCCESS_MESSAGES.usernameChanged);
-        this.router.navigate(['/platform/auth/configuration']);
-      },
-      error: () => this.messageService.add(AUTH_ERROR_MESSAGES.changeUsername),
-    });
+    const data = this.form.getRawValue();
+    const optional = (value: string | null) => value?.trim() || null;
+    const address = {
+      street: optional(data.street),
+      city: optional(data.city),
+      region: optional(data.region),
+      country: optional(data.country),
+      postalCode: optional(data.postalCode),
+    };
+    this.saving.set(true);
+    this.profiles
+      .updateProfile({
+        userName: data.userName!.trim(),
+        firstName: data.firstName!.trim(),
+        lastName: data.lastName!.trim(),
+        phone: data.phone?.replace(/[\s().-]/g, '') || null,
+        address: Object.values(address).some(Boolean) ? address : null,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (profile) => {
+          this.saving.set(false);
+          this.auth.syncProfileDisplay(profile.userName);
+          this.messages.add({
+            severity: 'success',
+            summary: 'Perfil actualizado',
+            detail: 'Tus datos se han guardado correctamente',
+          });
+          void this.router.navigate(['/platform/auth/configuration']);
+        },
+        error: () => {
+          this.saving.set(false);
+          this.messages.add({
+            severity: 'error',
+            summary: 'No se pudo guardar',
+            detail: 'Revisa los datos e inténtalo de nuevo',
+          });
+        },
+      });
   }
-
   onCancel(): void {
-    this.router.navigate(['/platform/auth/configuration']);
-  }
-
-  getUserNameError(): string {
-    const control = this.form.controls['userName'];
-    if (control.hasError('required')) {
-      return 'El nombre es requerido';
-    }
-    if (control.hasError('minlength')) {
-      return 'El nombre debe tener al menos 3 caracteres';
-    }
-    return '';
+    if (!this.saving()) void this.router.navigate(['/platform/auth/configuration']);
   }
 }

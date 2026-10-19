@@ -1,119 +1,149 @@
-import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
-import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { ChangeUsernamePageComponent } from '@features/platform/auth/pages/change-username/change-username-page.component';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { AUTH_SUCCESS_MESSAGES } from '@features/platform/auth/messages/success-messages';
-import { AUTH_ERROR_MESSAGES } from '@features/platform/auth/messages/error-messages';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ChangeUsernamePageComponent } from './change-username-page.component';
+import { AuthService } from '../../services/application/auth-application.service';
+import { SelfProfileService } from '../../services/api/self-profile.service';
+import { UserDetails } from '../../user/models/interfaces/user-details.interface';
 
-describe('ChangeUsernamePageComponent', () => {
-  let component: ChangeUsernamePageComponent;
-  let fixture: ComponentFixture<ChangeUsernamePageComponent>;
-  let mockAuthService: Partial<AuthService>;
-  let router: Router;
-  let messageService: MessageService;
-
-  function configureTestBed(changeUsernameValue: any = of(undefined)) {
-    mockAuthService = {
-      changeUsername: vi.fn().mockReturnValue(changeUsernameValue),
-      currentUser: vi.fn().mockReturnValue({ userName: 'Test User' }),
-      loading: signal(false),
-    };
-
+const profile: UserDetails = {
+  id: 'own-id',
+  firstName: 'Ana',
+  lastName: 'García',
+  userName: 'ana',
+  email: 'ana@example.com',
+  phone: null,
+  address: null,
+  roleId: 'role',
+  roleName: 'Ventas',
+  departmentId: 'department',
+  departmentName: 'Comercial',
+  active: true,
+  emailVerified: true,
+  createdAt: '',
+  updatedAt: '',
+};
+describe('Own profile editing', () => {
+  const getProfile = vi.fn();
+  const updateProfile = vi.fn();
+  const syncProfileDisplay = vi.fn();
+  beforeEach(() => {
+    vi.clearAllMocks();
+    getProfile.mockReturnValue(of(profile));
+    updateProfile.mockReturnValue(of({ ...profile, userName: 'ana nueva' }));
     TestBed.configureTestingModule({
       imports: [ChangeUsernamePageComponent],
       providers: [
         provideRouter([]),
-        { provide: AuthService, useValue: mockAuthService },
         MessageService,
+        { provide: SelfProfileService, useValue: { getProfile, updateProfile } },
+        { provide: AuthService, useValue: { syncProfileDisplay } },
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     });
-
-    TestBed.compileComponents();
-  }
-
-  function createComponent() {
-    fixture = TestBed.createComponent(ChangeUsernamePageComponent);
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    messageService = TestBed.inject(MessageService);
-  }
-
-  beforeEach(() => {
-    (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed();
-    createComponent();
   });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should have a form with userName control', () => {
-    expect(component.form.contains('userName')).toBe(true);
-  });
-
-  it('should patch form with current userName on init', () => {
+  function render() {
+    const fixture = TestBed.createComponent(ChangeUsernamePageComponent);
     fixture.detectChanges();
-    expect(component.form.value.userName).toBe('Test User');
+    return { fixture, component: fixture.componentInstance };
+  }
+  it('loads personal fields and renders shared tabs without administrative controls', () => {
+    const { component, fixture } = render();
+    expect(component.form.getRawValue()).toMatchObject({
+      firstName: 'Ana',
+      lastName: 'García',
+      userName: 'ana',
+      email: profile.email,
+    });
+    expect(component.control('email').disabled).toBe(true);
+    for (const field of [
+      'roleId',
+      'departmentId',
+      'permissions',
+      'active',
+      'emailVerified',
+      'password',
+    ])
+      expect(component.form.get(field)).toBeNull();
+    expect(fixture.nativeElement.textContent).toContain('Editar mi perfil');
+    expect(fixture.nativeElement.textContent).toContain('Contacto y dirección');
   });
-
-  it('should mark form as touched and return when form is invalid', () => {
-    const markAllAsTouchedSpy = vi.spyOn(component.form, 'markAllAsTouched');
-    component.form.controls['userName'].setValue('');
+  it('submits normalized personal data and updates display only', () => {
+    const { component } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    component.form.patchValue({
+      userName: ' ana nueva ',
+      phone: '+34 612 345 678',
+      city: ' Madrid ',
+    });
     component.onSubmit();
-    expect(markAllAsTouchedSpy).toHaveBeenCalled();
+    expect(updateProfile).toHaveBeenCalledWith({
+      userName: 'ana nueva',
+      firstName: 'Ana',
+      lastName: 'García',
+      phone: '+34612345678',
+      address: { street: null, city: 'Madrid', region: null, country: null, postalCode: null },
+    });
+    expect(syncProfileDisplay).toHaveBeenCalledWith('ana nueva');
+    expect(navigate).toHaveBeenCalledWith(['/platform/auth/configuration']);
   });
-
-  it('should call changeUsername and navigate on success', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    const addSpy = vi.spyOn(messageService, 'add');
-
-    component.form.controls['userName'].setValue('New Name');
-
+  it('submits empty optional data as null', () => {
+    const { component } = render();
     component.onSubmit();
-
-    expect(mockAuthService.changeUsername).toHaveBeenCalledWith({ username: 'New Name' });
-    expect(addSpy).toHaveBeenCalledWith(AUTH_SUCCESS_MESSAGES.usernameChanged);
-    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
+    expect(updateProfile).toHaveBeenCalledWith(
+      expect.objectContaining({ phone: null, address: null }),
+    );
   });
-
-  it('should show error message on changeUsername failure', () => {
-    (TestBed as TestBedStatic).resetTestingModule();
-    configureTestBed(throwError(() => new Error('Failed')));
-    createComponent();
-
-    const addSpy = vi.spyOn(messageService, 'add');
-
-    component.form.controls['userName'].setValue('New Name');
-
+  it('selects the invalid tab and rejects multiple phone numbers', () => {
+    const { component } = render();
+    component.control('phone').setValue('612345678,699123456');
     component.onSubmit();
-
-    expect(addSpy).toHaveBeenCalledWith(AUTH_ERROR_MESSAGES.changeUsername);
+    expect(component.activeTab()).toBe('contact');
+    expect(updateProfile).not.toHaveBeenCalled();
+    component.control('firstName').setValue('   ');
+    component.onSubmit();
+    expect(component.activeTab()).toBe('general');
+    expect(component.control('firstName').touched).toBe(true);
   });
-
-  it('should navigate to configuration on cancel', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
+  it('preserves entered data after saving fails', () => {
+    updateProfile.mockReturnValue(throwError(() => new Error('Unavailable')));
+    const { component } = render();
+    component.control('userName').setValue('draft name');
+    component.onSubmit();
+    expect(component.saving()).toBe(false);
+    expect(component.control('userName').value).toBe('draft name');
+    expect(syncProfileDisplay).not.toHaveBeenCalled();
+  });
+  it('blocks duplicate submissions and cancel during saving', () => {
+    updateProfile.mockReturnValue(new Subject<UserDetails>());
+    const { component } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    component.onSubmit();
+    component.onSubmit();
     component.onCancel();
-    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/configuration']);
+    expect(updateProfile).toHaveBeenCalledTimes(1);
+    expect(navigate).not.toHaveBeenCalled();
   });
-
-  it('should return required error when userName is empty', () => {
-    component.form.controls['userName'].setValue('');
-    expect(component.getUserNameError()).toBe('El nombre es requerido');
+  it('blocks saving during loading and allows retry after load failure', () => {
+    const pending = new Subject<UserDetails>();
+    getProfile.mockReturnValue(pending);
+    const { component } = render();
+    component.onSubmit();
+    pending.error(new Error());
+    expect(component.error()).toBe(true);
+    component.onSubmit();
+    expect(updateProfile).not.toHaveBeenCalled();
+    getProfile.mockReturnValue(of(profile));
+    component.loadProfile();
+    expect(component.error()).toBe(false);
+    expect(component.control('firstName').value).toBe('Ana');
   });
-
-  it('should return minlength error when userName is too short', () => {
-    component.form.controls['userName'].setValue('ab');
-    expect(component.getUserNameError()).toBe('El nombre debe tener al menos 3 caracteres');
-  });
-
-  it('should return empty string when no errors', () => {
-    component.form.controls['userName'].setValue('Valid Name');
-    expect(component.getUserNameError()).toBe('');
+  it('cancels without saving', () => {
+    const { component } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
+    component.onCancel();
+    expect(navigate).toHaveBeenCalledWith(['/platform/auth/configuration']);
+    expect(updateProfile).not.toHaveBeenCalled();
   });
 });

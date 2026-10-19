@@ -105,6 +105,14 @@ export class AuthService {
     );
   }
 
+  syncProfileDisplay(userName: string): void {
+    const current = this.currentUser();
+    if (!current) return;
+    const updated = { ...current, userName };
+    this.currentUser.set(updated);
+    this.saveCurrentUserToStorage(updated);
+  }
+
   changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
     this.loading.set(true);
     this.error.set(null);

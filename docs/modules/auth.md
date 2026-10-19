@@ -911,3 +911,25 @@ export const AUTH_ROUTES: Routes = [
 **Last Updated**: 2025-12-18
 
 **Module Status**: [ ] Planned | [ ] In Development | [x] Implemented
+
+### Perfil de la cuenta autenticada
+
+La página **Mi perfil** reúne nombre y apellidos, usuario, correo, teléfono único,
+dirección completa, rol y departamento, estado de cuenta y verificación del correo,
+fechas de registro y actualización. El identificador interno no se muestra. Los campos sin datos
+se muestran como **No indicado** o **Sin asignar**.
+
+`SelfProfileService` consulta `GET /api/auth/profile` para leer exclusivamente la
+cuenta autenticada, sin necesitar permiso de lectura de usuarios. La sección
+**Mis permisos** consulta el acceso efectivo de `/api/auth/access`, muestra módulos
+y acciones en español y no permite modificar permisos. La indicación de
+administrador del sistema depende del indicador `systemAdministrator`, no del
+nombre del rol. Cada consulta tiene su propio estado de carga, error y reintento.
+
+La acción **Editar perfil** abre el formulario compartido por pestañas General y
+Contacto y dirección, conservando la ruta `/platform/auth/change-username`. Guarda
+únicamente usuario, nombre, apellidos, teléfono único y dirección mediante
+`PUT /api/auth/profile`. El correo es de solo lectura. No contiene controles de rol,
+departamento, permisos ni estado. La sincronización local actualiza solo el nombre
+visible y conserva el acceso efectivo. Se mantiene la acción de contraseña. La composición utiliza los componentes de detalle
+compartidos y una cuadrícula adaptable que amplía los campos sueltos a toda la fila.

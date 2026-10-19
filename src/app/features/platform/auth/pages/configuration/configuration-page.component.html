@@ -1,100 +1,197 @@
-<div class="flex justify-center px-4 py-8">
-  <div class="w-full max-w-[1800px] flex flex-col gap-6">
-    <h1
-      class="cashly-page-header text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-0"
-    >
-      Configuración de Cuenta
-    </h1>
-
-    @if (currentUser(); as user) {
-      <div
-        class="cashly-panel rounded-3xl border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 overflow-hidden"
-      >
-        <div class="flex items-start gap-4 p-6">
-          <p-avatar
-            [label]="getInitials()"
-            size="xlarge"
-            [style]="{ 'background-color': '#171717', color: '#ffffff', 'font-size': '2rem' }"
-            styleClass="shrink-0"
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-6">
+    <app-page-header
+      title="Mi perfil"
+      subtitle="Tu información personal, organización y acceso al sistema"
+    />
+    @if (loading()) {
+      <div class="cashly-panel rounded-3xl p-8 animate-pulse" role="status" aria-live="polite">
+        Cargando tu perfil…
+      </div>
+    } @else if (error()) {
+      <app-details-card>
+        <div class="p-6 flex flex-col items-start gap-4" role="alert">
+          <p>No pudimos cargar tu perfil. Vuelve a intentarlo.</p>
+          <p-button
+            label="Reintentar"
+            icon="pi pi-refresh"
+            [outlined]="true"
+            (onClick)="loadProfile()"
           />
-          <div class="flex flex-col gap-1 min-w-0">
-            <h2 class="text-xl font-semibold text-surface-900 dark:text-surface-0 truncate">
-              {{ user.userName }}
+        </div>
+      </app-details-card>
+    } @else if (profile(); as user) {
+      <app-details-card>
+        <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+          <div
+            class="w-20 h-20 rounded-2xl bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900 flex items-center justify-center text-2xl font-semibold shrink-0"
+            aria-hidden="true"
+          >
+            {{ initials() }}
+          </div>
+          <div class="min-w-0 flex-1">
+            <h2
+              class="text-2xl font-semibold tracking-tight break-words text-surface-900 dark:text-surface-0"
+            >
+              {{ fullName() }}
             </h2>
-            <p class="text-sm text-surface-500 dark:text-surface-400">{{ user.email }}</p>
-            <p class="text-xs text-surface-400 dark:text-surface-500">
-              Miembro desde {{ user.createdAt | date: 'dd/MM/yyyy' }}
+            <p class="text-sm text-surface-500 break-all mt-1">
+              {{ user.userName }} · {{ user.email }}
             </p>
-            <div class="flex gap-2 mt-2">
-              <span
-                class="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                [ngClass]="
-                  user.active
-                    ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300'
-                    : 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300'
-                "
-              >
-                {{ user.active ? 'Activo' : 'Inactivo' }}
-              </span>
-              <span
-                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-200"
-              >
-                {{ getUserTypeLabel(user.type) }}
-              </span>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <app-status-badge [active]="user.active" />
+              <app-text-badge [label]="display(user.roleName)" variant="label" />
+              @if (!accessLoading() && !accessError() && access()?.systemAdministrator) {
+                <app-text-badge label="Administrador del sistema" variant="label" />
+              }
             </div>
           </div>
+          <p-button
+            label="Editar perfil"
+            icon="pi pi-user-edit"
+            [outlined]="true"
+            (onClick)="onEditName()"
+          />
         </div>
+      </app-details-card>
 
-        <div class="border-t border-surface-100 dark:border-surface-800">
-          <button
-            [appPermission]="'UPDATE'"
-            (click)="onEditName()"
-            class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-100 dark:bg-surface-800 shrink-0"
-              >
-                <i class="pi pi-user-edit text-surface-600 dark:text-surface-300 text-sm"></i>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-surface-900 dark:text-surface-0">
-                  Cambiar Nombre de Usuario
-                </p>
-                <p class="text-xs text-surface-500 dark:text-surface-400">
-                  Actualiza cómo apareces en el sistema
-                </p>
-              </div>
-            </div>
-            <i class="pi pi-chevron-right text-surface-400 text-sm"></i>
-          </button>
+      <app-details-card>
+        <app-details-card-header
+          title="Información personal y contacto"
+          subtitle="Datos asociados a tu cuenta"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Nombre" [value]="display(user.firstName)" />
+            <app-details-info-field label="Apellidos" [value]="display(user.lastName)" />
+            <app-details-info-field label="Nombre de usuario" [value]="display(user.userName)" />
+            <app-details-info-field label="Correo electrónico" [value]="display(user.email)" />
+            <app-details-info-field label="Teléfono" [value]="display(user.phone)" />
+          </app-details-info-grid>
         </div>
+      </app-details-card>
 
-        <div class="border-t border-surface-100 dark:border-surface-800">
-          <button
-            [appPermission]="'UPDATE'"
-            (click)="onChangePassword()"
-            class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
-          >
-            <div class="flex items-center gap-3">
-              <div
-                class="flex items-center justify-center w-8 h-8 rounded-lg bg-surface-100 dark:bg-surface-800 shrink-0"
-              >
-                <i class="pi pi-key text-surface-600 dark:text-surface-300 text-sm"></i>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-surface-900 dark:text-surface-0">
-                  Cambiar Contraseña
-                </p>
-                <p class="text-xs text-surface-500 dark:text-surface-400">
-                  Mantén tu cuenta segura
-                </p>
-              </div>
-            </div>
-            <i class="pi pi-chevron-right text-surface-400 text-sm"></i>
-          </button>
+      <app-details-card>
+        <app-details-card-header title="Dirección" subtitle="Domicilio registrado" />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              label="Calle y número"
+              [value]="display(user.address?.street)"
+            />
+            <app-details-info-field label="Ciudad" [value]="display(user.address?.city)" />
+            <app-details-info-field
+              label="Provincia o región"
+              [value]="display(user.address?.region)"
+            />
+            <app-details-info-field
+              label="Código postal"
+              [value]="display(user.address?.postalCode)"
+            />
+            <app-details-info-field label="País" [value]="display(user.address?.country)" />
+          </app-details-info-grid>
         </div>
-      </div>
+      </app-details-card>
+
+      <app-details-card>
+        <app-details-card-header title="Organización" subtitle="Tu rol y departamento asignados" />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Rol" [value]="user.roleName || 'Sin asignar'" />
+            <app-details-info-field
+              label="Departamento"
+              [value]="user.departmentName || 'Sin asignar'"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-details-card>
+
+      <app-details-card>
+        <app-details-card-header
+          title="Seguridad y cuenta"
+          subtitle="Estado y registro de tu cuenta"
+        >
+          <div actions>
+            <p-button
+              label="Cambiar contraseña"
+              icon="pi pi-key"
+              [outlined]="true"
+              (onClick)="onChangePassword()"
+            />
+          </div>
+        </app-details-card-header>
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Estado de la cuenta" type="badge"
+              ><app-status-badge [active]="user.active"
+            /></app-details-info-field>
+            <app-details-info-field label="Correo electrónico" type="badge"
+              ><app-status-badge
+                [active]="user.emailVerified"
+                activeLabel="Verificado"
+                inactiveLabel="Pendiente de verificar"
+            /></app-details-info-field>
+            <app-details-info-field
+              label="Fecha de registro"
+              [value]="(user.createdAt | date: 'dd/MM/yyyy HH:mm') || 'No indicado'"
+            />
+            <app-details-info-field
+              label="Última actualización"
+              [value]="(user.updatedAt | date: 'dd/MM/yyyy HH:mm') || 'No indicado'"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-details-card>
+
+      <app-details-card>
+        <app-details-card-header
+          title="Mis permisos"
+          subtitle="Módulos y acciones que puedes utilizar. Tu administrador gestiona este acceso."
+        />
+        <div class="p-4 sm:p-6">
+          @if (accessLoading()) {
+            <p role="status" class="text-sm text-surface-500">Cargando tus permisos…</p>
+          } @else if (accessError()) {
+            <div class="flex flex-col sm:flex-row gap-4 sm:items-center" role="alert">
+              <p class="text-sm">No pudimos consultar tus permisos.</p>
+              <p-button
+                label="Reintentar permisos"
+                icon="pi pi-refresh"
+                [outlined]="true"
+                (onClick)="loadAccess()"
+              />
+            </div>
+          } @else {
+            @if (access()?.systemAdministrator) {
+              <p class="mb-5 text-sm text-surface-600 dark:text-surface-300">
+                Tu cuenta es administradora del sistema. Los módulos siguientes muestran tu acceso
+                efectivo actual.
+              </p>
+            }
+            <app-details-info-grid [columns]="2" [fillLastRow]="true">
+              @for (module of modules(); track module.id) {
+                <div
+                  class="rounded-2xl border border-surface-200 dark:border-surface-800 p-4 flex flex-col gap-3"
+                >
+                  <h3 class="font-semibold text-sm text-surface-900 dark:text-surface-0">
+                    {{ module.label }}
+                  </h3>
+                  <div class="flex flex-wrap gap-2">
+                    @for (action of module.actions; track action) {
+                      <app-text-badge [label]="action" variant="label" />
+                    }
+                  </div>
+                </div>
+              } @empty {
+                <p class="text-sm text-surface-500">
+                  No tienes módulos con acceso asignado. Contacta con tu administrador si necesitas
+                  acceso.
+                </p>
+              }
+            </app-details-info-grid>
+          }
+        </div>
+      </app-details-card>
     }
   </div>
 </div>

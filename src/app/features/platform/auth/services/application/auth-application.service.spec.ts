@@ -86,6 +86,14 @@ describe('AuthService', () => {
     localStorage.clear();
   });
 
+  it('synchronizes the displayed username without changing identity or access', () => {
+    service.currentUser.set(mockUserResponse);
+    const access = service.currentAccess();
+    service.syncProfileDisplay('Updated name');
+    expect(service.currentUser()).toEqual({ ...mockUserResponse, userName: 'Updated name' });
+    expect(service.currentAccess()).toBe(access);
+  });
+
   describe('initial state', () => {
     it('should have null current user initially', () => {
       expect(service.currentUser()).toBeNull();

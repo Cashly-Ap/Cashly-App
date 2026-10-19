@@ -1,107 +1,158 @@
-import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
-import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Router, provideRouter } from '@angular/router';
-import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { ConfigurationPageComponent } from '@features/platform/auth/pages/configuration/configuration-page.component';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { MessageService } from 'primeng/api';
-import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
-import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
-import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
-import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
-
+import { TestBed } from '@angular/core/testing';
+import { provideRouter, Router } from '@angular/router';
+import { signal } from '@angular/core';
+import { of, Subject, throwError } from 'rxjs';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { ConfigurationPageComponent } from './configuration-page.component';
+import { AuthService } from '../../services/application/auth-application.service';
+import { SelfProfileService } from '../../services/api/self-profile.service';
+import { UserDetails } from '../../user/models/interfaces/user-details.interface';
+import { CurrentAccess } from '../../authorization/models/access.model';
+import { BusinessModule } from '../../user/models/enums/business-module.enum';
+const profile: UserDetails = {
+  id: 'private-account-id',
+  firstName: 'Ana',
+  lastName: 'García',
+  userName: 'ana',
+  email: 'ana@example.com',
+  phone: '600123456',
+  address: {
+    street: 'Calle 1',
+    city: 'Madrid',
+    region: 'Madrid',
+    postalCode: '28001',
+    country: 'España',
+  },
+  roleId: 'role-1',
+  roleName: 'Ventas regionales',
+  departmentId: 'dept-1',
+  departmentName: 'Comercial',
+  active: true,
+  emailVerified: false,
+  createdAt: '2026-10-15T12:00:00Z',
+  updatedAt: '2026-10-19T12:00:00Z',
+};
 describe('ConfigurationPageComponent', () => {
-  let component: ConfigurationPageComponent;
-  let fixture: ComponentFixture<ConfigurationPageComponent>;
-  let mockAuthService: Partial<AuthService>;
-  let router: Router;
-
-  const pdfMocks = [
-    { provide: CatalogPdfApiService, useValue: { downloadPdf: vi.fn() } },
-    { provide: StockPdfApiService, useValue: { getPdf: vi.fn() } },
-    { provide: MovementsPdfApiService, useValue: { getPdf: vi.fn() } },
-    { provide: OrderPdfApiService, useValue: { downloadOrdersReportPdf: vi.fn() } },
-    { provide: InvoicePdfApiService, useValue: { downloadInvoicesReportPdf: vi.fn() } },
-    { provide: QuotePdfApiService, useValue: { downloadQuotesReportPdf: vi.fn() } },
-  ];
-
-  function setupTest(userName = 'John Doe', role = 'ADMIN') {
-    (TestBed as TestBedStatic).resetTestingModule();
-
-    mockAuthService = {
-      currentUser: signal({
-        userName,
-        email: 'john@example.com',
-        role,
-        type: role,
-      }),
-      loading: signal(false),
-    };
-
+  const access = signal<CurrentAccess | null>(null);
+  const getProfile = vi.fn();
+  const ensureAccess = vi.fn();
+  beforeEach(() => {
+    access.set({
+      roleId: 'role-1',
+      roleName: 'Ventas regionales',
+      departmentId: 'dept-1',
+      systemAdministrator: false,
+      permissions: { [BusinessModule.SALES]: ['READ', 'CREATE'] },
+    });
+    getProfile.mockReturnValue(of(profile));
+    ensureAccess.mockReturnValue(of(access()));
     TestBed.configureTestingModule({
       imports: [ConfigurationPageComponent],
       providers: [
-        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
-        { provide: AuthService, useValue: mockAuthService },
-        MessageService,
-        ...pdfMocks,
+        { provide: SelfProfileService, useValue: { getProfile } },
+        { provide: AuthService, useValue: { currentAccess: access, ensureAccess } },
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     });
-
-    TestBed.compileComponents();
-
-    fixture = TestBed.createComponent(ConfigurationPageComponent);
-    component = fixture.componentInstance;
-    router = TestBed.inject(Router);
+  });
+  function render() {
+    const fixture = TestBed.createComponent(ConfigurationPageComponent);
+    fixture.detectChanges();
+    return {
+      fixture,
+      component: fixture.componentInstance,
+      text: () => (fixture.nativeElement as HTMLElement).textContent ?? '',
+    };
   }
+  it('displays complete profile and real custom role', () => {
+    const { text } = render();
+    for (const value of [
+      'Ana García',
+      'ana@example.com',
+      '600123456',
+      'Calle 1',
+      'Madrid',
+      '28001',
+      'España',
+      'Ventas regionales',
+      'Comercial',
 
-  beforeEach(() => {
-    setupTest();
+      'Pendiente de verificar',
+    ])
+      expect(text()).toContain(value);
+    expect(text()).not.toContain('USER');
+    expect(text()).not.toContain('private-account-id');
+    expect(text()).not.toContain('Identificador de cuenta');
   });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('shows translated effective permissions and self actions without users access', () => {
+    const { text } = render();
+    for (const value of [
+      'Gestión Comercial',
+      'Consultar',
+      'Crear',
+      'Editar perfil',
+      'Cambiar contraseña',
+    ])
+      expect(text()).toContain(value);
+    expect(text()).not.toContain('Administrador del sistema');
   });
-
-  it('should return first letter uppercase for getInitials', () => {
-    expect(component.getInitials()).toBe('J');
+  it('uses the authoritative administrator flag', () => {
+    const { fixture, text } = render();
+    access.update((value) => (value ? { ...value, systemAdministrator: true } : null));
+    fixture.detectChanges();
+    expect(text()).toContain('Tu cuenta es administradora del sistema');
   });
-
-  it('should return empty string for getInitials when userName is empty', () => {
-    setupTest('');
-    expect(component.getInitials()).toBe('');
+  it('handles absent optional data and falls back to username', () => {
+    getProfile.mockReturnValue(
+      of({
+        ...profile,
+        firstName: '',
+        lastName: '',
+        phone: null,
+        address: null,
+        roleName: null,
+        departmentName: null,
+      }),
+    );
+    const { component, text } = render();
+    expect(component.fullName()).toBe('ana');
+    expect(text()).toContain('No indicado');
+    expect(text()).toContain('Sin asignar');
+    expect(text()).not.toContain('undefined');
   });
-
-  it('should return correct label for OPERATOR user type', () => {
-    expect(component.getUserTypeLabel('OPERATOR')).toBe('Operador');
+  it('shows loading and a retryable profile error', () => {
+    const pending = new Subject<UserDetails>();
+    getProfile.mockReturnValue(pending);
+    const { fixture, component, text } = render();
+    expect(text()).toContain('Cargando tu perfil');
+    pending.error(new Error());
+    fixture.detectChanges();
+    expect(text()).toContain('No pudimos cargar tu perfil');
+    getProfile.mockReturnValue(of(profile));
+    component.loadProfile();
+    fixture.detectChanges();
+    expect(text()).toContain('Ana García');
   });
-
-  it('should return correct label for ADMIN user type', () => {
-    expect(component.getUserTypeLabel('ADMIN')).toBe('Administrador');
+  it('keeps profile visible during access failure and supports retry', () => {
+    ensureAccess.mockReturnValue(throwError(() => new Error()));
+    const { fixture, component, text } = render();
+    expect(text()).toContain('Ana García');
+    expect(text()).toContain('No pudimos consultar tus permisos');
+    ensureAccess.mockReturnValue(of(access()));
+    component.loadAccess();
+    fixture.detectChanges();
+    expect(text()).toContain('Gestión Comercial');
   });
-
-  it('should return correct label for SUPER_ADMIN user type', () => {
-    expect(component.getUserTypeLabel('SUPER_ADMIN')).toBe('Super Administrador');
+  it('explains empty permissions', () => {
+    access.update((value) => (value ? { ...value, permissions: {} } : null));
+    expect(render().text()).toContain('No tienes módulos con acceso asignado');
   });
-
-  it('should return the input for unknown user type', () => {
-    expect(component.getUserTypeLabel('UNKNOWN' as any)).toBe('UNKNOWN');
-  });
-
-  it('should navigate to /auth/change-username on onEditName', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
+  it('preserves own-account action routes', () => {
+    const { component } = render();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
     component.onEditName();
-    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/change-username']);
-  });
-
-  it('should navigate to /auth/change-password onChangePassword', () => {
-    const navigateSpy = vi.spyOn(router, 'navigate');
+    expect(navigate).toHaveBeenCalledWith(['/platform/auth/change-username']);
     component.onChangePassword();
-    expect(navigateSpy).toHaveBeenCalledWith(['/platform/auth/change-password']);
+    expect(navigate).toHaveBeenCalledWith(['/platform/auth/change-password']);
   });
 });
