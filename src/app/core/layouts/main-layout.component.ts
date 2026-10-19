@@ -244,7 +244,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           return false;
         if (
           item.requiredAction &&
-          !item.requiredModule &&
           !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)
         )
           return false;

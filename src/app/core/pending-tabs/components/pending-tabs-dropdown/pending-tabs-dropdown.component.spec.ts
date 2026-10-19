@@ -3,6 +3,7 @@ import { PendingTabsDropdownComponent } from '@core/pending-tabs/components/pend
 import { PendingTabsService } from '@core/pending-tabs/pending-tabs.service';
 import { PendingTab } from '@core/pending-tabs/models';
 import { Router } from '@angular/router';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { signal, WritableSignal } from '@angular/core';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 
@@ -23,10 +24,13 @@ describe('PendingTabsDropdownComponent', () => {
     url: string;
   };
 
+  let grants: WritableSignal<string[]>;
+  const authMock = { hasPermission: vi.fn() };
+
   const createMockTab = (overrides: Partial<PendingTab> = {}): PendingTab => ({
     id: '1',
     title: 'Test Tab',
-    route: '/test?id=1',
+    route: '/partners/customers/new?id=1',
     formData: { name: 'Test' },
     type: 'create',
     module: 'customers',
@@ -35,6 +39,10 @@ describe('PendingTabsDropdownComponent', () => {
   });
 
   beforeEach(async () => {
+    grants = signal(['SALES:CREATE', 'SALES:UPDATE']);
+    authMock.hasPermission.mockImplementation((module, action) =>
+      grants().includes(`${module}:${action}`),
+    );
     const mockTab = createMockTab();
 
     tabsSignal = signal<PendingTab[]>([mockTab]);
@@ -58,6 +66,7 @@ describe('PendingTabsDropdownComponent', () => {
       providers: [
         { provide: PendingTabsService, useValue: pendingTabsServiceMock },
         { provide: Router, useValue: routerMock },
+        { provide: AuthService, useValue: authMock },
       ],
     }).compileComponents();
 
@@ -79,6 +88,77 @@ describe('PendingTabsDropdownComponent', () => {
     expect(component.pendingTabsCount()).toBe(1);
   });
 
+  describe('role visibility', () => {
+    it('hides pending drafts from denied modules', () => {
+      tabsSignal.set([
+        createMockTab(),
+        createMockTab({ id: 'users', route: '/platform/users/new', module: 'users' }),
+      ]);
+      expect(component.tabs().map((tab) => tab.id)).toEqual(['1']);
+    });
+
+    it('counts only visible pending drafts', () => {
+      tabCountSignal.set(2);
+      tabsSignal.set([
+        createMockTab(),
+        createMockTab({ id: 'users', route: '/platform/users/new', module: 'users' }),
+      ]);
+      expect(component.pendingTabsCount()).toBe(1);
+    });
+
+    it('does not expose edit drafts to a role allowed only to create', () => {
+      grants.set(['SALES:CREATE']);
+      tabsSignal.set([
+        createMockTab(),
+        createMockTab({ id: 'edit', type: 'edit', route: '/partners/customers/record-1/edit' }),
+      ]);
+      expect(component.tabs().map((tab) => tab.id)).toEqual(['1']);
+    });
+
+    it('does not expose create drafts to a role allowed only to update', () => {
+      grants.set(['SALES:UPDATE']);
+      expect(component.tabs()).toEqual([]);
+    });
+
+    it('hides drafts without a recognized route owner', () => {
+      tabsSignal.set([createMockTab({ route: '/unknown/new' })]);
+      expect(component.tabs()).toEqual([]);
+    });
+
+    it('reacts to revoked grants without removing stored drafts', () => {
+      component.tabs();
+      grants.set([]);
+      expect(component.tabs()).toEqual([]);
+    });
+
+    it('keeps stored drafts when permissions are revoked', () => {
+      grants.set([]);
+      component.tabs();
+      expect(tabsSignal()).toHaveLength(1);
+    });
+
+    it('restores draft visibility when permissions return', () => {
+      grants.set([]);
+      component.tabs();
+      grants.set(['SALES:CREATE']);
+      expect(component.tabs()).toHaveLength(1);
+    });
+
+    it('rechecks revoked permission before navigation', () => {
+      const tab = createMockTab();
+      component.tabsMenu = { hide: vi.fn() } as unknown as typeof component.tabsMenu;
+      component.tabs();
+      grants.set([]);
+      component.goToTab(tab);
+      expect(routerMock.navigateByUrl).not.toHaveBeenCalled();
+    });
+
+    it('checks the route owner instead of trusting the draft module label', () => {
+      tabsSignal.set([createMockTab({ route: '/platform/users/new', module: 'customers' })]);
+      expect(component.tabs()).toEqual([]);
+    });
+  });
+
   describe('goToTab', () => {
     it('should navigate to tab route', async () => {
       const tab = createMockTab({ route: '/partners/customers/create?tabId=123' });
@@ -97,8 +177,8 @@ describe('PendingTabsDropdownComponent', () => {
     });
 
     it('should reload current route if already on the target route', async () => {
-      routerMock.url = '/test?id=1';
-      const tab = createMockTab({ route: '/test?id=1' });
+      routerMock.url = '/partners/customers/new?id=1';
+      const tab = createMockTab({ route: '/partners/customers/new?id=1' });
       component.tabsMenu = {
         hide: vi.fn(),
         overlayVisible: false,
@@ -111,6 +191,19 @@ describe('PendingTabsDropdownComponent', () => {
           skipLocationChange: true,
         });
       });
+    });
+
+    it('rechecks permission after the asynchronous route reload', async () => {
+      const tab = createMockTab();
+      routerMock.url = tab.route;
+      routerMock.navigateByUrl.mockImplementation(() => {
+        grants.set([]);
+        return Promise.resolve(true);
+      });
+      component.tabsMenu = { hide: vi.fn() } as unknown as typeof component.tabsMenu;
+      component.goToTab(tab);
+      await Promise.resolve();
+      expect(routerMock.navigateByUrl).not.toHaveBeenCalledWith(tab.route);
     });
 
     it('should hide tabs menu after navigation', () => {

@@ -127,6 +127,7 @@ describe('OrderDetailPageComponent', () => {
   });
 
   it('shows edit as the first available record action', () => {
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/sales/orders/ord-001');
     currentOrderSignal.set({ ...mockOrder, status: OrderStatus.DRAFT });
     fixture.detectChanges();
     const actionsTrigger = Array.from<HTMLButtonElement>(

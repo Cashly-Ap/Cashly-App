@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@app/core/layouts/config/menu.config';
 
@@ -93,5 +94,22 @@ describe('ERP navigation', () => {
     expect(actions).toHaveLength(10);
     actions.forEach((item) => item.command?.());
     Object.values(callbacks).forEach((callback) => expect(callback).toHaveBeenCalledOnce());
+  });
+  it('assigns every report action its business owner and exact EXPORT action', () => {
+    const reports = flatten(buildMenuItems(createCallbacks())).filter((item) => item.command);
+    for (const item of reports) {
+      expect(item.requiredModule).toBeDefined();
+      expect(item.requiredAction).toBe('EXPORT');
+    }
+  });
+  it('uses inventory export for the inventory catalog report and catalog export for the commercial catalog', () => {
+    const callbacks = createCallbacks();
+    const items = flatten(buildMenuItems(callbacks));
+    expect(items.find((item) => item.command === callbacks.openCatalogModal)?.requiredModule).toBe(
+      BusinessModule.INVENTORY,
+    );
+    expect(
+      items.find((item) => item.command === callbacks.openCommercialCatalogModal)?.requiredModule,
+    ).toBe(BusinessModule.CATALOG);
   });
 });

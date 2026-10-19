@@ -1,25 +1,27 @@
-<p-button
-  icon="pi pi-ellipsis-v"
-  [text]="true"
-  [rounded]="true"
-  severity="secondary"
-  [ariaLabel]="ariaLabel()"
-  pTooltip="Acciones"
-  tooltipPosition="top"
-  (onClick)="actionsPopover.toggle($event)"
-/>
-<p-popover #actionsPopover appendTo="body">
-  <div class="flex min-w-52 flex-col gap-1 p-1">
-    @for (action of orderedActions(); track action.label) {
-      <p-button
-        [label]="action.label"
-        [icon]="action.icon"
-        [link]="true"
-        [severity]="action.danger ? 'danger' : 'secondary'"
-        [disabled]="action.disabled"
-        (onClick)="actionsPopover.hide(); action.command()"
-        styleClass="w-full justify-start text-left text-sm"
-      />
-    }
-  </div>
-</p-popover>
+@if (orderedActions().length) {
+  <p-button
+    icon="pi pi-ellipsis-v"
+    [text]="true"
+    [rounded]="true"
+    severity="secondary"
+    [ariaLabel]="ariaLabel()"
+    pTooltip="Acciones"
+    tooltipPosition="top"
+    (onClick)="actionsPopover.toggle($event)"
+  />
+  <p-popover #actionsPopover appendTo="body">
+    <div class="flex min-w-52 flex-col gap-1 p-1">
+      @for (action of orderedActions(); track action.label) {
+        <p-button
+          [label]="action.label"
+          [icon]="action.icon"
+          [link]="true"
+          [severity]="action.danger ? 'danger' : 'secondary'"
+          [disabled]="action.disabled"
+          (onClick)="actionsPopover.hide(); execute(action)"
+          styleClass="w-full justify-start text-left text-sm"
+        />
+      }
+    </div>
+  </p-popover>
+}

@@ -40,11 +40,17 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     allowedRoles: businessRoles,
     ...(requiredModule ? { requiredModule } : {}),
   });
-  const report = (label: string, icon: string, command: () => void): MenuItem => ({
+  const report = (
+    label: string,
+    icon: string,
+    command: () => void,
+    requiredModule: BusinessModule,
+  ): MenuItem => ({
     label,
     icon,
     command,
     requiredAction: 'EXPORT',
+    requiredModule,
     allowedRoles: businessRoles,
   });
 
@@ -59,8 +65,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           'Reportes',
           'pi pi-chart-bar',
           [
-            report('Reporte de Presupuestos PDF', 'pi pi-file-pdf', callbacks.openQuotesPdfModal),
-            report('Reporte de Pedidos PDF', 'pi pi-file-pdf', callbacks.openOrdersPdfModal),
+            report(
+              'Reporte de Presupuestos PDF',
+              'pi pi-file-pdf',
+              callbacks.openQuotesPdfModal,
+              BusinessModule.SALES,
+            ),
+            report(
+              'Reporte de Pedidos PDF',
+              'pi pi-file-pdf',
+              callbacks.openOrdersPdfModal,
+              BusinessModule.SALES,
+            ),
           ],
           BusinessModule.DOCUMENT_ADMIN,
         ),
@@ -75,7 +91,14 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         group(
           'Reportes',
           'pi pi-chart-bar',
-          [report('Reporte de Compras PDF', 'pi pi-file-pdf', callbacks.openPurchasesPdfModal)],
+          [
+            report(
+              'Reporte de Compras PDF',
+              'pi pi-file-pdf',
+              callbacks.openPurchasesPdfModal,
+              BusinessModule.PURCHASES,
+            ),
+          ],
           BusinessModule.DOCUMENT_ADMIN,
         ),
       ],
@@ -92,8 +115,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           'Reportes',
           'pi pi-chart-bar',
           [
-            report('Reporte de Productos PDF', 'pi pi-table', callbacks.openCatalogModal),
-            report('Catálogo Comercial PDF', 'pi pi-book', callbacks.openCommercialCatalogModal),
+            report(
+              'Reporte de Productos PDF',
+              'pi pi-table',
+              callbacks.openCatalogModal,
+              BusinessModule.INVENTORY,
+            ),
+            report(
+              'Catálogo Comercial PDF',
+              'pi pi-book',
+              callbacks.openCommercialCatalogModal,
+              BusinessModule.CATALOG,
+            ),
           ],
           BusinessModule.DOCUMENT_ADMIN,
         ),
@@ -109,8 +142,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           'Reportes',
           'pi pi-chart-bar',
           [
-            report('Stock PDF', 'pi pi-warehouse', callbacks.openStockModal),
-            report('Movimientos PDF', 'pi pi-arrow-right-arrow-left', callbacks.openMovementsModal),
+            report(
+              'Stock PDF',
+              'pi pi-warehouse',
+              callbacks.openStockModal,
+              BusinessModule.INVENTORY,
+            ),
+            report(
+              'Movimientos PDF',
+              'pi pi-arrow-right-arrow-left',
+              callbacks.openMovementsModal,
+              BusinessModule.INVENTORY,
+            ),
           ],
           BusinessModule.DOCUMENT_ADMIN,
         ),
@@ -142,6 +185,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
                 'Reporte de Facturas PDF',
                 'pi pi-file-pdf',
                 callbacks.openInvoicesPdfModal,
+                BusinessModule.FINANCE,
               ),
               requiredModule: BusinessModule.FINANCE,
             },
@@ -161,11 +205,17 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             'Reportes',
             'pi pi-chart-bar',
             [
-              report('Reportes de Caja', 'pi pi-chart-bar', callbacks.openCashRegisterModal),
+              report(
+                'Reportes de Caja',
+                'pi pi-chart-bar',
+                callbacks.openCashRegisterModal,
+                BusinessModule.FINANCE,
+              ),
               report(
                 'Cuentas por Cobrar PDF',
                 'pi pi-file-pdf',
                 callbacks.openAccountsReceivablePdfModal,
+                BusinessModule.FINANCE,
               ),
             ],
             BusinessModule.DOCUMENT_ADMIN,

@@ -278,6 +278,7 @@ export class DepartmentsPageComponent {
     });
   }
   remove(item: Department): void {
+    if (!this.authorization.can(this.module, 'DELETE')) return;
     this.confirmation.confirm({
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí, eliminar',
@@ -285,10 +286,12 @@ export class DepartmentsPageComponent {
       acceptButtonStyleClass: 'p-button-danger',
       header: 'Confirmar eliminación',
       message: `¿Eliminar ${item.name}?`,
-      accept: () =>
+      accept: () => {
+        if (!this.authorization.can(this.module, 'DELETE')) return;
         this.service
           .delete('departments', item.id)
-          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) }),
+          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) });
+      },
     });
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {

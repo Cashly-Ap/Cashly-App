@@ -88,4 +88,23 @@ describe('Department management navigation and form', () => {
     expect(service.saveDepartment).not.toHaveBeenCalled();
     expect(component.form.controls.name.touched).toBe(true);
   });
+
+  it('does not open deletion confirmation without DELETE', () => {
+    createComponent();
+    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
+    const confirm = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    component.remove({ id: 'blocked', name: 'Blocked', active: true });
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it('rechecks DELETE when accepting an already open confirmation', () => {
+    createComponent();
+    const confirm = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    component.remove({ id: 'blocked', name: 'Blocked', active: true });
+    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
+    const accept = confirm.mock.calls[0][0].accept;
+    expect(accept).toBeDefined();
+    accept?.();
+    expect(service.delete).not.toHaveBeenCalled();
+  });
 });

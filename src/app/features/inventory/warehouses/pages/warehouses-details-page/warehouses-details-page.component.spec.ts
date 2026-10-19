@@ -106,6 +106,7 @@ describe('WarehousesDetailsPageComponent', () => {
   });
 
   it('shows edit and delete before warehouse-specific actions', () => {
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/inventory/warehouses/wh-001');
     fixture.detectChanges();
     const actionsTrigger = Array.from<HTMLButtonElement>(
       fixture.nativeElement.querySelectorAll('button'),

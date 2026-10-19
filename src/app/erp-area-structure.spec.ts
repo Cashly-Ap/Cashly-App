@@ -94,10 +94,14 @@ describe('ERP business areas', () => {
   });
 
   it('keeps relocated unit specs next to the files they exercise', () => {
-    const integrationSuite = './features/platform/auth/tests/manual-integration.spec.ts';
+    const integrationSuites = new Set([
+      './features/platform/auth/tests/manual-integration.spec.ts',
+      './features/platform/auth/tests/role-route-enforcement.integration.spec.ts',
+      './features/platform/auth/tests/role-access-enforcement.integration.spec.ts',
+    ]);
     expect(
       featureSources
-        .filter((path) => path.endsWith('.spec.ts') && path !== integrationSuite)
+        .filter((path) => path.endsWith('.spec.ts') && !integrationSuites.has(path))
         .filter((path) => !featureSources.includes(path.replace(/\.spec\.ts$/, '.ts'))),
     ).toEqual([]);
   });

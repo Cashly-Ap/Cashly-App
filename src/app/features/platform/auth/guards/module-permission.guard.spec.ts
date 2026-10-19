@@ -59,4 +59,27 @@ describe('modulePermissionGuard', () => {
     expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
     expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.INVENTORY, 'EXECUTE');
   });
+  it('rechecks ancestor modules when a child has a different owner', async () => {
+    const snapshot = route('', BusinessModule.DOCUMENT_ADMIN);
+    snapshot.pathFromRoot.push({
+      data: { module: BusinessModule.INVENTORY },
+    } as ActivatedRouteSnapshot);
+    auth.hasPermission.mockImplementation((module) => module === BusinessModule.INVENTORY);
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(snapshot, {} as never),
+    );
+    const destination = await firstValueFrom(result as ReturnType<typeof of>);
+    expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.DOCUMENT_ADMIN, 'READ');
+  });
+  it('fails closed when a guarded route has no module metadata', async () => {
+    const snapshot = route('new');
+    snapshot.pathFromRoot = [];
+    const result = TestBed.runInInjectionContext(() =>
+      modulePermissionGuard(snapshot, {} as never),
+    );
+    expect(TestBed.inject(Router).serializeUrl(result as never)).toBe(
+      '/platform/auth/configuration',
+    );
+  });
 });

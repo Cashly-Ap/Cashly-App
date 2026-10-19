@@ -14,7 +14,7 @@ export const modulePermissionGuard: CanActivateFn = (route) => {
     .reverse()
     .map((snapshot) => snapshot.data['module'])
     .find(Boolean) as BusinessModule | undefined;
-  if (!module) return true;
+  if (!module) return router.createUrlTree(['/platform/auth/configuration']);
 
   const path = route.routeConfig?.path ?? '';
   const action = (route.data['action'] ??
@@ -23,12 +23,16 @@ export const modulePermissionGuard: CanActivateFn = (route) => {
 
   return auth.ensureAccess().pipe(
     map(() => {
+      const ancestorGrants = route.pathFromRoot.every((snapshot) => {
+        const owner = snapshot.data['module'] as BusinessModule | undefined;
+        return !owner || owner === module || auth.hasPermission(owner, 'READ');
+      });
       const extraGrants = requiredPermissions.every((grant) => {
         const [owner, required] = grant.split(':');
         return auth.hasPermission(owner as BusinessModule, required as PermissionAction);
       });
       return (
-        (auth.hasPermission(module, action) && extraGrants) ||
+        (auth.hasPermission(module, action) && ancestorGrants && extraGrants) ||
         router.createUrlTree(['/platform/auth/configuration'])
       );
     }),

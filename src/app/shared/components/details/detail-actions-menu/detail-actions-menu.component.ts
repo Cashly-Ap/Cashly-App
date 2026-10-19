@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  contentChildren,
+  viewChild,
+} from '@angular/core';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ButtonModule } from 'primeng/button';
 import { Popover, PopoverModule } from 'primeng/popover';
 
@@ -10,6 +17,8 @@ import { Popover, PopoverModule } from 'primeng/popover';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DetailActionsMenuComponent {
+  private readonly actions = contentChildren(PermissionDirective, { descendants: true });
+  readonly hasActions = computed(() => this.actions().some((action) => action.allowed()));
   private readonly popover = viewChild.required<Popover>('actionsPopover');
 
   hide(): void {

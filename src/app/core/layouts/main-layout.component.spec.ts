@@ -245,6 +245,30 @@ describe('MainLayoutComponent', () => {
       ).toBe(false);
     });
 
+    it('hides report actions without owner EXPORT even with document EXPORT', () => {
+      authServiceMock.hasPermission.mockImplementation(
+        (module, action = 'READ') =>
+          module === BusinessModule.DOCUMENT_ADMIN ||
+          (module === BusinessModule.SALES && action === 'READ'),
+      );
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      expect(
+        items.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
+      ).toEqual(['Presupuestos', 'Pedidos']);
+    });
+
+    it('hides report actions without document EXPORT even with owner EXPORT', () => {
+      authServiceMock.hasPermission.mockImplementation(
+        (module, action = 'READ') =>
+          module === BusinessModule.SALES ||
+          (module === BusinessModule.DOCUMENT_ADMIN && action === 'READ'),
+      );
+      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
+      expect(
+        items.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
+      ).toEqual(['Presupuestos', 'Pedidos']);
+    });
+
     it('should require both document access and the corresponding area for report actions', () => {
       authServiceMock.hasModulePermission.mockImplementation((module: BusinessModule) =>
         [BusinessModule.SALES, BusinessModule.DOCUMENT_ADMIN].includes(module),

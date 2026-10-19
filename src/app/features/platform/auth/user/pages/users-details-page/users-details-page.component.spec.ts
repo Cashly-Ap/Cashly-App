@@ -103,6 +103,7 @@ describe('UsersDetailsPageComponent', () => {
   });
 
   it('shows edit before user-specific actions', () => {
+    vi.spyOn(router, 'url', 'get').mockReturnValue('/platform/users/1');
     fixture.detectChanges();
     const actionsTrigger = Array.from<HTMLButtonElement>(
       fixture.nativeElement.querySelectorAll('button'),
