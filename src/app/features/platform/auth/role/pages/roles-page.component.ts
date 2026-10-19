@@ -24,7 +24,7 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { CheckboxModule } from 'primeng/checkbox';
+import { PermissionEditorComponent } from '../components/permission-editor/permission-editor.component';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import {
@@ -78,7 +78,7 @@ import {
     TabsModule,
     TextareaModule,
     ToggleSwitchModule,
-    CheckboxModule,
+    PermissionEditorComponent,
     TableModule,
     ConfirmDialogModule,
     FormCardComponent,
@@ -289,9 +289,26 @@ export class RolesPageComponent {
   }
   toggle(module: BusinessModule, action: PermissionAction): void {
     const value = this.editing();
-    if (!value || value.systemKey) return;
+    const entry = this.registry().find((entry) => entry.module === module);
+    if (
+      !value ||
+      value.systemKey ||
+      this.busy() ||
+      !entry?.actions.includes(action) ||
+      !entry.actions.includes('READ') ||
+      !this.authorization.can(module, action) ||
+      !this.authorization.can(module, 'READ') ||
+      !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
+    )
+      return;
     const permissions: PermissionMatrix = { ...value.permissions };
     let grants = [...(permissions[module] ?? [])];
+    if (
+      action === 'READ' &&
+      grants.includes('READ') &&
+      grants.some((grant) => !this.authorization.can(module, grant))
+    )
+      return;
     if (grants.includes(action))
       grants = action === 'READ' ? [] : grants.filter((a) => a !== action);
     else {
@@ -299,6 +316,17 @@ export class RolesPageComponent {
       if (!grants.includes('READ')) grants.unshift('READ');
     }
     permissions[module] = grants;
+    this.editing.set({ ...value, permissions });
+  }
+  updatePermissions(permissions: PermissionMatrix): void {
+    const value = this.editing();
+    if (
+      !value ||
+      value.systemKey ||
+      this.busy() ||
+      !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
+    )
+      return;
     this.editing.set({ ...value, permissions });
   }
   submit(): void {
@@ -313,6 +341,7 @@ export class RolesPageComponent {
     const value = this.editing();
     if (
       !value?.name?.trim() ||
+      !!value.systemKey ||
       this.busy() ||
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
@@ -336,6 +365,7 @@ export class RolesPageComponent {
     });
   }
   remove(item: Department): void {
+    if (!this.authorization.can(this.module, 'DELETE')) return;
     this.confirmation.confirm({
       icon: 'pi pi-exclamation-triangle',
       acceptLabel: 'Sí, eliminar',
@@ -343,10 +373,12 @@ export class RolesPageComponent {
       acceptButtonStyleClass: 'p-button-danger',
       header: 'Confirmar eliminación',
       message: `¿Eliminar ${item.name}?`,
-      accept: () =>
+      accept: () => {
+        if (!this.authorization.can(this.module, 'DELETE')) return;
         this.service
           .delete('roles', item.id)
-          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) }),
+          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) });
+      },
     });
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {

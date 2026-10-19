@@ -9,7 +9,7 @@ import { AuthorizationService } from '../../authorization/services/authorization
 import { BusinessModule } from '../../user/models/enums/business-module.enum';
 
 describe('Role permission matrix', () => {
-  const service = { roles: vi.fn(), registry: vi.fn(), saveRole: vi.fn() };
+  const service = { roles: vi.fn(), registry: vi.fn(), saveRole: vi.fn(), delete: vi.fn() };
   const authorization = { can: vi.fn() };
   const messages = { add: vi.fn() };
   let component: RolesPageComponent;
@@ -20,6 +20,7 @@ describe('Role permission matrix', () => {
     );
     authorization.can.mockReturnValue(true);
     service.saveRole.mockReset();
+    service.delete.mockReset();
     messages.add.mockReset();
     TestBed.configureTestingModule({
       imports: [RolesPageComponent],
@@ -56,6 +57,42 @@ describe('Role permission matrix', () => {
     expect(component.selected(BusinessModule.CATALOG, 'IMPORT')).toBe(false);
     component.toggle(BusinessModule.CATALOG, 'READ');
     expect(component.selected(BusinessModule.CATALOG, 'READ')).toBe(true);
+  });
+  it('rejects unsupported, nondelegable and busy permission changes', () => {
+    component.create();
+    component.toggle(BusinessModule.CATALOG, 'IMPORT');
+    expect(component.editing()?.permissions).toEqual({});
+    authorization.can.mockImplementation((_module, action) => action !== 'CREATE');
+    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    expect(component.editing()?.permissions).toEqual({});
+    authorization.can.mockReturnValue(true);
+    component.busy.set(true);
+    component.toggle(BusinessModule.CATALOG, 'READ');
+    component.updatePermissions({ [BusinessModule.CATALOG]: ['READ'] });
+    expect(component.editing()?.permissions).toEqual({});
+  });
+  it('rejects a protected role save', () => {
+    component.edit({
+      id: 'system',
+      name: 'Administrator',
+      description: '',
+      active: true,
+      version: 0,
+      systemKey: 'SYSTEM_ADMIN',
+      permissions: {},
+    });
+    component.save();
+    expect(service.saveRole).not.toHaveBeenCalled();
+  });
+  it('does not grant an action when READ is unsupported or outside actor access', () => {
+    component.create();
+    component.registry.set([{ module: BusinessModule.CATALOG, actions: ['CREATE'] }]);
+    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    expect(component.editing()?.permissions).toEqual({});
+    component.registry.set([{ module: BusinessModule.CATALOG, actions: ['READ', 'CREATE'] }]);
+    authorization.can.mockImplementation((_module, action) => action !== 'READ');
+    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    expect(component.editing()?.permissions).toEqual({});
   });
   it('sends optimistic version and preserves the editor on conflict', () => {
     component.edit({
@@ -114,5 +151,22 @@ describe('Role permission matrix', () => {
     component.submit();
     expect(service.saveRole).not.toHaveBeenCalled();
     expect(component.form.controls.name.touched).toBe(true);
+  });
+
+  it('does not open deletion confirmation without DELETE', () => {
+    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
+    const confirm = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    component.remove({ id: 'blocked', name: 'Blocked', active: true });
+    expect(confirm).not.toHaveBeenCalled();
+  });
+
+  it('rechecks DELETE when accepting an already open confirmation', () => {
+    const confirm = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    component.remove({ id: 'blocked', name: 'Blocked', active: true });
+    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
+    const accept = confirm.mock.calls[0][0].accept;
+    expect(accept).toBeDefined();
+    accept?.();
+    expect(service.delete).not.toHaveBeenCalled();
   });
 });

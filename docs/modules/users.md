@@ -24,3 +24,8 @@ Stock-rich order, invoice, quote and purchase detail routes require INVENTORY RE
 ## Verification (2026-10-19)
 
 The complete frontend suite passed 264 files / 2,583 tests and the production build passed. User/role/department lists, details and forms use the customer presentation components; two-field details use two columns and trailing single fields fill the row. Browser evidence is recorded in the API change release-verification document. No deployment is implied.
+
+
+## Faster role permission configuration
+
+The Roles form Permissions tab uses full-width module cards instead of a wide matrix. Each module offers No access, Read only, Custom and All available presets; global controls apply Read only, All available or Clear to all modules even when a search filter is active. Module search ignores accents and case. Custom controls can be expanded and collapsed, show only supported actions and include short explanations. Presets only change the draft until the role is explicitly saved. Actor-inaccessible grants are preserved and their READ prerequisite cannot be removed. Protected roles remain immutable.

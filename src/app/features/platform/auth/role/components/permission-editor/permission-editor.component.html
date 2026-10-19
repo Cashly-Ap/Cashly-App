@@ -1,0 +1,149 @@
+<div class="p-4 sm:p-6 space-y-5">
+  <div class="space-y-4">
+    <div>
+      <h2 class="text-base font-semibold">Acceso por módulo</h2>
+      <p class="text-sm text-surface-500 dark:text-surface-400 mt-1">
+        Elige un nivel de acceso o personaliza sus acciones. {{ selectedCount() }} de
+        {{ registry().length }} módulos con acceso.
+      </p>
+    </div>
+    @if (protected()) {
+      <p class="text-sm text-surface-500">Rol protegido. Sus permisos los gestiona el sistema.</p>
+    }
+    @if (disabled() && !protected()) {
+      <p class="text-sm text-surface-500">
+        La edición no está disponible mientras se guarda o si no tienes permiso para modificar este
+        rol.
+      </p>
+    }
+    <div class="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
+      <input
+        pInputText
+        type="search"
+        aria-label="Buscar módulo"
+        placeholder="Buscar módulo..."
+        class="w-full xl:max-w-sm"
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+        [ngModelOptions]="{ standalone: true }"
+      />
+      <div class="flex flex-wrap gap-2">
+        <p-button
+          label="Solo lectura en todos"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          [disabled]="disabled() || protected()"
+          (onClick)="applyAll('read')"
+        />
+        <p-button
+          label="Permitir todo disponible"
+          severity="contrast"
+          size="small"
+          [disabled]="disabled() || protected()"
+          (onClick)="applyAll('all')"
+        />
+        <p-button
+          label="Quitar acceso"
+          severity="secondary"
+          [text]="true"
+          size="small"
+          [disabled]="disabled() || protected()"
+          (onClick)="applyAll('none')"
+        />
+      </div>
+    </div>
+    <p class="text-xs text-surface-500">
+      Los cambios se aplican al guardar el rol. Solo puedes modificar permisos que tienes. Las
+      acciones necesitan Consultar; los permisos fuera de tu alcance se conservan. Los cambios
+      globales afectan a todos los módulos, aunque estén ocultos por la búsqueda.
+    </p>
+  </div>
+  <div class="flex flex-col gap-4">
+    @for (entry of filteredRegistry(); track entry.module) {
+      <section
+        class="rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-900 p-4 sm:p-5"
+      >
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h3 class="font-semibold text-sm">{{ labels[entry.module] }}</h3>
+            <p class="text-xs text-surface-500 mt-1">
+              {{
+                preset(entry) === 'none'
+                  ? 'Sin acceso'
+                  : preset(entry) === 'read'
+                    ? 'Solo consulta'
+                    : preset(entry) === 'all'
+                      ? 'Todas las acciones del módulo'
+                      : 'Acceso personalizado'
+              }}
+            </p>
+          </div>
+          <div
+            class="flex flex-wrap gap-2"
+            role="group"
+            [attr.aria-label]="'Nivel de acceso a ' + labels[entry.module]"
+          >
+            @for (option of presetOptions; track option.value) {
+              <button
+                type="button"
+                class="px-3 py-2 rounded-lg border text-xs font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                [class]="
+                  preset(entry) === option.value
+                    ? 'bg-surface-900 text-surface-0 border-surface-900 dark:bg-surface-0 dark:text-surface-900 dark:border-surface-0'
+                    : 'bg-surface-0 dark:bg-surface-900 border-surface-300 dark:border-surface-600'
+                "
+                [attr.aria-pressed]="preset(entry) === option.value"
+                [attr.aria-expanded]="option.value === 'custom' ? isExpanded(entry) : null"
+                [disabled]="!editable(entry)"
+                (click)="setPreset(entry, option.value)"
+              >
+                {{ option.label }}
+              </button>
+            }
+          </div>
+        </div>
+        @if (isExpanded(entry)) {
+          <div
+            class="flex flex-col gap-3 mt-4 pt-4 border-t border-surface-200 dark:border-surface-700"
+          >
+            @for (action of entry.actions; track action) {
+              <label
+                class="flex items-center gap-3 rounded-lg p-2 hover:bg-surface-100 dark:hover:bg-surface-800"
+              >
+                <p-checkbox
+                  [binary]="true"
+                  [ngModel]="selected(entry.module, action)"
+                  [ngModelOptions]="{ standalone: true }"
+                  [ariaLabel]="labels[entry.module] + ': ' + actionLabels[action]"
+                  [disabled]="!canToggle(entry, action)"
+                  (onChange)="toggle(entry, action)"
+                />
+                <span class="flex-1"
+                  ><span class="block text-sm font-medium">{{ actionLabels[action] }}</span
+                  ><span class="block text-xs text-surface-500">{{
+                    descriptions[action]
+                  }}</span></span
+                >
+                @if (action === 'READ' && editable(entry) && !canToggle(entry, action)) {
+                  <span class="text-xs text-surface-500">Necesario para permisos protegidos</span>
+                }
+                @if (!allowed(entry, action)) {
+                  <span class="text-xs text-surface-500">Fuera de tu alcance</span>
+                }
+              </label>
+            }
+          </div>
+        }
+      </section>
+    } @empty {
+      <p class="text-sm text-surface-500 py-6 text-center">
+        No hay módulos que coincidan con la búsqueda.
+      </p>
+    }
+  </div>
+  <p class="text-xs text-surface-500">
+    Existencias: Consultar en Inventario. Reservas y movimientos: Ejecutar en Inventario. Informes:
+    Exportar en su módulo y en Documentos. Estos accesos se configuran por separado.
+  </p>
+</div>

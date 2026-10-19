@@ -359,60 +359,18 @@
                   </app-tab-content>
                 </p-tabpanel>
                 <p-tabpanel value="permissions">
-                  <div class="p-6 space-y-4">
-                    <p class="text-sm text-surface-500 dark:text-surface-400">
-                      Activa Visualizar para permitir el acceso a cada módulo. Solo puedes asignar
-                      permisos que tengas disponibles.
-                    </p>
-                    @if (value.systemKey) {
-                      <p class="text-sm text-surface-500">
-                        Rol de administración protegido. Sus permisos los gestiona el sistema.
-                      </p>
-                    }
-                    <div class="overflow-x-auto">
-                      <p-table [value]="registry()" styleClass="p-datatable-striped">
-                        <ng-template pTemplate="header"
-                          ><tr>
-                            <th>Módulo</th>
-                            @for (action of actions; track action) {
-                              <th class="text-center">{{ actionLabels[action] }}</th>
-                            }
-                          </tr></ng-template
-                        >
-                        <ng-template pTemplate="body" let-entry>
-                          <tr>
-                            <td class="font-medium">{{ moduleLabel(entry.module) }}</td>
-                            @for (action of actions; track action) {
-                              <td class="text-center">
-                                <p-checkbox
-                                  [binary]="true"
-                                  [ngModel]="selected(entry.module, action)"
-                                  [ngModelOptions]="{ standalone: true }"
-                                  [ariaLabel]="
-                                    moduleLabel(entry.module) + ' ' + actionLabels[action]
-                                  "
-                                  [disabled]="
-                                    !!value.systemKey ||
-                                    (value.id
-                                      ? !authorization.can(module, 'UPDATE')
-                                      : !authorization.can(module, 'CREATE')) ||
-                                    !entry.actions.includes(action) ||
-                                    !authorization.can(entry.module, action)
-                                  "
-                                  (onChange)="toggle(entry.module, action)"
-                                />
-                              </td>
-                            }
-                          </tr>
-                        </ng-template>
-                      </p-table>
-                    </div>
-                    <p class="text-sm text-surface-500 dark:text-surface-400">
-                      Las consultas de existencias requieren Visualizar en Inventario. Las
-                      operaciones que reservan o mueven existencias requieren Ejecutar en
-                      Inventario. Los informes requieren Exportar en su módulo y en Documentos.
-                    </p>
-                  </div>
+                  <app-permission-editor
+                    [registry]="registry()"
+                    [permissions]="value.permissions || {}"
+                    [protected]="!!value.systemKey"
+                    [disabled]="
+                      busy() ||
+                      (value.id
+                        ? !authorization.can(module, 'UPDATE')
+                        : !authorization.can(module, 'CREATE'))
+                    "
+                    (permissionsChange)="updatePermissions($event)"
+                  />
                 </p-tabpanel>
               </p-tabpanels>
             </p-tabs>
