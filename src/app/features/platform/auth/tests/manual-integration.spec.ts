@@ -167,6 +167,16 @@ describe('Auth Integration - Form to API', () => {
           updatedAt: new Date(),
         },
       });
+      const accessRequest = httpMock.expectOne(`${environment.apiUrl}/auth/access`);
+      expect(accessRequest.request.method).toBe('GET');
+      accessRequest.flush({
+        roleId: 'role-admin',
+        roleName: 'Administrator',
+        departmentId: 'department-admin',
+        systemAdministrator: true,
+        permissions: { USERS: ['READ', 'CREATE', 'UPDATE', 'DELETE'] },
+      });
+      expect(authService.isAuthenticated()).toBe(true);
     });
 
     it('should not accept invalid email format', () => {

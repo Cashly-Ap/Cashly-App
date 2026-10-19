@@ -53,7 +53,11 @@
                   <span class="text-xs text-surface-400 dark:text-surface-500 leading-snug">
                     disp: {{ getItemTotalAvailable(item) | number: '1.0-3' }}
                     @if (stockMultiplier() > 1) {
-                      <span class="ml-1" [class.text-red-600]="isItemOverAllocated(item)" [class.dark:text-red-400]="isItemOverAllocated(item)">
+                      <span
+                        class="ml-1"
+                        [class.text-red-600]="isItemOverAllocated(item)"
+                        [class.dark:text-red-400]="isItemOverAllocated(item)"
+                      >
                         | necesario: {{ getItemRequiredStock(item) | number: '1.0-3' }}
                       </span>
                     }

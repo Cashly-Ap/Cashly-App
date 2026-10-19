@@ -13,18 +13,24 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="space-y-5">
       @if (mode() === 'single' && invoice()) {
-        <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+        <div
+          class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
+        >
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Saldo Pendiente</span>
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
+              >Saldo Pendiente</span
+            >
             <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
-              {{ invoice()!.balance | currency : 'USD' : 'symbol' : '1.2-2' }}
+              {{ invoice()!.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
       }
 
       @if (mode() !== 'single' && customerName()) {
-        <div class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+        <div
+          class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
+        >
           <div class="flex items-center justify-between mb-2">
             <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Cliente</span>
             <span class="font-semibold text-surface-900 dark:text-surface-0">
@@ -32,53 +38,81 @@
             </span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Deuda Total</span>
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
+              >Deuda Total</span
+            >
             <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
-              {{ totalDebt() | currency : 'USD' : 'symbol' : '1.2-2' }}
+              {{ totalDebt() | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
       }
 
       @if (customerBalance() > 0) {
-        <div class="bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg p-4">
+        <div
+          class="bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
+        >
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <i class="pi pi-wallet text-surface-900 dark:text-surface-100 text-sm"></i>
-              <span class="text-sm font-medium text-surface-900 dark:text-surface-100">Saldo a Favor</span>
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-100"
+                >Saldo a Favor</span
+              >
             </div>
             <span class="font-mono font-bold text-blue-600 dark:text-blue-400">
-              {{ customerBalance() | currency : 'USD' : 'symbol' : '1.2-2' }}
+              {{ customerBalance() | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
           <div class="flex gap-3">
-            <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
+            <label
+              class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
               [class.border-primary]="useBalance()"
-              [class.bg-primary/5]="useBalance()"
+              [class]="useBalance() ? 'bg-primary/5' : ''"
               [class.border-surface-200]="!useBalance()"
-              [class.dark:border-surface-600]="!useBalance()">
-              <p-radioButton [value]="true" [ngModel]="useBalance()" (ngModelChange)="onBalanceChange($event)" [ngModelOptions]="{standalone: true}" name="balanceGroup" inputId="useBalance" />
+              [class.dark:border-surface-600]="!useBalance()"
+            >
+              <p-radioButton
+                [value]="true"
+                [ngModel]="useBalance()"
+                (ngModelChange)="onBalanceChange($event)"
+                [ngModelOptions]="{ standalone: true }"
+                name="balanceGroup"
+                inputId="useBalance"
+              />
               <span class="text-sm font-medium">Usar saldo</span>
             </label>
-            <label class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
+            <label
+              class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
               [class.border-primary]="!useBalance()"
-              [class.bg-primary/5]="!useBalance()"
+              [class]="!useBalance() ? 'bg-primary/5' : ''"
               [class.border-surface-200]="useBalance()"
-              [class.dark:border-surface-600]="useBalance()">
-              <p-radioButton [value]="false" [ngModel]="useBalance()" (ngModelChange)="onBalanceChange($event)" [ngModelOptions]="{standalone: true}" name="balanceGroup" inputId="noBalance" />
+              [class.dark:border-surface-600]="useBalance()"
+            >
+              <p-radioButton
+                [value]="false"
+                [ngModel]="useBalance()"
+                (ngModelChange)="onBalanceChange($event)"
+                [ngModelOptions]="{ standalone: true }"
+                name="balanceGroup"
+                inputId="noBalance"
+              />
               <span class="text-sm font-medium">No usar</span>
             </label>
           </div>
         </div>
 
         @if (useBalance()) {
-          <div class="flex items-center justify-between px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg">
+          <div
+            class="flex items-center justify-between px-4 py-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 rounded-lg"
+          >
             <div class="flex items-center gap-2">
               <i class="pi pi-check-circle text-surface-900 dark:text-surface-100"></i>
-              <span class="text-sm font-medium text-surface-900 dark:text-surface-100">Saldo aplicado</span>
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-100"
+                >Saldo aplicado</span
+              >
             </div>
             <span class="font-mono font-bold text-blue-600 dark:text-blue-400">
-              -{{ balanceApplied() | currency : 'USD' : 'symbol' : '1.2-2' }}
+              -{{ balanceApplied() | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         }
@@ -86,7 +120,10 @@
 
       @if (showAmountField()) {
         <div class="space-y-2">
-          <label for="amount" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          <label
+            for="amount"
+            class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+          >
             Monto
             <span class="text-red-500">*</span>
           </label>
@@ -117,9 +154,10 @@
             @if (isFullyCoveredByBalance()) {
               Pago cubierto completamente por saldo a favor
             } @else if (useBalance()) {
-              Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }} (saldo aplicado: {{ balanceApplied() | currency : 'USD' : 'symbol' : '1.2-2' }})
+              Máximo: {{ maxAmount() | currency: 'USD' : 'symbol' : '1.2-2' }} (saldo aplicado:
+              {{ balanceApplied() | currency: 'USD' : 'symbol' : '1.2-2' }})
             } @else {
-              Máximo: {{ maxAmount() | currency : 'USD' : 'symbol' : '1.2-2' }}
+              Máximo: {{ maxAmount() | currency: 'USD' : 'symbol' : '1.2-2' }}
             }
           </small>
         </div>
@@ -128,16 +166,21 @@
           <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
             Monto Total a Pagar
           </label>
-          <div class="bg-surface-50 dark:bg-surface-900/50 border-2 border-surface-200 dark:border-surface-700 rounded-lg p-4 text-center">
+          <div
+            class="bg-surface-50 dark:bg-surface-900/50 border-2 border-surface-200 dark:border-surface-700 rounded-lg p-4 text-center"
+          >
             <span class="font-mono text-2xl font-bold text-green-600 dark:text-green-400">
-              {{ totalDebt() | currency : 'USD' : 'symbol' : '1.2-2' }}
+              {{ totalDebt() | currency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
       }
 
       <div class="space-y-2">
-        <label for="paymentDate" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+        <label
+          for="paymentDate"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
           Fecha de Pago
         </label>
         <p-datepicker
@@ -154,14 +197,15 @@
           [class.ng-invalid]="form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched"
         />
         @if (form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched) {
-          <small class="text-red-500 text-xs block mt-1">
-            La fecha es requerida
-          </small>
+          <small class="text-red-500 text-xs block mt-1"> La fecha es requerida </small>
         }
       </div>
 
       <div class="space-y-2">
-        <label for="paymentMethod" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+        <label
+          for="paymentMethod"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
           Método de Pago
           <span class="text-red-500">*</span>
         </label>
@@ -175,17 +219,20 @@
           appendTo="body"
           styleClass="w-full"
           [class.opacity-60]="isFullyCoveredByBalance()"
-          [class.ng-invalid]="form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched"
+          [class.ng-invalid]="
+            form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched
+          "
         />
         @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {
-          <small class="text-red-500 text-xs block mt-1">
-            El método de pago es requerido
-          </small>
+          <small class="text-red-500 text-xs block mt-1"> El método de pago es requerido </small>
         }
       </div>
 
       <div class="space-y-2">
-        <label for="reference" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+        <label
+          for="reference"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
           Referencia
           <span class="text-red-500">*</span>
         </label>
@@ -196,7 +243,9 @@
           formControlName="referenceNumber"
           placeholder="Ingrese la referencia del pago"
           class="w-full"
-          [class.ng-invalid]="form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched"
+          [class.ng-invalid]="
+            form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched
+          "
         />
         @if (form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched) {
           <small class="text-red-500 text-xs block mt-1">
@@ -209,14 +258,13 @@
           </small>
         }
       </div>
-
     </div>
   </form>
 
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
-              severity="secondary"
+        severity="secondary"
         label="Cancelar"
         icon="pi pi-times"
         (onClick)="onCancel()"
@@ -224,7 +272,8 @@
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
-              severity="contrast"
+        [appPermission]="'EXECUTE'"
+        severity="contrast"
         label="Registrar Pago"
         icon="pi pi-check"
         (onClick)="onSubmit()"

@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnChanges, input, output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { inject } from '@angular/core';
@@ -10,7 +11,7 @@ import { OrderList } from '@features/sales/orders/models/interfaces/order-list.i
   selector: 'app-cancel-order-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, ReactiveFormsModule, TextareaModule],
+  imports: [PermissionDirective, DialogModule, ButtonModule, ReactiveFormsModule, TextareaModule],
   templateUrl: './cancel-order-dialog.component.html',
 })
 export class CancelOrderDialogComponent implements OnChanges {

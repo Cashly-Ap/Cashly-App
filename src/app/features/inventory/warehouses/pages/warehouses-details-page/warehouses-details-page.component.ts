@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,6 +26,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
   selector: 'app-warehouses-details-page',
   standalone: true,
   imports: [
+    PermissionDirective,
     DatePipe,
     ButtonModule,
     ConfirmDialogModule,

@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +20,7 @@ import { PaymentMethodApplicationService } from '@features/finance/treasury/paym
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     DatePipe,
     ButtonModule,
     ConfirmDialogModule,

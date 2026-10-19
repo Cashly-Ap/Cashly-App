@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
@@ -48,6 +50,8 @@ describe('CommercialCatalogPdfModalComponent', () => {
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: CategoryApplicationService, useValue: mockCategoryService },
         { provide: PriceTypeApplicationService, useValue: mockPriceTypeService },
       ],

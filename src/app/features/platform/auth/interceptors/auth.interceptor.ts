@@ -1,3 +1,4 @@
+import { ACCESS_REFRESH_REQUEST } from '../authorization/models/access.model';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
@@ -40,6 +41,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       return throwError(() => error);
     }
 
+    if (error.status === 401 && req.context.get(ACCESS_REFRESH_REQUEST))
+      return throwError(() => error);
+
     if (error.status === 401) {
       const refreshToken = authService.refreshToken();
 
@@ -76,6 +80,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       authService.clearAuthState();
       router.navigate(['/platform/auth/login']);
       return throwError(() => error);
+    }
+
+    if (error.status === 403 && !req.url.includes('/auth/access')) {
+      authService.refreshAccess().subscribe({ error: () => undefined });
     }
 
     if (error.status >= 500) {

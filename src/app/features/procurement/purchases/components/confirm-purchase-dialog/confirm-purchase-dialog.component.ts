@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,7 +19,7 @@ import { PurchaseStatus } from '@features/procurement/purchases/models/enums/pur
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, TableModule, DatePipe, DecimalPipe],
+  imports: [PermissionDirective, DialogModule, ButtonModule, TableModule, DatePipe, DecimalPipe],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
 export class ConfirmPurchaseDialogComponent {

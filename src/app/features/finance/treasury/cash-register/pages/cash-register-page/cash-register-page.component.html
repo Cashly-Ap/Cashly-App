@@ -30,6 +30,7 @@
           </p>
           <div class="mt-7 flex w-full max-w-md flex-col gap-3 sm:flex-row">
             <p-button
+              [appPermission]="'EXECUTE'"
               label="Abrir caja"
               icon="pi pi-lock-open"
               severity="contrast"
@@ -93,6 +94,7 @@
                   @if (isOpen()) {
                     <div class="my-1 border-t border-surface-200 dark:border-surface-700"></div>
                     <p-button
+                      [appPermission]="'EXECUTE'"
                       label="Cerrar caja"
                       icon="pi pi-lock"
                       [link]="true"
@@ -255,6 +257,7 @@
         (onClick)="onOpenDialogClose()"
       />
       <p-button
+        [appPermission]="'EXECUTE'"
         label="Abrir Caja"
         icon="pi pi-plus"
         severity="contrast"
@@ -344,6 +347,7 @@
         (onClick)="onCloseDialogClose()"
       />
       <p-button
+        [appPermission]="'EXECUTE'"
         label="Cerrar Caja"
         icon="pi pi-lock"
         severity="contrast"

@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,6 +48,7 @@ export interface DuplicateConfirmEvent {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     DialogModule,
     ButtonModule,

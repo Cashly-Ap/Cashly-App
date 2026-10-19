@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -39,6 +40,7 @@ import { ReturnList } from '@features/finance/billing/returns/models/interfaces/
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -134,8 +136,20 @@ export class ReturnListPageComponent implements OnInit {
 
   actionsFor(ret: ReturnList): ListAction[] {
     return [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(ret) },
-      { label: 'Eliminar', icon: 'pi pi-trash', danger: true, command: () => this.onDelete(ret) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onDetail(ret),
+      },
+      {
+        requiredAction: 'DELETE',
+        requiredPermissions: ['INVENTORY:EXECUTE'],
+        label: 'Eliminar',
+        icon: 'pi pi-trash',
+        danger: true,
+        command: () => this.onDelete(ret),
+      },
     ];
   }
 

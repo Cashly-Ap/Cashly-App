@@ -15,8 +15,8 @@ describe('Invoice Routes', () => {
     expect(INVOICE_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have SALES module data', () => {
-    expect(INVOICE_ROUTES[0].data).toEqual({ module: 'SALES' });
+  it('should have FINANCES module data', () => {
+    expect(INVOICE_ROUTES[0].data).toEqual({ module: 'FINANCES' });
   });
 
   it('should have list route as default child', () => {
@@ -47,5 +47,25 @@ describe('Invoice Routes', () => {
     INVOICE_ROUTES[0].children?.forEach((child) => {
       expect(child.loadComponent).toBeDefined();
     });
+  });
+  it('keeps list read independent and guards stock-rich detail and forms', () => {
+    expect(
+      INVOICE_ROUTES[0].children?.find((route) => route.path === '')?.data?.['requiredPermissions'],
+    ).toBeUndefined();
+    expect(
+      INVOICE_ROUTES[0].children?.find((route) => route.path === ':id')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:READ']);
+    expect(
+      INVOICE_ROUTES[0].children?.find((route) => route.path === 'new')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:EXECUTE']);
+    expect(
+      INVOICE_ROUTES[0].children?.find((route) => route.path === ':id/edit')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:EXECUTE']);
   });
 });

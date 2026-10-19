@@ -16,8 +16,8 @@ describe('Category Routes', () => {
     expect(CATEGORY_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have INVENTORY module data', () => {
-    expect(CATEGORY_ROUTES[0].data).toEqual({ module: BusinessModule.INVENTORY });
+  it('should have CATALOG module data', () => {
+    expect(CATEGORY_ROUTES[0].data).toEqual({ module: BusinessModule.CATALOG });
   });
 
   it('should have list route as default child', () => {

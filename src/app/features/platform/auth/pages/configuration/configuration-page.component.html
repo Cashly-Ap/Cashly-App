@@ -47,6 +47,7 @@
 
         <div class="border-t border-surface-100 dark:border-surface-800">
           <button
+            [appPermission]="'UPDATE'"
             (click)="onEditName()"
             class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
           >
@@ -71,6 +72,7 @@
 
         <div class="border-t border-surface-100 dark:border-surface-800">
           <button
+            [appPermission]="'UPDATE'"
             (click)="onChangePassword()"
             class="flex items-center justify-between w-full px-6 py-4 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors border-0 bg-transparent cursor-pointer text-left"
           >

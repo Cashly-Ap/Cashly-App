@@ -1,3 +1,4 @@
+import { currentAccessFixture } from './access.fixture';
 import { expect, test } from '@playwright/test';
 
 const customers = [
@@ -35,6 +36,13 @@ const pageResponse = (content: typeof customers) => ({
 });
 
 async function authenticate(page: import('@playwright/test').Page): Promise<void> {
+  await page.route('**/api/auth/access', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(currentAccessFixture()),
+    }),
+  );
   await page.addInitScript(() => {
     localStorage.setItem('accessToken', 'e2e-access-token');
     localStorage.setItem('refreshToken', 'e2e-refresh-token');

@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -36,6 +38,8 @@ describe('WarehousesDetailsPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [WarehousesDetailsPageComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'wh-001' } } } },
         { provide: WarehouseApplicationService, useValue: service },
         MessageService,

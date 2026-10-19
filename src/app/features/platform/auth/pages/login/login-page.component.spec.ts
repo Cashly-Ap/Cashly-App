@@ -20,6 +20,9 @@ describe('LoginPageComponent', () => {
   let fixture: ComponentFixture<LoginPageComponent>;
   let authServiceMock: {
     login: ReturnType<typeof vi.fn>;
+    hasPermission: ReturnType<typeof vi.fn>;
+    isAuthenticated: ReturnType<typeof vi.fn>;
+    ensureAccess: ReturnType<typeof vi.fn>;
     hasModulePermission: ReturnType<typeof vi.fn>;
     isSuperAdmin: ReturnType<typeof vi.fn>;
     loading: ReturnType<typeof signal<boolean>>;
@@ -50,6 +53,9 @@ describe('LoginPageComponent', () => {
   beforeEach(async () => {
     authServiceMock = {
       login: vi.fn(),
+      hasPermission: vi.fn().mockReturnValue(true),
+      isAuthenticated: vi.fn().mockReturnValue(true),
+      ensureAccess: vi.fn().mockReturnValue(of({})),
       hasModulePermission: vi.fn().mockReturnValue(true),
       isSuperAdmin: vi.fn().mockReturnValue(true),
       loading: signal(false),

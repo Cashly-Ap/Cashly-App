@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
@@ -47,6 +49,8 @@ describe('WarehouseStockOperationDialogComponent', () => {
     TestBed.configureTestingModule({
       imports: [WarehouseStockOperationDialogComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: WarehouseApplicationService, useValue: warehouseService },
         { provide: ProductApplicationService, useValue: productService },
         MessageService,

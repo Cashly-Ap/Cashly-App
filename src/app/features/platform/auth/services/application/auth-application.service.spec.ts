@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -58,7 +59,23 @@ describe('AuthService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [AuthService, { provide: AuthApiService, useValue: mockApiService }],
+      providers: [
+        {
+          provide: HttpClient,
+          useValue: {
+            get: () =>
+              of({
+                roleId: 'r',
+                roleName: 'Test',
+                departmentId: 'd',
+                systemAdministrator: false,
+                permissions: {},
+              }),
+          },
+        },
+        AuthService,
+        { provide: AuthApiService, useValue: mockApiService },
+      ],
     });
 
     service = TestBed.inject(AuthService);
@@ -433,7 +450,23 @@ describe('AuthService', () => {
       localStorage.setItem('tokenExpiresAt', (Date.now() + 3600000).toString());
 
       TestBed.configureTestingModule({
-        providers: [AuthService, { provide: AuthApiService, useValue: mockApiService }],
+        providers: [
+          {
+            provide: HttpClient,
+            useValue: {
+              get: () =>
+                of({
+                  roleId: 'r',
+                  roleName: 'Test',
+                  departmentId: 'd',
+                  systemAdministrator: false,
+                  permissions: {},
+                }),
+            },
+          },
+          AuthService,
+          { provide: AuthApiService, useValue: mockApiService },
+        ],
       });
 
       const newService = TestBed.inject(AuthService);

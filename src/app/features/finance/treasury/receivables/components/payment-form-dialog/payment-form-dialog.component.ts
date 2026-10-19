@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -38,6 +39,7 @@ export interface PaymentMethodOption {
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
+    PermissionDirective,
     DialogModule,
     ButtonModule,
     InputNumberModule,

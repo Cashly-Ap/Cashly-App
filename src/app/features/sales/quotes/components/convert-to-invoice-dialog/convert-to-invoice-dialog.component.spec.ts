@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component, signal } from '@angular/core';
@@ -68,7 +70,12 @@ describe('ConvertToInvoiceDialogComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
       schemas: [NO_ERRORS_SCHEMA],
     });
 

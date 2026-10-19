@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,6 +20,7 @@ import { CategoryDetails } from '@features/catalog/categories/models/interfaces/
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,

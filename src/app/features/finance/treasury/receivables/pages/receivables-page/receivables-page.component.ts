@@ -183,26 +183,35 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
 
   customerActions(customer: CustomerDebtList): ListAction[] {
     return [
-      { label: 'Ver deuda', icon: 'pi pi-eye', command: () => this.onViewCustomerDebt(customer) },
       {
+        requiredAction: 'READ',
+        label: 'Ver deuda',
+        icon: 'pi pi-eye',
+        command: () => this.onViewCustomerDebt(customer),
+      },
+      {
+        requiredAction: 'EXECUTE',
         label: 'Pagar todo',
         icon: 'pi pi-check-circle',
         disabled: customer.totalDebt <= 0,
         command: () => this.openCustomerPayment(customer, 'all'),
       },
       {
+        requiredAction: 'EXECUTE',
         label: 'Pago parcial',
         icon: 'pi pi-percentage',
         disabled: customer.totalDebt <= 0,
         command: () => this.openCustomerPayment(customer, 'partial'),
       },
       {
+        requiredAction: 'EXECUTE',
         label: 'Reintegro',
         icon: 'pi pi-undo',
         disabled: customer.customerBalance <= 0,
         command: () => this.openBalanceAction(customer, 'refund'),
       },
       {
+        requiredAction: 'EXECUTE',
         label: 'Generar anticipo',
         icon: 'pi pi-plus-circle',
         command: () => this.openBalanceAction(customer, 'advance'),

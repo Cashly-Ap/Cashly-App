@@ -125,6 +125,7 @@
           </div>
           <div class="flex gap-2 w-full sm:w-auto">
             <p-button
+              [appPermission]="'EXECUTE'"
               label="Pagar Todo"
               icon="pi pi-check-circle"
               severity="contrast"
@@ -403,6 +404,7 @@
           </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <p-button
+              [appPermission]="'CREATE'"
               label="Reintegro"
               icon="pi pi-undo"
               severity="contrast"
@@ -411,6 +413,7 @@
               styleClass="w-full sm:w-auto font-medium"
             />
             <p-button
+              [appPermission]="'CREATE'"
               label="Generar Anticipo"
               icon="pi pi-plus-circle"
               severity="contrast"
@@ -841,6 +844,7 @@
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
+        [appPermission]="'EXECUTE'"
         severity="contrast"
         label="Registrar Anticipo"
         icon="pi pi-plus-circle"

@@ -1,8 +1,15 @@
+import {
+  currentAccessFixture,
+  referenceOptions,
+  departmentReferenceOptions,
+} from './access.fixture';
 import { expect, test, type Page, type Route } from '@playwright/test';
 
 const appRoutes = [
   { path: '/analytics/dashboard' },
   { path: '/platform/users' },
+  { path: '/platform/roles' },
+  { path: '/platform/departments' },
   { path: '/partners/suppliers' },
   { path: '/procurement/purchases' },
   { path: '/catalog/categories' },
@@ -62,6 +69,32 @@ async function authenticate(page: Page): Promise<void> {
 
 async function fulfillApi(route: Route): Promise<void> {
   const path = new URL(route.request().url()).pathname;
+  if (path.endsWith('/auth/access')) {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(currentAccessFixture()),
+    });
+    return;
+  }
+  if (/\/(roles|departments)(\/options)?$/.test(path)) {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        path.endsWith('/options')
+          ? path.includes('/departments')
+            ? departmentReferenceOptions
+            : referenceOptions
+          : [],
+      ),
+    });
+    return;
+  }
+  if (path.endsWith('/roles/registry')) {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+    return;
+  }
 
   if (path.endsWith('/notifications/unread-count')) {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '0' });

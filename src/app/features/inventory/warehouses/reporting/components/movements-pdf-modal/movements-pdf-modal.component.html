@@ -69,6 +69,8 @@
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
       <p-button
+        [appPermissionModule]="'INVENTORY'"
+        [appPermission]="'EXPORT'"
         label="Excel"
         icon="pi pi-file-excel"
         (onClick)="generateExcel()"
@@ -76,6 +78,8 @@
         styleClass="p-button-outlined"
       />
       <p-button
+        [appPermissionModule]="'INVENTORY'"
+        [appPermission]="'EXPORT'"
         label="Ver PDF"
         icon="pi pi-file-pdf"
         (onClick)="generatePdf()"

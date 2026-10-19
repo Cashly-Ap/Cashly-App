@@ -7,8 +7,9 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 export const USER_ROUTES: Routes = [
   {
     path: '',
-    canActivate: [authGuard, adminGuard, modulePermissionGuard],
+    canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.USERS },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',

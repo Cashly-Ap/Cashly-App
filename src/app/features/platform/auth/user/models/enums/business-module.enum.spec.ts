@@ -6,6 +6,9 @@ import {
 describe('BusinessModule', () => {
   it('should have all expected enum values', () => {
     expect(BusinessModule.USERS).toBe('USERS');
+    expect(BusinessModule.ROLES).toBe('ROLES');
+    expect(BusinessModule.DEPARTMENTS).toBe('DEPARTMENTS');
+    expect(BusinessModule.CATALOG).toBe('CATALOG');
     expect(BusinessModule.INVENTORY).toBe('INVENTORY');
     expect(BusinessModule.SALES).toBe('SALES');
     expect(BusinessModule.FINANCE).toBe('FINANCES');
@@ -13,8 +16,8 @@ describe('BusinessModule', () => {
     expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');
   });
 
-  it('should have exactly 7 enum values', () => {
-    expect(Object.keys(BusinessModule).length).toBe(7);
+  it('should have exactly 10 enum values', () => {
+    expect(Object.keys(BusinessModule).length).toBe(10);
   });
 });
 

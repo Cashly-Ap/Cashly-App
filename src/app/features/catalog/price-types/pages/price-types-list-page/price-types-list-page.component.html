@@ -24,6 +24,7 @@
             (search)="onSearch($event)"
           />
           <p-button
+            [appPermission]="'CREATE'"
             label="Nuevo Tipo de Precio"
             icon="pi pi-plus"
             (onClick)="onCreate()"

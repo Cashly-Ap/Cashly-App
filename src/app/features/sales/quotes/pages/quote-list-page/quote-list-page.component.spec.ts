@@ -1,3 +1,4 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ActivatedRoute, Router, provideRouter } from '@angular/router';
@@ -70,6 +71,7 @@ describe('QuoteListPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [QuoteListPageComponent],
       providers: [
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         {
           provide: ActivatedRoute,

@@ -8,6 +8,7 @@ export const ORDER_ROUTES: Routes = [
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.SALES },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',
@@ -19,6 +20,7 @@ export const ORDER_ROUTES: Routes = [
       },
       {
         path: 'new',
+        data: { requiredPermissions: ['INVENTORY:EXECUTE'] },
         loadComponent: () =>
           import('@features/sales/orders/pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,
@@ -27,6 +29,7 @@ export const ORDER_ROUTES: Routes = [
       },
       {
         path: ':id',
+        data: { requiredPermissions: ['INVENTORY:READ'] },
         loadComponent: () =>
           import('@features/sales/orders/pages/order-detail-page/order-detail-page.component').then(
             (m) => m.OrderDetailPageComponent,
@@ -35,6 +38,7 @@ export const ORDER_ROUTES: Routes = [
       },
       {
         path: ':id/edit',
+        data: { requiredPermissions: ['INVENTORY:EXECUTE'] },
         loadComponent: () =>
           import('@features/sales/orders/pages/order-form-page/order-form-page.component').then(
             (m) => m.OrderFormPageComponent,

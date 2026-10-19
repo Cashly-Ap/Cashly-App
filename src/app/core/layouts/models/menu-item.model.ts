@@ -13,5 +13,6 @@ export interface MenuItem {
   command?: () => void;
   isMegaMenu?: boolean;
   allowedRoles?: UserType[];
+  requiredAction?: import('@features/platform/auth/authorization/models/access.model').PermissionAction;
   requiredModule?: BusinessModule;
 }

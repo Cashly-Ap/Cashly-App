@@ -86,6 +86,20 @@ export const routes: Routes = [
               import('@features/platform/auth/routing').then((m) => m.AUTHENTICATED_AUTH_ROUTES),
           },
           {
+            path: 'roles',
+            loadChildren: () =>
+              import('@features/platform/auth/role/routing/roles.routes').then(
+                (m) => m.ROLES_ROUTES,
+              ),
+          },
+          {
+            path: 'departments',
+            loadChildren: () =>
+              import('@features/platform/auth/department/routing/departments.routes').then(
+                (m) => m.DEPARTMENTS_ROUTES,
+              ),
+          },
+          {
             path: 'users',
             loadChildren: () =>
               import('@features/platform/auth/user/routing').then((m) => m.USER_ROUTES),

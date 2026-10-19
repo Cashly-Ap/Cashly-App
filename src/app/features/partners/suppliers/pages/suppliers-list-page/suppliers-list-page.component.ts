@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -49,6 +50,7 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -233,11 +235,22 @@ export class SuppliersListPageComponent implements OnInit {
 
   actionsFor(supplier: SupplierList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(supplier) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(supplier) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(supplier),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(supplier),
+      },
     ];
     if (!supplier.hasPurchases) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

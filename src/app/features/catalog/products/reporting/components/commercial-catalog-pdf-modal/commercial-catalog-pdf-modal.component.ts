@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -24,6 +25,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     DialogModule,

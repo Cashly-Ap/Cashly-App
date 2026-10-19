@@ -25,6 +25,8 @@
               />
               <app-detail-actions-menu #actionsMenu>
                 <p-button
+                  [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+                  [appPermission]="'DELETE'"
                   label="Eliminar"
                   icon="pi pi-trash"
                   severity="danger"
@@ -183,7 +185,8 @@
                             >
                             @for (alloc of line.allocations; track alloc.warehouseId) {
                               <span class="text-xs text-surface-600 dark:text-surface-400">
-                                {{ alloc.warehouseName || alloc.warehouseId }}: {{ alloc.allocated }}
+                                {{ alloc.warehouseName || alloc.warehouseId }}:
+                                {{ alloc.allocated }}
                               </span>
                             }
                           </div>

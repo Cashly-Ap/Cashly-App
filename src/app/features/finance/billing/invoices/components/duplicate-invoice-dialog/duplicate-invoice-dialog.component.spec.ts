@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
@@ -88,7 +90,11 @@ describe('DuplicateInvoiceDialogComponent', () => {
     TestBed.configureTestingModule({
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      providers: [{ provide: InvoiceApiService, useValue: mockApi }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
+        { provide: InvoiceApiService, useValue: mockApi },
+      ],
     });
 
     fixture = TestBed.createComponent(HostComponent);

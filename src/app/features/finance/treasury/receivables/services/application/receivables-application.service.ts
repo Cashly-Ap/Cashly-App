@@ -1,3 +1,4 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { Observable, Subject, tap, catchError, finalize, of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -49,15 +50,10 @@ export class ReceivablesApplicationService {
 
   readonly customerDebtChange = new Subject<void>();
 
-  readonly isAdmin = computed(() => {
-    const user = this.authService.currentUser();
-    return user?.role === 'ADMIN' || user?.role === 'SUPER_ADMIN';
-  });
-
-  readonly isMerchant = computed(() => {
-    const user = this.authService.currentUser();
-    return user?.role === 'OPERATOR';
-  });
+  readonly isAdmin = computed(() =>
+    this.authService.hasPermission(BusinessModule.FINANCE, 'EXECUTE'),
+  );
+  readonly isMerchant = computed(() => !this.isAdmin());
 
   loadGlobalSummary(): Observable<GlobalDebtSummary | null> {
     this.loading.set(true);

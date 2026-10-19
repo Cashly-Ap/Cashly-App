@@ -1,6 +1,16 @@
+import { currentAccessFixture } from './access.fixture';
 import { expect, test } from '@playwright/test';
 
 test.describe('Back-office authentication entry point', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.route('**/api/auth/access', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(currentAccessFixture()),
+      }),
+    );
+  });
   const authenticatedUser = {
     id: 'user-e2e-1',
     email: 'e2e-admin@example.com',

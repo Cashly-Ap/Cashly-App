@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -43,6 +44,7 @@ import { ProductList } from '@features/catalog/products/models/interfaces/produc
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -225,11 +227,22 @@ export class ProductsListPageComponent implements OnInit {
 
   actionsFor(product: ProductList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(product) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(product) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(product),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(product),
+      },
     ];
     if (product.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

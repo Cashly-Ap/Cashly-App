@@ -1,10 +1,17 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 
 export interface ListAction {
   label: string;
+  requiredPermissions?: string[];
+  requiredAction?: import('@features/platform/auth/authorization/models/access.model').PermissionAction;
   icon: string;
   command: () => void;
   danger?: boolean;
@@ -20,6 +27,8 @@ export interface ListAction {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListActionButtonsComponent {
+  private readonly authorization = inject(AuthorizationService);
+  private readonly router = inject(Router);
   readonly actions = input.required<readonly ListAction[]>();
   readonly ariaLabel = input('Abrir acciones del registro');
   readonly orderedActions = computed(() => {
@@ -29,6 +38,23 @@ export class ListActionButtonsComponent {
       ['Eliminar', 2],
     ]);
     return this.actions()
+      .filter((action) => {
+        const module = moduleForUrl(this.router.url);
+        return (
+          !!module &&
+          !!action.requiredAction &&
+          this.authorization.can(module, action.requiredAction) &&
+          (action.requiredPermissions ?? []).every((grant) => {
+            const [owner, required] = grant.split(':');
+            return this.authorization.can(
+              owner as BusinessModule,
+              required as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
+            );
+          }) &&
+          (action.requiredAction !== 'EXPORT' ||
+            this.authorization.can(BusinessModule.DOCUMENT_ADMIN, 'EXPORT'))
+        );
+      })
       .map((action, index) => ({ action, index }))
       .sort(
         (left, right) =>

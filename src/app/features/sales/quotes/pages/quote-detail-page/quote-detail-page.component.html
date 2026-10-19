@@ -27,6 +27,8 @@
                 <app-detail-actions-menu #actionsMenu>
                   @if (currentQuote.status === QuoteStatus.DRAFT) {
                     <p-button
+                      [appRequiredPermissions]="['INVENTORY:READ']"
+                      [appPermission]="'UPDATE'"
                       label="Editar"
                       icon="pi pi-pencil"
                       [link]="true"

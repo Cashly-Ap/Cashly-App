@@ -8,6 +8,7 @@ export const WAREHOUSE_ROUTES: Routes = [
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.INVENTORY },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',

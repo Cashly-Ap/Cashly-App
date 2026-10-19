@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -37,6 +38,7 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -122,11 +124,22 @@ export class PriceTypesListPageComponent implements OnInit {
 
   actionsFor(priceType: PriceTypeList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(priceType) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(priceType) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(priceType),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(priceType),
+      },
     ];
     if (priceType.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

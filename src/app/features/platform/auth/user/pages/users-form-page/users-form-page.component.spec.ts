@@ -1,150 +1,124 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
-import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { UsersFormPageComponent } from '@features/platform/auth/user/pages/users-form-page/users-form-page.component';
-import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
-import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
-import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
-
-describe('UsersFormPageComponent', () => {
+import { signal } from '@angular/core';
+import { UsersFormPageComponent } from './users-form-page.component';
+import { UserApplicationService } from '../../services/application/user-application.service';
+import { AccessManagementService } from '../../../authorization/services/access-management.service';
+describe('User profile form', () => {
+  const userService = {
+    loading: signal(false),
+    createUser: vi.fn(),
+    updateUser: vi.fn(),
+    loadUserById: vi.fn(),
+  };
   let component: UsersFormPageComponent;
-  let fixture: ComponentFixture<UsersFormPageComponent>;
-  let mockUserService: {
-    loading: ReturnType<typeof vi.fn>;
-    loadUserById: ReturnType<typeof vi.fn>;
-    createUser: ReturnType<typeof vi.fn>;
-    updateUser: ReturnType<typeof vi.fn>;
-  };
-
-  const mockUserDetails: UserDetails = {
-    id: '1',
-    email: 'test@cashly.com',
-    userName: 'Test User',
-    role: UserType.OPERATOR,
-    active: true,
-    emailVerified: true,
-    createdAt: '2024-01-01T00:00:00Z',
-    updatedAt: '2024-01-01T00:00:00Z',
-  };
-
-  function buildMockService() {
-    return {
-      loading: vi.fn(() => false),
-      loadUserById: vi.fn().mockReturnValue(of(mockUserDetails)),
-      createUser: vi.fn().mockReturnValue(of(mockUserDetails)),
-      updateUser: vi.fn().mockReturnValue(of(mockUserDetails)),
-    };
-  }
-
-  async function createComponent(params: Record<string, string> = {}): Promise<void> {
-    mockUserService = buildMockService();
-
+  beforeEach(async () => {
+    userService.createUser.mockReset().mockReturnValue(of({ id: 'u' }));
     await TestBed.configureTestingModule({
       imports: [UsersFormPageComponent],
       providers: [
         provideRouter([]),
-        { provide: UserApplicationService, useValue: mockUserService },
+        provideHttpClient(),
+        MessageService,
+        { provide: UserApplicationService, useValue: userService },
+        {
+          provide: AccessManagementService,
+          useValue: {
+            roleOptions: () => of([{ id: 'r', name: 'Custom' }]),
+            departmentOptions: () => of([{ id: 'd', name: 'Support' }]),
+          },
+        },
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap(params)),
-            snapshot: {
-              paramMap: convertToParamMap(params),
-              queryParamMap: convertToParamMap({}),
-            },
+            paramMap: of(convertToParamMap({})),
+            snapshot: { paramMap: convertToParamMap({}), queryParamMap: convertToParamMap({}) },
           },
         },
-        MessageService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
       ],
-      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
-
-    fixture = TestBed.createComponent(UsersFormPageComponent);
+    const fixture = TestBed.createComponent(UsersFormPageComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+  function valid() {
+    component.form.patchValue({
+      email: 'user@cashly.com',
+      password: 'Password123',
+      userName: 'testuser',
+      firstName: ' Test ',
+      lastName: ' User ',
+      roleId: 'r',
+      departmentId: 'd',
+    });
   }
-
-  beforeEach(async () => {
-    await createComponent();
+  it('requires profile references and removes editable enum/direct grants', () => {
+    expect(component.form.get('role')).toBeNull();
+    expect(component.form.get('modulePermissions')).toBeNull();
+    expect(component.form.invalid).toBe(true);
+    valid();
+    expect(component.form.valid).toBe(true);
+    expect(component.roles()[0].label).toBe('Custom');
   });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('saves profile and references in one create request with a normalized phone', () => {
+    valid();
+    component.form.patchValue({ phone: '+34 612 345 678' });
+    component.onSubmit();
+    expect(userService.createUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: 'Test',
+        lastName: 'User',
+        roleId: 'r',
+        departmentId: 'd',
+        phone: '+34612345678',
+      }),
+    );
+    expect(userService.createUser.mock.calls[0][0]).not.toHaveProperty('modulePermissions');
   });
-
-  it('should initialize in create mode when no id in route', () => {
-    fixture.detectChanges();
-    expect(component.isEditMode()).toBe(false);
-    expect(component.entityId()).toBeNull();
+  it('has one phone control and rejects multiple numbers', () => {
+    valid();
+    expect(component.form.get('phones')).toBeNull();
+    component.form.patchValue({ phone: '612345678,612345679' });
+    component.onSubmit();
+    expect(userService.createUser).not.toHaveBeenCalled();
+    expect(component.activeTab()).toBe('contact');
   });
-
-  it('should have correct title in create mode', () => {
-    fixture.detectChanges();
-    expect(component.title()).toBe('Nuevo Usuario');
+  it('allows an absent phone', () => {
+    valid();
+    component.onSubmit();
+    expect(userService.createUser).toHaveBeenCalledWith(expect.objectContaining({ phone: null }));
   });
-
-  it('should have correct submit label in create mode', () => {
-    fixture.detectChanges();
-    expect(component.submitLabel()).toBe('Crear Usuario');
+  it('rejects blank names and preserves password strength checks', () => {
+    valid();
+    component.form.patchValue({ firstName: '   ', password: 'password' });
+    expect(component.form.invalid).toBe(true);
   });
-
-  it('should build form with required fields', () => {
-    fixture.detectChanges();
-    expect(component.form.get('email')).toBeTruthy();
-    expect(component.form.get('password')).toBeTruthy();
-    expect(component.form.get('userName')).toBeTruthy();
-    expect(component.form.get('role')).toBeTruthy();
-    expect(component.form.get('active')).toBeTruthy();
-  });
-
-  it('should show password field in create mode', () => {
-    fixture.detectChanges();
-    expect(component.isEditMode()).toBe(false);
-  });
-
-  it('should return email error for required field', () => {
-    fixture.detectChanges();
-    component.form.get('email')?.setErrors({ required: true });
-    expect(component.getEmailError()).toBe('El correo electrónico es requerido');
-  });
-
-  it('should return email error for invalid format', () => {
-    fixture.detectChanges();
-    component.form.get('email')?.setErrors({ email: true });
-    expect(component.getEmailError()).toBe('El formato del correo electrónico es inválido');
-  });
-
-  it('should return userName error for required field', () => {
-    fixture.detectChanges();
-    component.form.get('userName')?.setErrors({ required: true });
-    expect(component.getUserNameError()).toBe('El nombre de usuario es requerido');
-  });
-
-  describe('edit mode', () => {
-    beforeEach(async () => {
-      TestBed.resetTestingModule();
-      await createComponent({ id: '1' });
+  it('round-trips nullable optional address fields and phone without throwing', () => {
+    valid();
+    component.form.patchValue({
+      street: 'Main Street',
+      city: null,
+      region: null,
+      country: null,
+      postalCode: null,
     });
-
-    it('should have correct title in edit mode', () => {
-      fixture.detectChanges();
-      expect(component.title()).toBe('Editar Usuario');
-    });
-
-    it('should have correct submit label in edit mode', () => {
-      fixture.detectChanges();
-      expect(component.submitLabel()).toBe('Actualizar Usuario');
-    });
-
-    it('should load user data in edit mode', () => {
-      fixture.detectChanges();
-      expect(mockUserService.loadUserById).toHaveBeenCalledWith('1');
-    });
+    component.form.patchValue({ phone: '+34 (612).345-678' });
+    component.onSubmit();
+    expect(userService.createUser).toHaveBeenCalledWith(
+      expect.objectContaining({
+        address: {
+          street: 'Main Street',
+          city: null,
+          region: null,
+          country: null,
+          postalCode: null,
+        },
+        phone: '+34612345678',
+      }),
+    );
   });
 });

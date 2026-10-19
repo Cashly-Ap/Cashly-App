@@ -1,3 +1,6 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -30,6 +33,7 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
@@ -45,6 +49,8 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
   templateUrl: './products-details-page.component.html',
 })
 export class ProductsDetailsPageComponent implements OnInit {
+  private readonly authorization = inject(AuthorizationService);
+  readonly canViewStock = computed(() => this.authorization.can(BusinessModule.INVENTORY));
   private service = inject(ProductApplicationService);
   private photoService = inject(ProductPhotoService);
   private route = inject(ActivatedRoute);
@@ -66,7 +72,9 @@ export class ProductsDetailsPageComponent implements OnInit {
     this.loading.set(true);
     forkJoin({
       product: this.service.loadById(id),
-      stock: this.service.getStock(id).pipe(catchError(() => of([]))),
+      stock: this.canViewStock()
+        ? this.service.getStock(id).pipe(catchError(() => of([])))
+        : of([]),
     }).subscribe({
       next: ({ product, stock }) => {
         this.product.set(product);

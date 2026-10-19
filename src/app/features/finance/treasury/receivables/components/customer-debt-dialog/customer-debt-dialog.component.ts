@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ListActionButtonsComponent,
   ListAction,
@@ -55,6 +56,7 @@ interface BalanceFilterOption {
   selector: 'app-customer-debt-dialog',
   standalone: true,
   imports: [
+    PermissionDirective,
     ListActionButtonsComponent,
     DialogModule,
     ButtonModule,
@@ -211,11 +213,13 @@ export class CustomerDebtDialogComponent {
   protected invoiceActions(invoice: CustomerInvoiceDebt): ListAction[] {
     const actions: ListAction[] = [
       {
+        requiredAction: 'READ',
         label: 'Ver factura',
         icon: 'pi pi-file-pdf',
         command: () => this.onViewInvoicePdf(invoice),
       },
       {
+        requiredAction: 'READ',
         label: 'Ver historial de pagos',
         icon: 'pi pi-history',
         command: () => this.onViewInvoicePaymentHistory(invoice),
@@ -224,12 +228,15 @@ export class CustomerDebtDialogComponent {
     if (this.canReturnInvoice(invoice)) {
       actions.push(
         {
+          requiredAction: 'CREATE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
           label: 'Devolución',
           icon: 'pi pi-undo',
           disabled: this.loadingReturnInvoice(),
           command: () => this.onViewInvoiceReturns(invoice),
         },
         {
+          requiredAction: 'CREATE',
           label: 'Nota',
           icon: 'pi pi-file-edit',
           disabled: this.loadingNoteInvoice(),
@@ -239,6 +246,7 @@ export class CustomerDebtDialogComponent {
     }
     if (invoice.balance > 0 && !this.isInvoiceFullyBlocked(invoice)) {
       actions.push({
+        requiredAction: 'EXECUTE',
         label: 'Registrar pago',
         icon: 'pi pi-dollar',
         command: () => this.onPayInvoice(invoice),

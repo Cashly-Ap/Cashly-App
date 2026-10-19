@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -43,6 +44,7 @@ import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/ord
     `,
   ],
   imports: [
+    PermissionDirective,
     DialogModule,
     ButtonModule,
     SelectModule,

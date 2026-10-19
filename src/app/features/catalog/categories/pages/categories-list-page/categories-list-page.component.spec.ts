@@ -1,3 +1,4 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, provideRouter } from '@angular/router';
@@ -48,6 +49,7 @@ describe('CategoriesListPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CategoriesListPageComponent],
       providers: [
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         { provide: CategoryApplicationService, useValue: mockService },
         ConfirmationService,

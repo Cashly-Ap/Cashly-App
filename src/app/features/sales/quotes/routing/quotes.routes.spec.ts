@@ -48,4 +48,24 @@ describe('Quote Routes', () => {
       expect(child.loadComponent).toBeDefined();
     });
   });
+  it('keeps list read independent and guards stock-rich detail and forms', () => {
+    expect(
+      QUOTE_ROUTES[0].children?.find((route) => route.path === '')?.data?.['requiredPermissions'],
+    ).toBeUndefined();
+    expect(
+      QUOTE_ROUTES[0].children?.find((route) => route.path === ':id')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:READ']);
+    expect(
+      QUOTE_ROUTES[0].children?.find((route) => route.path === 'new')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:READ']);
+    expect(
+      QUOTE_ROUTES[0].children?.find((route) => route.path === ':id/edit')?.data?.[
+        'requiredPermissions'
+      ],
+    ).toEqual(['INVENTORY:READ']);
+  });
 });

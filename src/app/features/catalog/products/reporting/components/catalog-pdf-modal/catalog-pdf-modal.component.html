@@ -66,6 +66,13 @@
   }
 
   <ng-template pTemplate="footer">
-    <p-button label="Ver PDF" icon="pi pi-file-pdf" (onClick)="generatePdf()" severity="primary" />
+    <p-button
+      [appPermissionModule]="'CATALOG'"
+      [appPermission]="'EXPORT'"
+      label="Ver PDF"
+      icon="pi pi-file-pdf"
+      (onClick)="generatePdf()"
+      severity="primary"
+    />
   </ng-template>
 </p-dialog>

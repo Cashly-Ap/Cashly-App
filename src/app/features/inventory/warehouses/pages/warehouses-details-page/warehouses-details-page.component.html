@@ -21,6 +21,7 @@
               />
               <app-detail-actions-menu #actionsMenu>
                 <p-button
+                  [appPermission]="'UPDATE'"
                   label="Editar"
                   icon="pi pi-pencil"
                   [link]="true"
@@ -29,6 +30,7 @@
                 />
                 @if (currentWarehouse.deletable) {
                   <p-button
+                    [appPermission]="'DELETE'"
                     label="Eliminar"
                     icon="pi pi-trash"
                     severity="danger"
@@ -38,6 +40,7 @@
                   />
                 }
                 <p-button
+                  [appPermission]="'EXECUTE'"
                   label="Registrar entrada"
                   icon="pi pi-arrow-circle-down"
                   [link]="true"
@@ -45,6 +48,7 @@
                   styleClass="w-full justify-start text-left text-sm"
                 />
                 <p-button
+                  [appPermission]="'EXECUTE'"
                   label="Registrar salida"
                   icon="pi pi-arrow-circle-up"
                   [link]="true"

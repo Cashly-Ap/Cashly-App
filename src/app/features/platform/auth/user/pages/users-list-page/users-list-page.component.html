@@ -48,18 +48,20 @@
                     />
                   }
                 </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Rol</label>
-                  <p-select
-                    [options]="roleOptions"
-                    [ngModel]="filterRole()"
-                    (onChange)="onRoleFilterChange($event.value)"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="Todos los roles"
-                    styleClass="w-full"
-                  />
-                </div>
+                @if (canFilterRoles()) {
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">Rol</label>
+                    <p-select
+                      [options]="roleOptions()"
+                      [ngModel]="filterRole()"
+                      (onChange)="onRoleFilterChange($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Todos los roles"
+                      styleClass="w-full"
+                    />
+                  </div>
+                }
                 <div class="flex flex-col gap-1">
                   <label class="text-xs font-medium text-surface-500">Estado</label>
                   <p-select
@@ -76,6 +78,7 @@
             </p-popover>
           </div>
           <p-button
+            [appPermission]="'CREATE'"
             label="Nuevo Usuario"
             icon="pi pi-plus"
             (onClick)="onCreate()"
@@ -96,8 +99,6 @@
           icon="pi-users"
           title="No hay usuarios registrados"
           message="Comienza a gestionar usuarios agregando el primero."
-          buttonLabel="Crear mi Primer Usuario"
-          (buttonClick)="onCreate()"
         />
       </app-content-card>
     } @else {
@@ -115,15 +116,13 @@
               icon="pi-search"
               title="No se encontraron resultados"
               message="No hay usuarios que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo usuario."
-              buttonLabel="Crear Nuevo Usuario"
-              (buttonClick)="onCreate()"
             />
           } @else {
             <div class="overflow-x-auto rounded-t-2xl">
               <p-table
                 #dt
                 [value]="users()"
-                [globalFilterFields]="['userName', 'email', 'role']"
+                [globalFilterFields]="['userName', 'email', 'roleName']"
                 [customSort]="true"
                 (sortFunction)="onSort($event)"
                 styleClass="p-datatable-striped"
@@ -142,10 +141,10 @@
                         <p-sortIcon field="email" />
                       </div>
                     </th>
-                    <th pSortableColumn="role" class="w-32">
+                    <th pSortableColumn="roleName" class="w-32">
                       <div class="flex items-center gap-2 font-semibold">
-                        Tipo
-                        <p-sortIcon field="role" />
+                        Rol
+                        <p-sortIcon field="roleName" />
                       </div>
                     </th>
                     <th class="w-24">
@@ -169,13 +168,18 @@
                       </div>
                     </td>
                     <td>
-                      <app-text-badge [label]="getTypeLabel(user.role)" variant="label" />
+                      <app-text-badge [label]="user.roleName || user.roleId" variant="label" />
                     </td>
                     <td>
                       <app-status-badge [active]="user.active" />
                     </td>
                     <td>
-                      <app-list-action-buttons [actions]="actionsFor(user)" />
+                      <div class="flex justify-center">
+                        <app-list-action-buttons
+                          [actions]="actionsFor(user)"
+                          ariaLabel="Abrir acciones del usuario"
+                        />
+                      </div>
                     </td>
                   </tr>
                 </ng-template>
@@ -210,8 +214,6 @@
               icon="pi-search"
               title="No se encontraron resultados"
               message="No hay usuarios que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo usuario."
-              buttonLabel="Crear Nuevo Usuario"
-              (buttonClick)="onCreate()"
             />
           </app-content-card>
         } @else {
@@ -229,13 +231,13 @@
                       {{ user.email }}
                     </p>
                     <div class="flex gap-2 mt-2">
-                      <app-text-badge [label]="getTypeLabel(user.role)" variant="label" />
+                      <app-text-badge [label]="user.roleName || user.roleId" variant="label" />
                       <app-status-badge [active]="user.active" />
                     </div>
                   </div>
                 </div>
                 <div
-                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                  class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
                 >
                   <app-list-action-buttons [actions]="actionsFor(user)" />
                 </div>
@@ -247,7 +249,7 @@
               [first]="first()"
               [rows]="rows()"
               [totalRecords]="totalElements()"
-              [rowsPerPageOptions]="[10, 25, 50]"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
               currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} usuarios"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"

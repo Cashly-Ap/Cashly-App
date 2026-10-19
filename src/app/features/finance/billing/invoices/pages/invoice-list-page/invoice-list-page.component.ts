@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -72,6 +73,7 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
     `,
   ],
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     DecimalPipe,
@@ -341,8 +343,15 @@ export class InvoiceListPageComponent implements OnInit {
 
   actionsFor(invoice: InvoiceList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(invoice) },
       {
+        requiredAction: 'READ',
+        requiredPermissions: ['INVENTORY:READ'],
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(invoice),
+      },
+      {
+        requiredAction: 'EXPORT',
         label: 'Descargar PDF',
         icon: 'pi pi-file-pdf',
         command: () => this.onDownloadPdf(invoice),
@@ -350,9 +359,23 @@ export class InvoiceListPageComponent implements OnInit {
     ];
     if (invoice.status === 'DRAFT') {
       actions.push(
-        { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirmInvoice(invoice) },
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(invoice) },
         {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
+          label: 'Confirmar',
+          icon: 'pi pi-check',
+          command: () => this.onConfirmInvoice(invoice),
+        },
+        {
+          requiredAction: 'UPDATE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
+          label: 'Editar',
+          icon: 'pi pi-pencil',
+          command: () => this.onEdit(invoice),
+        },
+        {
+          requiredAction: 'DELETE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
           label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
@@ -362,6 +385,8 @@ export class InvoiceListPageComponent implements OnInit {
     }
     if (this.canCancel(invoice.status)) {
       actions.push({
+        requiredAction: 'EXECUTE',
+        requiredPermissions: ['INVENTORY:EXECUTE'],
         label: 'Cancelar',
         icon: 'pi pi-times',
         danger: true,
@@ -369,6 +394,8 @@ export class InvoiceListPageComponent implements OnInit {
       });
     }
     actions.push({
+      requiredAction: 'CREATE',
+      requiredPermissions: ['INVENTORY:EXECUTE'],
       label: 'Duplicar',
       icon: 'pi pi-copy',
       command: () => this.onDuplicate(invoice),

@@ -1,6 +1,14 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export class UserValidators {
+  static phoneNumber(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const normalized = String(control.value).replace(/[\s().-]/g, '');
+      return /^\+?\d{7,15}$/.test(normalized) ? null : { invalidPhone: true };
+    };
+  }
+
   static passwordStrength(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;

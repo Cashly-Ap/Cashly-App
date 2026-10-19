@@ -244,6 +244,8 @@
           (onClick)="onCancel()"
         />
         <p-button
+          [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+          [appPermission]="'EXECUTE'"
           label="Confirmar Compra"
           icon="pi pi-check"
           severity="success"

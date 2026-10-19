@@ -155,6 +155,8 @@
     <div class="flex gap-2 justify-end">
       <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
       <p-button
+        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermission]="'CREATE'"
         label="Duplicar Factura"
         icon="pi pi-copy"
         severity="contrast"

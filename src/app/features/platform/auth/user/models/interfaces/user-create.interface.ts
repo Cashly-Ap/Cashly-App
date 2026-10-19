@@ -1,9 +1,7 @@
-import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
+import { UserProfile } from '../../../authorization/models/access.model';
 
-export interface UserCreate {
+export interface UserCreate extends UserProfile {
   email: string;
   password: string;
   userName: string;
-  role: UserType;
-  active: boolean;
 }

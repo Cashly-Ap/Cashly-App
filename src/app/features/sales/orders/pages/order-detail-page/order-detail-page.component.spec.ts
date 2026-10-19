@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -77,6 +79,8 @@ describe('OrderDetailPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [OrderDetailPageComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'ord-001' } } } },
         { provide: OrderApplicationService, useValue: mockService },
         MessageService,

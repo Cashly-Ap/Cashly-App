@@ -8,6 +8,7 @@ export const CASH_REGISTER_ROUTES: Routes = [
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.FINANCE },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',

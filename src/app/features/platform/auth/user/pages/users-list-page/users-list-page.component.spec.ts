@@ -1,3 +1,5 @@
+import { AccessManagementService } from '../../../authorization/services/access-management.service';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, provideRouter } from '@angular/router';
@@ -16,6 +18,13 @@ describe('UsersListPageComponent', () => {
   let router: Router;
 
   const mockUser: UserList = {
+    deletable: true,
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -38,6 +47,11 @@ describe('UsersListPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UsersListPageComponent],
       providers: [
+        {
+          provide: AccessManagementService,
+          useValue: { roleOptions: () => of([{ id: 'role-1', name: 'Custom role' }]) },
+        },
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         { provide: UserApplicationService, useValue: mockUserService },
         ConfirmationService,
@@ -97,5 +111,12 @@ describe('UsersListPageComponent', () => {
   it('should return correct type label', () => {
     const label = component.getTypeLabel(UserType.OPERATOR);
     expect(label).toBe('Operador');
+  });
+  it('does not request assignable role options for a read-only user administrator', () => {
+    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
+    const options = vi.spyOn(TestBed.inject(AccessManagementService), 'roleOptions');
+    fixture.detectChanges();
+    expect(options).not.toHaveBeenCalled();
+    expect(component.canFilterRoles()).toBe(false);
   });
 });

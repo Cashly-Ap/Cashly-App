@@ -1,3 +1,4 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import {
   Component,
   computed,
@@ -193,6 +194,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.authService.isAuthenticated())
+      this.authService.ensureAccess().subscribe({ error: () => undefined });
     this.checkScreenSize();
     this.scrollSubscription = fromEvent(window, 'scroll').subscribe(() => {
       if (this.userMenu?.overlayVisible) {
@@ -234,8 +237,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
     return items
       .filter((item) => {
-        if (item.allowedRoles && !item.allowedRoles.includes(userType)) return false;
-        if (item.requiredModule && !this.authService.hasModulePermission(item.requiredModule))
+        if (
+          item.requiredModule &&
+          !this.authService.hasPermission(item.requiredModule, item.requiredAction ?? 'READ')
+        )
+          return false;
+        if (
+          item.requiredAction &&
+          !item.requiredModule &&
+          !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)
+        )
           return false;
         return true;
       })

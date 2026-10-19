@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -51,6 +52,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,
@@ -180,14 +182,39 @@ export class OrderListPageComponent implements OnInit {
 
   actionsFor(order: OrderList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(order) },
-      { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(order) },
+      {
+        requiredAction: 'READ',
+        requiredPermissions: ['INVENTORY:READ'],
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(order),
+      },
+      {
+        requiredAction: 'EXPORT',
+        label: 'Descargar PDF',
+        icon: 'pi pi-file-pdf',
+        command: () => this.onDownloadPdf(order),
+      },
     ];
     if (order.status === 'DRAFT') {
       actions.push(
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(order) },
-        { label: 'Confirmar', icon: 'pi pi-check', command: () => this.onConfirm(order) },
         {
+          requiredAction: 'UPDATE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
+          label: 'Editar',
+          icon: 'pi pi-pencil',
+          command: () => this.onEdit(order),
+        },
+        {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
+          label: 'Confirmar',
+          icon: 'pi pi-check',
+          command: () => this.onConfirm(order),
+        },
+        {
+          requiredAction: 'DELETE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
           label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
@@ -198,11 +225,15 @@ export class OrderListPageComponent implements OnInit {
     if (order.status === 'CONFIRMED') {
       actions.push(
         {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
           label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(order),
         },
         {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
           label: 'Cancelar',
           icon: 'pi pi-times',
           danger: true,

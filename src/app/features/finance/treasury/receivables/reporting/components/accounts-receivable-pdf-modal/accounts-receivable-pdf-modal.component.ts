@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,7 +18,15 @@ interface SelectOption {
   selector: 'app-accounts-receivable-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, FormsModule, DialogModule, ButtonModule, SelectModule, CheckboxModule],
+  imports: [
+    PermissionDirective,
+    CommonModule,
+    FormsModule,
+    DialogModule,
+    ButtonModule,
+    SelectModule,
+    CheckboxModule,
+  ],
   templateUrl: './accounts-receivable-pdf-modal.component.html',
 })
 export class AccountsReceivablePdfModalComponent {

@@ -5,6 +5,14 @@ import { UserEdit } from '@features/platform/auth/user/models/interfaces/user-ed
 export class UserMapper {
   static toList(user: UserDetails): UserList {
     return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address: user.address,
+      phone: user.phone,
+      roleId: user.roleId,
+      departmentId: user.departmentId,
+      roleName: user.roleName,
+      departmentName: user.departmentName,
       id: user.id,
       email: user.email,
       userName: user.userName,
@@ -23,10 +31,13 @@ export class UserMapper {
 
   static toEdit(user: UserDetails): UserEdit {
     return {
-      id: user.id,
-      email: user.email,
       userName: user.userName,
-      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      address: user.address,
+      phone: user.phone,
+      roleId: user.roleId,
+      departmentId: user.departmentId,
       active: user.active,
     };
   }

@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -50,6 +51,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,
@@ -177,23 +179,45 @@ export class QuoteListPageComponent implements OnInit {
 
   actionsFor(quote: QuoteList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(quote) },
-      { label: 'Descargar PDF', icon: 'pi pi-file-pdf', command: () => this.onDownloadPdf(quote) },
+      {
+        requiredAction: 'READ',
+        requiredPermissions: ['INVENTORY:READ'],
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(quote),
+      },
+      {
+        requiredAction: 'EXPORT',
+        label: 'Descargar PDF',
+        icon: 'pi pi-file-pdf',
+        command: () => this.onDownloadPdf(quote),
+      },
     ];
     if (quote.status === 'DRAFT') {
       actions.push(
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(quote) },
         {
+          requiredAction: 'UPDATE',
+          requiredPermissions: ['INVENTORY:READ'],
+          label: 'Editar',
+          icon: 'pi pi-pencil',
+          command: () => this.onEdit(quote),
+        },
+        {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['SALES:CREATE', 'INVENTORY:EXECUTE'],
           label: 'Convertir a pedido',
           icon: 'pi pi-shopping-cart',
           command: () => this.onConvertToOrder(quote),
         },
         {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
           label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(quote),
         },
         {
+          requiredAction: 'DELETE',
           label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,

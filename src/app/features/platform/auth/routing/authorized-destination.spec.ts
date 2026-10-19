@@ -18,9 +18,10 @@ describe('authorizedDestination', () => {
 
   it.each([
     [BusinessModule.SALES, '/partners/customers'],
-    [BusinessModule.INVENTORY, '/catalog/products'],
+    [BusinessModule.CATALOG, '/catalog/products'],
+    [BusinessModule.INVENTORY, '/inventory/warehouses'],
     [BusinessModule.PURCHASES, '/procurement/purchases'],
-    [BusinessModule.FINANCE, '/finance/billing/credit-notes'],
+    [BusinessModule.FINANCE, '/finance/billing/invoices'],
     [BusinessModule.DASHBOARD, '/analytics/dashboard'],
   ])('selects an accessible landing page for %s', (module, destination) => {
     expect(authorizedDestination(auth([module]))).toBe(destination);
@@ -53,10 +54,8 @@ describe('authorizedDestination', () => {
     ).toBe('/analytics/reports/inventory');
   });
 
-  it('does not send an operator with USERS permission to super administrator pages', () => {
-    expect(authorizedDestination(auth([BusinessModule.USERS]))).toBe(
-      '/platform/auth/configuration',
-    );
+  it('allows a custom role with USERS permission to open users', () => {
+    expect(authorizedDestination(auth([BusinessModule.USERS]))).toBe('/platform/users');
   });
 
   it('allows the users landing page for a super administrator with USERS permission', () => {

@@ -7,6 +7,7 @@ import { UserList } from '@features/platform/auth/user/models/interfaces/user-li
 import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { UserCreate } from '@features/platform/auth/user/models/interfaces/user-create.interface';
 import { UserEdit } from '@features/platform/auth/user/models/interfaces/user-edit.interface';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
 
 describe('UserApiService', () => {
@@ -15,6 +16,12 @@ describe('UserApiService', () => {
   const baseUrl = '/api/users';
 
   const mockUserDetails: UserDetails = {
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -26,6 +33,13 @@ describe('UserApiService', () => {
   };
 
   const mockUserList: UserList = {
+    deletable: true,
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -50,30 +64,30 @@ describe('UserApiService', () => {
 
   describe('getAll', () => {
     it('should fetch all users', async () => {
-      const promise = new Promise<UserList[]>((resolve, reject) => {
+      const promise = new Promise<PagedResponse<UserList>>((resolve, reject) => {
         service.getAll().subscribe({ next: resolve, error: reject });
       });
 
       const req = httpMock.expectOne(baseUrl);
       expect(req.request.method).toBe('GET');
-      req.flush([mockUserList]);
+      req.flush({ content: [mockUserList], totalElements: 1, totalPages: 1, size: 20, number: 0 });
 
       const users = await promise;
-      expect(users).toHaveLength(1);
-      expect(users[0].id).toBe('1');
-      expect(users[0].userName).toBe('Test User');
+      expect(users.content).toHaveLength(1);
+      expect(users.content[0].id).toBe('1');
+      expect(users.content[0].userName).toBe('Test User');
     });
 
     it('should handle empty array response', async () => {
-      const promise = new Promise<UserList[]>((resolve, reject) => {
+      const promise = new Promise<PagedResponse<UserList>>((resolve, reject) => {
         service.getAll().subscribe({ next: resolve, error: reject });
       });
 
       const req = httpMock.expectOne(baseUrl);
-      req.flush([]);
+      req.flush({ content: [], totalElements: 0, totalPages: 0, size: 20, number: 0 });
 
       const users = await promise;
-      expect(users).toEqual([]);
+      expect(users.content).toEqual([]);
     });
 
     it('should handle HTTP errors', async () => {
@@ -120,11 +134,15 @@ describe('UserApiService', () => {
   describe('create', () => {
     it('should create a new user', async () => {
       const createData: UserCreate = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         email: 'new@cashly.com',
         password: 'Password1!',
         userName: 'New User',
-        role: UserType.OPERATOR,
-        active: true,
       };
 
       const promise = new Promise<UserDetails>((resolve, reject) => {
@@ -142,11 +160,15 @@ describe('UserApiService', () => {
 
     it('should handle validation errors on create', async () => {
       const createData: UserCreate = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         email: '',
         password: 'weak',
         userName: '',
-        role: UserType.OPERATOR,
-        active: true,
       };
 
       const promise = new Promise((resolve, reject) => {
@@ -164,10 +186,13 @@ describe('UserApiService', () => {
   describe('update', () => {
     it('should update existing user', async () => {
       const editData: UserEdit = {
-        id: '1',
-        email: 'updated@cashly.com',
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         userName: 'Updated User',
-        role: UserType.ADMIN,
         active: false,
       };
 
@@ -186,10 +211,13 @@ describe('UserApiService', () => {
 
     it('should handle 404 when updating non-existent user', async () => {
       const editData: UserEdit = {
-        id: '999',
-        email: 'x@x.com',
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         userName: 'Ghost',
-        role: UserType.OPERATOR,
         active: true,
       };
 
@@ -229,5 +257,46 @@ describe('UserApiService', () => {
       const error = await promise;
       expect((error as { status: number }).status).toBe(404);
     });
+  });
+  it('serializes create using only the accepted registration fields', () => {
+    const payload = {
+      ...mockUserDetails,
+      password: 'Password123',
+      active: false,
+      unexpected: 'value',
+    };
+    service.create(payload).subscribe();
+    const request = httpMock.expectOne(baseUrl);
+    expect(Object.keys(request.request.body).sort()).toEqual(
+      [
+        'email',
+        'password',
+        'userName',
+        'firstName',
+        'lastName',
+        'address',
+        'phone',
+        'roleId',
+        'departmentId',
+      ].sort(),
+    );
+    request.flush(mockUserDetails);
+  });
+  it('serializes update without id/email, credentials or legacy direct grants', () => {
+    service.update('1', { ...mockUserDetails, password: 'never-send' } as UserEdit).subscribe();
+    const request = httpMock.expectOne(`${baseUrl}/1`);
+    expect(Object.keys(request.request.body).sort()).toEqual(
+      [
+        'userName',
+        'firstName',
+        'lastName',
+        'address',
+        'phone',
+        'roleId',
+        'departmentId',
+        'active',
+      ].sort(),
+    );
+    request.flush(mockUserDetails);
   });
 });

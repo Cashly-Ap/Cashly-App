@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -38,6 +39,7 @@ import { DebitNoteList } from '@features/finance/billing/debit-notes/models/inte
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -132,8 +134,14 @@ export class DebitNoteListPageComponent implements OnInit {
 
   actionsFor(debitNote: DebitNoteList): ListAction[] {
     return [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(debitNote) },
       {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onDetail(debitNote),
+      },
+      {
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

@@ -1,81 +1,62 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-
+import { ActivatedRouteSnapshot, Router, provideRouter } from '@angular/router';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { of, throwError, firstValueFrom, isObservable } from 'rxjs';
+import { modulePermissionGuard } from './module-permission.guard';
+import { AuthService } from '../services/application/auth-application.service';
+import { BusinessModule } from '../user/models/enums/business-module.enum';
 describe('modulePermissionGuard', () => {
-  let mockAuthService: {
-    isAuthenticated: ReturnType<typeof vi.fn>;
-    hasModulePermission: ReturnType<typeof vi.fn>;
-  };
-  let mockRouter: { navigate: ReturnType<typeof vi.fn> };
-
+  const auth = { isAuthenticated: vi.fn(), ensureAccess: vi.fn(), hasPermission: vi.fn() };
   beforeEach(() => {
-    mockAuthService = {
-      isAuthenticated: vi.fn(),
-      hasModulePermission: vi.fn(),
-    };
-    mockRouter = {
-      navigate: vi.fn(),
-    };
-
     TestBed.configureTestingModule({
-      providers: [
-        { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter },
-      ],
+      providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
     });
+    auth.isAuthenticated.mockReturnValue(true);
+    auth.ensureAccess.mockReturnValue(of({}));
+    auth.hasPermission.mockReturnValue(false);
   });
-
-  function createRoute(module?: BusinessModule): ActivatedRouteSnapshot {
-    return { data: { module } } as unknown as ActivatedRouteSnapshot;
+  function route(path: string, module = BusinessModule.CATALOG): ActivatedRouteSnapshot {
+    return {
+      data: {},
+      routeConfig: { path },
+      pathFromRoot: [{ data: { module } }, { data: {} }],
+    } as ActivatedRouteSnapshot;
   }
-
-  it('should redirect to /auth/login when not authenticated', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(false);
-
+  async function run(path: string) {
     const result = TestBed.runInInjectionContext(() =>
-      modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any),
+      modulePermissionGuard(route(path), {} as never),
     );
-
-    expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/platform/auth/login']);
+    return isObservable(result) ? firstValueFrom(result) : result;
+  }
+  it('checks CREATE and UPDATE on direct child URLs using the parent module', async () => {
+    auth.hasPermission.mockReturnValue(true);
+    expect(await run('new')).toBe(true);
+    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG, 'CREATE');
+    expect(await run(':id/edit')).toBe(true);
+    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG, 'UPDATE');
   });
-
-  it('should return true when no module is specified in route data', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(true);
-
-    const result = TestBed.runInInjectionContext(() =>
-      modulePermissionGuard(createRoute(undefined), {} as any),
+  it('checks READ for details and redirects denied actions', async () => {
+    const result = await run(':id');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.CATALOG, 'READ');
+    expect(TestBed.inject(Router).serializeUrl(result as never)).toBe(
+      '/platform/auth/configuration',
     );
-
-    expect(result).toBe(true);
-    expect(mockRouter.navigate).not.toHaveBeenCalled();
   });
-
-  it('should return true when user has module permission', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(true);
-    mockAuthService.hasModulePermission.mockReturnValue(true);
-
-    const result = TestBed.runInInjectionContext(() =>
-      modulePermissionGuard(createRoute(BusinessModule.USERS), {} as any),
+  it('fails closed if server access cannot be loaded', async () => {
+    auth.ensureAccess.mockReturnValue(throwError(() => new Error('unavailable')));
+    expect(TestBed.inject(Router).serializeUrl((await run('new')) as never)).toBe(
+      '/platform/auth/login',
     );
-
-    expect(result).toBe(true);
-    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.USERS);
   });
-
-  it('should redirect to / when user lacks module permission', () => {
-    mockAuthService.isAuthenticated.mockReturnValue(true);
-    mockAuthService.hasModulePermission.mockReturnValue(false);
-
+  it('requires explicit cross-owner stock grants before activating a write route', async () => {
+    const snapshot = route('new', BusinessModule.SALES);
+    snapshot.data = { requiredPermissions: ['INVENTORY:EXECUTE'] };
+    auth.hasPermission.mockImplementation((module) => module === BusinessModule.SALES);
     const result = TestBed.runInInjectionContext(() =>
-      modulePermissionGuard(createRoute(BusinessModule.FINANCE), {} as any),
+      modulePermissionGuard(snapshot, {} as never),
     );
-
-    expect(result).toBe(false);
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/']);
+    const destination = await firstValueFrom(result as ReturnType<typeof of>);
+    expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.INVENTORY, 'EXECUTE');
   });
 });

@@ -1,27 +1,37 @@
 import { inject } from '@angular/core';
-import { CanActivateFn, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { CanActivateFn, Router } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
+import { AuthService } from '../services/application/auth-application.service';
+import { BusinessModule } from '../user/models/enums/business-module.enum';
+import { PermissionAction } from '../authorization/models/access.model';
 
-export const modulePermissionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
-  const authService = inject(AuthService);
+export const modulePermissionGuard: CanActivateFn = (route) => {
+  const auth = inject(AuthService);
   const router = inject(Router);
+  if (!auth.isAuthenticated()) return router.createUrlTree(['/platform/auth/login']);
 
-  if (!authService.isAuthenticated()) {
-    router.navigate(['/platform/auth/login']);
-    return false;
-  }
+  const module = [...route.pathFromRoot]
+    .reverse()
+    .map((snapshot) => snapshot.data['module'])
+    .find(Boolean) as BusinessModule | undefined;
+  if (!module) return true;
 
-  const module = route.data['module'] as BusinessModule;
+  const path = route.routeConfig?.path ?? '';
+  const action = (route.data['action'] ??
+    (path === 'new' ? 'CREATE' : path.includes('edit') ? 'UPDATE' : 'READ')) as PermissionAction;
+  const requiredPermissions = (route.data['requiredPermissions'] ?? []) as string[];
 
-  if (!module) {
-    return true;
-  }
-
-  if (authService.hasModulePermission(module)) {
-    return true;
-  }
-
-  router.navigate(['/']);
-  return false;
+  return auth.ensureAccess().pipe(
+    map(() => {
+      const extraGrants = requiredPermissions.every((grant) => {
+        const [owner, required] = grant.split(':');
+        return auth.hasPermission(owner as BusinessModule, required as PermissionAction);
+      });
+      return (
+        (auth.hasPermission(module, action) && extraGrants) ||
+        router.createUrlTree(['/platform/auth/configuration'])
+      );
+    }),
+    catchError(() => of(router.createUrlTree(['/platform/auth/login']))),
+  );
 };

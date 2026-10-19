@@ -1,3 +1,4 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, provideRouter } from '@angular/router';
@@ -17,6 +18,7 @@ describe('CustomersListPageComponent', () => {
   let mockService: Partial<CustomerApplicationService>;
   let router: Router;
   const mockAuthService = {
+    hasPermission: vi.fn().mockReturnValue(true),
     hasModulePermission: vi.fn().mockReturnValue(true),
   };
 
@@ -45,6 +47,7 @@ describe('CustomersListPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CustomersListPageComponent],
       providers: [
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         { provide: CustomerApplicationService, useValue: mockService },
         { provide: AuthService, useValue: mockAuthService },

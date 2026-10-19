@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
@@ -28,6 +30,8 @@ describe('PendingPaymentsTabComponent', () => {
     await TestBed.configureTestingModule({
       imports: [PendingPaymentsTabComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         {
           provide: ReceivablesApiService,
           useValue: {

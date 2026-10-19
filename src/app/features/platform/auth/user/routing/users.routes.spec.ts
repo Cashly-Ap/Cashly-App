@@ -13,7 +13,7 @@ describe('User Routes', () => {
   });
 
   it('should have auth guards on parent route', () => {
-    expect(USER_ROUTES[0].canActivate).toHaveLength(3);
+    expect(USER_ROUTES[0].canActivate).toHaveLength(2);
   });
 
   it('should have USERS module data', () => {

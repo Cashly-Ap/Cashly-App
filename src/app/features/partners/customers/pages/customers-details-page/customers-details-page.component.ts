@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,6 +26,7 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
   selector: 'app-customers-details-page',
   standalone: true,
   imports: [
+    PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,

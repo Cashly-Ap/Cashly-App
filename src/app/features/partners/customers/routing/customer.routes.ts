@@ -8,6 +8,7 @@ export const CUSTOMER_ROUTES: Routes = [
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
     data: { module: BusinessModule.SALES },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',

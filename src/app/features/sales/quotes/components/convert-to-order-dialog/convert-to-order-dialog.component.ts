@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -37,7 +38,15 @@ interface LineWithStockInfo {
 @Component({
   selector: 'app-convert-to-order-dialog',
   standalone: true,
-  imports: [CommonModule, DecimalPipe, DialogModule, ButtonModule, TableModule, TooltipModule],
+  imports: [
+    PermissionDirective,
+    CommonModule,
+    DecimalPipe,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    TooltipModule,
+  ],
   templateUrl: './convert-to-order-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

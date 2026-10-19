@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
@@ -40,7 +42,12 @@ function setup(overrides: { visible?: boolean } = {}) {
   TestBed.configureTestingModule({
     imports: [HostComponent],
     schemas: [NO_ERRORS_SCHEMA],
-    providers: [provideHttpClient(), provideHttpClientTesting()],
+    providers: [
+      provideRouter([]),
+      { provide: AuthorizationService, useValue: { can: () => true } },
+      provideHttpClient(),
+      provideHttpClientTesting(),
+    ],
   });
   TestBed.compileComponents();
 

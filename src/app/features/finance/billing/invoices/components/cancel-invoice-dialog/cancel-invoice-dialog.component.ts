@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnChanges, input, output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { inject } from '@angular/core';
@@ -10,7 +11,7 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
   selector: 'app-cancel-invoice-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DialogModule, ButtonModule, ReactiveFormsModule, TextareaModule],
+  imports: [PermissionDirective, DialogModule, ButtonModule, ReactiveFormsModule, TextareaModule],
   templateUrl: './cancel-invoice-dialog.component.html',
 })
 export class CancelInvoiceDialogComponent implements OnChanges {

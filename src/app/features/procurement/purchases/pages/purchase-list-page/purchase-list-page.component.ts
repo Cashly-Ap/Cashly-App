@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -48,6 +49,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,
@@ -174,8 +176,15 @@ export class PurchaseListPageComponent implements OnInit {
 
   actionsFor(purchase: PurchaseList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(purchase) },
       {
+        requiredAction: 'READ',
+        requiredPermissions: ['INVENTORY:READ'],
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(purchase),
+      },
+      {
+        requiredAction: 'EXPORT',
         label: 'Descargar PDF',
         icon: 'pi pi-file-pdf',
         command: () => this.onDownloadPdf(purchase),
@@ -183,9 +192,22 @@ export class PurchaseListPageComponent implements OnInit {
     ];
     if (purchase.status === 'DRAFT') {
       actions.push(
-        { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(purchase) },
-        { label: 'Confirmar compra', icon: 'pi pi-check', command: () => this.onConfirm(purchase) },
         {
+          requiredAction: 'UPDATE',
+          requiredPermissions: ['INVENTORY:READ'],
+          label: 'Editar',
+          icon: 'pi pi-pencil',
+          command: () => this.onEdit(purchase),
+        },
+        {
+          requiredAction: 'EXECUTE',
+          requiredPermissions: ['INVENTORY:EXECUTE'],
+          label: 'Confirmar compra',
+          icon: 'pi pi-check',
+          command: () => this.onConfirm(purchase),
+        },
+        {
+          requiredAction: 'DELETE',
           label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
@@ -195,6 +217,8 @@ export class PurchaseListPageComponent implements OnInit {
     }
     if (purchase.status === 'CONFIRMED') {
       actions.push({
+        requiredAction: 'EXECUTE',
+        requiredPermissions: ['INVENTORY:EXECUTE'],
         label: 'Cancelar compra',
         icon: 'pi pi-ban',
         danger: true,

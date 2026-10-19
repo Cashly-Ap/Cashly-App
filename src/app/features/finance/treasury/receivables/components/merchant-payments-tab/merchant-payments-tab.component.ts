@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TableModule } from 'primeng/table';
@@ -35,6 +36,7 @@ function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'inf
   selector: 'app-merchant-payments-tab',
   standalone: true,
   imports: [
+    PermissionDirective,
     TableModule,
     ButtonModule,
     TagModule,

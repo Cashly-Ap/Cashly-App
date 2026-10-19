@@ -27,6 +27,8 @@
       <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
       @if (pdfUrl()) {
         <p-button
+          [appPermissionModule]="'FINANCES'"
+          [appPermission]="'EXPORT'"
           label="Descargar"
           icon="pi pi-download"
           severity="success"
@@ -34,6 +36,8 @@
         />
       }
       <p-button
+        [appPermissionModule]="'FINANCES'"
+        [appPermission]="'EXPORT'"
         label="Generar PDF"
         icon="pi pi-file-pdf"
         [loading]="loading()"

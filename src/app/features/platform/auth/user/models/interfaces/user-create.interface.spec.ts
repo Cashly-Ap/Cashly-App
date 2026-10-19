@@ -1,36 +1,24 @@
 import { describe, it, expect } from 'vitest';
 import type { UserCreate } from '@features/platform/auth/user/models/interfaces/user-create.interface';
-import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
 
 describe('UserCreate interface', () => {
   it('should have all required properties', () => {
     const user: UserCreate = {
+      firstName: 'Test',
+      lastName: 'User',
+      address: null,
+      phone: null,
+      roleId: 'role-1',
+      departmentId: 'department-1',
       email: 'test@example.com',
       password: 'secret123',
       userName: 'testuser',
-      role: UserType.OPERATOR,
-      active: true,
     };
 
     expect(user.email).toBe('test@example.com');
     expect(user.password).toBe('secret123');
     expect(user.userName).toBe('testuser');
-    expect(user.role).toBe(UserType.OPERATOR);
-    expect(user.active).toBe(true);
-  });
-
-  it('should accept all UserType values', () => {
-    const roles: UserType[] = [UserType.OPERATOR, UserType.ADMIN, UserType.SUPER_ADMIN];
-
-    roles.forEach((role) => {
-      const user: UserCreate = {
-        email: 'test@example.com',
-        password: 'secret123',
-        userName: 'testuser',
-        role,
-        active: true,
-      };
-      expect(user.role).toBe(role);
-    });
+    expect(user.roleId).toBe('role-1');
+    expect(user.departmentId).toBe('department-1');
   });
 });

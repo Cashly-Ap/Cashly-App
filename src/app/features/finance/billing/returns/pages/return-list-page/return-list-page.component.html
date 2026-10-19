@@ -79,6 +79,8 @@
             </p-popover>
           </div>
           <p-button
+            [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+            [appPermission]="'CREATE'"
             label="Nueva Devolución"
             icon="pi pi-plus"
             (onClick)="onCreate()"

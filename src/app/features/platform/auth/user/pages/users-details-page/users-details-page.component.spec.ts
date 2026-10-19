@@ -1,3 +1,4 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, ActivatedRoute, provideRouter } from '@angular/router';
@@ -18,6 +19,12 @@ describe('UsersDetailsPageComponent', () => {
   let router: Router;
 
   const mockUser: UserDetails = {
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -44,6 +51,7 @@ describe('UsersDetailsPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [UsersDetailsPageComponent],
       providers: [
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: UserApplicationService, useValue: mockUserService },

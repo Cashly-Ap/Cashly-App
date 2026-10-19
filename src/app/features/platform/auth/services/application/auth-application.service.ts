@@ -1,5 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap, map } from 'rxjs';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import {
+  CurrentAccess,
+  PermissionAction,
+  ACCESS_REFRESH_REQUEST,
+} from '../../authorization/models/access.model';
 import { tap, finalize, shareReplay } from 'rxjs/operators';
 import { AuthApiService } from '@features/platform/auth/services/api/auth-api.service';
 import {
@@ -21,6 +27,9 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly http = inject(HttpClient);
+  readonly currentAccess = signal<CurrentAccess | null>(null);
+  private accessInFlight$: Observable<CurrentAccess> | null = null;
   private apiService = inject(AuthApiService);
 
   currentUser = signal<UserResponse | null>(null);
@@ -75,6 +84,7 @@ export class AuthService {
           this.loading.set(false);
         },
       }),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
     );
   }
 
@@ -156,13 +166,41 @@ export class AuthService {
   }
 
   isSuperAdmin(): boolean {
-    const role = this.currentUser()?.role;
-    return role === 'SUPER_ADMIN';
+    return this.currentAccess()?.systemAdministrator === true;
+  }
+
+  hasPermission(module: BusinessModule, action: PermissionAction = 'READ'): boolean {
+    const grants = this.currentAccess()?.permissions[module] ?? [];
+    return grants.includes('READ') && grants.includes(action);
   }
 
   hasModulePermission(module: BusinessModule): boolean {
-    if (this.isSuperAdmin()) return true;
-    return this.currentUser()?.modulePermissions?.includes(module) ?? false;
+    return this.hasPermission(module);
+  }
+
+  refreshAccess(): Observable<CurrentAccess> {
+    if (this.accessInFlight$) return this.accessInFlight$;
+    this.accessInFlight$ = this.http
+      .get<CurrentAccess>('/api/auth/access', {
+        context: new HttpContext().set(ACCESS_REFRESH_REQUEST, true),
+      })
+      .pipe(
+        tap({
+          next: (access) => this.currentAccess.set(access),
+          error: () => this.currentAccess.set(null),
+        }),
+        finalize(() => (this.accessInFlight$ = null)),
+        shareReplay(1),
+      );
+    return this.accessInFlight$;
+  }
+
+  ensureAccess(): Observable<CurrentAccess | null> {
+    const expiresAt = Number(localStorage.getItem('tokenExpiresAt'));
+    if (expiresAt > 0 && expiresAt <= Date.now() + 60000 && this.refreshToken()) {
+      return this.refreshTokenSilently().pipe(map(() => this.currentAccess()));
+    }
+    return this.refreshAccess();
   }
 
   refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {
@@ -172,6 +210,7 @@ export class AuthService {
           this.setAuthState(response);
         },
       }),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
     );
   }
 
@@ -203,6 +242,7 @@ export class AuthService {
           this.setAuthState(response);
         },
       }),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
       finalize(() => {
         this.refreshInFlight$ = null;
       }),
@@ -221,6 +261,7 @@ export class AuthService {
   }
 
   setAuthState(response: AuthenticationResponse): void {
+    this.currentAccess.set(null);
     this.currentUser.set(response.entity);
     this.accessToken.set(response.accessToken);
     this.refreshToken.set(response.refreshToken);
@@ -229,6 +270,7 @@ export class AuthService {
   }
 
   clearAuthState(): void {
+    this.currentAccess.set(null);
     this.currentUser.set(null);
     this.accessToken.set(null);
     this.refreshToken.set(null);
@@ -286,6 +328,8 @@ export class AuthService {
         this.accessToken.set(accessToken);
         this.refreshToken.set(refreshToken);
         this.currentUser.set(user);
+        const remaining = Number(localStorage.getItem('tokenExpiresAt')) - Date.now();
+        if (remaining > 60000) this.scheduleTokenRefresh(remaining);
       }
     } catch {
       this.clearAuthFromStorage();

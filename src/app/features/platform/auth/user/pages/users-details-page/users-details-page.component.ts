@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -29,6 +30,7 @@ import { ChangeEmailDialogComponent } from '@features/platform/auth/user/compone
   selector: 'app-users-details-page',
   standalone: true,
   imports: [
+    PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,

@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -53,6 +54,7 @@ import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -244,11 +246,13 @@ export class CustomersListPageComponent implements OnInit {
   actionsFor(customer: CustomerList): ListAction[] {
     const actions: ListAction[] = [
       {
+        requiredAction: 'READ',
         label: 'Ver detalle',
         icon: 'pi pi-eye',
         command: () => this.onView(customer),
       },
       {
+        requiredAction: 'UPDATE',
         label: 'Editar',
         icon: 'pi pi-pencil',
         command: () => this.onEdit(customer),
@@ -257,6 +261,8 @@ export class CustomersListPageComponent implements OnInit {
 
     if (this.authService.hasModulePermission(BusinessModule.FINANCE)) {
       actions.push({
+        requiredAction: 'READ',
+        requiredPermissions: ['FINANCES:READ'],
         label: 'Ver saldo',
         icon: 'pi pi-wallet',
         command: () => this.onViewBalance(customer),
@@ -265,6 +271,7 @@ export class CustomersListPageComponent implements OnInit {
 
     if (customer.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

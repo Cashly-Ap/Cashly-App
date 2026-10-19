@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -30,6 +31,7 @@ const IMAGE_EXTENSION_PATTERN = /\.(png|jpe?g|gif|webp|svg|bmp)(\?.*)?$/i;
   selector: 'app-pending-payments-tab',
   standalone: true,
   imports: [
+    PermissionDirective,
     CommonModule,
     CurrencyPipe,
     DatePipe,

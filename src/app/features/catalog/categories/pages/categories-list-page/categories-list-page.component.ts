@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -39,6 +40,7 @@ import { CategoryList } from '@features/catalog/categories/models/interfaces/cat
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -153,11 +155,22 @@ export class CategoriesListPageComponent implements OnInit {
 
   actionsFor(category: CategoryList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(category) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(category) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(category),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(category),
+      },
     ];
     if (category.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

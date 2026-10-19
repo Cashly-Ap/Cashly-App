@@ -7,7 +7,8 @@ export const RETURN_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.SALES },
+    data: { module: BusinessModule.FINANCE },
+    canActivateChild: [modulePermissionGuard],
     children: [
       {
         path: '',
@@ -19,6 +20,7 @@ export const RETURN_ROUTES: Routes = [
       },
       {
         path: 'new',
+        data: { requiredPermissions: ['INVENTORY:EXECUTE'] },
         loadComponent: () =>
           import(
             '@features/finance/billing/returns/pages/return-form-page/return-form-page.component'

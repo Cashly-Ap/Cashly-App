@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { describe, it, expect, beforeEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray } from '@angular/forms';
@@ -12,6 +14,10 @@ describe('CustomerAddressesSectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
+      ],
       imports: [CustomerAddressesSectionComponent, ReactiveFormsModule, NoopAnimationsModule],
     }).compileComponents();
 

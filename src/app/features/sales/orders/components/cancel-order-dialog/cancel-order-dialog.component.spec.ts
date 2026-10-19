@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
@@ -38,6 +40,10 @@ describe('CancelOrderDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
+      ],
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
     });

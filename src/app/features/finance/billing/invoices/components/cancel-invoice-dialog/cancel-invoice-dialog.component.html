@@ -55,6 +55,8 @@
     <div class="flex gap-2 justify-end pt-1">
       <p-button label="Volver" [outlined]="true" severity="secondary" (onClick)="onCancel()" />
       <p-button
+        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermission]="'EXECUTE'"
         label="Cancelar Factura"
         icon="pi pi-times"
         severity="danger"

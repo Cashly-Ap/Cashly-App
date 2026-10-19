@@ -26,6 +26,8 @@
               @if (currentPurchase.status === PurchaseStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   <p-button
+                    [appRequiredPermissions]="['INVENTORY:READ']"
+                    [appPermission]="'UPDATE'"
                     label="Editar"
                     icon="pi pi-pencil"
                     [link]="true"

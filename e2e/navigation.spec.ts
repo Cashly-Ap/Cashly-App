@@ -1,3 +1,8 @@
+import {
+  currentAccessFixture,
+  referenceOptions,
+  departmentReferenceOptions,
+} from './access.fixture';
 import { expect, test, type Page } from '@playwright/test';
 
 const allModules = [
@@ -8,6 +13,9 @@ const allModules = [
   'FINANCES',
   'DOCUMENT_ADMIN',
   'USERS',
+  'ROLES',
+  'DEPARTMENTS',
+  'CATALOG',
 ];
 const rootLabels = [
   'Ventas',
@@ -54,6 +62,24 @@ async function authenticate(page: Page, modules = allModules, role = 'SUPER_ADMI
   await page.route('**/api/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
     let body: unknown = emptyPage;
+    if (path.endsWith('/auth/access')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(currentAccessFixture(modules, role === 'SUPER_ADMIN')),
+      });
+      return;
+    }
+    if (/\/(roles|departments)\/options$/.test(path)) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          path.includes('/departments') ? departmentReferenceOptions : referenceOptions,
+        ),
+      });
+      return;
+    }
     if (path.endsWith('/notifications/unread-count')) body = 0;
     else if (path.endsWith('/cash-register/active')) body = null;
     else if (path.endsWith('/dashboard/summary'))
@@ -318,10 +344,10 @@ test('given a finance operator when opening reports then only authorized finance
   ).toHaveText(['Reportes de Caja', 'Cuentas por Cobrar PDF']);
 });
 
-test('given an inventory operator when opening catalog then products categories and pricing remain without sales documents', async ({
+test('given a catalog operator when opening catalog then products categories and pricing remain without sales documents', async ({
   page,
 }) => {
-  await authenticate(page, ['INVENTORY'], 'OPERATOR');
+  await authenticate(page, ['CATALOG'], 'OPERATOR');
   await page.goto('/catalog/products');
   await openDesktop(page, ['Catálogo']);
   await expect(
@@ -393,7 +419,7 @@ test('an inventory operator cannot bypass invoice permission through a legacy bo
       invoiceRequests.push(request.url());
   });
   await page.goto('/invoices');
-  await expect(page).toHaveURL(/\/catalog\/products$/);
+  await expect(page).toHaveURL(/\/platform\/auth\/configuration$/);
   expect(invoiceRequests).toEqual([]);
 });
 

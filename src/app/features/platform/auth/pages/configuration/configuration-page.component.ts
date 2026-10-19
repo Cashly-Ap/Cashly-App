@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -8,7 +9,7 @@ import { UserType } from '@features/platform/auth/models/interfaces/user.interfa
 @Component({
   selector: 'app-configuration-page',
   standalone: true,
-  imports: [CommonModule, AvatarModule],
+  imports: [PermissionDirective, CommonModule, AvatarModule],
   templateUrl: './configuration-page.component.html',
 })
 export class ConfigurationPageComponent {

@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -38,6 +40,8 @@ describe('WarehousesListPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [WarehousesListPageComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: WarehouseApplicationService, useValue: service },
         {
           provide: ProductApplicationService,

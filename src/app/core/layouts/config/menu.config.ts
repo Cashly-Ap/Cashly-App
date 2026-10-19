@@ -44,6 +44,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     label,
     icon,
     command,
+    requiredAction: 'EXPORT',
     allowedRoles: businessRoles,
   });
 
@@ -97,7 +98,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           BusinessModule.DOCUMENT_ADMIN,
         ),
       ],
-      BusinessModule.INVENTORY,
+      BusinessModule.CATALOG,
     ),
     group(
       'Inventario',
@@ -118,8 +119,8 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     ),
     group('Finanzas', 'pi pi-dollar', [
       group('Facturación', 'pi pi-file', [
-        page('Facturas', 'pi pi-file', '/finance/billing/invoices', BusinessModule.SALES),
-        page('Devoluciones', 'pi pi-undo', '/finance/billing/returns', BusinessModule.SALES),
+        page('Facturas', 'pi pi-file', '/finance/billing/invoices', BusinessModule.FINANCE),
+        page('Devoluciones', 'pi pi-undo', '/finance/billing/returns', BusinessModule.FINANCE),
         page(
           'Notas de crédito',
           'pi pi-file-plus',
@@ -142,7 +143,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
                 'pi pi-file-pdf',
                 callbacks.openInvoicesPdfModal,
               ),
-              requiredModule: BusinessModule.SALES,
+              requiredModule: BusinessModule.FINANCE,
             },
           ],
           BusinessModule.DOCUMENT_ADMIN,
@@ -196,8 +197,9 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     group('Plataforma', 'pi pi-cog', [
       {
         ...page('Usuarios', 'pi pi-user', '/platform/users', BusinessModule.USERS),
-        allowedRoles: ['SUPER_ADMIN'],
       },
+      page('Roles', 'pi pi-shield', '/platform/roles', BusinessModule.ROLES),
+      page('Departamentos', 'pi pi-building', '/platform/departments', BusinessModule.DEPARTMENTS),
       page('Configuración', 'pi pi-cog', '/platform/auth/configuration'),
     ]),
   ];

@@ -128,24 +128,4 @@ export class UserApplicationService {
       finalize(() => this.loading.set(false)),
     );
   }
-
-  updateModulePermissions(
-    id: string,
-    modulePermissions: BusinessModule[],
-  ): Observable<UserDetails> {
-    this.loading.set(true);
-    this.error.set(null);
-
-    return this.api.updateModulePermissions(id, modulePermissions).pipe(
-      tap({
-        next: (user) => {
-          if (this.currentUser()?.id === id) {
-            this.currentUser.set(user);
-          }
-        },
-        error: (err) => this.error.set(err.message),
-      }),
-      finalize(() => this.loading.set(false)),
-    );
-  }
 }

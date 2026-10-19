@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   input,
@@ -26,6 +27,7 @@ interface ProductOption {
   selector: 'app-product-composition-section',
   standalone: true,
   imports: [
+    PermissionDirective,
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,

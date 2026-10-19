@@ -78,6 +78,8 @@ describe('ERP navigation', () => {
         '/finance/billing/returns',
         '/finance/treasury/payment-methods',
         '/platform/users',
+        '/platform/roles',
+        '/platform/departments',
         '/platform/auth/configuration',
         '/analytics/reports/inventory',
       ].sort(),

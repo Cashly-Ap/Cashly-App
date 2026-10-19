@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -30,6 +31,7 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     ReactiveFormsModule,
     CurrencyPipe,

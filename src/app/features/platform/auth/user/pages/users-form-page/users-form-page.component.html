@@ -2,142 +2,115 @@
   <app-form-header [title]="title()" [subtitle]="subtitle()" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-form-card>
-      <p-tabs value="general">
+      <p-tabs [value]="activeTab()" (valueChange)="activeTab.set(($event ?? 'general').toString())">
         <p-tablist>
-          <p-tab value="general">
-            <i class="pi pi-user mr-2"></i>
-            General
-          </p-tab>
-          @if (authService.isSuperAdmin()) {
-            <p-tab value="permisos">
-              <i class="pi pi-shield mr-2"></i>
-              Permisos
-            </p-tab>
-          }
+          <p-tab value="general"><i class="pi pi-info-circle mr-2"></i>General</p-tab>
+          <p-tab value="contact"><i class="pi pi-address-book mr-2"></i>Contacto y dirección</p-tab>
+          <p-tab value="access"><i class="pi pi-shield mr-2"></i>Acceso</p-tab>
         </p-tablist>
-
         <p-tabpanels>
           <p-tabpanel value="general">
-            <div class="flex flex-col gap-6 py-4">
-              @if (!isEditMode()) {
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <app-text-input
-                    label="Correo Electrónico"
-                    placeholder="usuario@correo.com"
-                    [control]="emailControl"
-                    [errorMessage]="getEmailError()"
-                  />
-                  <app-text-input
-                    label="Contraseña"
-                    placeholder="••••••••"
-                    variant="password"
-                    [control]="passwordControl"
-                    [errorMessage]="getPasswordError()"
-                  />
-                </div>
-              }
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <app-tab-content
+              [columns]="2"
+              class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
+            >
+              <app-text-input
+                label="Nombre"
+                placeholder="Nombre del usuario"
+                errorMessage="El nombre es requerido (máximo 100 caracteres)"
+                [control]="control('firstName')"
+              />
+              <app-text-input
+                label="Apellidos"
+                placeholder="Apellidos del usuario"
+                errorMessage="Los apellidos son requeridos (máximo 100 caracteres)"
+                [control]="control('lastName')"
+              />
+              <app-text-input
+                label="Nombre de usuario"
+                placeholder="Nombre de acceso"
+                errorMessage="El usuario debe tener entre 3 y 100 caracteres"
+                [control]="control('userName')"
+              />
+              @if (isCreateMode()) {
                 <app-text-input
-                  label="Nombre de Usuario"
-                  placeholder="Nombre completo"
-                  [control]="userNameControl"
-                  [errorMessage]="getUserNameError()"
+                  label="Correo electrónico"
+                  placeholder="usuario@ejemplo.com"
+                  errorMessage="Introduce un correo válido"
+                  [control]="control('email')"
                 />
-                <app-select-input
-                  label="Rol de Usuario"
-                  placeholder="Seleccione un rol"
-                  [options]="userTypes"
-                  [control]="roleControl"
-                  errorMessage="El rol de usuario es requerido"
+                <app-text-input
+                  class="md:col-span-2"
+                  label="Contraseña"
+                  errorMessage="Usa al menos 8 caracteres, mayúsculas, minúsculas y números"
+                  variant="password"
+                  [control]="control('password')"
                 />
-              </div>
+              }
+            </app-tab-content>
+          </p-tabpanel>
+          <p-tabpanel value="contact">
+            <app-tab-content
+              [columns]="2"
+              class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
+            >
+              <app-text-input
+                label="Teléfono"
+                placeholder="0414-1234567"
+                errorMessage="Introduce entre 7 y 15 dígitos"
+                [control]="control('phone')"
+              />
+              @for (field of addressFields; track field.key) {
+                <app-text-input [label]="field.label" [control]="control(field.key)" />
+              }
+            </app-tab-content>
+          </p-tabpanel>
+          <p-tabpanel value="access">
+            <app-tab-content
+              [columns]="2"
+              class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
+            >
+              <app-select-input
+                label="Rol"
+                placeholder="Seleccione un rol"
+                [filter]="true"
+                [options]="roles()"
+                [control]="control('roleId')"
+                errorMessage="Seleccione un rol disponible"
+              />
+              <app-select-input
+                label="Departamento"
+                placeholder="Seleccione un departamento"
+                [filter]="true"
+                [options]="departments()"
+                [control]="control('departmentId')"
+                errorMessage="Seleccione un departamento disponible"
+              />
               @if (isEditMode()) {
                 <div
-                  class="flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
+                  class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
                 >
                   <div>
                     <p class="font-medium text-surface-800 dark:text-surface-200">Usuario Activo</p>
                     <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
-                      Indica si el usuario puede acceder al sistema
+                      Indica si el usuario está activo en el sistema
                     </p>
                   </div>
                   <p-toggleswitch formControlName="active" />
                 </div>
               }
-              @if (isEditMode()) {
-                <div
-                  class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-surface-200 dark:border-surface-700"
-                >
-                  <p-button
-                    label="Cambiar Contraseña"
-                    icon="pi pi-lock"
-                    [outlined]="true"
-                    styleClass="w-full sm:w-auto"
-                    (onClick)="showChangePasswordDialog.set(true)"
-                  />
-                  <p-button
-                    label="Cambiar Correo"
-                    icon="pi pi-envelope"
-                    [outlined]="true"
-                    styleClass="w-full sm:w-auto"
-                    (onClick)="showChangeEmailDialog.set(true)"
-                  />
-                </div>
-              }
-            </div>
+            </app-tab-content>
           </p-tabpanel>
-
-          @if (authService.isSuperAdmin()) {
-            <p-tabpanel value="permisos">
-              <div class="flex flex-col gap-4 py-4">
-                <span class="text-xs text-surface-400"
-                  >Selecciona los módulos a los que este usuario tendrá acceso</span
-                >
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  @for (module of allModules; track module) {
-                    <label
-                      class="flex items-center gap-3 cursor-pointer p-3 rounded-lg border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
-                    >
-                      <p-checkbox
-                        [binary]="true"
-                        [ngModel]="isModuleSelected(module)"
-                        [ngModelOptions]="{ standalone: true }"
-                        (ngModelChange)="toggleModule(module)"
-                      />
-                      <span class="text-sm font-medium dark:text-surface-100">{{
-                        moduleLabels[module]
-                      }}</span>
-                    </label>
-                  }
-                </div>
-              </div>
-            </p-tabpanel>
-          }
         </p-tabpanels>
       </p-tabs>
-
       <app-form-actions
         [submitLabel]="submitLabel()"
         cancelLabel="Cancelar"
         [loading]="loading()"
         [disabled]="form.invalid"
-        [tooltipMessage]="submitTooltip()"
+        tooltipMessage="Complete los campos requeridos"
         (cancel)="onCancel()"
       />
     </app-form-card>
   </form>
 </app-form-container>
-
-@if (isEditMode() && entityId()) {
-  <app-change-password-dialog
-    [userId]="entityId()!"
-    [visible]="showChangePasswordDialog()"
-    (visibleChange)="showChangePasswordDialog.set($event)"
-  />
-  <app-change-email-dialog
-    [userId]="entityId()!"
-    [visible]="showChangeEmailDialog()"
-    (visibleChange)="showChangeEmailDialog.set($event)"
-    (changed)="onEmailChanged($event)"
-  />
-}

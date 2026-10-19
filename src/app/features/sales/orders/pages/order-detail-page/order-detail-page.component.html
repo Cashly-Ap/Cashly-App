@@ -23,6 +23,8 @@
               @if (currentOrder.status === OrderStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   <p-button
+                    [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+                    [appPermission]="'UPDATE'"
                     label="Editar"
                     icon="pi pi-pencil"
                     [link]="true"

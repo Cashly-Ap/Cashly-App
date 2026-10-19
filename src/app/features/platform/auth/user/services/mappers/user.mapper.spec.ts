@@ -8,6 +8,12 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 
 describe('UserMapper', () => {
   const mockUserDetails: UserDetails = {
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: 'user-001',
     email: 'john@example.com',
     userName: 'John Doe',
@@ -77,10 +83,11 @@ describe('UserMapper', () => {
     it('should map UserDetails to UserEdit', () => {
       const result = UserMapper.toEdit(mockUserDetails);
 
-      expect(result.id).toBe('user-001');
-      expect(result.email).toBe('john@example.com');
+      expect(result).not.toHaveProperty('id');
+      expect(result).not.toHaveProperty('email');
       expect(result.userName).toBe('John Doe');
-      expect(result.role).toBe(UserType.ADMIN);
+      expect(result.roleId).toBe('role-1');
+      expect(result).not.toHaveProperty('role');
       expect(result.active).toBe(true);
     });
 

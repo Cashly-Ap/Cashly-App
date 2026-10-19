@@ -26,7 +26,7 @@ export class UserApiService {
   getAll(filters?: UserFilters): Observable<PagedResponse<UserList>> {
     let params = new HttpParams();
     if (filters?.search) params = params.set('search', filters.search);
-    if (filters?.role) params = params.set('role', filters.role);
+    if (filters?.role) params = params.set('roleId', filters.role);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));
     if (filters?.size !== undefined) params = params.set('size', String(filters.size));
@@ -40,11 +40,33 @@ export class UserApiService {
   }
 
   create(data: UserCreate): Observable<UserDetails> {
-    return this.http.post<UserDetails>(this.baseUrl, data);
+    const { email, password, userName, firstName, lastName, address, phone, roleId, departmentId } =
+      data;
+    return this.http.post<UserDetails>(this.baseUrl, {
+      email,
+      password,
+      userName,
+      firstName,
+      lastName,
+      address,
+      phone,
+      roleId,
+      departmentId,
+    });
   }
 
   update(id: string, data: UserEdit): Observable<UserDetails> {
-    return this.http.put<UserDetails>(`${this.baseUrl}/${id}`, data);
+    const { userName, firstName, lastName, address, phone, roleId, departmentId, active } = data;
+    return this.http.put<UserDetails>(`${this.baseUrl}/${id}`, {
+      userName,
+      firstName,
+      lastName,
+      address,
+      phone,
+      roleId,
+      departmentId,
+      active,
+    });
   }
 
   delete(id: string): Observable<void> {
@@ -57,14 +79,5 @@ export class UserApiService {
 
   changeEmail(id: string, email: string): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/${id}/email`, { email });
-  }
-
-  updateModulePermissions(
-    id: string,
-    modulePermissions: BusinessModule[],
-  ): Observable<UserDetails> {
-    return this.http.put<UserDetails>(`${this.baseUrl}/${id}/module-permissions`, {
-      modulePermissions,
-    });
   }
 }

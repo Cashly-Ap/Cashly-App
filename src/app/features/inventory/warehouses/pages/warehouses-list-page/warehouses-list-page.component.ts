@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -44,6 +45,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
   selector: 'app-warehouses-list-page',
   standalone: true,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,
@@ -177,26 +179,45 @@ export class WarehousesListPageComponent implements OnInit {
   actionsFor(warehouse: WarehouseList): ListAction[] {
     const actions: ListAction[] = [
       {
+        requiredAction: 'EXECUTE',
         label: 'Registrar entrada',
         icon: 'pi pi-arrow-circle-down',
         command: () => this.onOpenEntry(warehouse),
       },
       {
+        requiredAction: 'EXECUTE',
         label: 'Registrar salida',
         icon: 'pi pi-arrow-circle-up',
         command: () => this.onOpenExit(warehouse),
       },
-      { label: 'Ver stock', icon: 'pi pi-box', command: () => this.onViewStock(warehouse) },
       {
+        requiredAction: 'READ',
+        label: 'Ver stock',
+        icon: 'pi pi-box',
+        command: () => this.onViewStock(warehouse),
+      },
+      {
+        requiredAction: 'READ',
         label: 'Historial de movimientos',
         icon: 'pi pi-history',
         command: () => this.onViewMovements(warehouse),
       },
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(warehouse) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(warehouse) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(warehouse),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(warehouse),
+      },
     ];
     if (warehouse.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

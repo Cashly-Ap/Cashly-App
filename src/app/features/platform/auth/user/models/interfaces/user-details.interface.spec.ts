@@ -6,6 +6,12 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 describe('UserDetails interface', () => {
   it('should have all required properties', () => {
     const user: UserDetails = {
+      firstName: 'Test',
+      lastName: 'User',
+      address: null,
+      phone: null,
+      roleId: 'role-1',
+      departmentId: 'department-1',
       id: 'u-001',
       email: 'test@example.com',
       userName: 'testuser',
@@ -33,6 +39,12 @@ describe('UserDetails interface', () => {
 
     roles.forEach((role) => {
       const user: UserDetails = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         id: 'u-001',
         email: 'test@example.com',
         userName: 'testuser',

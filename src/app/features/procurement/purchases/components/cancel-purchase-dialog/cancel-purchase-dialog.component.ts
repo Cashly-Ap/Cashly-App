@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +9,14 @@ import { TextareaModule } from 'primeng/textarea';
 @Component({
   selector: 'app-cancel-purchase-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, FormsModule, InputTextModule, TextareaModule],
+  imports: [
+    PermissionDirective,
+    DialogModule,
+    ButtonModule,
+    FormsModule,
+    InputTextModule,
+    TextareaModule,
+  ],
   templateUrl: './cancel-purchase-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

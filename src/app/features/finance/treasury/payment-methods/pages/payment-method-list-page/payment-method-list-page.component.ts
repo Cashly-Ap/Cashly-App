@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -39,6 +40,7 @@ import { PaymentMethodList } from '@features/finance/treasury/payment-methods/mo
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -153,11 +155,22 @@ export class PaymentMethodListPageComponent implements OnInit {
 
   actionsFor(paymentMethod: PaymentMethodList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(paymentMethod) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(paymentMethod) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onDetail(paymentMethod),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(paymentMethod),
+      },
     ];
     if (!paymentMethod.hasAssociatedRecords) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

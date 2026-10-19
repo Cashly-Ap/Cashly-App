@@ -70,6 +70,8 @@
     <div class="flex gap-2 justify-end">
       <p-button label="Volver" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
       <p-button
+        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermission]="'EXECUTE'"
         label="Cancelar Compra"
         icon="pi pi-ban"
         severity="danger"

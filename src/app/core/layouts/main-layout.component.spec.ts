@@ -49,6 +49,9 @@ describe('MainLayoutComponent', () => {
     currentUser: ReturnType<typeof signal>;
     clearAuthState: ReturnType<typeof vi.fn>;
     getUserType: ReturnType<typeof vi.fn>;
+    hasPermission: ReturnType<typeof vi.fn>;
+    isAuthenticated: ReturnType<typeof vi.fn>;
+    ensureAccess: ReturnType<typeof vi.fn>;
     hasModulePermission: ReturnType<typeof vi.fn>;
   };
   let themeServiceMock: { isDarkMode: ReturnType<typeof signal<boolean>> };
@@ -77,6 +80,13 @@ describe('MainLayoutComponent', () => {
       }),
       clearAuthState: vi.fn(),
       getUserType: vi.fn().mockReturnValue('ADMIN'),
+      hasPermission: vi
+        .fn()
+        .mockImplementation((module: BusinessModule) =>
+          authServiceMock.hasModulePermission(module),
+        ),
+      isAuthenticated: vi.fn().mockReturnValue(true),
+      ensureAccess: vi.fn().mockReturnValue(of({})),
       hasModulePermission: vi.fn().mockReturnValue(true),
     };
 
@@ -211,23 +221,17 @@ describe('MainLayoutComponent', () => {
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
-        [
-          '/catalog/price-types',
-          '/catalog/products',
-          '/catalog/categories',
-          '/inventory/warehouses',
-          '/platform/auth/configuration',
-        ].sort(),
+        ['/inventory/warehouses', '/platform/auth/configuration'].sort(),
       );
-      expect(items.map((item) => item.label)).toEqual(['Catálogo', 'Inventario', 'Plataforma']);
+      expect(items.map((item) => item.label)).toEqual(['Inventario', 'Plataforma']);
     });
 
-    it('should expose administration only to a super administrator with users permission', () => {
+    it('should expose administration to every custom role with users permission', () => {
       expect(
         component['filterMenuByRole'](menu(), 'ADMIN')
           .flatMap((item) => item.children ?? [])
           .some((item) => item.routerLink === '/platform/users'),
-      ).toBe(false);
+      ).toBe(true);
       expect(routes(component['filterMenuByRole'](menu(), 'SUPER_ADMIN'))).toContain(
         '/platform/users',
       );

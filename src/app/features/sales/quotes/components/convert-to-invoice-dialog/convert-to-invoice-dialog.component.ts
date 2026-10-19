@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -66,6 +67,7 @@ interface LineWithStockInfo {
     `,
   ],
   imports: [
+    PermissionDirective,
     CommonModule,
     DialogModule,
     ButtonModule,

@@ -1,3 +1,8 @@
+import {
+  currentAccessFixture,
+  referenceOptions,
+  departmentReferenceOptions,
+} from './access.fixture';
 import { expect, test, type Page } from '@playwright/test';
 
 const emptyPage = {
@@ -56,6 +61,24 @@ async function prepare(
   await page.route('**/api/**', async (route) => {
     const path = new URL(route.request().url()).pathname;
     let body: unknown = emptyPage;
+    if (path.endsWith('/auth/access')) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(currentAccessFixture()),
+      });
+      return;
+    }
+    if (/\/(roles|departments)\/options$/.test(path)) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(
+          path.includes('/departments') ? departmentReferenceOptions : referenceOptions,
+        ),
+      });
+      return;
+    }
     if (path.endsWith('/notifications/unread-count')) body = 0;
     else if (path.endsWith('/dashboard/summary'))
       body = {

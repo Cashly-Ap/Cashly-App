@@ -12,7 +12,8 @@
       >
         <i class="pi pi-shopping-cart text-surface-900 dark:text-surface-100 text-lg"></i>
       </div>
-      <span class="text-base font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
+      <span
+        class="text-base font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
         >Convertir a Pedido</span
       >
     </div>
@@ -125,6 +126,8 @@
     <div class="flex gap-2 justify-end">
       <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
       <p-button
+        [appRequiredPermissions]="['SALES:CREATE', 'INVENTORY:EXECUTE']"
+        [appPermission]="'EXECUTE'"
         label="Convertir a Pedido"
         icon="pi pi-shopping-cart"
         severity="contrast"

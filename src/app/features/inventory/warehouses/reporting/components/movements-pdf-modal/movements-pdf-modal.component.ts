@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   ChangeDetectionStrategy,
@@ -22,6 +23,7 @@ import { MovementsPdfFilters } from '@features/inventory/warehouses/reporting/mo
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     DialogModule,

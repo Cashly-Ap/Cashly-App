@@ -1,3 +1,4 @@
+import { map, catchError, of } from 'rxjs';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
@@ -17,6 +18,8 @@ export const homeRedirectGuard: CanActivateFn = (route) => {
     .map((snapshot) => snapshot.data['navigationArea'])
     .reverse()
     .find(Boolean) as string | undefined;
-  router.navigate([authorizedDestination(authService, area)]);
-  return false;
+  return authService.ensureAccess().pipe(
+    map(() => router.createUrlTree([authorizedDestination(authService, area)])),
+    catchError(() => of(router.createUrlTree(['/platform/auth/login']))),
+  );
 };

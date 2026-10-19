@@ -6,6 +6,13 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 describe('UserList interface', () => {
   it('should have all required properties', () => {
     const user: UserList = {
+      deletable: true,
+      firstName: 'Test',
+      lastName: 'User',
+      address: null,
+      phone: null,
+      roleId: 'role-1',
+      departmentId: 'department-1',
       id: 'u-001',
       email: 'test@example.com',
       userName: 'testuser',
@@ -31,6 +38,13 @@ describe('UserList interface', () => {
 
     roles.forEach((role) => {
       const user: UserList = {
+        deletable: true,
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         id: 'u-001',
         email: 'test@example.com',
         userName: 'testuser',
@@ -46,6 +60,13 @@ describe('UserList interface', () => {
 
   it('should accept multiple module permissions', () => {
     const user: UserList = {
+      deletable: true,
+      firstName: 'Test',
+      lastName: 'User',
+      address: null,
+      phone: null,
+      roleId: 'role-1',
+      departmentId: 'department-1',
       id: 'u-001',
       email: 'test@example.com',
       userName: 'admin',

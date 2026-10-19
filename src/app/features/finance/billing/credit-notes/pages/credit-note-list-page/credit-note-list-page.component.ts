@@ -1,3 +1,4 @@
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -38,6 +39,7 @@ import { CreditNoteList } from '@features/finance/billing/credit-notes/models/in
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -132,8 +134,14 @@ export class CreditNoteListPageComponent implements OnInit {
 
   actionsFor(creditNote: CreditNoteList): ListAction[] {
     return [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onDetail(creditNote) },
       {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onDetail(creditNote),
+      },
+      {
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

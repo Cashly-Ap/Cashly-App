@@ -1,3 +1,5 @@
+import { provideRouter } from '@angular/router';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -55,6 +57,8 @@ describe('InvoiceDetailPageComponent', () => {
     TestBed.configureTestingModule({
       imports: [InvoiceDetailPageComponent],
       providers: [
+        provideRouter([]),
+        { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: () => 'inv-001' } } } },
         { provide: InvoiceApplicationService, useValue: mockService },
         MessageService,

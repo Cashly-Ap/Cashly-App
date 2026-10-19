@@ -1,9 +1,6 @@
-import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
+import { UserProfile } from '../../../authorization/models/access.model';
 
-export interface UserEdit {
-  id: string;
-  email: string;
+export interface UserEdit extends UserProfile {
   userName: string;
-  role: UserType;
   active: boolean;
 }

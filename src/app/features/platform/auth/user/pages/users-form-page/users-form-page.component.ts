@@ -1,12 +1,11 @@
+import { TabsModule } from 'primeng/tabs';
+import { UserValidators } from '../../validators/user.validators';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { TabsModule } from 'primeng/tabs';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import {
+  TabContentComponent,
   FormContainerComponent,
   FormHeaderComponent,
   FormCardComponent,
@@ -14,107 +13,77 @@ import {
   TextInputComponent,
   SelectInputComponent,
 } from '@core/forms/components';
-import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
-import { UserType, USER_TYPES } from '@features/platform/auth/user/models/enums/user-type.enum';
-import {
-  BusinessModule,
-  BUSINESS_MODULE_LABELS,
-} from '@features/platform/auth/user/models/enums/business-module.enum';
-import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
-import { ChangePasswordDialogComponent } from '@features/platform/auth/user/components/change-password-dialog/change-password-dialog.component';
-import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { forkJoin, of, switchMap } from 'rxjs';
-
-interface UserFormData {
+import { UserApplicationService } from '../../services/application/user-application.service';
+import { AccessManagementService } from '../../../authorization/services/access-management.service';
+import { UserProfile, SelectionOption } from '../../../authorization/models/access.model';
+interface UserFormData extends UserProfile {
   email: string;
   password: string;
   userName: string;
-  role: UserType | string;
   active: boolean;
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  postalCode: string;
 }
-
 @Component({
   selector: 'app-users-form-page',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
-    FormsModule,
-    ButtonModule,
-    CheckboxModule,
     TabsModule,
+    ReactiveFormsModule,
     ToggleSwitchModule,
+    TabContentComponent,
     FormContainerComponent,
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
     TextInputComponent,
     SelectInputComponent,
-    ChangePasswordDialogComponent,
-    ChangeEmailDialogComponent,
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
-  private service = inject(UserApplicationService);
-  private messageService = inject(MessageService);
-  readonly authService = inject(AuthService);
-
-  loading = this.service.loading;
-
-  submitTooltip = signal('');
-
-  private readonly FIELD_LABELS: Record<string, string> = {
-    email: 'Correo electrónico',
-    password: 'Contraseña',
-    userName: 'Nombre de usuario',
-    role: 'Rol',
-  };
-
+  private readonly service = inject(UserApplicationService);
+  private readonly management = inject(AccessManagementService);
+  private readonly messages = inject(MessageService);
+  readonly loading = this.service.loading;
+  readonly roles = signal<{ label: string; value: string }[]>([]);
+  readonly departments = signal<{ label: string; value: string }[]>([]);
+  readonly activeTab = signal('general');
+  readonly addressFields = [
+    { key: 'street', label: 'Dirección' },
+    { key: 'city', label: 'Ciudad' },
+    { key: 'region', label: 'Provincia' },
+    { key: 'country', label: 'País' },
+    { key: 'postalCode', label: 'Código postal' },
+  ];
   override ngOnInit(): void {
-    super.ngOnInit?.();
-    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
-    this.updateSubmitTooltip();
+    super.ngOnInit();
+    const options = (items: SelectionOption[]) =>
+      items.map((item) => ({ label: item.name, value: item.id }));
+    this.management.roleOptions().subscribe({
+      next: (items) => this.roles.set(options(items)),
+      error: () => this.selectionError(),
+    });
+    this.management.departmentOptions().subscribe({
+      next: (items) => this.departments.set(options(items)),
+      error: () => this.selectionError(),
+    });
   }
-
-  private updateSubmitTooltip(): void {
-    const invalid = Object.entries(this.FIELD_LABELS)
-      .filter(([key]) => this.form.get(key)?.invalid)
-      .map(([, label]) => label);
-    const messages = [...invalid];
-    if (this.selectedModules().length === 0) {
-      messages.push('Módulos (mínimo 1)');
-    }
-    this.submitTooltip.set(messages.length ? `Campos requeridos: ${messages.join(', ')}` : '');
+  private selectionError(): void {
+    this.messages.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'No se pudieron cargar los roles o departamentos disponibles.',
+    });
   }
-
-  showChangePasswordDialog = signal(false);
-  showChangeEmailDialog = signal(false);
-  selectedModules = signal<BusinessModule[]>([]);
-
-  readonly allModules = Object.values(BusinessModule);
-  readonly moduleLabels = BUSINESS_MODULE_LABELS;
-
-  userTypes = [...USER_TYPES];
-
-  get emailControl(): FormControl {
-    return this.form.get('email') as FormControl;
+  control(key: string): FormControl {
+    return this.form.get(key) as FormControl;
   }
-  get passwordControl(): FormControl {
-    return this.form.get('password') as FormControl;
-  }
-  get userNameControl(): FormControl {
-    return this.form.get('userName') as FormControl;
-  }
-  get roleControl(): FormControl {
-    return this.form.get('role') as FormControl;
-  }
-  get activeControl(): FormControl {
-    return this.form.get('active') as FormControl;
-  }
-
   getConfig(): FormConfig {
     return {
       entityDisplayName: 'Usuario',
@@ -123,7 +92,6 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
       routeBase: '/platform/users',
     };
   }
-
   createForm(): FormGroup {
     return this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -132,183 +100,116 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         this.isCreateMode() ? [Validators.required, UserValidators.passwordStrength()] : [],
       ],
       userName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
-      role: ['', Validators.required],
+      firstName: ['', [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)]],
+      lastName: ['', [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)]],
+      roleId: ['', Validators.required],
+      departmentId: ['', Validators.required],
       active: [true],
+      phone: ['', UserValidators.phoneNumber()],
+      street: ['', Validators.maxLength(200)],
+      city: ['', Validators.maxLength(100)],
+      region: ['', Validators.maxLength(100)],
+      country: ['', Validators.maxLength(100)],
+      postalCode: ['', Validators.maxLength(20)],
     });
   }
-
-  protected override getPendingTabTitle(formData: UserFormData): string {
-    return formData.userName?.trim() || super.getPendingTabTitle(formData);
-  }
-
   protected override restoreFormData(data: UserFormData): void {
-    this.form.patchValue({
-      email: data.email,
-      userName: data.userName,
-      role: data.role,
-      active: data.active,
-    });
+    this.form.patchValue(data);
   }
-
+  protected override getPendingTabTitle(data: UserFormData): string {
+    return data.userName?.trim() || super.getPendingTabTitle(data);
+  }
   protected override onLoadEntity(id: string): void {
     this.service.loadUserById(id).subscribe({
       next: (user) => {
-        this.form.patchValue({
-          email: user.email,
-          userName: user.userName,
-          role: user.role,
-          active: user.active,
-        });
-        this.form.get('password')?.setValidators([]);
-        this.form.get('password')?.updateValueAndValidity();
-        this.selectedModules.set([...(user.modulePermissions ?? [])]);
+        this.form.patchValue({ ...user, ...user.address });
+        this.control('password').clearValidators();
+        this.control('password').updateValueAndValidity();
       },
-      error: () => {
-        this.messageService.add({
+      error: () =>
+        this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al cargar el usuario. Es posible que no exista.',
-          life: 5000,
+          detail: 'No se pudo cargar el usuario.',
+        }),
+    });
+  }
+  private firstInvalidTab(): string {
+    if (
+      ['firstName', 'lastName', 'userName', 'email', 'password'].some(
+        (key) => this.control(key).invalid,
+      )
+    )
+      return 'general';
+    if (['roleId', 'departmentId'].some((key) => this.control(key).invalid)) return 'access';
+    return 'contact';
+  }
+  override onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.activeTab.set(this.firstInvalidTab());
+      return;
+    }
+    const v = this.form.getRawValue();
+    const address = {
+      street: (v.street ?? '').trim() || null,
+      city: (v.city ?? '').trim() || null,
+      region: (v.region ?? '').trim() || null,
+      country: (v.country ?? '').trim() || null,
+      postalCode: (v.postalCode ?? '').trim() || null,
+    };
+    const phone = (v.phone ?? '').replace(/[\s().-]/g, '') || null;
+    const data = {
+      email: v.email,
+      userName: v.userName.trim(),
+      firstName: v.firstName.trim(),
+      lastName: v.lastName.trim(),
+      roleId: v.roleId,
+      departmentId: v.departmentId,
+      active: v.active,
+      address: Object.values(address).some(Boolean) ? address : null,
+      phone,
+    };
+    const request = this.isEditMode()
+      ? this.service.updateUser(this.entityId()!, {
+          userName: data.userName,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address: data.address,
+          phone: data.phone,
+          roleId: data.roleId,
+          departmentId: data.departmentId,
+          active: data.active,
+        })
+      : this.service.createUser({
+          email: data.email,
+          userName: data.userName,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          address: data.address,
+          phone: data.phone,
+          roleId: data.roleId,
+          departmentId: data.departmentId,
+          password: v.password,
+        });
+    request.subscribe({
+      next: () => {
+        this.markAsSubmitted();
+        this.messages.add({
+          severity: 'success',
+          summary: 'Guardado',
+          detail: 'Usuario guardado correctamente',
         });
         this.router.navigate(['/platform/users']);
       },
+      error: (error) =>
+        this.messages.add({
+          severity: 'error',
+          summary: 'Error',
+          detail:
+            error.error?.message ??
+            'No se pudo guardar. Comprueba que el rol y departamento sigan disponibles.',
+        }),
     });
-  }
-
-  override onSubmit(): void {
-    if (!this.form.valid) {
-      this.form.markAllAsTouched();
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Por favor, complete todos los campos requeridos correctamente',
-        life: 5000,
-      });
-      return;
-    }
-
-    if (this.selectedModules().length === 0) {
-      this.messageService.add({
-        severity: 'warn',
-        summary: 'Advertencia',
-        detail: 'Debe seleccionar al menos un módulo para el usuario',
-        life: 5000,
-      });
-      return;
-    }
-
-    const formValue = this.form.getRawValue();
-
-    if (this.isEditMode() && this.entityId()) {
-      const editData = {
-        id: this.entityId()!,
-        email: formValue.email,
-        userName: formValue.userName,
-        role: formValue.role,
-        active: formValue.active,
-      };
-
-      const updateUser$ = this.service.updateUser(this.entityId()!, editData);
-      const updatePermissions$ = this.authService.isSuperAdmin()
-        ? this.service.updateModulePermissions(this.entityId()!, this.selectedModules())
-        : of(null);
-
-      forkJoin([updateUser$, updatePermissions$]).subscribe({
-        next: () => {
-          this.markAsSubmitted();
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Éxito',
-            detail: 'Usuario actualizado exitosamente',
-            life: 3000,
-          });
-          this.router.navigate(['/platform/users']);
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al actualizar el usuario. Por favor, intente nuevamente.',
-            life: 5000,
-          });
-        },
-      });
-    } else {
-      const createData = {
-        email: formValue.email,
-        password: formValue.password,
-        userName: formValue.userName,
-        role: formValue.role,
-        active: formValue.active,
-      };
-
-      this.service
-        .createUser(createData)
-        .pipe(
-          switchMap((createdUser) => {
-            if (this.authService.isSuperAdmin() && this.selectedModules().length > 0) {
-              return this.service.updateModulePermissions(createdUser.id, this.selectedModules());
-            }
-            return of(null);
-          }),
-        )
-        .subscribe({
-          next: () => {
-            this.markAsSubmitted();
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario creado exitosamente',
-              life: 3000,
-            });
-            this.router.navigate(['/platform/users']);
-          },
-          error: (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail:
-                err?.error?.message || 'Error al crear el usuario. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-    }
-  }
-
-  toggleModule(module: BusinessModule): void {
-    this.selectedModules.update((current) =>
-      current.includes(module) ? current.filter((m) => m !== module) : [...current, module],
-    );
-    this.updateSubmitTooltip();
-  }
-
-  isModuleSelected(module: BusinessModule): boolean {
-    return this.selectedModules().includes(module);
-  }
-
-  onEmailChanged(newEmail: string): void {
-    this.form.patchValue({ email: newEmail });
-  }
-
-  getEmailError(): string {
-    const errors = this.form.get('email')?.errors;
-    if (errors?.['required']) return 'El correo electrónico es requerido';
-    if (errors?.['email']) return 'El formato del correo electrónico es inválido';
-    return '';
-  }
-
-  getPasswordError(): string {
-    const errors = this.form.get('password')?.errors;
-    if (!errors) return '';
-    return UserValidators.getPasswordErrorMessage(errors);
-  }
-
-  getUserNameError(): string {
-    const errors = this.form.get('userName')?.errors;
-    if (errors?.['required']) return 'El nombre de usuario es requerido';
-    if (errors?.['minlength']) return 'El nombre debe tener al menos 3 caracteres';
-    if (errors?.['maxlength']) return 'El nombre debe tener como máximo 100 caracteres';
-    return '';
   }
 }

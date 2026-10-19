@@ -1,3 +1,6 @@
+import { BusinessModule } from '../../models/enums/business-module.enum';
+import { AuthorizationService } from '../../../authorization/services/authorization.service';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -6,6 +9,7 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
+import { AccessManagementService } from '../../../authorization/services/access-management.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
@@ -46,6 +50,7 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,
@@ -72,6 +77,13 @@ import {
   providers: [ConfirmationService],
 })
 export class UsersListPageComponent implements OnInit {
+  readonly authorization = inject(AuthorizationService);
+  readonly canFilterRoles = computed(
+    () =>
+      this.authorization.can(BusinessModule.USERS, 'CREATE') ||
+      this.authorization.can(BusinessModule.USERS, 'UPDATE'),
+  );
+  private readonly management = inject(AccessManagementService);
   private service = inject(UserApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
@@ -97,10 +109,7 @@ export class UsersListPageComponent implements OnInit {
     return count;
   });
 
-  roleOptions = [
-    { label: 'Todos los roles', value: '' },
-    ...USER_TYPES.map((t) => ({ label: t.label, value: t.value })),
-  ];
+  readonly roleOptions = signal([{ label: 'Todos los roles', value: '' }]);
 
   activeOptions = [
     { label: 'Activos', value: 'true' },
@@ -123,6 +132,15 @@ export class UsersListPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    if (this.canFilterRoles())
+      this.management.roleOptions().subscribe({
+        error: () => this.roleOptions.set([{ label: 'Todos los roles', value: '' }]),
+        next: (items) =>
+          this.roleOptions.set([
+            { label: 'Todos los roles', value: '' },
+            ...items.map((item) => ({ label: item.name, value: item.id })),
+          ]),
+      });
     this.loadWithFilters();
   }
 
@@ -201,11 +219,22 @@ export class UsersListPageComponent implements OnInit {
 
   actionsFor(user: UserList): ListAction[] {
     const actions: ListAction[] = [
-      { label: 'Ver detalle', icon: 'pi pi-eye', command: () => this.onView(user) },
-      { label: 'Editar', icon: 'pi pi-pencil', command: () => this.onEdit(user) },
+      {
+        requiredAction: 'READ',
+        label: 'Ver detalle',
+        icon: 'pi pi-eye',
+        command: () => this.onView(user),
+      },
+      {
+        requiredAction: 'UPDATE',
+        label: 'Editar',
+        icon: 'pi pi-pencil',
+        command: () => this.onEdit(user),
+      },
     ];
     if (user.deletable) {
       actions.push({
+        requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,

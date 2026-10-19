@@ -21,6 +21,12 @@ describe('UserApplicationService', () => {
   };
 
   const mockUserDetails: UserDetails = {
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -32,6 +38,13 @@ describe('UserApplicationService', () => {
   };
 
   const mockUserList: UserList = {
+    deletable: true,
+    firstName: 'Test',
+    lastName: 'User',
+    address: null,
+    phone: null,
+    roleId: 'role-1',
+    departmentId: 'department-1',
     id: '1',
     email: 'test@cashly.com',
     userName: 'Test User',
@@ -149,11 +162,15 @@ describe('UserApplicationService', () => {
       service.loadUsers().subscribe();
 
       const createData: UserCreate = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         email: 'new@cashly.com',
         password: 'Password1!',
         userName: 'New User',
-        role: UserType.OPERATOR,
-        active: true,
       };
 
       service.createUser(createData).subscribe(() => {
@@ -168,11 +185,15 @@ describe('UserApplicationService', () => {
       mockApiService.create.mockReturnValue(throwError(() => new Error('Conflict')));
 
       const createData: UserCreate = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         email: 'duplicate@cashly.com',
         password: 'Password1!',
         userName: 'Duplicate User',
-        role: UserType.OPERATOR,
-        active: true,
       };
 
       service.createUser(createData).subscribe({
@@ -191,6 +212,12 @@ describe('UserApplicationService', () => {
       service.loadUsers().subscribe();
 
       const updatedDetails: UserDetails = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         ...mockUserDetails,
         userName: 'Updated User',
         role: UserType.ADMIN,
@@ -198,10 +225,13 @@ describe('UserApplicationService', () => {
       mockApiService.update.mockReturnValue(of(updatedDetails));
 
       const editData: UserEdit = {
-        id: '1',
-        email: 'test@cashly.com',
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         userName: 'Updated User',
-        role: UserType.ADMIN,
         active: true,
       };
 
@@ -218,16 +248,25 @@ describe('UserApplicationService', () => {
       service.loadUserById('1').subscribe();
 
       const updatedDetails: UserDetails = {
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         ...mockUserDetails,
         userName: 'New Name',
       };
       mockApiService.update.mockReturnValue(of(updatedDetails));
 
       const editData: UserEdit = {
-        id: '1',
-        email: 'test@cashly.com',
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         userName: 'New Name',
-        role: UserType.OPERATOR,
         active: true,
       };
 
@@ -240,10 +279,13 @@ describe('UserApplicationService', () => {
       mockApiService.update.mockReturnValue(throwError(() => new Error('Update failed')));
 
       const editData: UserEdit = {
-        id: '1',
-        email: 'test@cashly.com',
+        firstName: 'Test',
+        lastName: 'User',
+        address: null,
+        phone: null,
+        roleId: 'role-1',
+        departmentId: 'department-1',
         userName: 'Test',
-        role: UserType.OPERATOR,
         active: true,
       };
 

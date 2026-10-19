@@ -1,3 +1,4 @@
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -26,6 +27,7 @@ describe('CashRegisterPageComponent', () => {
     await TestBed.configureTestingModule({
       imports: [CashRegisterPageComponent],
       providers: [
+        { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
         { provide: CashRegisterApplicationService, useValue: service },
       ],
