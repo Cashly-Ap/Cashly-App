@@ -204,3 +204,35 @@ test('disabling MFA requires password and second factor then ends the old sessio
   expect(submitted).toEqual({ password: 'ValidPassword1!', code: 'ABCDE-FGHIJ' });
   expect(await page.evaluate(() => localStorage.getItem('accessToken'))).toBeNull();
 });
+
+test('login animations respect reduced-motion and keep keyboard access usable', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await mockShell(page);
+  await page.goto('/platform/auth/login');
+  const email = page.getByLabel('Email', { exact: true });
+  await email.fill('motion@example.com');
+  await page.getByLabel('Contraseña', { exact: true }).fill('ValidPassword1!');
+  await expect(page.getByRole('button', { name: /Iniciar Sesión$/ })).toBeEnabled();
+  expect(await page.locator('.login-panel .login-enter').evaluateAll(elements => elements.every(element => getComputedStyle(element).animationName === 'none'))).toBe(true);
+  await email.focus();
+  await expect(email).toBeFocused();
+  expect(await email.evaluate(element => getComputedStyle(element.closest('.login-field')!).transform)).toBe('none');
+});
+
+test('login entry motion preserves the form and transitions into MFA on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await loginChallenge(page);
+  const form = page.locator('form').filter({ has: page.getByLabel('Código de verificación o recuperación') });
+  await expect(form).toBeVisible();
+  await expect.poll(() => form.evaluate(element => getComputedStyle(element).animationName)).toBe('cashly-login-enter');
+  await expect(page.getByLabel('Código de verificación o recuperación')).toBeEditable();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.getByRole('button', { name: 'Volver al inicio de sesión' }).click();
+  await expect(page.getByLabel('Email', { exact: true })).toHaveValue(user.email);
+  await expect(page.getByLabel('Contraseña', { exact: true })).toBeEmpty();
+  await page.locator('.login-panel').evaluate(async panel => {
+    await Promise.all(panel.getAnimations({ subtree: true }).map(animation => animation.finished.catch(() => undefined)));
+  });
+  await page.screenshot({ path: 'output/playwright/mfa/login-motion-mobile.png', fullPage: true });
+});

@@ -650,3 +650,79 @@ app-user-avatar .p-avatar img {
   object-fit: cover;
   object-position: center;
 }
+
+@keyframes cashly-login-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cashly-login-feedback {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.cashly-login .login-enter {
+  animation: cashly-login-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--login-enter-delay, 0ms);
+}
+.cashly-login .login-delay-1 { --login-enter-delay: 40ms; }
+.cashly-login .login-delay-2 { --login-enter-delay: 80ms; }
+.cashly-login .login-delay-3 { --login-enter-delay: 120ms; }
+.cashly-login .login-delay-4 { --login-enter-delay: 160ms; }
+.cashly-login .login-delay-5 { --login-enter-delay: 200ms; }
+.cashly-login .login-feedback { animation: cashly-login-feedback 160ms ease-out; }
+.cashly-login .login-field {
+  transition: transform 180ms ease-out;
+}
+.cashly-login .login-field:focus-within { transform: translateY(-1px); }
+.cashly-login .login-submit button,
+.cashly-login .login-submit .p-button-icon {
+  transition: transform 160ms ease-out;
+}
+.cashly-login .login-submit button:not(:disabled):hover { transform: translateY(-1px); }
+.cashly-login .login-submit button:not(:disabled):hover .p-button-icon { transform: translateX(3px); }
+.cashly-login .login-submit button:not(:disabled):active { transform: translateY(0) scale(0.99); }
+
+@keyframes cashly-login-orbit {
+  to { transform: rotate(360deg); }
+}
+@keyframes cashly-login-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+@keyframes cashly-login-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@media (min-width: 1024px) {
+  .cashly-login .login-orbit { animation: cashly-login-orbit 90s linear infinite; }
+  .cashly-login .login-orbit:nth-child(2) { animation-duration: 75s; animation-direction: reverse; }
+  .cashly-login .login-orbit:nth-child(3) { animation-duration: 60s; }
+  .cashly-login .login-orbit:nth-child(4) { animation-duration: 45s; animation-direction: reverse; }
+  .cashly-login .login-orbit:nth-child(5) { animation-duration: 30s; }
+  .cashly-login .login-core { animation: cashly-login-pulse 5s ease-in-out infinite; }
+  .cashly-login .login-artwork-copy { animation: cashly-login-float 8s ease-in-out infinite; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cashly-login .login-enter,
+  .cashly-login .login-feedback,
+  .cashly-login .login-orbit,
+  .cashly-login .login-core,
+  .cashly-login .login-artwork-copy {
+    animation: none !important;
+  }
+  .cashly-login .login-field,
+  .cashly-login .login-submit button,
+  .cashly-login .login-submit .p-button-icon {
+    transition: none !important;
+    transform: none !important;
+  }
+}

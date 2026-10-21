@@ -16,25 +16,25 @@
     >
       <div class="relative flex size-[32rem] items-center justify-center">
         <span
-          class="absolute size-full rounded-full border-2 border-dotted border-surface-600"
+          class="login-orbit absolute size-full rounded-full border-2 border-dotted border-surface-600"
         ></span>
         <span
-          class="absolute size-[26rem] rounded-full border-2 border-dotted border-surface-600"
+          class="login-orbit absolute size-[26rem] rounded-full border-2 border-dotted border-surface-600"
         ></span>
         <span
-          class="absolute size-[20rem] rounded-full border-2 border-dotted border-surface-500"
+          class="login-orbit absolute size-[20rem] rounded-full border-2 border-dotted border-surface-500"
         ></span>
         <span
-          class="absolute size-[14rem] rounded-full border-2 border-dotted border-surface-500"
+          class="login-orbit absolute size-[14rem] rounded-full border-2 border-dotted border-surface-500"
         ></span>
         <span
-          class="absolute size-32 rounded-full border-2 border-dotted border-surface-400"
+          class="login-orbit absolute size-32 rounded-full border-2 border-dotted border-surface-400"
         ></span>
-        <span class="size-5 rounded-full bg-surface-50"></span>
+        <span class="login-core size-5 rounded-full bg-surface-50"></span>
       </div>
     </div>
 
-    <div class="relative z-10 mt-96 max-w-lg">
+    <div class="login-artwork-copy relative z-10 mt-96 max-w-lg">
       <p class="mb-4 text-xs uppercase tracking-[0.2em] text-surface-400">
         Tu negocio, en un solo lugar
       </p>
@@ -44,9 +44,6 @@
       >
         Todo conectado.<br />Todo bajo control.
       </h2>
-      <p class="mt-6 max-w-sm text-sm leading-relaxed text-surface-400">
-        Clientes, ventas y finanzas. Una visión clara para cada decisión.
-      </p>
     </div>
 
     <div
@@ -62,7 +59,7 @@
     aria-labelledby="login-title"
   >
     <div
-      class="flex items-center justify-between border-b border-surface-300 pb-6 dark:border-surface-700"
+      class="login-enter flex items-center justify-between border-b border-surface-300 pb-6 dark:border-surface-700"
     >
       @if (logoSrc()) {
         <img
@@ -80,19 +77,19 @@
     </div>
 
     <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-14">
-      <p class="mb-5 text-xs uppercase tracking-[0.2em] text-surface-500">Tu espacio de trabajo</p>
+      <p class="login-enter login-delay-1 mb-5 text-xs uppercase tracking-[0.2em] text-surface-500">Tu espacio de trabajo</p>
       <h1
         id="login-title"
-        class="mb-4 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
+        class="login-enter login-delay-1 mb-4 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
       >
         Bienvenido de nuevo
       </h1>
-      <p class="mb-10 text-sm leading-relaxed text-surface-500">
+      <p class="login-enter login-delay-2 mb-10 text-sm leading-relaxed text-surface-500">
         Ingresa tus credenciales para acceder
       </p>
 
       @if (challengeToken()) {
-        <form [formGroup]="codeForm" (ngSubmit)="verifyMfa()" class="flex flex-col gap-5">
+        <form [formGroup]="codeForm" (ngSubmit)="verifyMfa()" class="login-enter login-delay-1 flex flex-col gap-5">
           <h2 class="text-xl font-semibold">Verificación en dos pasos</h2>
           <p class="text-sm text-surface-500">
             Introduce el código de Microsoft Authenticator o Google Authenticator. También puedes
@@ -110,6 +107,7 @@
             maxlength="64"
           />
           <p-button
+            class="login-submit"
             type="submit"
             label="Verificar e iniciar sesión"
             icon="pi pi-arrow-right"
@@ -128,7 +126,7 @@
         </form>
       } @else {
         <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-7">
-          <div class="flex flex-col gap-3">
+          <div class="login-field login-enter login-delay-3 flex flex-col gap-3">
             <label for="email" class="text-xs font-semibold uppercase tracking-[0.12em]"
               >Email</label
             >
@@ -149,13 +147,13 @@
               }"
             />
             @if (form.controls.email.invalid && form.controls.email.touched) {
-              <small id="email-error" class="text-red-600 dark:text-red-400" aria-live="polite">{{
+              <small id="email-error" class="login-feedback text-red-600 dark:text-red-400" aria-live="polite">{{
                 getEmailError()
               }}</small>
             }
           </div>
 
-          <div class="flex flex-col gap-3">
+          <div class="login-field login-enter login-delay-4 flex flex-col gap-3">
             <label for="password" class="text-xs font-semibold uppercase tracking-[0.12em]"
               >Contraseña</label
             >
@@ -170,14 +168,15 @@
               inputStyleClass="w-full"
             />
             @if (form.controls.password.invalid && form.controls.password.touched) {
-              <small class="text-red-600 dark:text-red-400" aria-live="polite"
+              <small class="login-feedback text-red-600 dark:text-red-400" aria-live="polite"
                 >La contraseña es requerida</small
               >
             }
           </div>
 
-          <div class="pt-2">
+          <div class="login-enter login-delay-5 pt-2">
             <p-button
+              class="login-submit"
               type="submit"
               label="Iniciar Sesión"
               icon="pi pi-arrow-right"
@@ -193,7 +192,7 @@
     </div>
 
     <div
-      class="flex items-center justify-between gap-4 border-t border-surface-300 pt-5 text-xs text-surface-500 dark:border-surface-700"
+      class="login-enter login-delay-2 flex items-center justify-between gap-4 border-t border-surface-300 pt-5 text-xs text-surface-500 dark:border-surface-700"
     >
       <span>Sistema de gestión empresarial</span>
       <span class="uppercase tracking-[0.12em]">Cashly</span>
