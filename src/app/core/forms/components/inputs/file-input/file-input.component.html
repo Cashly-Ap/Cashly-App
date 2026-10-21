@@ -36,7 +36,7 @@
     class="block [&_input[type=file]]:sr-only"
     mode="basic"
     [accept]="accept()"
-    [maxFileSize]="maxFileSize()"
+    [maxFileSize]="optimizeImage() ? 0 : maxFileSize()"
     [auto]="false"
     chooseLabel="Seleccionar archivo"
     chooseIcon="pi pi-upload"
@@ -47,7 +47,11 @@
   />
 
   <div class="min-h-[20px] mt-1.5">
-    @if (control().invalid && control().touched && errorMessage()) {
+    @if (optimizing()) {
+      <p role="status" class="text-xs text-surface-500">Optimizando imagen…</p>
+    } @else if (imageError()) {
+      <p role="alert" class="text-xs text-red-500">{{ imageError() }}</p>
+    } @else if (control().invalid && control().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
         {{ errorMessage() }}
