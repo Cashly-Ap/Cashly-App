@@ -35,6 +35,17 @@
                 [columns]="2"
                 class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
               >
+                <app-file-input
+                  class="md:col-span-full"
+                  label="Foto de perfil"
+                  [control]="photo"
+                  accept="image/png,image/jpeg"
+                  [maxFileSize]="5000000"
+                  helpText="PNG o JPG. Máximo 5 MB."
+                  [previewUrl]="removePhoto() ? null : photoUrl()"
+                  (fileSelected)="removePhoto.set(false)"
+                  (deleteExistingPhoto)="removePhoto.set(true)"
+                />
                 <app-text-input
                   label="Nombre"
                   errorMessage="El nombre es requerido (máximo 100 caracteres)"
@@ -72,11 +83,15 @@
                   [control]="control('phone')"
                 />
                 @for (field of addressFields; track field.key) {
-                  <app-text-input
-                    [label]="field.label"
-                    errorMessage="El texto supera la longitud permitida"
-                    [control]="control(field.key)"
-                  />
+                  @if (field.key === 'country') {
+                    <app-country-input [control]="control(field.key)" />
+                  } @else {
+                    <app-text-input
+                      [label]="field.label"
+                      errorMessage="El texto supera la longitud permitida"
+                      [control]="control(field.key)"
+                    />
+                  }
                 }
               </app-tab-content>
             </p-tabpanel>

@@ -45,6 +45,7 @@
             </div>
           </app-details-card-header>
           <div class="p-4 sm:p-6">
+            <div class="mb-6"><app-user-avatar [userId]="currentUser.id" [photoPath]="currentUser.photoPath" [name]="currentUser.userName" size="xlarge" /></div>
             <app-details-info-grid [columns]="2" [fillLastRow]="true">
               <app-details-info-field label="Nombre" [value]="currentUser.firstName" />
               <app-details-info-field label="Apellidos" [value]="currentUser.lastName" />

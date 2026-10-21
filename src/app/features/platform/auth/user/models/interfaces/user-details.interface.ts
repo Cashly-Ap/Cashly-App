@@ -6,6 +6,7 @@ export interface UserDetails extends UserProfile {
   id: string;
   email: string;
   userName: string;
+  photoPath?: string | null;
   role?: UserType;
   active: boolean;
   emailVerified: boolean;

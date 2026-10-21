@@ -16,6 +16,7 @@ export interface UserResponse {
   id: string;
   email: string;
   userName: string;
+  photoPath?: string | null;
   type: UserType;
   role: UserType;
   active: boolean;

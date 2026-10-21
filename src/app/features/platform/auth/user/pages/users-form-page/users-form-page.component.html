@@ -14,6 +14,19 @@
               [columns]="2"
               class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
             >
+              @if (canManagePhoto()) {
+                <app-file-input
+                  class="md:col-span-full"
+                  label="Foto del usuario"
+                  [control]="photo"
+                  accept="image/png,image/jpeg"
+                  [maxFileSize]="5000000"
+                  helpText="PNG o JPG. Máximo 5 MB."
+                  [previewUrl]="removePhoto() ? null : photoUrl()"
+                  (fileSelected)="removePhoto.set(false)"
+                  (deleteExistingPhoto)="removePhoto.set(true)"
+                />
+              }
               <app-text-input
                 label="Nombre"
                 placeholder="Nombre del usuario"
@@ -61,7 +74,11 @@
                 [control]="control('phone')"
               />
               @for (field of addressFields; track field.key) {
-                <app-text-input [label]="field.label" [control]="control(field.key)" />
+                @if (field.key === 'country') {
+                  <app-country-input [control]="control(field.key)" />
+                } @else {
+                  <app-text-input [label]="field.label" [control]="control(field.key)" />
+                }
               }
             </app-tab-content>
           </p-tabpanel>
@@ -106,7 +123,7 @@
       <app-form-actions
         [submitLabel]="submitLabel()"
         cancelLabel="Cancelar"
-        [loading]="loading()"
+        [loading]="loading() || savingPhoto()"
         [disabled]="form.invalid"
         tooltipMessage="Complete los campos requeridos"
         (cancel)="onCancel()"

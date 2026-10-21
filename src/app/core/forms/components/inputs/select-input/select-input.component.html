@@ -9,6 +9,7 @@
     {{ label() }}
   </label>
   <p-select
+    [ariaLabel]="label()"
     [formControl]="internalControl()"
     [name]="label()"
     [options]="options()"
@@ -20,7 +21,38 @@
     [disabled]="disabled()"
     [showClear]="showClear()"
     styleClass="w-full"
-  />
+  >
+    <ng-template #item let-option>
+      <div class="flex items-center gap-3">
+        @if (optionImage() && option?.[optionImage()]) {
+          <img
+            [src]="option[optionImage()]"
+            width="24"
+            height="18"
+            alt=""
+            aria-hidden="true"
+            class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
+          />
+        }
+        <span>{{ option?.[optionLabel()] ?? option }}</span>
+      </div>
+    </ng-template>
+    <ng-template #selectedItem let-option>
+      <div class="flex items-center gap-3">
+        @if (optionImage() && option?.[optionImage()]) {
+          <img
+            [src]="option[optionImage()]"
+            width="24"
+            height="18"
+            alt=""
+            aria-hidden="true"
+            class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
+          />
+        }
+        <span>{{ option?.[optionLabel()] ?? option }}</span>
+      </div>
+    </ng-template>
+  </p-select>
   <div class="min-h-[20px] mt-1.5">
     @if (internalControl().invalid && internalControl().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">

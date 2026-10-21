@@ -14,6 +14,7 @@ export class SelectInputComponent {
   options = input<unknown[]>([]);
   optionLabel = input<string>('label');
   optionValue = input<string>('value');
+  optionImage = input<string>('');
   control = input<FormControl>();
   colSpan = input<number>();
   errorMessage = input<string>('');

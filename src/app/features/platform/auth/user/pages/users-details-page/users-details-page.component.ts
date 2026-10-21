@@ -1,3 +1,4 @@
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -30,6 +31,7 @@ import { ChangeEmailDialogComponent } from '@features/platform/auth/user/compone
   selector: 'app-users-details-page',
   standalone: true,
   imports: [
+    UserAvatarComponent,
     PermissionDirective,
     CommonModule,
     ButtonModule,

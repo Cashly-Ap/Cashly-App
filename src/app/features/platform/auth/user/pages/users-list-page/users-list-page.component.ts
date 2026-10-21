@@ -1,3 +1,4 @@
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '../../models/enums/business-module.enum';
 import { AuthorizationService } from '../../../authorization/services/authorization.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -50,6 +51,7 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    UserAvatarComponent,
     PermissionDirective,
     CommonModule,
     FormsModule,

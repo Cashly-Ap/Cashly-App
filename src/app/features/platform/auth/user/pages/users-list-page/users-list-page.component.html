@@ -25,6 +25,7 @@
               (search)="onSearch($event)"
             />
             <p-button
+
               #filterBtn
               icon="pi pi-filter"
               [outlined]="true"
@@ -78,6 +79,7 @@
             </p-popover>
           </div>
           <p-button
+
             [appPermission]="'CREATE'"
             label="Nuevo Usuario"
             icon="pi pi-plus"
@@ -159,7 +161,13 @@
                   <tr class="transition-colors duration-150">
                     <td>
                       <div class="font-medium">
-                        {{ user.userName }}
+                        <span class="inline-flex items-center gap-3"
+                          ><app-user-avatar
+                            [userId]="user.id"
+                            [photoPath]="user.photoPath"
+                            [name]="user.userName"
+                          />{{ user.userName }}</span
+                        >
                       </div>
                     </td>
                     <td class="hidden lg:table-cell">
@@ -225,7 +233,13 @@
                 <div class="flex justify-between items-start mb-3">
                   <div class="flex-1">
                     <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
-                      {{ user.userName }}
+                      <span class="inline-flex items-center gap-3"
+                        ><app-user-avatar
+                          [userId]="user.id"
+                          [photoPath]="user.photoPath"
+                          [name]="user.userName"
+                        />{{ user.userName }}</span
+                      >
                     </h3>
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
                       {{ user.email }}

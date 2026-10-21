@@ -81,6 +81,16 @@ export const routes: Routes = [
         children: [
           areaEntry('platform'),
           {
+            path: 'company/edit', canActivate: [authGuard, modulePermissionGuard],
+            data: { module: BusinessModule.COMPANY, action: 'UPDATE' },
+            loadComponent: () => import('@features/platform/company/company-page.component').then(m => m.CompanyPageComponent),
+          },
+          {
+            path: 'company', canActivate: [authGuard, modulePermissionGuard],
+            data: { module: BusinessModule.COMPANY, action: 'READ' },
+            loadComponent: () => import('@features/platform/company/company-details.component').then(m => m.CompanyDetailsComponent),
+          },
+          {
             path: 'auth',
             loadChildren: () =>
               import('@features/platform/auth/routing').then((m) => m.AUTHENTICATED_AUTH_ROUTES),

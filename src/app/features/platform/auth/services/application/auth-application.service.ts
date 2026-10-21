@@ -135,6 +135,14 @@ export class AuthService {
     this.saveCurrentUserToStorage(updated);
   }
 
+  syncProfilePhoto(photoPath: string | null): void {
+    const current = this.currentUser();
+    if (!current) return;
+    const updated = { ...current, photoPath };
+    this.currentUser.set(updated);
+    this.saveCurrentUserToStorage(updated);
+  }
+
   changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
     this.loading.set(true);
     this.error.set(null);

@@ -25,8 +25,15 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-3">
-      <p-button label="Cancelar" [outlined]="true" (onClick)="onCancel()" [disabled]="loading()" />
       <p-button
+
+        label="Cancelar"
+        [outlined]="true"
+        (onClick)="onCancel()"
+        [disabled]="loading()"
+      />
+      <p-button
+
         label="Guardar"
         icon="pi pi-check"
         severity="contrast"

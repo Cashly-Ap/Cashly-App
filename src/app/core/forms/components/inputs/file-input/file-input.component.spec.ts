@@ -116,6 +116,14 @@ describe('FileInputComponent', () => {
     expect(component.previewImageUrl()).toBe('https://example.com/image.jpg');
   });
 
+  it('clears the selected preview when the parent resets a saved file', () => {
+    const file = new File(['photo'], 'avatar.png', { type: 'image/png' });
+    component.onSelect({ files: [file], currentFiles: [file], originalEvent: new Event('select') });
+    component.control().reset();
+    expect(component.selectedFile()).toBeNull();
+    expect(component.previewImageUrl()).toBeNull();
+  });
+
   it('should generate object URL for selected file', () => {
     const mockFile = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
     const mockEvent: FileSelectEvent = {

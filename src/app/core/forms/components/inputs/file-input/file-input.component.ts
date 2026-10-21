@@ -1,4 +1,14 @@
-import { Component, input, output, signal, computed, effect } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  signal,
+  computed,
+  effect,
+  DestroyRef,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { FileUploadModule, FileSelectEvent, FileRemoveEvent } from 'primeng/fileupload';
 import { ButtonModule } from 'primeng/button';
@@ -8,6 +18,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ReactiveFormsModule, FileUploadModule, ButtonModule],
   templateUrl: './file-input.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileInputComponent {
   control = input.required<FormControl<File | null>>();
@@ -27,7 +38,18 @@ export class FileInputComponent {
 
   private previewLoadErrorSignal = signal<boolean>(false);
 
+  private readonly selectedPreviewUrl = signal<string | null>(null);
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.revokePreview());
+    effect((onCleanup) => {
+      const subscription = this.control().valueChanges.subscribe((value) => {
+        if (!value) {
+          this.revokePreview();
+          this.selectedFileSignal.set(null);
+        }
+      });
+      onCleanup(() => subscription.unsubscribe());
+    });
     effect(() => {
       this.previewUrl();
       this.previewLoadErrorSignal.set(false);
@@ -40,7 +62,7 @@ export class FileInputComponent {
     }
     const file = this.selectedFileSignal();
     if (file) {
-      return URL.createObjectURL(file);
+      return this.selectedPreviewUrl();
     }
     return this.previewUrl();
   });
@@ -48,6 +70,8 @@ export class FileInputComponent {
   onSelect(event: FileSelectEvent): void {
     const file = event.files[0];
     if (file) {
+      this.revokePreview();
+      this.selectedPreviewUrl.set(URL.createObjectURL(file));
       this.selectedFileSignal.set(file);
       this.control().setValue(file);
       this.control().markAsTouched();
@@ -63,7 +87,14 @@ export class FileInputComponent {
     this.clearFile();
   }
 
+  private revokePreview(): void {
+    const url = this.selectedPreviewUrl();
+    if (url) URL.revokeObjectURL(url);
+    this.selectedPreviewUrl.set(null);
+  }
+
   private clearFile(): void {
+    this.revokePreview();
     this.selectedFileSignal.set(null);
     this.previewLoadErrorSignal.set(false);
     this.control().setValue(null);

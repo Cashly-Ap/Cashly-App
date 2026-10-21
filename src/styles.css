@@ -529,3 +529,8 @@ app-section-card > div {
 .my-app-dark img[src$='cashly-icon.svg'] {
   filter: invert(1);
 }
+
+app-user-avatar .p-avatar img {
+  object-fit: cover;
+  object-position: center;
+}

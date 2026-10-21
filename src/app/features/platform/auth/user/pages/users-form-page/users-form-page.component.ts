@@ -1,3 +1,10 @@
+import { AuthService } from '../../../services/application/auth-application.service';
+import { BusinessModule } from '../../models/enums/business-module.enum';
+import { computed } from '@angular/core';
+import { UserPhotoService } from '../../../services/api/user-photo.service';
+import { switchMap, of, catchError, finalize } from 'rxjs';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TabsModule } from 'primeng/tabs';
 import { UserValidators } from '../../validators/user.validators';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
@@ -10,8 +17,10 @@ import {
   FormHeaderComponent,
   FormCardComponent,
   FormActionsComponent,
+  FileInputComponent,
   TextInputComponent,
   SelectInputComponent,
+  CountryInputComponent,
 } from '@core/forms/components';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { UserApplicationService } from '../../services/application/user-application.service';
@@ -40,8 +49,10 @@ interface UserFormData extends UserProfile {
     FormHeaderComponent,
     FormCardComponent,
     FormActionsComponent,
+    FileInputComponent,
     TextInputComponent,
     SelectInputComponent,
+    CountryInputComponent,
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,7 +61,22 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private readonly service = inject(UserApplicationService);
   private readonly management = inject(AccessManagementService);
   private readonly messages = inject(MessageService);
+  private readonly photos = inject(UserPhotoService);
+  private readonly auth = inject(AuthService);
+  readonly canManagePhoto = computed(() => this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'));
+  private readonly photoDestroy = inject(DestroyRef);
+  readonly photo = new FormControl<File | null>(null);
+  readonly photoUrl = signal<string | null>(null);
+  readonly removePhoto = signal(false);
+  readonly savingPhoto = signal(false);
   readonly loading = this.service.loading;
+  constructor() {
+    super();
+    this.photoDestroy.onDestroy(() => {
+      const url = this.photoUrl();
+      if (url) URL.revokeObjectURL(url);
+    });
+  }
   readonly roles = signal<{ label: string; value: string }[]>([]);
   readonly departments = signal<{ label: string; value: string }[]>([]);
   readonly activeTab = signal('general');
@@ -123,6 +149,18 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
     this.service.loadUserById(id).subscribe({
       next: (user) => {
         this.form.patchValue({ ...user, ...user.address });
+        if (user.photoPath)
+          this.photos
+            .get(id)
+            .pipe(takeUntilDestroyed(this.photoDestroy))
+            .subscribe({
+              next: (blob) => {
+                const old = this.photoUrl();
+                if (old) URL.revokeObjectURL(old);
+                this.photoUrl.set(URL.createObjectURL(blob));
+              },
+              error: () => undefined,
+            });
         this.control('password').clearValidators();
         this.control('password').updateValueAndValidity();
       },
@@ -145,6 +183,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
     return 'contact';
   }
   override onSubmit(): void {
+    if (this.loading() || this.savingPhoto()) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.activeTab.set(this.firstInvalidTab());
@@ -192,24 +231,46 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
           departmentId: data.departmentId,
           password: v.password,
         });
-    request.subscribe({
-      next: () => {
-        this.markAsSubmitted();
-        this.messages.add({
-          severity: 'success',
-          summary: 'Guardado',
-          detail: 'Usuario guardado correctamente',
-        });
-        this.router.navigate(['/platform/users']);
-      },
-      error: (error) =>
-        this.messages.add({
-          severity: 'error',
-          summary: 'Error',
-          detail:
-            error.error?.message ??
-            'No se pudo guardar. Comprueba que el rol y departamento sigan disponibles.',
-        }),
-    });
+    let photoFailed = false;
+    this.savingPhoto.set(true);
+    request
+      .pipe(
+        switchMap((user) =>
+          (this.photo.value
+            ? this.photos.upload(this.photo.value, user.id)
+            : this.removePhoto()
+              ? this.photos.remove(user.id)
+              : of(user)
+          ).pipe(
+            catchError(() => {
+              photoFailed = true;
+              return of(user);
+            }),
+          ),
+        ),
+        finalize(() => this.savingPhoto.set(false)),
+        takeUntilDestroyed(this.photoDestroy),
+      )
+      .subscribe({
+        next: () => {
+          this.markAsSubmitted();
+          this.messages.add({
+            severity: photoFailed ? 'warn' : 'success',
+            summary: photoFailed ? 'Usuario guardado sin foto' : 'Guardado',
+            detail: photoFailed
+              ? 'El usuario se guardó. Edita su ficha para volver a subir la foto.'
+              : 'Usuario guardado correctamente',
+          });
+          this.router.navigate(['/platform/users']);
+        },
+        error: (error) =>
+          this.messages.add({
+            severity: 'error',
+            summary: 'Error',
+            detail:
+              error.error?.message ??
+              'No se pudo guardar. Comprueba que el rol y departamento sigan disponibles.',
+          }),
+      });
   }
 }

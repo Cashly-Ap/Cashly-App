@@ -14,6 +14,7 @@ export class UserMapper {
       roleName: user.roleName,
       departmentName: user.departmentName,
       id: user.id,
+      photoPath: user.photoPath,
       email: user.email,
       userName: user.userName,
       role: user.role,

@@ -1,3 +1,4 @@
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -42,6 +43,7 @@ const ACTION_LABELS: Record<PermissionAction, string> = {
   selector: 'app-configuration-page',
   standalone: true,
   imports: [
+    UserAvatarComponent,
     CommonModule,
     ButtonModule,
     PageHeaderComponent,

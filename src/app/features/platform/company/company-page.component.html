@@ -1,0 +1,75 @@
+<app-form-container>
+  <app-form-header
+    title="Editar empresa"
+    subtitle="Datos fiscales, contacto e identidad de tu empresa"
+  />
+  @if (loading()) {
+    <app-form-card><div class="p-6" role="status">Cargando empresa…</div></app-form-card>
+  } @else if (error()) {
+    <app-form-card
+      ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
+        <p>No pudimos cargar la empresa.</p>
+        <p-button
+          label="Reintentar"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          (onClick)="load()"
+        /></div
+    ></app-form-card>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <app-form-card>
+        <p-tabs value="general"
+          ><p-tablist
+            ><p-tab value="general"><i class="pi pi-building mr-2"></i>Empresa</p-tab
+            ><p-tab value="address"
+              ><i class="pi pi-map-marker mr-2"></i>Dirección fiscal</p-tab
+            ></p-tablist
+          >
+          <p-tabpanels
+            ><p-tabpanel value="general"
+              ><app-tab-content [columns]="2">
+                <app-file-input
+                  class="md:col-span-full"
+                  label="Logotipo"
+                  [control]="photo"
+                  accept="image/png,image/jpeg"
+                  [maxFileSize]="5000000"
+                  helpText="PNG o JPG. Máximo 5 MB."
+                  [previewUrl]="removeLogo() ? null : service.logoUrl()"
+                  (fileSelected)="removeLogo.set(false)"
+                  (deleteExistingPhoto)="removeLogo.set(true)"
+                />
+                @for (field of fields; track field.key) {
+                  <app-text-input
+                    [label]="field.label"
+                    [control]="control(field.key)"
+                    errorMessage="Revisa el formato y la longitud de este campo"
+                  />
+                }</app-tab-content></p-tabpanel
+            ><p-tabpanel value="address"
+              ><app-tab-content [columns]="2">
+                @for (field of addressFields; track field.key) {
+                  @if (field.key === 'country') {
+                    <app-country-input [control]="control(field.key)" />
+                  } @else {
+                    <app-text-input
+                      [label]="field.label"
+                      [control]="control(field.key)"
+                      errorMessage="El texto supera la longitud permitida"
+                    />
+                  }
+                }</app-tab-content></p-tabpanel
+          ></p-tabpanels>
+        </p-tabs>
+        <app-form-actions
+          submitLabel="Guardar cambios"
+          cancelLabel="Cancelar"
+          [loading]="saving()"
+          [disabled]="form.invalid || saving()"
+          (cancel)="cancel()"
+        />
+      </app-form-card>
+    </form>
+  }
+</app-form-container>

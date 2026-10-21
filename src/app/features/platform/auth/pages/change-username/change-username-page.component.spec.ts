@@ -1,3 +1,4 @@
+import { UserPhotoService } from '../../services/api/user-photo.service';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
@@ -38,8 +39,9 @@ describe('Own profile editing', () => {
       providers: [
         provideRouter([]),
         MessageService,
+        { provide: UserPhotoService, useValue: {get:vi.fn(), upload:vi.fn(), remove:vi.fn()} },
         { provide: SelfProfileService, useValue: { getProfile, updateProfile } },
-        { provide: AuthService, useValue: { syncProfileDisplay } },
+        { provide: AuthService, useValue: { syncProfileDisplay, syncProfilePhoto: vi.fn() } },
       ],
     });
   });

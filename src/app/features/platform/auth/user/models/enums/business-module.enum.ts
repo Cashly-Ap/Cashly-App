@@ -1,4 +1,5 @@
 export enum BusinessModule {
+  COMPANY = 'COMPANY',
   USERS = 'USERS',
   ROLES = 'ROLES',
   DEPARTMENTS = 'DEPARTMENTS',
@@ -12,6 +13,7 @@ export enum BusinessModule {
 }
 
 export const BUSINESS_MODULE_LABELS: Record<BusinessModule, string> = {
+  [BusinessModule.COMPANY]: 'Empresa',
   [BusinessModule.ROLES]: 'Roles',
   [BusinessModule.DEPARTMENTS]: 'Departamentos',
   [BusinessModule.CATALOG]: 'Catálogo',

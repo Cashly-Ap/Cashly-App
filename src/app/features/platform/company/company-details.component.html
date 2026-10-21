@@ -1,0 +1,60 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-6">
+    <app-page-header title="Detalles de la empresa" subtitle="Identidad, datos fiscales y contacto de tu empresa" />
+    @if (loading()) {
+      <app-details-card><div class="p-6" role="status">Cargando empresa…</div></app-details-card>
+    } @else if (error()) {
+      <app-details-card>
+        <div class="p-6 flex flex-col items-start gap-4" role="alert">
+          <p>No pudimos cargar la empresa.</p>
+          <p-button label="Reintentar" icon="pi pi-refresh" [outlined]="true" (onClick)="load()" />
+        </div>
+      </app-details-card>
+    } @else if (company(); as company) {
+      <app-details-card>
+        <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+          <img [src]="service.logoUrl() || '/cashly-icon.svg'" alt="Logotipo de la empresa" class="w-20 h-20 object-contain rounded-2xl shrink-0" />
+          <div class="min-w-0 flex-1">
+            <h2 class="text-2xl font-semibold tracking-tight break-words text-surface-900 dark:text-surface-0">{{ company.tradeName || company.legalName }}</h2>
+            <p class="text-sm text-surface-500 break-words mt-1">{{ company.legalName }}</p>
+          </div>
+          @if (canEdit()) {
+            <p-button label="Editar empresa" ariaLabel="Editar empresa" icon="pi pi-pencil" [outlined]="true" (onClick)="edit()" />
+          }
+        </div>
+      </app-details-card>
+      <app-details-card>
+        <app-details-card-header title="Información fiscal" subtitle="Identificación de la empresa" />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Razón social" [value]="display(company.legalName)" />
+            <app-details-info-field label="Nombre comercial" [value]="display(company.tradeName)" />
+            <app-details-info-field label="NIF / CIF" [value]="display(company.taxId)" />
+          </app-details-info-grid>
+        </div>
+      </app-details-card>
+      <app-details-card>
+        <app-details-card-header title="Dirección fiscal" subtitle="Domicilio registrado de la empresa" />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Calle y número" [value]="display(company.address?.street)" />
+            <app-details-info-field label="Ciudad" [value]="display(company.address?.city)" />
+            <app-details-info-field label="Provincia o región" [value]="display(company.address?.region)" />
+            <app-details-info-field label="Código postal" [value]="display(company.address?.postalCode)" />
+            <app-details-info-field label="País" [value]="display(company.address?.country)" />
+          </app-details-info-grid>
+        </div>
+      </app-details-card>
+      <app-details-card>
+        <app-details-card-header title="Contacto" subtitle="Canales de contacto de la empresa" />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field label="Correo electrónico" [value]="display(company.email)" />
+            <app-details-info-field label="Teléfono" [value]="display(company.phone)" />
+            <app-details-info-field label="Sitio web" [value]="display(company.website)" />
+          </app-details-info-grid>
+        </div>
+      </app-details-card>
+    }
+  </div>
+</div>

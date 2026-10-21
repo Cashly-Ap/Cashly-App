@@ -1,3 +1,5 @@
+import { switchMap, of, finalize, tap } from 'rxjs';
+import { UserPhotoService } from '../../services/api/user-photo.service';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -10,6 +12,8 @@ import {
   FormCardComponent,
   FormHeaderComponent,
   FormActionsComponent,
+  FileInputComponent,
+  CountryInputComponent,
   TextInputComponent,
   TabContentComponent,
 } from '@core/forms/components';
@@ -26,6 +30,8 @@ import { createUserNameForm } from './change-username-page.config';
     FormCardComponent,
     FormHeaderComponent,
     FormActionsComponent,
+    FileInputComponent,
+    CountryInputComponent,
     TextInputComponent,
     TabContentComponent,
     TabsModule,
@@ -40,6 +46,10 @@ export class ChangeUsernamePageComponent {
   private readonly profiles = inject(SelfProfileService);
   private readonly messages = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly photos = inject(UserPhotoService);
+  readonly photo = new FormControl<File | null>(null);
+  readonly photoUrl = signal<string | null>(null);
+  readonly removePhoto = signal(false);
   readonly form = createUserNameForm();
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -53,6 +63,10 @@ export class ChangeUsernamePageComponent {
     { key: 'postalCode', label: 'Código postal' },
   ];
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      const url = this.photoUrl();
+      if (url) URL.revokeObjectURL(url);
+    });
     this.loadProfile();
   }
   control(field: string): FormControl {
@@ -66,6 +80,19 @@ export class ChangeUsernamePageComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (user) => {
+          this.auth.syncProfilePhoto(user.photoPath ?? null);
+          if (user.photoPath)
+            this.photos
+              .get()
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe({
+                next: (blob) => {
+                  const old = this.photoUrl();
+                  if (old) URL.revokeObjectURL(old);
+                  this.photoUrl.set(URL.createObjectURL(blob));
+                },
+                error: () => undefined,
+              });
           this.form.patchValue({
             firstName: user.firstName,
             lastName: user.lastName,
@@ -115,7 +142,18 @@ export class ChangeUsernamePageComponent {
         phone: data.phone?.replace(/[\s().-]/g, '') || null,
         address: Object.values(address).some(Boolean) ? address : null,
       })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        tap((profile) => this.auth.syncProfileDisplay(profile.userName)),
+        switchMap((profile) =>
+          this.photo.value
+            ? this.photos.upload(this.photo.value)
+            : this.removePhoto()
+              ? this.photos.remove()
+              : of(profile),
+        ),
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
         next: (profile) => {
           this.saving.set(false);

@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { provideRouter, ActivatedRoute, convertToParamMap } from '@angular/router';
+import { provideRouter, ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { UserPhotoService } from '../../../services/api/user-photo.service';
+import { UserDetails } from '../../models/interfaces/user-details.interface';
 import { signal } from '@angular/core';
 import { UsersFormPageComponent } from './users-form-page.component';
 import { UserApplicationService } from '../../services/application/user-application.service';
@@ -86,6 +88,33 @@ describe('User profile form', () => {
     component.onSubmit();
     expect(userService.createUser).not.toHaveBeenCalled();
     expect(component.activeTab()).toBe('contact');
+  });
+  it('uploads the selected photo against the newly created user', () => {
+    valid();
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const file = new File(['photo'], 'user.png', { type: 'image/png' });
+    component.photo.setValue(file);
+    const upload = vi
+      .spyOn(TestBed.inject(UserPhotoService), 'upload')
+      .mockReturnValue(of({ id: 'u', photoPath: 'users/photo.png' } as UserDetails));
+    component.onSubmit();
+    expect(upload).toHaveBeenCalledWith(file, 'u');
+    expect(userService.createUser).toHaveBeenCalledTimes(1);
+  });
+  it('leaves a saved user available for photo retry when only the upload fails', () => {
+    valid();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const notify = vi.spyOn(TestBed.inject(MessageService), 'add');
+    component.photo.setValue(new File(['photo'], 'user.png'));
+    vi.spyOn(TestBed.inject(UserPhotoService), 'upload').mockReturnValue(
+      throwError(() => new Error('upload failed')),
+    );
+    component.onSubmit();
+    expect(userService.createUser).toHaveBeenCalledTimes(1);
+    expect(notify).toHaveBeenCalledWith(
+      expect.objectContaining({ severity: 'warn', summary: 'Usuario guardado sin foto' }),
+    );
+    expect(navigate).toHaveBeenCalledWith(['/platform/users']);
   });
   it('allows an absent phone', () => {
     valid();

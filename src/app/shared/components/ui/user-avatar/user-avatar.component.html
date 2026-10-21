@@ -1,0 +1,7 @@
+<p-avatar
+  [image]="url() || undefined"
+  [label]="url() ? undefined : name().charAt(0).toUpperCase() || 'U'"
+  [size]="size()"
+  shape="circle"
+  (onImageError)="url.set(null)"
+/>

@@ -22,7 +22,7 @@ function emailsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-change-email-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, DialogModule, ButtonModule, TextInputComponent],
+  imports: [ShortcutDirective, ReactiveFormsModule, DialogModule, ButtonModule, TextInputComponent],
   templateUrl: './change-email-dialog.component.html',
 })
 export class ChangeEmailDialogComponent implements OnInit {

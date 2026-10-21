@@ -23,12 +23,7 @@
     } @else if (profile(); as user) {
       <app-details-card>
         <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
-          <div
-            class="w-20 h-20 rounded-2xl bg-surface-900 text-surface-0 dark:bg-surface-0 dark:text-surface-900 flex items-center justify-center text-2xl font-semibold shrink-0"
-            aria-hidden="true"
-          >
-            {{ initials() }}
-          </div>
+          <app-user-avatar [photoPath]="user.photoPath" [name]="fullName()" size="xlarge" />
           <div class="min-w-0 flex-1">
             <h2
               class="text-2xl font-semibold tracking-tight break-words text-surface-900 dark:text-surface-0"

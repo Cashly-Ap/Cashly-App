@@ -17,7 +17,13 @@ import { MessageService } from 'primeng/api';
 @Component({
   selector: 'app-change-password-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, NgClass, DialogModule, ButtonModule, PasswordModule],
+  imports: [
+    ReactiveFormsModule,
+    NgClass,
+    DialogModule,
+    ButtonModule,
+    PasswordModule,
+  ],
   templateUrl: './change-password-dialog.component.html',
 })
 export class ChangePasswordDialogComponent implements OnInit {
