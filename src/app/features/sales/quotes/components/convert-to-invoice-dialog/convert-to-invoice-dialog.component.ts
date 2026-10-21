@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -67,6 +68,7 @@ interface LineWithStockInfo {
     `,
   ],
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     DialogModule,

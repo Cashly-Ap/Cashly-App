@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -19,7 +20,15 @@ import { PurchaseStatus } from '@features/procurement/purchases/models/enums/pur
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PermissionDirective, DialogModule, ButtonModule, TableModule, DatePipe, DecimalPipe],
+  imports: [
+    ShortcutDirective,
+    PermissionDirective,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    DatePipe,
+    DecimalPipe,
+  ],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
 export class ConfirmPurchaseDialogComponent {

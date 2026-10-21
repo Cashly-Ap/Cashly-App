@@ -118,7 +118,13 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="onHide()" />
+      <p-button
+        appShortcut="cancel"
+        label="Cancelar"
+        [text]="true"
+        severity="secondary"
+        (onClick)="onHide()"
+      />
       <p-button
         [label]="format() === 'PDF' ? 'Generar PDF' : 'Exportar Excel'"
         [icon]="format() === 'PDF' ? 'pi pi-file-pdf' : 'pi pi-file-excel'"

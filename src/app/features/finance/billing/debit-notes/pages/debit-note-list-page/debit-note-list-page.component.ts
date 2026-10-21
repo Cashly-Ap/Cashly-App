@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -39,6 +40,7 @@ import { DebitNoteList } from '@features/finance/billing/debit-notes/models/inte
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

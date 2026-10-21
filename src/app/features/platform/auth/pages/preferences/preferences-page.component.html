@@ -1,0 +1,177 @@
+<section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+  <app-page-header
+    title="Configuración"
+    subtitle="Personaliza la apariencia y los atajos de tu cuenta."
+  />
+  <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
+    @if (preferences.loading()) {
+      <p role="status">Cargando tu configuración…</p>
+    } @else if (preferences.saving()) {
+      <p role="status">Guardando cambios…</p>
+    } @else if (!preferences.error()) {
+      <p>Los cambios se guardan automáticamente en tu cuenta y se recuperan en tus dispositivos.</p>
+    }
+  </div>
+  @if (preferences.error(); as error) {
+    <app-details-card>
+      <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">
+        <p>{{ error }}</p>
+        <p-button
+          label="Reintentar"
+          ariaLabel="Reintentar configuración"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          (onClick)="preferences.retry()"
+        />
+      </div>
+    </app-details-card>
+  }
+  <app-details-card>
+    <app-details-card-header
+      title="Apariencia"
+      subtitle="Elige el modo de visualización por defecto."
+    />
+    <fieldset
+      class="p-4 sm:p-6"
+      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
+    >
+      <legend class="sr-only">Modo de visualización</legend>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        @for (theme of themes; track theme.value) {
+          <label
+            class="flex cursor-pointer items-start gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
+          >
+            <input
+              type="radio"
+              name="themeMode"
+              [value]="theme.value"
+              [checked]="preferences.themeMode() === theme.value"
+              (change)="preferences.setThemeMode(theme.value)"
+              class="mt-1 accent-black dark:accent-white"
+            />
+            <span class="flex min-w-0 flex-col gap-2">
+              <span class="flex items-center gap-2 font-semibold"
+                ><i [class]="theme.icon" aria-hidden="true"></i>{{ theme.label }}</span
+              >
+              <span class="text-sm text-surface-500 dark:text-surface-400">{{
+                theme.description
+              }}</span>
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+  </app-details-card>
+  <app-details-card>
+    <app-details-card-header
+      title="Modo de colores"
+      subtitle="Organiza visualmente la información como prefieras."
+    />
+    <fieldset
+      class="p-4 sm:p-6"
+      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
+    >
+      <legend class="sr-only">Modo de colores</legend>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        @for (color of colors; track color.value) {
+          <label
+            class="flex cursor-pointer items-start gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
+          >
+            <input
+              type="radio"
+              name="colorMode"
+              [value]="color.value"
+              [checked]="preferences.colorMode() === color.value"
+              (change)="preferences.setColorMode(color.value)"
+              class="mt-1 accent-black dark:accent-white"
+            />
+            <span class="flex min-w-0 flex-col gap-2">
+              <span class="font-semibold">{{ color.label }}</span>
+              <span class="text-sm text-surface-500 dark:text-surface-400">{{
+                color.description
+              }}</span>
+              @if (color.value === 'informative') {
+                <span class="mt-1 flex gap-2" aria-hidden="true">
+                  <span class="h-3 w-6 rounded-full bg-blue-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-purple-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-teal-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-amber-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-green-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-pink-600"></span>
+                </span>
+              } @else {
+                <span class="mt-1 flex gap-2" aria-hidden="true"
+                  ><span class="h-3 w-6 rounded-full bg-surface-900"></span
+                  ><span class="h-3 w-6 rounded-full bg-surface-600"></span
+                  ><span class="h-3 w-6 rounded-full bg-surface-300"></span
+                ></span>
+              }
+            </span>
+          </label>
+        }
+      </div>
+    </fieldset>
+  </app-details-card>
+  <app-details-card>
+    <app-details-card-header
+      title="Atajos de teclado"
+      subtitle="Accede a los módulos y a las acciones habituales desde el teclado."
+    />
+    <div class="flex flex-col gap-6 p-4 sm:p-6">
+      <label class="flex cursor-pointer items-start gap-3">
+        <input
+          type="checkbox"
+          role="switch"
+          [checked]="preferences.shortcutsEnabled()"
+          [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
+          (change)="preferences.setShortcutsEnabled(!preferences.shortcutsEnabled())"
+          class="mt-1 h-4 w-4 accent-black dark:accent-white"
+        />
+        <span
+          ><span class="block font-semibold">Habilitar atajos de teclado</span
+          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400"
+            >Solo actúan sobre las acciones disponibles y los módulos a los que tienes acceso.</span
+          ></span
+        >
+      </label>
+      <label class="flex cursor-pointer items-start gap-3">
+        <input
+          type="checkbox"
+          role="switch"
+          aria-label="Mostrar atajos en cada pantalla"
+          [checked]="preferences.showShortcutHints()"
+          [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
+          (change)="preferences.setShowShortcutHints(!preferences.showShortcutHints())"
+          class="mt-1 h-4 w-4 accent-black dark:accent-white"
+        />
+        <span
+          ><span class="block font-semibold">Mostrar atajos en cada pantalla</span
+          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400"
+            >Muestra una ayuda con las acciones disponibles en la pantalla o diálogo actual cuando
+            los atajos están habilitados.</span
+          ></span
+        >
+      </label>
+      <dl class="grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-2">
+        @for (shortcut of shortcuts; track shortcut.action) {
+          <div
+            class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 pb-3 dark:border-surface-800"
+          >
+            <dt class="text-sm">{{ shortcut.label }}</dt>
+            <dd>
+              <kbd
+                class="rounded-lg border border-surface-300 px-2 py-1 text-xs dark:border-surface-600"
+                >{{ shortcut.keys }}</kbd
+              >
+            </dd>
+          </div>
+        }
+      </dl>
+      <p class="text-sm text-surface-500 dark:text-surface-400">
+        Pulsa una sola tecla: N para nuevo, F para filtros, B para buscar, G para guardar y M para
+        módulos. J/K bajan y suben. Esc sale primero del campo; después cancela o cierra. Las letras no activan acciones mientras escribes ni
+        sustituyen los atajos del navegador.
+      </p>
+    </div>
+  </app-details-card>
+</section>

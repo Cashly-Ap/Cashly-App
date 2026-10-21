@@ -7,6 +7,8 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
+import { chartPalette, moduleColor } from '@core/preferences/module-appearance';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import {
   DashboardApiService,
@@ -41,6 +43,7 @@ const DASHBOARD_CHART_COLORS = {
 export class DashboardPageComponent implements OnInit {
   private readonly api = inject(DashboardApiService);
   private readonly themeService = inject(ThemeService);
+  private readonly preferences = inject(UserPreferencesService);
 
   readonly summary = signal<DashboardSummary | null>(null);
   readonly monthlySales = signal<MonthlySales[]>([]);
@@ -100,7 +103,9 @@ export class DashboardPageComponent implements OnInit {
 
   readonly salesChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color = this.preferences.colorMode() === 'informative'
+      ? moduleColor('sales', isDark)
+      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.salesChartSource();
     return {
       ...source,
@@ -121,7 +126,9 @@ export class DashboardPageComponent implements OnInit {
 
   readonly productsChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color = this.preferences.colorMode() === 'informative'
+      ? chartPalette(this.productsChartSource().labels?.length ?? 0, isDark)
+      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.productsChartSource();
     return {
       ...source,
@@ -145,7 +152,9 @@ export class DashboardPageComponent implements OnInit {
 
   readonly customersChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color = this.preferences.colorMode() === 'informative'
+      ? chartPalette(this.customersChartSource().labels?.length ?? 0, isDark).reverse()
+      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.customersChartSource();
     return {
       ...source,
@@ -169,13 +178,16 @@ export class DashboardPageComponent implements OnInit {
 
   readonly dueChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const informative = this.preferences.colorMode() === 'informative';
+    const color = informative
+      ? moduleColor('finance', isDark)
+      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.dueChartSource();
     return {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
-        backgroundColor: isDark
+        backgroundColor: informative ? `${color}20` : isDark
           ? DASHBOARD_CHART_COLORS.darkFill
           : DASHBOARD_CHART_COLORS.lightFill,
         borderColor: color,

@@ -530,6 +530,122 @@ app-section-card > div {
   filter: invert(1);
 }
 
+.cashly-informative :is([data-module="sales"], .cashly-module-sales) {
+  --cashly-accent: #1d4ed8;
+}
+.my-app-dark.cashly-informative :is([data-module="sales"], .cashly-module-sales) {
+  --cashly-accent: #93c5fd;
+}
+.cashly-informative :is([data-module="procurement"], .cashly-module-procurement) {
+  --cashly-accent: #7e22ce;
+}
+.my-app-dark.cashly-informative :is([data-module="procurement"], .cashly-module-procurement) {
+  --cashly-accent: #d8b4fe;
+}
+.cashly-informative :is([data-module="catalog"], .cashly-module-catalog) {
+  --cashly-accent: #0f766e;
+}
+.my-app-dark.cashly-informative :is([data-module="catalog"], .cashly-module-catalog) {
+  --cashly-accent: #5eead4;
+}
+.cashly-informative :is([data-module="inventory"], .cashly-module-inventory) {
+  --cashly-accent: #a16207;
+}
+.my-app-dark.cashly-informative :is([data-module="inventory"], .cashly-module-inventory) {
+  --cashly-accent: #fcd34d;
+}
+.cashly-informative :is([data-module="finance"], .cashly-module-finance) {
+  --cashly-accent: #15803d;
+}
+.my-app-dark.cashly-informative :is([data-module="finance"], .cashly-module-finance) {
+  --cashly-accent: #86efac;
+}
+.cashly-informative :is([data-module="partners"], .cashly-module-partners) {
+  --cashly-accent: #be185d;
+}
+.my-app-dark.cashly-informative :is([data-module="partners"], .cashly-module-partners) {
+  --cashly-accent: #f9a8d4;
+}
+.cashly-informative :is([data-module="analytics"], .cashly-module-analytics) {
+  --cashly-accent: #4338ca;
+}
+.my-app-dark.cashly-informative :is([data-module="analytics"], .cashly-module-analytics) {
+  --cashly-accent: #a5b4fc;
+}
+.cashly-informative :is([data-module="platform"], .cashly-module-platform) {
+  --cashly-accent: #475569;
+}
+.my-app-dark.cashly-informative :is([data-module="platform"], .cashly-module-platform) {
+  --cashly-accent: #cbd5e1;
+}
+
+.cashly-informative .cashly-workspace {
+  --cashly-accent-soft: color-mix(in srgb, var(--cashly-accent) 8%, var(--cashly-panel));
+  --cashly-accent-line: color-mix(in srgb, var(--cashly-accent) 32%, var(--cashly-line));
+}
+.cashly-informative .cashly-page-header h1 {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-page-header::before {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) {
+  border-color: var(--cashly-accent-line);
+}
+.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div, app-form-card-header > div, app-section-card > div > div:first-child) {
+  background: var(--cashly-accent-soft);
+}
+.cashly-informative .cashly-workspace .p-datatable {
+  --p-datatable-header-cell-background: var(--cashly-accent-soft);
+  --p-datatable-header-cell-color: var(--cashly-accent);
+  --p-datatable-header-cell-hover-background: color-mix(in srgb, var(--cashly-accent) 14%, var(--cashly-panel));
+  --p-datatable-header-cell-hover-color: var(--cashly-accent);
+}
+.cashly-informative :is(.main-menubar .p-menubar-item, .mobile-panel-menu .p-panelmenu-panel, .mobile-panel-menu .p-menuitem) > :is(.p-menubar-item-content, .p-panelmenu-header, .p-menuitem-content) :is(.p-menubar-item-icon, .p-panelmenu-header-icon, .p-menuitem-icon) {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-module-sales,
+.cashly-informative .cashly-module-procurement,
+.cashly-informative .cashly-module-catalog,
+.cashly-informative .cashly-module-inventory,
+.cashly-informative .cashly-module-finance,
+.cashly-informative .cashly-module-partners,
+.cashly-informative .cashly-module-analytics,
+.cashly-informative .cashly-module-platform {
+  --p-menubar-item-icon-color: var(--cashly-accent);
+  --p-panelmenu-item-icon-color: var(--cashly-accent);
+  --p-panelmenu-panel-icon-color: var(--cashly-accent);
+}
+.cashly-informative .dashboard-widget {
+  border-color: color-mix(in srgb, var(--cashly-accent) 32%, var(--cashly-line));
+}
+.cashly-informative .dashboard-metric {
+  background: color-mix(in srgb, var(--cashly-accent) 8%, var(--cashly-panel));
+  color: var(--cashly-ink);
+}
+.cashly-informative .dashboard-metric-primary :is(p, span) {
+  color: var(--cashly-ink);
+}
+.cashly-informative .dashboard-metric-icon {
+  background: color-mix(in srgb, var(--cashly-accent) 14%, var(--cashly-panel));
+}
+.cashly-informative .dashboard-metric-icon i,
+.cashly-informative .dashboard-widget h3 {
+  color: var(--cashly-accent);
+}
+.cashly-informative .dashboard-activity-label {
+  background: color-mix(in srgb, var(--cashly-accent) 10%, var(--cashly-panel));
+  border-color: color-mix(in srgb, var(--cashly-accent) 28%, var(--cashly-line));
+  color: var(--cashly-accent);
+}
+
+.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) > :is(app-details-card-header, app-form-header, app-form-card-header):first-child,
+.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) > :is(app-details-card-header, app-form-header, app-form-card-header):first-child > div,
+.cashly-informative .cashly-workspace app-section-card > div > div:first-child {
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
+}
+
 app-user-avatar .p-avatar img {
   object-fit: cover;
   object-position: center;

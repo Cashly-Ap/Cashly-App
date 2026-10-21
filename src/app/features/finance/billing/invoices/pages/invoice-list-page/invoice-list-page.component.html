@@ -25,6 +25,7 @@
               (search)="onSearch($event)"
             />
             <p-button
+              appShortcut="filter"
               #filterBtn
               icon="pi pi-filter"
               [outlined]="true"
@@ -122,6 +123,7 @@
             </p-popover>
           </div>
           <p-button
+            appShortcut="new"
             [appRequiredPermissions]="['INVENTORY:EXECUTE']"
             [appPermission]="'CREATE'"
             label="Nueva Factura"

@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
@@ -45,6 +46,7 @@ import { BusinessModule } from '../../user/models/enums/business-module.enum';
   selector: 'app-departments-page',
   standalone: true,
   imports: [
+    ShortcutDirective,
     ReactiveFormsModule,
     PaginatorModule,
     PopoverModule,

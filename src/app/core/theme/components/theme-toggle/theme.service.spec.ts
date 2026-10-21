@@ -1,113 +1,78 @@
 import { TestBed } from '@angular/core/testing';
-import { PLATFORM_ID } from '@angular/core';
-import { vi } from 'vitest';
-import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
+import { PLATFORM_ID, signal } from '@angular/core';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { UserPreferencesService, ThemeMode } from '@core/preferences/user-preferences.service';
+import { ThemeService } from './theme.service';
 
 describe('ThemeService', () => {
-  let service: ThemeService;
-  let localStorageMock: any;
+  const themeMode = signal<ThemeMode>('system');
+  let listener: ((event: MediaQueryListEvent) => void) | undefined;
+  let removeEventListener: ReturnType<typeof vi.fn>;
+  const setThemeMode = vi.fn((mode: ThemeMode) => themeMode.set(mode));
 
   beforeEach(() => {
-    localStorageMock = {
-      getItem: vi.fn(),
-      setItem: vi.fn(),
-      clear: vi.fn(),
-    };
-    Object.defineProperty(window, 'localStorage', {
-      value: localStorageMock,
-      writable: true,
-    });
-
-    TestBed.configureTestingModule({
-      providers: [ThemeService, { provide: PLATFORM_ID, useValue: 'browser' }],
-    });
-
-    service = TestBed.inject(ThemeService);
+    themeMode.set('system');
+    setThemeMode.mockClear();
+    document.documentElement.classList.remove('my-app-dark');
+    removeEventListener = vi.fn();
+    vi.stubGlobal('matchMedia', vi.fn(() => ({
+      matches: false,
+      addEventListener: vi.fn((_name, callback) => { listener = callback; }),
+      removeEventListener,
+    })));
+    TestBed.configureTestingModule({ providers: [
+      ThemeService,
+      { provide: PLATFORM_ID, useValue: 'browser' },
+      { provide: UserPreferencesService, useValue: { themeMode, setThemeMode } },
+    ] });
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
+  function create(): ThemeService {
+    const service = TestBed.inject(ThemeService);
+    TestBed.tick();
+    return service;
+  }
+
+  it('follows system changes while mode remains system', () => {
+    const service = create();
+    expect(service.isDarkMode()).toBe(false);
+    listener?.({ matches: true } as MediaQueryListEvent);
+    TestBed.tick();
+    expect(service.isDarkMode()).toBe(true);
+    expect(document.documentElement.classList.contains('my-app-dark')).toBe(true);
+    expect(themeMode()).toBe('system');
+    expect(setThemeMode).not.toHaveBeenCalled();
   });
 
-  describe('initialization', () => {
-    it('should initialize with dark mode false by default', () => {
-      localStorageMock.getItem.mockReturnValue(null);
-
-      const service = TestBed.inject(ThemeService);
-
-      expect(service.isDarkMode()).toBeDefined();
-    });
-
-    it('should load dark mode from localStorage', () => {
-      localStorageMock.getItem.mockReturnValue('dark');
-
-      const service = TestBed.inject(ThemeService);
-
-      expect(localStorageMock.getItem).toHaveBeenCalledWith('theme');
-    });
-
-    it('should load light mode from localStorage', () => {
-      localStorageMock.getItem.mockReturnValue('light');
-
-      const service = TestBed.inject(ThemeService);
-
-      expect(localStorageMock.getItem).toHaveBeenCalledWith('theme');
-    });
+  it('keeps explicit modes independent of system changes and can return to system', () => {
+    const service = create();
+    service.setMode('light');
+    listener?.({ matches: true } as MediaQueryListEvent);
+    expect(service.isDarkMode()).toBe(false);
+    service.setMode('dark');
+    listener?.({ matches: false } as MediaQueryListEvent);
+    expect(service.isDarkMode()).toBe(true);
+    service.setMode('system');
+    expect(service.isDarkMode()).toBe(false);
   });
 
-  describe('toggleTheme', () => {
-    it('should toggle from false to true', () => {
-      service.isDarkMode.set(false);
-
-      service.toggleTheme();
-
-      expect(service.isDarkMode()).toBe(true);
-    });
-
-    it('should toggle from true to false', () => {
-      service.isDarkMode.set(true);
-
-      service.toggleTheme();
-
-      expect(service.isDarkMode()).toBe(false);
-    });
-
-    it('should toggle multiple times', () => {
-      service.isDarkMode.set(false);
-
-      service.toggleTheme();
-      expect(service.isDarkMode()).toBe(true);
-
-      service.toggleTheme();
-      expect(service.isDarkMode()).toBe(false);
-
-      service.toggleTheme();
-      expect(service.isDarkMode()).toBe(true);
-    });
+  it('toggles to the opposite explicit preference', () => {
+    const service = create();
+    service.toggleTheme();
+    expect(setThemeMode).toHaveBeenLastCalledWith('dark');
+    service.toggleTheme();
+    expect(setThemeMode).toHaveBeenLastCalledWith('light');
   });
 
-  describe('theme persistence', () => {
-    it('should save theme to localStorage when changed', () => {
-      service.isDarkMode.set(true);
-
-      expect(localStorageMock.setItem).toHaveBeenCalled();
-    });
+  it('cleans up the system theme listener', () => {
+    create();
+    TestBed.resetTestingModule();
+    expect(removeEventListener).toHaveBeenCalledWith('change', listener);
   });
 
-  describe('browser detection', () => {
-    it('should detect browser platform', () => {
-      expect(service['isBrowser']).toBe(true);
-    });
-
-    it('should handle non-browser platform', () => {
-      TestBed.resetTestingModule();
-      TestBed.configureTestingModule({
-        providers: [ThemeService, { provide: PLATFORM_ID, useValue: 'server' }],
-      });
-
-      const serverService = TestBed.inject(ThemeService);
-
-      expect(serverService['isBrowser']).toBe(false);
-    });
+  it('does not access media queries on the server', () => {
+    TestBed.overrideProvider(PLATFORM_ID, { useValue: 'server' });
+    expect(create().isDarkMode()).toBe(false);
+    expect(window.matchMedia).not.toHaveBeenCalled();
   });
 });

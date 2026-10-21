@@ -264,6 +264,7 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
+        appShortcut="cancel"
         severity="secondary"
         label="Cancelar"
         icon="pi pi-times"
@@ -272,6 +273,7 @@
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
+        appShortcut="submit"
         [appPermission]="'EXECUTE'"
         severity="contrast"
         label="Registrar Pago"

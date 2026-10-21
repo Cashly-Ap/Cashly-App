@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { PdfViewerDialogComponent } from '@core/pdf-viewer';
@@ -12,4 +13,6 @@ import { PdfViewerDialogComponent } from '@core/pdf-viewer';
     <app-pdf-viewer-dialog />
   `,
 })
-export class App {}
+export class App {
+  private readonly theme = inject(ThemeService);
+}

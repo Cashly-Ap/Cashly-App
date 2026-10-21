@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -8,7 +9,14 @@ import { TooltipModule } from 'primeng/tooltip';
 @Component({
   selector: 'app-search-field',
   standalone: true,
-  imports: [ButtonModule, IconFieldModule, InputIconModule, InputTextModule, TooltipModule],
+  imports: [
+    ShortcutDirective,
+    ButtonModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule,
+    TooltipModule,
+  ],
   templateUrl: './search-field.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block' },

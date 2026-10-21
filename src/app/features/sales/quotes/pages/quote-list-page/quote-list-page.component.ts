@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -51,6 +52,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

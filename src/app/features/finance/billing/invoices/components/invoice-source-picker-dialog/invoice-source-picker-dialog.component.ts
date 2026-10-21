@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
@@ -49,7 +50,7 @@ interface SourceStockStatus {
 @Component({
   selector: 'app-invoice-source-picker-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, DecimalPipe],
+  imports: [ShortcutDirective, DialogModule, ButtonModule, DecimalPipe],
   templateUrl: './invoice-source-picker-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

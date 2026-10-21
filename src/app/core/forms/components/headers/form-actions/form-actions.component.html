@@ -2,6 +2,7 @@
   class="flex flex-col sm:flex-row gap-3 sm:justify-end bg-surface-50 dark:bg-surface-900 border-t border-surface-200 dark:border-surface-800 px-4 md:px-6 py-4"
 >
   <p-button
+    appShortcut="cancel"
     [label]="cancelLabel()"
     icon="pi pi-times"
     severity="secondary"
@@ -16,6 +17,7 @@
     class="inline-flex"
   >
     <p-button
+      appShortcut="submit"
       type="submit"
       [label]="submitLabel()"
       icon="pi pi-check"

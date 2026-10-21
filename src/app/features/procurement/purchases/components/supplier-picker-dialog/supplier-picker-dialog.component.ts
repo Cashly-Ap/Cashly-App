@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -30,6 +31,7 @@ const PAGE_SIZE = 10;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

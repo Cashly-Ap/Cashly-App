@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -40,6 +41,7 @@ interface InvoiceLineFormData {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     CommonModule,
     DecimalPipe,
     FormsModule,
@@ -183,12 +185,14 @@ interface InvoiceLineFormData {
       <ng-template pTemplate="footer">
         <div class="flex gap-2 justify-end">
           <p-button
+            appShortcut="cancel"
             label="Cancelar"
             [outlined]="true"
             severity="secondary"
             (onClick)="onCancel()"
           />
           <p-button
+            appShortcut="submit"
             label="Guardar Devolución"
             icon="pi pi-check"
             severity="contrast"

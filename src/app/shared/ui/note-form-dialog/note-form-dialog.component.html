@@ -85,6 +85,7 @@
   <ng-template pTemplate="footer">
     <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
       <p-button
+        appShortcut="cancel"
         label="Cancelar"
         [outlined]="true"
         severity="secondary"
@@ -93,6 +94,7 @@
         (onClick)="onCancel()"
       />
       <p-button
+        appShortcut="submit"
         [label]="submitLabel()"
         icon="pi pi-check"
         severity="contrast"

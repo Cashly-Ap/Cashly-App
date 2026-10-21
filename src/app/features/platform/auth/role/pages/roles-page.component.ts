@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
@@ -55,6 +56,7 @@ import {
   selector: 'app-roles-page',
   standalone: true,
   imports: [
+    ShortcutDirective,
     ReactiveFormsModule,
     PaginatorModule,
     PopoverModule,

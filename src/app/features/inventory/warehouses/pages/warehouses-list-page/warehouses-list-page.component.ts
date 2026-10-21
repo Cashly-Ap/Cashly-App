@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -45,6 +46,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
   selector: 'app-warehouses-list-page',
   standalone: true,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

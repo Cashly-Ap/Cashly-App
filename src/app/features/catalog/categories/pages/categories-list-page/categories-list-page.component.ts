@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -40,6 +41,7 @@ import { CategoryList } from '@features/catalog/categories/models/interfaces/cat
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

@@ -249,8 +249,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         ...page('Usuarios', 'pi pi-user', '/platform/users', BusinessModule.USERS),
       },
       page('Roles', 'pi pi-shield', '/platform/roles', BusinessModule.ROLES),
-      page('Departamentos', 'pi pi-building', '/platform/departments', BusinessModule.DEPARTMENTS),
-      page('Configuración', 'pi pi-cog', '/platform/auth/configuration'),
+      page('Departamentos', 'pi pi-sitemap', '/platform/departments', BusinessModule.DEPARTMENTS),
     ]),
   ];
 }

@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -18,6 +19,7 @@ import { MessageService } from 'primeng/api';
   selector: 'app-change-password-dialog',
   standalone: true,
   imports: [
+    ShortcutDirective,
     ReactiveFormsModule,
     NgClass,
     DialogModule,

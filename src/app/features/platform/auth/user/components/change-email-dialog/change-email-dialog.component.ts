@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,

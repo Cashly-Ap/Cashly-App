@@ -1,0 +1,67 @@
+<p-dialog
+  header="Ir a un módulo"
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: '36rem', maxWidth: 'calc(100vw - 2rem)' }"
+>
+  <div class="flex flex-col gap-4" data-keyboard-scope (keydown)="onKeydown($event)">
+    <div class="flex flex-col sm:flex-row gap-2">
+      <input
+        pInputText
+        type="search"
+        role="combobox"
+        aria-label="Buscar módulo"
+        aria-autocomplete="list"
+        aria-controls="module-results"
+        [attr.aria-expanded]="visible()"
+        [attr.aria-activedescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
+        placeholder="Buscar módulo..."
+        [value]="query()"
+        (input)="onInput($event)"
+        class="w-full min-w-0"
+      />
+      <button
+        type="button"
+        class="shrink-0 cursor-pointer rounded-xl border border-surface-300 px-3 py-2 text-sm dark:border-surface-600"
+        (click)="focusResults()"
+      >
+        Navegar resultados
+      </button>
+    </div>
+    <p class="text-sm text-surface-500">
+      ↑/↓ seleccionan · Enter abre · Esc sale del campo · J/K navegan fuera del campo
+    </p>
+    <div
+      #results
+      id="module-results"
+      role="listbox"
+      aria-label="Módulos disponibles"
+      tabindex="0"
+      data-focus-exit
+      [attr.aria-activedescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
+      class="flex max-h-96 flex-col gap-1 overflow-y-auto rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2"
+    >
+      @for (destination of destinations(); track destination.route; let index = $index) {
+        <button
+          type="button"
+          role="option"
+          [id]="'module-result-' + index"
+          [attr.data-result-index]="index"
+          [attr.aria-selected]="activeIndex() === index"
+          tabindex="-1"
+          [class.bg-surface-100]="activeIndex() === index"
+          [class.dark:bg-surface-800]="activeIndex() === index"
+          class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-4 py-3 text-left text-sm text-surface-900 hover:bg-surface-100 dark:text-surface-100 dark:hover:bg-surface-800"
+          (click)="navigate(destination)"
+        >
+          <i [class]="destination.icon" aria-hidden="true"></i
+          ><span>{{ destination.group }} / {{ destination.label }}</span>
+        </button>
+      } @empty {
+        <p class="p-4 text-sm text-surface-500">No hay módulos disponibles.</p>
+      }
+    </div>
+  </div>
+</p-dialog>

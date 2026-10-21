@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -49,6 +50,7 @@ interface ProductSelection {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

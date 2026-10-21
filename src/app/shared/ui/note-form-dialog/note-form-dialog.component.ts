@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -25,6 +26,7 @@ type NoteType = 'CREDIT' | 'DEBIT';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     FormsModule,
     ButtonModule,
     TextareaModule,

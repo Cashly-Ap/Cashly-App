@@ -357,6 +357,7 @@
       </span>
       <div class="flex flex-col sm:flex-row gap-2">
         <p-button
+          appShortcut="cancel"
           label="Cancelar"
           icon="pi pi-times"
           [outlined]="true"
@@ -364,6 +365,7 @@
           (onClick)="onCancel()"
         />
         <p-button
+          appShortcut="submit"
           label="Agregar"
           icon="pi pi-plus"
           [disabled]="selectedCount() === 0"

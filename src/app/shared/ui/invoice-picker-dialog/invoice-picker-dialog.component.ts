@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -21,6 +22,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

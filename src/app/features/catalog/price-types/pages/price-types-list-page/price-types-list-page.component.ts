@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -38,6 +39,7 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

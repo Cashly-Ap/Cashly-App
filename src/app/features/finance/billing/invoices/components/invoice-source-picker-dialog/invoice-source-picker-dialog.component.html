@@ -114,7 +114,13 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <p-button label="Cancelar" severity="secondary" [text]="true" (onClick)="cancel()" />
+      <p-button
+        appShortcut="cancel"
+        label="Cancelar"
+        severity="secondary"
+        [text]="true"
+        (onClick)="cancel()"
+      />
       <p-button
         label="Cargar seleccionados"
         icon="pi pi-download"

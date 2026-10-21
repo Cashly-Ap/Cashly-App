@@ -1,3 +1,4 @@
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
 import { UserPhotoService } from '../../services/api/user-photo.service';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
@@ -39,6 +40,7 @@ describe('Own profile editing', () => {
       providers: [
         provideRouter([]),
         MessageService,
+        { provide: KeyboardShortcutService, useValue: { register: () => () => undefined } },
         { provide: UserPhotoService, useValue: {get:vi.fn(), upload:vi.fn(), remove:vi.fn()} },
         { provide: SelfProfileService, useValue: { getProfile, updateProfile } },
         { provide: AuthService, useValue: { syncProfileDisplay, syncProfilePhoto: vi.fn() } },

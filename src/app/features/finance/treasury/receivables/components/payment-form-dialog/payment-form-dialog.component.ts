@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
 import {
@@ -39,6 +40,7 @@ export interface PaymentMethodOption {
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     DialogModule,
     ButtonModule,

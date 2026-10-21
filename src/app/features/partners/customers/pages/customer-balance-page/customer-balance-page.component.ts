@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -56,6 +57,7 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
   selector: 'app-customer-balance-page',
   standalone: true,
   imports: [
+    ShortcutDirective,
     CommonModule,
     FormsModule,
     PageHeaderComponent,

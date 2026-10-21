@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,6 +33,7 @@ export type WarehouseStockOperation = 'entry' | 'exit';
   selector: 'app-warehouse-stock-operation-dialog',
   standalone: true,
   imports: [
+    ShortcutDirective,
     CurrencyPipe,
     ReactiveFormsModule,
     ButtonModule,

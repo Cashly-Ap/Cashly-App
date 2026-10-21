@@ -25,6 +25,7 @@
               (search)="onSearch($event)"
             />
             <p-button
+              appShortcut="filter"
               #filterBtn
               icon="pi pi-filter"
               [outlined]="true"
@@ -74,6 +75,7 @@
             </p-popover>
           </div>
           <p-button
+            appShortcut="new"
             [appPermission]="'CREATE'"
             label="Nueva Nota de Crédito"
             icon="pi pi-plus"

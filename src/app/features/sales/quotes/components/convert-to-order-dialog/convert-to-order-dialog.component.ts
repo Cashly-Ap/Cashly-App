@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -39,6 +40,7 @@ interface LineWithStockInfo {
   selector: 'app-convert-to-order-dialog',
   standalone: true,
   imports: [
+    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     DecimalPipe,

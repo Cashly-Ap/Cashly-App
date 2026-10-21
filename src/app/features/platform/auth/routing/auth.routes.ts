@@ -15,6 +15,14 @@ export const AUTH_ROUTES: Routes = [
 
 export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
+    path: 'preferences',
+    loadComponent: () =>
+      import('../pages/preferences/preferences-page.component').then(
+        (m) => m.PreferencesPageComponent,
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'security',
     loadComponent: () =>
       import('../pages/security/security-page.component').then((m) => m.SecurityPageComponent),

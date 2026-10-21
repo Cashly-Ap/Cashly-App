@@ -236,6 +236,7 @@
     @if (!loading() && !error() && purchase()) {
       <div class="flex gap-2 justify-end">
         <p-button
+          appShortcut="cancel"
           label="Cancelar"
           icon="pi pi-times"
           [outlined]="true"

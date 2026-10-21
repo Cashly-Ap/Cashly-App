@@ -1,3 +1,11 @@
+import { ShortcutHelpComponent } from '@core/shortcuts/shortcut-help.component';
+import { ModuleNavigatorComponent } from '@core/shortcuts/module-navigator.component';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
+import { DestroyRef } from '@angular/core';
+import { ModuleGroup, moduleGroupFromUrl } from '@core/preferences/module-appearance';
+import { effect, untracked } from '@angular/core';
+import { CompanyService } from '@features/platform/company/company.service';
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import {
   Component,
@@ -28,7 +36,6 @@ import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
-import { ThemeToggleComponent } from '@core/theme/components';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
 import { CatalogPdfModalComponent } from '@features/catalog/products/reporting/components/catalog-pdf-modal/catalog-pdf-modal.component';
@@ -92,7 +99,10 @@ export type ContentMaxWidth =
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutHelpComponent,
     CommonModule,
+    ModuleNavigatorComponent,
+    UserAvatarComponent,
     NgOptimizedImage,
     ButtonModule,
     ToastModule,
@@ -100,7 +110,6 @@ export type ContentMaxWidth =
     Ripple,
     AvatarModule,
     RouterOutlet,
-    ThemeToggleComponent,
     Popover,
     PendingTabsDropdownComponent,
     NotificationBellComponent,
@@ -121,6 +130,9 @@ export type ContentMaxWidth =
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
+  @ViewChild(ModuleNavigatorComponent) moduleNavigator?: ModuleNavigatorComponent;
+  readonly navigationMenuItems = computed(() => this.buildMenuItems((this.currentUser()?.role || this.currentUser()?.type) as UserType));
+  private readonly keyboardShortcuts = inject(KeyboardShortcutService);
   @ViewChild('userMenu') userMenu!: Popover;
   @ViewChild('mobileDrawer') mobileDrawer!: Drawer;
 
@@ -129,6 +141,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private sanitizer = inject(DomSanitizer);
   private catalogPdfApi = inject(CatalogPdfApiService);
   private commercialCatalogPdfApi = inject(CommercialCatalogPdfApiService);
@@ -151,6 +164,38 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   currentUser = this.authService.currentUser;
 
   logoSrc = '/cashly-logo.svg';
+  readonly companyService = inject(CompanyService);
+  readonly companyName = computed(
+    () =>
+      this.companyService.company()?.tradeName ||
+      this.companyService.company()?.legalName ||
+      'Cashly',
+  );
+  readonly canViewCompany = computed(() =>
+    this.authService.hasPermission(BusinessModule.COMPANY, 'READ'),
+  );
+  private readonly brandingUserId = computed(() => this.currentUser()?.id);
+  constructor() {
+    const unregisterNavigation = this.keyboardShortcuts.registerNavigation(() => this.moduleNavigator?.open());
+    inject(DestroyRef).onDestroy(unregisterNavigation);
+    effect((onCleanup) => {
+      const userId = this.brandingUserId();
+      untracked(() => this.companyService.clear());
+      if (!userId) return;
+      const subscription = untracked(() =>
+        this.companyService.load().subscribe({ error: () => undefined }),
+      );
+      onCleanup(() => {
+        subscription.unsubscribe();
+        untracked(() => this.companyService.clear());
+      });
+    });
+  }
+  goToCompany(): void {
+    this.userMenu?.hide();
+    this.closeMobileMenu();
+    void this.router.navigate(['/platform/company']);
+  }
 
   readonly activeModal = signal<
     | 'catalog'
@@ -172,12 +217,12 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertMenuItem(item));
+    return this.buildMenuItems(userType).map((item) => this.convertMenuItem(item, this.menuGroup(item)));
   });
 
   mobileMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertToMobileMenuItem(item));
+    return this.buildMenuItems(userType).map((item) => this.convertToMobileMenuItem(item, this.menuGroup(item)));
   });
 
   maxWidthClass = computed(() => {
@@ -205,7 +250,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationStart))
-      .subscribe(() => {
+      .subscribe((event) => {
+        this.activeModule.set(moduleGroupFromUrl((event as NavigationStart).url));
         this.closeMobileMenu();
       });
   }
@@ -243,7 +289,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
         )
           return false;
         if (
-          item.requiredAction &&
+          item.requiredAction === 'EXPORT' &&
           !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)
         )
           return false;
@@ -263,8 +309,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       );
   }
 
-  private convertMenuItem(item: MenuItem): PrimeMenuItem {
+  private menuGroup(item: MenuItem): ModuleGroup {
+    if (item.routerLink) return moduleGroupFromUrl(item.routerLink);
+    const descendant = item.children?.find((child) => child.routerLink || child.children?.length);
+    return descendant ? this.menuGroup(descendant) : 'platform';
+  }
+
+  private convertMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
+      styleClass: `cashly-module-${group}`,
       label: item.label,
       icon: item.icon,
       routerLink: item.routerLink,
@@ -275,7 +328,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     };
 
     if (item.children) {
-      primeItem.items = item.children.map((child) => this.convertMenuItem(child));
+      primeItem.items = item.children.map((child) => this.convertMenuItem(child, group));
     }
 
     return primeItem;
@@ -511,7 +564,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   goToSecurity(): void {
     this.userMenu?.hide();
-    void this.router.navigate(['/platform/auth/security']);
+    this.router.navigate(['/platform/auth/security']);
+  }
+
+  goToPreferences(): void {
+    this.userMenu?.hide();
+    this.closeMobileMenu();
+    void this.router.navigate(['/platform/auth/preferences']);
   }
 
   goToConfiguration(): void {
@@ -540,8 +599,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.isMobile.set(window.innerWidth < 1024);
   }
 
-  private convertToMobileMenuItem(item: MenuItem): PrimeMenuItem {
+  private convertToMobileMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
+      styleClass: `cashly-module-${group}`,
       label: item.label,
       icon: item.icon,
       visible: item.visible ?? true,
@@ -570,7 +630,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     if (item.children) {
-      primeItem.items = item.children.map((child) => this.convertToMobileMenuItem(child));
+      primeItem.items = item.children.map((child) => this.convertToMobileMenuItem(child, group));
     }
 
     return primeItem;

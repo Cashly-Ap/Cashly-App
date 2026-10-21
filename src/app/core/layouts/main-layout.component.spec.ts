@@ -192,8 +192,8 @@ describe('MainLayoutComponent', () => {
     it('should hide all areas for an operator without business module permissions', () => {
       authServiceMock.hasModulePermission.mockReturnValue(false);
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      expect(items.map((item) => item.label)).toEqual(['Plataforma']);
-      expect(routes(items)).toEqual(['/platform/auth/configuration']);
+      expect(items.map((item) => item.label)).toEqual([]);
+      expect(routes(items)).toEqual([]);
     });
 
     it('should prune recursively empty report areas and preserve actionable leaves', () => {
@@ -201,7 +201,7 @@ describe('MainLayoutComponent', () => {
         (module: BusinessModule) => module === BusinessModule.DOCUMENT_ADMIN,
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      expect(items.map((item) => item.label)).toEqual(['Plataforma']);
+      expect(items.map((item) => item.label)).toEqual([]);
       const action = vi.fn();
       expect(
         component['filterMenuByRole'](
@@ -221,9 +221,9 @@ describe('MainLayoutComponent', () => {
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
-        ['/inventory/warehouses', '/platform/auth/configuration'].sort(),
+        ['/inventory/warehouses'].sort(),
       );
-      expect(items.map((item) => item.label)).toEqual(['Inventario', 'Plataforma']);
+      expect(items.map((item) => item.label)).toEqual(['Inventario']);
     });
 
     it('should expose administration to every custom role with users permission', () => {
@@ -286,6 +286,28 @@ describe('MainLayoutComponent', () => {
           .flatMap((item) => item.children ?? [])
           .some((item) => item.label === 'Reportes'),
       ).toBe(false);
+    });
+  });
+
+  describe('module appearance', () => {
+    it('inherits the module accent for nested desktop and mobile menu entries', () => {
+      const item: MenuItem = {
+        label: 'Sales', icon: 'pi pi-briefcase',
+        children: [
+          { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: '/sales/orders' },
+          { label: 'Reports', icon: 'pi pi-chart-bar', command: vi.fn() },
+        ],
+      };
+      for (const convert of [
+        () => component['convertMenuItem'](item),
+        () => component['convertToMobileMenuItem'](item),
+      ]) {
+        const result = convert();
+        expect(result.styleClass).toBe('cashly-module-sales');
+        expect(result.items?.map((child) => child.styleClass)).toEqual([
+          'cashly-module-sales', 'cashly-module-sales',
+        ]);
+      }
     });
   });
 
@@ -362,6 +384,11 @@ describe('MainLayoutComponent', () => {
 
       expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/configuration']);
       expect(component.userMenu.hide).toHaveBeenCalled();
+    });
+
+    it('should open personal preferences separately from profile', () => {
+      component.goToPreferences();
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/platform/auth/preferences']);
     });
 
     it('should logout and navigate to login', () => {

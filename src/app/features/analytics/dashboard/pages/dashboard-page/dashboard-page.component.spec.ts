@@ -1,19 +1,23 @@
+import { UserPreferencesService, ColorMode } from '@core/preferences/user-preferences.service';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { DashboardApiService } from '@features/analytics/dashboard/services/api/dashboard-api.service';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of } from 'rxjs';
 import { DashboardPageComponent } from '@features/analytics/dashboard/pages/dashboard-page/dashboard-page.component';
 
 describe('Dashboard chart theme', () => {
   const isDarkMode = signal(false);
+  const colorMode = signal<ColorMode>('minimal');
 
   beforeEach(() => {
     isDarkMode.set(false);
+    colorMode.set('minimal');
     TestBed.configureTestingModule({
       providers: [
         { provide: ThemeService, useValue: { isDarkMode } },
+        { provide: UserPreferencesService, useValue: { colorMode } },
         { provide: DashboardApiService, useValue: {} },
       ],
     });
@@ -112,8 +116,37 @@ describe('Dashboard chart theme', () => {
     expect(component.dueChartOptions()?.interaction).toEqual({ intersect: false, mode: 'index' });
 
     isDarkMode.set(false);
+    colorMode.set('minimal');
     TestBed.tick();
 
     expectChartPalette(component, '#525252', '#e5e5e5');
   });
+  it('recolors informative charts with distinct category colors and restores minimal values', () => {
+    const monthlySales = vi.fn(() => of([{ month: '2026-10', total: 100 }]));
+    TestBed.overrideProvider(DashboardApiService, {
+      useValue: {
+        getSummary: () => of(null),
+        getMonthlySales: monthlySales,
+        getTopProducts: () => of([{ id: '1', name: 'A', total: 100 }, { id: '2', name: 'B', total: 200 }]),
+        getTopCustomers: () => of([{ id: '1', name: 'A', total: 100 }, { id: '2', name: 'B', total: 200 }]),
+        getRecentActivity: () => of([]),
+        getInvoiceDueSchedule: () => of([{ dueDate: '2026-11-14', amount: 100 }]),
+      },
+    });
+    const component = createComponent();
+    component.ngOnInit();
+    colorMode.set('informative');
+    expect(component.salesChartData().datasets[0].backgroundColor).toBe('#1d4ed8');
+    const products = component.productsChartData().datasets[0];
+    expect(new Set(products.backgroundColor as string[]).size).toBe(2);
+    expect(products.data).toEqual([100, 200]);
+    expect(component.dueChartData().datasets[0].borderColor).toBe('#15803d');
+    isDarkMode.set(true);
+    expect(component.salesChartData().datasets[0].backgroundColor).toBe('#93c5fd');
+    colorMode.set('minimal');
+    expect(component.productsChartData().datasets[0].backgroundColor).toBe('#f5f5f5');
+    expect(component.productsChartData().datasets[0].data).toEqual([100, 200]);
+    expect(monthlySales).toHaveBeenCalledTimes(1);
+  });
+
 });

@@ -18,10 +18,23 @@
 
       <div
         class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2"
-        aria-label="Cashly"
+        [attr.aria-label]="companyName()"
       >
-        <img ngSrc="/cashly-icon.svg" width="32" height="32" alt="" />
-        <span class="xl:hidden 2xl:inline text-lg font-bold tracking-tight">Cashly</span>
+        @if (companyService.logoUrl(); as logo) {
+          <img
+            [src]="logo"
+            width="120"
+            height="32"
+            class="h-8 w-auto max-w-28 object-contain"
+            [alt]="companyName()"
+            (error)="companyService.clearLogo()"
+          />
+        } @else {
+          <img ngSrc="/cashly-icon.svg" width="32" height="32" alt="" />
+        }
+        <span class="xl:hidden 2xl:inline text-lg font-bold tracking-tight max-w-40 truncate">{{
+          companyName()
+        }}</span>
       </div>
 
       <div class="hidden xl:flex flex-1 min-w-0">
@@ -41,9 +54,9 @@
           aria-label="Abrir menú de usuario"
           class="hidden sm:flex items-center gap-2 p-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
         >
-          <p-avatar
-            [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
-            shape="circle"
+          <app-user-avatar
+            [photoPath]="currentUser()?.photoPath"
+            [name]="currentUser()?.userName || 'Usuario'"
             size="normal"
           />
           <span
@@ -56,9 +69,6 @@
           ></i>
         </button>
 
-        <div class="hidden sm:block">
-          <app-theme-toggle></app-theme-toggle>
-        </div>
       </div>
     </div>
   </div>
@@ -75,14 +85,23 @@
     <ng-template pTemplate="header">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          <img
-            [ngSrc]="logoSrc"
-            alt="Logo Cashly"
-            width="120"
-            height="32"
-            style="width: auto"
-            class="h-8 object-contain"
-          />
+          @if (companyService.logoUrl(); as logo) {
+            <img
+              [src]="logo"
+              [alt]="companyName()"
+              class="h-8 max-w-48 object-contain"
+              (error)="companyService.clearLogo()"
+            />
+            <span class="font-bold truncate">{{ companyName() }}</span>
+          } @else {
+            <img
+              [ngSrc]="logoSrc"
+              alt="Logo Cashly"
+              width="120"
+              height="32"
+              class="h-8 w-auto object-contain"
+            />
+          }
         </div>
         <p-button
           icon="pi pi-times"
@@ -99,9 +118,9 @@
       <div class="flex flex-col h-full">
         <div class="p-4 border-b border-surface-200 dark:border-surface-700">
           <div class="flex items-center gap-3">
-            <p-avatar
-              [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
-              shape="circle"
+            <app-user-avatar
+              [photoPath]="currentUser()?.photoPath"
+              [name]="currentUser()?.userName || 'Usuario'"
               size="large"
             />
             <div>
@@ -123,22 +142,31 @@
         </div>
 
         <div class="border-t border-surface-200 dark:border-surface-700 p-4 space-y-1">
-          <div class="flex items-center justify-between p-3 rounded-lg">
-            <div class="flex items-center gap-3">
-              <i class="pi pi-palette text-surface-600 dark:text-surface-400"></i>
-              <span class="font-medium text-surface-700 dark:text-surface-200">Modo Oscuro</span>
-            </div>
-            <app-theme-toggle></app-theme-toggle>
-          </div>
           <button
             (click)="goToConfiguration(); closeMobileMenu()"
             pRipple
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
           >
-            <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
-            <span class="font-medium">Configuración</span>
+            <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
+            <span class="font-medium">Perfil</span>
           </button>
-          <button (click)="goToSecurity(); closeMobileMenu()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+          @if (canViewCompany()) {
+            <button
+              (click)="goToCompany()"
+              pRipple
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+            >
+              <i class="pi pi-building"></i><span class="font-medium">Empresa</span>
+            </button>
+          }
+          <button (click)="goToPreferences()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+            <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">Configuración</span>
+          </button>
+          <button
+            (click)="goToSecurity(); closeMobileMenu()"
+            pRipple
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+          >
             <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
           </button>
           <button
@@ -161,10 +189,26 @@
         pRipple
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
       >
-        <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
-        <span class="font-medium">Configuración</span>
+        <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
+        <span class="font-medium">Perfil</span>
       </button>
-      <button (click)="goToSecurity()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+      @if (canViewCompany()) {
+        <button
+          (click)="goToCompany()"
+          pRipple
+          class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+        >
+          <i class="pi pi-building"></i><span class="font-medium">Empresa</span>
+        </button>
+      }
+      <button (click)="goToPreferences()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+        <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">Configuración</span>
+      </button>
+      <button
+        (click)="goToSecurity()"
+        pRipple
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+      >
         <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
       </button>
       <button
@@ -250,7 +294,10 @@
     />
   }
 
-  <main class="cashly-workspace pt-20 min-h-screen bg-app-bg-primary">
+  <main [attr.data-module]="activeModule()" class="cashly-workspace pt-20 min-h-screen bg-app-bg-primary">
+    <app-shortcut-help class="block max-w-[1800px] mx-auto px-4 sm:px-6" />
     <router-outlet />
   </main>
 </div>
+
+<app-module-navigator [items]="navigationMenuItems()" />

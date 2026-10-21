@@ -368,7 +368,13 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
+      <p-button
+        appShortcut="cancel"
+        label="Cancelar"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onCancel()"
+      />
       <p-button
         [appRequiredPermissions]="['FINANCES:CREATE', 'INVENTORY:EXECUTE']"
         [appPermission]="'EXECUTE'"

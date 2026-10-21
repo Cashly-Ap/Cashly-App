@@ -26,6 +26,7 @@
                   (search)="onSearch($event)"
                 />
                 <p-button
+                  appShortcut="filter"
                   icon="pi pi-filter"
                   [outlined]="true"
                   severity="secondary"
@@ -64,6 +65,7 @@
                 </p-popover>
               </div>
               <p-button
+                appShortcut="new"
                 [appPermission]="'CREATE'"
                 label="Nuevo Rol"
                 icon="pi pi-plus"

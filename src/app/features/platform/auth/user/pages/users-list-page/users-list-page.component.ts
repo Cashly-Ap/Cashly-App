@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '../../models/enums/business-module.enum';
 import { AuthorizationService } from '../../../authorization/services/authorization.service';
@@ -51,6 +52,7 @@ import {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     UserAvatarComponent,
     PermissionDirective,
     CommonModule,

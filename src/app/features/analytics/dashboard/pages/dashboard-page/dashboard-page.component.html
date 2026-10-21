@@ -28,6 +28,7 @@
   @if (summary()) {
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
       <div
+        data-module="sales"
         class="dashboard-metric-primary dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <div class="flex items-center justify-between mb-3">
@@ -46,6 +47,7 @@
       </div>
 
       <div
+        data-module="sales"
         class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <div class="flex items-center justify-between mb-3">
@@ -64,6 +66,7 @@
       </div>
 
       <div
+        data-module="finance"
         class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <div class="flex items-center justify-between mb-3">
@@ -84,6 +87,7 @@
       </div>
 
       <div
+        data-module="inventory"
         class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <div class="flex items-center justify-between mb-3">
@@ -104,6 +108,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
       <div
+        data-module="sales"
         class="dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-6">
@@ -126,6 +131,7 @@
       </div>
 
       <div
+        data-module="catalog"
         class="dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
       >
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-6">
@@ -151,6 +157,7 @@
     </div>
 
     <div
+        data-module="finance"
       class="dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6 mb-4"
     >
       <div class="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -217,6 +224,7 @@
       }
     </div>
     <div
+        data-module="partners"
       class="dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6 mb-4"
     >
       <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-6">
@@ -239,6 +247,7 @@
     </div>
 
     <div
+        data-module="analytics"
       class="dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
     >
       <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-6">
@@ -261,10 +270,7 @@
                   <td class="py-3">
                     <span
                       class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
-                      [class.bg-blue-100]="item.type === 'invoice'"
-                      [class.text-blue-700]="item.type === 'invoice'"
-                      [class.bg-purple-100]="item.type === 'order'"
-                      [class.text-purple-700]="item.type === 'order'"
+                      [attr.data-module]="item.type === 'invoice' ? 'finance' : 'sales'"
                     >
                       {{ activityLabel(item.type) }}
                     </span>
@@ -293,10 +299,7 @@
               <div class="flex items-center justify-between mb-3">
                 <span
                   class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
-                  [class.bg-blue-100]="item.type === 'invoice'"
-                  [class.text-blue-700]="item.type === 'invoice'"
-                  [class.bg-purple-100]="item.type === 'order'"
-                  [class.text-purple-700]="item.type === 'order'"
+                  [attr.data-module]="item.type === 'invoice' ? 'finance' : 'sales'"
                 >
                   {{ activityLabel(item.type) }}
                 </span>

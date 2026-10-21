@@ -1,3 +1,4 @@
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,6 +34,7 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ShortcutDirective,
     CommonModule,
     FormsModule,
     DatePipe,

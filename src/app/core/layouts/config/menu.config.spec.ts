@@ -81,7 +81,6 @@ describe('ERP navigation', () => {
         '/platform/users',
         '/platform/roles',
         '/platform/departments',
-        '/platform/auth/configuration',
         '/analytics/reports/inventory',
       ].sort(),
     );
@@ -112,4 +111,6 @@ describe('ERP navigation', () => {
       items.find((item) => item.command === callbacks.openCommercialCatalogModal)?.requiredModule,
     ).toBe(BusinessModule.CATALOG);
   });
+
+
 });
