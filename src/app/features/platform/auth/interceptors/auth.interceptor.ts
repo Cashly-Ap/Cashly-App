@@ -10,7 +10,10 @@ import { AUTH_SESSION_MESSAGES } from '@features/platform/auth/messages/error-me
 
 const isAuthEndpoint = (url: string): boolean => {
   return (
-    url.includes('/auth/login') || url.includes('/auth/register') || url.includes('/auth/refresh')
+    url.includes('/auth/mfa') ||
+    url.includes('/auth/login') ||
+    url.includes('/auth/register') ||
+    url.includes('/auth/refresh')
   );
 };
 

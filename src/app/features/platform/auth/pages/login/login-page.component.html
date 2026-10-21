@@ -91,66 +91,105 @@
         Ingresa tus credenciales para acceder
       </p>
 
-      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-7">
-        <div class="flex flex-col gap-3">
-          <label for="email" class="text-xs font-semibold uppercase tracking-[0.12em]">Email</label>
+      @if (challengeToken()) {
+        <form [formGroup]="codeForm" (ngSubmit)="verifyMfa()" class="flex flex-col gap-5">
+          <h2 class="text-xl font-semibold">Verificación en dos pasos</h2>
+          <p class="text-sm text-surface-500">
+            Introduce el código de Microsoft Authenticator o Google Authenticator. También puedes
+            usar un código de recuperación una sola vez. Si acabas de activar MFA, espera al
+            siguiente código.
+          </p>
+          <label for="mfa-code" class="text-xs font-semibold uppercase tracking-[0.12em]"
+            >Código de verificación o recuperación</label
+          >
           <input
             pInputText
-            type="email"
-            id="email"
-            formControlName="email"
-            placeholder="tu@email.com"
-            autocomplete="username"
-            class="w-full"
-            [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
-            [attr.aria-describedby]="
-              form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null
-            "
-            [ngClass]="{
-              'ng-invalid ng-dirty': form.controls.email.invalid && form.controls.email.touched,
-            }"
+            id="mfa-code"
+            formControlName="code"
+            autocomplete="one-time-code"
+            maxlength="64"
           />
-          @if (form.controls.email.invalid && form.controls.email.touched) {
-            <small id="email-error" class="text-red-600 dark:text-red-400" aria-live="polite">{{
-              getEmailError()
-            }}</small>
-          }
-        </div>
-
-        <div class="flex flex-col gap-3">
-          <label for="password" class="text-xs font-semibold uppercase tracking-[0.12em]"
-            >Contraseña</label
-          >
-          <p-password
-            inputId="password"
-            formControlName="password"
-            placeholder="••••••••"
-            autocomplete="current-password"
-            [toggleMask]="true"
-            [feedback]="false"
-            styleClass="w-full"
-            inputStyleClass="w-full"
-          />
-          @if (form.controls.password.invalid && form.controls.password.touched) {
-            <small class="text-red-600 dark:text-red-400" aria-live="polite"
-              >La contraseña es requerida</small
-            >
-          }
-        </div>
-
-        <div class="pt-2">
           <p-button
             type="submit"
-            label="Iniciar Sesión"
+            label="Verificar e iniciar sesión"
             icon="pi pi-arrow-right"
             iconPos="right"
-            [loading]="authService.loading()"
-            [disabled]="form.invalid"
             styleClass="w-full"
-            size="large"
+            [loading]="authService.loading()"
+            [disabled]="codeForm.invalid"
           />
-        </div>
-      </form>
+          <button
+            type="button"
+            (click)="restartLogin()"
+            class="text-sm font-medium text-surface-500 underline underline-offset-4 transition-colors hover:text-surface-900 dark:hover:text-surface-0"
+          >
+            Volver al inicio de sesión
+          </button>
+        </form>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-7">
+          <div class="flex flex-col gap-3">
+            <label for="email" class="text-xs font-semibold uppercase tracking-[0.12em]"
+              >Email</label
+            >
+            <input
+              pInputText
+              type="email"
+              id="email"
+              formControlName="email"
+              placeholder="tu@email.com"
+              autocomplete="username"
+              class="w-full"
+              [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
+              [attr.aria-describedby]="
+                form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null
+              "
+              [ngClass]="{
+                'ng-invalid ng-dirty': form.controls.email.invalid && form.controls.email.touched,
+              }"
+            />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <small id="email-error" class="text-red-600 dark:text-red-400" aria-live="polite">{{
+                getEmailError()
+              }}</small>
+            }
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <label for="password" class="text-xs font-semibold uppercase tracking-[0.12em]"
+              >Contraseña</label
+            >
+            <p-password
+              inputId="password"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (form.controls.password.invalid && form.controls.password.touched) {
+              <small class="text-red-600 dark:text-red-400" aria-live="polite"
+                >La contraseña es requerida</small
+              >
+            }
+          </div>
+
+          <div class="pt-2">
+            <p-button
+              type="submit"
+              label="Iniciar Sesión"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              [loading]="authService.loading()"
+              [disabled]="form.invalid"
+              styleClass="w-full"
+              size="large"
+            />
+          </div>
+        </form>
+      }
     </div>
 
     <div

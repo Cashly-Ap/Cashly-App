@@ -12,7 +12,10 @@ import {
   ChangeCommissionDeductionRequest,
 } from '@features/platform/auth/models/interfaces/auth-request.interface';
 import { UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
-import { AuthenticationResponse } from '@features/platform/auth/models/interfaces/auth-response.interface';
+import {
+  AuthenticationResponse,
+  LoginResponse,
+} from '@features/platform/auth/models/interfaces/auth-response.interface';
 
 const AUTH_API_ROUTES = {
   REGISTER: '/auth/register',
@@ -33,11 +36,15 @@ export class AuthApiService {
     return this.http.post<UserResponse>(`${this.baseUrl}${AUTH_API_ROUTES.REGISTER}`, request);
   }
 
-  login(request: LoginRequest): Observable<AuthenticationResponse> {
-    return this.http.post<AuthenticationResponse>(
-      `${this.baseUrl}${AUTH_API_ROUTES.LOGIN}`,
-      request,
-    );
+  login(request: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.baseUrl}${AUTH_API_ROUTES.LOGIN}`, request);
+  }
+
+  verifyMfa(challengeToken: string, code: string): Observable<AuthenticationResponse> {
+    return this.http.post<AuthenticationResponse>(`${this.baseUrl}/auth/mfa/verify`, {
+      challengeToken,
+      code,
+    });
   }
 
   refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {

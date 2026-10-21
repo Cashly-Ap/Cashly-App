@@ -20,6 +20,7 @@ describe('AuthService', () => {
   let mockApiService: {
     register: ReturnType<typeof vi.fn>;
     login: ReturnType<typeof vi.fn>;
+    verifyMfa: ReturnType<typeof vi.fn>;
     refresh: ReturnType<typeof vi.fn>;
     logout: ReturnType<typeof vi.fn>;
     changeUsername: ReturnType<typeof vi.fn>;
@@ -52,6 +53,7 @@ describe('AuthService', () => {
     mockApiService = {
       register: vi.fn(),
       login: vi.fn(),
+      verifyMfa: vi.fn(),
       refresh: vi.fn(),
       logout: vi.fn(),
       changeUsername: vi.fn(),
@@ -167,6 +169,50 @@ describe('AuthService', () => {
           expect(service.loading()).toBe(false);
         },
       });
+    });
+  });
+
+  describe('MFA login', () => {
+    it('explains the fifteen minute lockout after too many attempts', () => {
+      mockApiService.verifyMfa.mockReturnValue(
+        throwError(() => ({
+          status: 401,
+          error: { message: 'Too many MFA attempts; try again in 15 minutes' },
+        })),
+      );
+      service.verifyMfa('challenge', '123456').subscribe({ error: () => undefined });
+      expect(service.error()).toBe(
+        'Demasiados intentos. Espera 15 minutos antes de volver a intentarlo.',
+      );
+      expect(service.isAuthenticated()).toBe(false);
+    });
+
+    it('keeps the user unauthenticated and stores no tokens during the challenge', () => {
+      mockApiService.login.mockReturnValue(
+        of({ mfaRequired: true, challengeToken: 'challenge', expiresIn: 300 }),
+      );
+      const access = vi.spyOn(service, 'refreshAccess');
+      service.login({ email: 'test@example.com', password: 'password' }).subscribe();
+      expect(service.isAuthenticated()).toBe(false);
+      expect(localStorage.getItem('accessToken')).toBeNull();
+      expect(access).not.toHaveBeenCalled();
+      expect(service.loading()).toBe(false);
+    });
+
+    it('authenticates only after successful second factor verification', () => {
+      mockApiService.verifyMfa.mockReturnValue(of(mockAuthResponse));
+      service.verifyMfa('challenge', '123456').subscribe();
+      expect(mockApiService.verifyMfa).toHaveBeenCalledWith('challenge', '123456');
+      expect(service.isAuthenticated()).toBe(true);
+      expect(localStorage.getItem('accessToken')).toBe('mock-access-token');
+    });
+
+    it('does not save authentication after an invalid second factor', () => {
+      mockApiService.verifyMfa.mockReturnValue(throwError(() => ({ status: 401 })));
+      service.verifyMfa('challenge', 'wrong').subscribe({ error: () => undefined });
+      expect(service.isAuthenticated()).toBe(false);
+      expect(service.error()).toContain('Código incorrecto');
+      expect(service.loading()).toBe(false);
     });
   });
 

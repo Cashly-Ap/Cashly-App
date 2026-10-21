@@ -138,6 +138,9 @@
             <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
             <span class="font-medium">Configuración</span>
           </button>
+          <button (click)="goToSecurity(); closeMobileMenu()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+            <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
+          </button>
           <button
             (click)="logout()"
             pRipple
@@ -160,6 +163,9 @@
       >
         <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
         <span class="font-medium">Configuración</span>
+      </button>
+      <button (click)="goToSecurity()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
+        <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
       </button>
       <button
         (click)="logout()"

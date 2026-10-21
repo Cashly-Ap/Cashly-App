@@ -1,3 +1,4 @@
+import { mfaErrorMessage } from '../../messages/mfa-error-message';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, switchMap, map } from 'rxjs';
 import { HttpClient, HttpContext } from '@angular/common/http';
@@ -22,7 +23,11 @@ import {
   ChangeCommissionDeductionRequest,
 } from '@features/platform/auth/models/interfaces/auth-request.interface';
 import { UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
-import { AuthenticationResponse } from '@features/platform/auth/models/interfaces/auth-response.interface';
+import {
+  AuthenticationResponse,
+  LoginResponse,
+  requiresMfa,
+} from '@features/platform/auth/models/interfaces/auth-response.interface';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 @Injectable({ providedIn: 'root' })
@@ -69,22 +74,39 @@ export class AuthService {
     );
   }
 
-  login(request: LoginRequest): Observable<AuthenticationResponse> {
+  login(request: LoginRequest): Observable<LoginResponse> {
     this.loading.set(true);
     this.error.set(null);
-
     return this.apiService.login(request).pipe(
-      tap({
-        next: (response) => {
-          this.setAuthState(response);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          this.error.set(this.getErrorMessage(err));
-          this.loading.set(false);
-        },
+      switchMap((response) => {
+        if (requiresMfa(response)) {
+          this.clearAuthState();
+          return of(response);
+        }
+        this.setAuthState(response);
+        return this.refreshAccess().pipe(map(() => response));
       }),
+      tap({ error: (err) => this.error.set(this.getErrorMessage(err)) }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  verifyMfa(challengeToken: string, code: string): Observable<AuthenticationResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+    return this.apiService.verifyMfa(challengeToken, code).pipe(
+      tap((response) => this.setAuthState(response)),
       switchMap((response) => this.refreshAccess().pipe(map(() => response))),
+      tap({
+        error: (error: unknown) =>
+          this.error.set(
+            mfaErrorMessage(
+              error,
+              'Código incorrecto o verificación caducada. Inténtalo de nuevo o vuelve a iniciar sesión.',
+            ),
+          ),
+      }),
+      finalize(() => this.loading.set(false)),
     );
   }
 

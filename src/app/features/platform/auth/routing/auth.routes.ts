@@ -15,6 +15,12 @@ export const AUTH_ROUTES: Routes = [
 
 export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
+    path: 'security',
+    loadComponent: () =>
+      import('../pages/security/security-page.component').then((m) => m.SecurityPageComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'configuration',
     loadComponent: () =>
       import('@features/platform/auth/pages').then((m) => m.ConfigurationPageComponent),

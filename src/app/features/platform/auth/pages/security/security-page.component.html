@@ -1,0 +1,185 @@
+<section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+  <app-page-header
+    title="Seguridad"
+    subtitle="Protege tu cuenta con la verificación en dos pasos."
+  />
+  @if (error()) {
+    <p role="alert" class="rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-300">
+      {{ error() }}
+    </p>
+  }
+  @if (recoveryCodes().length) {
+    <app-details-card>
+      <app-details-card-header title="MFA activado. Guarda tus códigos de recuperación" />
+      <div class="flex flex-col gap-5 p-4 sm:p-6">
+        <p>
+          Solo se muestran una vez. Guarda estos códigos en un lugar seguro. Cada código permite
+          acceder una sola vez si pierdes tu autenticador.
+        </p>
+        <ul class="grid max-w-2xl grid-cols-1 gap-3 font-mono text-sm sm:grid-cols-2">
+          @for (code of recoveryCodes(); track code) {
+            <li
+              class="rounded-xl border border-surface-200 bg-surface-50 px-4 py-3 dark:border-surface-700 dark:bg-surface-800"
+            >
+              {{ code }}
+            </li>
+          }
+        </ul>
+        <div class="flex flex-wrap gap-3">
+          <p-button
+            [label]="copied() ? 'Copiados' : 'Copiar códigos'"
+            (onClick)="copyCodes()"
+            [outlined]="true"
+          />
+          <p-button
+            label="Descargar códigos"
+            ariaLabel="Descargar códigos"
+            icon="pi pi-download"
+            (onClick)="downloadCodes()"
+            [outlined]="true"
+          />
+        </div>
+        <p class="text-sm text-surface-500">
+          Por seguridad, tendrás que iniciar sesión de nuevo con MFA.
+        </p>
+        <p-button label="Ya los guardé. Iniciar sesión" (onClick)="finish()" />
+      </div>
+    </app-details-card>
+  } @else if (status(); as state) {
+    <app-details-card>
+      <app-details-card-header
+        title="Aplicación de autenticación"
+        subtitle="Compatible con Microsoft Authenticator, Google Authenticator y otras aplicaciones TOTP."
+      />
+      <div class="flex flex-col gap-5 p-4 sm:p-6">
+        <p class="font-medium">Estado: {{ state.enabled ? 'Activada' : 'Desactivada' }}</p>
+        @if (state.enabled) {
+          <p class="text-sm text-surface-500">
+            Códigos de recuperación disponibles: {{ state.recoveryCodesRemaining }}
+          </p>
+          <form
+            [formGroup]="disableForm"
+            (ngSubmit)="disable()"
+            class="flex max-w-xl flex-col gap-4"
+          >
+            <h3 class="font-semibold">Desactivar verificación en dos pasos</h3>
+            <label for="disable-password" class="text-sm font-medium">Contraseña actual</label>
+            <input
+              pInputText
+              id="disable-password"
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <label for="disable-code" class="text-sm font-medium"
+              >Código del autenticador o código de recuperación</label
+            >
+            <input
+              pInputText
+              id="disable-code"
+              formControlName="code"
+              autocomplete="one-time-code"
+              maxlength="64"
+            />
+            <p class="text-sm text-surface-500">
+              Al desactivarla, tendrás que iniciar sesión de nuevo.
+            </p>
+            <p-button
+              type="submit"
+              label="Desactivar MFA"
+              ariaLabel="Desactivar MFA"
+              severity="danger"
+              icon="pi pi-shield"
+              [loading]="busy()"
+              [disabled]="disableForm.invalid"
+            />
+          </form>
+        } @else if (setup(); as enrollment) {
+          <p>
+            Escanea este QR desde tu autenticador añadiendo una cuenta. La configuración caduca en
+            10 minutos.
+          </p>
+          @if (qrCode()) {
+            <img
+              [src]="qrCode()"
+              alt="QR para configurar el autenticador de Cashly"
+              width="240"
+              height="240"
+            />
+          }
+          <p class="text-sm">
+            Si no puedes escanearlo, introduce esta clave manualmente como una cuenta basada en
+            tiempo:
+          </p>
+          <p
+            class="max-w-xl break-all rounded-xl border border-surface-200 bg-surface-50 p-4 font-mono text-sm text-surface-900 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-0"
+          >
+            {{ enrollment.secret }}
+          </p>
+          <form [formGroup]="codeForm" (ngSubmit)="enable()" class="flex max-w-xl flex-col gap-4">
+            <label for="enable-code" class="text-sm font-medium">Código de seis dígitos</label>
+            <input
+              pInputText
+              id="enable-code"
+              formControlName="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+            />
+            <p-button
+              type="submit"
+              label="Confirmar y activar MFA"
+              [loading]="busy()"
+              [disabled]="codeForm.invalid"
+            />
+            <p-button
+              label="Cancelar configuración"
+              [outlined]="true"
+              (onClick)="cancelSetup()"
+              [disabled]="busy()"
+            />
+          </form>
+        } @else {
+          <form
+            [formGroup]="passwordForm"
+            (ngSubmit)="startSetup()"
+            class="flex max-w-xl flex-col gap-4"
+          >
+            <label for="setup-password" class="text-sm font-medium"
+              >Confirma tu contraseña actual</label
+            >
+            <input
+              pInputText
+              id="setup-password"
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <p-button
+              type="submit"
+              label="Configurar autenticador"
+              ariaLabel="Configurar autenticador"
+              icon="pi pi-shield"
+              [loading]="busy()"
+              [disabled]="passwordForm.invalid"
+            />
+          </form>
+        }
+      </div>
+    </app-details-card>
+  } @else {
+    <div
+      class="cashly-panel flex flex-col items-start gap-4 p-4 sm:p-6"
+      role="status"
+      aria-live="polite"
+    >
+      <p>Cargando seguridad…</p>
+      <p-button
+        label="Reintentar"
+        icon="pi pi-refresh"
+        [outlined]="true"
+        (onClick)="loadStatus()"
+      />
+    </div>
+  }
+</section>

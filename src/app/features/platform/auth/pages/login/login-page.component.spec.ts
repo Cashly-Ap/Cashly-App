@@ -20,6 +20,7 @@ describe('LoginPageComponent', () => {
   let fixture: ComponentFixture<LoginPageComponent>;
   let authServiceMock: {
     login: ReturnType<typeof vi.fn>;
+    verifyMfa: ReturnType<typeof vi.fn>;
     hasPermission: ReturnType<typeof vi.fn>;
     isAuthenticated: ReturnType<typeof vi.fn>;
     ensureAccess: ReturnType<typeof vi.fn>;
@@ -50,9 +51,32 @@ describe('LoginPageComponent', () => {
     entity: mockUser,
   };
 
+  it('switches to MFA without navigating or retaining the password', () => {
+    authServiceMock.login.mockReturnValue(
+      of({ mfaRequired: true, challengeToken: 'challenge', expiresIn: 300 }),
+    );
+    component.form.setValue({ email: 'test@example.com', password: 'password123' });
+    component.onSubmit();
+    fixture.detectChanges();
+    expect(component.challengeToken()).toBe('challenge');
+    expect(component.form.controls.password.value).toBeNull();
+    expect(routerMock.navigate).not.toHaveBeenCalled();
+    expect(fixture.nativeElement.querySelector('#mfa-code')).toBeTruthy();
+  });
+
+  it('accepts a recovery code in the second step and navigates after verification', () => {
+    component.challengeToken.set('challenge');
+    component.codeForm.setValue({ code: 'recovery-code' });
+    authServiceMock.verifyMfa.mockReturnValue(of(mockAuthResponse));
+    component.verifyMfa();
+    expect(authServiceMock.verifyMfa).toHaveBeenCalledWith('challenge', 'recovery-code');
+    expect(routerMock.navigate).toHaveBeenCalled();
+  });
+
   beforeEach(async () => {
     authServiceMock = {
       login: vi.fn(),
+      verifyMfa: vi.fn(),
       hasPermission: vi.fn().mockReturnValue(true),
       isAuthenticated: vi.fn().mockReturnValue(true),
       ensureAccess: vi.fn().mockReturnValue(of({})),
