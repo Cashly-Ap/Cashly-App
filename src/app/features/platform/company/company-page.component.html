@@ -34,12 +34,41 @@
                   label="Logotipo"
                   [control]="photo"
                   accept="image/png,image/jpeg"
-                  [maxFileSize]="5000000"
-                  helpText="PNG o JPG. Máximo 5 MB."
+                  [optimizeImage]="true"
+                  helpText="PNG o JPG. La imagen se optimiza automáticamente antes de guardarla."
+                  (optimizingChange)="logoOptimizing.set($event)"
                   [previewUrl]="removeLogo() ? null : service.logoUrl()"
                   (fileSelected)="removeLogo.set(false)"
                   (deleteExistingPhoto)="removeLogo.set(true)"
                 />
+                <app-file-input
+                  class="md:col-span-full"
+                  label="Logotipo de documentos PDF"
+                  [control]="pdfPhoto"
+                  (optimizingChange)="pdfLogoOptimizing.set($event)"
+                  accept="image/png,image/jpeg"
+                  [optimizeImage]="true"
+                  helpText="Para facturas, presupuestos, pedidos y todos los PDF. PNG o JPG. La imagen se optimiza automáticamente. Se recortan los márgenes blancos o transparentes y se ajusta sin deformar. Sin imagen propia se usa el logotipo de empresa; si tampoco existe, aparece «Logotipo»."
+                  [previewUrl]="removePdfLogo() ? null : service.pdfLogoUrl()"
+                  (fileSelected)="removePdfLogo.set(false)"
+                  (deleteExistingPhoto)="removePdfLogo.set(true)"
+                />
+                <div class="md:col-span-full flex flex-col sm:flex-row sm:items-center gap-3">
+                  <p-button
+                    label="Vista previa PDF"
+                    ariaLabel="Vista previa PDF"
+                    icon="pi pi-file-pdf"
+                    [outlined]="true"
+                    [loading]="previewLoading()"
+                    [disabled]="
+                      saving() || previewLoading() || logoOptimizing() || pdfLogoOptimizing()
+                    "
+                    (onClick)="previewPdf()"
+                  />
+                  <p class="text-sm text-surface-500">
+                    Comprueba el logotipo en un documento de ejemplo antes de guardar.
+                  </p>
+                </div>
                 @for (field of fields; track field.key) {
                   <app-text-input
                     [label]="field.label"
@@ -66,10 +95,18 @@
           submitLabel="Guardar cambios"
           cancelLabel="Cancelar"
           [loading]="saving()"
-          [disabled]="form.invalid || saving()"
+          [disabled]="form.invalid || saving() || logoOptimizing() || pdfLogoOptimizing()"
           (cancel)="cancel()"
         />
       </app-form-card>
     </form>
   }
 </app-form-container>
+
+<app-pdf-viewer-modal
+  [visible]="previewVisible()"
+  [loading]="previewLoading()"
+  [pdfUrl]="previewUrl()"
+  title="Vista previa del logotipo en PDF"
+  (visibleChange)="closePreview()"
+/>

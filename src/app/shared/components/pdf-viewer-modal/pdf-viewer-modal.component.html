@@ -1,5 +1,6 @@
 <p-dialog
   [visible]="visible()"
+  closeAriaLabel="Cerrar vista previa"
   (visibleChange)="visibleChange.emit($event)"
   [modal]="true"
   [style]="{ width: '90vw', 'max-width': '1200px' }"
@@ -12,7 +13,13 @@
       <p-progressSpinner />
     </div>
   } @else if (pdfUrl()) {
-    <iframe [src]="pdfUrl()" width="100%" height="600px" style="border: none"></iframe>
+    <iframe
+      title="Documento PDF"
+      [src]="pdfUrl()"
+      width="100%"
+      height="600px"
+      style="border: none"
+    ></iframe>
   } @else {
     <div class="flex justify-center items-center h-64 text-surface-500">
       <p>Seleccione los filtros y cargue el PDF.</p>
