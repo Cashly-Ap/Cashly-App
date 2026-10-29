@@ -16,9 +16,11 @@
         />
       </div>
 
-      <div
-        class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2"
-        [attr.aria-label]="companyName()"
+      <button
+        type="button"
+        class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2 cursor-pointer border-0 bg-transparent p-0 text-inherit rounded focus-visible:outline-2 focus-visible:outline-offset-4"
+        [attr.aria-label]="companyName() + ' — Ir al dashboard'"
+        (click)="goToDashboard()"
       >
         @if (companyService.logoUrl(); as logo) {
           <img
@@ -35,7 +37,7 @@
         <span class="xl:hidden 2xl:inline text-lg font-bold tracking-tight max-w-40 truncate">{{
           companyName()
         }}</span>
-      </div>
+      </button>
 
       <div class="hidden xl:flex flex-1 min-w-0">
         <p-menubar
