@@ -45,13 +45,13 @@ describe('authorizedDestination', () => {
     );
   });
 
-  it('allows consolidated reporting when both required permissions exist', () => {
+  it('returns to warehouses instead of the removed report page', () => {
     expect(
       authorizedDestination(
         auth([BusinessModule.DOCUMENT_ADMIN, BusinessModule.INVENTORY]),
         'analytics',
       ),
-    ).toBe('/analytics/reports/inventory');
+    ).toBe('/inventory/warehouses');
   });
 
   it('allows a custom role with USERS permission to open users', () => {

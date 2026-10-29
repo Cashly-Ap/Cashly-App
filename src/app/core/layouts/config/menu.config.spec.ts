@@ -101,7 +101,6 @@ describe('ERP navigation', () => {
         '/platform/users',
         '/platform/roles',
         '/platform/departments',
-        '/analytics/reports/inventory',
       ].sort(),
     );
     expect(new Set(routes).size).toBe(routes.length);
@@ -110,13 +109,21 @@ describe('ERP navigation', () => {
   it('places reports directly inside their owning module without report groups', () => {
     const menu = buildMenuItems(createCallbacks());
     const all = flatten(menu);
-    expect(all.some((item) => item.label === 'Reportes')).toBe(false);
+    expect(all.filter((item) => item.label === 'Reportes')).toHaveLength(1);
+    const warehouseReports = all
+      .find((item) => item.label === 'Almacenes')
+      ?.children?.find((item) => item.label === 'Reportes');
+    expect(warehouseReports?.children?.map((item) => item.label)).toEqual(['Stock', 'Movimientos']);
+    expect(warehouseReports?.children?.every((item) => !!item.command && !item.routerLink)).toBe(
+      true,
+    );
+    expect(all.some((item) => item.routerLink === '/analytics/reports/inventory')).toBe(false);
     for (const [owner, reports] of [
       ['Presupuestos', ['Reporte de Presupuestos PDF']],
       ['Pedidos', ['Reporte de Pedidos PDF']],
       ['Compras', ['Reporte de Compras PDF']],
       ['Productos', ['Reporte de Productos PDF', 'Catálogo Comercial PDF']],
-      ['Almacenes', ['Stock PDF', 'Movimientos PDF', 'Inventario consolidado']],
+      ['Almacenes', ['Reportes']],
       ['Facturas', ['Reporte de Facturas PDF']],
       ['Caja', ['Reportes de Caja']],
       ['Cuentas por cobrar', ['Cuentas por Cobrar PDF']],

@@ -137,27 +137,25 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         [
           withReports(
             page('Almacenes', 'pi pi-database', '/inventory/warehouses'),
-            report(
-              'Stock PDF',
-              'pi pi-warehouse',
-              callbacks.openStockModal,
+            group(
+              'Reportes',
+              'pi pi-chart-bar',
+              [
+                report(
+                  'Stock',
+                  'pi pi-warehouse',
+                  callbacks.openStockModal,
+                  BusinessModule.INVENTORY,
+                ),
+                report(
+                  'Movimientos',
+                  'pi pi-arrow-right-arrow-left',
+                  callbacks.openMovementsModal,
+                  BusinessModule.INVENTORY,
+                ),
+              ],
               BusinessModule.INVENTORY,
             ),
-            report(
-              'Movimientos PDF',
-              'pi pi-arrow-right-arrow-left',
-              callbacks.openMovementsModal,
-              BusinessModule.INVENTORY,
-            ),
-            {
-              ...page(
-                'Inventario consolidado',
-                'pi pi-box',
-                '/analytics/reports/inventory',
-                BusinessModule.INVENTORY,
-              ),
-              requiredPermissions: ['DOCUMENT_ADMIN:READ'],
-            },
           ),
         ],
         BusinessModule.INVENTORY,

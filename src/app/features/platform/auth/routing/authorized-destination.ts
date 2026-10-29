@@ -18,10 +18,7 @@ const destinations: Destination[] = [
   { path: '/finance/billing/invoices', modules: [BusinessModule.FINANCE] },
   { path: '/finance/billing/credit-notes', modules: [BusinessModule.FINANCE] },
   { path: '/finance/treasury/cash-register', modules: [BusinessModule.FINANCE] },
-  {
-    path: '/analytics/reports/inventory',
-    modules: [BusinessModule.DOCUMENT_ADMIN, BusinessModule.INVENTORY],
-  },
+
   { path: '/platform/roles', modules: [BusinessModule.ROLES] },
   { path: '/platform/departments', modules: [BusinessModule.DEPARTMENTS] },
   { path: '/platform/users', modules: [BusinessModule.USERS] },

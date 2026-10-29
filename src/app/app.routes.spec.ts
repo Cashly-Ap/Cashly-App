@@ -25,7 +25,6 @@ const aliases = [
   ['customers', 'partners/customers'],
   ['suppliers', 'partners/suppliers'],
   ['dashboard', 'analytics/dashboard'],
-  ['reports', 'analytics/reports'],
   ['users', 'platform/users'],
   ['auth', 'platform/auth'],
 ] as const;
@@ -84,11 +83,7 @@ describe('Legacy ERP route redirects', () => {
       '/finance/treasury/cash-register/history?closed=true#sessions',
       'finance/treasury/cash-register',
     ],
-    [
-      '/reports/inventory?warehouse=main#stock',
-      '/analytics/reports/inventory?warehouse=main#stock',
-      'analytics/reports',
-    ],
+
     [
       '/auth/login?returnUrl=%2Fquotes#login',
       '/platform/auth/login?returnUrl=%2Fquotes#login',

@@ -201,8 +201,8 @@ describe('MainLayoutComponent', () => {
           [
             'Reporte de Productos PDF',
             'Catálogo Comercial PDF',
-            'Stock PDF',
-            'Movimientos PDF',
+            'Stock',
+            'Movimientos',
             'Reporte de Pedidos PDF',
             'Reporte de Facturas PDF',
             'Reporte de Presupuestos PDF',

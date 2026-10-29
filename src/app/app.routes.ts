@@ -55,7 +55,6 @@ export const routes: Routes = [
   legacyRoute('customers', 'partners/customers'),
   legacyRoute('suppliers', 'partners/suppliers'),
   legacyRoute('dashboard', 'analytics/dashboard'),
-  legacyRoute('reports', 'analytics/reports'),
   legacyRoute('users', 'platform/users'),
   legacyRoute('auth', 'platform/auth'),
   {
@@ -81,14 +80,22 @@ export const routes: Routes = [
         children: [
           areaEntry('platform'),
           {
-            path: 'company/edit', canActivate: [authGuard, modulePermissionGuard],
+            path: 'company/edit',
+            canActivate: [authGuard, modulePermissionGuard],
             data: { module: BusinessModule.COMPANY, action: 'UPDATE' },
-            loadComponent: () => import('@features/platform/company/company-page.component').then(m => m.CompanyPageComponent),
+            loadComponent: () =>
+              import('@features/platform/company/company-page.component').then(
+                (m) => m.CompanyPageComponent,
+              ),
           },
           {
-            path: 'company', canActivate: [authGuard, modulePermissionGuard],
+            path: 'company',
+            canActivate: [authGuard, modulePermissionGuard],
             data: { module: BusinessModule.COMPANY, action: 'READ' },
-            loadComponent: () => import('@features/platform/company/company-details.component').then(m => m.CompanyDetailsComponent),
+            loadComponent: () =>
+              import('@features/platform/company/company-details.component').then(
+                (m) => m.CompanyDetailsComponent,
+              ),
           },
           {
             path: 'auth',
@@ -128,13 +135,6 @@ export const routes: Routes = [
               import(
                 '@features/analytics/dashboard/pages/dashboard-page/dashboard-page.component'
               ).then((m) => m.DashboardPageComponent),
-          },
-          {
-            path: 'reports',
-            canActivate: [authGuard, modulePermissionGuard],
-            data: { module: BusinessModule.DOCUMENT_ADMIN },
-            loadChildren: () =>
-              import('@features/analytics/reporting/routing').then((m) => m.REPORTS_ROUTES),
           },
         ],
       },

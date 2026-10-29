@@ -1,5 +1,4 @@
 import { routes as applicationRoutes } from '../../../../app.routes';
-import { INVENTORY_REPORTS_ROUTES } from '@features/inventory/warehouses/reporting/routing/inventory-reports.routes';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
@@ -39,16 +38,6 @@ const analytics = applicationRoutes
   .find((route) => route.children)
   ?.children?.find((route) => route.path === 'analytics');
 const dashboard = analytics?.children?.find((route) => route.path === 'dashboard');
-const reports = analytics?.children?.find((route) => route.path === 'reports');
-const reportRoutes: Routes = [
-  {
-    ...reports,
-    path: '',
-    loadChildren: undefined,
-    children: [{ path: 'inventory', children: INVENTORY_REPORTS_ROUTES }],
-  },
-];
-
 const modules: Routes[] = [
   [{ path: '', data: dashboard?.data, children: [{ ...dashboard, path: '' }] }],
   CATEGORY_ROUTES,
@@ -150,23 +139,8 @@ describe('real business route permission enforcement', () => {
   );
 });
 
-describe('inventory reporting route permissions', () => {
-  it('denies direct reports without document access', async () => {
-    auth.hasPermission.mockImplementation(
-      (module, action) => module === BusinessModule.INVENTORY && action === 'READ',
-    );
-    expect(await navigate(reportRoutes, 'inventory')).toBe('/platform/auth/configuration');
-  });
-
-  it('denies direct reports without inventory access', async () => {
-    auth.hasPermission.mockImplementation(
-      (module, action) => module === BusinessModule.DOCUMENT_ADMIN && action === 'READ',
-    );
-    expect(await navigate(reportRoutes, 'inventory')).toBe('/platform/auth/configuration');
-  });
-
-  it('allows direct reports when both document and inventory read grants exist', async () => {
-    auth.hasPermission.mockImplementation((module, action) => action === 'READ');
-    expect(await navigate(reportRoutes, 'inventory')).toBe('/protected/inventory');
+describe('inventory reports are modal actions', () => {
+  it('does not register a separate reports page in analytics', () => {
+    expect(analytics?.children?.some((route) => route.path === 'reports')).toBe(false);
   });
 });
