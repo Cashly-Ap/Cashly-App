@@ -203,6 +203,19 @@ function actionLabel(action: string, singular: string): string {
   return action;
 }
 
+function actionOrder(item: MenuItem): number {
+  if (/^Ver detalle|^Ver detalles|^Ver deuda/.test(item.label)) return 0;
+  if (item.requiredAction === 'UPDATE') return 1;
+  if (item.requiredAction === 'DELETE') return 2;
+  if (item.routerLink?.endsWith('/new')) return 3;
+  if (
+    (item.requiredAction === 'EXPORT' && !item.label.startsWith('Descargar PDF')) ||
+    item.label === 'Reportes'
+  )
+    return 5;
+  return 4;
+}
+
 export function addListNavigationActions(
   items: MenuItem[],
   callbacks: ListNavigationCallbacks,
@@ -258,7 +271,10 @@ export function addListNavigationActions(
                       callbacks.openListAction(definition.route, entry.label, entry.queryParams),
           }),
         ),
-      ],
+      ]
+        .map((child, index) => ({ child, order: index === 0 ? -1 : actionOrder(child) }))
+        .sort((left, right) => left.order - right.order)
+        .map(({ child }) => child),
     };
   });
 }

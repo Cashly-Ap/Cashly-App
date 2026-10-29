@@ -191,6 +191,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           [
             withReports(
               page('Caja', 'pi pi-calculator', '/finance/treasury/cash-register'),
+              page('Historial de caja', 'pi pi-history', '/finance/treasury/cash-register/history'),
               report(
                 'Reportes de Caja',
                 'pi pi-chart-bar',
@@ -198,7 +199,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
                 BusinessModule.FINANCE,
               ),
             ),
-            page('Historial de caja', 'pi pi-history', '/finance/treasury/cash-register/history'),
             withReports(
               page('Cuentas por cobrar', 'pi pi-money-bill', '/finance/treasury/receivables'),
               report(

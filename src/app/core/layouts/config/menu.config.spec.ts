@@ -73,6 +73,45 @@ describe('ERP navigation', () => {
     ).toBe(true);
   });
 
+  it('orders every module as list, detail, edit, delete, other actions and reports', () => {
+    const all = flatten(buildMenuItems(createCallbacks()));
+    for (const definition of LIST_NAVIGATION_DEFINITIONS) {
+      const group = all.find((item) =>
+        item.children?.some((child) => child.routerLink === definition.route),
+      );
+      const entries = group?.children ?? [];
+      expect(entries[0]?.routerLink).toBe(definition.route);
+      const priority = (item: MenuItem) => {
+        if (/^Ver detalle|^Ver detalles|^Ver deuda/.test(item.label)) return 0;
+        if (item.requiredAction === 'UPDATE') return 1;
+        if (item.requiredAction === 'DELETE') return 2;
+        if (item.routerLink?.endsWith('/new')) return 3;
+        if (
+          (item.requiredAction === 'EXPORT' && !item.label.startsWith('Descargar PDF')) ||
+          item.label === 'Reportes'
+        )
+          return 5;
+        return 4;
+      };
+      const ranks = entries.slice(1).map(priority);
+      expect(ranks).toEqual([...ranks].sort((a, b) => a - b));
+    }
+  });
+
+  it('keeps cash history inside Caja before its reports', () => {
+    const all = flatten(buildMenuItems(createCallbacks()));
+    const treasury = all.find((item) => item.label === 'Tesorería');
+    expect(treasury?.children?.some((item) => item.label === 'Historial de caja')).toBe(false);
+    const cash = treasury?.children?.find((item) => item.label === 'Caja');
+    const children = cash?.children ?? [];
+    const historyIndex = children.findIndex((item) => item.label === 'Historial de caja');
+    expect(historyIndex).toBeGreaterThan(0);
+    expect(children[historyIndex].routerLink).toBe('/finance/treasury/cash-register/history');
+    expect(historyIndex).toBeLessThan(
+      children.findIndex((item) => item.label === 'Reportes de Caja'),
+    );
+  });
+
   it('should preserve every destination exactly once and expose existing cash history', () => {
     const routes = flatten(buildMenuItems(createCallbacks())).flatMap((item) =>
       item.routerLink ? [item.routerLink] : [],
