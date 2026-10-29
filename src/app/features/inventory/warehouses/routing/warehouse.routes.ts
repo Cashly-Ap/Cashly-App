@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
 import { authGuard } from '@features/platform/auth/guards/auth.guard';
 import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -27,12 +28,19 @@ export const WAREHOUSE_ROUTES: Routes = [
         title: 'Nuevo Almacén',
       },
       {
-        path: ':id/stock',
+        path: 'stock',
         loadComponent: () =>
           import(
             '@features/inventory/warehouses/pages/warehouse-stock-page/warehouse-stock-page.component'
           ).then((m) => m.WarehouseStockPageComponent),
-        title: 'Stock de Almacén',
+        title: 'Ver stock',
+      },
+      {
+        path: ':id/stock',
+        redirectTo: ({ params, queryParams }) =>
+          inject(Router).createUrlTree(['/inventory/warehouses/stock'], {
+            queryParams: { ...queryParams, warehouseId: params['id'] },
+          }),
       },
       {
         path: ':id/movements',

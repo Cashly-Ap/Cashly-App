@@ -72,7 +72,9 @@ export class WarehousesDetailsPageComponent implements OnInit {
   }
 
   onViewStock(): void {
-    this.navigateToChild('stock');
+    const id = this.warehouse()?.id;
+    if (id)
+      this.router.navigate(['/inventory/warehouses/stock'], { queryParams: { warehouseId: id } });
   }
 
   onViewMovements(): void {
@@ -146,7 +148,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
     this.operationDialogVisible.set(true);
   }
 
-  private navigateToChild(path: 'stock' | 'movements'): void {
+  private navigateToChild(path: 'movements'): void {
     const id = this.warehouse()?.id;
     if (id) this.router.navigate(['/inventory/warehouses', id, path]);
   }

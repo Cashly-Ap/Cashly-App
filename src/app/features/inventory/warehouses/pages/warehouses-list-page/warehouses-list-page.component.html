@@ -64,15 +64,26 @@
               </div>
             </p-popover>
           </div>
-          <p-button
-            appShortcut="new"
-            [appPermission]="'CREATE'"
-            label="Nuevo Almacén"
-            icon="pi pi-plus"
-            (onClick)="onCreate()"
-            severity="contrast"
-            styleClass="font-medium w-full sm:w-auto"
-          />
+          <div class="flex flex-col gap-2 sm:flex-row">
+            <p-button
+              [appPermission]="'READ'"
+              label="Ver stock"
+              icon="pi pi-box"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full sm:w-auto"
+              (onClick)="onViewAllStock()"
+            />
+            <p-button
+              appShortcut="new"
+              [appPermission]="'CREATE'"
+              label="Nuevo Almacén"
+              icon="pi pi-plus"
+              (onClick)="onCreate()"
+              severity="contrast"
+              styleClass="font-medium w-full sm:w-auto"
+            />
+          </div>
         </div>
       </div>
     </app-list-container>

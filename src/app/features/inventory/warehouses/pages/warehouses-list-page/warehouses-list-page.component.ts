@@ -167,6 +167,10 @@ export class WarehousesListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
+  onViewAllStock(): void {
+    void this.router.navigate(['/inventory/warehouses/stock']);
+  }
+
   onCreate(): void {
     this.router.navigate(['/inventory/warehouses', 'new']);
   }
@@ -180,7 +184,9 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   onViewStock(warehouse: WarehouseList): void {
-    this.router.navigate(['/inventory/warehouses', warehouse.id, 'stock']);
+    this.router.navigate(['/inventory/warehouses/stock'], {
+      queryParams: { warehouseId: warehouse.id },
+    });
   }
 
   onViewMovements(warehouse: WarehouseList): void {

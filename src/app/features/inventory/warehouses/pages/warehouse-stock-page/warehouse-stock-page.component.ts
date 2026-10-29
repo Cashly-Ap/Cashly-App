@@ -2,26 +2,47 @@ import { NavigationHistoryService } from '@core/navigation/navigation-history.se
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   OnInit,
   computed,
   inject,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, forkJoin, of } from 'rxjs';
+import {
+  EMPTY,
+  Subject,
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  map,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { MessageService } from 'primeng/api';
+import { SelectModule } from 'primeng/select';
+import { PopoverModule } from 'primeng/popover';
+import { TooltipModule } from 'primeng/tooltip';
+import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
+import { ListContainerComponent } from '@shared/components/list';
+import { PaginatorModule } from 'primeng/paginator';
 import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
-import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
-import { WarehouseStockItem } from '@features/inventory/warehouses/models/interfaces/warehouse.interfaces';
+import {
+  StockOverviewApiService,
+  StockGroupBy,
+  StockOverviewGroup,
+  StockOverviewFilters,
+  StockOverviewItem,
+  StockOverviewSummary,
+} from '@features/inventory/warehouses/services/api/stock-overview-api.service';
 import { WAREHOUSE_ERROR_MESSAGES } from '@features/inventory/warehouses/messages/error-messages';
 
 const PAGE_SIZE = 10;
@@ -33,7 +54,12 @@ const PAGE_SIZE = 10;
     DecimalPipe,
     FormsModule,
     ButtonModule,
-    InputTextModule,
+    SelectModule,
+    PaginatorModule,
+    PopoverModule,
+    TooltipModule,
+    ShortcutDirective,
+    ListContainerComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
     EmptyStateComponent,
@@ -47,66 +73,177 @@ const PAGE_SIZE = 10;
 export class WarehouseStockPageComponent implements OnInit {
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
+  private readonly api = inject(StockOverviewApiService);
   private readonly router = inject(Router);
-  private readonly service = inject(WarehouseApplicationService);
-  private readonly messageService = inject(MessageService);
+  private routeInitialized = false;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly requests = new Subject<StockOverviewFilters>();
 
-  readonly warehouseId = signal('');
-  readonly warehouseName = signal('');
-  readonly stock = signal<WarehouseStockItem[]>([]);
+  readonly warehouseId = signal<string | null>(null);
+  readonly categoryId = signal<string | null>(null);
+  readonly warehouses = signal<{ id: string; name: string }[]>([]);
+  readonly categories = signal<{ id: string; name: string }[]>([]);
+  readonly stock = signal<StockOverviewItem[]>([]);
+  readonly groups = signal<StockOverviewGroup[]>([]);
+  readonly groupBy = signal<StockGroupBy>('PRODUCT');
+  readonly displayedGroupBy = signal<StockGroupBy>('PRODUCT');
+  readonly groupOptions = [
+    { label: 'Producto', value: 'PRODUCT' },
+    { label: 'Almacén', value: 'WAREHOUSE' },
+    { label: 'Sin agrupar', value: 'NONE' },
+  ];
+  readonly summary = signal<StockOverviewSummary | null>(null);
   readonly loading = signal(false);
+  readonly failed = signal(false);
   readonly search = signal('');
   readonly page = signal(0);
+  readonly rows = signal(PAGE_SIZE);
+  readonly totalElements = signal(0);
+  readonly errorMessage = WAREHOUSE_ERROR_MESSAGES.loadStock;
+  readonly warehouseName = computed(() => {
+    const id = this.warehouseId();
+    if (!id) return 'Todos los almacenes';
+    return (
+      this.warehouses().find((warehouse) => warehouse.id === id)?.name ?? 'Almacén seleccionado'
+    );
+  });
+  readonly activeFilterCount = computed(
+    () =>
+      Number(!!this.warehouseId()) +
+      Number(!!this.categoryId()) +
+      Number(this.groupBy() !== 'PRODUCT'),
+  );
+  readonly hasFilters = computed(() => this.activeFilterCount() > 0 || !!this.search());
+  readonly resultLabel = computed(() => {
+    const count = this.totalElements();
+    if (this.displayedGroupBy() === 'PRODUCT')
+      return `${count} ${count === 1 ? 'producto' : 'productos'}`;
+    if (this.displayedGroupBy() === 'WAREHOUSE')
+      return `${count} ${count === 1 ? 'almacén' : 'almacenes'}`;
+    return `${count} ${count === 1 ? 'registro de producto y almacén' : 'registros de producto y almacén'}`;
+  });
+  readonly paginationLabel = computed(() =>
+    this.displayedGroupBy() === 'PRODUCT'
+      ? '{first} - {last} de {totalRecords} productos'
+      : this.displayedGroupBy() === 'WAREHOUSE'
+        ? '{first} - {last} de {totalRecords} almacenes'
+        : '{first} - {last} de {totalRecords} registros',
+  );
 
-  readonly filteredStock = computed(() => {
-    const search = this.search().trim().toLowerCase();
-    return search
-      ? this.stock().filter((item) => item.productName.toLowerCase().includes(search))
-      : this.stock();
-  });
-  readonly totalPages = computed(() => Math.ceil(this.filteredStock().length / PAGE_SIZE));
-  readonly pagedStock = computed(() => {
-    const start = this.page() * PAGE_SIZE;
-    return this.filteredStock().slice(start, start + PAGE_SIZE);
-  });
+  constructor() {
+    this.requests
+      .pipe(
+        switchMap((filters) => {
+          this.loading.set(true);
+          this.failed.set(false);
+          this.stock.set([]);
+          this.groups.set([]);
+          this.summary.set(null);
+          return this.api.getOverview(filters).pipe(
+            tap((response) => {
+              this.displayedGroupBy.set(response.groupBy);
+              if (response.groupBy === 'NONE') {
+                this.stock.set(response.stock.content);
+                this.totalElements.set(response.stock.totalElements);
+              } else {
+                this.groups.set(response.groups.content);
+                this.totalElements.set(response.groups.totalElements);
+              }
+              this.summary.set(response.summary);
+              this.warehouses.set(response.warehouses);
+              this.categories.set(response.categories);
+            }),
+            catchError(() => {
+              this.failed.set(true);
+              this.totalElements.set(0);
+              return EMPTY;
+            }),
+            finalize(() => this.loading.set(false)),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
+  }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) return;
-    this.warehouseId.set(id);
-    this.load(id);
+    this.route.queryParamMap
+      .pipe(
+        map((params) => params.get('warehouseId')),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((id) => {
+        if (this.routeInitialized && this.warehouseId() === id) return;
+        this.routeInitialized = true;
+        this.warehouseId.set(id);
+        this.page.set(0);
+        this.load();
+      });
   }
 
   onSearchChange(value: string): void {
-    this.search.set(value);
+    this.search.set(value.trim());
     this.page.set(0);
+    this.load();
+  }
+
+  onWarehouseChange(id: string | null): void {
+    this.warehouseId.set(id);
+    this.page.set(0);
+    this.load();
+    this.syncWarehouseQuery();
+  }
+
+  onCategoryChange(id: string | null): void {
+    this.categoryId.set(id);
+    this.page.set(0);
+    this.load();
+  }
+
+  onGroupByChange(value: StockGroupBy): void {
+    this.groupBy.set(value);
+    this.page.set(0);
+    this.load();
+  }
+
+  onPageChange(event: { first: number; rows: number }): void {
+    this.rows.set(event.rows);
+    this.page.set(Math.floor(event.first / event.rows));
+    this.load();
+  }
+
+  clearFilters(): void {
+    this.warehouseId.set(null);
+    this.categoryId.set(null);
+    this.search.set('');
+    this.groupBy.set('PRODUCT');
+    this.page.set(0);
+    this.load();
+    this.syncWarehouseQuery();
   }
 
   onBack(): void {
-    this.navigationHistory.back(['/inventory/warehouses', this.warehouseId()]);
+    this.navigationHistory.back(['/inventory/warehouses']);
   }
 
-  private load(id: string): void {
-    this.loading.set(true);
-    forkJoin({
-      warehouse: this.service.loadById(id),
-      stock: this.service.getStock(id).pipe(catchError(() => of([]))),
-    }).subscribe({
-      next: ({ warehouse, stock }) => {
-        this.warehouseName.set(warehouse.name);
-        this.stock.set(stock);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: WAREHOUSE_ERROR_MESSAGES.loadStock,
-          life: 5000,
-        });
-        this.router.navigate(['/inventory/warehouses']);
-      },
+  load(): void {
+    this.requests.next({
+      groupBy: this.groupBy(),
+      warehouseId: this.warehouseId() ?? undefined,
+      categoryId: this.categoryId() ?? undefined,
+      search: this.search() || undefined,
+      page: this.page(),
+      size: this.rows(),
+    });
+  }
+
+  private syncWarehouseQuery(): void {
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { warehouseId: this.warehouseId() },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
     });
   }
 }

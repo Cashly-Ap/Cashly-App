@@ -99,7 +99,9 @@ describe('WarehousesListPageComponent', () => {
     component.onView(warehouse);
     component.onEdit(warehouse);
 
-    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses', 'wh-1', 'stock']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses/stock'], {
+      queryParams: { warehouseId: 'wh-1' },
+    });
     expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/inventory/warehouses', 'wh-1', 'movements']);
     expect(navigateSpy).toHaveBeenNthCalledWith(3, ['/inventory/warehouses', 'wh-1']);
     expect(navigateSpy).toHaveBeenNthCalledWith(4, ['/inventory/warehouses', 'wh-1', 'edit']);
