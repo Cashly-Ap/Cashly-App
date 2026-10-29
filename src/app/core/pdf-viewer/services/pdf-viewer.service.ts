@@ -5,6 +5,8 @@ import { PdfViewerConfig, PdfViewerState } from '@core/pdf-viewer/models';
 
 @Injectable({ providedIn: 'root' })
 export class PdfViewerService {
+  readonly fullscreen = signal(false);
+
   private http = inject(HttpClient);
   private sanitizer = inject(DomSanitizer);
 
@@ -28,6 +30,7 @@ export class PdfViewerService {
   });
 
   open(config: PdfViewerConfig): void {
+    this.fullscreen.set(false);
     this.cleanupBlobUrl();
 
     this.state.update((s) => ({
@@ -69,6 +72,7 @@ export class PdfViewerService {
   }
 
   close(): void {
+    this.fullscreen.set(false);
     this.cleanupBlobUrl();
     this.state.set({
       visible: false,
@@ -97,7 +101,7 @@ export class PdfViewerService {
     const blobUrl = this.state().pdfBlobUrl;
     if (!blobUrl) return;
 
-    window.open(blobUrl, '_blank');
+    this.fullscreen.update((value) => !value);
   }
 
   private cleanupBlobUrl(): void {

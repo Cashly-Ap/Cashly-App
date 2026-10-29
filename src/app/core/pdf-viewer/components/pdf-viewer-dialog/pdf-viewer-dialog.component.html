@@ -1,7 +1,7 @@
 <p-dialog
   [visible]="pdfService.visible()"
   [modal]="true"
-  [maximizable]="!isMobile()"
+  [maximizable]="false"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
@@ -34,16 +34,6 @@
             pTooltip="Descargar"
             tooltipPosition="bottom"
           />
-          <p-button
-            icon="pi pi-external-link"
-            [rounded]="true"
-            [text]="true"
-            size="large"
-            [disabled]="pdfService.loading() || !!pdfService.error()"
-            (onClick)="onOpenInBrowser()"
-            pTooltip="Abrir en navegador"
-            tooltipPosition="bottom"
-          />
         } @else if (isSmallScreen()) {
           <p-button
             icon="pi pi-download"
@@ -56,7 +46,7 @@
             tooltipPosition="bottom"
           />
           <p-button
-            icon="pi pi-external-link"
+            icon="pi pi-expand"
             [rounded]="true"
             [outlined]="true"
             size="small"
@@ -75,7 +65,7 @@
             (onClick)="onDownload()"
           />
           <p-button
-            icon="pi pi-external-link"
+            icon="pi pi-expand"
             label="Pantalla Completa"
             [outlined]="true"
             size="small"
@@ -104,51 +94,12 @@
         <p-button label="Cerrar" severity="secondary" (onClick)="onClose()" />
       </div>
     } @else if (pdfService.pdfSafeUrl()) {
-      @if (isMobile()) {
-        <div class="flex flex-col items-center justify-center gap-6 p-6 text-center h-full">
-          <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
-            <i class="pi pi-file-pdf text-4xl text-primary"></i>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
-              Documento listo
-            </h3>
-            <p class="text-sm text-surface-600 dark:text-surface-400 max-w-xs">
-              Para una mejor experiencia en móviles, abre el documento en tu navegador o descárgalo.
-            </p>
-          </div>
-
-          <div class="flex flex-col gap-3 w-full max-w-xs">
-            <p-button
-              icon="pi pi-external-link"
-              label="Abrir en navegador"
-              class="w-full"
-              [style]="{ width: '100%' }"
-              (onClick)="onOpenInBrowser()"
-            />
-            <p-button
-              icon="pi pi-download"
-              label="Descargar PDF"
-              [outlined]="true"
-              class="w-full"
-              [style]="{ width: '100%' }"
-              (onClick)="onDownload()"
-            />
-          </div>
-
-          <p class="text-xs text-surface-500 dark:text-surface-500">
-            {{ pdfService.config()?.fileName }}
-          </p>
-        </div>
-      } @else {
-        <iframe
-          [src]="pdfService.pdfSafeUrl()"
-          class="w-full h-full border-0"
-          type="application/pdf"
-          title="Visor de PDF"
-        ></iframe>
-      }
+      <iframe
+        [src]="pdfService.pdfSafeUrl()"
+        class="w-full h-full border-0"
+        type="application/pdf"
+        title="Visor de PDF"
+      ></iframe>
     }
   </div>
 </p-dialog>

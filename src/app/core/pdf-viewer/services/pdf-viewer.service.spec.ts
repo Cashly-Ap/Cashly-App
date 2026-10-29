@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { PdfViewerService } from '@core/pdf-viewer/services/pdf-viewer.service';
 import { PdfViewerConfig } from '@core/pdf-viewer/models';
 
@@ -125,6 +125,22 @@ describe('PdfViewerService', () => {
   });
 
   describe('openFullscreen', () => {
+    it('expands the current viewer without opening a browser tab and resets when closed', () => {
+      const openWindow = vi.spyOn(window, 'open');
+      service.open({ url: '/api/report', title: 'Reporte' });
+      httpMock.expectOne('/api/report').flush(new Blob(['pdf'], { type: 'application/pdf' }));
+      service.openFullscreen();
+      expect(service.fullscreen()).toBe(true);
+      expect(service.visible()).toBe(true);
+      expect(openWindow).not.toHaveBeenCalled();
+      service.openFullscreen();
+      expect(service.fullscreen()).toBe(false);
+      service.openFullscreen();
+      service.close();
+      expect(service.fullscreen()).toBe(false);
+      openWindow.mockRestore();
+    });
+
     it('should not throw when no blob URL exists', () => {
       expect(() => service.openFullscreen()).not.toThrow();
     });
