@@ -27,7 +27,7 @@ import { ProductGeneralSectionComponent } from '@features/catalog/products/compo
 import { ProductCompositionSectionComponent } from '@features/catalog/products/components/product-composition-section/product-composition-section.component';
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/price-type-list.interface';
-import { switchMap, of, combineLatest, filter, take } from 'rxjs';
+import { switchMap, of, combineLatest, filter, take, map } from 'rxjs';
 
 interface ProductFormData {
   code: string;
@@ -344,7 +344,7 @@ export class ProductsFormPageComponent
               detail: 'Producto actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/catalog/products']);
+            this.router.navigate(['/catalog/products', this.entityId()!]);
           },
           error: () => {
             this.messageService.add({
@@ -361,13 +361,13 @@ export class ProductsFormPageComponent
         .pipe(
           switchMap((product) => {
             if (value.photo && product?.id) {
-              return this.photoService.uploadPhoto(product.id, value.photo);
+              return this.photoService.uploadPhoto(product.id, value.photo).pipe(map(() => product));
             }
-            return of(undefined);
+            return of(product);
           }),
         )
         .subscribe({
-          next: () => {
+          next: (product) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -375,7 +375,7 @@ export class ProductsFormPageComponent
               detail: 'Producto creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/catalog/products']);
+            this.router.navigate(['/catalog/products', product.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

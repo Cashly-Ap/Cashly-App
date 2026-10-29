@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -46,6 +47,7 @@ import { ORDER_SUCCESS_MESSAGES } from '@features/sales/orders/messages/success-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderFormPageComponent implements OnInit, OnDestroy {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -332,6 +334,6 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/sales/orders']);
+    this.navigationHistory.back(['/sales/orders']);
   }
 }

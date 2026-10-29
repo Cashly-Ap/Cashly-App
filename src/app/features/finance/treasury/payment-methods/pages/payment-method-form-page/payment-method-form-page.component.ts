@@ -132,7 +132,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
               detail: 'Método de pago actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finance/treasury/payment-methods']);
+            this.router.navigate(['/finance/treasury/payment-methods', this.entityId()!]);
           },
           error: () => {
             this.messageService.add({
@@ -146,7 +146,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
       } else {
         const createPayload = { name: value.name, description: value.description || undefined };
         this.service.createPaymentMethod(createPayload).subscribe({
-          next: () => {
+          next: (created) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -154,7 +154,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
               detail: 'Método de pago creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/finance/treasury/payment-methods']);
+            this.router.navigate(['/finance/treasury/payment-methods', created.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

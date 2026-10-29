@@ -237,7 +237,7 @@ describe('WarehousesFormPageComponent', () => {
       });
     });
 
-    it('should navigate to /warehouses on create success', () => {
+    it('should navigate to /warehouses detail on create success', () => {
       fixture.detectChanges();
       component.form.patchValue({
         name: 'Nuevo Almacén',
@@ -248,7 +248,7 @@ describe('WarehousesFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onSubmit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses', 'wh-001']);
     });
 
     it('should show error message on create failure', () => {
@@ -345,7 +345,7 @@ describe('WarehousesFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.onSubmit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/inventory/warehouses', 'wh-001']);
     });
 
     it('should show error message on update failure', () => {
@@ -476,4 +476,17 @@ describe('WarehousesFormPageComponent', () => {
       expect(title).toContain('Almacén');
     });
   });
+
+  it('opens the saved detail after updating', () => {
+    TestBed.resetTestingModule();
+    configureTestBed('wh-001');
+    createComponent();
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.form.patchValue({ name: 'Updated warehouse', state: 'Carabobo', municipality: 'Valencia' });
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/inventory/warehouses', 'wh-001']);
+  });
+
+
 });

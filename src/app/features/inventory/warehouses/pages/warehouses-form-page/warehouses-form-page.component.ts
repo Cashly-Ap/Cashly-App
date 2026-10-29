@@ -190,7 +190,7 @@ export class WarehousesFormPageComponent
               detail: 'Almacén actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/inventory/warehouses']);
+            this.router.navigate(['/inventory/warehouses', this.entityId()!]);
           },
           error: () => {
             this.messageService.add({
@@ -203,7 +203,7 @@ export class WarehousesFormPageComponent
         });
       } else {
         this.service.create(payload).subscribe({
-          next: () => {
+          next: (created) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -211,7 +211,7 @@ export class WarehousesFormPageComponent
               detail: 'Almacén creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/inventory/warehouses']);
+            this.router.navigate(['/inventory/warehouses', created.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

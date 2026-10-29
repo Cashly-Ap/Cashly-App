@@ -1,3 +1,4 @@
+import { FormMode } from '@core/forms/enums/form-mode.enum';
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { provideRouter, ActivatedRoute, convertToParamMap, Router } from '@angular/router';
@@ -91,7 +92,7 @@ describe('User profile form', () => {
   });
   it('uploads the selected photo against the newly created user', () => {
     valid();
-    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     const file = new File(['photo'], 'user.png', { type: 'image/png' });
     component.photo.setValue(file);
     const upload = vi
@@ -99,6 +100,7 @@ describe('User profile form', () => {
       .mockReturnValue(of({ id: 'u', photoPath: 'users/photo.png' } as UserDetails));
     component.onSubmit();
     expect(upload).toHaveBeenCalledWith(file, 'u');
+    expect(navigate).toHaveBeenCalledWith(['/platform/users', 'u']);
     expect(userService.createUser).toHaveBeenCalledTimes(1);
   });
   it('leaves a saved user available for photo retry when only the upload fails', () => {
@@ -114,7 +116,7 @@ describe('User profile form', () => {
     expect(notify).toHaveBeenCalledWith(
       expect.objectContaining({ severity: 'warn', summary: 'Usuario guardado sin foto' }),
     );
-    expect(navigate).toHaveBeenCalledWith(['/platform/users']);
+    expect(navigate).toHaveBeenCalledWith(['/platform/users', 'u']);
   });
   it('allows an absent phone', () => {
     valid();
@@ -150,4 +152,14 @@ describe('User profile form', () => {
       }),
     );
   });
+  it('opens the saved user detail after updating', () => {
+    valid();
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    userService.updateUser.mockReturnValue(of({ id: 'edited-user' }));
+    component.mode.set(FormMode.EDIT);
+    component.entityId.set('edited-user');
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/platform/users', 'edited-user']);
+  });
+
 });

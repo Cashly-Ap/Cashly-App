@@ -1,3 +1,4 @@
+import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -334,6 +335,58 @@ describe('InvoiceFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
+      expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001']);
+    });
+
+    it('should open the first created detail after creating multiple invoices', () => {
+      fixture.detectChanges();
+      component.form.patchValue({ customerId: 'c1', paymentType: PaymentType.CASH });
+      component.items.set([
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 5,
+          unitPrice: 100,
+          stock: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              quantity: 50,
+              reserved: 0,
+              available: 50,
+            },
+          ],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 50,
+              allocated: 5,
+            },
+          ],
+        },
+      ]);
+
+      component.bulkMode.set(true);
+      component.selectedCustomers.set(
+        ['c1', 'c2'].map((id) => ({
+          id,
+          code: 1,
+          alias: id,
+          legalName: id,
+          rif: '',
+          type: CustomerType.BUSINESS,
+          active: true,
+          deletable: true,
+        })),
+      );
+      const navigateSpy = vi.spyOn(router, 'navigate');
+      component.submit();
+
+      expect(mockService.create).toHaveBeenCalledTimes(2);
       expect(navigateSpy).toHaveBeenCalledWith(['/finance/billing/invoices', 'inv-001']);
     });
 

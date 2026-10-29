@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -15,7 +15,7 @@ describe('CreditNoteFormPageComponent', () => {
   const messageService = { add: vi.fn() };
   const service = {
     loading: signal(false),
-    createCreditNote: vi.fn(() => of({})),
+    createCreditNote: vi.fn(() => of({ id: 'credit-1' })),
   };
 
   beforeEach(async () => {
@@ -62,4 +62,11 @@ describe('CreditNoteFormPageComponent', () => {
       }),
     );
   });
+  it('opens the created credit note detail after saving', () => {
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    fixture.componentInstance.form.patchValue({ customerId: 'c', customerName: 'Customer', invoiceId: 'i', invoiceNumber: 'INV-1', amount: 10, reason: 'Adjustment' });
+    fixture.componentInstance.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/finance/billing/credit-notes', 'credit-1']);
+  });
+
 });

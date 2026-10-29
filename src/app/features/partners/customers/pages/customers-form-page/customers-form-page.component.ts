@@ -310,7 +310,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
                   detail: 'Cliente actualizado exitosamente',
                   life: 3000,
                 });
-                this.router.navigate(['/partners/customers']);
+                this.router.navigate(['/partners/customers', this.entityId()!]);
               },
               error: () => {
                 this.markAsSubmitted();
@@ -320,7 +320,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
                   detail: 'Cliente actualizado, pero hubo un error al sincronizar los almacenes',
                   life: 5000,
                 });
-                this.router.navigate(['/partners/customers']);
+                this.router.navigate(['/partners/customers', this.entityId()!]);
               },
             });
           },
@@ -352,7 +352,7 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
               detail: 'Cliente creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/partners/customers']);
+            this.router.navigate(['/partners/customers', created.id]);
           },
           error: (error: unknown) =>
             this.handleSaveError(

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -69,6 +70,7 @@ import { InvoiceCreate } from '@features/finance/billing/invoices/models/interfa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceFormPageComponent implements OnInit, OnDestroy {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -713,7 +715,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           }),
         ),
       ).subscribe({
-        next: () => {
+        next: (invoices) => {
           this.isSubmitting.set(false);
           this.markAsSubmitted();
           this.messageService.add({
@@ -722,7 +724,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             detail: `Se crearon ${customers.length} facturas.`,
             life: 4000,
           });
-          this.router.navigate(['/finance/billing/invoices']);
+          this.router.navigate(['/finance/billing/invoices', invoices[0].id]);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -781,7 +783,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/finance/billing/invoices']);
+    this.navigationHistory.back(['/finance/billing/invoices']);
   }
 
   private toIsoDate(value: Date | string | null | undefined): string {

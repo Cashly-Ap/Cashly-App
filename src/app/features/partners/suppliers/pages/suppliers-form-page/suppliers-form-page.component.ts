@@ -236,7 +236,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
               detail: 'Proveedor actualizado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/partners/suppliers']);
+            this.router.navigate(['/partners/suppliers', this.entityId()!]);
           },
           error: () => {
             this.messageService.add({
@@ -250,7 +250,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
       } else {
         const createData = this.mapper.toCreateRequest(formModel);
         this.service.create(createData).subscribe({
-          next: () => {
+          next: (created) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -258,7 +258,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
               detail: 'Proveedor creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/partners/suppliers']);
+            this.router.navigate(['/partners/suppliers', created.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

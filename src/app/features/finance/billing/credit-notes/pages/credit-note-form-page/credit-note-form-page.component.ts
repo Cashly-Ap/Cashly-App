@@ -183,7 +183,7 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
       };
 
       this.service.createCreditNote(payload).subscribe({
-        next: () => {
+        next: (created) => {
           this.markAsSubmitted();
           this.messageService.add({
             severity: 'success',
@@ -191,7 +191,7 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
             detail: 'Nota de crédito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finance/billing/credit-notes']);
+          this.router.navigate(['/finance/billing/credit-notes', created.id]);
         },
         error: (err: { error?: { message?: string } }) => {
           this.messageService.add({

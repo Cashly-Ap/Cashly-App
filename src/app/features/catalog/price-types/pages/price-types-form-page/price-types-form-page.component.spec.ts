@@ -143,11 +143,11 @@ describe('PriceTypesFormPageComponent', () => {
     expect(mockService.create).toHaveBeenCalledWith({ name: 'New Price Type' });
   });
 
-  it('should navigate to /price-types on create success', () => {
+  it('should navigate to /price-types detail on create success', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('New Price Type');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/price-types', 'pt-001']);
   });
 
   it('should show success message on create success', () => {
@@ -199,6 +199,16 @@ describe('PriceTypesFormPageComponent', () => {
       name: 'Updated Price Type',
       active: true,
     });
+  });
+
+  it('opens the saved detail after updating', () => {
+    TestBed.resetTestingModule();
+    configureTestBed('pt-001');
+    createComponent();
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/catalog/price-types', 'pt-001']);
   });
 
   it('should show success message on update success', () => {

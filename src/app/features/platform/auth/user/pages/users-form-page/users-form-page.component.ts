@@ -2,7 +2,7 @@ import { AuthService } from '../../../services/application/auth-application.serv
 import { BusinessModule } from '../../models/enums/business-module.enum';
 import { computed } from '@angular/core';
 import { UserPhotoService } from '../../../services/api/user-photo.service';
-import { switchMap, of, catchError, finalize } from 'rxjs';
+import { switchMap, of, catchError, finalize, map } from 'rxjs';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TabsModule } from 'primeng/tabs';
@@ -246,13 +246,14 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
               photoFailed = true;
               return of(user);
             }),
+            map(() => user),
           ),
         ),
         finalize(() => this.savingPhoto.set(false)),
         takeUntilDestroyed(this.photoDestroy),
       )
       .subscribe({
-        next: () => {
+        next: (user) => {
           this.markAsSubmitted();
           this.messages.add({
             severity: photoFailed ? 'warn' : 'success',
@@ -261,7 +262,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
               ? 'El usuario se guardó. Edita su ficha para volver a subir la foto.'
               : 'Usuario guardado correctamente',
           });
-          this.router.navigate(['/platform/users']);
+          this.router.navigate(['/platform/users', user.id]);
         },
         error: (error) =>
           this.messages.add({

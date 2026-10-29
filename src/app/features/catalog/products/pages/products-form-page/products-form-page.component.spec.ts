@@ -219,12 +219,12 @@ describe('ProductsFormPageComponent', () => {
     expect(mockService.create).toHaveBeenCalled();
   });
 
-  it('should navigate to /products on create success', () => {
+  it('should navigate to /products detail on create success', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('New Product');
     component.form.get('categoryId')?.setValue('cat-001');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/products', 'prod-001']);
   });
 
   it('should show success message on create success', () => {
@@ -404,6 +404,16 @@ describe('ProductsFormPageComponent', () => {
     expect(mockService.update).toHaveBeenCalledWith('prod-001', expect.any(Object));
   });
 
+  it('opens the saved detail after updating', () => {
+    TestBed.resetTestingModule();
+    configureTestBed('prod-001');
+    createComponent();
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/catalog/products', 'prod-001']);
+  });
+
   it('should show success message on update success', () => {
     (TestBed as TestBedStatic).resetTestingModule();
     configureTestBed('prod-001');
@@ -449,4 +459,13 @@ describe('ProductsFormPageComponent', () => {
     const control = component.asFormControl('name');
     expect(control).toBeDefined();
   });
+  it('keeps the created product id after uploading its photo', () => {
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const photo = new File(['image'], 'product.png', { type: 'image/png' });
+    component.form.patchValue({ name: 'New Product', categoryId: 'cat-001', photo });
+    component.onSubmit();
+    expect(mockPhotoService.uploadPhoto).toHaveBeenCalledWith('prod-001', photo);
+    expect(navigate).toHaveBeenCalledWith(['/catalog/products', 'prod-001']);
+  });
+
 });

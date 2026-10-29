@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -44,6 +45,7 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DebitNoteFormPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly service = inject(DebitNoteApplicationService);
@@ -139,7 +141,7 @@ export class DebitNoteFormPageComponent implements OnInit {
         reason: formValue.reason ?? '',
       })
       .subscribe({
-        next: () => {
+        next: (created) => {
           this.isSubmitting.set(false);
           this.messageService.add({
             severity: 'success',
@@ -147,7 +149,7 @@ export class DebitNoteFormPageComponent implements OnInit {
             detail: 'Nota de débito creada exitosamente',
             life: 3000,
           });
-          this.router.navigate(['/finance/billing/debit-notes']);
+          this.router.navigate(['/finance/billing/debit-notes', created.id]);
         },
         error: () => {
           this.isSubmitting.set(false);
@@ -162,6 +164,6 @@ export class DebitNoteFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finance/billing/debit-notes']);
+    this.navigationHistory.back(['/finance/billing/debit-notes']);
   }
 }

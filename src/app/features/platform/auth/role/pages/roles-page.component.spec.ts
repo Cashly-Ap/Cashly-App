@@ -1,4 +1,4 @@
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MessageService, ConfirmationService } from 'primeng/api';
@@ -169,4 +169,13 @@ describe('Role permission matrix', () => {
     accept?.();
     expect(service.delete).not.toHaveBeenCalled();
   });
+  it.each([false, true])('opens the saved detail after create or update (editing=%s)', (editing) => {
+
+    service.saveRole.mockReturnValue(of({ id: 'saved-id' }));
+    component.editing.set({ name: 'Saved record', ...(editing ? { id: 'saved-id' } : {}) });
+    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    component.save();
+    expect(navigate).toHaveBeenCalledWith(['/platform/roles', 'saved-id']);
+  });
+
 });

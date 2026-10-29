@@ -290,7 +290,7 @@ describe('QuoteFormPageComponent', () => {
       );
     });
 
-    it('should navigate to /presupuestos on create success', () => {
+    it('should navigate to the created quote detail', () => {
       fixture.detectChanges();
       component.form.patchValue({ customerId: 'c1' });
       component.items.set([
@@ -316,7 +316,7 @@ describe('QuoteFormPageComponent', () => {
       const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
-      expect(navigateSpy).toHaveBeenCalledWith(['/sales/quotes']);
+      expect(navigateSpy).toHaveBeenCalledWith(['/sales/quotes', 'q-001']);
     });
 
     it('should show success message on create success', () => {
@@ -436,9 +436,11 @@ describe('QuoteFormPageComponent', () => {
         },
       ]);
 
+      const navigateSpy = vi.spyOn(router, 'navigate');
       component.submit();
 
       expect(mockService.update).toHaveBeenCalledWith('q-001', expect.objectContaining({}));
+      expect(navigateSpy).toHaveBeenCalledWith(['/sales/quotes', 'q-001']);
     });
 
     it('should show success message on update success', () => {

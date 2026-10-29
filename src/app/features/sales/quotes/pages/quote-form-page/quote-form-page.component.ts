@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -46,6 +47,7 @@ import { QUOTE_SUCCESS_MESSAGES } from '@features/sales/quotes/messages/success-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuoteFormPageComponent implements OnInit, OnDestroy {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -269,7 +271,7 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(QUOTE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/sales/quotes']);
+            this.router.navigate(['/sales/quotes', quote.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -299,11 +301,11 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
           })),
         })
         .subscribe({
-          next: () => {
+          next: (quote) => {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(QUOTE_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/sales/quotes']);
+            this.router.navigate(['/sales/quotes', quote.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -319,6 +321,6 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/sales/quotes']);
+    this.navigationHistory.back(['/sales/quotes']);
   }
 }

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -48,6 +49,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PurchaseFormPageComponent implements OnInit, OnDestroy {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -269,11 +271,11 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           })),
         })
         .subscribe({
-          next: () => {
+          next: (purchase) => {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(PURCHASE_SUCCESS_MESSAGES.updated);
-            this.router.navigate(['/procurement/purchases']);
+            this.router.navigate(['/procurement/purchases', purchase.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -303,11 +305,11 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           })),
         })
         .subscribe({
-          next: () => {
+          next: (purchase) => {
             this.isSubmitting.set(false);
             this.markAsSubmitted();
             this.messageService.add(PURCHASE_SUCCESS_MESSAGES.created);
-            this.router.navigate(['/procurement/purchases']);
+            this.router.navigate(['/procurement/purchases', purchase.id]);
           },
           error: () => {
             this.isSubmitting.set(false);
@@ -323,6 +325,6 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   }
 
   cancel(): void {
-    this.router.navigate(['/procurement/purchases']);
+    this.navigationHistory.back(['/procurement/purchases']);
   }
 }

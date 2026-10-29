@@ -282,7 +282,7 @@ export class DepartmentsPageComponent {
       return;
     this.busy.set(true);
     this.service.saveDepartment({ ...value, name: value.name.trim() }).subscribe({
-      next: () => {
+      next: (saved) => {
         this.busy.set(false);
         this.editing.set(null);
         this.messages.add({
@@ -290,7 +290,7 @@ export class DepartmentsPageComponent {
           summary: 'Guardado',
           detail: 'Registro guardado correctamente.',
         });
-        void this.router.navigate(['/platform/departments']);
+        void this.router.navigate(['/platform/departments', saved.id]);
       },
       error: (error) => {
         this.busy.set(false);

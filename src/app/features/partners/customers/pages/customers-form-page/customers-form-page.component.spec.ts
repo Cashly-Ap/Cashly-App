@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Router, ActivatedRoute, provideRouter, convertToParamMap } from '@angular/router';
@@ -95,6 +96,12 @@ describe('CustomersFormPageComponent', () => {
     expect(form.get('creditLimit')?.value).toBe(null);
   });
 
+  it('returns through navigation history instead of forcing the list destination', () => {
+    const back = vi.spyOn(TestBed.inject(NavigationHistoryService), 'back').mockImplementation(() => undefined);
+    component.onCancel();
+    expect(back).toHaveBeenCalledWith(['/partners/customers']);
+  });
+
   it('should navigate to /customers on cancel', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.onCancel();
@@ -136,6 +143,7 @@ describe('CustomersFormPageComponent', () => {
 
   it('should include warehouse ids in create request and not grant separately', () => {
     const createSpy = vi.spyOn(mockService, 'create');
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const apiService = TestBed.inject(CustomerApiService);
     const grantSpy = vi.spyOn(apiService, 'grantWarehouseAccess');
 
@@ -151,6 +159,7 @@ describe('CustomersFormPageComponent', () => {
 
     expect(createSpy).toHaveBeenCalledWith(expect.objectContaining({ warehouseIds: ['wh-001'] }));
     expect(grantSpy).not.toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalledWith(['/partners/customers', 'uuid-001']);
   });
 
   it('should identify a duplicate RIF when customer creation returns a conflict', () => {
@@ -209,4 +218,14 @@ describe('CustomersFormPageComponent', () => {
       }),
     );
   });
+  it('opens the saved customer detail after updating', () => {
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.mode.set(FormMode.EDIT);
+    component.entityId.set('uuid-001');
+    component.form.patchValue({ legalName: 'Acme Corp', rif: 'J-12345678-9', priceTypeId: 'pt-001' });
+    component.array('addresses').at(0).patchValue({ address: 'Av. Principal' });
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/partners/customers', 'uuid-001']);
+  });
+
 });

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -70,6 +71,7 @@ interface ReturnLineFormData {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReturnFormPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   readonly ReturnType = ReturnType;
 
   private readonly router = inject(Router);
@@ -292,7 +294,7 @@ export class ReturnFormPageComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/finance/billing/returns']);
+    this.navigationHistory.back(['/finance/billing/returns']);
   }
 
   private resetLines(): void {

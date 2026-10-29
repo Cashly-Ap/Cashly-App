@@ -155,11 +155,11 @@ describe('CategoriesFormPageComponent', () => {
     });
   });
 
-  it('should navigate to /categories on create success', () => {
+  it('should navigate to /categories detail on create success', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
     component.form.get('name')?.setValue('New Category');
     component.onSubmit();
-    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/catalog/categories', 'cat-001']);
   });
 
   it('should show success message on create success', () => {
@@ -212,6 +212,16 @@ describe('CategoriesFormPageComponent', () => {
       description: 'Electronic products',
       active: true,
     });
+  });
+
+  it('opens the saved detail after updating', () => {
+    TestBed.resetTestingModule();
+    configureTestBed('cat-001');
+    createComponent();
+    fixture.detectChanges();
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    component.onSubmit();
+    expect(navigate).toHaveBeenCalledWith(['/catalog/categories', 'cat-001']);
   });
 
   it('should show success message on update success', () => {

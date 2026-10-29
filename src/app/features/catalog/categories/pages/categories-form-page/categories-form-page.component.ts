@@ -127,7 +127,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
               detail: 'Categoría actualizada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/catalog/categories']);
+            this.router.navigate(['/catalog/categories', this.entityId()!]);
           },
           error: () => {
             this.messageService.add({
@@ -140,7 +140,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
         });
       } else {
         this.service.create(payload).subscribe({
-          next: () => {
+          next: (created) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -148,7 +148,7 @@ export class CategoriesFormPageComponent extends BaseFormComponent<CategoryFormD
               detail: 'Categoría creada exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/catalog/categories']);
+            this.router.navigate(['/catalog/categories', created.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({

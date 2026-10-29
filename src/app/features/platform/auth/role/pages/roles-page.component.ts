@@ -375,7 +375,7 @@ export class RolesPageComponent {
       return;
     this.busy.set(true);
     this.service.saveRole({ ...value, name: value.name.trim() }).subscribe({
-      next: () => {
+      next: (saved) => {
         this.busy.set(false);
         this.editing.set(null);
         this.messages.add({
@@ -383,7 +383,7 @@ export class RolesPageComponent {
           summary: 'Guardado',
           detail: 'Registro guardado correctamente.',
         });
-        void this.router.navigate(['/platform/roles']);
+        void this.router.navigate(['/platform/roles', saved.id]);
       },
       error: (error) => {
         this.busy.set(false);

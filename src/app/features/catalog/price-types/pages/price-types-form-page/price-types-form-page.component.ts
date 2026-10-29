@@ -116,7 +116,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
                 detail: 'Tipo de precio actualizado exitosamente',
                 life: 3000,
               });
-              this.router.navigate(['/catalog/price-types']);
+              this.router.navigate(['/catalog/price-types', this.entityId()!]);
             },
             error: () => {
               this.messageService.add({
@@ -129,7 +129,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
           });
       } else {
         this.service.create({ name: value.name }).subscribe({
-          next: () => {
+          next: (created) => {
             this.markAsSubmitted();
             this.messageService.add({
               severity: 'success',
@@ -137,7 +137,7 @@ export class PriceTypesFormPageComponent extends BaseFormComponent<PriceTypeForm
               detail: 'Tipo de precio creado exitosamente',
               life: 3000,
             });
-            this.router.navigate(['/catalog/price-types']);
+            this.router.navigate(['/catalog/price-types', created.id]);
           },
           error: (err: { error?: { message?: string } }) => {
             this.messageService.add({
