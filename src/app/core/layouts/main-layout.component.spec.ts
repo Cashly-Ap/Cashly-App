@@ -167,19 +167,61 @@ describe('MainLayoutComponent', () => {
   });
 
   it.each(['edit', 'balance'] as const)('selects a customer before opening %s', (action) => {
-    const customers = component.primeMenuItems()
-      .find((item) => item.label === 'Contactos')?.items
-      ?.find((item) => item.label === 'Clientes')?.items;
-    customers?.find((item) => item.label === (action === 'edit' ? 'Editar cliente' : 'Ver saldo de cliente'))
+    const customers = component
+      .primeMenuItems()
+      .find((item) => item.label === 'Contactos')
+      ?.items?.find((item) => item.label === 'Clientes')?.items;
+    customers
+      ?.find(
+        (item) => item.label === (action === 'edit' ? 'Editar cliente' : 'Ver saldo de cliente'),
+      )
       ?.command?.({});
     expect(component.customerPickerAction()).toBe(action);
     expect(routerMock.navigate).not.toHaveBeenCalled();
     component.onMenuCustomerSelected({
-      id: 'customer-1', code: 1, alias: 'Customer', legalName: 'Customer', rif: '',
-      type: Object.values(CustomerType)[0], active: true, deletable: true,
+      id: 'customer-1',
+      code: 1,
+      alias: 'Customer',
+      legalName: 'Customer',
+      rif: '',
+      type: Object.values(CustomerType)[0],
+      active: true,
+      deletable: true,
     });
     expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers', 'customer-1', action]);
     expect(component.customerPickerAction()).toBeNull();
+  });
+
+  it('opens every report modal from desktop and mobile without changing the current route', () => {
+    const collect = (items: import('primeng/api').MenuItem[]): import('primeng/api').MenuItem[] =>
+      items.flatMap((item) => [item, ...collect(item.items ?? [])]);
+    for (const menu of [component.primeMenuItems(), component.mobileMenuItems()]) {
+      const reports = collect(menu).filter(
+        (item) =>
+          [
+            'Reporte de Productos PDF',
+            'Catálogo Comercial PDF',
+            'Stock PDF',
+            'Movimientos PDF',
+            'Reporte de Pedidos PDF',
+            'Reporte de Facturas PDF',
+            'Reporte de Presupuestos PDF',
+            'Reporte de Compras PDF',
+            'Cuentas por Cobrar PDF',
+            'Reportes de Caja',
+          ].includes(item.label ?? '') &&
+          !!item.command &&
+          !item.routerLink,
+      );
+      expect(reports).toHaveLength(10);
+      for (const report of reports) {
+        component.activeModal.set(null);
+        report.command?.({});
+        expect(component.activeModal()).not.toBeNull();
+        expect(routerMock.navigate).not.toHaveBeenCalled();
+        expect(routerMock.url).toBe('/');
+      }
+    }
   });
 
   describe('ERP permission filtering', () => {
@@ -241,7 +283,11 @@ describe('MainLayoutComponent', () => {
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
-        ['/inventory/warehouses', '/inventory/warehouses/new'].sort(),
+        [
+          '/inventory/warehouses',
+          '/inventory/warehouses/new',
+          '/inventory/warehouses/stock',
+        ].sort(),
       );
       expect(items.map((item) => item.label)).toEqual(['Inventario']);
     });
@@ -294,15 +340,18 @@ describe('MainLayoutComponent', () => {
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       const reports = items
         .find((item) => item.label === 'Ventas')
-        ?.children?.find((item) => item.label === 'Reportes');
-      expect(reports?.children).toHaveLength(2);
+        ?.children?.find((item) => item.label === 'Presupuestos');
+      expect(reports?.children?.some((item) => item.label === 'Reporte de Presupuestos PDF')).toBe(
+        true,
+      );
       authServiceMock.hasModulePermission.mockImplementation(
         (module: BusinessModule) => module === BusinessModule.SALES,
       );
       expect(
         component['filterMenuByRole'](menu(), 'OPERATOR')
           .flatMap((item) => item.children ?? [])
-          .some((item) => item.label === 'Reportes'),
+          .flatMap((item) => item.children ?? [])
+          .some((item) => item.label === 'Reporte de Presupuestos PDF'),
       ).toBe(false);
     });
   });
@@ -310,7 +359,8 @@ describe('MainLayoutComponent', () => {
   describe('module appearance', () => {
     it('inherits the module accent for nested desktop and mobile menu entries', () => {
       const item: MenuItem = {
-        label: 'Sales', icon: 'pi pi-briefcase',
+        label: 'Sales',
+        icon: 'pi pi-briefcase',
         children: [
           { label: 'Orders', icon: 'pi pi-shopping-cart', routerLink: '/sales/orders' },
           { label: 'Reports', icon: 'pi pi-chart-bar', command: vi.fn() },
@@ -323,7 +373,8 @@ describe('MainLayoutComponent', () => {
         const result = convert();
         expect(result.styleClass).toBe('cashly-module-sales');
         expect(result.items?.map((child) => child.styleClass)).toEqual([
-          'cashly-module-sales', 'cashly-module-sales',
+          'cashly-module-sales',
+          'cashly-module-sales',
         ]);
       }
     });

@@ -16,6 +16,7 @@ export interface ListNavigationDefinition {
   create?: boolean;
   createPermissions?: string[];
   actions: NavigationActionDefinition[];
+  destinations?: MenuItem[];
 }
 
 const action = (
@@ -92,10 +93,17 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     route: '/inventory/warehouses',
     singular: 'almacén',
     create: true,
+    destinations: [
+      {
+        label: 'Ver stock',
+        icon: 'pi pi-box',
+        routerLink: '/inventory/warehouses/stock',
+        requiredAction: 'READ',
+      },
+    ],
     actions: [
       action('Registrar entrada', 'EXECUTE', 'arrow-circle-down'),
       action('Registrar salida', 'EXECUTE', 'arrow-circle-up'),
-      action('Ver stock', 'READ', 'box'),
       action('Historial de movimientos', 'READ', 'history'),
       ...recordActions(),
     ],
@@ -206,12 +214,17 @@ export function addListNavigationActions(
         ? { ...item, children: addListNavigationActions(item.children, callbacks) }
         : item;
     const module = moduleForUrl(definition.route) ?? undefined;
-    const { routerLink, ...group } = item;
+    const { routerLink, children, ...group } = item;
     return {
       ...group,
       requiredModule: module,
       children: [
-        { ...item, label: `Ver ${item.label.toLocaleLowerCase()}`, requiredModule: module },
+        {
+          ...group,
+          routerLink,
+          label: `Ver ${item.label.toLocaleLowerCase()}`,
+          requiredModule: module,
+        },
         ...(definition.create
           ? [
               {
@@ -224,6 +237,11 @@ export function addListNavigationActions(
               },
             ]
           : []),
+        ...(children ?? []),
+        ...(definition.destinations ?? []).map((destination) => ({
+          ...destination,
+          requiredModule: module,
+        })),
         ...definition.actions.map(
           (entry): MenuItem => ({
             label: actionLabel(entry.label, definition.singular),

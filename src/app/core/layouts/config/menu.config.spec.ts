@@ -48,14 +48,29 @@ describe('ERP navigation', () => {
     const menu = buildMenuItems(createCallbacks());
     expect(
       menu.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
-    ).toEqual(['Presupuestos', 'Pedidos', 'Reportes']);
+    ).toEqual(['Presupuestos', 'Pedidos']);
     expect(
       menu.find((item) => item.label === 'Inventario')?.children?.map((item) => item.label),
-    ).toEqual(['Almacenes', 'Reportes']);
+    ).toEqual(['Almacenes']);
     expect(
       menu.find((item) => item.label === 'Finanzas')?.children?.map((item) => item.label),
     ).toEqual(['Facturación', 'Tesorería']);
     expect(depth(menu)).toBeLessThanOrEqual(4);
+  });
+
+  it('opens a single stock destination directly without an action picker', () => {
+    const entries = flatten(buildMenuItems(createCallbacks())).filter(
+      (item) => item.label === 'Ver stock',
+    );
+    expect(entries).toHaveLength(1);
+    expect(entries[0].routerLink).toBe('/inventory/warehouses/stock');
+    expect(entries[0].command).toBeUndefined();
+    const inventory = buildMenuItems(createCallbacks()).find((item) => item.label === 'Inventario');
+    expect(
+      inventory?.children
+        ?.find((item) => item.label === 'Almacenes')
+        ?.children?.some((item) => item.label === 'Ver stock'),
+    ).toBe(true);
   });
 
   it('should preserve every destination exactly once and expose existing cash history', () => {
@@ -75,6 +90,7 @@ describe('ERP navigation', () => {
         '/catalog/products',
         '/catalog/categories',
         '/inventory/warehouses',
+        '/inventory/warehouses/stock',
         '/finance/treasury/cash-register',
         '/finance/treasury/cash-register/history',
         '/finance/treasury/receivables',
@@ -89,6 +105,28 @@ describe('ERP navigation', () => {
       ].sort(),
     );
     expect(new Set(routes).size).toBe(routes.length);
+  });
+
+  it('places reports directly inside their owning module without report groups', () => {
+    const menu = buildMenuItems(createCallbacks());
+    const all = flatten(menu);
+    expect(all.some((item) => item.label === 'Reportes')).toBe(false);
+    for (const [owner, reports] of [
+      ['Presupuestos', ['Reporte de Presupuestos PDF']],
+      ['Pedidos', ['Reporte de Pedidos PDF']],
+      ['Compras', ['Reporte de Compras PDF']],
+      ['Productos', ['Reporte de Productos PDF', 'Catálogo Comercial PDF']],
+      ['Almacenes', ['Stock PDF', 'Movimientos PDF', 'Inventario consolidado']],
+      ['Facturas', ['Reporte de Facturas PDF']],
+      ['Caja', ['Reportes de Caja']],
+      ['Cuentas por cobrar', ['Cuentas por Cobrar PDF']],
+    ] as const) {
+      const sections = all.filter((item) => item.label === owner && item.children);
+      for (const label of reports)
+        expect(
+          sections.some((section) => section.children?.some((item) => item.label === label)),
+        ).toBe(true);
+    }
   });
 
   it('should preserve every report action exactly once', () => {
