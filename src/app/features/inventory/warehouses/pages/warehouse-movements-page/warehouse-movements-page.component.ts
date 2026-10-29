@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -71,6 +72,7 @@ const MOVEMENT_TYPE_VARIANTS: Record<string, TextBadgeVariant> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehouseMovementsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly service = inject(WarehouseApplicationService);
@@ -107,7 +109,7 @@ export class WarehouseMovementsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/inventory/warehouses', this.warehouseId()]);
+    this.navigationHistory.back(['/inventory/warehouses', this.warehouseId()]);
   }
 
   getMovementTypeLabel(type: string): string {

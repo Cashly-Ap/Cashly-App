@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,6 +26,7 @@ import { createPasswordForm } from '@features/platform/auth/pages/change-passwor
   templateUrl: './change-password-page.component.html',
 })
 export class ChangePasswordPageComponent {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private router = inject(Router);
   protected authService = inject(AuthService);
   private messageService = inject(MessageService);
@@ -58,7 +60,7 @@ export class ChangePasswordPageComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/platform/auth/configuration']);
+    this.navigationHistory.back(['/platform/auth/configuration']);
   }
 
   getPasswordError(): string {

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -37,6 +38,7 @@ import { PaymentMethodApplicationService } from '@features/finance/treasury/paym
   templateUrl: './payment-method-detail-page.component.html',
 })
 export class PaymentMethodDetailPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly service = inject(PaymentMethodApplicationService);
@@ -64,7 +66,7 @@ export class PaymentMethodDetailPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/finance/treasury/payment-methods']);
+    this.navigationHistory.back(['/finance/treasury/payment-methods']);
   }
 
   onEdit(): void {

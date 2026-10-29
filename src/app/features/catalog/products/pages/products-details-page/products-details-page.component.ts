@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -49,6 +50,7 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
   templateUrl: './products-details-page.component.html',
 })
 export class ProductsDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly authorization = inject(AuthorizationService);
   readonly canViewStock = computed(() => this.authorization.can(BusinessModule.INVENTORY));
   private service = inject(ProductApplicationService);
@@ -125,6 +127,6 @@ export class ProductsDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/catalog/products']);
+    this.navigationHistory.back(['/catalog/products']);
   }
 }

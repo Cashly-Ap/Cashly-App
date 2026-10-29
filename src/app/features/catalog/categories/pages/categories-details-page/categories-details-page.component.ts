@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -35,6 +36,7 @@ import { CategoryDetails } from '@features/catalog/categories/models/interfaces/
   templateUrl: './categories-details-page.component.html',
 })
 export class CategoriesDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private service = inject(CategoryApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -78,6 +80,6 @@ export class CategoriesDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/catalog/categories']);
+    this.navigationHistory.back(['/catalog/categories']);
   }
 }

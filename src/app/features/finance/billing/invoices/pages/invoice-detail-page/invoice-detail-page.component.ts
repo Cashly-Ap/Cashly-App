@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -58,6 +59,7 @@ import {
   templateUrl: './invoice-detail-page.component.html',
 })
 export class InvoiceDetailPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly invoiceService = inject(InvoiceApplicationService);
@@ -95,7 +97,7 @@ export class InvoiceDetailPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/finance/billing/invoices']);
+    this.navigationHistory.back(['/finance/billing/invoices']);
   }
 
   onEdit(): void {

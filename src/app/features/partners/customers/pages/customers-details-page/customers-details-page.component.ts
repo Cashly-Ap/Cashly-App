@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -42,6 +43,7 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
   templateUrl: './customers-details-page.component.html',
 })
 export class CustomersDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private service = inject(CustomerApplicationService);
   private customerApi = inject(CustomerApiService);
   private priceTypeService = inject(PriceTypeApplicationService);
@@ -121,7 +123,7 @@ export class CustomersDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/partners/customers']);
+    this.navigationHistory.back(['/partners/customers']);
   }
 
   getTypeLabel(type: string): string {

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -37,6 +38,7 @@ import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/
   templateUrl: './suppliers-details-page.component.html',
 })
 export class SuppliersDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private service = inject(SupplierApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -80,7 +82,7 @@ export class SuppliersDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/partners/suppliers']);
+    this.navigationHistory.back(['/partners/suppliers']);
   }
 
   getTypeLabel(type: string): string {

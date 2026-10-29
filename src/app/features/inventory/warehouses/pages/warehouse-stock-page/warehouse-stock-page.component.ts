@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -44,6 +45,7 @@ const PAGE_SIZE = 10;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehouseStockPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly service = inject(WarehouseApplicationService);
@@ -81,7 +83,7 @@ export class WarehouseStockPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/inventory/warehouses', this.warehouseId()]);
+    this.navigationHistory.back(['/inventory/warehouses', this.warehouseId()]);
   }
 
   private load(id: string): void {

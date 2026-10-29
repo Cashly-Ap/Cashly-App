@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -45,6 +46,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehousesDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly service = inject(WarehouseApplicationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -116,7 +118,7 @@ export class WarehousesDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/inventory/warehouses']);
+    this.navigationHistory.back(['/inventory/warehouses']);
   }
 
   private loadWarehouse(id: string): void {

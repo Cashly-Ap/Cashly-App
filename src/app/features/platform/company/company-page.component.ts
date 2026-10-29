@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -41,6 +42,7 @@ import { CompanyService } from './company.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CompanyPageComponent {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   readonly service = inject(CompanyService);
   private readonly messages = inject(MessageService);
   private readonly router = inject(Router);
@@ -225,6 +227,6 @@ export class CompanyPageComponent {
     this.previewBlobUrl = null;
   }
   cancel(): void {
-    void this.router.navigate(['/platform/company']);
+    this.navigationHistory.back(['/platform/company']);
   }
 }

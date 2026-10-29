@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -36,6 +37,7 @@ import { CreditNoteApplicationService } from '@features/finance/billing/credit-n
   templateUrl: './credit-note-detail-page.component.html',
 })
 export class CreditNoteDetailPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly service = inject(CreditNoteApplicationService);
@@ -63,7 +65,7 @@ export class CreditNoteDetailPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/finance/billing/credit-notes']);
+    this.navigationHistory.back(['/finance/billing/credit-notes']);
   }
 
   onDelete(): void {

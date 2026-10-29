@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { switchMap, of, finalize, tap } from 'rxjs';
 import { UserPhotoService } from '../../services/api/user-photo.service';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
@@ -41,6 +42,7 @@ import { createUserNameForm } from './change-username-page.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeUsernamePageComponent {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
   private readonly profiles = inject(SelfProfileService);
@@ -176,6 +178,6 @@ export class ChangeUsernamePageComponent {
       });
   }
   onCancel(): void {
-    if (!this.saving()) void this.router.navigate(['/platform/auth/configuration']);
+    if (!this.saving()) this.navigationHistory.back(['/platform/auth/configuration']);
   }
 }

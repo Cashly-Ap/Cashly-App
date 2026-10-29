@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -45,6 +46,7 @@ import {
   templateUrl: './order-detail-page.component.html',
 })
 export class OrderDetailPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly orderService = inject(OrderApplicationService);
@@ -73,7 +75,7 @@ export class OrderDetailPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/sales/orders']);
+    this.navigationHistory.back(['/sales/orders']);
   }
 
   onEdit(): void {

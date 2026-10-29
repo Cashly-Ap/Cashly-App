@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
@@ -52,6 +53,7 @@ import { ChangeEmailDialogComponent } from '@features/platform/auth/user/compone
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private service = inject(UserApplicationService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -100,7 +102,7 @@ export class UsersDetailsPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/platform/users']);
+    this.navigationHistory.back(['/platform/users']);
   }
 
   onEmailChanged(newEmail: string): void {

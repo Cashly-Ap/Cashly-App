@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
@@ -15,4 +16,5 @@ import { PdfViewerDialogComponent } from '@core/pdf-viewer';
 })
 export class App {
   private readonly theme = inject(ThemeService);
+  private readonly navigationHistory = inject(NavigationHistoryService);
 }

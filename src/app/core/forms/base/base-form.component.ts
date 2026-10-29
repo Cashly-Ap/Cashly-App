@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Directive, OnInit, OnDestroy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
@@ -27,6 +28,7 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
   protected fb = inject(FormBuilder);
   protected route = inject(ActivatedRoute);
   protected router = inject(Router);
+  protected navigationHistory = inject(NavigationHistoryService);
   protected pendingTabsService = inject(PendingTabsService);
   protected destroyRef = inject(DestroyRef);
 
@@ -182,7 +184,7 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    this.router.navigate([this.getConfig().routeBase]);
+    this.navigationHistory.back([this.getConfig().routeBase]);
   }
 
   isEditMode(): boolean {

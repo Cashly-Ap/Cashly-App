@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -56,6 +57,7 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
   templateUrl: './cash-register-history-page.component.html',
 })
 export class CashRegisterHistoryPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly service = inject(CashRegisterApplicationService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -144,7 +146,7 @@ export class CashRegisterHistoryPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/finance/treasury/cash-register']);
+    this.navigationHistory.back(['/finance/treasury/cash-register']);
   }
 
   getStatusLabel(status: string): string {

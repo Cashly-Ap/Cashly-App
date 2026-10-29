@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -24,6 +25,7 @@ import { createCommissionDeductionForm } from '@features/platform/auth/pages/cha
   templateUrl: './change-commission-deduction-page.component.html',
 })
 export class ChangeCommissionDeductionPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private router = inject(Router);
   protected authService = inject(AuthService);
   private messageService = inject(MessageService);
@@ -65,7 +67,7 @@ export class ChangeCommissionDeductionPageComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/platform/auth/configuration']);
+    this.navigationHistory.back(['/platform/auth/configuration']);
   }
 
   getCommissionDeductionError(): string {

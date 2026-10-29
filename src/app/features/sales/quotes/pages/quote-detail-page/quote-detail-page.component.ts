@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -45,6 +46,7 @@ import {
   templateUrl: './quote-detail-page.component.html',
 })
 export class QuoteDetailPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly quoteService = inject(QuoteApplicationService);
@@ -73,7 +75,7 @@ export class QuoteDetailPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate(['/sales/quotes']);
+    this.navigationHistory.back(['/sales/quotes']);
   }
 
   onEdit(): void {

@@ -1,3 +1,4 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -278,6 +279,12 @@ describe('ProductsDetailsPageComponent', () => {
     component.product.set(null);
     component.onToggleActive();
     expect(mockService.toggleActive).not.toHaveBeenCalled();
+  });
+
+  it('returns through navigation history instead of forcing the list destination', () => {
+    const back = vi.spyOn(TestBed.inject(NavigationHistoryService), 'back').mockImplementation(() => undefined);
+    component.onBack();
+    expect(back).toHaveBeenCalledWith(['/catalog/products']);
   });
 
   it('should navigate to /products on onBack', () => {
