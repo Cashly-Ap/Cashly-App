@@ -1,3 +1,4 @@
+import { LIST_NAVIGATION_DEFINITIONS } from './list-navigation.config';
 import { describe, expect, it, vi } from 'vitest';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { MenuItem } from '@core/layouts/models';
@@ -5,6 +6,9 @@ import { buildMenuItems, MenuCallbacks } from '@app/core/layouts/config/menu.con
 
 function createCallbacks(): MenuCallbacks {
   return {
+    openListAction: vi.fn(),
+    openCustomerEditPicker: vi.fn(),
+    openCustomerBalancePicker: vi.fn(),
     openCatalogModal: vi.fn(),
     openCommercialCatalogModal: vi.fn(),
     openStockModal: vi.fn(),
@@ -58,7 +62,7 @@ describe('ERP navigation', () => {
     const routes = flatten(buildMenuItems(createCallbacks())).flatMap((item) =>
       item.routerLink ? [item.routerLink] : [],
     );
-    expect(routes.sort()).toEqual(
+    expect(routes.filter((route) => !route.endsWith('/new')).sort()).toEqual(
       [
         '/analytics/dashboard',
         '/partners/customers',
@@ -89,18 +93,59 @@ describe('ERP navigation', () => {
 
   it('should preserve every report action exactly once', () => {
     const callbacks = createCallbacks();
-    const actions = flatten(buildMenuItems(callbacks)).filter((item) => item.command);
+    const { openListAction, openCustomerEditPicker, openCustomerBalancePicker, ...reports } =
+      callbacks;
+    const actions = flatten(buildMenuItems(callbacks)).filter((item) =>
+      Object.values(reports).some((callback) => callback === item.command),
+    );
     expect(actions).toHaveLength(10);
     actions.forEach((item) => item.command?.());
-    Object.values(callbacks).forEach((callback) => expect(callback).toHaveBeenCalledOnce());
+    Object.values(reports).forEach((callback) => expect(callback).toHaveBeenCalledOnce());
   });
   it('assigns every report action its business owner and exact EXPORT action', () => {
-    const reports = flatten(buildMenuItems(createCallbacks())).filter((item) => item.command);
+    const reports = flatten(buildMenuItems(createCallbacks())).filter(
+      (item) => item.requiredAction === 'EXPORT',
+    );
     for (const item of reports) {
       expect(item.requiredModule).toBeDefined();
       expect(item.requiredAction).toBe('EXPORT');
     }
   });
+  it('does not expose delete actions in the navbar', () => {
+    const items = flatten(buildMenuItems(createCallbacks()));
+    expect(
+      items.some((item) => item.requiredAction === 'DELETE' || /eliminar|borrar/i.test(item.label)),
+    ).toBe(false);
+  });
+
+  it('exposes every list action and create destination', () => {
+    const callbacks = createCallbacks();
+    const items = flatten(buildMenuItems(callbacks));
+    items.filter((item) => item.command).forEach((item) => item.command?.());
+    for (const definition of LIST_NAVIGATION_DEFINITIONS) {
+      if (definition.create)
+        expect(
+          items.some(
+            (item) =>
+              item.routerLink === `${definition.route}/new` && item.requiredAction === 'CREATE',
+          ),
+        ).toBe(true);
+      for (const action of definition.actions) {
+        if (definition.route === '/partners/customers' && action.label === 'Editar') {
+          expect(callbacks.openCustomerEditPicker).toHaveBeenCalledOnce();
+        } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
+          expect(callbacks.openCustomerBalancePicker).toHaveBeenCalledOnce();
+        } else {
+          expect(callbacks.openListAction).toHaveBeenCalledWith(
+            definition.route,
+            action.label,
+            action.queryParams,
+          );
+        }
+      }
+    }
+  });
+
   it('uses inventory export for the inventory catalog report and catalog export for the commercial catalog', () => {
     const callbacks = createCallbacks();
     const items = flatten(buildMenuItems(callbacks));
@@ -111,6 +156,4 @@ describe('ERP navigation', () => {
       items.find((item) => item.command === callbacks.openCommercialCatalogModal)?.requiredModule,
     ).toBe(BusinessModule.CATALOG);
   });
-
-
 });

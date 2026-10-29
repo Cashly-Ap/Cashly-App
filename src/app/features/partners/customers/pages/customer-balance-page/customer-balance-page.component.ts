@@ -1,12 +1,17 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,7 +38,7 @@ import { CreditNoteApiService } from '@features/finance/billing/credit-notes/ser
 import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
 import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
 import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
-import { catchError, forkJoin, of } from 'rxjs';
+import { catchError, distinctUntilChanged, forkJoin, map, of, Subscription } from 'rxjs';
 
 interface BalanceTransactionFilters {
   dateFrom: Date | null;
@@ -57,6 +62,7 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
   selector: 'app-customer-balance-page',
   standalone: true,
   imports: [
+    CustomerPickerDialogComponent,
     ShortcutDirective,
     CommonModule,
     FormsModule,
@@ -75,7 +81,12 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerBalancePageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+  private customerRequests = new Subscription();
+  private readonly customerId = signal<string | null>(null);
+  readonly customerPickerVisible = signal(false);
   private readonly router = inject(Router);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly customerApi = inject(CustomerApiService);
@@ -158,18 +169,39 @@ export class CustomerBalancePageComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const customerId = this.route.snapshot.paramMap.get('id');
-    if (!customerId) {
-      this.router.navigate(['/partners/customers']);
-      return;
-    }
-
-    this.loadCustomerInfo(customerId);
-    this.loadAccountStatement(customerId);
+    this.destroyRef.onDestroy(() => this.customerRequests.unsubscribe());
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('id')),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((customerId) => {
+        this.customerRequests.unsubscribe();
+        this.customerRequests = new Subscription();
+        this.customerId.set(customerId);
+        this.customerName.set('');
+        this.customerAlias.set('');
+        this.balance.set(null);
+        this.pendingBalance.set(0);
+        this.allTransactions.set([]);
+        this.clearFilters();
+        if (!customerId) {
+          void this.router.navigate(['/partners/customers']);
+          return;
+        }
+        this.customerRequests.add(this.loadCustomerInfo(customerId));
+        this.customerRequests.add(this.loadAccountStatement(customerId));
+      });
   }
 
-  private loadCustomerInfo(id: string): void {
-    this.customerApi.getById(id).subscribe({
+  onCustomerSelected(customer: CustomerList): void {
+    this.customerPickerVisible.set(false);
+    void this.router.navigate(['/partners/customers', customer.id, 'balance']);
+  }
+
+  private loadCustomerInfo(id: string): Subscription {
+    return this.customerApi.getById(id).subscribe({
       next: (customer) => {
         this.customerName.set(customer.legalName);
         this.customerAlias.set(customer.alias ?? '');
@@ -185,9 +217,9 @@ export class CustomerBalancePageComponent implements OnInit {
     });
   }
 
-  private loadAccountStatement(id: string): void {
+  private loadAccountStatement(id: string): Subscription {
     this.transactionsLoading.set(true);
-    forkJoin({
+    return forkJoin({
       balance: this.balanceApi.getBalance(id).pipe(catchError(() => of(null))),
       balanceTransactions: this.balanceApi
         .getTransactions(id, 0, 1000)
@@ -374,11 +406,11 @@ export class CustomerBalancePageComponent implements OnInit {
   }
 
   onBack(): void {
-    const customerId = this.route.snapshot.paramMap.get('id');
+    const customerId = this.customerId();
     if (customerId) {
-      this.router.navigate(['/partners/customers', customerId]);
+      this.navigationHistory.back(['/partners/customers', customerId]);
     } else {
-      this.router.navigate(['/partners/customers']);
+      this.navigationHistory.back(['/partners/customers']);
     }
   }
 }

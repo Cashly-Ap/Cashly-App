@@ -2,9 +2,9 @@ import { AccessManagementService } from '../../../authorization/services/access-
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { UsersListPageComponent } from '@features/platform/auth/user/pages/users-list-page/users-list-page.component';
 import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
@@ -16,6 +16,7 @@ describe('UsersListPageComponent', () => {
   let fixture: ComponentFixture<UsersListPageComponent>;
   let mockUserService: Partial<UserApplicationService>;
   let router: Router;
+  const queryParams = new BehaviorSubject(convertToParamMap({}));
 
   const mockUser: UserList = {
     deletable: true,
@@ -35,6 +36,7 @@ describe('UsersListPageComponent', () => {
   };
 
   beforeEach(async () => {
+    queryParams.next(convertToParamMap({}));
     mockUserService = {
       loadUsers: vi.fn().mockReturnValue(of([mockUser])),
       deleteUser: vi.fn().mockReturnValue(of(undefined)),
@@ -53,6 +55,7 @@ describe('UsersListPageComponent', () => {
         },
         { provide: AuthorizationService, useValue: { can: () => true } },
         provideRouter([]),
+        { provide: ActivatedRoute, useValue: { queryParamMap: queryParams } },
         { provide: UserApplicationService, useValue: mockUserService },
         ConfirmationService,
         MessageService,
@@ -105,6 +108,20 @@ describe('UsersListPageComponent', () => {
     component.onSearch('nonexistent');
     expect(mockUserService.loadUsers).toHaveBeenCalledWith(
       expect.objectContaining({ search: 'nonexistent' }),
+    );
+  });
+
+  it('includes inactive users from other roles in the navbar selector', async () => {
+    fixture.detectChanges();
+    component.filterActive.set('true');
+    component.filterRole.set('role-1');
+    queryParams.next(convertToParamMap({ navAction: 'Editar' }));
+    await Promise.resolve();
+    expect(mockUserService.loadUsers).toHaveBeenLastCalledWith(
+      expect.not.objectContaining({ active: expect.anything() }),
+    );
+    expect(mockUserService.loadUsers).toHaveBeenLastCalledWith(
+      expect.not.objectContaining({ role: expect.anything() }),
     );
   });
 

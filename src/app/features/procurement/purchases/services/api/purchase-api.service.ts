@@ -1,3 +1,4 @@
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -15,6 +16,7 @@ export interface CancelPurchaseRequest {
 }
 
 export interface PurchaseFilters {
+  action?: DocumentListAction;
   search?: string;
   status?: string;
   dateFrom?: string;
@@ -95,6 +97,7 @@ export class PurchaseApiService {
 
   getAll(filters?: PurchaseFilters): Observable<PurchaseList[]> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.status) params = params.set('status', filters.status);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);

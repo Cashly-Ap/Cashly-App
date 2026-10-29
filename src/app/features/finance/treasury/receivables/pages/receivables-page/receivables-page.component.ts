@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import {
   ListActionButtonsComponent,
   ListAction,
@@ -107,6 +108,34 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly hasFilteredResults = computed(
     () => !this.service.loading() && this.service.totalCustomers() === 0 && !!this.searchTerm(),
   );
+
+  private readonly navigationAction = signal<ReceivablesSearchParams['action']>(undefined);
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.service.customers(),
+    loading: () => this.service.loading(),
+    total: () => this.service.totalCustomers(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    onActionChange: (label) => {
+      this.navigationAction.set(
+        label === 'Pagar todo'
+          ? 'PAY_ALL'
+          : label === 'Pago parcial'
+            ? 'PAY_PARTIAL'
+            : label === 'Reintegro'
+              ? 'REFUND'
+              : undefined,
+      );
+      if (label === null) this.loadCustomers();
+    },
+    search: (term) => this.onSearch(term),
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.customerName,
+    description: (record) => record.customerRif,
+    actions: (record) => this.customerActions(record),
+    acceptsAction: (label) =>
+      ['Ver deuda', 'Pagar todo', 'Pago parcial', 'Reintegro', 'Generar anticipo'].includes(label),
+  });
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
@@ -362,6 +391,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     const params: ReceivablesSearchParams = {
       page: Math.floor(this.first() / this.rows()),
       size: this.rows(),
+      action: this.navigationAction(),
     };
     if (this.searchTerm()) {
       params.search = this.searchTerm();

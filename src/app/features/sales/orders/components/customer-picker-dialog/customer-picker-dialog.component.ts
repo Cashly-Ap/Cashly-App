@@ -46,8 +46,10 @@ export class CustomerPickerDialogComponent {
   private readonly customerApi = inject(CustomerApiService);
 
   readonly visible = input<boolean>(false);
+  readonly description = input('Busque y seleccione el cliente para el pedido');
   readonly hasExistingItems = input<boolean>(false);
   readonly multiple = input<boolean>(false);
+  readonly requireConfirmation = input(false);
   readonly initialSelected = input<CustomerList[]>([]);
   readonly customerSelected = output<CustomerList>();
   readonly customersSelected = output<CustomerList[]>();
@@ -60,6 +62,13 @@ export class CustomerPickerDialogComponent {
   readonly currentPage = signal<number>(0);
   readonly loading = signal<boolean>(false);
   readonly selected = signal<CustomerList[]>([]);
+
+  readonly confirmedCustomer = computed(() => {
+    const customer = this.selected()[0];
+    return !this.loading() && customer && this.customers().some((item) => item.id === customer.id)
+      ? customer
+      : null;
+  });
 
   readonly filterType = signal<CustomerType | null>(null);
 
@@ -106,6 +115,10 @@ export class CustomerPickerDialogComponent {
 
   onSelect(customer: CustomerList): void {
     if (!this.multiple()) {
+      if (this.requireConfirmation()) {
+        this.selected.set([customer]);
+        return;
+      }
       this.customerSelected.emit(customer);
       return;
     }
@@ -117,7 +130,17 @@ export class CustomerPickerDialogComponent {
   }
 
   isSelected(customer: CustomerList): boolean {
-    return this.multiple() && this.selected().some((item) => item.id === customer.id);
+    return (
+      (this.multiple() || this.requireConfirmation()) &&
+      this.selected().some((item) => item.id === customer.id)
+    );
+  }
+
+  confirmSingle(): void {
+    const customer = this.confirmedCustomer();
+    if (this.requireConfirmation() && !this.multiple() && customer) {
+      this.customerSelected.emit(customer);
+    }
   }
 
   confirmMultiple(): void {
@@ -143,6 +166,7 @@ export class CustomerPickerDialogComponent {
   }
 
   private load(page: number): void {
+    if (this.requireConfirmation() && !this.multiple()) this.selected.set([]);
     this.loading.set(true);
     this.customerApi
       .getForPicker({

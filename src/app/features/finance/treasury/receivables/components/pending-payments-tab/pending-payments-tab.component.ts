@@ -1,6 +1,9 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
+import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
+  computed,
   inject,
   signal,
   ChangeDetectionStrategy,
@@ -68,6 +71,74 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
   readonly voucherViewerUrl = signal<string | null>(null);
   private readonly handledFocusId = signal<string | null>(null);
 
+  private readonly navigationSearch = signal('');
+  private readonly navigationFirst = signal(0);
+  private readonly navigationRows = signal(10);
+  private readonly navigationPayments = computed(() => {
+    const term = this.navigationSearch().trim().toLocaleLowerCase();
+    return this.payments().filter((payment) =>
+      `${payment.paymentNumber} ${payment.customerName} ${payment.invoiceNumber} ${payment.referenceNumber ?? ''}`
+        .toLocaleLowerCase()
+        .includes(term),
+    );
+  });
+  private readonly navigationAction = signal<'APPROVE' | 'REJECT' | undefined>(undefined);
+  private readonly listNavigation = connectListNavigation({
+    records: () =>
+      this.navigationPayments().slice(
+        this.navigationFirst(),
+        this.navigationFirst() + this.navigationRows(),
+      ),
+    loading: () => this.loading(),
+    total: () => this.navigationPayments().length,
+    first: () => this.navigationFirst(),
+    rows: () => this.navigationRows(),
+    onActionChange: (label) => {
+      this.navigationAction.set(
+        label === 'Aprobar pago' ? 'APPROVE' : label === 'Rechazar pago' ? 'REJECT' : undefined,
+      );
+      if (label === null) this.load();
+    },
+    search: (term) => {
+      this.load();
+      this.navigationSearch.set(term);
+      this.navigationFirst.set(0);
+    },
+    paginate: (event) => {
+      this.navigationFirst.set(event.first);
+      this.navigationRows.set(event.rows);
+    },
+    label: (record) => record.paymentNumber,
+    description: (record) => `${record.customerName} · ${record.invoiceNumber}`,
+    actions: (record) => this.navigationActions(record),
+    acceptsAction: (label) => ['Aprobar pago', 'Rechazar pago', 'Ver justificante'].includes(label),
+  });
+
+  private navigationActions(payment: PendingPayment): ListAction[] {
+    return [
+      {
+        label: 'Aprobar pago',
+        icon: 'pi pi-check',
+        requiredAction: 'EXECUTE',
+        command: () => this.openApprove(payment),
+      },
+      {
+        label: 'Rechazar pago',
+        icon: 'pi pi-times',
+        requiredAction: 'EXECUTE',
+        danger: true,
+        command: () => this.openReject(payment),
+      },
+      {
+        label: 'Ver justificante',
+        icon: 'pi pi-paperclip',
+        requiredAction: 'READ',
+        disabled: !payment.voucherUrl,
+        command: () => this.openVoucher(payment),
+      },
+    ];
+  }
+
   constructor() {
     effect(() => {
       const focusId = this.focusPaymentId();
@@ -92,7 +163,7 @@ export class PendingPaymentsTabComponent implements OnInit, OnDestroy {
   load(): void {
     this.loading.set(true);
     this.api
-      .listPendingPayments()
+      .listPendingPayments(this.navigationAction())
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

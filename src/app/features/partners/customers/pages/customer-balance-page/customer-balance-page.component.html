@@ -7,13 +7,23 @@
           title="Saldo del Cliente"
           subtitle="Resumen de saldo y movimientos"
         />
-        <p-button
-          label="Volver"
-          icon="pi pi-arrow-left"
-          severity="contrast"
-          styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
-          (onClick)="onBack()"
-        />
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <p-button
+            label="Buscar cliente"
+            icon="pi pi-search"
+            severity="secondary"
+            [outlined]="true"
+            styleClass="w-full sm:w-auto"
+            (onClick)="customerPickerVisible.set(true)"
+          />
+          <p-button
+            label="Volver"
+            icon="pi pi-arrow-left"
+            severity="contrast"
+            styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
+            (onClick)="onBack()"
+          />
+        </div>
       </div>
 
       <app-balance-summary-card
@@ -181,3 +191,13 @@
     </div>
   </div>
 </div>
+
+@if (customerPickerVisible()) {
+  <app-customer-picker-dialog
+    [requireConfirmation]="true"
+    [visible]="true"
+    description="Busque y seleccione el cliente para consultar su saldo"
+    (customerSelected)="onCustomerSelected($event)"
+    (cancelled)="customerPickerVisible.set(false)"
+  />
+}

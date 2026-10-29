@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -102,6 +103,30 @@ export class DebitNoteListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.dateFrom() || this.dateTo() || !!this.searchTerm()),
   );
+
+  private readonly navigationRecords = computed(() => {
+    const term = this.searchTerm().trim().toLocaleLowerCase();
+    return this.debitNotes().filter((record) =>
+      `${record.noteNumber} ${record.customerName ?? ''}`.toLocaleLowerCase().includes(term),
+    );
+  });
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.navigationRecords().slice(this.first(), this.first() + this.rows()),
+    loading: () => this.loading(),
+    total: () => this.navigationRecords().length,
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.dateFrom.set(null);
+      this.dateTo.set(null);
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.noteNumber,
+    description: (record) => record.customerName,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();

@@ -140,6 +140,16 @@ describe('InvoiceApiService', () => {
     httpMock.verify();
   });
 
+  it.each(['EDIT', 'CONFIRM', 'CANCEL', 'CONVERT_TO_ORDER', 'CONVERT_TO_INVOICE', 'DUPLICATE'] as const)(
+    'passes backend eligibility action %s together with search', (action) => {
+      service.getAll({ action, search: 'document' }).subscribe();
+      const request = httpMock.expectOne((req) => req.url === '/api/invoices');
+      expect(request.request.params.get('action')).toBe(action);
+      expect(request.request.params.get('search')).toBe('document');
+      request.flush([]);
+    },
+  );
+
   describe('getAll()', () => {
     it('should GET /api/invoices without filters', () => {
       service.getAll().subscribe((result) => {

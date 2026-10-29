@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -104,6 +105,21 @@ export class PaymentMethodListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.filterActive() !== 'true' || !!this.searchTerm()),
   );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.paymentMethods(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.name,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();

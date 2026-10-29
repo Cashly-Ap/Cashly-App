@@ -1,3 +1,4 @@
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
@@ -12,6 +13,7 @@ import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/i
 import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 
 export interface InvoiceFilters {
+  action?: DocumentListAction;
   search?: string;
   statuses?: string[];
   returnStatus?: string[];
@@ -139,6 +141,7 @@ export class InvoiceApiService {
 
   getAll(filters?: InvoiceFilters): Observable<InvoiceList[]> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.statuses && filters.statuses.length > 0) {
       filters.statuses.forEach((s) => (params = params.append('status', s)));

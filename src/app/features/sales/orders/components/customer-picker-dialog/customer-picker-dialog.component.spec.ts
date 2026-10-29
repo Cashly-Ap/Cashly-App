@@ -12,6 +12,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 @Component({
   template: `<app-customer-picker-dialog
     [visible]="visible"
+    [requireConfirmation]="requireConfirmation"
     (customerSelected)="onCustomerSelected($event)"
     (cancelled)="onCancelled()"
   ></app-customer-picker-dialog>`,
@@ -19,6 +20,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 })
 class HostComponent {
   visible = false;
+  requireConfirmation = false;
   onCustomerSelected = vi.fn();
   onCancelled = vi.fn();
 }
@@ -131,6 +133,37 @@ describe('CustomerPickerDialogComponent', () => {
   it('should emit cancelled on cancel', () => {
     dialog.onCancel();
     expect(hostComponent.onCancelled).toHaveBeenCalled();
+  });
+
+  it('waits for acceptance after selecting a customer when confirmation is required', () => {
+    hostComponent.requireConfirmation = true;
+    fixture.detectChanges();
+    dialog.customers.set(mockCustomers);
+    dialog.onSelect(mockCustomers[0]);
+    expect(hostComponent.onCustomerSelected).not.toHaveBeenCalled();
+    expect(dialog.isSelected(mockCustomers[0])).toBe(true);
+    dialog.confirmSingle();
+    expect(hostComponent.onCustomerSelected).toHaveBeenCalledWith(mockCustomers[0]);
+  });
+
+  it('clears a pending selection when searching and does not accept stale results', () => {
+    hostComponent.requireConfirmation = true;
+    fixture.detectChanges();
+    dialog.customers.set(mockCustomers);
+    dialog.onSelect(mockCustomers[0]);
+    dialog.onSearchChange('Another customer');
+    expect(dialog.selected()).toEqual([]);
+    dialog.confirmSingle();
+    expect(hostComponent.onCustomerSelected).not.toHaveBeenCalled();
+  });
+
+  it('does not emit a customer on cancel after selection', () => {
+    hostComponent.requireConfirmation = true;
+    fixture.detectChanges();
+    dialog.onSelect(mockCustomers[0]);
+    dialog.onCancel();
+    expect(hostComponent.onCustomerSelected).not.toHaveBeenCalled();
+    expect(hostComponent.onCancelled).toHaveBeenCalledOnce();
   });
 
   it('should emit customerSelected on select', () => {

@@ -1,9 +1,9 @@
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InvoiceListPageComponent } from '@features/finance/billing/invoices/pages/invoice-list-page/invoice-list-page.component';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
@@ -17,6 +17,7 @@ describe('InvoiceListPageComponent', () => {
   let mockService: Partial<InvoiceApplicationService>;
   let router: Router;
   let messageService: MessageService;
+  const queryParams = new BehaviorSubject(convertToParamMap({}));
 
   const mockInvoices = [
     {
@@ -76,6 +77,7 @@ describe('InvoiceListPageComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
+            queryParamMap: queryParams,
             snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
           },
         },
@@ -99,6 +101,7 @@ describe('InvoiceListPageComponent', () => {
 
   beforeEach(() => {
     (TestBed as TestBedStatic).resetTestingModule();
+    queryParams.next(convertToParamMap({}));
     configureTestBed();
     createComponent();
   });
@@ -137,6 +140,51 @@ describe('InvoiceListPageComponent', () => {
       component.filterPaymentType.set('CASH');
       expect(component.activeFilterCount()).toBe(2);
     });
+  });
+
+  it('searches every invoice status from the navbar without retaining list filters', async () => {
+    component.selectedStatus.set('DRAFT');
+    component.filterDateFrom.set(new Date('2026-01-01'));
+    component.filterPaymentType.set('CASH');
+    queryParams.next(convertToParamMap({ navAction: 'Ver detalle' }));
+    await Promise.resolve();
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({
+      statuses: Object.values(InvoiceStatus),
+      orderBy: 'createdAt',
+      orderDir: 'desc',
+    });
+  });
+
+  it('searches cancellable invoice states after a draft-only list filter', async () => {
+    component.selectedStatus.set('DRAFT');
+    queryParams.next(convertToParamMap({ navAction: 'Cancelar' }));
+    await Promise.resolve();
+    expect(component.selectedStatus()).toBe('ALL');
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({
+      action: 'CANCEL',
+      orderBy: 'createdAt',
+      orderDir: 'desc',
+    });
+  });
+
+  it.each([['Editar', 'EDIT'], ['Confirmar', 'CONFIRM'], ['Cancelar', 'CANCEL'], ['Duplicar', 'DUPLICATE']])('uses backend eligibility for %s and removes it after closing', async (label, action) => {
+    queryParams.next(convertToParamMap({ navAction: label }));
+    await Promise.resolve();
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, orderBy: 'createdAt', orderDir: 'desc' });
+    component.onSearch('FAC');
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, search: 'FAC', orderBy: 'createdAt', orderDir: 'desc' });
+    queryParams.next(convertToParamMap({}));
+    expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
+  });
+
+  it('cancels outdated list requests before loading records for a new action', async () => {
+    const cancelled = vi.fn();
+    vi.mocked(mockService.loadAll!).mockReturnValueOnce(new Observable(() => cancelled));
+    component.onSearch('old search');
+    queryParams.next(convertToParamMap({ navAction: 'Confirmar' }));
+    await Promise.resolve();
+    expect(cancelled).toHaveBeenCalledOnce();
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action: 'CONFIRM', orderBy: 'createdAt', orderDir: 'desc' });
   });
 
   describe('navigation', () => {

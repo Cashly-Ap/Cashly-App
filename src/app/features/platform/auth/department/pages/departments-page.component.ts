@@ -1,3 +1,5 @@
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -84,6 +86,7 @@ import { BusinessModule } from '../../user/models/enums/business-module.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DepartmentsPageComponent {
+  private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   readonly view = signal<'list' | 'detail' | 'form'>('list');
@@ -121,7 +124,7 @@ export class DepartmentsPageComponent {
     return this.form.controls[name];
   }
   onBack(): void {
-    this.router.navigate(['/platform/departments']);
+    this.navigationHistory.back(['/platform/departments']);
   }
   onCreate(): void {
     this.router.navigate(['/platform/departments', 'new']);
@@ -189,7 +192,7 @@ export class DepartmentsPageComponent {
         summary: 'Error',
         detail: 'No se encontró el departamento.',
       });
-      this.onBack();
+      void this.router.navigate(['/platform/departments']);
       return;
     }
     this.edit(item);
@@ -217,6 +220,22 @@ export class DepartmentsPageComponent {
           this.orderDir(),
       );
   });
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.pageItems(),
+    loading: () => this.loading(),
+    total: () => this.filteredItems().length,
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.name,
+    description: (record) => record.description,
+    actions: (record) => this.actionsFor(record),
+  });
+
   constructor() {
     this.view.set(this.route.snapshot.data['view'] ?? 'list');
     this.load();
@@ -233,7 +252,7 @@ export class DepartmentsPageComponent {
       error: (error) => {
         this.loading.set(false);
         this.fail(error);
-        if (this.view() !== 'list') this.onBack();
+        if (this.view() !== 'list') void this.router.navigate(['/platform/departments']);
       },
     });
   }
@@ -271,7 +290,7 @@ export class DepartmentsPageComponent {
           summary: 'Guardado',
           detail: 'Registro guardado correctamente.',
         });
-        this.onBack();
+        void this.router.navigate(['/platform/departments']);
       },
       error: (error) => {
         this.busy.set(false);

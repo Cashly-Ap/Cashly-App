@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 import { By } from '@angular/platform-browser';
-import { NEVER, of } from 'rxjs';
+import { BehaviorSubject, NEVER, of, Subject } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Popover } from 'primeng/popover';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -14,11 +14,15 @@ import { CreditNoteApiService } from '@features/finance/billing/credit-notes/ser
 import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
 import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
 import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
+import { CustomerBalanceResponse } from '@features/partners/customers/models/interfaces/customer-balance.interface';
 import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 
 describe('CustomerBalancePageComponent', () => {
   let fixture: ComponentFixture<CustomerBalancePageComponent>;
-  let customerApi: { getById: ReturnType<typeof vi.fn> };
+  let routeParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
+  let customerApi: { getById: ReturnType<typeof vi.fn>; getForPicker: ReturnType<typeof vi.fn> };
   let balanceApi: {
     getBalance: ReturnType<typeof vi.fn>;
     getTransactions: ReturnType<typeof vi.fn>;
@@ -30,8 +34,12 @@ describe('CustomerBalancePageComponent', () => {
   let returnApi: { getAll: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
+    routeParams = new BehaviorSubject(convertToParamMap({ id: 'customer-001' }));
     customerApi = {
       getById: vi.fn().mockReturnValue(NEVER),
+      getForPicker: vi
+        .fn()
+        .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
     };
     balanceApi = {
       getBalance: vi.fn().mockReturnValue(NEVER),
@@ -57,12 +65,79 @@ describe('CustomerBalancePageComponent', () => {
         { provide: ReturnApiService, useValue: returnApi },
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: { get: () => 'customer-001' } } },
+          useValue: {
+            paramMap: routeParams,
+            snapshot: { paramMap: { get: () => 'customer-001' } },
+          },
         },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomerBalancePageComponent);
+  });
+
+  it('opens the shared customer selector from the balance page', () => {
+    const router = TestBed.inject(Router);
+    const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
+    const searchButton = Array.from<HTMLButtonElement>(
+      fixture.nativeElement.querySelectorAll('button'),
+    ).find((button) => button.textContent?.includes('Buscar cliente'));
+    expect(searchButton).toBeDefined();
+    searchButton?.click();
+    fixture.detectChanges();
+    const picker = fixture.debugElement.query(By.directive(CustomerPickerDialogComponent));
+    expect(picker).not.toBeNull();
+    picker.componentInstance.customerSelected.emit({
+      id: 'customer-002',
+      code: 2,
+      alias: 'Segundo',
+      legalName: 'Segundo cliente',
+      rif: '',
+      type: CustomerType.INDIVIDUAL,
+      active: true,
+      deletable: true,
+    });
+    expect(navigate).toHaveBeenCalledWith(['/partners/customers', 'customer-002', 'balance']);
+    fixture.detectChanges();
+    expect(fixture.debugElement.query(By.directive(CustomerPickerDialogComponent))).toBeNull();
+  });
+
+  it('loads a new customer when the balance route changes and discards stale responses', () => {
+    const firstBalance = new Subject<CustomerBalanceResponse>();
+    const secondBalance = new Subject<CustomerBalanceResponse>();
+    customerApi.getById.mockImplementation((id: string) => of({ legalName: id, alias: '' }));
+    balanceApi.getBalance.mockReturnValueOnce(firstBalance).mockReturnValueOnce(secondBalance);
+    balanceApi.getTransactions.mockReturnValue(of({ content: [] }));
+    invoiceApi.getAll.mockReturnValue(of([]));
+    receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [] }));
+    creditNoteApi.getAll.mockReturnValue(of([]));
+    debitNoteApi.getAll.mockReturnValue(of([]));
+    returnApi.getAll.mockReturnValue(of([]));
+    fixture.detectChanges();
+    const component = fixture.componentInstance;
+    component.filterNumber.set('previous-filter');
+    component.applyFilters();
+    routeParams.next(convertToParamMap({ id: 'customer-002' }));
+    expect(balanceApi.getBalance).toHaveBeenLastCalledWith('customer-002');
+    expect(component.activeFilterCount()).toBe(0);
+    secondBalance.next({
+      customerId: 'customer-002',
+      totalBalance: 20,
+      createdAt: null,
+      updatedAt: null,
+    });
+    secondBalance.complete();
+    firstBalance.next({
+      customerId: 'customer-001',
+      totalBalance: 100,
+      createdAt: null,
+      updatedAt: null,
+    });
+    firstBalance.complete();
+    expect(component.balance()?.customerId).toBe('customer-002');
+    expect(component.customerName()).toBe('customer-002');
+    expect(component.transactionsLoading()).toBe(false);
   });
 
   it('keeps the balance workspace visible while its requests are loading', () => {

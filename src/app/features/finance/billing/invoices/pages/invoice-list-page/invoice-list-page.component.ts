@@ -1,3 +1,8 @@
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
+import { DocumentListAction, documentListAction } from '@shared/models/document-list-action';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -138,7 +143,7 @@ export class InvoiceListPageComponent implements OnInit {
 
   readonly filterStatus = computed(() => {
     const s = this.selectedStatus();
-    return s ? [s] : [];
+    return s === 'ALL' ? Object.values(InvoiceStatus) : s ? [s] : [];
   });
 
   readonly cancelDialogVisible = signal(false);
@@ -200,6 +205,7 @@ export class InvoiceListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
+    { label: 'Todas las facturas', value: 'ALL' },
     { label: 'Facturas activas', value: '' },
     ...Object.values(InvoiceStatus).map((s) => ({ label: INVOICE_STATUS_LABELS[s], value: s })),
   ];
@@ -250,6 +256,57 @@ export class InvoiceListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
+
+  private readonly navigationRecords = computed(() => {
+    const term = this.searchTerm().trim().toLocaleLowerCase();
+    return this.invoices().filter((record) =>
+      `${record.invoiceNumber} ${record.customerName ?? ''}`.toLocaleLowerCase().includes(term),
+    );
+  });
+
+  private readonly listDestroyRef = inject(DestroyRef);
+  private listRequest?: Subscription;
+  private readonly navigationAction = signal<DocumentListAction | undefined>(undefined);
+
+  private readonly listNavigation = connectListNavigation({
+    onActionChange: (action) => {
+      const previous = this.navigationAction();
+      this.navigationAction.set(documentListAction(action));
+      if (!action && previous) this.loadWithFilters();
+    },
+    records: () => this.navigationRecords().slice(this.first(), this.first() + this.rows()),
+    loading: () => this.loading(),
+    total: () => this.navigationRecords().length,
+    first: () => this.first(),
+    rows: () => this.rows(),
+    acceptsAction: () => {
+      this.selectedStatus.set('ALL');
+      return true;
+    },
+    search: (term) => {
+      this.selectedReturnStatus.set('');
+      this.selectedDueStatus.set('');
+      this.filterPaymentType.set('');
+      this.filterDateFrom.set(null);
+      this.filterDateTo.set(null);
+      this.onSearch(term);
+    },
+    filters: () =>
+      this.navigationAction()
+        ? []
+        : [
+            {
+              label: 'Estado',
+              value: this.selectedStatus(),
+              options: this.statusOptions,
+              change: (value) => this.onStatusFilterChange(value),
+            },
+          ],
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.invoiceNumber,
+    description: (record) => record.customerName,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();
@@ -664,8 +721,10 @@ export class InvoiceListPageComponent implements OnInit {
 
   private loadWithFilters(): void {
     const filters: InvoiceFilters = {};
+    if (this.navigationAction()) filters.action = this.navigationAction();
     if (this.searchTerm()) filters.search = this.searchTerm();
-    if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
+    if (!this.navigationAction() && this.filterStatus().length > 0)
+      filters.statuses = this.filterStatus();
     if (this.selectedReturnStatus()) filters.returnStatus = [this.selectedReturnStatus()];
     if (this.selectedDueStatus())
       filters.dueStatus = this.selectedDueStatus() as 'OVERDUE' | 'CURRENT';
@@ -675,6 +734,10 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();
-    this.invoiceService.loadAll(filters).subscribe();
+    this.listRequest?.unsubscribe();
+    this.listRequest = this.invoiceService
+      .loadAll(filters)
+      .pipe(takeUntilDestroyed(this.listDestroyRef))
+      .subscribe();
   }
 }

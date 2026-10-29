@@ -18,6 +18,7 @@ describe('CustomersListPageComponent', () => {
   let mockService: Partial<CustomerApplicationService>;
   let router: Router;
   const mockAuthService = {
+    currentUser: signal(null),
     hasPermission: vi.fn().mockReturnValue(true),
     hasModulePermission: vi.fn().mockReturnValue(true),
   };

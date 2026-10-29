@@ -1,9 +1,9 @@
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { ActivatedRoute, Router, provideRouter } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { Component, signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { of, throwError } from 'rxjs';
+import { BehaviorSubject, of, throwError } from 'rxjs';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
@@ -17,6 +17,7 @@ import { PdfViewerService } from '@core/pdf-viewer';
 describe('OrderListPageComponent', () => {
   let component: OrderListPageComponent;
   let fixture: ComponentFixture<OrderListPageComponent>;
+  const queryParams = new BehaviorSubject(convertToParamMap({}));
   let mockService: Partial<OrderApplicationService>;
   let router: Router;
   let messageService: MessageService;
@@ -77,6 +78,7 @@ describe('OrderListPageComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+            queryParamMap: queryParams,
           },
         },
         { provide: OrderApplicationService, useValue: mockService },
@@ -103,6 +105,7 @@ describe('OrderListPageComponent', () => {
 
   beforeEach(() => {
     (TestBed as TestBedStatic).resetTestingModule();
+    queryParams.next(convertToParamMap({}));
     configureTestBed();
     createComponent();
   });
@@ -111,6 +114,16 @@ describe('OrderListPageComponent', () => {
     if (httpMock) {
       httpMock.match(() => true).forEach((req) => req.flush([]));
     }
+  });
+
+  it.each([['Editar', 'EDIT'], ['Confirmar', 'CONFIRM'], ['Cancelar', 'CANCEL'], ['Convertir a factura', 'CONVERT_TO_INVOICE']])('requests only eligible records for %s and keeps the action when searching', async (label, action) => {
+    queryParams.next(convertToParamMap({ navAction: label }));
+    await Promise.resolve();
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, orderBy: 'createdAt', orderDir: 'desc' });
+    component.onSearch('document');
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, search: 'document', orderBy: 'createdAt', orderDir: 'desc' });
+    queryParams.next(convertToParamMap({}));
+    expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
   });
 
   it('should create', () => {

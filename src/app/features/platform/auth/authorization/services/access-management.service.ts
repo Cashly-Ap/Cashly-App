@@ -4,8 +4,8 @@ import { Department, Role, SelectionOption, PermissionRegistry } from '../models
 @Injectable({ providedIn: 'root' })
 export class AccessManagementService {
   private readonly http = inject(HttpClient);
-  roles() {
-    return this.http.get<Role[]>('/api/roles');
+  roles(action?: 'EDIT') {
+    return this.http.get<Role[]>('/api/roles', action ? { params: { action } } : {});
   }
   departments() {
     return this.http.get<Department[]>('/api/departments');

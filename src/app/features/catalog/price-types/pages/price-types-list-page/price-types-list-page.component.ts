@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -85,6 +86,19 @@ export class PriceTypesListPageComponent implements OnInit {
   hasFilteredResults = computed(
     () => !this.isLoading() && this.totalElements() === 0 && !!this.searchTerm(),
   );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.priceTypes(),
+    loading: () => this.isLoading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => this.onSearch(term),
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.name,
+    description: (record) => record.active ? 'Activo' : 'Inactivo',
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();

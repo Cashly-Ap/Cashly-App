@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '../../models/enums/business-module.enum';
@@ -134,6 +135,23 @@ export class UsersListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.users(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.filterRole.set('');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.userName,
+    description: (record) => record.email,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     if (this.canFilterRoles())

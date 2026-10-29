@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -143,6 +144,25 @@ export class CustomersListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.customers(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.filterType.set('');
+      this.filterState.set('');
+      this.filterMunicipality.set('');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.legalName,
+    description: (record) => `${record.alias} · ${record.rif}`,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();

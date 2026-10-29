@@ -26,6 +26,7 @@ export interface ReceivablesSearchParams {
   sort?: string;
   status?: string;
   invoiceId?: string;
+  action?: 'PAY_ALL' | 'PAY_PARTIAL' | 'REFUND';
 }
 
 @Injectable({ providedIn: 'root' })
@@ -40,7 +41,8 @@ export class ReceivablesApiService {
   searchCustomersWithDebt(
     params?: ReceivablesSearchParams,
   ): Observable<PagedResponse<CustomerDebtList>> {
-    const httpParams = this.buildParams(params);
+    let httpParams = this.buildParams(params);
+    if (params?.action) httpParams = httpParams.set('action', params.action);
     return this.http.get<PagedResponse<CustomerDebtList>>(`${this.baseUrl}/customers`, {
       params: httpParams,
     });
@@ -104,9 +106,12 @@ export class ReceivablesApiService {
     });
   }
 
-  listPendingPayments(): Observable<PendingPayment[]> {
+  listPendingPayments(action?: 'APPROVE' | 'REJECT'): Observable<PendingPayment[]> {
     return forkJoin({
-      payments: this.http.get<PendingPayment[]>(`${this.paymentsBaseUrl}?status=PENDING`),
+      payments: this.http.get<PendingPayment[]>(
+        `${this.paymentsBaseUrl}?status=PENDING`,
+        action ? { params: { action } } : {},
+      ),
       details: this.getPaymentHistory({ page: 0, size: 100 }).pipe(
         map((response) => response.content ?? []),
         catchError(() => of([])),

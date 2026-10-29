@@ -1,3 +1,5 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
+import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -92,6 +94,45 @@ export class CashRegisterPageComponent implements OnInit {
     declaredBalance: [0, [Validators.required, Validators.min(0)]],
     closingNotes: [''],
   });
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => [],
+    loading: () => this.loading(),
+    total: () => 0,
+    first: () => 0,
+    rows: () => 10,
+    search: () => undefined,
+    paginate: () => undefined,
+    label: () => '',
+    actions: () => [],
+    globalActions: () => this.navigationActions(),
+  });
+
+  private navigationActions(): ListAction[] {
+    return [
+      {
+        label: 'Abrir caja',
+        icon: 'pi pi-lock-open',
+        requiredAction: 'EXECUTE',
+        disabled: this.closure() !== null,
+        command: () => this.onOpenDialogOpen(),
+      },
+      {
+        label: 'Cerrar caja',
+        icon: 'pi pi-lock',
+        requiredAction: 'EXECUTE',
+        disabled: !this.isOpen(),
+        command: () => this.onOpenCloseDialog(),
+      },
+      {
+        label: 'Ver detalles',
+        icon: 'pi pi-eye',
+        requiredAction: 'READ',
+        disabled: this.closure() === null,
+        command: () => this.onOpenDetailDialog(),
+      },
+    ];
+  }
 
   ngOnInit(): void {
     this.service.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();

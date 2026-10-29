@@ -1,3 +1,8 @@
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Subscription } from 'rxjs';
+import { DocumentListAction, documentListAction } from '@shared/models/document-list-action';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -130,6 +135,31 @@ export class OrderListPageComponent implements OnInit {
       this.totalElements() === 0 &&
       (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
+
+  private readonly listDestroyRef = inject(DestroyRef);
+  private listRequest?: Subscription;
+  private readonly navigationAction = signal<DocumentListAction | undefined>(undefined);
+
+  private readonly listNavigation = connectListNavigation({
+    onActionChange: (action) => {
+      const previous = this.navigationAction();
+      this.navigationAction.set(documentListAction(action));
+      if (!action && previous) this.loadWithFilters();
+    },
+    records: () => this.orders().slice(this.first(), this.first() + this.rows()),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterStatus.set('ALL');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.orderNumber,
+    description: (record) => `${record.customerAlias} · ${record.status}`,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();
@@ -409,10 +439,15 @@ export class OrderListPageComponent implements OnInit {
 
   private loadWithFilters(): void {
     const filters: OrderFilters = {};
+    if (this.navigationAction()) filters.action = this.navigationAction();
     if (this.searchTerm()) filters.search = this.searchTerm();
-    if (this.filterStatus()) filters.status = this.filterStatus();
+    if (!this.navigationAction() && this.filterStatus()) filters.status = this.filterStatus();
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();
-    this.orderService.loadAll(filters).subscribe();
+    this.listRequest?.unsubscribe();
+    this.listRequest = this.orderService
+      .loadAll(filters)
+      .pipe(takeUntilDestroyed(this.listDestroyRef))
+      .subscribe();
   }
 }

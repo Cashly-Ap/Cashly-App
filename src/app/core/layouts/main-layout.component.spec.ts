@@ -1,3 +1,4 @@
+import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
@@ -165,9 +166,28 @@ describe('MainLayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it.each(['edit', 'balance'] as const)('selects a customer before opening %s', (action) => {
+    const customers = component.primeMenuItems()
+      .find((item) => item.label === 'Contactos')?.items
+      ?.find((item) => item.label === 'Clientes')?.items;
+    customers?.find((item) => item.label === (action === 'edit' ? 'Editar cliente' : 'Ver saldo de cliente'))
+      ?.command?.({});
+    expect(component.customerPickerAction()).toBe(action);
+    expect(routerMock.navigate).not.toHaveBeenCalled();
+    component.onMenuCustomerSelected({
+      id: 'customer-1', code: 1, alias: 'Customer', legalName: 'Customer', rif: '',
+      type: Object.values(CustomerType)[0], active: true, deletable: true,
+    });
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers', 'customer-1', action]);
+    expect(component.customerPickerAction()).toBeNull();
+  });
+
   describe('ERP permission filtering', () => {
     function menu(): MenuItem[] {
       const callbacks: MenuCallbacks = {
+        openListAction: vi.fn(),
+        openCustomerEditPicker: vi.fn(),
+        openCustomerBalancePicker: vi.fn(),
         openCatalogModal: vi.fn(),
         openCommercialCatalogModal: vi.fn(),
         openStockModal: vi.fn(),
@@ -221,16 +241,14 @@ describe('MainLayoutComponent', () => {
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
-        ['/inventory/warehouses'].sort(),
+        ['/inventory/warehouses', '/inventory/warehouses/new'].sort(),
       );
       expect(items.map((item) => item.label)).toEqual(['Inventario']);
     });
 
     it('should expose administration to every custom role with users permission', () => {
       expect(
-        component['filterMenuByRole'](menu(), 'ADMIN')
-          .flatMap((item) => item.children ?? [])
-          .some((item) => item.routerLink === '/platform/users'),
+        routes(component['filterMenuByRole'](menu(), 'ADMIN')).includes('/platform/users'),
       ).toBe(true);
       expect(routes(component['filterMenuByRole'](menu(), 'SUPER_ADMIN'))).toContain(
         '/platform/users',

@@ -301,3 +301,15 @@
 </div>
 
 <app-module-navigator [items]="navigationMenuItems()" />
+
+@if (customerPickerAction() !== null) {
+  <app-customer-picker-dialog
+    [requireConfirmation]="true"
+    [visible]="true"
+    [description]="customerPickerAction() === 'edit' ? 'Busque y seleccione el cliente que desea editar' : 'Busque y seleccione el cliente para consultar su saldo'"
+    (customerSelected)="onMenuCustomerSelected($event)"
+    (cancelled)="customerPickerAction.set(null)"
+  />
+}
+
+<app-list-navigation-picker />

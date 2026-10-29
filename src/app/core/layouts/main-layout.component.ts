@@ -1,3 +1,7 @@
+import { NavigationLookupService } from '@core/layouts/services/navigation-lookup.service';
+import { ListNavigationPickerComponent } from '@shared/components/list/list-navigation-picker/list-navigation-picker.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { ShortcutHelpComponent } from '@core/shortcuts/shortcut-help.component';
 import { ModuleNavigatorComponent } from '@core/shortcuts/module-navigator.component';
 import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
@@ -99,6 +103,8 @@ export type ContentMaxWidth =
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListNavigationPickerComponent,
+    CustomerPickerDialogComponent,
     ShortcutHelpComponent,
     CommonModule,
     ModuleNavigatorComponent,
@@ -141,6 +147,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   private authService = inject(AuthService);
   private router = inject(Router);
+  private readonly navigationLookup = inject(NavigationLookupService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private sanitizer = inject(DomSanitizer);
   private catalogPdfApi = inject(CatalogPdfApiService);
@@ -210,6 +217,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     | 'cashRegister'
     | null
   >(null);
+  readonly customerPickerAction = signal<'edit' | 'balance' | null>(null);
+
+  onMenuCustomerSelected(customer: CustomerList): void {
+    const action = this.customerPickerAction();
+    if (!action) return;
+    this.customerPickerAction.set(null);
+    void this.router.navigate(['/partners/customers', customer.id, action]);
+  }
+
   readonly pdfViewerVisible = signal(false);
   readonly pdfUrl = signal<SafeResourceUrl | null>(null);
   readonly pdfTitle = signal('');
@@ -266,6 +282,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const user = this.authService.currentUser();
     const role = (user?.role || user?.type) as UserType;
     const callbacks = {
+      openListAction: (route: string, action: string, queryParams?: Record<string, string>) => {
+        this.navigationLookup.open(route, action, queryParams);
+      },
+      openCustomerEditPicker: () => this.customerPickerAction.set('edit'),
+      openCustomerBalancePicker: () => this.customerPickerAction.set('balance'),
       openCatalogModal: () => this.activeModal.set('catalog'),
       openCommercialCatalogModal: () => this.activeModal.set('commercialCatalog'),
       openStockModal: () => this.activeModal.set('stock'),
@@ -288,6 +309,15 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           !this.authService.hasPermission(item.requiredModule, item.requiredAction ?? 'READ')
         )
           return false;
+        if (
+          (item.requiredPermissions ?? []).some((grant) => {
+            const [module, action] = grant.split(':');
+            return !this.authService.hasPermission(
+              module as BusinessModule,
+              action as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
+            );
+          })
+        ) return false;
         if (
           item.requiredAction === 'EXPORT' &&
           !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)

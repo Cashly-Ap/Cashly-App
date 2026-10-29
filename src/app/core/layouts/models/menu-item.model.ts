@@ -15,4 +15,5 @@ export interface MenuItem {
   allowedRoles?: UserType[];
   requiredAction?: import('@features/platform/auth/authorization/models/access.model').PermissionAction;
   requiredModule?: BusinessModule;
+  requiredPermissions?: string[];
 }

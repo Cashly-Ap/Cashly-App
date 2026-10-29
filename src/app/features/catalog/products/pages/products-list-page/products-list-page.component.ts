@@ -1,3 +1,4 @@
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -145,6 +146,24 @@ export class ProductsListPageComponent implements OnInit {
       .filter((pt) => pt.active)
       .map((pt) => ({ label: pt.name, value: pt.id })),
   );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.products(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.filterComposite.set('');
+      this.filterCategoryId.set(null);
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.name,
+    description: (record) => `${record.code} · ${record.categoryName}`,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.categoryService.loadAll({ size: 1000 }).subscribe();
