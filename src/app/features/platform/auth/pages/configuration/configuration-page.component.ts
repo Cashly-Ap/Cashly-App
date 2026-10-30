@@ -32,13 +32,13 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
 const ACTION_LABELS: Record<PermissionAction, string> = {
-  READ: 'Consultar',
-  CREATE: 'Crear',
-  UPDATE: 'Editar',
-  DELETE: 'Eliminar',
-  EXPORT: 'Exportar',
-  IMPORT: 'Importar',
-  EXECUTE: 'Ejecutar',
+  READ: 'platform.auth.permissionActionRead',
+  CREATE: 'platform.auth.permissionActionCreate',
+  UPDATE: 'platform.auth.permissionActionUpdate',
+  DELETE: 'platform.auth.permissionActionDelete',
+  EXPORT: 'platform.auth.permissionActionExport',
+  IMPORT: 'platform.auth.permissionActionImport',
+  EXECUTE: 'platform.auth.permissionActionExecute',
 };
 
 @Component({

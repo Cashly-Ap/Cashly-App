@@ -51,22 +51,22 @@ export class PermissionEditorComponent {
   readonly expanded = signal<Partial<Record<BusinessModule, boolean>>>({});
   readonly labels = BUSINESS_MODULE_LABELS;
   readonly actionLabels: Record<PermissionAction, string> = {
-    READ: 'Consultar',
-    CREATE: 'Crear',
-    UPDATE: 'Editar',
-    DELETE: 'Eliminar',
-    EXPORT: 'Exportar',
-    IMPORT: 'Importar',
-    EXECUTE: 'Ejecutar',
+    READ: 'platform.auth.permissionActionRead',
+    CREATE: 'platform.auth.permissionActionCreate',
+    UPDATE: 'platform.auth.permissionActionUpdate',
+    DELETE: 'platform.auth.permissionActionDelete',
+    EXPORT: 'platform.auth.permissionActionExport',
+    IMPORT: 'platform.auth.permissionActionImport',
+    EXECUTE: 'platform.auth.permissionActionExecute',
   };
   readonly descriptions: Record<PermissionAction, string> = {
-    READ: 'Ver listados y detalles',
-    CREATE: 'Añadir nuevos registros',
-    UPDATE: 'Modificar registros existentes',
-    DELETE: 'Borrar registros',
-    EXPORT: 'Descargar datos e informes',
-    IMPORT: 'Cargar datos desde archivos',
-    EXECUTE: 'Realizar operaciones del módulo',
+    READ: 'platform.auth.viewListsAndDetails',
+    CREATE: 'platform.auth.addNewRecords',
+    UPDATE: 'platform.auth.editExistingRecords',
+    DELETE: 'platform.auth.deleteRecords',
+    EXPORT: 'platform.auth.downloadDataAndReports',
+    IMPORT: 'platform.auth.uploadDataFromFiles',
+    EXECUTE: 'platform.auth.performModuleOperations',
   };
   readonly filteredRegistry = computed(() => {
     const normalize = (value: string) =>

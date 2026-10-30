@@ -235,13 +235,13 @@ export class RolesPageComponent {
       );
   });
   readonly actionLabels: Record<PermissionAction, string> = {
-    READ: 'Visualizar',
-    CREATE: 'Crear',
-    UPDATE: 'Editar',
-    DELETE: 'Eliminar',
-    EXPORT: 'Exportar',
-    IMPORT: 'Importar',
-    EXECUTE: 'Ejecutar',
+    READ: 'platform.auth.permissionActionRead',
+    CREATE: 'platform.auth.permissionActionCreate',
+    UPDATE: 'platform.auth.permissionActionUpdate',
+    DELETE: 'platform.auth.permissionActionDelete',
+    EXPORT: 'platform.auth.permissionActionExport',
+    IMPORT: 'platform.auth.permissionActionImport',
+    EXECUTE: 'platform.auth.permissionActionExecute',
   };
   readonly actions: PermissionAction[] = [
     'READ',

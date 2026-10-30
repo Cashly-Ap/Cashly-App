@@ -165,5 +165,11 @@
   "platform.auth.user.passwordConfirmationIsRequired": "Password confirmation is required",
   "platform.auth.user.operator": "Operator",
   "platform.auth.user.administrator": "Administrator",
-  "platform.auth.user.superAdmin": "Super admin"
+  "platform.auth.user.superAdmin": "Super admin",
+  "platform.auth.permissionActionView": "View",
+  "platform.auth.permissionActionCreate": "Create",
+  "platform.auth.permissionActionEdit": "Edit",
+  "platform.auth.permissionActionDelete": "Delete",
+  "platform.auth.permissionActionExport": "Export",
+  "platform.auth.permissionActionExecute": "Execute"
 }

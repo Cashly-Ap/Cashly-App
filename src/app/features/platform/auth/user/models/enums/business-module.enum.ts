@@ -13,15 +13,15 @@ export enum BusinessModule {
 }
 
 export const BUSINESS_MODULE_LABELS: Record<BusinessModule, string> = {
-  [BusinessModule.COMPANY]: 'Empresa',
-  [BusinessModule.ROLES]: 'Roles',
-  [BusinessModule.DEPARTMENTS]: 'Departamentos',
-  [BusinessModule.CATALOG]: 'Catálogo',
-  [BusinessModule.USERS]: 'Gestión de Usuarios',
-  [BusinessModule.INVENTORY]: 'Inventario',
-  [BusinessModule.SALES]: 'Gestión Comercial',
-  [BusinessModule.FINANCE]: 'Finanzas',
-  [BusinessModule.PURCHASES]: 'Compras',
-  [BusinessModule.DOCUMENT_ADMIN]: 'Reportes',
-  [BusinessModule.DASHBOARD]: 'Dashboard',
+  [BusinessModule.COMPANY]: 'platform.auth.company',
+  [BusinessModule.ROLES]: 'platform.auth.roles',
+  [BusinessModule.DEPARTMENTS]: 'platform.auth.departments',
+  [BusinessModule.CATALOG]: 'platform.auth.catalog',
+  [BusinessModule.USERS]: 'platform.auth.userManagement',
+  [BusinessModule.INVENTORY]: 'platform.auth.inventory',
+  [BusinessModule.SALES]: 'platform.auth.salesManagement',
+  [BusinessModule.FINANCE]: 'platform.auth.finance',
+  [BusinessModule.PURCHASES]: 'platform.auth.purchases',
+  [BusinessModule.DOCUMENT_ADMIN]: 'platform.auth.reports',
+  [BusinessModule.DASHBOARD]: 'platform.auth.dashboard',
 };

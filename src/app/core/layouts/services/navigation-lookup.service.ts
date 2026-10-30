@@ -37,6 +37,12 @@ export class NavigationLookupService {
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
+    const modalAction =
+      (route === '/sales/orders' && label === 'Confirmar') ||
+      (route === '/sales/quotes' &&
+        ['Convertir a pedido', 'Convertir a factura'].includes(label)) ||
+      (route === '/procurement/purchases' &&
+        ['Confirmar compra', 'Cancelar compra'].includes(label));
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -53,6 +59,7 @@ export class NavigationLookupService {
                   ? {}
                   : { navRecord: item.id, navSearch: item.label }),
               },
+              ...(modalAction ? { skipLocationChange: true } : {}),
             });
           },
         }),

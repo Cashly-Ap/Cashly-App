@@ -5,6 +5,8 @@ import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
+import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
+import { PurchaseApiService } from '@features/procurement/purchases/services/api/purchase-api.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { NavigationLookupService } from './navigation-lookup.service';
@@ -13,6 +15,8 @@ describe('Navbar lookup without navigation', () => {
   const navigate = vi.fn().mockResolvedValue(true);
   const categoryApi = { getAll: vi.fn() };
   const orderApi = { getAll: vi.fn().mockReturnValue(of([])) };
+  const quoteApi = { getAll: vi.fn().mockReturnValue(of([])) };
+  const purchaseApi = { getAll: vi.fn().mockReturnValue(of([])) };
   let lookup: NavigationLookupService;
   let navigation: ListNavigationService;
 
@@ -34,6 +38,8 @@ describe('Navbar lookup without navigation', () => {
         { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: CategoryApiService, useValue: categoryApi },
         { provide: OrderApiService, useValue: orderApi },
+        { provide: QuoteApiService, useValue: quoteApi },
+        { provide: PurchaseApiService, useValue: purchaseApi },
       ],
     });
     lookup = TestBed.inject(NavigationLookupService);
@@ -66,5 +72,53 @@ describe('Navbar lookup without navigation', () => {
     lookup.open('/sales/orders', 'Confirmar');
     expect(orderApi.getAll).toHaveBeenCalledWith({ search: undefined, action: 'CONFIRM' });
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ['/sales/orders', 'Confirmar', 'ORD-001', orderApi],
+    ['/sales/quotes', 'Convertir a pedido', 'QUO-001', quoteApi],
+    ['/procurement/purchases', 'Confirmar compra', 'PUR-001', purchaseApi],
+  ])('passes search terms to %s lookup', (route, label, number, api) => {
+    api.getAll.mockReturnValue(
+      of([
+        {
+          id: 'record-1',
+          orderNumber: number,
+          quoteNumber: number,
+          purchaseNumber: number,
+          customerAlias: 'Customer',
+          customerName: 'Customer',
+          supplierName: 'Supplier',
+          status: 'DRAFT',
+          createdAt: '2026-01-01T00:00:00Z',
+        },
+      ]),
+    );
+    lookup.open(route, label);
+    navigation.session()!.search(number);
+    expect(api.getAll).toHaveBeenLastCalledWith({ search: number, action: expect.any(String) });
+  });
+
+  it('opens confirmation actions without changing the visible route', async () => {
+    orderApi.getAll.mockReturnValue(
+      of([
+        {
+          id: 'order-1',
+          orderNumber: 'ORD-001',
+          customerAlias: 'Customer',
+          status: 'DRAFT',
+        },
+      ]),
+    );
+    lookup.open('/sales/orders', 'Confirmar');
+    await navigation.select(navigation.session()!.records()[0]);
+    expect(navigate).toHaveBeenCalledWith(['/sales/orders'], {
+      queryParams: {
+        navAction: 'Confirmar',
+        navRecord: 'order-1',
+        navSearch: 'ORD-001',
+      },
+      skipLocationChange: true,
+    });
   });
 });
