@@ -1,7 +1,3 @@
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
-import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,29 +7,15 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
 import { PurchaseApiService } from '@features/procurement/purchases/services/api/purchase-api.service';
 import { PurchaseDetails } from '@features/procurement/purchases/models/interfaces/purchase-details.interface';
-import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
+import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
+import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 @Component({
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    TranslatePipe,
-    LocalizedDatePipe,
-    LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
-    DialogModule,
-    ButtonModule,
-    TableModule,
-    DatePipe,
-    DecimalPipe,
-  ],
+  imports: [DocumentConfirmationDialogComponent],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
 export class ConfirmPurchaseDialogComponent {
@@ -51,6 +33,57 @@ export class ConfirmPurchaseDialogComponent {
   readonly error = signal<string | null>(null);
 
   readonly purchase = computed(() => this.details());
+  readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
+    const purchase = this.details();
+    const rows =
+      purchase?.lines.flatMap((line) =>
+        line.allocations.map((allocation) => {
+          const available = this.availableStock(line, allocation.warehouseId);
+          return {
+            productName: line.productName,
+            productCode: line.productCode,
+            warehouseName: allocation.warehouseName,
+            quantity: allocation.allocatedQuantity,
+            available,
+            availableAfter: available + allocation.allocatedQuantity,
+            sufficient: true,
+          };
+        }),
+      ) ?? [];
+    return {
+      title: 'procurement.purchases.confirmPurchase2',
+      subtitle: 'procurement.purchases.reviewTheDetailsBeforeConfirmingThePurchase',
+      icon: 'pi-check-circle',
+      summaryFields: purchase
+        ? [
+            {
+              label: 'procurement.purchases.purchase2',
+              value: `#${purchase.purchaseNumber}`,
+              monospace: true,
+            },
+            { label: 'procurement.purchases.supplier2', value: purchase.supplierName },
+            {
+              label: 'finance.treasury.receivables.customerTaxId',
+              value: purchase.supplierRif,
+              monospace: true,
+            },
+            { label: 'finance.billing.returns.total', value: purchase.subtotal },
+          ]
+        : [],
+      notice: {
+        severity: 'warning',
+        title: 'procurement.purchases.areYouSureYouWantToConfirmThisPurchase',
+        description:
+          'procurement.purchases.confirmingWillGenerateStockMovementsAndYouWillNoLongerBeAbleToEditThePurchase',
+      },
+      inventory: { rows, blocking: false },
+      acceptLabel: 'procurement.purchases.confirmPurchase2',
+      acceptIcon: 'pi pi-check',
+      acceptSeverity: 'success',
+      permissionAction: 'EXECUTE',
+      requiredPermissions: ['INVENTORY:EXECUTE'],
+    };
+  });
 
   onDialogShow(): void {
     const id = this.purchaseId();
@@ -108,23 +141,5 @@ export class ConfirmPurchaseDialogComponent {
 
   availableStock(line: PurchaseDetails['lines'][number], warehouseId: string): number {
     return line.stockItems.find((stock) => stock.warehouseId === warehouseId)?.available ?? 0;
-  }
-
-  getStatusLabel(status: PurchaseStatus): string {
-    const labels: Record<PurchaseStatus, string> = {
-      [PurchaseStatus.DRAFT]: 'Borrador',
-      [PurchaseStatus.CONFIRMED]: 'Confirmada',
-      [PurchaseStatus.CANCELLED]: 'Cancelada',
-    };
-    return labels[status] ?? status;
-  }
-
-  getStatusVariant(status: PurchaseStatus): 'success' | 'danger' | 'label' {
-    const variants: Record<PurchaseStatus, 'success' | 'danger' | 'label'> = {
-      [PurchaseStatus.DRAFT]: 'label',
-      [PurchaseStatus.CONFIRMED]: 'success',
-      [PurchaseStatus.CANCELLED]: 'danger',
-    };
-    return variants[status] ?? 'label';
   }
 }

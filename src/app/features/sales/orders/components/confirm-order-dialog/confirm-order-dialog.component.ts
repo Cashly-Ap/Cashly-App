@@ -8,19 +8,17 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { DialogModule } from 'primeng/dialog';
-import { ButtonModule } from 'primeng/button';
-import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
-import { DocumentStockReviewComponent } from '@shared/components/document-stock-review/document-stock-review.component';
+import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
+import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { orderStockLines } from '@features/sales/orders/models/order-stock';
 
 @Component({
   selector: 'app-confirm-order-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TranslatePipe, DocumentStockReviewComponent],
+  imports: [DocumentConfirmationDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './confirm-order-dialog.component.html',
 })
@@ -36,6 +34,43 @@ export class ConfirmOrderDialogComponent implements OnChanges {
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
   readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.details())));
+  readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
+    const order = this.details();
+    const rows = this.stock().rows.map((row) => ({
+      ...row,
+      availableAfter: row.available - row.quantity,
+    }));
+    return {
+      title: 'Confirmar Pedido',
+      subtitle: 'Revise el stock antes de confirmar el pedido',
+      icon: 'pi-check-circle',
+      summaryFields: order
+        ? [
+            {
+              label: 'finance.billing.invoices.order',
+              value: `#${order.orderNumber}`,
+              monospace: true,
+            },
+            { label: 'finance.billing.invoices.customer', value: order.customerAlias },
+          ]
+        : [],
+      notice: {
+        severity: this.stock().valid ? 'info' : 'danger',
+        title: this.stock().valid
+          ? 'El stock se reservará al confirmar el pedido.'
+          : 'sales.quotes.unableToConvert',
+        description: this.stock().valid
+          ? undefined
+          : 'shared.thereIsNotEnoughStockInOneOrMoreWarehousesConversionWouldReserveStockAndResultInNegativeInventory',
+      },
+      inventory: { rows, blocking: !this.stock().valid },
+      acceptLabel: 'Sí, confirmar',
+      acceptIcon: 'pi pi-check',
+      acceptSeverity: 'success',
+      permissionAction: 'EXECUTE',
+      requiredPermissions: ['INVENTORY:EXECUTE'],
+    };
+  });
   readonly canConfirm = computed(
     () =>
       !!this.details() &&

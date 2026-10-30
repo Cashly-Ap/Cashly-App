@@ -1,24 +1,18 @@
 import { reviewDocumentStock } from '@shared/utils/document-stock';
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
-import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
   OnChanges,
+  computed,
   inject,
   input,
   output,
   signal,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
-import { TooltipModule } from 'primeng/tooltip';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
+import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
+import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 
 interface AllocationWithStock {
   warehouseName: string;
@@ -42,18 +36,7 @@ interface LineWithStockInfo {
 @Component({
   selector: 'app-convert-to-order-dialog',
   standalone: true,
-  imports: [
-    TranslatePipe,
-    LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
-    CommonModule,
-    DecimalPipe,
-    DialogModule,
-    ButtonModule,
-    TableModule,
-    TooltipModule,
-  ],
+  imports: [DocumentConfirmationDialogComponent],
   templateUrl: './convert-to-order-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -75,6 +58,46 @@ export class ConvertToOrderDialogComponent implements OnChanges {
     null,
   );
   readonly hasAnyNegativeStock = signal(false);
+  readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
+    const info = this.quoteInfo();
+    const rows = this.lines().flatMap((line) =>
+      line.allocations.map((allocation) => ({
+        productName: line.productName,
+        productCode: line.productCode,
+        warehouseName: allocation.warehouseName,
+        quantity: allocation.allocated,
+        available: allocation.available,
+        availableAfter: allocation.availableAfterReserve,
+        sufficient: !allocation.wouldBeNegative,
+      })),
+    );
+    return {
+      title: 'sales.quotes.convertToOrder2',
+      subtitle: 'shared.availableStockWillBeCheckedBeforeGeneratingTheOrder',
+      icon: 'pi-shopping-cart',
+      summaryFields: info
+        ? [
+            { label: 'sales.quotes.quote2', value: info.number, monospace: true },
+            { label: 'finance.billing.invoices.customer', value: info.customerName },
+            { label: 'finance.billing.returns.total', value: info.subtotal },
+          ]
+        : [],
+      notice: {
+        severity: this.hasAnyNegativeStock() ? 'danger' : 'info',
+        title: this.hasAnyNegativeStock()
+          ? 'sales.quotes.unableToConvert'
+          : 'shared.availableStockWillBeCheckedBeforeGeneratingTheOrder',
+        description: this.hasAnyNegativeStock()
+          ? 'shared.thereIsNotEnoughStockInOneOrMoreWarehousesConversionWouldReserveStockAndResultInNegativeInventory'
+          : undefined,
+      },
+      inventory: { rows, blocking: this.hasAnyNegativeStock() },
+      acceptLabel: 'sales.quotes.convertToOrder2',
+      acceptIcon: 'pi pi-shopping-cart',
+      permissionAction: 'EXECUTE',
+      requiredPermissions: ['SALES:CREATE', 'INVENTORY:EXECUTE'],
+    };
+  });
 
   ngOnChanges(): void {
     ++this.requestVersion;

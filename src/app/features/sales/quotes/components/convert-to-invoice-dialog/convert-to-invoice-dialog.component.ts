@@ -3,8 +3,6 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,10 +13,9 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
@@ -37,6 +34,8 @@ import { PaymentMethodApiService } from '@features/finance/treasury/payment-meth
 import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 import { ConvertToInvoiceRequest } from '@features/sales/quotes/services/api/quote-api.service';
+import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
+import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 
 interface AllocationWithStock {
   warehouseName: string;
@@ -76,19 +75,16 @@ interface LineWithStockInfo {
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
-    DialogModule,
     ButtonModule,
     SelectModule,
     FormsModule,
-    DecimalPipe,
     TableModule,
     TooltipModule,
     InputNumberModule,
     PasswordModule,
     RadioButtonModule,
+    DocumentConfirmationDialogComponent,
   ],
   templateUrl: './convert-to-invoice-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -122,6 +118,15 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   );
   readonly quoteCustomerId = signal<string | null>(null);
   readonly hasAnyNegativeStock = signal(false);
+  readonly confirmationModel = computed<DocumentConfirmationModel>(() => ({
+    title: 'sales.orders.convertToInvoice2',
+    subtitle: 'shared.availableStockWillBeCheckedBeforeGeneratingTheOrder',
+    icon: 'pi-file',
+    acceptLabel: 'sales.orders.convertToInvoice2',
+    acceptIcon: 'pi pi-file',
+    permissionAction: 'EXECUTE',
+    requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
+  }));
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);
   readonly creditLoading = signal(false);

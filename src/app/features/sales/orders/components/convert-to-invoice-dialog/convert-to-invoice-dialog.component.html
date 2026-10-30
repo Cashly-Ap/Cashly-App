@@ -1,26 +1,14 @@
-<p-dialog
+<app-document-confirmation-dialog
   [visible]="visible()"
-  [modal]="true"
-  [closable]="false"
-  [style]="{ width: '90vw', maxWidth: '900px' }"
-  [contentStyle]="{ overflow: 'visible', padding: '0' }"
-  styleClass="confirm-invoice-dialog"
+  [model]="confirmationModel()"
+  [loading]="stockLoading()"
+  [error]="stockError() ? 'Error al cargar los detalles del pedido.' : null"
+  [submitting]="isConfirming()"
+  [canAccept]="canConfirm()"
+  (accepted)="onConfirm()"
+  (cancelled)="onCancel()"
 >
-  <ng-template pTemplate="header">
-    <div class="flex items-center gap-3 px-5 pt-4">
-      <div
-        class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-100 dark:bg-surface-800 shrink-0"
-      >
-        <i class="pi pi-file text-surface-900 dark:text-surface-100 text-lg"></i>
-      </div>
-      <span
-        class="text-base font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
-        >{{ 'sales.orders.convertToInvoice2' | translate }}</span
-      >
-    </div>
-  </ng-template>
-
-  <div class="px-5 pb-2 space-y-5">
+  <div confirmation-extra class="space-y-5">
     @if (stockLoading()) {
       <i class="pi pi-spin pi-spinner" role="status"></i>
     }
@@ -329,29 +317,4 @@
       </div>
     }
   </div>
-
-  <ng-template pTemplate="footer">
-    <div
-      class="flex items-center justify-end gap-2 px-5 py-4 bg-surface-50 dark:bg-surface-900/50 border-t border-surface-200 dark:border-surface-700"
-    >
-      <p-button
-        appShortcut="cancel"
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="onCancel()"
-        severity="secondary"
-        [text]="true"
-      />
-      <p-button
-        [appRequiredPermissions]="['FINANCES:CREATE', 'INVENTORY:EXECUTE']"
-        [appPermission]="'EXECUTE'"
-        [label]="'sales.orders.convertToInvoice2' | translate"
-        icon="pi pi-check"
-        (onClick)="onConfirm()"
-        severity="contrast"
-        [loading]="isConfirming()"
-        [disabled]="!canConfirm()"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+</app-document-confirmation-dialog>
