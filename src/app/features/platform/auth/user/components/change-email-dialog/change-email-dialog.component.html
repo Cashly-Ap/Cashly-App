@@ -1,5 +1,5 @@
 <p-dialog
-  header="Cambiar Correo Electrónico"
+  [header]="'platform.auth.user.changeEmailAddress' | translate"
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
   [modal]="true"
@@ -9,15 +9,15 @@
 >
   <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-5 pt-2">
     <app-text-input
-      label="Nuevo Correo Electrónico"
-      placeholder="usuario@correo.com"
+      [label]="'platform.auth.user.newEmailAddress' | translate"
+      [placeholder]="'platform.auth.userExampleComLabel' | translate"
       [control]="emailControl"
       [errorMessage]="getEmailError()"
     />
 
     <app-text-input
-      label="Confirmar Correo Electrónico"
-      placeholder="usuario@correo.com"
+      [label]="'platform.auth.user.confirmEmailAddress' | translate"
+      [placeholder]="'platform.auth.userExampleComLabel' | translate"
       [control]="confirmEmailControl"
       [errorMessage]="getConfirmEmailError()"
     />
@@ -27,14 +27,14 @@
     <div class="flex justify-end gap-3">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         [outlined]="true"
         (onClick)="onCancel()"
         [disabled]="loading()"
       />
       <p-button
         appShortcut="submit"
-        label="Guardar"
+        [label]="'finance.billing.creditnotes.save' | translate"
         icon="pi pi-check"
         severity="contrast"
         (onClick)="onSubmit()"

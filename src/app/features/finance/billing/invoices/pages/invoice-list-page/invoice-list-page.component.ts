@@ -1,3 +1,8 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
@@ -79,6 +84,10 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
     `,
   ],
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -110,9 +119,11 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
     DuplicateInvoiceDialogComponent,
   ],
   templateUrl: './invoice-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class InvoiceListPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly invoiceService = inject(InvoiceApplicationService);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);

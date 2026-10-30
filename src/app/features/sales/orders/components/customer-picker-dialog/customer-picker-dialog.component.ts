@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -30,6 +32,8 @@ const PAGE_SIZE = 10;
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     DialogModule,
     ButtonModule,

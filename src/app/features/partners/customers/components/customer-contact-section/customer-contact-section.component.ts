@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, inject } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -13,7 +14,7 @@ import { CustomerValidators } from '@features/partners/customers/validators/cust
 @Component({
   selector: 'app-customer-contact-section',
   standalone: true,
-  imports: [ReactiveFormsModule, ListSectionComponent, ListItemComponent],
+  imports: [TranslatePipe, ReactiveFormsModule, ListSectionComponent, ListItemComponent],
   templateUrl: './customer-contact-section.component.html',
 })
 export class CustomerContactSectionComponent {

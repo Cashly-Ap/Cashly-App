@@ -1,12 +1,19 @@
 <app-form-container>
-  <app-form-header [title]="title()" [subtitle]="subtitle()" />
+  <app-form-header [title]="title() | translate" [subtitle]="subtitle() | translate" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-form-card>
       <p-tabs [value]="activeTab()" (valueChange)="activeTab.set(($event ?? 'general').toString())">
         <p-tablist>
-          <p-tab value="general"><i class="pi pi-info-circle mr-2"></i>General</p-tab>
-          <p-tab value="contact"><i class="pi pi-address-book mr-2"></i>Contacto y dirección</p-tab>
-          <p-tab value="access"><i class="pi pi-shield mr-2"></i>Acceso</p-tab>
+          <p-tab value="general"
+            ><i class="pi pi-info-circle mr-2"></i>{{ 'users.profile.general' | translate }}</p-tab
+          >
+          <p-tab value="contact"
+            ><i class="pi pi-address-book mr-2"></i
+            >{{ 'users.profile.contact.and.address' | translate }}</p-tab
+          >
+          <p-tab value="access"
+            ><i class="pi pi-shield mr-2"></i>{{ 'users.profile.access' | translate }}</p-tab
+          >
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="general">
@@ -17,45 +24,60 @@
               @if (canManagePhoto()) {
                 <app-file-input
                   class="md:col-span-full"
-                  label="Foto del usuario"
+                  [label]="'users.profile.user.photo' | translate"
                   [control]="photo"
                   accept="image/png,image/jpeg"
                   [maxFileSize]="5000000"
-                  helpText="PNG o JPG. Máximo 5 MB."
+                  [helpText]="'users.profile.png.or.jpg.maximum.5.mb' | translate"
                   [previewUrl]="removePhoto() ? null : photoUrl()"
                   (fileSelected)="removePhoto.set(false)"
                   (deleteExistingPhoto)="removePhoto.set(true)"
                 />
               }
               <app-text-input
-                label="Nombre"
-                placeholder="Nombre del usuario"
-                errorMessage="El nombre es requerido (máximo 100 caracteres)"
+                [label]="'users.profile.first.name' | translate"
+                [placeholder]="'users.profile.user.first.name' | translate"
+                [errorMessage]="
+                  'users.profile.first.name.is.required.maximum.100.characters' | translate
+                "
                 [control]="control('firstName')"
               />
               <app-text-input
-                label="Apellidos"
-                placeholder="Apellidos del usuario"
-                errorMessage="Los apellidos son requeridos (máximo 100 caracteres)"
+                [label]="'users.profile.last.name' | translate"
+                [placeholder]="'users.profile.user.last.name' | translate"
+                [errorMessage]="
+                  'users.profile.last.name.is.required.maximum.100.characters' | translate
+                "
                 [control]="control('lastName')"
               />
+              <app-select-input
+                [label]="'users.profile.language' | translate"
+                [options]="languages"
+                [control]="control('language')"
+                [errorMessage]="'users.profile.select.spanish.or.english' | translate"
+              />
               <app-text-input
-                label="Nombre de usuario"
-                placeholder="Nombre de acceso"
-                errorMessage="El usuario debe tener entre 3 y 100 caracteres"
+                [label]="'users.profile.username' | translate"
+                [placeholder]="'users.profile.login.name' | translate"
+                [errorMessage]="
+                  'users.profile.username.must.contain.between.3.and.100.characters' | translate
+                "
                 [control]="control('userName')"
               />
               @if (isCreateMode()) {
                 <app-text-input
-                  label="Correo electrónico"
-                  placeholder="usuario@ejemplo.com"
-                  errorMessage="Introduce un correo válido"
+                  [label]="'users.profile.email' | translate"
+                  [placeholder]="'platform.auth.userExampleCom' | translate"
+                  [errorMessage]="'users.profile.enter.a.valid.email.address' | translate"
                   [control]="control('email')"
                 />
                 <app-text-input
                   class="md:col-span-2"
-                  label="Contraseña"
-                  errorMessage="Usa al menos 8 caracteres, mayúsculas, minúsculas y números"
+                  [label]="'users.profile.password' | translate"
+                  [errorMessage]="
+                    'users.profile.use.at.least.8.characters.uppercase.letters.lowercase.letters.and.numbers'
+                      | translate
+                  "
                   variant="password"
                   [control]="control('password')"
                 />
@@ -68,16 +90,19 @@
               class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
             >
               <app-text-input
-                label="Teléfono"
+                [label]="'users.profile.phone' | translate"
                 placeholder="0414-1234567"
-                errorMessage="Introduce entre 7 y 15 dígitos"
+                [errorMessage]="'users.profile.enter.between.7.and.15.digits' | translate"
                 [control]="control('phone')"
               />
               @for (field of addressFields; track field.key) {
                 @if (field.key === 'country') {
                   <app-country-input [control]="control(field.key)" />
                 } @else {
-                  <app-text-input [label]="field.label" [control]="control(field.key)" />
+                  <app-text-input
+                    [label]="field.label | translate"
+                    [control]="control(field.key)"
+                  />
                 }
               }
             </app-tab-content>
@@ -88,29 +113,34 @@
               class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
             >
               <app-select-input
-                label="Rol"
-                placeholder="Seleccione un rol"
+                [label]="'users.profile.role' | translate"
+                [placeholder]="'users.profile.select.a.role' | translate"
                 [filter]="true"
                 [options]="roles()"
                 [control]="control('roleId')"
-                errorMessage="Seleccione un rol disponible"
+                [errorMessage]="'users.profile.select.an.available.role' | translate"
               />
               <app-select-input
-                label="Departamento"
-                placeholder="Seleccione un departamento"
+                [label]="'users.profile.department' | translate"
+                [placeholder]="'users.profile.select.a.department' | translate"
                 [filter]="true"
                 [options]="departments()"
                 [control]="control('departmentId')"
-                errorMessage="Seleccione un departamento disponible"
+                [errorMessage]="'users.profile.select.an.available.department' | translate"
               />
               @if (isEditMode()) {
                 <div
                   class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
                 >
                   <div>
-                    <p class="font-medium text-surface-800 dark:text-surface-200">Usuario Activo</p>
+                    <p class="font-medium text-surface-800 dark:text-surface-200">
+                      {{ 'users.profile.active.user' | translate }}
+                    </p>
                     <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
-                      Indica si el usuario está activo en el sistema
+                      {{
+                        'users.profile.indicates.whether.the.user.is.active.in.the.system'
+                          | translate
+                      }}
                     </p>
                   </div>
                   <p-toggleswitch formControlName="active" />

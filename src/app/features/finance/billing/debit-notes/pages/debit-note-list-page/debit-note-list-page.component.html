@@ -4,11 +4,13 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Notas de Débito</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.billing.debitnotes.debitNotes' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona las notas de débito emitidas
+        {{ 'finance.billing.debitnotes.manageIssuedDebitNotes' | translate }}
       </p>
     </div>
 
@@ -21,7 +23,7 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[280px]"
               [value]="searchTerm()"
-              placeholder="Buscar nota de débito..."
+              [placeholder]="'finance.billing.debitnotes.searchDebitNote' | translate"
               (search)="onSearch($event)"
             />
             <p-button
@@ -31,17 +33,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[280px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -51,25 +53,29 @@
                 </div>
                 <div class="flex flex-col gap-3">
                   <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Fecha Desde</label>
+                    <label class="text-xs font-medium text-surface-500">{{
+                      'finance.billing.creditnotes.startDate' | translate
+                    }}</label>
                     <p-datePicker
                       [(ngModel)]="dateFrom"
-                      dateFormat="dd/mm/yy"
+                      [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                       [showIcon]="true"
                       styleClass="w-full"
                     />
                   </div>
                   <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">Fecha Hasta</label>
+                    <label class="text-xs font-medium text-surface-500">{{
+                      'finance.billing.creditnotes.endDate' | translate
+                    }}</label>
                     <p-datePicker
                       [(ngModel)]="dateTo"
-                      dateFormat="dd/mm/yy"
+                      [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                       [showIcon]="true"
                       styleClass="w-full"
                     />
                   </div>
                   <p-button
-                    label="Aplicar Filtros"
+                    [label]="'finance.billing.returns.applyFilters' | translate"
                     [text]="true"
                     size="small"
                     severity="contrast"
@@ -82,7 +88,7 @@
           <p-button
             appShortcut="new"
             [appPermission]="'CREATE'"
-            label="Nueva Nota de Débito"
+            [label]="'finance.billing.debitnotes.newDebitNote' | translate"
             icon="pi pi-plus"
             (onClick)="onCreate()"
             severity="contrast"
@@ -94,15 +100,17 @@
 
     @if (showInitialLoading()) {
       <app-content-card class="mt-4">
-        <app-loading-spinner message="Cargando notas de débito..." />
+        <app-loading-spinner
+          [message]="'finance.billing.debitnotes.loadingDebitNotes' | translate"
+        />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-file"
-          title="No hay notas de débito registradas"
-          message="Comienza a emitir la primera nota de débito."
-          buttonLabel="Crear primera Nota de Débito"
+          [title]="'finance.billing.debitnotes.noDebitNotesRegistered' | translate"
+          [message]="'finance.billing.debitnotes.startByIssuingTheFirstDebitNote' | translate"
+          [buttonLabel]="'finance.billing.debitnotes.createFirstDebitNote' | translate"
           (buttonClick)="onCreate()"
         />
       </app-content-card>
@@ -119,9 +127,9 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay notas de débito que coincidan con tu búsqueda."
-              buttonLabel="Crear Nueva Nota de Débito"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.debitnotes.noDebitNotesMatchYourSearch' | translate"
+              [buttonLabel]="'finance.billing.debitnotes.createNewDebitNote' | translate"
               (buttonClick)="onCreate()"
             />
           } @else {
@@ -129,11 +137,25 @@
               <p-table [value]="debitNotes()" styleClass="p-datatable-striped">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th class="w-28"><div class="font-semibold">Número</div></th>
-                    <th class="w-auto"><div class="font-semibold">Cliente</div></th>
-                    <th class="w-32"><div class="font-semibold">Factura</div></th>
-                    <th class="w-28"><div class="font-semibold">Monto</div></th>
-                    <th class="w-36"><div class="font-semibold text-center">Acciones</div></th>
+                    <th class="w-28">
+                      <div class="font-semibold">
+                        {{ 'analytics.dashboard.number' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-auto">
+                      <div class="font-semibold">{{ 'shared.customer' | translate }}</div>
+                    </th>
+                    <th class="w-32">
+                      <div class="font-semibold">{{ 'shared.invoice' | translate }}</div>
+                    </th>
+                    <th class="w-28">
+                      <div class="font-semibold">{{ 'shared.amount' | translate }}</div>
+                    </th>
+                    <th class="w-36">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-debitNote>
@@ -148,7 +170,9 @@
                       <div class="font-mono text-sm">{{ debitNote.invoiceNumber || '—' }}</div>
                     </td>
                     <td>
-                      <div class="font-medium">{{ debitNote.amount | number: '1.2-2' }}</div>
+                      <div class="font-medium">
+                        {{ debitNote.amount | localizedNumber: '1.2-2' }}
+                      </div>
                     </td>
                     <td>
                       <app-list-action-buttons [actions]="actionsFor(debitNote)" />
@@ -164,7 +188,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} notas de débito"
+                [currentPageReportTemplate]="
+                  'finance.billing.debitnotes.debitNotesPage' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -184,9 +210,9 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay notas de débito que coincidan con tu búsqueda."
-              buttonLabel="Crear Nueva Nota de Débito"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.debitnotes.noDebitNotesMatchYourSearch' | translate"
+              [buttonLabel]="'finance.billing.debitnotes.createNewDebitNote' | translate"
               (buttonClick)="onCreate()"
             />
           </app-content-card>
@@ -202,10 +228,13 @@
                       {{ debitNote.noteNumber }}
                     </h3>
                     <p class="text-sm text-surface-500 dark:text-surface-400 mb-1">
-                      {{ debitNote.customerName || 'Cliente no especificado' }}
+                      {{
+                        debitNote.customerName ||
+                          ('finance.billing.creditnotes.customerNotSpecified' | translate)
+                      }}
                     </p>
                     <p class="text-sm font-medium mb-1">
-                      {{ debitNote.amount | number: '1.2-2' }}
+                      {{ debitNote.amount | localizedNumber: '1.2-2' }}
                     </p>
                   </div>
                 </div>
@@ -224,7 +253,7 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} notas de débito"
+              [currentPageReportTemplate]="'finance.billing.debitnotes.debitNotesPage' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

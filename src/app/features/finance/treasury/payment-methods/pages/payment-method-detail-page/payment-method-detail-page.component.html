@@ -6,15 +6,20 @@
     @if (paymentMethod(); as pm) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles del Método de Pago"
-          subtitle="Información completa del método de pago"
+          [title]="'finance.treasury.paymentmethods.paymentMethodDetails2' | translate"
+          [subtitle]="
+            'finance.treasury.paymentmethods.completePaymentMethodInformation' | translate
+          "
         />
 
         <app-details-card>
-          <app-details-card-header [title]="pm.name" [subtitle]="'Código: ' + pm.code">
+          <app-details-card-header
+            [title]="pm.name"
+            [subtitle]="('finance.treasury.paymentmethods.codePrefix' | translate) + pm.code"
+          >
             <div actions class="flex gap-3 flex-wrap">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -23,7 +28,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Editar"
+                  [label]="'finance.billing.invoices.edit' | translate"
                   icon="pi pi-pencil"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onEdit()"
@@ -35,9 +40,19 @@
 
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Código" [value]="pm.code" type="code" />
-              <app-details-info-field label="Nombre" [value]="pm.name" />
-              <app-details-info-field label="Estado" type="badge">
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.code' | translate"
+                [value]="pm.code"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="pm.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
                 <app-status-badge
                   [active]="pm.isActive"
                   activeLabel="Activo"
@@ -45,17 +60,23 @@
                 />
               </app-details-info-field>
               @if (pm.description) {
-                <app-details-info-field label="Descripción" [value]="pm.description" />
+                <app-details-info-field
+                  [label]="'finance.treasury.paymentmethods.description' | translate"
+                  [value]="pm.description"
+                />
               } @else {
-                <app-details-info-field label="Descripción" value="—" />
+                <app-details-info-field
+                  [label]="'finance.treasury.paymentmethods.description' | translate"
+                  value="—"
+                />
               }
               <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(pm.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(pm.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
-                [value]="(pm.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(pm.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>

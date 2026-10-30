@@ -1,20 +1,17 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, inject } from '@angular/core';
+import { LanguageService } from '@core/i18n/language.service';
 
-@Pipe({
-  name: 'appCurrency',
-  standalone: true,
-})
+@Pipe({ name: 'appCurrency', standalone: true, pure: false })
 export class CurrencyPipe implements PipeTransform {
-  transform(value: number | null | undefined, decimals: number = 2): string {
-    if (value === null || value === undefined) {
-      return '0,00$';
-    }
-
-    const formattedNumber = value.toLocaleString('es-VE', {
+  private readonly language = inject(LanguageService, { optional: true });
+  transform(value: number | null | undefined, decimals = 2): string {
+    const number = value ?? 0;
+    const locale = this.language?.locale() ?? 'es-ES';
+    const language = this.language?.language() ?? 'es';
+    const formatted = number.toLocaleString(locale, {
       minimumFractionDigits: decimals,
       maximumFractionDigits: decimals,
     });
-
-    return `${formattedNumber}$`;
+    return language === 'en' ? `$${formatted}` : `${formatted}$`;
   }
 }

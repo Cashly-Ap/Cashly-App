@@ -1,0 +1,19 @@
+{
+  "core.shortcuts.goToAModule": "Go to a module",
+  "core.shortcuts.availableModules": "Available modules",
+  "core.shortcuts.navigateResults": "Navigate results",
+  "core.shortcuts.selectEnterOpensEscLeavesTheFieldJKNavigateOutsideTheField": "↑/↓ select · Enter opens · Esc leaves the field · J/K navigate outside the field",
+  "core.shortcuts.noModulesAvailable": "No modules available.",
+  "core.shortcuts.down": "down ·",
+  "core.shortcuts.up": "up ·",
+  "core.shortcuts.esc": "Esc",
+  "core.shortcuts.leaveTheField": "leave the field",
+  "core.shortcuts.unfocusField": "Unfocus field",
+  "core.shortcuts.letterShortcutsWorkWhenYouAreNotTypingYouCanHideThisHelpInSettings": "Letter shortcuts work when you are not typing. You can hide this help in Settings.",
+  "core.shortcuts.newRecord": "New record",
+  "core.shortcuts.openFilters": "Open filters",
+  "core.shortcuts.focusSearch": "Focus search",
+  "core.shortcuts.saveOrAccept": "Save or accept",
+  "core.shortcuts.cancelOrGoBack": "Cancel or go back",
+  "core.shortcuts.messages.dialogShortcuts": "Dialog shortcuts"
+}

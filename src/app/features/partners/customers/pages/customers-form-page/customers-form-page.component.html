@@ -6,15 +6,15 @@
         <p-tablist>
           <p-tab value="0">
             <i class="pi pi-info-circle mr-2"></i>
-            General
+            {{ 'partners.suppliers.general' | translate }}
           </p-tab>
           <p-tab value="1">
             <i class="pi pi-address-book mr-2"></i>
-            Contacto y Direcciones
+            {{ 'partners.suppliers.contactAndAddresses' | translate }}
           </p-tab>
           <p-tab value="2">
             <i class="pi pi-warehouse mr-2"></i>
-            Almacenes
+            {{ 'inventory.warehouses.warehouses' | translate }}
           </p-tab>
         </p-tablist>
 
@@ -32,7 +32,7 @@
           </p-tabpanel>
           <p-tabpanel value="2">
             <div class="p-6 flex flex-col gap-4">
-              <p class="font-medium text-surface-800 dark:text-surface-200">Almacenes con Acceso</p>
+              <p class="font-medium text-surface-800 dark:text-surface-200">{{ 'partners.customers.accessibleWarehouses' | translate }}</p>
 
               @if (warehouseAccessLoading()) {
                 <div class="flex justify-center py-8">
@@ -41,13 +41,13 @@
               } @else {
                 @if (warehouseOptions().length > 0) {
                   <p-select
-                    [options]="warehouseOptions()"
+                    [options]="warehouseOptions() | translateOptions: true"
                     [ngModel]="selectedWarehouseId()"
                     (ngModelChange)="onSelectWarehouse($event)"
                     [ngModelOptions]="{ standalone: true }"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Seleccionar almacén para agregar..."
+                    [placeholder]="'partners.customers.selectAWarehouseToAdd' | translate"
                     class="w-full"
                   />
                 }
@@ -55,7 +55,7 @@
                 @if (warehouseAccess().length === 0) {
                   <div class="flex flex-col items-center justify-center py-10 gap-2 text-amber-500">
                     <i class="pi pi-exclamation-triangle text-3xl"></i>
-                    <p class="text-sm">Debe asignar al menos un almacén al cliente</p>
+                    <p class="text-sm">{{ 'partners.customers.youMustAssignAtLeastOneWarehouseToTheCustomer' | translate }}</p>
                   </div>
                 } @else {
                   <div class="flex flex-col gap-2">
@@ -85,7 +85,7 @@
 
       <app-form-actions
         [submitLabel]="submitLabel()"
-        cancelLabel="Cancelar"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="loading()"
         [disabled]="form.invalid || warehouseAccess().length === 0"
         [tooltipMessage]="submitTooltip()"

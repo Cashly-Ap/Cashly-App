@@ -1,20 +1,24 @@
 <section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
   <app-page-header
-    title="Seguridad"
-    subtitle="Protege tu cuenta con la verificación en dos pasos."
+    [title]="'platform.auth.security' | translate"
+    [subtitle]="'platform.auth.protectYourAccountWithTwoStepVerification' | translate"
   />
   @if (error()) {
     <p role="alert" class="rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-300">
-      {{ error() }}
+      {{ (error()) | translate }}
     </p>
   }
   @if (recoveryCodes().length) {
     <app-details-card>
-      <app-details-card-header title="MFA activado. Guarda tus códigos de recuperación" />
+      <app-details-card-header
+        [title]="'platform.auth.mfaEnabledSaveYourRecoveryCodes' | translate"
+      />
       <div class="flex flex-col gap-5 p-4 sm:p-6">
         <p>
-          Solo se muestran una vez. Guarda estos códigos en un lugar seguro. Cada código permite
-          acceder una sola vez si pierdes tu autenticador.
+          {{
+            'platform.auth.theseCodesAreOnlyShownOnceStoreThemSecurelyEachCodeAllowsOneSignInIfYouLoseYourAuthenticator'
+              | translate
+          }}
         </p>
         <ul class="grid max-w-2xl grid-cols-1 gap-3 font-mono text-sm sm:grid-cols-2">
           @for (code of recoveryCodes(); track code) {
@@ -27,43 +31,62 @@
         </ul>
         <div class="flex flex-wrap gap-3">
           <p-button
-            [label]="copied() ? 'Copiados' : 'Copiar códigos'"
+            [label]="
+              copied()
+                ? ('platform.auth.copied' | translate)
+                : ('platform.auth.copyCodes' | translate)
+            "
             (onClick)="copyCodes()"
             [outlined]="true"
           />
           <p-button
-            label="Descargar códigos"
-            ariaLabel="Descargar códigos"
+            [label]="'platform.auth.downloadCodes' | translate"
+            [ariaLabel]="'platform.auth.downloadCodes' | translate"
             icon="pi pi-download"
             (onClick)="downloadCodes()"
             [outlined]="true"
           />
         </div>
         <p class="text-sm text-surface-500">
-          Por seguridad, tendrás que iniciar sesión de nuevo con MFA.
+          {{ 'platform.auth.forSecurityYouMustSignInAgainUsingMfa' | translate }}
         </p>
-        <p-button label="Ya los guardé. Iniciar sesión" (onClick)="finish()" />
+        <p-button [label]="'platform.auth.iHaveSavedThemSignIn' | translate" (onClick)="finish()" />
       </div>
     </app-details-card>
   } @else if (status(); as state) {
     <app-details-card>
       <app-details-card-header
-        title="Aplicación de autenticación"
-        subtitle="Compatible con Microsoft Authenticator, Google Authenticator y otras aplicaciones TOTP."
+        [title]="'platform.auth.authenticatorApp' | translate"
+        [subtitle]="
+          'platform.auth.compatibleWithMicrosoftAuthenticatorGoogleAuthenticatorAndOtherTotpApps'
+            | translate
+        "
       />
       <div class="flex flex-col gap-5 p-4 sm:p-6">
-        <p class="font-medium">Estado: {{ state.enabled ? 'Activada' : 'Desactivada' }}</p>
+        <p class="font-medium">
+          {{ 'platform.auth.status' | translate }}
+          {{
+            state.enabled
+              ? ('platform.auth.enabled' | translate)
+              : ('platform.auth.disabled' | translate)
+          }}
+        </p>
         @if (state.enabled) {
           <p class="text-sm text-surface-500">
-            Códigos de recuperación disponibles: {{ state.recoveryCodesRemaining }}
+            {{ 'platform.auth.availableRecoveryCodes' | translate }}
+            {{ state.recoveryCodesRemaining }}
           </p>
           <form
             [formGroup]="disableForm"
             (ngSubmit)="disable()"
             class="flex max-w-xl flex-col gap-4"
           >
-            <h3 class="font-semibold">Desactivar verificación en dos pasos</h3>
-            <label for="disable-password" class="text-sm font-medium">Contraseña actual</label>
+            <h3 class="font-semibold">
+              {{ 'platform.auth.disableTwoStepVerification' | translate }}
+            </h3>
+            <label for="disable-password" class="text-sm font-medium">{{
+              'platform.auth.currentPassword' | translate
+            }}</label>
             <input
               pInputText
               id="disable-password"
@@ -71,9 +94,9 @@
               formControlName="password"
               autocomplete="current-password"
             />
-            <label for="disable-code" class="text-sm font-medium"
-              >Código del autenticador o código de recuperación</label
-            >
+            <label for="disable-code" class="text-sm font-medium">{{
+              'platform.auth.authenticatorCodeOrRecoveryCode' | translate
+            }}</label>
             <input
               pInputText
               id="disable-code"
@@ -82,12 +105,12 @@
               maxlength="64"
             />
             <p class="text-sm text-surface-500">
-              Al desactivarla, tendrás que iniciar sesión de nuevo.
+              {{ 'platform.auth.afterDisablingItYouMustSignInAgain' | translate }}
             </p>
             <p-button
               type="submit"
-              label="Desactivar MFA"
-              ariaLabel="Desactivar MFA"
+              [label]="'platform.auth.disableMfa' | translate"
+              [ariaLabel]="'platform.auth.disableMfa' | translate"
               severity="danger"
               icon="pi pi-shield"
               [loading]="busy()"
@@ -96,8 +119,10 @@
           </form>
         } @else if (setup(); as enrollment) {
           <p>
-            Escanea este QR desde tu autenticador añadiendo una cuenta. La configuración caduca en
-            10 minutos.
+            {{
+              'platform.auth.scanThisQrCodeInYourAuthenticatorToAddAnAccountSetupExpiresIn10Minutes'
+                | translate
+            }}
           </p>
           @if (qrCode()) {
             <img
@@ -108,8 +133,9 @@
             />
           }
           <p class="text-sm">
-            Si no puedes escanearlo, introduce esta clave manualmente como una cuenta basada en
-            tiempo:
+            {{
+              'platform.auth.ifYouCannotScanItEnterThisKeyManuallyAsATimeBasedAccount' | translate
+            }}
           </p>
           <p
             class="max-w-xl break-all rounded-xl border border-surface-200 bg-surface-50 p-4 font-mono text-sm text-surface-900 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-0"
@@ -117,7 +143,9 @@
             {{ enrollment.secret }}
           </p>
           <form [formGroup]="codeForm" (ngSubmit)="enable()" class="flex max-w-xl flex-col gap-4">
-            <label for="enable-code" class="text-sm font-medium">Código de seis dígitos</label>
+            <label for="enable-code" class="text-sm font-medium">{{
+              'platform.auth.sixDigitCode' | translate
+            }}</label>
             <input
               pInputText
               id="enable-code"
@@ -128,12 +156,12 @@
             />
             <p-button
               type="submit"
-              label="Confirmar y activar MFA"
+              [label]="'platform.auth.confirmAndEnableMfa' | translate"
               [loading]="busy()"
               [disabled]="codeForm.invalid"
             />
             <p-button
-              label="Cancelar configuración"
+              [label]="'platform.auth.cancelSetup' | translate"
               [outlined]="true"
               (onClick)="cancelSetup()"
               [disabled]="busy()"
@@ -145,9 +173,9 @@
             (ngSubmit)="startSetup()"
             class="flex max-w-xl flex-col gap-4"
           >
-            <label for="setup-password" class="text-sm font-medium"
-              >Confirma tu contraseña actual</label
-            >
+            <label for="setup-password" class="text-sm font-medium">{{
+              'platform.auth.confirmYourCurrentPassword' | translate
+            }}</label>
             <input
               pInputText
               id="setup-password"
@@ -157,8 +185,8 @@
             />
             <p-button
               type="submit"
-              label="Configurar autenticador"
-              ariaLabel="Configurar autenticador"
+              [label]="'platform.auth.setUpAuthenticator' | translate"
+              [ariaLabel]="'platform.auth.setUpAuthenticator' | translate"
               icon="pi pi-shield"
               [loading]="busy()"
               [disabled]="passwordForm.invalid"
@@ -173,9 +201,9 @@
       role="status"
       aria-live="polite"
     >
-      <p>Cargando seguridad…</p>
+      <p>{{ 'platform.auth.loadingSecurity' | translate }}</p>
       <p-button
-        label="Reintentar"
+        [label]="'inventory.warehouses.retry' | translate"
         icon="pi pi-refresh"
         [outlined]="true"
         (onClick)="loadStatus()"

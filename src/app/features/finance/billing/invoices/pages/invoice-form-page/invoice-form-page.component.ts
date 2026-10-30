@@ -1,3 +1,8 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -49,6 +54,10 @@ import { InvoiceCreate } from '@features/finance/billing/invoices/models/interfa
   selector: 'app-invoice-form-page',
   standalone: true,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     ReactiveFormsModule,
     DecimalPipe,
     DatePipe,
@@ -65,11 +74,13 @@ import { InvoiceCreate } from '@features/finance/billing/invoices/models/interfa
     CustomerPickerDialogComponent,
     InvoiceSourcePickerDialogComponent,
   ],
-  providers: [MessageService],
+  providers: [provideTranslatedMessages()],
   templateUrl: './invoice-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InvoiceFormPageComponent implements OnInit, OnDestroy {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

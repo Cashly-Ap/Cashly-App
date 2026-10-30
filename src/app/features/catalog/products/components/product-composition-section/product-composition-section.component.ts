@@ -1,3 +1,6 @@
+import { inject as i18nInject } from '@angular/core';
+import { LanguageService as I18nLanguageService } from '@core/i18n/language.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -26,7 +29,7 @@ interface ProductOption {
 @Component({
   selector: 'app-product-composition-section',
   standalone: true,
-  imports: [
+  imports: [TranslatePipe,
     PermissionDirective,
     CommonModule,
     ReactiveFormsModule,
@@ -41,6 +44,7 @@ interface ProductOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductCompositionSectionComponent implements OnInit {
+  readonly i18nLanguage = i18nInject(I18nLanguageService);
   private readonly productService = inject(ProductApplicationService);
 
   readonly componentsArray = input.required<FormArray>();

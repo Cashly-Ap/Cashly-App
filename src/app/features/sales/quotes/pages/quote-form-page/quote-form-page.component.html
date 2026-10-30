@@ -1,10 +1,12 @@
 <app-form-container>
   <app-form-header
-    [title]="isEditMode() ? 'Editar Presupuesto' : 'Nuevo Presupuesto'"
+    [title]="
+      isEditMode() ? ('sales.quotes.editQuote' | translate) : ('sales.quotes.newQuote' | translate)
+    "
     [subtitle]="
       isEditMode()
-        ? 'Modifica los datos del presupuesto'
-        : 'Complete la información del presupuesto'
+        ? ('sales.quotes.updateQuoteDetails' | translate)
+        : ('sales.quotes.completeTheQuoteInformation' | translate)
     "
   />
   <form [formGroup]="form" (ngSubmit)="submit()">
@@ -14,7 +16,7 @@
           class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
         >
           <i class="pi pi-info-circle text-surface-500"></i>
-          Información del Presupuesto
+          {{ 'sales.quotes.quoteInformation' | translate }}
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -22,7 +24,7 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Cliente *
+              {{ 'finance.billing.debitnotes.customer' | translate }}
             </label>
             @if (selectedCustomerLabel(); as customer) {
               <div
@@ -42,7 +44,7 @@
                     class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
                     (click)="openPicker()"
                   >
-                    Cambiar
+                    {{ 'finance.billing.creditnotes.change' | translate }}
                   </button>
                 }
               </div>
@@ -53,14 +55,14 @@
                 (click)="openPicker()"
               >
                 <i class="pi pi-search text-sm"></i>
-                Buscar y seleccionar cliente...
+                {{ 'finance.billing.creditnotes.searchAndSelectACustomer' | translate }}
               </button>
             }
             <div class="min-h-[20px] mt-1.5">
               @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
                 <small class="flex items-center gap-1 text-red-500 text-xs">
                   <i class="pi pi-exclamation-circle text-xs"></i>
-                  El cliente es requerido
+                  {{ 'finance.billing.creditnotes.aCustomerIsRequired' | translate }}
                 </small>
               }
             </div>
@@ -70,15 +72,17 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Notas
-              <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span>
+              {{ 'finance.billing.invoices.notes' | translate }}
+              <span class="text-surface-400 text-xs font-normal ml-1">{{
+                'finance.billing.invoices.optional' | translate
+              }}</span>
             </label>
             <textarea
               pTextarea
               formControlName="notes"
               rows="3"
               class="w-full"
-              placeholder="Notas o instrucciones adicionales..."
+              [placeholder]="'finance.billing.invoices.additionalNotesOrInstructions' | translate"
             ></textarea>
             <div class="min-h-[20px] mt-1.5"></div>
           </div>
@@ -95,8 +99,8 @@
       </div>
 
       <app-form-actions
-        submitLabel="Guardar"
-        cancelLabel="Cancelar"
+        [submitLabel]="'finance.billing.creditnotes.save' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"
         [tooltipMessage]="submitTooltip()"

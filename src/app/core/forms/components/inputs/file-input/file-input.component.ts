@@ -1,3 +1,5 @@
+import { TooltipModule } from 'primeng/tooltip';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
   input,
@@ -16,7 +18,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-file-input',
   standalone: true,
-  imports: [ReactiveFormsModule, FileUploadModule, ButtonModule],
+  imports: [TooltipModule, TranslatePipe, ReactiveFormsModule, FileUploadModule, ButtonModule],
   templateUrl: './file-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

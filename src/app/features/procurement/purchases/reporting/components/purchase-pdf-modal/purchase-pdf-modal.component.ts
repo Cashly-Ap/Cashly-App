@@ -1,3 +1,6 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
@@ -32,6 +35,8 @@ interface SelectOption {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -45,6 +50,8 @@ interface SelectOption {
   templateUrl: './purchase-pdf-modal.component.html',
 })
 export class PurchasePdfModalComponent {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);
   private readonly supplierApi = inject(SupplierApiService);

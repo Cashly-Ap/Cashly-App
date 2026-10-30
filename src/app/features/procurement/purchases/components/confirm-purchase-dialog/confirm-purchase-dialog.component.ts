@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -21,6 +23,9 @@ import { PurchaseStatus } from '@features/procurement/purchases/models/enums/pur
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     DialogModule,

@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -32,7 +34,16 @@ function getPaymentStatusSeverity(
 @Component({
   selector: 'app-payment-detail-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TagModule, CurrencyPipe, DatePipe],
+  imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    DialogModule,
+    ButtonModule,
+    TagModule,
+    CurrencyPipe,
+    DatePipe,
+  ],
   templateUrl: './payment-detail-dialog.component.html',
 })
 export class PaymentDetailDialogComponent {

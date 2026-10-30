@@ -1,3 +1,7 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { Language } from '@core/i18n/language';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { AuthService } from '../../../services/application/auth-application.service';
 import { BusinessModule } from '../../models/enums/business-module.enum';
 import { computed } from '@angular/core';
@@ -27,6 +31,7 @@ import { UserApplicationService } from '../../services/application/user-applicat
 import { AccessManagementService } from '../../../authorization/services/access-management.service';
 import { UserProfile, SelectionOption } from '../../../authorization/models/access.model';
 interface UserFormData extends UserProfile {
+  language: Language;
   email: string;
   password: string;
   userName: string;
@@ -41,6 +46,7 @@ interface UserFormData extends UserProfile {
   selector: 'app-users-form-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     TabsModule,
     ReactiveFormsModule,
     ToggleSwitchModule,
@@ -58,11 +64,17 @@ interface UserFormData extends UserProfile {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
+  private readonly translations = inject(TranslationService);
   private readonly service = inject(UserApplicationService);
   private readonly management = inject(AccessManagementService);
   private readonly messages = inject(MessageService);
   private readonly photos = inject(UserPhotoService);
   private readonly auth = inject(AuthService);
+  private readonly preferences = inject(UserPreferencesService);
+  readonly languages = [
+    { label: 'Español', value: 'es' },
+    { label: 'English', value: 'en' },
+  ];
   readonly canManagePhoto = computed(() => this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'));
   private readonly photoDestroy = inject(DestroyRef);
   readonly photo = new FormControl<File | null>(null);
@@ -103,8 +115,8 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private selectionError(): void {
     this.messages.add({
       severity: 'error',
-      summary: 'Error',
-      detail: 'No se pudieron cargar los roles o departamentos disponibles.',
+      summary: this.translations.t('users.profile.error'),
+      detail: this.translations.t('users.profile.could.not.load.available.roles.or.departments'),
     });
   }
   control(key: string): FormControl {
@@ -112,7 +124,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   }
   getConfig(): FormConfig {
     return {
-      entityDisplayName: 'Usuario',
+      entityDisplayName: this.translations.t('users.profile.user'),
       entityArticle: 'del',
       module: 'users',
       routeBase: '/platform/users',
@@ -120,6 +132,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   }
   createForm(): FormGroup {
     return this.fb.group({
+      language: ['es', [Validators.required, Validators.pattern(/^(es|en)$/)]],
       email: ['', [Validators.required, Validators.email]],
       password: [
         '',
@@ -148,7 +161,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   protected override onLoadEntity(id: string): void {
     this.service.loadUserById(id).subscribe({
       next: (user) => {
-        this.form.patchValue({ ...user, ...user.address });
+        this.form.patchValue({ ...user, ...user.address, language: user.language ?? 'es' });
         if (user.photoPath)
           this.photos
             .get(id)
@@ -167,14 +180,14 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
       error: () =>
         this.messages.add({
           severity: 'error',
-          summary: 'Error',
-          detail: 'No se pudo cargar el usuario.',
+          summary: this.translations.t('users.profile.error'),
+          detail: this.translations.t('users.profile.could.not.load.the.user'),
         }),
     });
   }
   private firstInvalidTab(): string {
     if (
-      ['firstName', 'lastName', 'userName', 'email', 'password'].some(
+      ['firstName', 'lastName', 'userName', 'email', 'password', 'language'].some(
         (key) => this.control(key).invalid,
       )
     )
@@ -211,6 +224,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
     };
     const request = this.isEditMode()
       ? this.service.updateUser(this.entityId()!, {
+          language: v.language,
           userName: data.userName,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -222,6 +236,7 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
         })
       : this.service.createUser({
           email: data.email,
+          language: v.language,
           userName: data.userName,
           firstName: data.firstName,
           lastName: data.lastName,
@@ -254,23 +269,31 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
       )
       .subscribe({
         next: (user) => {
+          if (user.id === this.auth.currentUser()?.id)
+            this.preferences.syncLanguage(user.language ?? v.language);
           this.markAsSubmitted();
           this.messages.add({
             severity: photoFailed ? 'warn' : 'success',
-            summary: photoFailed ? 'Usuario guardado sin foto' : 'Guardado',
+            summary: photoFailed
+              ? this.translations.t('users.profile.user.saved.without.photo')
+              : this.translations.t('users.profile.saved'),
             detail: photoFailed
-              ? 'El usuario se guardó. Edita su ficha para volver a subir la foto.'
-              : 'Usuario guardado correctamente',
+              ? this.translations.t(
+                  'users.profile.the.user.was.saved.edit.their.profile.to.upload.the.photo.again',
+                )
+              : this.translations.t('users.profile.user.saved.successfully'),
           });
           this.router.navigate(['/platform/users', user.id]);
         },
         error: (error) =>
           this.messages.add({
             severity: 'error',
-            summary: 'Error',
+            summary: this.translations.t('users.profile.error'),
             detail:
               error.error?.message ??
-              'No se pudo guardar. Comprueba que el rol y departamento sigan disponibles.',
+              this.translations.t(
+                'users.profile.could.not.save.check.that.the.role.and.department.are.still.available',
+              ),
           }),
       });
   }

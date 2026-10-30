@@ -1,24 +1,29 @@
 <section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
   <app-page-header
-    title="Configuración"
-    subtitle="Personaliza la apariencia y los atajos de tu cuenta."
+    [title]="'auth.profile.settings' | translate"
+    [subtitle]="'auth.profile.customize.your.account.appearance.and.shortcuts' | translate"
   />
   <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
     @if (preferences.loading()) {
-      <p role="status">Cargando tu configuración…</p>
+      <p role="status">{{ 'auth.profile.loading.your.settings' | translate }}</p>
     } @else if (preferences.saving()) {
-      <p role="status">Guardando cambios…</p>
+      <p role="status">{{ 'auth.profile.saving.changes' | translate }}</p>
     } @else if (!preferences.error()) {
-      <p>Los cambios se guardan automáticamente en tu cuenta y se recuperan en tus dispositivos.</p>
+      <p>
+        {{
+          'auth.profile.changes.are.saved.automatically.to.your.account.and.restored.on.your.devices'
+            | translate
+        }}
+      </p>
     }
   </div>
   @if (preferences.error(); as error) {
     <app-details-card>
       <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">
-        <p>{{ error }}</p>
+        <p>{{ (error) | translate }}</p>
         <p-button
-          label="Reintentar"
-          ariaLabel="Reintentar configuración"
+          [label]="'auth.profile.retry' | translate"
+          [ariaLabel]="'auth.profile.retry.settings' | translate"
           icon="pi pi-refresh"
           [outlined]="true"
           (onClick)="preferences.retry()"
@@ -28,14 +33,43 @@
   }
   <app-details-card>
     <app-details-card-header
-      title="Apariencia"
-      subtitle="Elige el modo de visualización por defecto."
+      [title]="'auth.profile.language' | translate"
+      [subtitle]="'auth.profile.language.for.the.application.messages.and.reports' | translate"
     />
     <fieldset
       class="p-4 sm:p-6"
       [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
     >
-      <legend class="sr-only">Modo de visualización</legend>
+      <legend class="sr-only">{{ 'auth.profile.application.language' | translate }}</legend>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        @for (language of languages; track language.value) {
+          <label
+            class="flex cursor-pointer items-center gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
+          >
+            <input
+              type="radio"
+              name="language"
+              [value]="language.value"
+              [checked]="preferences.language() === language.value"
+              (change)="preferences.setLanguage(language.value)"
+              class="accent-black dark:accent-white"
+            />
+            <span class="font-semibold">{{ language.label }}</span>
+          </label>
+        }
+      </div>
+    </fieldset>
+  </app-details-card>
+  <app-details-card>
+    <app-details-card-header
+      [title]="'auth.profile.appearance' | translate"
+      [subtitle]="'auth.profile.choose.the.default.display.mode' | translate"
+    />
+    <fieldset
+      class="p-4 sm:p-6"
+      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
+    >
+      <legend class="sr-only">{{ 'auth.profile.display.mode' | translate }}</legend>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         @for (theme of themes; track theme.value) {
           <label
@@ -51,10 +85,10 @@
             />
             <span class="flex min-w-0 flex-col gap-2">
               <span class="flex items-center gap-2 font-semibold"
-                ><i [class]="theme.icon" aria-hidden="true"></i>{{ theme.label }}</span
+                ><i [class]="theme.icon" aria-hidden="true"></i>{{ theme.label | translate }}</span
               >
               <span class="text-sm text-surface-500 dark:text-surface-400">{{
-                theme.description
+                theme.description | translate
               }}</span>
             </span>
           </label>
@@ -64,14 +98,14 @@
   </app-details-card>
   <app-details-card>
     <app-details-card-header
-      title="Modo de colores"
-      subtitle="Organiza visualmente la información como prefieras."
+      [title]="'auth.profile.color.mode' | translate"
+      [subtitle]="'auth.profile.organize.information.visually.as.you.prefer' | translate"
     />
     <fieldset
       class="p-4 sm:p-6"
       [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
     >
-      <legend class="sr-only">Modo de colores</legend>
+      <legend class="sr-only">{{ 'auth.profile.color.mode' | translate }}</legend>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         @for (color of colors; track color.value) {
           <label
@@ -86,9 +120,9 @@
               class="mt-1 accent-black dark:accent-white"
             />
             <span class="flex min-w-0 flex-col gap-2">
-              <span class="font-semibold">{{ color.label }}</span>
+              <span class="font-semibold">{{ color.label | translate }}</span>
               <span class="text-sm text-surface-500 dark:text-surface-400">{{
-                color.description
+                color.description | translate
               }}</span>
               @if (color.value === 'informative') {
                 <span class="mt-1 flex gap-2" aria-hidden="true">
@@ -114,8 +148,8 @@
   </app-details-card>
   <app-details-card>
     <app-details-card-header
-      title="Atajos de teclado"
-      subtitle="Accede a los módulos y a las acciones habituales desde el teclado."
+      [title]="'auth.profile.keyboard.shortcuts' | translate"
+      [subtitle]="'auth.profile.access.modules.and.common.actions.using.the.keyboard' | translate"
     />
     <div class="flex flex-col gap-6 p-4 sm:p-6">
       <label class="flex cursor-pointer items-start gap-3">
@@ -128,28 +162,33 @@
           class="mt-1 h-4 w-4 accent-black dark:accent-white"
         />
         <span
-          ><span class="block font-semibold">Habilitar atajos de teclado</span
-          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400"
-            >Solo actúan sobre las acciones disponibles y los módulos a los que tienes acceso.</span
-          ></span
+          ><span class="block font-semibold">{{
+            'auth.profile.enable.keyboard.shortcuts' | translate
+          }}</span
+          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">{{
+            'auth.profile.they.only.trigger.available.actions.and.modules.you.can.access'
+              | translate
+          }}</span></span
         >
       </label>
       <label class="flex cursor-pointer items-start gap-3">
         <input
           type="checkbox"
           role="switch"
-          aria-label="Mostrar atajos en cada pantalla"
+          [attr.aria-label]="'auth.profile.show.shortcuts.on.each.screen' | translate"
           [checked]="preferences.showShortcutHints()"
           [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
           (change)="preferences.setShowShortcutHints(!preferences.showShortcutHints())"
           class="mt-1 h-4 w-4 accent-black dark:accent-white"
         />
         <span
-          ><span class="block font-semibold">Mostrar atajos en cada pantalla</span
-          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400"
-            >Muestra una ayuda con las acciones disponibles en la pantalla o diálogo actual cuando
-            los atajos están habilitados.</span
-          ></span
+          ><span class="block font-semibold">{{
+            'auth.profile.show.shortcuts.on.each.screen' | translate
+          }}</span
+          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">{{
+            'auth.profile.shows.available.actions.for.the.current.screen.or.dialog.when.shortcuts.are.enabled'
+              | translate
+          }}</span></span
         >
       </label>
       <dl class="grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-2">
@@ -157,7 +196,7 @@
           <div
             class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 pb-3 dark:border-surface-800"
           >
-            <dt class="text-sm">{{ shortcut.label }}</dt>
+            <dt class="text-sm">{{ shortcut.label | translate }}</dt>
             <dd>
               <kbd
                 class="rounded-lg border border-surface-300 px-2 py-1 text-xs dark:border-surface-600"
@@ -168,9 +207,10 @@
         }
       </dl>
       <p class="text-sm text-surface-500 dark:text-surface-400">
-        Pulsa una sola tecla: N para nuevo, F para filtros, B para buscar, G para guardar y M para
-        módulos. J/K bajan y suben. Esc sale primero del campo; después cancela o cierra. Las letras no activan acciones mientras escribes ni
-        sustituyen los atajos del navegador.
+        {{
+          'auth.profile.press.one.key.n.for.new.f.for.filters.b.to.search.g.to.save.and.m.for.modules.j.k.move.down.and.up.esc.first.leaves.the.field.then.cancels.or.closes.letters.do.not.trigger.actions.while.typing.or.replace.browser.shortcuts'
+            | translate
+        }}
       </p>
     </div>
   </app-details-card>

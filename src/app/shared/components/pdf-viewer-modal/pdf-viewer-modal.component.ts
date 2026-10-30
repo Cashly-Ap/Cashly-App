@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, ChangeDetectionStrategy, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DialogModule } from 'primeng/dialog';
@@ -8,7 +9,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
   selector: 'app-pdf-viewer-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DialogModule, ProgressSpinnerModule],
+  imports: [TranslatePipe, CommonModule, DialogModule, ProgressSpinnerModule],
   templateUrl: './pdf-viewer-modal.component.html',
 })
 export class PdfViewerModalComponent {

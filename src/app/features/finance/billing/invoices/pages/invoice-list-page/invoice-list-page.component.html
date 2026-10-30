@@ -4,11 +4,13 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Facturas</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.billing.invoices.invoices' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona las facturas de clientes
+        {{ 'finance.billing.invoices.manageCustomerInvoices' | translate }}
       </p>
     </div>
 
@@ -21,7 +23,7 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[300px]"
               [value]="searchTerm()"
-              placeholder="Buscar por número o cliente..."
+              [placeholder]="'shared.searchByNumberOrCustomer' | translate"
               (search)="onSearch($event)"
             />
             <p-button
@@ -31,17 +33,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[280px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -50,72 +52,84 @@
                   }
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.status' | translate
+                  }}</label>
                   <p-select
-                    [options]="statusOptions"
+                    [options]="statusOptions | translateOptions"
                     [ngModel]="selectedStatus()"
                     (onChange)="onStatusFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Facturas activas"
+                    [placeholder]="'finance.billing.invoices.activeInvoices' | translate"
                     fluid
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Tipo de Pago</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.paymentType' | translate
+                  }}</label>
                   <p-select
-                    [options]="paymentTypeOptions"
+                    [options]="paymentTypeOptions | translateOptions"
                     [ngModel]="filterPaymentType()"
                     (onChange)="onPaymentTypeFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos los tipos"
+                    [placeholder]="'finance.billing.invoices.allTypes' | translate"
                     fluid
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Vencimiento</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'analytics.dashboard.dueDate' | translate
+                  }}</label>
                   <p-select
-                    [options]="dueStatusOptions"
+                    [options]="dueStatusOptions | translateOptions"
                     [ngModel]="selectedDueStatus()"
                     (onChange)="onDueStatusFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todas las fechas"
+                    [placeholder]="'finance.billing.invoices.allDates' | translate"
                     fluid
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.startDate2' | translate
+                  }}</label>
                   <p-datepicker
                     [ngModel]="filterDateFrom()"
                     (onSelect)="onDateFromChange($event)"
                     [showIcon]="true"
-                    dateFormat="dd/mm/yy"
-                    placeholder="Desde"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [placeholder]="'finance.billing.invoices.from' | translate"
                     fluid
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.endDate2' | translate
+                  }}</label>
                   <p-datepicker
                     [ngModel]="filterDateTo()"
                     (onSelect)="onDateToChange($event)"
                     [showIcon]="true"
-                    dateFormat="dd/mm/yy"
-                    placeholder="Hasta"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [placeholder]="'finance.billing.invoices.to' | translate"
                     fluid
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Devolución</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.return' | translate
+                  }}</label>
                   <p-select
-                    [options]="returnStatusOptions"
+                    [options]="returnStatusOptions | translateOptions"
                     [ngModel]="selectedReturnStatus()"
                     (onChange)="onReturnStatusFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todas"
+                    [placeholder]="'finance.billing.invoices.all' | translate"
                     fluid
                   />
                 </div>
@@ -126,7 +140,7 @@
             appShortcut="new"
             [appRequiredPermissions]="['INVENTORY:EXECUTE']"
             [appPermission]="'CREATE'"
-            label="Nueva Factura"
+            [label]="'finance.billing.invoices.newInvoice' | translate"
             icon="pi pi-plus"
             (onClick)="onCreate()"
             severity="contrast"
@@ -140,14 +154,14 @@
 
     @if (showInitialLoading()) {
       <app-content-card>
-        <app-loading-spinner message="Cargando facturas..." />
+        <app-loading-spinner [message]="'finance.billing.invoices.loadingInvoices' | translate" />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card>
         <app-empty-state
           icon="pi-file"
-          title="No hay facturas registradas"
-          message="Crea tu primera factura para comenzar."
+          [title]="'finance.billing.invoices.noInvoicesRegistered' | translate"
+          [message]="'finance.billing.invoices.createYourFirstInvoiceToGetStarted' | translate"
         />
       </app-content-card>
     } @else {
@@ -163,8 +177,8 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay facturas que coincidan con tu búsqueda."
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.invoices.noInvoicesMatchYourSearch' | translate"
             />
           } @else {
             <div class="overflow-x-auto rounded-t-2xl">
@@ -177,30 +191,47 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th pSortableColumn="invoiceNumber" class="w-32">
-                      <div class="font-semibold">Número <p-sortIcon field="invoiceNumber" /></div>
+                      <div class="font-semibold">
+                        {{ 'analytics.dashboard.number' | translate }}
+                        <p-sortIcon field="invoiceNumber" />
+                      </div>
                     </th>
                     <th pSortableColumn="customerName" class="w-auto">
-                      <div class="font-semibold">Cliente <p-sortIcon field="customerName" /></div>
+                      <div class="font-semibold">
+                        {{ 'shared.customer' | translate }} <p-sortIcon field="customerName" />
+                      </div>
                     </th>
                     <th pSortableColumn="paymentType" class="w-28">
                       <div class="font-semibold">
-                        Tipo de Pago <p-sortIcon field="paymentType" />
+                        {{ 'finance.billing.invoices.paymentType' | translate }}
+                        <p-sortIcon field="paymentType" />
                       </div>
                     </th>
                     <th pSortableColumn="status" class="w-28">
-                      <div class="font-semibold">Estado <p-sortIcon field="status" /></div>
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                        <p-sortIcon field="status" />
+                      </div>
                     </th>
                     <th pSortableColumn="total" class="w-32 text-right">
-                      <div class="font-semibold">Total <p-sortIcon field="total" /></div>
+                      <div class="font-semibold">
+                        {{ 'shared.total' | translate }} <p-sortIcon field="total" />
+                      </div>
                     </th>
                     <th class="w-32 text-right">
-                      <div class="font-semibold">Pendiente de pagar</div>
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.outstanding' | translate }}
+                      </div>
                     </th>
                     <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
-                      <div class="font-semibold">Vence</div>
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.due2' | translate }}
+                      </div>
                     </th>
                     <th class="w-28">
-                      <div class="font-semibold text-center">Acciones</div>
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
                     </th>
                   </tr>
                 </ng-template>
@@ -215,46 +246,58 @@
                       <div class="font-medium">{{ invoice.customerName }}</div>
                       @if (invoice.orderNumber) {
                         <div class="text-xs text-surface-400">
-                          Pedido #{{ invoice.orderNumber }}
+                          {{ 'finance.billing.invoices.order2' | translate
+                          }}{{ invoice.orderNumber }}
                         </div>
                       }
                     </td>
                     <td>
                       <app-text-badge
-                        [label]="getPaymentTypeLabel(invoice.paymentType)"
+                        [label]="getPaymentTypeLabel(invoice.paymentType) | translate"
                         variant="label"
                       />
                     </td>
                     <td>
                       <div class="flex gap-2 flex-wrap">
                         <app-text-badge
-                          [label]="invoice.statusLabel"
+                          [label]="invoice.statusLabel | translate"
                           [variant]="getStatusVariant(invoice.status)"
                         />
                         @if (invoice.returnStatus === 'PARTIAL') {
-                          <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                          <app-text-badge
+                            [label]="'finance.billing.invoices.partiallyReturned' | translate"
+                            variant="warning"
+                          />
                         }
                         @if (invoice.overdue) {
-                          <app-text-badge label="Vencida" variant="danger" />
+                          <app-text-badge
+                            [label]="'finance.billing.invoices.overdue' | translate"
+                            variant="danger"
+                          />
                         } @else if (
                           invoice.status === 'PENDING_PAYMENT' ||
                           invoice.status === 'PARTIALLY_PAID'
                         ) {
-                          <app-text-badge label="Al día" variant="success" />
+                          <app-text-badge
+                            [label]="'finance.billing.invoices.upToDate' | translate"
+                            variant="success"
+                          />
                         }
                       </div>
                     </td>
                     <td class="text-right">
-                      <span class="text-sm font-medium">{{ invoice.total | number: '1.2-2' }}</span>
+                      <span class="text-sm font-medium">{{
+                        invoice.total | localizedNumber: '1.2-2'
+                      }}</span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium">{{
-                        pendingAmount(invoice) | number: '1.2-2'
+                        pendingAmount(invoice) | localizedNumber: '1.2-2'
                       }}</span>
                     </td>
                     <td class="hidden lg:table-cell">
                       <div class="text-sm text-surface-500">
-                        {{ invoice.dueDate | date: 'dd/MM/yyyy' }}
+                        {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
                       </div>
                     </td>
                     <td>
@@ -271,7 +314,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} facturas"
+                [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -291,8 +334,8 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay facturas que coincidan con tu búsqueda."
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.invoices.noInvoicesMatchYourSearch' | translate"
             />
           </app-content-card>
         } @else {
@@ -312,34 +355,45 @@
                       {{ invoice.customerName }}
                     </h3>
                     <p class="text-sm font-medium mb-1">
-                      Total: {{ invoice.total | number: '1.2-2' }}
+                      {{ 'finance.billing.returns.total' | translate }}
+                      {{ invoice.total | localizedNumber: '1.2-2' }}
                     </p>
                     <p class="text-sm text-surface-500 mb-2">
-                      Pendiente: {{ pendingAmount(invoice) | number: '1.2-2' }}
+                      {{ 'finance.billing.invoices.outstanding2' | translate }}
+                      {{ pendingAmount(invoice) | localizedNumber: '1.2-2' }}
                     </p>
                     <div class="flex flex-nowrap gap-2">
                       <app-text-badge
-                        [label]="getPaymentTypeLabel(invoice.paymentType)"
+                        [label]="getPaymentTypeLabel(invoice.paymentType) | translate"
                         variant="label"
                       />
                       <app-text-badge
-                        [label]="getStatusLabel(invoice.status)"
+                        [label]="getStatusLabel(invoice.status) | translate"
                         [variant]="getStatusVariant(invoice.status)"
                       />
                       @if (invoice.returnStatus === 'PARTIAL') {
-                        <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.partiallyReturned' | translate"
+                          variant="warning"
+                        />
                       }
                       @if (invoice.overdue) {
-                        <app-text-badge label="Vencida" variant="danger" />
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.overdue' | translate"
+                          variant="danger"
+                        />
                       } @else if (
                         invoice.status === 'PENDING_PAYMENT' || invoice.status === 'PARTIALLY_PAID'
                       ) {
-                        <app-text-badge label="Al día" variant="success" />
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.upToDate' | translate"
+                          variant="success"
+                        />
                       }
                     </div>
                   </div>
                   <div class="text-xs text-surface-400 ml-2">
-                    {{ invoice.createdAt | date: 'dd/MM/yyyy' }}
+                    {{ invoice.createdAt | localizedDate: 'dd/MM/yyyy' }}
                   </div>
                 </div>
                 <div
@@ -357,7 +411,7 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} facturas"
+              [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>
@@ -383,7 +437,7 @@
 <p-dialog
   [visible]="confirmDialogVisible()"
   (visibleChange)="confirmDialogVisible.set($event)"
-  header="Confirmar Factura"
+  [header]="'finance.billing.invoices.confirmInvoice' | translate"
   [modal]="true"
   [style]="{ width: '90vw', maxWidth: '520px' }"
   [contentStyle]="{ overflow: 'visible', padding: '0' }"
@@ -398,17 +452,17 @@
       >
         <div class="flex items-center justify-between mb-3">
           <div>
-            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide"
-              >Total a Pagar</span
-            >
+            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">{{
+              'finance.billing.invoices.totalToPay' | translate
+            }}</span>
             <div class="font-mono text-2xl font-bold text-surface-900 dark:text-surface-0 mt-0.5">
-              ${{ invoiceToConfirm()?.total ?? 0 | number: '1.2-2' }}
+              ${{ invoiceToConfirm()?.total ?? 0 | localizedNumber: '1.2-2' }}
             </div>
           </div>
           <div class="text-right">
-            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide"
-              >Cliente</span
-            >
+            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">{{
+              'shared.customer' | translate
+            }}</span>
             <div
               class="font-semibold text-surface-700 dark:text-surface-300 mt-0.5 max-w-[180px] truncate"
             >
@@ -421,12 +475,12 @@
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <i class="pi pi-wallet text-green-600 text-sm"></i>
-                <span class="text-sm font-medium text-surface-700 dark:text-surface-300"
-                  >Saldo a Favor</span
-                >
+                <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+                  'finance.billing.invoices.creditBalance' | translate
+                }}</span>
               </div>
               <span class="font-mono font-bold text-green-600"
-                >${{ customerBalanceConfirm() | number: '1.2-2' }}</span
+                >${{ customerBalanceConfirm() | localizedNumber: '1.2-2' }}</span
               >
             </div>
             <div class="flex gap-3">
@@ -444,7 +498,9 @@
                   name="balanceGroup"
                   inputId="useBalance"
                 />
-                <span class="text-sm font-medium">Usar saldo</span>
+                <span class="text-sm font-medium">{{
+                  'finance.billing.invoices.useCreditBalance' | translate
+                }}</span>
               </label>
               <label
                 class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
@@ -460,7 +516,9 @@
                   name="balanceGroup"
                   inputId="noBalance"
                 />
-                <span class="text-sm font-medium">No usar</span>
+                <span class="text-sm font-medium">{{
+                  'finance.billing.invoices.doNotUse' | translate
+                }}</span>
               </label>
             </div>
           </div>
@@ -473,16 +531,16 @@
         >
           <div class="flex items-center gap-2">
             <i class="pi pi-check-circle text-green-600"></i>
-            <span class="text-sm font-medium text-green-700 dark:text-green-300"
-              >Saldo aplicado</span
-            >
+            <span class="text-sm font-medium text-green-700 dark:text-green-300">{{
+              'finance.billing.invoices.balanceApplied' | translate
+            }}</span>
           </div>
           <span class="font-mono font-bold text-green-600"
             >-${{
               (customerBalanceConfirm() >= (invoiceToConfirm()?.total ?? 0)
                 ? (invoiceToConfirm()?.total ?? 0)
                 : customerBalanceConfirm()
-              ) | number: '1.2-2'
+              ) | localizedNumber: '1.2-2'
             }}</span
           >
         </div>
@@ -490,12 +548,12 @@
 
       <div class="space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0"
-            >Metodos de Pago</span
-          >
+          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+            'finance.billing.invoices.paymentMethods' | translate
+          }}</span>
           @if (remainingToPay() > 0) {
             <p-button
-              label="Agregar"
+              [label]="'finance.billing.invoices.add' | translate"
               icon="pi pi-plus"
               size="small"
               severity="info"
@@ -515,7 +573,7 @@
                   [options]="paymentMethods()"
                   optionLabel="name"
                   optionValue="id"
-                  placeholder="Seleccionar metodo"
+                  [placeholder]="'finance.billing.invoices.selectMethod' | translate"
                   fluid
                   [ngModel]="line.methodId"
                   (ngModelChange)="updatePaymentLine(i, 'methodId', $event)"
@@ -528,7 +586,7 @@
                   (ngModelChange)="updatePaymentLine(i, 'amount', $event)"
                   mode="currency"
                   currency="USD"
-                  locale="en-US"
+                  [locale]="locale()"
                   [min]="0"
                   [maxFractionDigits]="2"
                   fluid
@@ -551,38 +609,40 @@
               class="text-center py-6 text-sm text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded-xl"
             >
               <i class="pi pi-credit-card text-2xl mb-2 block text-surface-300"></i>
-              Agregue un metodo de pago o use saldo a favor
+              {{ 'finance.billing.invoices.addAPaymentMethodOrUseTheCreditBalance' | translate }}
             </div>
           }
         </div>
 
         <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-              >Total asignado</span
-            >
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.billing.invoices.totalAllocated' | translate
+            }}</span>
             <span
               class="font-mono font-bold text-lg"
               [class.text-green-600]="totalPayments() === (invoiceToConfirm()?.total ?? 0)"
               [class.text-red-500]="totalPayments() !== (invoiceToConfirm()?.total ?? 0)"
             >
-              ${{ totalPayments() | number: '1.2-2' }}
+              ${{ totalPayments() | localizedNumber: '1.2-2' }}
             </span>
           </div>
           @if (remainingToPay() > 0) {
             <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
               <i class="pi pi-exclamation-circle text-xs"></i>
-              <span class="text-xs font-medium"
-                >Restan ${{ remainingToPay() | number: '1.2-2' }} por asignar</span
-              >
+              <span class="text-xs font-medium">{{
+                'finance.billing.invoices.remainingAllocation'
+                  | translate: { amount: (remainingToPay() | localizedNumber: '1.2-2') }
+              }}</span>
             </div>
           }
           @if (totalPayments() > (invoiceToConfirm()?.total ?? 0)) {
             <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
               <i class="pi pi-exclamation-circle text-xs"></i>
               <span class="text-xs font-medium"
-                >Excede el total por ${{
-                  totalPayments() - (invoiceToConfirm()?.total ?? 0) | number: '1.2-2'
+                >{{ 'finance.billing.invoices.exceedsTheTotalBy' | translate
+                }}{{
+                  totalPayments() - (invoiceToConfirm()?.total ?? 0) | localizedNumber: '1.2-2'
                 }}</span
               >
             </div>
@@ -598,17 +658,20 @@
         <i class="pi pi-exclamation-triangle text-amber-600 text-lg mt-0.5"></i>
         <div>
           <div class="font-semibold text-amber-800 dark:text-amber-300 text-sm">
-            Limite de credito excedido
+            {{ 'finance.billing.invoices.creditLimitExceeded' | translate }}
           </div>
           <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">
-            La factura excede el credito disponible. Ingrese su contrasena para confirmar.
+            {{
+              'finance.billing.invoices.theInvoiceExceedsTheAvailableCreditEnterYourPasswordToConfirm'
+                | translate
+            }}
           </p>
         </div>
       </div>
       <div class="space-y-2">
-        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
-          >Contrasena</label
-        >
+        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+          'finance.billing.invoices.password' | translate
+        }}</label>
         <p-password
           [ngModel]="confirmationPassword()"
           (ngModelChange)="confirmationPassword.set($event)"
@@ -626,7 +689,7 @@
       class="flex items-center justify-end gap-2 px-5 py-4 bg-surface-50 dark:bg-surface-900/50 border-t border-surface-200 dark:border-surface-700"
     >
       <p-button
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         (onClick)="confirmDialogVisible.set(false)"
         severity="secondary"
@@ -635,7 +698,7 @@
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
         [appPermission]="'EXECUTE'"
-        label="Confirmar"
+        [label]="'finance.billing.invoices.confirm' | translate"
         icon="pi pi-check"
         (onClick)="submitConfirm()"
         [loading]="isConfirming()"

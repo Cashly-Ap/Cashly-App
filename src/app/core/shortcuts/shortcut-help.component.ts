@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,6 +12,7 @@ import { UserPreferencesService } from '@core/preferences/user-preferences.servi
 import { KeyboardShortcutService } from './keyboard-shortcut.service';
 
 @Component({
+  imports: [TranslatePipe],
   selector: 'app-shortcut-help',
   standalone: true,
   templateUrl: './shortcut-help.component.html',

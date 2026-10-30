@@ -30,6 +30,21 @@ describe('SelfProfileService', () => {
       .expectOne(`${environment.apiUrl}/auth/profile`)
       .flush({}, { status: 503, statusText: 'Unavailable' });
   });
+  it('includes the selected language in profile updates', () => {
+    TestBed.inject(SelfProfileService)
+      .updateProfile({
+        userName: 'ana',
+        firstName: 'Ana',
+        lastName: 'García',
+        phone: null,
+        address: null,
+        language: 'en',
+      })
+      .subscribe();
+    const request = http.expectOne(`${environment.apiUrl}/auth/profile`);
+    expect(request.request.body.language).toBe('en');
+    request.flush({ language: 'en' });
+  });
   it('projects only personal fields even when administrative data is injected', () => {
     const input = {
       userName: 'ana',

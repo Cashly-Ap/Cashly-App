@@ -6,11 +6,13 @@
           <p
             class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
           >
-            Cashly / Gestión
+            {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
           </p>
-          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Roles</h1>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+            {{ 'platform.auth.role.roles' | translate }}
+          </h1>
           <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-            Gestiona los roles del sistema
+            {{ 'platform.auth.role.manageSystemRoles' | translate }}
           </p>
         </div>
         <app-list-container>
@@ -22,7 +24,7 @@
                 <app-search-field
                   class="flex-1 sm:flex-none sm:min-w-[300px]"
                   [value]="search()"
-                  placeholder="Buscar por nombre o descripción..."
+                  [placeholder]="'platform.auth.department.searchByNameOrDescription' | translate"
                   (search)="onSearch($event)"
                 />
                 <p-button
@@ -31,17 +33,17 @@
                   [outlined]="true"
                   severity="secondary"
                   (onClick)="filterPopover.toggle($event)"
-                  pTooltip="Filtros"
+                  [pTooltip]="'shared.filters' | translate"
                   [badge]="filterActive() ? '1' : ''"
                   badgeSeverity="contrast"
                 />
                 <p-popover #filterPopover [focusOnShow]="false">
                   <div class="flex flex-col gap-4 p-1 min-w-[260px]">
                     <div class="flex items-center justify-between">
-                      <span class="font-semibold text-sm">Filtros</span>
+                      <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                       @if (filterActive()) {
                         <p-button
-                          label="Limpiar"
+                          [label]="'finance.billing.creditnotes.clear' | translate"
                           [text]="true"
                           size="small"
                           severity="secondary"
@@ -50,14 +52,16 @@
                       }
                     </div>
                     <div class="flex flex-col gap-1">
-                      <label class="text-xs font-medium text-surface-500">Estado</label
+                      <label class="text-xs font-medium text-surface-500">{{
+                        'finance.billing.invoices.status' | translate
+                      }}</label
                       ><p-select
-                        [options]="activeOptions"
+                        [options]="activeOptions | translateOptions"
                         [ngModel]="filterActive()"
                         (onChange)="onFilter($event.value)"
                         optionLabel="label"
                         optionValue="value"
-                        placeholder="Todos"
+                        [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                         styleClass="w-full"
                       />
                     </div>
@@ -67,7 +71,7 @@
               <p-button
                 appShortcut="new"
                 [appPermission]="'CREATE'"
-                label="Nuevo Rol"
+                [label]="'platform.auth.role.newRole' | translate"
                 icon="pi pi-plus"
                 (onClick)="onCreate()"
                 severity="contrast"
@@ -78,13 +82,15 @@
         </app-list-container>
         <div class="h-4"></div>
         @if (loading()) {
-          <app-content-card><app-loading-spinner message="Cargando roles..." /></app-content-card>
+          <app-content-card
+            ><app-loading-spinner [message]="'platform.auth.role.loadingRoles' | translate"
+          /></app-content-card>
         } @else if (items().length === 0) {
           <app-content-card
             ><app-empty-state
               icon="pi-shield"
-              title="No hay roles registrados"
-              message="Comienza a gestionar roles agregando el primero."
+              [title]="'platform.auth.role.noRolesRegistered' | translate"
+              [message]="'platform.auth.role.startManagingRolesByAddingTheFirstOne' | translate"
           /></app-content-card>
         } @else {
           <app-list-container class="mt-4 hidden md:block">
@@ -92,8 +98,11 @@
               @if (filteredItems().length === 0) {
                 <app-empty-state
                   icon="pi-search"
-                  title="No se encontraron resultados"
-                  message="No hay roles que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo rol."
+                  [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+                  [message]="
+                    'platform.auth.role.noRolesMatchYourSearchTryDifferentTermsOrCreateANewRole'
+                      | translate
+                  "
                 />
               } @else {
                 <div class="overflow-x-auto rounded-t-2xl">
@@ -107,16 +116,26 @@
                       ><tr>
                         <th pSortableColumn="name" class="w-auto">
                           <div class="flex items-center gap-2 font-semibold">
-                            Nombre <p-sortIcon field="name" />
+                            {{ 'finance.treasury.paymentmethods.name' | translate }}
+                            <p-sortIcon field="name" />
                           </div>
                         </th>
                         <th pSortableColumn="description" class="w-auto hidden lg:table-cell">
                           <div class="flex items-center gap-2 font-semibold">
-                            Descripción <p-sortIcon field="description" />
+                            {{ 'finance.treasury.paymentmethods.description' | translate }}
+                            <p-sortIcon field="description" />
                           </div>
                         </th>
-                        <th class="w-24"><div class="font-semibold">Estado</div></th>
-                        <th class="w-20"><div class="font-semibold text-center">Acciones</div></th>
+                        <th class="w-24">
+                          <div class="font-semibold">
+                            {{ 'finance.billing.invoices.status' | translate }}
+                          </div>
+                        </th>
+                        <th class="w-20">
+                          <div class="font-semibold text-center">
+                            {{ 'shared.actions' | translate }}
+                          </div>
+                        </th>
                       </tr></ng-template
                     >
                     <ng-template pTemplate="body" let-item
@@ -134,7 +153,7 @@
                           <div class="flex justify-center">
                             <app-list-action-buttons
                               [actions]="actionsFor(item)"
-                              ariaLabel="Abrir acciones del rol"
+                              [ariaLabel]="'platform.auth.role.openRoleActions' | translate"
                             />
                           </div>
                         </td></tr
@@ -148,7 +167,7 @@
                     [totalRecords]="filteredItems().length"
                     [rowsPerPageOptions]="[10, 25, 50, 100]"
                     [showCurrentPageReport]="true"
-                    currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} roles"
+                    [currentPageReportTemplate]="'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate"
                     (onPageChange)="onPageChange($event)"
                   />
                 </div>
@@ -160,8 +179,11 @@
               <app-content-card
                 ><app-empty-state
                   icon="pi-search"
-                  title="No se encontraron resultados"
-                  message="No hay roles que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo rol."
+                  [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+                  [message]="
+                    'platform.auth.role.noRolesMatchYourSearchTryDifferentTermsOrCreateANewRole'
+                      | translate
+                  "
               /></app-content-card>
             } @else {
               <div class="flex flex-col gap-4">
@@ -189,7 +211,7 @@
                     >
                       <app-list-action-buttons
                         [actions]="actionsFor(item)"
-                        ariaLabel="Abrir acciones del rol"
+                        [ariaLabel]="'platform.auth.role.openRoleActions' | translate"
                       />
                     </div>
                   </div>
@@ -202,7 +224,7 @@
                   [totalRecords]="filteredItems().length"
                   [rowsPerPageOptions]="[10, 25, 50, 100]"
                   [showCurrentPageReport]="true"
-                  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} roles"
+                  [currentPageReportTemplate]="'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate"
                   (onPageChange)="onPageChange($event)"
                 />
               </div>
@@ -220,7 +242,10 @@
         }
         @if (editing(); as value) {
           <div class="flex flex-col gap-6">
-            <app-page-header title="Detalles del Rol" subtitle="Información completa del rol" />
+            <app-page-header
+              [title]="'platform.auth.role.roleDetails' | translate"
+              [subtitle]="'platform.auth.role.completeRoleInformation' | translate"
+            />
             <app-details-card>
               <app-details-card-header
                 [title]="value.name || ''"
@@ -228,7 +253,7 @@
               >
                 <div actions class="flex gap-3">
                   <p-button
-                    label="Volver"
+                    [label]="'finance.billing.creditnotes.back' | translate"
                     icon="pi pi-arrow-left"
                     [outlined]="true"
                     (onClick)="onBack()"
@@ -238,7 +263,7 @@
                     <app-detail-actions-menu #actionsMenu>
                       <p-button
                         [appPermission]="'UPDATE'"
-                        label="Editar"
+                        [label]="'finance.billing.invoices.edit' | translate"
                         icon="pi pi-pencil"
                         [link]="true"
                         (onClick)="actionsMenu.hide(); onEdit({ id: value.id! })"
@@ -250,15 +275,20 @@
               </app-details-card-header>
               <div class="p-4 sm:p-6">
                 <app-details-info-grid [columns]="2" [fillLastRow]="true">
-                  <app-details-info-field label="Nombre" [value]="value.name || '—'" />
-                  <app-details-info-field label="Estado" type="badge"
+                  <app-details-info-field
+                    [label]="'finance.treasury.paymentmethods.name' | translate"
+                    [value]="value.name || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'finance.billing.invoices.status' | translate"
+                    type="badge"
                     ><app-status-badge [active]="!!value.active"
                   /></app-details-info-field>
                 </app-details-info-grid>
                 @if (value.description) {
                   <div class="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
                     <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1">
-                      Descripción
+                      {{ 'finance.treasury.paymentmethods.description' | translate }}
                     </p>
                     <p class="text-sm text-surface-600 dark:text-surface-400 whitespace-pre-wrap">
                       {{ value.description }}
@@ -268,22 +298,27 @@
               </div>
             </app-details-card>
             <app-details-card>
-              <app-details-card-header title="Permisos" />
+              <app-details-card-header [title]="'platform.auth.role.permissions' | translate" />
               <div class="p-4 sm:p-6">
                 <app-details-info-grid [columns]="2" [fillLastRow]="true">
                   @for (entry of registry(); track entry.module) {
-                    <app-details-info-field [label]="moduleLabel(entry.module)" type="badge">
+                    <app-details-info-field
+                      [label]="moduleLabel(entry.module) | translate"
+                      type="badge"
+                    >
                       <div class="flex flex-wrap gap-2">
                         @for (action of entry.actions; track action) {
                           @if (selected(entry.module, action)) {
                             <span
                               class="text-xs rounded-lg px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300"
-                              >{{ actionLabels[action] }}</span
+                              >{{ actionLabels[action] | translate }}</span
                             >
                           }
                         }
                         @if (!selected(entry.module, 'READ')) {
-                          <span class="text-sm text-surface-400">Sin acceso</span>
+                          <span class="text-sm text-surface-400">{{
+                            'platform.auth.role.noAccess' | translate
+                          }}</span>
                         }
                       </div>
                     </app-details-info-field>
@@ -299,8 +334,12 @@
   @case ('form') {
     <app-form-container>
       <app-form-header
-        [title]="editing()?.id ? 'Editar Rol' : 'Nuevo Rol'"
-        subtitle="Completa la información del rol"
+        [title]="
+          editing()?.id
+            ? ('platform.auth.role.editRole' | translate)
+            : ('platform.auth.role.newRole' | translate)
+        "
+        [subtitle]="'platform.auth.role.completeTheRoleInformation' | translate"
       />
       @if (loading()) {
         <app-loading-spinner />
@@ -309,17 +348,25 @@
           <app-form-card>
             <p-tabs value="general">
               <p-tablist>
-                <p-tab value="general"><i class="pi pi-info-circle mr-2"></i>General</p-tab>
-                <p-tab value="permissions"><i class="pi pi-shield mr-2"></i>Permisos</p-tab>
+                <p-tab value="general"
+                  ><i class="pi pi-info-circle mr-2"></i
+                  >{{ 'partners.suppliers.general' | translate }}</p-tab
+                >
+                <p-tab value="permissions"
+                  ><i class="pi pi-shield mr-2"></i
+                  >{{ 'platform.auth.role.permissions' | translate }}</p-tab
+                >
               </p-tablist>
               <p-tabpanels>
                 <p-tabpanel value="general">
                   <app-tab-content [columns]="1">
                     <app-text-input
                       [control]="control('name')"
-                      label="Nombre"
-                      placeholder="Nombre del rol"
-                      errorMessage="El nombre es requerido (máximo 100 caracteres)"
+                      [label]="'finance.treasury.paymentmethods.name' | translate"
+                      [placeholder]="'platform.auth.role.roleName' | translate"
+                      [errorMessage]="
+                        'users.profile.first.name.is.required.maximum.100.characters' | translate
+                      "
                     />
                     @if (value.id) {
                       <div
@@ -327,10 +374,13 @@
                       >
                         <div>
                           <p class="font-medium text-surface-800 dark:text-surface-200">
-                            Rol Activo
+                            {{ 'platform.auth.role.activeRole' | translate }}
                           </p>
                           <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
-                            Indica si el rol está activo en el sistema
+                            {{
+                              'platform.auth.role.indicatesWhetherTheRoleIsActiveInTheSystem'
+                                | translate
+                            }}
                           </p>
                         </div>
                         <p-toggleswitch formControlName="active" />
@@ -342,20 +392,21 @@
                       <label
                         for="role-description"
                         class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-                        >Descripción</label
+                        >{{ 'finance.treasury.paymentmethods.description' | translate }}</label
                       >
                       <textarea
                         pTextarea
                         id="role-description"
                         formControlName="description"
                         rows="4"
-                        placeholder="Descripción del rol..."
+                        [placeholder]="'platform.auth.role.roleDescription' | translate"
                         class="w-full resize-none"
                       ></textarea>
                       @if (form.controls.description.invalid && form.controls.description.touched) {
-                        <small class="text-red-500 text-xs"
-                          >La descripción no puede superar 500 caracteres</small
-                        >
+                        <small class="text-red-500 text-xs">{{
+                          'platform.auth.department.descriptionCannotExceed500Characters'
+                            | translate
+                        }}</small>
                       }
                     </div>
                   </app-tab-content>
@@ -378,7 +429,7 @@
             </p-tabs>
             <app-form-actions
               [submitLabel]="value.id ? 'Guardar Cambios' : 'Crear Rol'"
-              cancelLabel="Cancelar"
+              [cancelLabel]="'shared.cancel' | translate"
               [loading]="busy()"
               [disabled]="form.invalid"
               tooltipMessage="Complete los campos requeridos"

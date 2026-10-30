@@ -4,11 +4,11 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Almacenes</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">{{ 'inventory.warehouses.warehouses' | translate }}</h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona los almacenes y su inventario
+        {{ 'inventory.warehouses.manageWarehousesAndTheirInventory' | translate }}
       </p>
     </div>
 
@@ -21,7 +21,7 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[280px]"
               [value]="searchTerm()"
-              placeholder="Buscar almacén..."
+              [placeholder]="'inventory.warehouses.searchWarehouses' | translate"
               (search)="onSearch($event)"
             />
             <p-button
@@ -31,17 +31,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[220px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -50,14 +50,14 @@
                   }
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <label class="text-xs font-medium text-surface-500">{{ 'finance.billing.invoices.status' | translate }}</label>
                   <p-select
-                    [options]="activeFilterOptions"
+                    [options]="activeFilterOptions | translateOptions"
                     [ngModel]="filterActive()"
                     (onChange)="onActiveFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos"
+                    [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                     styleClass="w-full"
                   />
                 </div>
@@ -67,7 +67,7 @@
           <div class="flex flex-col gap-2 sm:flex-row">
             <p-button
               [appPermission]="'READ'"
-              label="Ver stock"
+              [label]="'inventory.warehouses.viewStock' | translate"
               icon="pi pi-box"
               severity="secondary"
               [outlined]="true"
@@ -77,7 +77,7 @@
             <p-button
               appShortcut="new"
               [appPermission]="'CREATE'"
-              label="Nuevo Almacén"
+              [label]="'inventory.warehouses.newWarehouse' | translate"
               icon="pi pi-plus"
               (onClick)="onCreate()"
               severity="contrast"
@@ -90,15 +90,15 @@
 
     @if (showInitialLoading()) {
       <app-content-card class="mt-4">
-        <app-loading-spinner message="Cargando almacenes..." />
+        <app-loading-spinner [message]="'inventory.warehouses.loadingWarehouses' | translate" />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-warehouse"
-          title="No hay almacenes registrados"
-          message="Comienza creando el primer almacén."
-          buttonLabel="Crear primer Almacén"
+          [title]="'inventory.warehouses.noWarehousesRegistered' | translate"
+          [message]="'inventory.warehouses.startByCreatingTheFirstWarehouse' | translate"
+          [buttonLabel]="'inventory.warehouses.createFirstWarehouse' | translate"
           (buttonClick)="onCreate()"
         />
       </app-content-card>
@@ -115,9 +115,9 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay almacenes que coincidan con tu búsqueda."
-              buttonLabel="Crear Nuevo Almacén"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'inventory.warehouses.noWarehousesMatchYourSearch' | translate"
+              [buttonLabel]="'inventory.warehouses.createNewWarehouse' | translate"
               (buttonClick)="onCreate()"
             />
           } @else {
@@ -132,24 +132,24 @@
                   <tr>
                     <th pSortableColumn="name" class="w-auto">
                       <div class="flex items-center gap-2 font-semibold">
-                        Nombre
+                        {{ 'finance.treasury.paymentmethods.name' | translate }}
                         <p-sortIcon field="name" />
                       </div>
                     </th>
                     <th pSortableColumn="state" class="w-auto hidden lg:table-cell">
                       <div class="flex items-center gap-2 font-semibold">
-                        Estado
+                        {{ 'finance.billing.invoices.status' | translate }}
                         <p-sortIcon field="state" />
                       </div>
                     </th>
                     <th pSortableColumn="municipality" class="w-auto hidden lg:table-cell">
                       <div class="flex items-center gap-2 font-semibold">
-                        Municipio
+                        {{ 'inventory.warehouses.municipality' | translate }}
                         <p-sortIcon field="municipality" />
                       </div>
                     </th>
-                    <th class="w-24"><div class="font-semibold">Activo</div></th>
-                    <th class="w-48"><div class="font-semibold text-center">Acciones</div></th>
+                    <th class="w-24"><div class="font-semibold">{{ 'inventory.warehouses.active' | translate }}</div></th>
+                    <th class="w-48"><div class="font-semibold text-center">{{ 'shared.actions' | translate }}</div></th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-warehouse>
@@ -180,7 +180,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} almacenes"
+                [currentPageReportTemplate]="'inventory.warehouses.labels.showingFirstToLastOfTotalrecordsWarehouses' | translate"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -200,9 +200,9 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay almacenes que coincidan con tu búsqueda."
-              buttonLabel="Crear Nuevo Almacén"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'inventory.warehouses.noWarehousesMatchYourSearch' | translate"
+              [buttonLabel]="'inventory.warehouses.createNewWarehouse' | translate"
               (buttonClick)="onCreate()"
             />
           </app-content-card>
@@ -243,7 +243,7 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} almacenes"
+              [currentPageReportTemplate]="'inventory.warehouses.labels.showingFirstToLastOfTotalrecordsWarehouses' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

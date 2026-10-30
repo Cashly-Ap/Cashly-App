@@ -1,5 +1,5 @@
 <p-dialog
-  header="Ir a un módulo"
+  [header]="'core.shortcuts.goToAModule' | translate"
   [visible]="visible()"
   (visibleChange)="visible.set($event)"
   [modal]="true"
@@ -12,12 +12,12 @@
         pInputText
         type="search"
         role="combobox"
-        aria-label="Buscar módulo"
+        [attr.aria-label]="'platform.auth.role.searchModules' | translate"
         aria-autocomplete="list"
         aria-controls="module-results"
         [attr.aria-expanded]="visible()"
         [attr.aria-activedescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
-        placeholder="Buscar módulo..."
+        [placeholder]="'platform.auth.role.searchModules2' | translate"
         [value]="query()"
         (input)="onInput($event)"
         class="w-full min-w-0"
@@ -27,17 +27,17 @@
         class="shrink-0 cursor-pointer rounded-xl border border-surface-300 px-3 py-2 text-sm dark:border-surface-600"
         (click)="focusResults()"
       >
-        Navegar resultados
+        {{ 'core.shortcuts.navigateResults' | translate }}
       </button>
     </div>
     <p class="text-sm text-surface-500">
-      ↑/↓ seleccionan · Enter abre · Esc sale del campo · J/K navegan fuera del campo
+      {{ 'core.shortcuts.selectEnterOpensEscLeavesTheFieldJKNavigateOutsideTheField' | translate }}
     </p>
     <div
       #results
       id="module-results"
       role="listbox"
-      aria-label="Módulos disponibles"
+      [attr.aria-label]="'core.shortcuts.availableModules' | translate"
       tabindex="0"
       data-focus-exit
       [attr.aria-activedescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
@@ -57,10 +57,10 @@
           (click)="navigate(destination)"
         >
           <i [class]="destination.icon" aria-hidden="true"></i
-          ><span>{{ destination.group }} / {{ destination.label }}</span>
+          ><span>{{ destination.group | translate }} / {{ destination.label | translate }}</span>
         </button>
       } @empty {
-        <p class="p-4 text-sm text-surface-500">No hay módulos disponibles.</p>
+        <p class="p-4 text-sm text-surface-500">{{ 'core.shortcuts.noModulesAvailable' | translate }}</p>
       }
     </div>
   </div>

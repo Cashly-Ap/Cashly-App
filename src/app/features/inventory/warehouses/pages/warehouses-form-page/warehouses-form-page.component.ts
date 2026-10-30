@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
   inject,
@@ -40,7 +41,7 @@ interface WarehouseFormData {
   selector: 'app-warehouses-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,

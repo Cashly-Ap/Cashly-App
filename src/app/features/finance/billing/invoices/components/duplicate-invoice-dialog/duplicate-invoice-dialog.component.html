@@ -4,14 +4,16 @@
   [style]="{ width: '900px' }"
   [closable]="true"
   [dismissableMask]="true"
-  header="Duplicar Factura"
+  [header]="'finance.billing.invoices.duplicateInvoice' | translate"
   (onHide)="onCancel()"
 >
   <div class="flex flex-col gap-4">
     @if (loading()) {
       <div class="flex items-center justify-center py-8">
         <i class="pi pi-spin pi-spinner text-2xl text-surface-400"></i>
-        <span class="ml-3 text-surface-500">Cargando datos de la factura...</span>
+        <span class="ml-3 text-surface-500">{{
+          'finance.billing.invoices.loadingInvoiceData' | translate
+        }}</span>
       </div>
     }
 
@@ -27,12 +29,16 @@
       <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4">
         <div class="flex items-center gap-2 mb-1">
           <i class="pi pi-file text-surface-400"></i>
-          <span class="font-semibold text-sm">Factura #{{ info.number }}</span>
+          <span class="font-semibold text-sm"
+            >{{ 'finance.billing.creditnotes.invoice' | translate }}{{ info.number }}</span
+          >
         </div>
         <p class="text-xs text-surface-400 ml-6 mt-1">
           <i class="pi pi-info-circle mr-1"></i>
-          Los precios se actualizar&aacute;n seg&uacute;n la base de datos al duplicar. El stock se
-          reservar&aacute; en las mismas cantidades y almacenes de la factura original.
+          {{
+            'shared.pricesWillBeUpdatedFromTheDatabaseWhenDuplicatingStockWillBeReservedInTheSameQuantitiesAndWarehousesAsTheOriginalInvoice'
+              | translate
+          }}
         </p>
       </div>
 
@@ -40,10 +46,10 @@
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <i class="pi pi-user text-surface-400"></i>
-            <span class="font-semibold text-sm">Cliente</span>
+            <span class="font-semibold text-sm">{{ 'shared.customer' | translate }}</span>
           </div>
           <p-button
-            label="Seleccionar Cliente"
+            [label]="'finance.billing.invoices.selectCustomer' | translate"
             icon="pi pi-search"
             severity="secondary"
             [outlined]="true"
@@ -62,7 +68,7 @@
               class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
               (click)="onClearCustomer()"
             >
-              Usar cliente original
+              {{ 'finance.billing.invoices.useOriginalCustomer' | translate }}
             </button>
           } @else {
             <p class="text-sm text-surface-500">
@@ -74,7 +80,7 @@
               }
             </p>
             <p class="text-xs text-surface-400 mt-0.5">
-              Se usar&aacute; el cliente original de la factura
+              {{ 'shared.theOriginalInvoiceCustomerWillBeUsed' | translate }}
             </p>
           }
         </div>
@@ -83,12 +89,14 @@
       <p-table [value]="lines()" styleClass="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
-            <th>Producto</th>
-            <th class="w-20 text-center">Cant.</th>
-            <th>Almac&eacute;n</th>
-            <th class="w-20 text-center">Asigna</th>
-            <th class="w-24 text-center">Stock Disp.</th>
-            <th class="w-24 text-center">Disp. Despu&eacute;s</th>
+            <th>{{ 'finance.billing.returns.product' | translate }}</th>
+            <th class="w-20 text-center">{{ 'finance.billing.invoices.qty' | translate }}</th>
+            <th>{{ 'inventory.warehouses.warehouse' | translate }}</th>
+            <th class="w-20 text-center">{{ 'finance.billing.invoices.allocate' | translate }}</th>
+            <th class="w-24 text-center">
+              {{ 'finance.billing.invoices.availableStock' | translate }}
+            </th>
+            <th class="w-24 text-center">{{ 'shared.availableAfterwards' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-line>
@@ -124,9 +132,7 @@
                   @if (alloc.wouldBeNegative) {
                     <i
                       class="pi pi-exclamation-triangle text-red-500 ml-1"
-                      pTooltip="Stock insuficiente: disponible {{
-                        alloc.realAvailable
-                      }}, reservando {{ alloc.allocated }}"
+                      [pTooltip]="'finance.billing.invoices.insufficientStockAllocation' | translate: { available: alloc.realAvailable, reserved: alloc.allocated }"
                     ></i>
                   }
                 </td>
@@ -142,9 +148,13 @@
         >
           <i class="pi pi-exclamation-circle text-red-500 mt-0.5"></i>
           <div class="text-sm text-red-700 dark:text-red-300">
-            <span class="font-semibold">No se puede duplicar.</span>
-            No hay suficiente stock disponible en uno o m&aacute;s almacenes. La duplicaci&oacute;n
-            reservar&iacute;a stock y dejar&iacute;a existencias negativas.
+            <span class="font-semibold">{{
+              'finance.billing.invoices.cannotDuplicate' | translate
+            }}</span>
+            {{
+              'shared.insufficientStockIsAvailableInOneOrMoreWarehousesDuplicatingWouldReserveStockAndLeaveNegativeQuantities'
+                | translate
+            }}
           </div>
         </div>
       }
@@ -155,7 +165,7 @@
     <div class="flex gap-2 justify-end">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onCancel()"
@@ -163,7 +173,7 @@
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
         [appPermission]="'CREATE'"
-        label="Duplicar Factura"
+        [label]="'finance.billing.invoices.duplicateInvoice' | translate"
         icon="pi pi-copy"
         severity="contrast"
         [disabled]="loading() || hasAnyNegativeStock() || !invoiceInfo()"

@@ -6,6 +6,7 @@ import { AuthService } from '@features/platform/auth/services/application/auth-a
 import { UserPreferencesService } from './user-preferences.service';
 
 const defaults = {
+  language: 'es',
   themeMode: 'system',
   colorMode: 'minimal',
   shortcutsEnabled: false,
@@ -33,6 +34,25 @@ describe('account preferences', () => {
   afterEach(() => http.verify());
   const load = () => http.expectOne('/api/auth/preferences').flush(defaults);
 
+  it('defaults to Spanish and persists English as an account preference', () => {
+    expect(service.language()).toBe('es');
+    load();
+    service.setLanguage('en');
+    const request = http.expectOne('/api/auth/preferences');
+    expect(request.request.body.language).toBe('en');
+    request.flush(request.request.body);
+    expect(service.language()).toBe('en');
+  });
+  it('syncs language saved by the profile without a second update request', () => {
+    load();
+    service.syncLanguage('en');
+    expect(service.language()).toBe('en');
+    http.expectNone('/api/auth/preferences');
+    service.setColorMode('informative');
+    const request = http.expectOne('/api/auth/preferences');
+    expect(request.request.body.language).toBe('en');
+    request.flush(request.request.body);
+  });
   it('loads account preferences over browser defaults', () => {
     http.expectOne('/api/auth/preferences').flush({ ...defaults, themeMode: 'dark' });
     expect(service.themeMode()).toBe('dark');

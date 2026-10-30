@@ -1,3 +1,5 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
@@ -34,6 +36,7 @@ interface CreditNoteFormData {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,
@@ -49,6 +52,8 @@ interface CreditNoteFormData {
   templateUrl: './credit-note-form-page.component.html',
 })
 export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFormData> {
+  readonly locale = inject(LanguageService).locale;
+
   private service = inject(CreditNoteApplicationService);
   private messageService = inject(MessageService);
 

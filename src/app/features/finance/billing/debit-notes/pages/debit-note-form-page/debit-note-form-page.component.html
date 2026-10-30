@@ -1,7 +1,7 @@
 <app-form-container>
   <app-form-header
-    title="Nueva Nota de Débito"
-    subtitle="Complete la información de la nota de débito"
+    [title]="'finance.billing.debitnotes.newDebitNote' | translate"
+    [subtitle]="'finance.billing.debitnotes.completeTheDebitNoteInformation' | translate"
   />
   <form [formGroup]="form" (ngSubmit)="submit()">
     <app-form-card>
@@ -10,7 +10,7 @@
           class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
         >
           <i class="pi pi-info-circle text-surface-500"></i>
-          Información de la Nota de Débito
+          {{ 'finance.billing.debitnotes.debitNoteInformation' | translate }}
         </h3>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -18,7 +18,7 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Cliente *
+              {{ 'finance.billing.debitnotes.customer' | translate }}
             </label>
             @if (selectedCustomerLabel(); as customer) {
               <div
@@ -37,7 +37,7 @@
                   class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
                   (click)="openPicker()"
                 >
-                  Cambiar
+                  {{ 'finance.billing.creditnotes.change' | translate }}
                 </button>
               </div>
             } @else {
@@ -47,14 +47,14 @@
                 (click)="openPicker()"
               >
                 <i class="pi pi-search text-sm"></i>
-                Buscar y seleccionar cliente...
+                {{ 'finance.billing.creditnotes.searchAndSelectACustomer' | translate }}
               </button>
             }
             <div class="min-h-[20px] mt-1.5">
               @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
                 <small class="flex items-center gap-1 text-red-500 text-xs">
                   <i class="pi pi-exclamation-circle text-xs"></i>
-                  El cliente es requerido
+                  {{ 'finance.billing.creditnotes.aCustomerIsRequired' | translate }}
                 </small>
               }
             </div>
@@ -64,7 +64,7 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Factura Asociada *
+              {{ 'finance.billing.debitnotes.associatedInvoice' | translate }}
             </label>
             @if (selectedInvoice(); as invoice) {
               <div
@@ -72,7 +72,8 @@
               >
                 <div class="flex flex-col min-w-0">
                   <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate"
-                    >Factura #{{ invoice.invoiceNumber }}</span
+                    >{{ 'finance.billing.creditnotes.invoice' | translate
+                    }}{{ invoice.invoiceNumber }}</span
                   >
                   <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{
                     invoice.customerName
@@ -83,7 +84,7 @@
                   class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
                   (click)="showInvoicePicker.set(true)"
                 >
-                  Cambiar
+                  {{ 'finance.billing.creditnotes.change' | translate }}
                 </button>
               </div>
             } @else {
@@ -93,14 +94,14 @@
                 (click)="showInvoicePicker.set(true)"
               >
                 <i class="pi pi-search text-sm"></i>
-                Buscar factura por número, cliente o fecha...
+                {{ 'finance.billing.creditnotes.searchInvoiceByNumberCustomerOrDate' | translate }}
               </button>
             }
             <div class="min-h-[20px] mt-1.5">
               @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
                 <small class="flex items-center gap-1 text-red-500 text-xs">
                   <i class="pi pi-exclamation-circle text-xs"></i>
-                  La factura es requerida
+                  {{ 'finance.billing.creditnotes.invoiceIsRequired' | translate }}
                 </small>
               }
             </div>
@@ -110,9 +111,10 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Monto *
+              {{ 'finance.billing.debitnotes.amount' | translate }}
             </label>
             <p-inputNumber
+              [locale]="locale()"
               formControlName="amount"
               mode="decimal"
               [minFractionDigits]="2"
@@ -124,7 +126,9 @@
               @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
                 <small class="flex items-center gap-1 text-red-500 text-xs">
                   <i class="pi pi-exclamation-circle text-xs"></i>
-                  El monto es requerido y debe ser mayor a 0
+                  {{
+                    'finance.billing.creditnotes.amountIsRequiredAndMustBeGreaterThan0' | translate
+                  }}
                 </small>
               }
             </div>
@@ -134,20 +138,20 @@
             class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-              Motivo *
+              {{ 'finance.billing.debitnotes.reason' | translate }}
             </label>
             <textarea
               pTextarea
               formControlName="reason"
               rows="3"
               class="w-full"
-              placeholder="Motivo de la nota de débito..."
+              [placeholder]="'finance.billing.debitnotes.reasonForTheDebitNote' | translate"
             ></textarea>
             <div class="min-h-[20px] mt-1.5">
               @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
                 <small class="flex items-center gap-1 text-red-500 text-xs">
                   <i class="pi pi-exclamation-circle text-xs"></i>
-                  El motivo es requerido
+                  {{ 'shared.aReasonIsRequired' | translate }}
                 </small>
               }
             </div>
@@ -156,8 +160,8 @@
       </div>
 
       <app-form-actions
-        submitLabel="Guardar"
-        cancelLabel="Cancelar"
+        [submitLabel]="'finance.billing.creditnotes.save' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"
         [tooltipMessage]="submitTooltip()"

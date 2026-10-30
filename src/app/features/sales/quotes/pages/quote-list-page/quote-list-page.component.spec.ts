@@ -115,15 +115,31 @@ describe('QuoteListPageComponent', () => {
     }
   });
 
-  it.each([['Editar', 'EDIT'], ['Convertir a pedido', 'CONVERT_TO_ORDER'], ['Convertir a factura', 'CONVERT_TO_INVOICE']])('requests only eligible records for %s and keeps the action when searching', async (label, action) => {
-    queryParams.next(convertToParamMap({ navAction: label }));
-    await Promise.resolve();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, orderBy: 'createdAt', orderDir: 'desc' });
-    component.onSearch('document');
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, search: 'document', orderBy: 'createdAt', orderDir: 'desc' });
-    queryParams.next(convertToParamMap({}));
-    expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
-  });
+  it.each([
+    ['Editar', 'EDIT'],
+    ['Convertir a pedido', 'CONVERT_TO_ORDER'],
+    ['Convertir a factura', 'CONVERT_TO_INVOICE'],
+  ])(
+    'requests only eligible records for %s and keeps the action when searching',
+    async (label, action) => {
+      queryParams.next(convertToParamMap({ navAction: label }));
+      await Promise.resolve();
+      expect(mockService.loadAll).toHaveBeenLastCalledWith({
+        action,
+        orderBy: 'createdAt',
+        orderDir: 'desc',
+      });
+      component.onSearch('document');
+      expect(mockService.loadAll).toHaveBeenLastCalledWith({
+        action,
+        search: 'document',
+        orderBy: 'createdAt',
+        orderDir: 'desc',
+      });
+      queryParams.next(convertToParamMap({}));
+      expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
+    },
+  );
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -311,7 +327,7 @@ describe('QuoteListPageComponent', () => {
             provide: ActivatedRoute,
             useValue: {
               snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
-            queryParamMap: queryParams,
+              queryParamMap: queryParams,
             },
           },
           { provide: QuoteApplicationService, useValue: errorMockService },

@@ -1,0 +1,9 @@
+{
+  "platform.notifications.openNotifications": "Open notifications",
+  "platform.notifications.notifications": "Notifications",
+  "platform.notifications.read": "Read",
+  "platform.notifications.clearAll": "Clear all",
+  "platform.notifications.noNotifications": "No notifications",
+  "platform.notifications.markAsRead": "Mark as read",
+  "platform.notifications.goThere": "Go there"
+}

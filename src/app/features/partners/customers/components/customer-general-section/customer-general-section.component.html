@@ -1,14 +1,14 @@
 <app-tab-content [columns]="2">
   <app-text-input
     [control]="control('legalName')"
-    label="Razón Social"
-    placeholder="Acme Corporation C.A."
-    errorMessage="La razón social es requerida y debe tener entre 2 y 300 caracteres"
+    [label]="'partners.suppliers.legalName' | translate"
+    [placeholder]="'partners.suppliers.acmeCorporationCA' | translate"
+    [errorMessage]="'partners.customers.labels.theLegalNameIsRequiredAndMustContain2To300Characters' | translate"
   />
 
   <app-text-input
     [control]="control('rif')"
-    label="RIF"
+    [label]="'partners.customers.labels.taxId' | translate"
     placeholder="J-12345678-9"
     [errorMessage]="
       control('rif').hasError('duplicateRif')
@@ -19,35 +19,35 @@
 
   <app-text-input
     [control]="control('alias')"
-    label="Alias"
-    placeholder="ACME Corp"
-    errorMessage="El alias es requerido (máximo 200 caracteres)"
+    [label]="'partners.suppliers.alias' | translate"
+    [placeholder]="'partners.suppliers.acmeCorp' | translate"
+    [errorMessage]="'partners.customers.labels.anAliasIsRequiredMaximum200Characters' | translate"
   />
 
   <app-select-input
     [control]="control('type')"
-    label="Tipo de Cliente"
-    placeholder="Seleccione el tipo"
+    [label]="'partners.customers.customerType2' | translate"
+    [placeholder]="'partners.suppliers.selectTheType' | translate"
     [options]="customerTypes"
     optionLabel="label"
     optionValue="value"
-    errorMessage="El tipo de cliente es requerido"
+    [errorMessage]="'partners.customers.labels.aCustomerTypeIsRequired' | translate"
   />
 
   <app-select-input
     [control]="paymentTypeControl()"
-    label="Condición de Pago"
-    placeholder="Seleccione la condición"
+    [label]="'partners.customers.paymentTerms' | translate"
+    [placeholder]="'partners.customers.selectPaymentTerms' | translate"
     [options]="paymentTypes"
     optionLabel="label"
     optionValue="value"
-    errorMessage="La condición de pago es requerida"
+    [errorMessage]="'partners.customers.labels.aPaymentTermIsRequired' | translate"
   />
 
   <app-select-input
     [control]="control('priceTypeId')"
-    label="Lista de Precio"
-    placeholder="Seleccione la lista de precio"
+    [label]="'partners.customers.priceList' | translate"
+    [placeholder]="'partners.customers.selectThePriceList' | translate"
     [options]="priceTypeOptions()"
     optionLabel="label"
     optionValue="value"
@@ -57,20 +57,20 @@
   @if (isCreditPayment()) {
     <app-number-input
       [control]="control('creditDays')"
-      label="Días de Crédito"
+      [label]="'partners.customers.creditDays' | translate"
       [min]="0"
       [max]="365"
-      errorMessage="Los días de crédito deben estar entre 0 y 365"
+      [errorMessage]="'partners.customers.labels.creditDaysMustBeBetween0And365' | translate"
     />
 
     <app-number-input
       [control]="control('creditLimit')"
-      label="Límite de Crédito"
+      [label]="'finance.treasury.receivables.creditLimit' | translate"
       [min]="0"
       mode="decimal"
       [minFractionDigits]="2"
       [maxFractionDigits]="2"
-      errorMessage="El límite de crédito no puede ser negativo"
+      [errorMessage]="'partners.customers.labels.theCreditLimitCannotBeNegative' | translate"
     />
   }
 
@@ -80,9 +80,9 @@
       class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
     >
       <div>
-        <p class="font-medium text-surface-800 dark:text-surface-200">Cliente Activo</p>
+        <p class="font-medium text-surface-800 dark:text-surface-200">{{ 'partners.customers.activeCustomer' | translate }}</p>
         <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
-          Indica si el cliente está activo en el sistema
+          {{ 'partners.customers.indicatesWhetherTheCustomerIsActiveInTheSystem' | translate }}
         </p>
       </div>
       <p-toggleswitch formControlName="active" />
@@ -94,13 +94,13 @@
     class="md:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
   >
     <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-      >Notas</label
+      >{{ 'finance.billing.invoices.notes' | translate }}</label
     >
     <textarea
       pTextarea
       formControlName="notes"
       rows="4"
-      placeholder="Observaciones o notas internas sobre el cliente..."
+      [placeholder]="'partners.customers.internalCustomerCommentsOrNotes' | translate"
       class="w-full resize-none"
     ></textarea>
   </div>

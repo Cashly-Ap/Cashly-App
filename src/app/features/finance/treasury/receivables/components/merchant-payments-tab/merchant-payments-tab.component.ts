@@ -1,3 +1,6 @@
+import { TooltipModule } from 'primeng/tooltip';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
@@ -36,6 +39,10 @@ function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'inf
   selector: 'app-merchant-payments-tab',
   standalone: true,
   imports: [
+    TooltipModule,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     TableModule,
     ButtonModule,

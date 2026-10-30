@@ -1,3 +1,5 @@
+import { provideTranslatedConfirmation, provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
+import { languageInterceptor } from '@core/i18n/language.interceptor';
 import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
@@ -13,7 +15,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([languageInterceptor, authInterceptor])),
     providePrimeNG({
       theme: {
         preset: CashlyPreset,
@@ -27,8 +29,8 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideCharts(withDefaultRegisterables()),
-    MessageService,
-    ConfirmationService,
+    provideTranslatedMessages(),
+    provideTranslatedConfirmation(),
     DialogService,
   ],
 };

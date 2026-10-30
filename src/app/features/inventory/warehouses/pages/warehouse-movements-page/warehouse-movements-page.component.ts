@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -55,7 +58,7 @@ const MOVEMENT_TYPE_VARIANTS: Record<string, TextBadgeVariant> = {
 @Component({
   selector: 'app-warehouse-movements-page',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedDatePipe, LocalizedNumberPipe,
     DatePipe,
     DecimalPipe,
     FormsModule,

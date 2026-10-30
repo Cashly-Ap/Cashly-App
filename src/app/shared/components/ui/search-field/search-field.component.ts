@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ChangeDetectionStrategy, Component, input, linkedSignal, output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
@@ -9,7 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 @Component({
   selector: 'app-search-field',
   standalone: true,
-  imports: [
+  imports: [TranslatePipe,
     ShortcutDirective,
     ButtonModule,
     IconFieldModule,

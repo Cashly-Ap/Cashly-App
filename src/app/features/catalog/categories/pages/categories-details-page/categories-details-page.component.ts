@@ -1,3 +1,5 @@
+import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
@@ -20,7 +22,7 @@ import { CategoryDetails } from '@features/catalog/categories/models/interfaces/
   selector: 'app-categories-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe, LocalizedDatePipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,

@@ -4,11 +4,11 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Tipos de Precios</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">{{ 'catalog.pricetypes.priceTypes2' | translate }}</h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona los tipos de precio
+        {{ 'catalog.pricetypes.managePriceTypes' | translate }}
       </p>
     </div>
 
@@ -20,13 +20,13 @@
           <app-search-field
             class="flex-1 sm:flex-none sm:min-w-[280px]"
             [value]="searchTerm()"
-            placeholder="Buscar tipo de precio..."
+            [placeholder]="'catalog.pricetypes.searchPriceTypes' | translate"
             (search)="onSearch($event)"
           />
           <p-button
             appShortcut="new"
             [appPermission]="'CREATE'"
-            label="Nuevo Tipo de Precio"
+            [label]="'catalog.pricetypes.newPriceType' | translate"
             icon="pi pi-plus"
             (onClick)="onCreate()"
             severity="contrast"
@@ -38,15 +38,15 @@
 
     @if (showInitialLoading()) {
       <app-content-card class="mt-4">
-        <app-loading-spinner message="Cargando tipos de precio..." />
+        <app-loading-spinner [message]="'catalog.pricetypes.loadingPriceTypes' | translate" />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-tag"
-          title="No hay tipos de precio registrados"
-          message="Crea el primer tipo de precio para comenzar."
-          buttonLabel="Nuevo Tipo de Precio"
+          [title]="'catalog.pricetypes.noPriceTypesRegistered' | translate"
+          [message]="'catalog.pricetypes.createTheFirstPriceTypeToGetStarted' | translate"
+          [buttonLabel]="'catalog.pricetypes.newPriceType' | translate"
           (buttonClick)="onCreate()"
         />
       </app-content-card>
@@ -63,9 +63,9 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay tipos de precio que coincidan con tu búsqueda."
-              buttonLabel="Nuevo Tipo de Precio"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'catalog.pricetypes.noPriceTypesMatchYourSearch' | translate"
+              [buttonLabel]="'catalog.pricetypes.newPriceType' | translate"
               (buttonClick)="onCreate()"
             />
           } @else {
@@ -79,13 +79,13 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th pSortableColumn="name" class="w-auto">
-                      <div class="font-semibold">Nombre <p-sortIcon field="name" /></div>
+                      <div class="font-semibold">{{ 'finance.treasury.paymentmethods.name' | translate }} <p-sortIcon field="name" /></div>
                     </th>
                     <th class="w-24">
-                      <div class="font-semibold">Estado</div>
+                      <div class="font-semibold">{{ 'finance.billing.invoices.status' | translate }}</div>
                     </th>
                     <th class="w-36">
-                      <div class="font-semibold text-center">Acciones</div>
+                      <div class="font-semibold text-center">{{ 'shared.actions' | translate }}</div>
                     </th>
                   </tr>
                 </ng-template>
@@ -115,7 +115,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tipos de precio"
+                [currentPageReportTemplate]="'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -135,9 +135,9 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay tipos de precio que coincidan con tu búsqueda."
-              buttonLabel="Nuevo Tipo de Precio"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'catalog.pricetypes.noPriceTypesMatchYourSearch' | translate"
+              [buttonLabel]="'catalog.pricetypes.newPriceType' | translate"
               (buttonClick)="onCreate()"
             />
           </app-content-card>
@@ -176,7 +176,7 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tipos de precio"
+              [currentPageReportTemplate]="'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

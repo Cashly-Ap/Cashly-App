@@ -4,11 +4,13 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Cuentas por Cobrar</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.treasury.receivables.accountsReceivable' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona las deudas de clientes y cobros pendientes
+        {{ 'finance.treasury.receivables.manageCustomerDebtAndPendingCollections' | translate }}
       </p>
     </div>
 
@@ -18,7 +20,9 @@
           class="dashboard-metric-primary dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
           <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">Deuda Total</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.totalDebt' | translate
+            }}</span>
             <div
               class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
             >
@@ -28,14 +32,16 @@
           <p
             class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
           >
-            {{ summary.totalDebt | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ summary.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
           class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
           <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">Facturas Pendientes</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.outstandingInvoices' | translate
+            }}</span>
             <div
               class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
             >
@@ -52,7 +58,9 @@
           class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
         >
           <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">Clientes con Deuda</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.customersWithDebt' | translate
+            }}</span>
             <div
               class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
             >
@@ -82,8 +90,12 @@
 
     <p-tabs [(value)]="activeTab" styleClass="mt-4">
       <p-tablist>
-        <p-tab value="customers">Clientes con Deuda</p-tab>
-        <p-tab value="pending">Pagos en Validación</p-tab>
+        <p-tab value="customers">{{
+          'finance.treasury.receivables.customersWithDebt' | translate
+        }}</p-tab>
+        <p-tab value="pending">{{
+          'finance.treasury.receivables.paymentsAwaitingReview' | translate
+        }}</p-tab>
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="customers">
@@ -95,7 +107,7 @@
                 <div class="relative">
                   <app-search-field
                     [value]="searchTerm()"
-                    placeholder="Buscar por nombre o RIF..."
+                    [placeholder]="'finance.treasury.receivables.searchByNameOrTaxId' | translate"
                     (search)="onSearch($event)"
                   />
                 </div>
@@ -122,10 +134,13 @@
                     <i class="pi pi-users text-4xl text-surface-400"></i>
                   </div>
                   <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-2">
-                    No hay clientes con deuda
+                    {{ 'finance.treasury.receivables.noCustomersWithDebt' | translate }}
                   </h3>
                   <p class="text-sm text-surface-500 dark:text-surface-400">
-                    Todos los clientes están al día con sus pagos
+                    {{
+                      'finance.treasury.receivables.allCustomersAreUpToDateWithTheirPayments'
+                        | translate
+                    }}
                   </p>
                 </div>
               } @else {
@@ -145,7 +160,7 @@
                             class="flex items-center gap-2 cursor-pointer select-none"
                             (click)="toggleSort('customerName')"
                           >
-                            Cliente
+                            {{ 'shared.customer' | translate }}
                             <i [class]="sortIcon('customerName')"></i>
                           </div>
                         </th>
@@ -154,7 +169,7 @@
                             class="flex items-center gap-2 justify-end cursor-pointer select-none"
                             (click)="toggleSort('totalDebt')"
                           >
-                            Deuda Total
+                            {{ 'finance.treasury.receivables.totalDebt' | translate }}
                             <i [class]="sortIcon('totalDebt')"></i>
                           </div>
                         </th>
@@ -163,7 +178,7 @@
                             class="flex items-center gap-2 justify-end cursor-pointer select-none"
                             (click)="toggleSort('creditLimit')"
                           >
-                            Límite Crédito
+                            {{ 'finance.treasury.receivables.creditLimit2' | translate }}
                             <i [class]="sortIcon('creditLimit')"></i>
                           </div>
                         </th>
@@ -172,13 +187,13 @@
                             class="flex items-center gap-2 justify-end cursor-pointer select-none"
                             (click)="toggleSort('availableCredit')"
                           >
-                            Crédito Disponible
+                            {{ 'finance.treasury.receivables.availableCredit' | translate }}
                             <i [class]="sortIcon('availableCredit')"></i>
                           </div>
                         </th>
                         <th class="text-right bg-surface-50 dark:bg-surface-800">
                           <div class="font-semibold text-surface-700 dark:text-surface-200">
-                            Saldo a Favor
+                            {{ 'finance.billing.invoices.creditBalance' | translate }}
                           </div>
                         </th>
                         <th class="text-center bg-surface-50 dark:bg-surface-800">
@@ -186,13 +201,13 @@
                             class="flex items-center gap-2 justify-center cursor-pointer select-none"
                             (click)="toggleSort('pendingInvoicesCount')"
                           >
-                            Facturas Pendientes
+                            {{ 'finance.treasury.receivables.outstandingInvoices' | translate }}
                             <i [class]="sortIcon('pendingInvoicesCount')"></i>
                           </div>
                         </th>
                         <th class="text-center bg-surface-50 dark:bg-surface-800">
                           <div class="font-semibold text-surface-700 dark:text-surface-200">
-                            Acciones
+                            {{ 'shared.actions' | translate }}
                           </div>
                         </th>
                       </tr>
@@ -217,14 +232,16 @@
                         </td>
                         <td class="text-right">
                           <span class="font-mono font-bold text-lg text-red-600 dark:text-red-400">
-                            {{ customer.totalDebt | currency: 'USD' : 'symbol' : '1.2-2' }}
+                            {{ customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                           </span>
                         </td>
                         <td class="text-right">
                           <span
                             class="font-mono font-semibold text-surface-900 dark:text-surface-0"
                           >
-                            {{ customer.creditLimit | currency: 'USD' : 'symbol' : '1.2-2' }}
+                            {{
+                              customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                            }}
                           </span>
                         </td>
                         <td class="text-right">
@@ -232,18 +249,27 @@
                             <span
                               class="font-mono font-semibold text-green-600 dark:text-green-400"
                             >
-                              {{ customer.availableCredit | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.availableCredit
+                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           } @else {
                             <span class="font-mono font-semibold text-red-600 dark:text-red-400">
-                              {{ customer.availableCredit | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.availableCredit
+                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           }
                         </td>
                         <td class="text-right">
                           @if (customer.customerBalance > 0) {
                             <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
-                              {{ customer.customerBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.customerBalance
+                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           } @else {
                             <span class="font-mono text-surface-400 dark:text-surface-500"
@@ -261,7 +287,9 @@
                         <td class="text-center">
                           <app-list-action-buttons
                             [actions]="customerActions(customer)"
-                            ariaLabel="Abrir acciones del cliente"
+                            [ariaLabel]="
+                              'finance.treasury.receivables.openCustomerActions' | translate
+                            "
                           />
                         </td>
                       </tr>
@@ -279,10 +307,13 @@
                               <p
                                 class="text-lg font-semibold text-surface-700 dark:text-surface-200 mb-1"
                               >
-                                No se encontraron clientes
+                                {{ 'finance.treasury.receivables.noCustomersFound' | translate }}
                               </p>
                               <p class="text-sm text-surface-500 dark:text-surface-400">
-                                No hay clientes registrados en el sistema
+                                {{
+                                  'finance.treasury.receivables.noCustomersRegisteredInTheSystem'
+                                    | translate
+                                }}
                               </p>
                             </div>
                           </div>
@@ -322,39 +353,51 @@
                           <div
                             class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
                           >
-                            <span class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >Deuda Total</span
+                            <span
+                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
+                              >{{ 'finance.treasury.receivables.totalDebt' | translate }}</span
                             >
                             <span class="font-mono font-bold text-red-600 dark:text-red-400">
-                              {{ customer.totalDebt | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           </div>
                           <div
                             class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400"
                           >
-                            <span class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >Límite Crédito</span
+                            <span
+                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
+                              >{{ 'finance.treasury.receivables.creditLimit2' | translate }}</span
                             >
                             <span
                               class="font-mono font-semibold text-surface-900 dark:text-surface-0"
                             >
-                              {{ customer.creditLimit | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           </div>
                           <div
                             class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
                           >
-                            <span class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >Crédito Disponible</span
+                            <span
+                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
+                              >{{
+                                'finance.treasury.receivables.availableCredit' | translate
+                              }}</span
                             >
                             <span
                               class="font-mono font-semibold"
                               [class.text-green-600]="customer.availableCredit > 0"
- [class.dark:text-green-400]="customer.availableCredit > 0"
+                              [class.dark:text-green-400]="customer.availableCredit > 0"
                               [class.text-red-600]="customer.availableCredit <= 0"
- [class.dark:text-red-400]="customer.availableCredit <= 0"
+                              [class.dark:text-red-400]="customer.availableCredit <= 0"
                             >
-                              {{ customer.availableCredit | currency: 'USD' : 'symbol' : '1.2-2' }}
+                              {{
+                                customer.availableCredit
+                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                              }}
                             </span>
                           </div>
                           @if (customer.customerBalance > 0) {
@@ -363,21 +406,22 @@
                             >
                               <span
                                 class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                                >Saldo a Favor</span
+                                >{{ 'finance.billing.invoices.creditBalance' | translate }}</span
                               >
                               <span
                                 class="font-mono font-semibold text-blue-600 dark:text-blue-400"
                               >
                                 {{
-                                  customer.customerBalance | currency: 'USD' : 'symbol' : '1.2-2'
+                                  customer.customerBalance
+                                    | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                                 }}
                               </span>
                             </div>
                           }
                           <div class="flex items-center justify-between">
-                            <span class="text-xs text-surface-600 dark:text-surface-400"
-                              >Facturas Pendientes</span
-                            >
+                            <span class="text-xs text-surface-600 dark:text-surface-400">{{
+                              'finance.treasury.receivables.outstandingInvoices' | translate
+                            }}</span>
                             <span
                               class="px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-xs font-semibold rounded-full"
                             >
@@ -387,7 +431,9 @@
                         </div>
                         <app-list-action-buttons
                           [actions]="customerActions(customer)"
-                          ariaLabel="Abrir acciones del cliente"
+                          [ariaLabel]="
+                            'finance.treasury.receivables.openCustomerActions' | translate
+                          "
                         />
                       </div>
                     }
@@ -406,7 +452,7 @@
               [totalRecords]="service.totalCustomers()"
               [rowsPerPageOptions]="[10, 20, 50]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+              [currentPageReportTemplate]="'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

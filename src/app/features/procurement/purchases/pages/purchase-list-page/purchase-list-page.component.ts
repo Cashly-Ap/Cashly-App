@@ -1,3 +1,7 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
@@ -55,6 +59,10 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -80,7 +88,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
     ConfirmPurchaseDialogComponent,
   ],
   templateUrl: './purchase-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class PurchaseListPageComponent implements OnInit {
   private readonly purchaseService = inject(PurchaseApplicationService);

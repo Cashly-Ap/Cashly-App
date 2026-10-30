@@ -4,17 +4,24 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Caja</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.treasury.cashregister.cashRegister' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Controla cada sesión, sus entradas, salidas y saldo esperado
+        {{
+          'finance.treasury.cashregister.manageEachSessionMoneyInMoneyOutAndExpectedBalance'
+            | translate
+        }}
       </p>
     </div>
 
     @if (showInitialLoading()) {
       <app-content-card>
-        <app-loading-spinner message="Cargando caja..." />
+        <app-loading-spinner
+          [message]="'finance.treasury.cashregister.loadingCashRegister' | translate"
+        />
       </app-content-card>
     } @else if (showEmptyState()) {
       <app-content-card>
@@ -24,14 +31,19 @@
           >
             <i class="pi pi-lock text-2xl text-surface-600 dark:text-surface-300"></i>
           </div>
-          <h2 class="mt-5 text-2xl font-semibold">Caja cerrada</h2>
+          <h2 class="mt-5 text-2xl font-semibold">
+            {{ 'finance.treasury.cashregister.cashRegisterClosed' | translate }}
+          </h2>
           <p class="mt-2 max-w-lg text-surface-500 dark:text-surface-400">
-            Abre una sesión para habilitar pagos, anticipos, devoluciones, ingresos y egresos.
+            {{
+              'finance.treasury.cashregister.openASessionToEnablePaymentsAdvancesRefundsMoneyInAndMoneyOut'
+                | translate
+            }}
           </p>
           <div class="mt-7 flex w-full max-w-md flex-col gap-3 sm:flex-row">
             <p-button
               [appPermission]="'EXECUTE'"
-              label="Abrir caja"
+              [label]="'finance.treasury.cashregister.openCashRegister' | translate"
               icon="pi pi-lock-open"
               severity="contrast"
               styleClass="w-full"
@@ -39,7 +51,7 @@
               (onClick)="onOpenDialogOpen()"
             />
             <p-button
-              label="Historial de cajas"
+              [label]="'finance.treasury.cashregister.cashRegisterHistory2' | translate"
               icon="pi pi-history"
               severity="secondary"
               [outlined]="true"
@@ -56,20 +68,23 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
               <p-tag
-                [value]="getStatusLabel(c.status)"
+                [value]="getStatusLabel(c.status) | translate"
                 [severity]="getStatusSeverity(c.status)"
                 styleClass="text-sm font-medium px-3 py-1"
               />
               <div>
-                <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">Caja</h1>
+                <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">
+                  {{ 'finance.treasury.cashregister.cashRegister' | translate }}
+                </h1>
                 <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
-                  Desde {{ c.openedAt | date: 'dd/MM/yyyy HH:mm' }} &middot; {{ c.openedByName }}
+                  {{ 'finance.billing.invoices.from' | translate }}
+                  {{ c.openedAt | localizedDate: 'dd/MM/yyyy HH:mm' }} &middot; {{ c.openedByName }}
                 </p>
               </div>
             </div>
             <div class="w-full sm:w-auto sm:self-start">
               <p-button
-                label="Acciones"
+                [label]="'shared.actions' | translate"
                 icon="pi pi-ellipsis-v"
                 severity="contrast"
                 styleClass="w-full sm:w-auto"
@@ -78,14 +93,14 @@
               <p-popover #actionsPopover>
                 <div class="flex min-w-48 flex-col gap-1 p-1">
                   <p-button
-                    label="Ver detalles"
+                    [label]="'finance.treasury.cashregister.viewDetails' | translate"
                     icon="pi pi-table"
                     [link]="true"
                     styleClass="w-full justify-start text-left text-sm"
                     (click)="actionsPopover.hide(); onOpenDetailDialog()"
                   />
                   <p-button
-                    label="Ver historial"
+                    [label]="'finance.treasury.cashregister.viewHistory' | translate"
                     icon="pi pi-history"
                     [link]="true"
                     styleClass="w-full justify-start text-left text-sm"
@@ -95,7 +110,7 @@
                     <div class="my-1 border-t border-surface-200 dark:border-surface-700"></div>
                     <p-button
                       [appPermission]="'EXECUTE'"
-                      label="Cerrar caja"
+                      [label]="'finance.treasury.cashregister.closeCashRegister' | translate"
                       icon="pi pi-lock"
                       [link]="true"
                       severity="danger"
@@ -123,11 +138,11 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Saldo inicial</span
+              >{{ 'finance.treasury.cashregister.openingBalance' | translate }}</span
             >
           </div>
           <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
-            {{ c.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
@@ -141,11 +156,11 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Facturación</span
+              >{{ 'finance.treasury.cashregister.billing' | translate }}</span
             >
           </div>
           <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
-            {{ c.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
@@ -159,11 +174,11 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Ingresos</span
+              >{{ 'finance.treasury.cashregister.moneyIn' | translate }}</span
             >
           </div>
           <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-            {{ c.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
@@ -177,11 +192,11 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Egresos</span
+              >{{ 'finance.treasury.cashregister.moneyOut' | translate }}</span
             >
           </div>
           <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-            {{ c.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div
@@ -195,7 +210,7 @@
             </div>
             <span
               class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Saldo esperado</span
+              >{{ 'finance.treasury.cashregister.expectedBalance' | translate }}</span
             >
           </div>
           <p
@@ -203,7 +218,7 @@
             [class.text-green-600]="c.expectedBalance >= 0"
             [class.text-red-600]="c.expectedBalance < 0"
           >
-            {{ c.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ c.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
       </div>
@@ -213,7 +228,7 @@
 
 <p-dialog
   [visible]="openDialogVisible()"
-  header="Abrir Caja"
+  [header]="'finance.treasury.cashregister.openCashRegister2' | translate"
   [modal]="true"
   [style]="{ width: 'min(450px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
@@ -223,21 +238,24 @@
   <form [formGroup]="openForm">
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-1">
-        <label for="openedByName" class="text-xs font-medium text-surface-500">Abierto por</label>
+        <label for="openedByName" class="text-xs font-medium text-surface-500">{{
+          'finance.treasury.cashregister.openedBy' | translate
+        }}</label>
         <input
           id="openedByName"
           pInputText
           formControlName="openedByName"
           class="w-full"
           style="width: 100%"
-          placeholder="Nombre del cajero"
+          [placeholder]="'finance.treasury.cashregister.cashierName' | translate"
         />
       </div>
       <div class="flex flex-col gap-1">
-        <label for="openingBalance" class="text-xs font-medium text-surface-500"
-          >Saldo inicial</label
-        >
+        <label for="openingBalance" class="text-xs font-medium text-surface-500">{{
+          'finance.treasury.cashregister.openingBalance' | translate
+        }}</label>
         <p-inputnumber
+          [locale]="locale()"
           inputId="openingBalance"
           formControlName="openingBalance"
           mode="currency"
@@ -251,14 +269,14 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onOpenDialogClose()"
       />
       <p-button
         [appPermission]="'EXECUTE'"
-        label="Abrir Caja"
+        [label]="'finance.treasury.cashregister.openCashRegister2' | translate"
         icon="pi pi-plus"
         severity="contrast"
         [disabled]="openForm.invalid || isSubmitting()"
@@ -271,7 +289,7 @@
 
 <p-dialog
   [visible]="closeDialogVisible()"
-  header="Cerrar Caja"
+  [header]="'finance.treasury.cashregister.closeCashRegister2' | translate"
   [modal]="true"
   [style]="{ width: 'min(500px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
@@ -284,21 +302,25 @@
         class="flex gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200 dark:border-surface-700"
       >
         <div class="flex-1">
-          <p class="text-xs text-surface-500 uppercase font-medium mb-1">Saldo esperado</p>
+          <p class="text-xs text-surface-500 uppercase font-medium mb-1">
+            {{ 'finance.treasury.cashregister.expectedBalance' | translate }}
+          </p>
           <p
             class="text-lg font-bold"
             [class.text-green-600]="(closure()?.expectedBalance ?? 0) >= 0"
             [class.text-red-600]="(closure()?.expectedBalance ?? 0) < 0"
           >
-            {{ closure()?.expectedBalance ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ closure()?.expectedBalance ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
       </div>
       <div>
         <label for="declaredBalance" class="text-xs font-medium text-surface-500 block mb-1"
-          >Saldo contado <span class="text-red-500">*</span></label
+          >{{ 'finance.treasury.cashregister.countedBalance' | translate }}
+          <span class="text-red-500">*</span></label
         >
         <p-inputnumber
+          [locale]="locale()"
           inputId="declaredBalance"
           formControlName="declaredBalance"
           mode="currency"
@@ -306,34 +328,39 @@
           [min]="0"
           styleClass="w-full"
         />
-        <p class="mt-1 text-xs text-surface-500">La diferencia quedará registrada en el cierre.</p>
+        <p class="mt-1 text-xs text-surface-500">
+          {{ 'finance.treasury.cashregister.theDifferenceWillBeRecordedWhenClosing' | translate }}
+        </p>
       </div>
       <div>
         <label for="closedByName" class="text-xs font-medium text-surface-500 block mb-1"
-          >Cerrado por <span class="text-red-500">*</span></label
+          >{{ 'finance.treasury.cashregister.closedBy2' | translate }}
+          <span class="text-red-500">*</span></label
         >
         <input
           id="closedByName"
           pInputText
           formControlName="closedByName"
           style="width: 100%"
-          placeholder="Nombre de quien cierra"
+          [placeholder]="'finance.treasury.cashregister.closedBy' | translate"
         />
         @if (closeForm.get('closedByName')?.invalid && closeForm.get('closedByName')?.touched) {
-          <p class="text-xs text-red-500 mt-1">Este campo es obligatorio</p>
+          <p class="text-xs text-red-500 mt-1">
+            {{ 'finance.treasury.cashregister.thisFieldIsRequired' | translate }}
+          </p>
         }
       </div>
       <div>
-        <label for="closingNotes" class="text-xs font-medium text-surface-500 block mb-1"
-          >Notas de Cierre</label
-        >
+        <label for="closingNotes" class="text-xs font-medium text-surface-500 block mb-1">{{
+          'finance.treasury.cashregister.closingNotes' | translate
+        }}</label>
         <textarea
           id="closingNotes"
           pInputTextarea
           formControlName="closingNotes"
           style="width: 100%; resize: none"
           rows="3"
-          placeholder="Notas opcionales..."
+          [placeholder]="'finance.treasury.cashregister.optionalNotes' | translate"
         ></textarea>
       </div>
     </div>
@@ -341,14 +368,14 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onCloseDialogClose()"
       />
       <p-button
         [appPermission]="'EXECUTE'"
-        label="Cerrar Caja"
+        [label]="'finance.treasury.cashregister.closeCashRegister2' | translate"
         icon="pi pi-lock"
         severity="contrast"
         [disabled]="closeForm.invalid || isSubmitting()"
@@ -361,7 +388,7 @@
 
 <p-dialog
   [visible]="detailDialogVisible()"
-  header="Detalle por Método de Pago"
+  [header]="'finance.treasury.cashregister.breakdownByPaymentMethod' | translate"
   [modal]="true"
   [style]="{ width: 'min(600px, calc(100vw - 2rem))' }"
   [dismissableMask]="true"
@@ -376,10 +403,13 @@
         <i class="pi pi-inbox text-2xl text-surface-500 dark:text-surface-400"></i>
       </div>
       <h3 class="mt-4 text-lg font-semibold text-surface-900 dark:text-surface-0">
-        Sin movimientos
+        {{ 'finance.treasury.cashregister.noMovements' | translate }}
       </h3>
       <p class="mt-2 max-w-sm text-sm text-surface-500 dark:text-surface-400">
-        Esta sesión todavía no tiene operaciones agrupadas por método de pago.
+        {{
+          'finance.treasury.cashregister.thisSessionHasNoTransactionsGroupedByPaymentMethodYet'
+            | translate
+        }}
       </p>
     </div>
   } @else {
@@ -387,9 +417,19 @@
       <p-table [value]="details()" styleClass="p-datatable-striped">
         <ng-template pTemplate="header">
           <tr>
-            <th class="w-auto"><div class="font-semibold">Método de Pago</div></th>
-            <th class="w-24"><div class="font-semibold text-right">Transacciones</div></th>
-            <th class="w-36"><div class="font-semibold text-right">Monto</div></th>
+            <th class="w-auto">
+              <div class="font-semibold">
+                {{ 'finance.treasury.cashregister.paymentMethod' | translate }}
+              </div>
+            </th>
+            <th class="w-24">
+              <div class="font-semibold text-right">
+                {{ 'finance.treasury.cashregister.transactions2' | translate }}
+              </div>
+            </th>
+            <th class="w-36">
+              <div class="font-semibold text-right">{{ 'shared.amount' | translate }}</div>
+            </th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-detail>
@@ -402,7 +442,7 @@
             </td>
             <td>
               <div class="text-right font-mono">
-                {{ detail.expectedAmount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                {{ detail.expectedAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
               </div>
             </td>
           </tr>
@@ -413,7 +453,7 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
       <p-button
-        label="Cerrar"
+        [label]="'shared.close' | translate"
         severity="secondary"
         [outlined]="true"
         (onClick)="onDetailDialogClose()"

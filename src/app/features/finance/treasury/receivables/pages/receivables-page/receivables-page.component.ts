@@ -1,3 +1,5 @@
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import {
   ListActionButtonsComponent,
@@ -45,6 +47,8 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     ListActionButtonsComponent,
     CommonModule,
     FormsModule,

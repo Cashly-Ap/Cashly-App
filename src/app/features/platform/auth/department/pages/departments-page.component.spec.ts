@@ -107,13 +107,15 @@ describe('Department management navigation and form', () => {
     accept?.();
     expect(service.delete).not.toHaveBeenCalled();
   });
-  it.each([false, true])('opens the saved detail after create or update (editing=%s)', (editing) => {
-    createComponent();
-    service.saveDepartment.mockReturnValue(of({ id: 'saved-id' }));
-    component.editing.set({ name: 'Saved record', ...(editing ? { id: 'saved-id' } : {}) });
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    component.save();
-    expect(navigate).toHaveBeenCalledWith(['/platform/departments', 'saved-id']);
-  });
-
+  it.each([false, true])(
+    'opens the saved detail after create or update (editing=%s)',
+    (editing) => {
+      createComponent();
+      service.saveDepartment.mockReturnValue(of({ id: 'saved-id' }));
+      component.editing.set({ name: 'Saved record', ...(editing ? { id: 'saved-id' } : {}) });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      component.save();
+      expect(navigate).toHaveBeenCalledWith(['/platform/departments', 'saved-id']);
+    },
+  );
 });

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -33,6 +34,7 @@ import { ORDER_SUCCESS_MESSAGES } from '@features/sales/orders/messages/success-
   selector: 'app-order-form-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
     TextareaModule,

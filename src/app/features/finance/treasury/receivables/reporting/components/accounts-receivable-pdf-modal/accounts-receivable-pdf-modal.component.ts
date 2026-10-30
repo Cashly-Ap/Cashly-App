@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
@@ -20,6 +22,8 @@ interface SelectOption {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,

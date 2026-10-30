@@ -1,3 +1,7 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { Language } from '@core/i18n/language';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { switchMap, of, finalize, tap } from 'rxjs';
 import { UserPhotoService } from '../../services/api/user-photo.service';
@@ -15,6 +19,7 @@ import {
   FormActionsComponent,
   FileInputComponent,
   CountryInputComponent,
+  SelectInputComponent,
   TextInputComponent,
   TabContentComponent,
 } from '@core/forms/components';
@@ -26,6 +31,7 @@ import { createUserNameForm } from './change-username-page.config';
   selector: 'app-change-username-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
     FormCardComponent,
@@ -33,6 +39,7 @@ import { createUserNameForm } from './change-username-page.config';
     FormActionsComponent,
     FileInputComponent,
     CountryInputComponent,
+    SelectInputComponent,
     TextInputComponent,
     TabContentComponent,
     TabsModule,
@@ -42,6 +49,7 @@ import { createUserNameForm } from './change-username-page.config';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangeUsernamePageComponent {
+  private readonly translations = inject(TranslationService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
@@ -49,6 +57,11 @@ export class ChangeUsernamePageComponent {
   private readonly messages = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly photos = inject(UserPhotoService);
+  private readonly preferences = inject(UserPreferencesService);
+  readonly languages = [
+    { label: 'Español', value: 'es' },
+    { label: 'English', value: 'en' },
+  ];
   readonly photo = new FormControl<File | null>(null);
   readonly photoUrl = signal<string | null>(null);
   readonly removePhoto = signal(false);
@@ -96,6 +109,7 @@ export class ChangeUsernamePageComponent {
                 error: () => undefined,
               });
           this.form.patchValue({
+            language: user.language ?? 'es',
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,
@@ -120,7 +134,9 @@ export class ChangeUsernamePageComponent {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.activeTab.set(
-        ['firstName', 'lastName', 'userName'].some((field) => this.control(field).invalid)
+        ['firstName', 'lastName', 'userName', 'language'].some(
+          (field) => this.control(field).invalid,
+        )
           ? 'general'
           : 'contact',
       );
@@ -138,6 +154,7 @@ export class ChangeUsernamePageComponent {
     this.saving.set(true);
     this.profiles
       .updateProfile({
+        language: data.language as Language,
         userName: data.userName!.trim(),
         firstName: data.firstName!.trim(),
         lastName: data.lastName!.trim(),
@@ -145,7 +162,10 @@ export class ChangeUsernamePageComponent {
         address: Object.values(address).some(Boolean) ? address : null,
       })
       .pipe(
-        tap((profile) => this.auth.syncProfileDisplay(profile.userName)),
+        tap((profile) => {
+          this.auth.syncProfileDisplay(profile.userName);
+          this.preferences.syncLanguage(profile.language ?? (data.language as Language));
+        }),
         switchMap((profile) =>
           this.photo.value
             ? this.photos.upload(this.photo.value)
@@ -162,8 +182,8 @@ export class ChangeUsernamePageComponent {
           this.auth.syncProfileDisplay(profile.userName);
           this.messages.add({
             severity: 'success',
-            summary: 'Perfil actualizado',
-            detail: 'Tus datos se han guardado correctamente',
+            summary: this.translations.t('auth.profile.profile.updated'),
+            detail: this.translations.t('auth.profile.your.details.have.been.saved.successfully'),
           });
           void this.router.navigate(['/platform/auth/configuration']);
         },
@@ -171,8 +191,8 @@ export class ChangeUsernamePageComponent {
           this.saving.set(false);
           this.messages.add({
             severity: 'error',
-            summary: 'No se pudo guardar',
-            detail: 'Revisa los datos e inténtalo de nuevo',
+            summary: this.translations.t('auth.profile.could.not.save'),
+            detail: this.translations.t('auth.profile.check.your.details.and.try.again'),
           });
         },
       });

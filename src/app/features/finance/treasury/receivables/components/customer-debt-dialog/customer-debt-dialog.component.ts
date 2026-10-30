@@ -1,3 +1,8 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ListActionButtonsComponent,
@@ -56,6 +61,10 @@ interface BalanceFilterOption {
   selector: 'app-customer-debt-dialog',
   standalone: true,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     ListActionButtonsComponent,
     DialogModule,
@@ -75,10 +84,12 @@ interface BalanceFilterOption {
     ReturnFormDialogComponent,
     NoteFormDialogComponent,
   ],
-  providers: [MessageService],
+  providers: [provideTranslatedMessages()],
   templateUrl: './customer-debt-dialog.component.html',
 })
 export class CustomerDebtDialogComponent {
+  readonly locale = inject(LanguageService).locale;
+
   protected service = inject(ReceivablesApplicationService);
   private balanceApi = inject(CustomerBalanceApiService);
   private messageService = inject(MessageService);

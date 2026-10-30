@@ -4,12 +4,12 @@
   [style]="{ width: '400px' }"
   [draggable]="false"
   [resizable]="false"
-  header="Seleccionar Método de Pago"
+  [header]="'shared.selectPaymentMethod' | translate"
 >
   <div class="flex flex-col gap-4">
     <app-search-field
       [value]="searchTerm()"
-      placeholder="Buscar método de pago..."
+      [placeholder]="'shared.searchPaymentMethods' | translate"
       (search)="onSearch($event)"
     />
 
@@ -34,13 +34,13 @@
             <span class="text-xs font-mono text-surface-400">{{ paymentMethod.code }}</span>
           </button>
         } @empty {
-          <div class="text-center py-4 text-surface-500">No se encontraron métodos de pago</div>
+          <div class="text-center py-4 text-surface-500">{{ 'shared.noPaymentMethodsFound' | translate }}</div>
         }
       </div>
     }
   </div>
 
   <ng-template pTemplate="footer">
-    <p-button label="Cancelar" [text]="true" severity="secondary" (onClick)="close()" />
+    <p-button [label]="'shared.cancel' | translate" [text]="true" severity="secondary" (onClick)="close()" />
   </ng-template>
 </p-dialog>

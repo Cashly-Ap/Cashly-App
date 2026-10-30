@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
@@ -48,6 +50,8 @@ import { BusinessModule } from '../../user/models/enums/business-module.enum';
   selector: 'app-departments-page',
   standalone: true,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     ReactiveFormsModule,
     PaginatorModule,

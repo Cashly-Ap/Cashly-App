@@ -1,0 +1,12 @@
+{
+  "partners.suppliers.messages.couldNotCreateTheSupplierPleaseTryAgain": "Error al crear el proveedor. Por favor, intente nuevamente.",
+  "partners.suppliers.messages.couldNotUpdateTheSupplierPleaseTryAgain": "Error al actualizar el proveedor. Por favor, intente nuevamente.",
+  "partners.suppliers.messages.couldNotLoadTheSupplierItMayNotExist": "Error al cargar el proveedor. Es posible que no exista.",
+  "partners.suppliers.messages.couldNotDeleteTheSupplierPleaseTryAgain": "Error al eliminar el proveedor. Por favor, intente nuevamente.",
+  "partners.suppliers.messages.supplierCreatedSuccessfully": "Proveedor creado exitosamente",
+  "partners.suppliers.messages.supplierUpdatedSuccessfully": "Proveedor actualizado exitosamente",
+  "partners.suppliers.messages.supplierDeletedSuccessfully": "Proveedor eliminado exitosamente",
+  "partners.suppliers.messages.messages.couldNotConnectToTheServerCheckYourInternetConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
+  "partners.suppliers.messages.messages.theSupplierDataIsInvalidCheckTheInformation": "Los datos del proveedor son incorrectos. Verifica la información.",
+  "partners.suppliers.messages.messages.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde."
+}

@@ -16,10 +16,10 @@
         </div>
         <div class="flex flex-col">
           <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-            >Seleccionar registro</span
+            >{{ 'shared.selectRecord' | translate }}</span
           >
           <span class="text-xs text-surface-500 dark:text-surface-400"
-            >{{ session.title }} · Busque y seleccione el registro</span
+            >{{ session.title | translate }} {{ 'shared.searchForAndSelectARecord' | translate }}</span
           >
         </div>
       </div>
@@ -30,20 +30,20 @@
         <app-search-field
           class="hidden min-w-0 flex-1 sm:block"
           [value]="search()"
-          placeholder="Buscar registro..."
+          [placeholder]="'shared.searchRecords' | translate"
           (search)="onSearch($event)"
         />
         <button
           type="button"
-          aria-label="Filtros"
-          title="Filtros"
+          [attr.aria-label]="'shared.filters' | translate"
+          [title]="'shared.filters' | translate"
           class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors shrink-0"
           (click)="filterPopover.toggle($event)"
         >
           <i class="pi pi-filter text-sm"></i>
         </button>
         <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
-          {{ session.total() }} {{ session.total() === 1 ? 'registro' : 'registros' }}
+          {{ session.total() }} {{ session.total() === 1 ? ('shared.record2' | translate) : ('shared.records' | translate) }}
         </span>
       </div>
 
@@ -52,13 +52,13 @@
           <div
             class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
           >
-            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{ 'shared.filters' | translate }}</span>
           </div>
           <div class="px-4 py-3 flex flex-col gap-3">
             <app-search-field
               class="block sm:hidden"
               [value]="search()"
-              placeholder="Buscar registro..."
+              [placeholder]="'shared.searchRecords' | translate"
               (search)="onSearch($event)"
             />
             @for (filter of session.filters?.() ?? []; track filter.label) {
@@ -68,7 +68,7 @@
                   >{{ filter.label }}</span
                 >
                 <p-select
-                  [options]="filter.options"
+                  [options]="filter.options | translateOptions"
                   [ngModel]="filter.value"
                   optionLabel="label"
                   optionValue="value"
@@ -95,12 +95,12 @@
               <th
                 class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
               >
-                Registro
+                {{ 'shared.record' | translate }}
               </th>
               <th
                 class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
               >
-                Información
+                {{ 'shared.information' | translate }}
               </th>
             </tr>
           </thead>
@@ -130,7 +130,7 @@
                     @if (isSelected(record)) {
                       <i
                         class="pi pi-check-circle text-primary text-lg"
-                        aria-label="Seleccionado"
+                        [attr.aria-label]="'shared.selected' | translate"
                       ></i>
                     }
                   </td>
@@ -155,7 +155,7 @@
                     class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
                   >
                     <i class="pi pi-search text-2xl block mb-2"></i>
-                    No se encontraron registros
+                    {{ 'shared.noRecordsFound' | translate }}
                   </td>
                 </tr>
               }
@@ -193,7 +193,7 @@
               @if (isSelected(record)) {
                 <span class="flex items-center gap-1.5 mt-2 text-xs font-semibold text-primary">
                   <i class="pi pi-check-circle"></i>
-                  Seleccionado
+                  {{ 'shared.selected' | translate }}
                 </span>
               }
               <span
@@ -204,7 +204,7 @@
           } @empty {
             <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
               <i class="pi pi-search text-2xl block mb-2"></i>
-              No se encontraron registros
+              {{ 'shared.noRecordsFound' | translate }}
             </div>
           }
         }
@@ -213,12 +213,12 @@
       @if (totalPages() > 1) {
         <div class="flex items-center justify-between">
           <span class="text-xs text-surface-500 dark:text-surface-400"
-            >Página {{ currentPage() + 1 }} de {{ totalPages() }}</span
+            >{{ 'shared.page' | translate }} {{ currentPage() + 1 }} {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
           >
           <div class="flex gap-1">
             <button
               type="button"
-              aria-label="Página anterior"
+              [attr.aria-label]="'shared.previousPage' | translate"
               class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               [disabled]="session.loading() || currentPage() === 0"
               (click)="changePage(-1)"
@@ -227,7 +227,7 @@
             </button>
             <button
               type="button"
-              aria-label="Página siguiente"
+              [attr.aria-label]="'shared.nextPage' | translate"
               class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               [disabled]="session.loading() || currentPage() >= totalPages() - 1"
               (click)="changePage(1)"
@@ -242,7 +242,7 @@
     <ng-template pTemplate="footer">
       <div class="flex justify-between items-center gap-4 pt-1">
         <p-button
-          label="Aceptar"
+          [label]="'shared.accept' | translate"
           icon="pi pi-check"
           [disabled]="!selectedRecord() || accepting()"
           [loading]="accepting()"
@@ -250,7 +250,7 @@
         />
         <p-button
           appShortcut="cancel"
-          label="Cancelar"
+          [label]="'shared.cancel' | translate"
           icon="pi pi-times"
           [outlined]="true"
           severity="secondary"

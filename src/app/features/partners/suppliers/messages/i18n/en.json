@@ -1,0 +1,12 @@
+{
+  "partners.suppliers.messages.couldNotCreateTheSupplierPleaseTryAgain": "Could not create the supplier. Please try again.",
+  "partners.suppliers.messages.couldNotUpdateTheSupplierPleaseTryAgain": "Could not update the supplier. Please try again.",
+  "partners.suppliers.messages.couldNotLoadTheSupplierItMayNotExist": "Could not load the supplier. It may not exist.",
+  "partners.suppliers.messages.couldNotDeleteTheSupplierPleaseTryAgain": "Could not delete the supplier. Please try again.",
+  "partners.suppliers.messages.supplierCreatedSuccessfully": "Supplier created successfully",
+  "partners.suppliers.messages.supplierUpdatedSuccessfully": "Supplier updated successfully",
+  "partners.suppliers.messages.supplierDeletedSuccessfully": "Supplier deleted successfully",
+  "partners.suppliers.messages.messages.couldNotConnectToTheServerCheckYourInternetConnection": "Could not connect to the server. Check your internet connection.",
+  "partners.suppliers.messages.messages.theSupplierDataIsInvalidCheckTheInformation": "The supplier data is invalid. Check the information.",
+  "partners.suppliers.messages.messages.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later."
+}

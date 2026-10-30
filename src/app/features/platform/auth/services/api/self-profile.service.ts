@@ -1,3 +1,4 @@
+import { Language } from '@core/i18n/language';
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -5,6 +6,7 @@ import { environment } from '@env/environment';
 import { UserDetails } from '../../user/models/interfaces/user-details.interface';
 
 export interface SelfProfileUpdate {
+  language?: Language;
   userName: string;
   firstName: string;
   lastName: string;
@@ -20,8 +22,9 @@ export class SelfProfileService {
     return this.http.get<UserDetails>(`${environment.apiUrl}/auth/profile`);
   }
   updateProfile(profile: SelfProfileUpdate): Observable<UserDetails> {
-    const { userName, firstName, lastName, phone, address } = profile;
+    const { userName, firstName, lastName, phone, address, language } = profile;
     const payload: SelfProfileUpdate = {
+      ...(language ? { language } : {}),
       userName,
       firstName,
       lastName,

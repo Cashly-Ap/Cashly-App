@@ -1,17 +1,17 @@
 <div class="p-6 flex flex-col gap-8">
   <app-list-section
-    title="Correos Electrónicos"
+    [title]="'partners.suppliers.emailAddresses' | translate"
     icon="pi-envelope"
     [isEmpty]="emailsArray.length === 0"
     emptyIcon="pi-envelope"
-    emptyMessage="No hay correos electrónicos registrados. Agregue al menos uno."
+    [emptyMessage]="'partners.suppliers.noEmailAddressesRegisteredAddAtLeastOne' | translate"
     addButtonLabel="Agregar Correo"
     (add)="addEmail()"
   >
     @for (email of emailsArray.controls; track $index) {
       <app-list-item
         [control]="emailControl($index)"
-        placeholder="correo@ejemplo.com"
+        [placeholder]="'partners.suppliers.labels.emailExampleCom' | translate"
         inputType="email"
         icon="pi-envelope"
         (remove)="removeEmail($index)"
@@ -20,11 +20,11 @@
   </app-list-section>
 
   <app-list-section
-    title="Teléfonos"
+    [title]="'partners.suppliers.phoneNumbers' | translate"
     icon="pi-phone"
     [isEmpty]="phonesArray.length === 0"
     emptyIcon="pi-phone"
-    emptyMessage="No hay teléfonos registrados. Agregue al menos uno."
+    [emptyMessage]="'partners.suppliers.noPhoneNumbersRegisteredAddAtLeastOne' | translate"
     addButtonLabel="Agregar Teléfono"
     (add)="addPhone()"
   >

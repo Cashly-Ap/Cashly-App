@@ -6,11 +6,11 @@
         <p-tablist>
           <p-tab value="0">
             <i class="pi pi-info-circle mr-2"></i>
-            General
+            {{ 'partners.suppliers.general' | translate }}
           </p-tab>
           <p-tab value="1">
             <i class="pi pi-address-book mr-2"></i>
-            Contacto y Direcciones
+            {{ 'partners.suppliers.contactAndAddresses' | translate }}
           </p-tab>
         </p-tablist>
 
@@ -27,7 +27,7 @@
 
       <app-form-actions
         [submitLabel]="submitLabel()"
-        cancelLabel="Cancelar"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="loading()"
         [disabled]="form.invalid"
         [tooltipMessage]="submitTooltip()"

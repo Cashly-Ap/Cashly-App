@@ -1,10 +1,10 @@
 <div class="cashly-page-header mb-8">
   <h1 class="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-1">
-    {{ title() }}
+    {{ title() | translate }}
   </h1>
   @if (subtitle()) {
     <p class="text-surface-500 dark:text-surface-400 text-sm sm:text-base">
-      {{ subtitle() }}
+      {{ subtitle() | translate }}
     </p>
   }
 </div>

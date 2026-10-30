@@ -6,16 +6,16 @@
     @if (icon()) {
       <i class="pi {{ icon() }} mr-1.5 text-primary-500 dark:text-primary-400"></i>
     }
-    {{ label() }}
+    {{ label() | translate }}
   </label>
   <p-select
-    [ariaLabel]="label()"
+    [ariaLabel]="label() | translate"
     [formControl]="internalControl()"
     [name]="label()"
     [options]="options()"
     [optionLabel]="optionLabel()"
     [optionValue]="optionValue()"
-    [placeholder]="placeholder()"
+    [placeholder]="placeholder() | translate"
     [filter]="filter()"
     [filterPlaceholder]="filterPlaceholder()"
     [disabled]="disabled()"
@@ -57,7 +57,7 @@
     @if (internalControl().invalid && internalControl().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
-        {{ errorMessage() }}
+        {{ errorMessage() | translate }}
       </small>
     }
   </div>

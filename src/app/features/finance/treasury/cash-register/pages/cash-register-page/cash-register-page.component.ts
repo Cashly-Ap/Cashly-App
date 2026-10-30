@@ -1,3 +1,6 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -33,6 +36,9 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     CommonModule,
     ReactiveFormsModule,
@@ -54,6 +60,8 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
   templateUrl: './cash-register-page.component.html',
 })
 export class CashRegisterPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly service = inject(CashRegisterApplicationService);
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);

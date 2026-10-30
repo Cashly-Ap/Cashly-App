@@ -1,3 +1,6 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
@@ -20,6 +23,9 @@ import { DebitNoteApplicationService } from '@features/finance/billing/debit-not
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     PermissionDirective,
     DatePipe,
     DecimalPipe,
@@ -33,7 +39,7 @@ import { DebitNoteApplicationService } from '@features/finance/billing/debit-not
     LoadingSpinnerComponent,
     PageHeaderComponent,
   ],
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   templateUrl: './debit-note-detail-page.component.html',
 })
 export class DebitNoteDetailPageComponent implements OnInit {

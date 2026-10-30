@@ -6,18 +6,21 @@
     @if (creditNote(); as cn) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles de la Nota de Crédito"
-          subtitle="Información completa de la nota de crédito"
+          [title]="'finance.billing.creditnotes.creditNoteDetails2' | translate"
+          [subtitle]="'finance.billing.creditnotes.completeCreditNoteInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header
             [title]="cn.noteNumber"
-            [subtitle]="'Monto: ' + (cn.amount | number: '1.2-2')"
+            [subtitle]="
+              ('finance.billing.invoices.amountPrefix' | translate) +
+              (cn.amount | localizedNumber: '1.2-2')
+            "
           >
             <div actions class="flex gap-3">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -26,7 +29,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'DELETE'"
-                  label="Eliminar"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
                   icon="pi pi-trash"
                   severity="danger"
                   [link]="true"
@@ -39,23 +42,36 @@
 
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Número" [value]="cn.noteNumber" type="code" />
-              <app-details-info-field label="Cliente" [value]="cn.customerName || '—'" />
-              <app-details-info-field label="RIF" [value]="cn.customerRif || '—'" type="code" />
               <app-details-info-field
-                label="Factura"
+                [label]="'analytics.dashboard.number' | translate"
+                [value]="cn.noteNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.customer' | translate"
+                [value]="cn.customerName || '—'"
+              />
+              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="cn.customerRif || '—'" type="code" />
+              <app-details-info-field
+                [label]="'shared.invoice' | translate"
                 [value]="cn.invoiceNumber || '—'"
                 type="code"
               />
-              <app-details-info-field label="Monto" [value]="(cn.amount | number: '1.2-2') || ''" />
-              <app-details-info-field label="Creado por" [value]="cn.createdByName" />
               <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(cn.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'shared.amount' | translate"
+                [value]="(cn.amount | localizedNumber: '1.2-2') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
-                [value]="(cn.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="cn.createdByName"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(cn.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(cn.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>
@@ -63,7 +79,7 @@
 
         @if (cn.reason) {
           <app-details-card>
-            <app-details-card-header title="Motivo" />
+            <app-details-card-header [title]="'shared.reason' | translate" />
             <div class="p-4 sm:p-6">
               <p
                 class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap leading-relaxed"

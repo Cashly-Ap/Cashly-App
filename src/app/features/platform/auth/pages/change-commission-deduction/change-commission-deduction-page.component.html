@@ -1,14 +1,16 @@
 <app-form-container maxWidth="max-w-[1800px]">
   <app-form-header
-    title="Deducible Mensual de Retraso"
-    subtitle="Porcentaje que se descuenta de la comisión por cada mes de retraso en el cobro"
+    [title]="'platform.auth.monthlyLatePaymentDeduction' | translate"
+    [subtitle]="
+      'platform.auth.percentageDeductedFromCommissionForEachMonthAPaymentIsLate' | translate
+    "
   />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <app-form-card>
       <div class="flex flex-col gap-4 p-4 md:p-6 lg:p-8">
         <app-number-input
           [control]="asFormControl(control('commissionDeductionPercentage'))"
-          label="Deducible Mensual (%)"
+          [label]="'platform.auth.monthlyDeduction' | translate"
           placeholder="0"
           [min]="0"
           [max]="100"
@@ -16,12 +18,15 @@
           [minFractionDigits]="2"
           [maxFractionDigits]="2"
           [errorMessage]="getCommissionDeductionError()"
-          helpText="Porcentaje que se resta de la comisión nominal por cada mes de retraso en el cobro de la factura"
+          [helpText]="
+            'platform.auth.percentageDeductedFromTheNominalCommissionForEachMonthTheInvoicePaymentIsOverdue'
+              | translate
+          "
         />
       </div>
       <app-form-actions
-        submitLabel="Actualizar"
-        cancelLabel="Cancelar"
+        [submitLabel]="'finance.treasury.receivables.refresh' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="authService.loading()"
         [disabled]="form.invalid"
         (cancel)="onCancel()"

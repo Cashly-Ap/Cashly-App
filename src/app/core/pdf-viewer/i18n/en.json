@@ -1,0 +1,8 @@
+{
+  "core.pdfviewer.fullScreen": "Full screen",
+  "core.pdfviewer.fullScreen2": "Full screen",
+  "core.pdfviewer.pdfViewer": "PDF viewer",
+  "core.pdfviewer.loadingDocument": "Loading document...",
+  "core.pdfviewer.messages.thePdfDocumentWasNotFound": "The PDF document was not found",
+  "core.pdfviewer.messages.couldNotLoadThePdfDocumentPleaseTryAgain": "Could not load the PDF document. Please try again."
+}

@@ -1,16 +1,22 @@
 <app-form-container>
   <app-form-header
-    title="Editar mi perfil"
-    subtitle="Actualiza tus datos personales, contacto y dirección"
+    [title]="'auth.profile.edit.my.profile' | translate"
+    [subtitle]="
+      'auth.profile.update.your.personal.details.contact.information.and.address' | translate
+    "
   />
   @if (loading()) {
-    <app-form-card><div class="p-6" role="status">Cargando tu perfil…</div></app-form-card>
+    <app-form-card
+      ><div class="p-6" role="status">
+        {{ 'auth.profile.loading.your.profile' | translate }}
+      </div></app-form-card
+    >
   } @else if (error()) {
     <app-form-card
       ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
-        <p>No pudimos cargar tu perfil.</p>
+        <p>{{ 'auth.profile.we.could.not.load.your.profile' | translate }}</p>
         <p-button
-          label="Reintentar"
+          [label]="'auth.profile.retry' | translate"
           icon="pi pi-refresh"
           [outlined]="true"
           (onClick)="loadProfile()"
@@ -24,9 +30,11 @@
           (valueChange)="activeTab.set(($event ?? 'general').toString())"
         >
           <p-tablist
-            ><p-tab value="general"><i class="pi pi-info-circle mr-2"></i>General</p-tab
+            ><p-tab value="general"
+              ><i class="pi pi-info-circle mr-2"></i>{{ 'auth.profile.general' | translate }}</p-tab
             ><p-tab value="contact"
-              ><i class="pi pi-address-book mr-2"></i>Contacto y dirección</p-tab
+              ><i class="pi pi-address-book mr-2"></i
+              >{{ 'auth.profile.contact.and.address' | translate }}</p-tab
             ></p-tablist
           >
           <p-tabpanels>
@@ -37,38 +45,53 @@
               >
                 <app-file-input
                   class="md:col-span-full"
-                  label="Foto de perfil"
+                  [label]="'auth.profile.profile.photo' | translate"
                   [control]="photo"
                   accept="image/png,image/jpeg"
                   [maxFileSize]="5000000"
-                  helpText="PNG o JPG. Máximo 5 MB."
+                  [helpText]="'auth.profile.png.or.jpg.maximum.5.mb' | translate"
                   [previewUrl]="removePhoto() ? null : photoUrl()"
                   (fileSelected)="removePhoto.set(false)"
                   (deleteExistingPhoto)="removePhoto.set(true)"
                 />
                 <app-text-input
-                  label="Nombre"
-                  errorMessage="El nombre es requerido (máximo 100 caracteres)"
+                  [label]="'auth.profile.first.name' | translate"
+                  [errorMessage]="
+                    'auth.profile.first.name.is.required.maximum.100.characters' | translate
+                  "
                   [control]="control('firstName')"
                 />
                 <app-text-input
-                  label="Apellidos"
-                  errorMessage="Los apellidos son requeridos (máximo 100 caracteres)"
+                  [label]="'auth.profile.last.name' | translate"
+                  [errorMessage]="
+                    'auth.profile.last.name.is.required.maximum.100.characters' | translate
+                  "
                   [control]="control('lastName')"
                 />
+                <app-select-input
+                  [label]="'auth.profile.language' | translate"
+                  [options]="languages"
+                  [control]="control('language')"
+                  [errorMessage]="'auth.profile.select.spanish.or.english' | translate"
+                />
                 <app-text-input
-                  label="Nombre de usuario"
-                  errorMessage="El usuario debe tener entre 3 y 100 caracteres"
+                  [label]="'auth.profile.username' | translate"
+                  [errorMessage]="
+                    'auth.profile.username.must.contain.between.3.and.100.characters' | translate
+                  "
                   [control]="control('userName')"
                 />
                 <app-text-input
-                  label="Correo electrónico"
+                  [label]="'auth.profile.email' | translate"
                   [readonly]="true"
                   [control]="control('email')"
                 />
               </app-tab-content>
               <p class="px-4 md:px-6 lg:px-8 pb-4 text-sm text-surface-500">
-                El correo electrónico, rol, departamento y permisos los gestiona tu administrador.
+                {{
+                  'auth.profile.your.administrator.manages.your.email.role.department.and.permissions'
+                    | translate
+                }}
               </p>
             </p-tabpanel>
             <p-tabpanel value="contact">
@@ -77,9 +100,12 @@
                 class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
               >
                 <app-text-input
-                  label="Teléfono"
+                  [label]="'auth.profile.phone' | translate"
                   placeholder="+34 612 345 678"
-                  errorMessage="Introduce un solo teléfono de entre 7 y 15 dígitos"
+                  [errorMessage]="
+                    'auth.profile.enter.one.phone.number.containing.between.7.and.15.digits'
+                      | translate
+                  "
                   [control]="control('phone')"
                 />
                 @for (field of addressFields; track field.key) {
@@ -87,8 +113,10 @@
                     <app-country-input [control]="control(field.key)" />
                   } @else {
                     <app-text-input
-                      [label]="field.label"
-                      errorMessage="El texto supera la longitud permitida"
+                      [label]="field.label | translate"
+                      [errorMessage]="
+                        'auth.profile.the.text.exceeds.the.maximum.length' | translate
+                      "
                       [control]="control(field.key)"
                     />
                   }

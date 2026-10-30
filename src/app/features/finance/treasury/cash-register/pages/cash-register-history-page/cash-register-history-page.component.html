@@ -4,11 +4,13 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Historial de Caja</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.treasury.cashregister.cashRegisterHistory' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Consulta el historial de aperturas y cierres de caja
+        {{ 'finance.treasury.cashregister.viewCashRegisterOpeningAndClosingHistory' | translate }}
       </p>
     </div>
 
@@ -24,17 +26,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[280px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -43,24 +45,28 @@
                   }
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Desde Fecha</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.startDate2' | translate
+                  }}</label>
                   <p-datepicker
                     [ngModel]="filterDateFrom()"
                     (onSelect)="onDateFromChange($event)"
                     [showIcon]="true"
-                    dateFormat="dd/mm/yy"
-                    placeholder="Desde"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [placeholder]="'finance.billing.invoices.from' | translate"
                     styleClass="w-full"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Hasta Fecha</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.endDate2' | translate
+                  }}</label>
                   <p-datepicker
                     [ngModel]="filterDateTo()"
                     (onSelect)="onDateToChange($event)"
                     [showIcon]="true"
-                    dateFormat="dd/mm/yy"
-                    placeholder="Hasta"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [placeholder]="'finance.billing.invoices.to' | translate"
                     styleClass="w-full"
                   />
                 </div>
@@ -72,7 +78,7 @@
               class="grid w-full grid-cols-2 rounded-lg border border-surface-200 p-1 dark:border-surface-700 sm:w-auto"
             >
               <p-button
-                label="Simple"
+                [label]="'finance.billing.invoices.simple' | translate"
                 size="small"
                 [text]="viewMode() !== 'SIMPLE'"
                 [severity]="viewMode() === 'SIMPLE' ? 'contrast' : 'secondary'"
@@ -80,7 +86,7 @@
                 (onClick)="onViewModeChange('SIMPLE')"
               />
               <p-button
-                label="Detallado"
+                [label]="'finance.billing.invoices.detailed' | translate"
                 size="small"
                 [text]="viewMode() !== 'DETAILED'"
                 [severity]="viewMode() === 'DETAILED' ? 'contrast' : 'secondary'"
@@ -90,7 +96,7 @@
             </div>
             <p-button
               icon="pi pi-arrow-left"
-              label="Volver"
+              [label]="'finance.billing.creditnotes.back' | translate"
               severity="secondary"
               [outlined]="true"
               styleClass="w-full sm:w-auto"
@@ -105,14 +111,16 @@
 
     @if (showInitialLoading()) {
       <app-content-card>
-        <app-loading-spinner message="Cargando historial..." />
+        <app-loading-spinner
+          [message]="'finance.treasury.cashregister.loadingHistory' | translate"
+        />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card>
         <app-empty-state
           icon="pi-history"
-          title="No hay registros de caja"
-          message="Aún no se ha realizado ninguna apertura de caja."
+          [title]="'finance.treasury.cashregister.noCashSessionsRegistered' | translate"
+          [message]="'finance.treasury.cashregister.noCashSessionHasBeenOpenedYet' | translate"
         />
       </app-content-card>
     } @else {
@@ -128,8 +136,10 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="Sin resultados"
-              message="No hay registros que coincidan con los filtros seleccionados."
+              [title]="'finance.treasury.cashregister.noResults' | translate"
+              [message]="
+                'finance.treasury.cashregister.noRecordsMatchTheSelectedFilters' | translate
+              "
             />
           } @else {
             <div data-testid="cash-history-compact" class="grid gap-3 p-3 sm:p-4 lg:hidden">
@@ -140,18 +150,19 @@
                   <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                       <p class="font-semibold text-surface-900 dark:text-surface-0">
-                        {{ register.openedAt | date: 'dd/MM/yyyy HH:mm' }}
+                        {{ register.openedAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                       </p>
                       <p class="mt-1 text-xs text-surface-500">
                         @if (register.closedAt) {
-                          hasta {{ register.closedAt | date: 'dd/MM/yyyy HH:mm' }}
+                          {{ 'finance.treasury.cashregister.until' | translate }}
+                          {{ register.closedAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                         } @else {
                           {{ register.openedByName }}
                         }
                       </p>
                     </div>
                     <p-tag
-                      [value]="getStatusLabel(register.status)"
+                      [value]="getStatusLabel(register.status) | translate"
                       [severity]="getStatusSeverity(register.status)"
                       styleClass="shrink-0 text-xs font-medium px-2 py-0.5"
                     />
@@ -159,42 +170,60 @@
 
                   <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
                     <div>
-                      <dt class="text-xs text-surface-500">Facturación</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.billing' | translate }}
+                      </dt>
                       <dd class="mt-1 font-medium">
-                        {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Inicial</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.opening' | translate }}
+                      </dt>
                       <dd class="mt-1 font-medium">
-                        {{ register.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          register.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Ingresos</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.moneyIn' | translate }}
+                      </dt>
                       <dd class="mt-1 font-medium text-green-600 dark:text-green-400">
-                        {{ register.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Egresos</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.moneyOut' | translate }}
+                      </dt>
                       <dd class="mt-1 font-medium text-red-600 dark:text-red-400">
-                        {{ register.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Esperado</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.expected' | translate }}
+                      </dt>
                       <dd class="mt-1 font-medium">
-                        {{ register.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          register.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Diferencia</dt>
+                      <dt class="text-xs text-surface-500">
+                        {{ 'finance.treasury.cashregister.difference' | translate }}
+                      </dt>
                       <dd
                         class="mt-1 font-medium"
                         [class.text-red-600]="(register.difference ?? 0) !== 0"
                       >
-                        {{ register.difference ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          register.difference ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </dd>
                     </div>
                   </dl>
@@ -202,16 +231,21 @@
                   @if (viewMode() === 'DETAILED') {
                     <div class="mt-4 border-t border-surface-200 pt-4 dark:border-surface-700">
                       <div class="mb-3 flex items-center justify-between gap-2">
-                        <span class="text-xs font-semibold uppercase tracking-wide text-surface-500"
-                          >Movimientos</span
+                        <span
+                          class="text-xs font-semibold uppercase tracking-wide text-surface-500"
+                          >{{ 'finance.treasury.cashregister.movements' | translate }}</span
                         >
                         <span class="text-xs text-surface-500"
-                          >{{ register.movements.length }} operaciones</span
+                          >{{ register.movements.length }}
+                          {{ 'finance.treasury.cashregister.transactions' | translate }}</span
                         >
                       </div>
                       @if (register.movements.length === 0) {
                         <p class="text-sm text-surface-500">
-                          Esta sesión no tiene movimientos registrados.
+                          {{
+                            'finance.treasury.cashregister.thisSessionHasNoRecordedMovements'
+                              | translate
+                          }}
                         </p>
                       } @else {
                         <div class="grid gap-2">
@@ -230,7 +264,8 @@
                                 <div class="flex flex-wrap justify-between gap-2">
                                   <p class="min-w-0 break-words text-sm font-medium">
                                     {{
-                                      movement.description || getMovementTypeLabel(movement.type)
+                                      movement.description ||
+                                        (getMovementTypeLabel(movement.type) | translate)
                                     }}
                                   </p>
                                   <span
@@ -241,13 +276,19 @@
                                     "
                                   >
                                     {{ movement.direction === 'IN' ? '+' : '-'
-                                    }}{{ movement.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                                    }}{{
+                                      movement.amount
+                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                                    }}
                                   </span>
                                 </div>
                                 <p class="mt-1 break-words text-xs text-surface-500">
-                                  {{ movement.occurredAt | date: 'dd/MM/yyyy HH:mm' }} ·
+                                  {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
                                   {{ movement.paymentMethodName }} ·
-                                  {{ movement.createdByName || 'Sistema' }}
+                                  {{
+                                    movement.createdByName ||
+                                      ('finance.treasury.cashregister.system' | translate)
+                                  }}
                                 </p>
                               </div>
                             </div>
@@ -268,13 +309,13 @@
                   <tr>
                     <th class="min-w-44 cursor-pointer select-none" (click)="onSort('openedAt')">
                       <div class="font-semibold inline-flex items-center gap-1">
-                        Sesión
+                        {{ 'finance.treasury.cashregister.session' | translate }}
                         <i [class]="getSortIcon('openedAt')" class="text-xs"></i>
                       </div>
                     </th>
                     <th class="w-24 cursor-pointer select-none" (click)="onSort('status')">
                       <div class="font-semibold inline-flex items-center gap-1">
-                        Estado
+                        {{ 'finance.billing.invoices.status' | translate }}
                         <i [class]="getSortIcon('status')" class="text-xs"></i>
                       </div>
                     </th>
@@ -283,19 +324,21 @@
                       (click)="onSort('openingBalance')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Inicial
+                        {{ 'finance.treasury.cashregister.opening' | translate }}
                         <i [class]="getSortIcon('openingBalance')" class="text-xs"></i>
                       </div>
                     </th>
                     <th class="w-32 text-right">
-                      <div class="font-semibold">Facturación</div>
+                      <div class="font-semibold">
+                        {{ 'finance.treasury.cashregister.billing' | translate }}
+                      </div>
                     </th>
                     <th
                       class="w-32 text-right cursor-pointer select-none"
                       (click)="onSort('totalIncome')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Ingresos
+                        {{ 'finance.treasury.cashregister.moneyIn' | translate }}
                         <i [class]="getSortIcon('totalIncome')" class="text-xs"></i>
                       </div>
                     </th>
@@ -304,7 +347,7 @@
                       (click)="onSort('totalExpense')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Egresos
+                        {{ 'finance.treasury.cashregister.moneyOut' | translate }}
                         <i [class]="getSortIcon('totalExpense')" class="text-xs"></i>
                       </div>
                     </th>
@@ -313,22 +356,25 @@
                       (click)="onSort('expectedClosingBalance')"
                     >
                       <div class="font-semibold inline-flex items-center gap-1 justify-end">
-                        Esperado
+                        {{ 'finance.treasury.cashregister.expected' | translate }}
                         <i [class]="getSortIcon('expectedClosingBalance')" class="text-xs"></i>
                       </div>
                     </th>
-                    <th class="w-28 text-right">Diferencia</th>
+                    <th class="w-28 text-right">
+                      {{ 'finance.treasury.cashregister.difference' | translate }}
+                    </th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-register>
                   <tr class="transition-colors duration-150">
                     <td>
                       <span class="block text-sm font-medium">{{
-                        register.openedAt | date: 'dd/MM/yyyy HH:mm'
+                        register.openedAt | localizedDate: 'dd/MM/yyyy HH:mm'
                       }}</span>
                       <span class="block text-xs text-surface-500">
                         @if (register.closedAt) {
-                          hasta {{ register.closedAt | date: 'dd/MM/yyyy HH:mm' }}
+                          {{ 'finance.treasury.cashregister.until' | translate }}
+                          {{ register.closedAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                         } @else {
                           {{ register.openedByName }}
                         }
@@ -336,29 +382,31 @@
                     </td>
                     <td>
                       <p-tag
-                        [value]="getStatusLabel(register.status)"
+                        [value]="getStatusLabel(register.status) | translate"
                         [severity]="getStatusSeverity(register.status)"
                         styleClass="text-xs font-medium px-2 py-0.5"
                       />
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium">
-                        {{ register.openingBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          register.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium">
-                        {{ register.totalInvoiced | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium text-green-600 dark:text-green-400">
-                        {{ register.totalIncome | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium text-red-600 dark:text-red-400">
-                        {{ register.totalExpense | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{ register.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </span>
                     </td>
                     <td class="text-right">
@@ -367,14 +415,18 @@
                         [class.text-green-600]="register.expectedBalance >= 0"
                         [class.text-red-600]="register.expectedBalance < 0"
                       >
-                        {{ register.expectedBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          register.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </span>
                     </td>
                     <td class="text-right">
                       <span
                         class="text-sm font-medium"
                         [class.text-red-600]="(register.difference ?? 0) !== 0"
-                        >{{ register.difference ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}</span
+                        >{{
+                          register.difference ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}</span
                       >
                     </td>
                   </tr>
@@ -387,15 +439,21 @@
                           <div class="mb-3 flex items-center justify-between">
                             <span
                               class="text-xs font-semibold uppercase tracking-wide text-surface-500"
-                              >Movimientos de la sesión</span
+                              >{{
+                                'finance.treasury.cashregister.sessionMovements' | translate
+                              }}</span
                             >
                             <span class="text-xs text-surface-500"
-                              >{{ register.movements.length }} operaciones</span
+                              >{{ register.movements.length }}
+                              {{ 'finance.treasury.cashregister.transactions' | translate }}</span
                             >
                           </div>
                           @if (register.movements.length === 0) {
                             <p class="text-sm text-surface-500">
-                              Esta sesión no tiene movimientos registrados.
+                              {{
+                                'finance.treasury.cashregister.thisSessionHasNoRecordedMovements'
+                                  | translate
+                              }}
                             </p>
                           } @else {
                             <div class="grid gap-2">
@@ -413,13 +471,17 @@
                                   <div>
                                     <p class="text-sm font-medium">
                                       {{
-                                        movement.description || getMovementTypeLabel(movement.type)
+                                        movement.description ||
+                                          (getMovementTypeLabel(movement.type) | translate)
                                       }}
                                     </p>
                                     <p class="text-xs text-surface-500">
-                                      {{ movement.occurredAt | date: 'dd/MM/yyyy HH:mm' }} ·
-                                      {{ movement.paymentMethodName }} ·
-                                      {{ movement.createdByName || 'Sistema' }}
+                                      {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                                      · {{ movement.paymentMethodName }} ·
+                                      {{
+                                        movement.createdByName ||
+                                          ('finance.treasury.cashregister.system' | translate)
+                                      }}
                                     </p>
                                   </div>
                                   <span
@@ -430,7 +492,10 @@
                                     "
                                   >
                                     {{ movement.direction === 'IN' ? '+' : '-'
-                                    }}{{ movement.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                                    }}{{
+                                      movement.amount
+                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                                    }}
                                   </span>
                                 </div>
                               }
@@ -450,7 +515,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+                [currentPageReportTemplate]="'finance.treasury.cashregister.showingFirstToLastOfTotalrecordsRecords' | translate"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>

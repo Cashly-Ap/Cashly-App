@@ -1,3 +1,4 @@
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
 import { UserPhotoService } from '../../services/api/user-photo.service';
 import { TestBed } from '@angular/core/testing';
@@ -39,9 +40,10 @@ describe('Own profile editing', () => {
       imports: [ChangeUsernamePageComponent],
       providers: [
         provideRouter([]),
+        { provide: UserPreferencesService, useValue: { syncLanguage: vi.fn() } },
         MessageService,
         { provide: KeyboardShortcutService, useValue: { register: () => () => undefined } },
-        { provide: UserPhotoService, useValue: {get:vi.fn(), upload:vi.fn(), remove:vi.fn()} },
+        { provide: UserPhotoService, useValue: { get: vi.fn(), upload: vi.fn(), remove: vi.fn() } },
         { provide: SelfProfileService, useValue: { getProfile, updateProfile } },
         { provide: AuthService, useValue: { syncProfileDisplay, syncProfilePhoto: vi.fn() } },
       ],
@@ -73,6 +75,15 @@ describe('Own profile editing', () => {
     expect(fixture.nativeElement.textContent).toContain('Editar mi perfil');
     expect(fixture.nativeElement.textContent).toContain('Contacto y dirección');
   });
+  it('loads and saves the profile language, updating active preferences', () => {
+    getProfile.mockReturnValue(of({ ...profile, language: 'en' }));
+    const { component } = render();
+    expect(component.control('language').value).toBe('en');
+    component.control('language').setValue('es');
+    component.onSubmit();
+    expect(updateProfile).toHaveBeenCalledWith(expect.objectContaining({ language: 'es' }));
+    expect(TestBed.inject(UserPreferencesService).syncLanguage).toHaveBeenCalledWith('es');
+  });
   it('submits normalized personal data and updates display only', () => {
     const { component } = render();
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate');
@@ -83,6 +94,7 @@ describe('Own profile editing', () => {
     });
     component.onSubmit();
     expect(updateProfile).toHaveBeenCalledWith({
+      language: 'es',
       userName: 'ana nueva',
       firstName: 'Ana',
       lastName: 'García',

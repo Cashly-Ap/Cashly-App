@@ -1,3 +1,4 @@
+import { LanguageService } from '@core/i18n/language.service';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { PermissionEditorComponent } from './permission-editor.component';
@@ -34,6 +35,24 @@ describe('Permission editor', () => {
       fixture.componentRef.setInput('permissions', value);
     });
   });
+  it('switches permission labels and search language without changing permission codes', () => {
+    fixture.componentRef.setInput('permissions', { [catalog.module]: ['READ'] });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Catálogo');
+    TestBed.inject(LanguageService).setLanguage('en');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Catalog');
+    expect(fixture.nativeElement.textContent).toContain('Read-only');
+    component.search.set('Inventory');
+    expect(component.filteredRegistry().map((entry) => entry.module)).toEqual([inventory.module]);
+    component.search.set('');
+    expect(component.permissions()).toEqual({ [catalog.module]: ['READ'] });
+    expect(emitted).toHaveLength(0);
+    TestBed.inject(LanguageService).setLanguage('es');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Catálogo');
+  });
+
   it('applies module presets while preserving other modules', () => {
     fixture.componentRef.setInput('permissions', { [inventory.module]: ['READ', 'EXECUTE'] });
     component.setPreset(catalog, 'read');

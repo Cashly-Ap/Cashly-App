@@ -6,15 +6,15 @@
     @if (product(); as p) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles de Producto"
-          subtitle="Información completa del producto"
+          [title]="'catalog.products.productDetails' | translate"
+          [subtitle]="'catalog.products.completeProductInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header [title]="p.name">
             <div actions class="flex gap-3">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -23,7 +23,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Editar"
+                  [label]="'finance.billing.invoices.edit' | translate"
                   icon="pi pi-pencil"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onEdit()"
@@ -34,37 +34,37 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Código" [value]="p.code" />
-              <app-details-info-field label="Nombre" [value]="p.name" />
-              <app-details-info-field label="Categoría" [value]="p.categoryName" />
-              <app-details-info-field label="Tipo" type="badge"
-                ><app-text-badge [label]="p.composite ? 'Compuesto' : 'Simple'" variant="label"
+              <app-details-info-field [label]="'finance.treasury.paymentmethods.code' | translate" [value]="p.code" />
+              <app-details-info-field [label]="'finance.treasury.paymentmethods.name' | translate" [value]="p.name" />
+              <app-details-info-field [label]="'finance.billing.invoices.category' | translate" [value]="p.categoryName" />
+              <app-details-info-field [label]="'shared.type' | translate" type="badge"
+                ><app-text-badge [label]="p.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate)" variant="label"
               /></app-details-info-field>
               <app-details-info-field
-                label="Precio de Compra"
+                [label]="'catalog.products.purchasePrice' | translate"
                 [value]="
                   p.purchasePrice != null
-                    ? (p.purchasePrice | currency: 'USD' : 'symbol' : '1.2-2') || ''
+                    ? (p.purchasePrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
                     : '—'
                 "
               />
               @if (canViewStock()) {
-                <app-details-info-field label="Stock Total" [value]="totalStock().toString()" />
+                <app-details-info-field [label]="'catalog.products.totalStock' | translate" [value]="totalStock().toString()" />
               }
-              <app-details-info-field label="Estado" type="badge">
+              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge">
                 <app-status-badge [active]="p.active" />
               </app-details-info-field>
               <app-details-info-field
-                label="Creado"
-                [value]="(p.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'catalog.products.created' | translate"
+                [value]="(p.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Actualizado"
-                [value]="(p.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'catalog.products.updated' | translate"
+                [value]="(p.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
                 class="col-span-full"
-                label="Descripción"
+                [label]="'finance.treasury.paymentmethods.description' | translate"
                 [value]="p.description || '—'"
               />
             </app-details-info-grid>
@@ -72,7 +72,7 @@
         </app-details-card>
 
         <app-details-card>
-          <app-details-card-header title="Precios por Tipo" />
+          <app-details-card-header [title]="'catalog.products.pricesByType' | translate" />
           <div class="p-4 sm:p-6">
             @if (p.productPrices.length > 0) {
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -84,17 +84,17 @@
                       pp.priceTypeName
                     }}</span>
                     <span class="text-2xl font-bold text-surface-900 dark:text-surface-100">{{
-                      pp.price | currency: 'USD' : 'symbol' : '1.2-2'
+                      pp.price | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                     }}</span>
                     <span class="text-xs text-surface-500 dark:text-surface-400">
-                      Margen: {{ pp.profitMargin != null ? pp.profitMargin + '%' : '—' }}
+                      {{ 'catalog.products.margin' | translate }} {{ pp.profitMargin != null ? pp.profitMargin + '%' : '—' }}
                     </span>
                   </div>
                 }
               </div>
             } @else {
               <p class="py-6 text-center text-sm text-surface-400 dark:text-surface-500">
-                Sin precios configurados
+                {{ 'catalog.products.noPricesConfigured' | translate }}
               </p>
             }
           </div>
@@ -102,14 +102,14 @@
 
         @if (p.composite && p.components.length > 0) {
           <app-details-card>
-            <app-details-card-header title="Componentes" />
+            <app-details-card-header [title]="'catalog.products.components' | translate" />
             <div class="p-4 sm:p-6">
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead>
                     <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th class="text-left py-2 font-semibold">Producto</th>
-                      <th class="text-right py-2 font-semibold">Cantidad</th>
+                      <th class="text-left py-2 font-semibold">{{ 'finance.billing.returns.product' | translate }}</th>
+                      <th class="text-right py-2 font-semibold">{{ 'finance.billing.returns.quantity' | translate }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -128,15 +128,15 @@
 
         @if (canViewStock()) {
           <app-details-card>
-            <app-details-card-header title="Stock por Almacén" />
+            <app-details-card-header [title]="'catalog.products.stockByWarehouse' | translate" />
             <div class="p-4 sm:p-6">
               <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                   <thead>
                     <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th class="text-left py-2 font-semibold">Almacén</th>
-                      <th class="text-right py-2 font-semibold">Cantidad</th>
-                      <th class="text-right py-2 font-semibold">Último Movimiento</th>
+                      <th class="text-left py-2 font-semibold">{{ 'inventory.warehouses.warehouse' | translate }}</th>
+                      <th class="text-right py-2 font-semibold">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                      <th class="text-right py-2 font-semibold">{{ 'catalog.products.lastMovement' | translate }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -146,7 +146,7 @@
                         <td class="py-2 text-right font-medium">{{ s.quantity }}</td>
                         <td class="py-2 text-right text-surface-500 dark:text-surface-400">
                           {{
-                            s.lastMovementAt ? (s.lastMovementAt | date: 'dd/MM/yyyy HH:mm') : '—'
+                            s.lastMovementAt ? (s.lastMovementAt | localizedDate: 'dd/MM/yyyy HH:mm') : '—'
                           }}
                         </td>
                       </tr>
@@ -156,7 +156,7 @@
                           colspan="3"
                           class="py-6 text-center text-sm text-surface-400 dark:text-surface-500"
                         >
-                          Sin stock registrado en almacenes
+                          {{ 'catalog.products.noWarehouseStockRecorded' | translate }}
                         </td>
                       </tr>
                     }
@@ -169,7 +169,7 @@
 
         @if (photoUrl()) {
           <app-details-card>
-            <app-details-card-header title="Foto" />
+            <app-details-card-header [title]="'catalog.products.photo' | translate" />
             <div class="p-4 sm:p-6">
               <div class="overflow-hidden rounded-xl w-56">
                 <img [src]="photoUrl()!" [alt]="p.name" class="w-full aspect-square object-cover" />

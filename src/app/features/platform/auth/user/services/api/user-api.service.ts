@@ -40,9 +40,20 @@ export class UserApiService {
   }
 
   create(data: UserCreate): Observable<UserDetails> {
-    const { email, password, userName, firstName, lastName, address, phone, roleId, departmentId } =
-      data;
+    const {
+      email,
+      password,
+      userName,
+      firstName,
+      lastName,
+      address,
+      phone,
+      roleId,
+      departmentId,
+      language,
+    } = data;
     return this.http.post<UserDetails>(this.baseUrl, {
+      language: language ?? 'es',
       email,
       password,
       userName,
@@ -56,8 +67,19 @@ export class UserApiService {
   }
 
   update(id: string, data: UserEdit): Observable<UserDetails> {
-    const { userName, firstName, lastName, address, phone, roleId, departmentId, active } = data;
+    const {
+      userName,
+      firstName,
+      lastName,
+      address,
+      phone,
+      roleId,
+      departmentId,
+      active,
+      language,
+    } = data;
     return this.http.put<UserDetails>(`${this.baseUrl}/${id}`, {
+      ...(language ? { language } : {}),
       userName,
       firstName,
       lastName,

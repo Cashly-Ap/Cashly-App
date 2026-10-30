@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import {
@@ -23,7 +24,14 @@ function emailsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-change-email-dialog',
   standalone: true,
-  imports: [ShortcutDirective, ReactiveFormsModule, DialogModule, ButtonModule, TextInputComponent],
+  imports: [
+    TranslatePipe,
+    ShortcutDirective,
+    ReactiveFormsModule,
+    DialogModule,
+    ButtonModule,
+    TextInputComponent,
+  ],
   templateUrl: './change-email-dialog.component.html',
 })
 export class ChangeEmailDialogComponent implements OnInit {

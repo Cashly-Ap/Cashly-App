@@ -19,7 +19,7 @@
         [class.text-base]="isMobile()"
         [class.text-lg]="!isMobile()"
       >
-        {{ pdfService.config()?.title }}
+        {{ pdfService.config()?.title | translate }}
       </span>
 
       <div class="flex gap-1 sm:gap-2 flex-shrink-0">
@@ -31,7 +31,7 @@
             size="large"
             [disabled]="pdfService.loading() || !!pdfService.error()"
             (onClick)="onDownload()"
-            pTooltip="Descargar"
+            [pTooltip]="'finance.treasury.payments.download' | translate"
             tooltipPosition="bottom"
           />
         } @else if (isSmallScreen()) {
@@ -42,7 +42,7 @@
             size="small"
             [disabled]="pdfService.loading() || !!pdfService.error()"
             (onClick)="onDownload()"
-            pTooltip="Descargar"
+            [pTooltip]="'finance.treasury.payments.download' | translate"
             tooltipPosition="bottom"
           />
           <p-button
@@ -52,13 +52,13 @@
             size="small"
             [disabled]="pdfService.loading() || !!pdfService.error()"
             (onClick)="onFullscreen()"
-            pTooltip="Pantalla completa"
+            [pTooltip]="'core.pdfviewer.fullScreen' | translate"
             tooltipPosition="bottom"
           />
         } @else {
           <p-button
             icon="pi pi-download"
-            label="Descargar"
+            [label]="'finance.treasury.payments.download' | translate"
             [outlined]="true"
             size="small"
             [disabled]="pdfService.loading() || !!pdfService.error()"
@@ -66,7 +66,7 @@
           />
           <p-button
             icon="pi pi-expand"
-            label="Pantalla Completa"
+            [label]="'core.pdfviewer.fullScreen2' | translate"
             [outlined]="true"
             size="small"
             [disabled]="pdfService.loading() || !!pdfService.error()"
@@ -82,7 +82,7 @@
       <div class="flex flex-col items-center gap-4 p-4">
         <p-progressSpinner strokeWidth="4" [style]="{ width: '50px', height: '50px' }" />
         <span class="text-surface-600 dark:text-surface-400 text-center"
-          >Cargando documento...</span
+          >{{ 'core.pdfviewer.loadingDocument' | translate }}</span
         >
       </div>
     } @else if (pdfService.error()) {
@@ -91,14 +91,14 @@
         <span class="text-red-600 dark:text-red-400 text-sm sm:text-base">{{
           pdfService.error()
         }}</span>
-        <p-button label="Cerrar" severity="secondary" (onClick)="onClose()" />
+        <p-button [label]="'shared.close' | translate" severity="secondary" (onClick)="onClose()" />
       </div>
     } @else if (pdfService.pdfSafeUrl()) {
       <iframe
         [src]="pdfService.pdfSafeUrl()"
         class="w-full h-full border-0"
         type="application/pdf"
-        title="Visor de PDF"
+        [title]="'core.pdfviewer.pdfViewer' | translate"
       ></iframe>
     }
   </div>

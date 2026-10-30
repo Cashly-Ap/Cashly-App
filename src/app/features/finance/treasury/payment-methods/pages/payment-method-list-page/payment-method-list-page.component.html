@@ -4,11 +4,13 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Métodos de Pago</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'finance.treasury.paymentmethods.paymentMethods' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona los métodos de pago disponibles
+        {{ 'finance.treasury.paymentmethods.manageAvailablePaymentMethods' | translate }}
       </p>
     </div>
 
@@ -21,7 +23,7 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[280px]"
               [value]="searchTerm()"
-              placeholder="Buscar método de pago..."
+              [placeholder]="'shared.searchPaymentMethods' | translate"
               (search)="onSearch($event)"
             />
             <p-button
@@ -31,17 +33,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[220px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -50,14 +52,16 @@
                   }
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.status' | translate
+                  }}</label>
                   <p-select
-                    [options]="activeFilterOptions"
+                    [options]="activeFilterOptions | translateOptions"
                     [ngModel]="filterActive()"
                     (onChange)="onActiveFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos"
+                    [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                     styleClass="w-full"
                   />
                 </div>
@@ -67,7 +71,7 @@
           <p-button
             appShortcut="new"
             [appPermission]="'CREATE'"
-            label="Nuevo Método de Pago"
+            [label]="'finance.treasury.paymentmethods.newPaymentMethod' | translate"
             icon="pi pi-plus"
             (onClick)="onCreate()"
             severity="contrast"
@@ -79,15 +83,20 @@
 
     @if (showInitialLoading()) {
       <app-content-card class="mt-4">
-        <app-loading-spinner message="Cargando métodos de pago..." />
+        <app-loading-spinner
+          [message]="'finance.treasury.paymentmethods.loadingPaymentMethods' | translate"
+        />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card class="mt-4">
         <app-empty-state
           icon="pi-credit-card"
-          title="No hay métodos de pago registrados"
-          message="Comienza a organizar tus pagos creando el primer método de pago."
-          buttonLabel="Crear primer Método de Pago"
+          [title]="'finance.treasury.paymentmethods.noPaymentMethodsRegistered' | translate"
+          [message]="
+            'finance.treasury.paymentmethods.startOrganizingPaymentsByCreatingTheFirstPaymentMethod'
+              | translate
+          "
+          [buttonLabel]="'finance.treasury.paymentmethods.createFirstPaymentMethod' | translate"
           (buttonClick)="onCreate()"
         />
       </app-content-card>
@@ -104,9 +113,11 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay métodos de pago que coincidan con tu búsqueda."
-              buttonLabel="Crear Nuevo Método de Pago"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'finance.treasury.paymentmethods.noPaymentMethodsMatchYourSearch' | translate
+              "
+              [buttonLabel]="'finance.treasury.paymentmethods.createNewPaymentMethod' | translate"
               (buttonClick)="onCreate()"
             />
           } @else {
@@ -121,25 +132,31 @@
                   <tr>
                     <th pSortableColumn="code" class="w-24">
                       <div class="flex items-center gap-2 font-semibold">
-                        Código
+                        {{ 'finance.treasury.paymentmethods.code' | translate }}
                         <p-sortIcon field="code" />
                       </div>
                     </th>
                     <th pSortableColumn="name" class="w-auto">
                       <div class="flex items-center gap-2 font-semibold">
-                        Nombre
+                        {{ 'finance.treasury.paymentmethods.name' | translate }}
                         <p-sortIcon field="name" />
                       </div>
                     </th>
                     <th pSortableColumn="description" class="w-auto hidden lg:table-cell">
                       <div class="flex items-center gap-2 font-semibold">
-                        Descripción
+                        {{ 'finance.treasury.paymentmethods.description' | translate }}
                         <p-sortIcon field="description" />
                       </div>
                     </th>
-                    <th class="w-24"><div class="font-semibold">Estado</div></th>
+                    <th class="w-24">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
+                    </th>
                     <th class="w-36">
-                      <div class="font-semibold text-center">Acciones</div>
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
                     </th>
                   </tr>
                 </ng-template>
@@ -177,7 +194,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} métodos de pago"
+                [currentPageReportTemplate]="
+                  'finance.treasury.paymentmethods.paymentMethodsPage' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -197,9 +216,11 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay métodos de pago que coincidan con tu búsqueda."
-              buttonLabel="Crear Nuevo Método de Pago"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'finance.treasury.paymentmethods.noPaymentMethodsMatchYourSearch' | translate
+              "
+              [buttonLabel]="'finance.treasury.paymentmethods.createNewPaymentMethod' | translate"
               (buttonClick)="onCreate()"
             />
           </app-content-card>
@@ -246,7 +267,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} métodos de pago"
+              [currentPageReportTemplate]="
+                'finance.treasury.paymentmethods.paymentMethodsPage' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

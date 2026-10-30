@@ -15,7 +15,7 @@
       </div>
       <span
         class="text-base font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
-        >Convertir a Factura</span
+        >{{ 'sales.orders.convertToInvoice2' | translate }}</span
       >
     </div>
   </ng-template>
@@ -28,7 +28,7 @@
         >
           <span
             class="text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wide"
-            >Pedido</span
+            >{{ 'finance.billing.invoices.order' | translate }}</span
           >
           <span
             class="text-sm font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
@@ -40,17 +40,17 @@
         >
           <span
             class="text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wide"
-            >Total</span
+            >{{ 'shared.total' | translate }}</span
           >
           <span
             class="text-sm font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
-            >{{ totalAmount() | number: '1.2-2' }}</span
+            >{{ totalAmount() | localizedNumber: '1.2-2' }}</span
           >
         </div>
         <div class="flex flex-col gap-0.5 px-4 py-3 col-span-2">
           <span
             class="text-xs font-medium text-surface-400 dark:text-surface-500 uppercase tracking-wide"
-            >Cliente</span
+            >{{ 'shared.customer' | translate }}</span
           >
           <span
             class="text-sm font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
@@ -64,11 +64,11 @@
       <label
         for="paymentType"
         class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-        >Tipo de Pago</label
+        >{{ 'finance.billing.invoices.paymentType' | translate }}</label
       >
       <p-select
         id="paymentType"
-        [options]="paymentTypeOptions"
+        [options]="paymentTypeOptions | translateOptions"
         [(ngModel)]="paymentType"
         optionLabel="label"
         optionValue="value"
@@ -82,42 +82,46 @@
       @if (creditLoading()) {
         <div class="flex items-center gap-2 text-sm text-surface-500">
           <i class="pi pi-spin pi-spinner"></i>
-          <span>Verificando crédito...</span>
+          <span>{{ 'sales.orders.checkingCredit' | translate }}</span>
         </div>
       } @else if (creditStatus(); as status) {
         <div class="rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden">
           <div
             class="px-4 py-3 border-b border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800"
           >
-            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide"
-              >Cr&eacute;dito del Cliente</span
-            >
+            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">{{
+              'shared.customerCredit' | translate
+            }}</span>
           </div>
           <div class="grid grid-cols-3">
             <div
               class="flex flex-col gap-0.5 px-4 py-3 border-r border-surface-200 dark:border-surface-700"
             >
-              <span class="text-xs text-surface-400">L&iacute;mite</span>
+              <span class="text-xs text-surface-400">{{ 'shared.limit' | translate }}</span>
               <span class="font-mono text-sm font-semibold"
-                >${{ status.creditLimit | number: '1.2-2' }}</span
+                >${{ status.creditLimit | localizedNumber: '1.2-2' }}</span
               >
             </div>
             <div
               class="flex flex-col gap-0.5 px-4 py-3 border-r border-surface-200 dark:border-surface-700"
             >
-              <span class="text-xs text-surface-400">Disponible</span>
+              <span class="text-xs text-surface-400">{{
+                'inventory.warehouses.available' | translate
+              }}</span>
               <span
                 class="font-mono text-sm font-semibold"
                 [class.text-green-600]="status.availableCredit >= totalAmount()"
                 [class.text-red-500]="status.availableCredit < totalAmount()"
               >
-                ${{ status.availableCredit | number: '1.2-2' }}
+                ${{ status.availableCredit | localizedNumber: '1.2-2' }}
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-4 py-3">
-              <span class="text-xs text-surface-400">Total Factura</span>
+              <span class="text-xs text-surface-400">{{
+                'sales.orders.invoiceTotal' | translate
+              }}</span>
               <span class="font-mono text-sm font-semibold"
-                >${{ totalAmount() | number: '1.2-2' }}</span
+                >${{ totalAmount() | localizedNumber: '1.2-2' }}</span
               >
             </div>
           </div>
@@ -132,18 +136,18 @@
                 class="pi pi-exclamation-triangle text-surface-900 dark:text-surface-100 mt-0.5 shrink-0"
               ></i>
               <div>
-                <span class="font-semibold text-sm text-surface-900 dark:text-surface-100"
-                  >Cr&eacute;dito Insuficiente</span
-                >
+                <span class="font-semibold text-sm text-surface-900 dark:text-surface-100">{{
+                  'shared.insufficientCredit' | translate
+                }}</span>
                 <p class="text-sm text-surface-900 dark:text-surface-100 leading-relaxed mt-1">
-                  {{ warning.message }}
+                  {{ (warning.message) | translate }}
                 </p>
               </div>
             </div>
             <div class="space-y-2">
               <label
                 class="block text-sm font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
-                >Contrase&ntilde;a de Confirmaci&oacute;n</label
+                >{{ 'shared.confirmationPassword' | translate }}</label
               >
               <p-password
                 [(ngModel)]="confirmationPassword"
@@ -166,12 +170,12 @@
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-2">
                 <i class="pi pi-wallet text-surface-900 dark:text-surface-100 text-sm"></i>
-                <span class="text-sm font-medium text-surface-700 dark:text-surface-300"
-                  >Saldo a Favor</span
-                >
+                <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+                  'finance.billing.invoices.creditBalance' | translate
+                }}</span>
               </div>
               <span class="font-mono font-bold text-blue-600 dark:text-blue-400"
-                >${{ customerBalance() | number: '1.2-2' }}</span
+                >${{ customerBalance() | localizedNumber: '1.2-2' }}</span
               >
             </div>
           </div>
@@ -190,7 +194,9 @@
                   name="balanceGroup"
                   inputId="useBalance"
                 />
-                <span class="text-sm font-medium">Usar saldo</span>
+                <span class="text-sm font-medium">{{
+                  'finance.billing.invoices.useCreditBalance' | translate
+                }}</span>
               </label>
               <label
                 class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
@@ -205,7 +211,9 @@
                   name="balanceGroup"
                   inputId="noBalance"
                 />
-                <span class="text-sm font-medium">No usar</span>
+                <span class="text-sm font-medium">{{
+                  'finance.billing.invoices.doNotUse' | translate
+                }}</span>
               </label>
             </div>
           </div>
@@ -216,11 +224,11 @@
         <div class="flex items-center justify-between">
           <span
             class="text-sm font-semibold text-surface-900 dark:text-surface-100 dark:text-surface-0"
-            >M&eacute;todos de Pago</span
+            >{{ 'finance.treasury.paymentmethods.paymentMethods' | translate }}</span
           >
           @if (remainingToPay() > 0) {
             <p-button
-              label="Agregar"
+              [label]="'finance.billing.invoices.add' | translate"
               icon="pi pi-plus"
               size="small"
               severity="contrast"
@@ -240,7 +248,7 @@
                   [options]="paymentMethods()"
                   optionLabel="name"
                   optionValue="id"
-                  placeholder="Seleccionar m&eacute;todo"
+                  [placeholder]="'finance.treasury.receivables.selectMethod' | translate"
                   styleClass="w-full"
                   [ngModel]="line.methodId"
                   (ngModelChange)="updatePaymentLine(i, 'methodId', $event)"
@@ -253,7 +261,7 @@
                   (ngModelChange)="updatePaymentLine(i, 'amount', $event)"
                   mode="currency"
                   currency="USD"
-                  locale="en-US"
+                  [locale]="locale()"
                   [min]="0"
                   [maxFractionDigits]="2"
                   fluid
@@ -276,30 +284,31 @@
               class="text-center py-6 text-sm text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded-xl"
             >
               <i class="pi pi-credit-card text-2xl mb-2 block text-surface-300"></i>
-              Agregue un m&eacute;todo de pago o use saldo a favor
+              {{ 'shared.addAPaymentMethodOrUseCreditBalance' | translate }}
             </div>
           }
         </div>
 
         <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-              >Total asignado</span
-            >
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.billing.invoices.totalAllocated' | translate
+            }}</span>
             <span
               class="font-mono font-bold text-lg"
               [class.text-green-600]="totalPayments() === totalAmount()"
               [class.text-red-500]="totalPayments() !== totalAmount()"
             >
-              ${{ totalPayments() | number: '1.2-2' }}
+              ${{ totalPayments() | localizedNumber: '1.2-2' }}
             </span>
           </div>
           @if (remainingToPay() > 0) {
             <div class="flex items-center gap-1.5 mt-1.5 text-surface-900 dark:text-surface-100">
               <i class="pi pi-exclamation-circle text-xs"></i>
-              <span class="text-xs font-medium"
-                >Restan ${{ remainingToPay() | number: '1.2-2' }} por asignar</span
-              >
+              <span class="text-xs font-medium">{{
+                'finance.billing.invoices.remainingAllocation'
+                  | translate: { amount: (remainingToPay() | localizedNumber: '1.2-2') }
+              }}</span>
             </div>
           }
         </div>
@@ -313,7 +322,7 @@
     >
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         (onClick)="onCancel()"
         severity="secondary"
@@ -322,7 +331,7 @@
       <p-button
         [appRequiredPermissions]="['FINANCES:CREATE', 'INVENTORY:EXECUTE']"
         [appPermission]="'EXECUTE'"
-        label="Convertir a Factura"
+        [label]="'sales.orders.convertToInvoice2' | translate"
         icon="pi pi-check"
         (onClick)="onConfirm()"
         severity="contrast"

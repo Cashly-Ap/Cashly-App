@@ -1,0 +1,13 @@
+{
+  "procurement.purchases.messages.unableToCreateThePurchasePleaseTryAgain": "Error al crear la compra. Por favor, intente nuevamente.",
+  "procurement.purchases.messages.unableToUpdateThePurchasePleaseTryAgain": "Error al actualizar la compra. Por favor, intente nuevamente.",
+  "procurement.purchases.messages.unableToDeleteThePurchasePleaseTryAgain": "Error al eliminar la compra. Por favor, intente nuevamente.",
+  "procurement.purchases.messages.unableToConfirmThePurchasePleaseTryAgain": "Error al confirmar la compra. Por favor, intente nuevamente.",
+  "procurement.purchases.messages.unableToCancelThePurchasePleaseTryAgain": "Error al cancelar la compra. Por favor, intente nuevamente.",
+  "procurement.purchases.messages.purchaseCreatedSuccessfully": "Compra creada exitosamente",
+  "procurement.purchases.messages.purchaseUpdatedSuccessfully": "Compra actualizada exitosamente",
+  "procurement.purchases.messages.purchaseDeletedSuccessfully": "Compra eliminada exitosamente",
+  "procurement.purchases.messages.purchaseConfirmedSuccessfully": "Compra confirmada exitosamente",
+  "procurement.purchases.messages.purchaseCancelledSuccessfully": "Compra cancelada exitosamente",
+  "procurement.purchases.messages.unableToLoadThePurchaseItMayNotExist": "Error al cargar la compra. Es posible que no exista."
+}

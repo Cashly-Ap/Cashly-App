@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
   input,
@@ -29,7 +30,7 @@ import { ProductPricesSectionComponent } from '@features/catalog/products/compon
   selector: 'app-product-general-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     SelectModule,

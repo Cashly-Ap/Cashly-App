@@ -3,7 +3,7 @@
 >
   <p-button
     appShortcut="cancel"
-    [label]="cancelLabel()"
+    [label]="cancelLabel() | translate"
     icon="pi pi-times"
     severity="secondary"
     [outlined]="true"
@@ -19,7 +19,7 @@
     <p-button
       appShortcut="submit"
       type="submit"
-      [label]="submitLabel()"
+      [label]="submitLabel() | translate"
       icon="pi pi-check"
       severity="contrast"
       [loading]="loading()"

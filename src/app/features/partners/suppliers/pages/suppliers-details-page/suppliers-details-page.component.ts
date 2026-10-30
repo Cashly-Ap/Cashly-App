@@ -1,3 +1,5 @@
+import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -21,7 +23,7 @@ import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/
 @Component({
   selector: 'app-suppliers-details-page',
   standalone: true,
-  imports: [
+  imports: [TranslatePipe, LocalizedDatePipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,

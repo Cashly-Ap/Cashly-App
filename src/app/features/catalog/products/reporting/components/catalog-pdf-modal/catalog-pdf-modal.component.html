@@ -4,7 +4,7 @@
   (onShow)="loadFilters()"
   [modal]="true"
   [style]="{ width: '500px' }"
-  header="Catálogo de Productos"
+  [header]="'catalog.products.productCatalog' | translate"
   [draggable]="false"
   [resizable]="false"
 >
@@ -15,46 +15,46 @@
   } @else {
     <div class="flex flex-col gap-4 pt-2">
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Búsqueda</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'catalog.products.search' | translate }}</label>
         <app-search-field
           [value]="search()"
-          placeholder="Buscar producto..."
+          [placeholder]="'catalog.products.searchProducts' | translate"
           (search)="search.set($event)"
         />
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Categoría</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'finance.billing.invoices.category' | translate }}</label>
         <p-select
-          [options]="categoryOptions()"
+          [options]="categoryOptions() | translateOptions: true"
           [(ngModel)]="categoryId"
           optionLabel="label"
           optionValue="value"
           appendTo="body"
-          placeholder="Todas las categorías"
+          [placeholder]="'finance.billing.invoices.allCategories' | translate"
           styleClass="w-full"
         />
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'inventory.warehouses.warehouse' | translate }}</label>
         <p-select
-          [options]="warehouseOptions()"
+          [options]="warehouseOptions() | translateOptions: true"
           [(ngModel)]="warehouseId"
           optionLabel="label"
           optionValue="value"
           appendTo="body"
-          placeholder="Todos los almacenes"
+          [placeholder]="'inventory.warehouses.allWarehouses' | translate"
           styleClass="w-full"
         />
       </div>
 
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-          >Disponibilidad</label
+          >{{ 'inventory.warehouses.availability' | translate }}</label
         >
         <p-select
-          [options]="stockOptions"
+          [options]="stockOptions | translateOptions"
           [(ngModel)]="withStock"
           optionLabel="label"
           optionValue="value"
@@ -69,7 +69,7 @@
     <p-button
       [appPermissionModule]="'CATALOG'"
       [appPermission]="'EXPORT'"
-      label="Ver PDF"
+      [label]="'inventory.warehouses.viewPdf' | translate"
       icon="pi pi-file-pdf"
       (onClick)="generatePdf()"
       severity="primary"

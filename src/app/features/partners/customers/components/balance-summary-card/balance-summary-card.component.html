@@ -22,20 +22,20 @@
           <p
             class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-widest font-semibold"
           >
-            Saldo pendiente
+            {{ 'partners.customers.outstandingBalance' | translate }}
           </p>
           <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-red-600">
-            {{ pendingBalance() | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ pendingBalance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
         <div class="flex flex-col gap-1">
           <p
             class="text-xs text-surface-500 dark:text-surface-400 uppercase tracking-widest font-semibold"
           >
-            Saldo a favor
+            {{ 'finance.treasury.receivables.creditBalance' | translate }}
           </p>
           <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-green-600">
-            {{ customerBalance()?.totalBalance ?? 0 | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ customerBalance()?.totalBalance ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <div data-testid="balance-transactions-mobile" class="md:hidden">
   @if (loading()) {
-    <div class="flex min-h-48 items-center justify-center" aria-label="Cargando movimientos">
+    <div class="flex min-h-48 items-center justify-center" [attr.aria-label]="'partners.customers.loadingMovements' | translate">
       <i class="pi pi-spin pi-spinner text-3xl text-surface-500"></i>
     </div>
   } @else {
@@ -13,7 +13,7 @@
             <div class="min-w-0">
               <span [class]="typeBadgeClass(tx.type)">{{ translateType(tx.type) }}</span>
               <p class="mt-2 text-xs text-surface-500 dark:text-surface-400">
-                {{ tx.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
               </p>
             </div>
             <p
@@ -21,19 +21,19 @@
               [class.text-green-600]="tx.amount >= 0"
               [class.text-red-600]="tx.amount < 0"
             >
-              {{ tx.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </p>
           </div>
 
           <dl class="mt-4 grid grid-cols-1 gap-3 text-sm min-[420px]:grid-cols-2">
             <div class="min-w-0">
-              <dt class="text-xs text-surface-500">Número</dt>
+              <dt class="text-xs text-surface-500">{{ 'analytics.dashboard.number' | translate }}</dt>
               <dd class="mt-1 break-all font-mono text-surface-700 dark:text-surface-300">
                 {{ tx.number ?? '-' }}
               </dd>
             </div>
             <div class="min-w-0">
-              <dt class="text-xs text-surface-500">Referencia</dt>
+              <dt class="text-xs text-surface-500">{{ 'finance.treasury.receivables.reference' | translate }}</dt>
               <dd class="mt-1 break-all font-mono text-surface-700 dark:text-surface-300">
                 {{ tx.referenceNumber ?? '-' }}
               </dd>
@@ -42,7 +42,7 @@
         </article>
       } @empty {
         <div class="py-12 text-center text-surface-400 dark:text-surface-500">
-          No se encontraron movimientos
+          {{ 'partners.customers.noMovementsFound' | translate }}
         </div>
       }
     </div>
@@ -57,7 +57,7 @@
         [showPageLinks]="false"
         [showFirstLastIcon]="false"
         [showCurrentPageReport]="true"
-        currentPageReportTemplate="{first} - {last} de {totalRecords}"
+        [currentPageReportTemplate]="'partners.customers.labels.firstLastOfTotalrecords' | translate"
         dropdownAppendTo="body"
         (onPageChange)="onPage($event)"
       />
@@ -83,19 +83,19 @@
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="createdAt" class="w-40">
-          <div class="flex items-center gap-2">Fecha <p-sortIcon field="createdAt" /></div>
+          <div class="flex items-center gap-2">{{ 'finance.billing.invoices.date' | translate }} <p-sortIcon field="createdAt" /></div>
         </th>
-        <th pSortableColumn="type" class="w-32">Tipo</th>
-        <th pSortableColumn="amount" class="w-28 text-right">Monto</th>
-        <th class="w-36">Número</th>
-        <th class="w-36">Referencia</th>
+        <th pSortableColumn="type" class="w-32">{{ 'shared.type' | translate }}</th>
+        <th pSortableColumn="amount" class="w-28 text-right">{{ 'shared.amount' | translate }}</th>
+        <th class="w-36">{{ 'analytics.dashboard.number' | translate }}</th>
+        <th class="w-36">{{ 'finance.treasury.receivables.reference' | translate }}</th>
       </tr>
     </ng-template>
 
     <ng-template pTemplate="body" let-tx>
       <tr class="hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors">
         <td class="text-sm text-surface-600 dark:text-surface-400">
-          {{ tx.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+          {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
         </td>
         <td>
           <span [class]="typeBadgeClass(tx.type)">
@@ -107,7 +107,7 @@
           [class.text-green-600]="tx.amount >= 0"
           [class.text-red-600]="tx.amount < 0"
         >
-          {{ tx.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+          {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
         </td>
         <td class="text-sm font-mono text-surface-700 dark:text-surface-300">
           {{ tx.number ?? '-' }}
@@ -121,7 +121,7 @@
     <ng-template pTemplate="emptymessage">
       <tr>
         <td colspan="5" class="text-center py-12 text-surface-400 dark:text-surface-500">
-          No se encontraron movimientos
+          {{ 'partners.customers.noMovementsFound' | translate }}
         </td>
       </tr>
     </ng-template>

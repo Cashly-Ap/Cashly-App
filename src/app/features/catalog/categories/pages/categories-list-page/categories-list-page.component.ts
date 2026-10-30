@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -41,7 +44,7 @@ import { CategoryList } from '@features/catalog/categories/models/interfaces/cat
   selector: 'app-categories-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -65,7 +68,7 @@ import { CategoryList } from '@features/catalog/categories/models/interfaces/cat
     StatusBadgeComponent,
   ],
   templateUrl: './categories-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class CategoriesListPageComponent implements OnInit {
   private service = inject(CategoryApplicationService);

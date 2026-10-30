@@ -4,13 +4,13 @@
       @if (icon()) {
         <i [class]="'pi mr-1 ' + icon() + ' ' + iconClass()"></i>
       }
-      {{ label() }}
+      {{ label() | translate }}
     </label>
   }
 
   <ng-content />
 
   @if (helpText()) {
-    <p [class]="helpClass()">{{ helpText() }}</p>
+    <p [class]="helpClass()">{{ helpText() | translate }}</p>
   }
 </div>

@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
@@ -26,7 +28,7 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
 @Component({
   selector: 'app-customers-details-page',
   standalone: true,
-  imports: [
+  imports: [TranslatePipe, LocalizedDatePipe, LocalizedNumberPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,

@@ -14,7 +14,7 @@ export type ModuleGroup = keyof typeof MODULE_APPEARANCE;
 export function moduleGroupFromUrl(url: string): ModuleGroup {
   const segment = url.split(/[?#]/, 1)[0].split('/').filter(Boolean)[0];
   return segment && Object.hasOwn(MODULE_APPEARANCE, segment)
-    ? segment as ModuleGroup
+    ? (segment as ModuleGroup)
     : 'platform';
 }
 

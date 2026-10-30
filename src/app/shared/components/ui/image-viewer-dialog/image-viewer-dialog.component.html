@@ -25,7 +25,7 @@
             severity="secondary"
             (onClick)="zoomOut()"
             [disabled]="zoomLevel() <= 0.5"
-            pTooltip="Alejar"
+            [pTooltip]="'shared.zoomOut' | translate"
             tooltipPosition="bottom"
           />
           <span class="text-sm font-mono text-gray-600 dark:text-gray-400 min-w-[4rem] text-center">
@@ -39,7 +39,7 @@
             severity="secondary"
             (onClick)="zoomIn()"
             [disabled]="zoomLevel() >= 3"
-            pTooltip="Acercar"
+            [pTooltip]="'shared.zoomIn' | translate"
             tooltipPosition="bottom"
           />
           <p-button
@@ -49,7 +49,7 @@
             size="small"
             severity="secondary"
             (onClick)="resetZoom()"
-            pTooltip="Restablecer zoom"
+            [pTooltip]="'shared.resetZoom' | translate"
             tooltipPosition="bottom"
           />
         </div>
@@ -66,7 +66,7 @@
         @if (!isImageLoaded() && !isImageError()) {
           <div class="flex flex-col items-center justify-center py-12">
             <i class="pi pi-spin pi-spinner text-5xl text-primary-500 mb-4"></i>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">Cargando imagen...</p>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">{{ 'shared.loadingImage' | translate }}</p>
           </div>
         }
 
@@ -78,10 +78,10 @@
               <i class="pi pi-exclamation-triangle text-4xl text-red-500"></i>
             </div>
             <p class="text-gray-900 dark:text-gray-100 text-lg font-semibold mb-2">
-              Error al cargar la imagen
+              {{ 'shared.couldNotLoadImage' | translate }}
             </p>
             <p class="text-gray-600 dark:text-gray-400">
-              La imagen no pudo ser cargada. Verifique la URL o intente nuevamente.
+              {{ 'shared.theImageCouldNotBeLoadedCheckTheUrlOrTryAgain' | translate }}
             </p>
           </div>
         }
@@ -105,10 +105,10 @@
             <i class="pi pi-image text-5xl text-gray-400 dark:text-gray-500"></i>
           </div>
           <p class="text-gray-900 dark:text-gray-100 text-xl font-semibold mb-2">
-            No hay imagen disponible
+            {{ 'shared.noImageAvailable' | translate }}
           </p>
           <p class="text-gray-600 dark:text-gray-400">
-            No se ha proporcionado una imagen para visualizar
+            {{ 'shared.noImageWasProvidedToDisplay' | translate }}
           </p>
         </div>
       }
@@ -122,7 +122,7 @@
       <div class="flex gap-2">
         @if (downloadable() && imageUrl() && isImageLoaded()) {
           <p-button
-            label="Descargar Imagen"
+            [label]="'shared.downloadImage' | translate"
             icon="pi pi-download"
             [outlined]="true"
             severity="success"
@@ -131,7 +131,7 @@
         }
       </div>
 
-      <p-button label="Cerrar" icon="pi pi-times" severity="secondary" (onClick)="onHide()" />
+      <p-button [label]="'shared.close' | translate" icon="pi pi-times" severity="secondary" (onClick)="onHide()" />
     </div>
   </ng-template>
 </p-dialog>

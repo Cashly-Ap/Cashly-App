@@ -1,3 +1,7 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -41,6 +45,8 @@ import { DebitNoteList } from '@features/finance/billing/debit-notes/models/inte
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -63,9 +69,11 @@ import { DebitNoteList } from '@features/finance/billing/debit-notes/models/inte
     ListActionButtonsComponent,
   ],
   templateUrl: './debit-note-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class DebitNoteListPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private service = inject(DebitNoteApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);

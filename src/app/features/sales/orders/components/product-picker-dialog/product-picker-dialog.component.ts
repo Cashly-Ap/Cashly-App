@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -53,6 +56,9 @@ export interface ProductSelection {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     DialogModule,
     ButtonModule,

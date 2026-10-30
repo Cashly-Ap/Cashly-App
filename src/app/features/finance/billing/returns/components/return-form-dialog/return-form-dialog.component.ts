@@ -1,3 +1,7 @@
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -40,7 +44,7 @@ interface InvoiceLineFormData {
   selector: 'app-return-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [LocalizedNumberPipe, TranslateOptionsPipe, TranslatePipe,
     ShortcutDirective,
     CommonModule,
     DecimalPipe,
@@ -55,155 +59,8 @@ interface InvoiceLineFormData {
     ToastModule,
     ReturnLinesTableComponent,
   ],
-  providers: [MessageService],
-  template: `
-    <p-toast position="top-right" />
-
-    <p-dialog
-      [header]="'Crear Devolución — #' + invoice().invoiceNumber"
-      [modal]="true"
-      [visible]="visible()"
-      [style]="{ width: 'min(90vw, 960px)' }"
-      [draggable]="false"
-      [resizable]="false"
-      (onShow)="onVisibleChange(true)"
-      (onHide)="onVisibleChange(false)"
-    >
-      <div class="flex flex-col gap-4 py-2">
-        <!-- Customer -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <p class="text-sm text-surface-600 dark:text-surface-400">
-            <span class="font-semibold text-surface-800 dark:text-surface-200">Cliente:</span>
-            {{ invoice().customerName }} — {{ invoice().customerRif }}
-          </p>
-        </div>
-
-        <!-- Type -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-            >Tipo de Devolución *</label
-          >
-          <p-select
-            [options]="returnTypeOptions"
-            [ngModel]="selectedReturnType()"
-            (ngModelChange)="selectedReturnType.set($event)"
-            optionLabel="label"
-            optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          />
-        </div>
-
-        <!-- Reason -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-            >Motivo *</label
-          >
-          <textarea
-            pTextarea
-            [ngModel]="reason()"
-            (ngModelChange)="reason.set($event)"
-            rows="3"
-            class="w-full"
-            placeholder="Motivo de la devolución..."
-          ></textarea>
-        </div>
-
-        <!-- Líneas -->
-        @if (selectedReturnType() === ReturnType.MANUAL) {
-          <app-return-lines-table
-            [invoiceLines]="invoice().lines"
-            [returnLines]="returnLines()"
-            (returnLinesChange)="onLinesChange($event)"
-          />
-        } @else {
-          <div
-            class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-          >
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              >Almacén de destino *</label
-            >
-            <p-select
-              [options]="warehouseOptions()"
-              [ngModel]="autoWarehouseId()"
-              (ngModelChange)="onAutoWarehouseSelected($event)"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Seleccionar almacén..."
-              styleClass="w-full"
-              appendTo="body"
-            />
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1.5">
-              Al seleccionar el almacén se cargarán todas las líneas con la cantidad máxima de la
-              factura.
-            </p>
-
-            @if (returnLines().length > 0) {
-              <div class="overflow-x-auto mt-4">
-                <table class="w-full text-sm">
-                  <thead>
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th class="text-left py-2 font-semibold">Producto</th>
-                      <th class="text-right py-2 font-semibold">Cantidad</th>
-                      <th class="text-right py-2 font-semibold">Precio Unit.</th>
-                      <th class="text-right py-2 font-semibold">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (line of returnLines(); track line.invoiceLineId) {
-                      <tr class="border-b border-surface-100 dark:border-surface-800">
-                        <td class="py-2">{{ line.productName }}</td>
-                        <td class="text-right py-2">{{ line.quantity }}</td>
-                        <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-                        <td class="text-right py-2 font-medium">
-                          {{ line.quantity * line.unitPrice | number: '1.2-2' }}
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                  <tfoot>
-                    <tr class="border-t border-surface-200 dark:border-surface-700">
-                      <td colspan="3" class="text-right py-3 font-semibold">Total:</td>
-                      <td class="text-right py-3 font-bold">
-                        {{ totalAmount() | number: '1.2-2' }}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            }
-          </div>
-        }
-      </div>
-
-      <ng-template pTemplate="footer">
-        <div class="flex gap-2 justify-end">
-          <p-button
-            appShortcut="cancel"
-            label="Cancelar"
-            [outlined]="true"
-            severity="secondary"
-            (onClick)="onCancel()"
-          />
-          <p-button
-            appShortcut="submit"
-            label="Guardar Devolución"
-            icon="pi pi-check"
-            severity="contrast"
-            [loading]="isSubmitting()"
-            [disabled]="!canSubmit()"
-            (onClick)="submit()"
-          />
-        </div>
-      </ng-template>
-    </p-dialog>
-  `,
+  providers: [provideTranslatedMessages()],
+  templateUrl: './return-form-dialog.component.html',
 })
 export class ReturnFormDialogComponent implements OnInit {
   private readonly returnApi = inject(ReturnApiService);

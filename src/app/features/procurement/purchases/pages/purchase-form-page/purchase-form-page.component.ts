@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -34,6 +35,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
   selector: 'app-purchase-form-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
     TextareaModule,

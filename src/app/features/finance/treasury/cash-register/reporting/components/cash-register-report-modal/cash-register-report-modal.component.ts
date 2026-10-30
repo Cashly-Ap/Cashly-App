@@ -1,3 +1,6 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -35,6 +38,8 @@ interface SelectOption {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     CommonModule,
     FormsModule,
@@ -48,6 +53,8 @@ interface SelectOption {
   templateUrl: './cash-register-report-modal.component.html',
 })
 export class CashRegisterReportModalComponent {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly customerApi = inject(CustomerApiService);
   private readonly productApi = inject(ProductApiService);
   private readonly categoryApi = inject(CategoryApiService);

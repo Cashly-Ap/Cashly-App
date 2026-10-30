@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -51,6 +54,9 @@ interface ReturnLineFormData {
   selector: 'app-return-form-page',
   standalone: true,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedNumberPipe,
     CommonModule,
     DecimalPipe,
     ReactiveFormsModule,

@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -24,7 +26,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   selector: 'app-commercial-catalog-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,

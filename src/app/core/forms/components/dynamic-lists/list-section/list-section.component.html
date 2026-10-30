@@ -6,10 +6,10 @@
       @if (icon()) {
         <i [class]="'pi ' + icon() + ' text-surface-500'"></i>
       }
-      {{ title() }}
+      {{ title() | translate }}
     </h3>
     <p-button
-      [label]="addButtonLabel()"
+      [label]="addButtonLabel() | translate"
       icon="pi pi-plus"
       size="small"
       (onClick)="add.emit()"
@@ -25,7 +25,7 @@
         <i [class]="'pi text-3xl mb-2 text-surface-400 dark:text-surface-500 ' + emptyIcon()"></i>
       }
       <p class="text-sm text-surface-500 dark:text-surface-400">
-        {{ emptyMessage() }}
+        {{ emptyMessage() | translate }}
       </p>
     </div>
   }

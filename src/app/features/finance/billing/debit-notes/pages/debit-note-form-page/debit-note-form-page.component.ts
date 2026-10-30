@@ -1,3 +1,5 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -28,6 +30,7 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
   selector: 'app-debit-note-form-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,
@@ -45,6 +48,8 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DebitNoteFormPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);

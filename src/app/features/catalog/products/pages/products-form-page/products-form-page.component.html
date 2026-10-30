@@ -6,12 +6,12 @@
         <p-tablist>
           <p-tab value="0" styleClass="text-sm md:text-base">
             <i class="pi pi-box mr-2"></i>
-            <span>Información General</span>
+            <span>{{ 'catalog.products.generalInformation' | translate }}</span>
           </p-tab>
           @if (isComposite()) {
             <p-tab value="1" styleClass="text-sm md:text-base">
               <i class="pi pi-sitemap mr-2"></i>
-              <span>Composición</span>
+              <span>{{ 'catalog.products.composition' | translate }}</span>
             </p-tab>
           }
         </p-tablist>
@@ -41,7 +41,7 @@
 
       <app-form-actions
         [submitLabel]="submitLabel()"
-        cancelLabel="Cancelar"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="loading()"
         [disabled]="form.invalid"
         [tooltipMessage]="submitTooltip()"

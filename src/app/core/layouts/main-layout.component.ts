@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationLookupService } from '@core/layouts/services/navigation-lookup.service';
 import { ListNavigationPickerComponent } from '@shared/components/list/list-navigation-picker/list-navigation-picker.component';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
@@ -102,7 +104,7 @@ export type ContentMaxWidth =
   selector: 'app-main-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     ListNavigationPickerComponent,
     CustomerPickerDialogComponent,
     ShortcutHelpComponent,
@@ -136,6 +138,7 @@ export type ContentMaxWidth =
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
+  private readonly translations = inject(TranslationService);
   @ViewChild(ModuleNavigatorComponent) moduleNavigator?: ModuleNavigatorComponent;
   readonly navigationMenuItems = computed(() => this.buildMenuItems((this.currentUser()?.role || this.currentUser()?.type) as UserType));
   private readonly keyboardShortcuts = inject(KeyboardShortcutService);
@@ -348,7 +351,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private convertMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
       styleClass: `cashly-module-${group}`,
-      label: item.label,
+      label: this.translations.t(item.label),
       icon: item.icon,
       routerLink: item.routerLink,
       visible: item.visible ?? true,
@@ -632,7 +635,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private convertToMobileMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
       styleClass: `cashly-module-${group}`,
-      label: item.label,
+      label: this.translations.t(item.label),
       icon: item.icon,
       visible: item.visible ?? true,
       badge: item.badge,

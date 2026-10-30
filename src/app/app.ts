@@ -1,6 +1,8 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
-import { Component, inject } from '@angular/core';
+import { Component, inject, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { PdfViewerDialogComponent } from '@core/pdf-viewer';
@@ -15,6 +17,13 @@ import { PdfViewerDialogComponent } from '@core/pdf-viewer';
   `,
 })
 export class App {
+  private readonly preferences = inject(UserPreferencesService);
+  private readonly language = inject(LanguageService);
+
+  constructor() {
+    effect(() => this.language.setLanguage(this.preferences.language()));
+  }
+
   private readonly theme = inject(ThemeService);
   private readonly navigationHistory = inject(NavigationHistoryService);
 }

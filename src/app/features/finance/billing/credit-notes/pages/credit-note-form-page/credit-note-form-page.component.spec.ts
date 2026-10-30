@@ -64,9 +64,15 @@ describe('CreditNoteFormPageComponent', () => {
   });
   it('opens the created credit note detail after saving', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    fixture.componentInstance.form.patchValue({ customerId: 'c', customerName: 'Customer', invoiceId: 'i', invoiceNumber: 'INV-1', amount: 10, reason: 'Adjustment' });
+    fixture.componentInstance.form.patchValue({
+      customerId: 'c',
+      customerName: 'Customer',
+      invoiceId: 'i',
+      invoiceNumber: 'INV-1',
+      amount: 10,
+      reason: 'Adjustment',
+    });
     fixture.componentInstance.onSubmit();
     expect(navigate).toHaveBeenCalledWith(['/finance/billing/credit-notes', 'credit-1']);
   });
-
 });

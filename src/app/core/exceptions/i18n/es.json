@@ -1,0 +1,10 @@
+{
+  "core.exceptions.couldNotCreate": "Error al crear ${entityName}",
+  "core.exceptions.couldNotUpdate": "Error al actualizar ${entityName}",
+  "core.exceptions.couldNotDelete": "Error al eliminar ${entityName}",
+  "core.exceptions.couldNotLoad": "Error al cargar ${entityName}",
+  "core.exceptions.messages.theProvidedDataIsInvalidPleaseReviewItAndTryAgain": "Los datos proporcionados son inválidos. Por favor, revise la información e intente nuevamente.",
+  "core.exceptions.messages.serverErrorPleaseTryAgainLater": "Error del servidor. Por favor, intente nuevamente más tarde.",
+  "core.exceptions.messages.couldNotConnectToTheServerCheckYourInternetConnection": "No se pudo conectar con el servidor. Verifique su conexión a internet.",
+  "core.exceptions.messages.cannotDeleteEntitynameBecauseItHasAssociatedRecords": "No se puede eliminar ${entityName} porque tiene registros asociados"
+}

@@ -1,3 +1,7 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -45,7 +49,7 @@ import { ProductList } from '@features/catalog/products/models/interfaces/produc
   selector: 'app-products-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedCurrencyPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -71,7 +75,7 @@ import { ProductList } from '@features/catalog/products/models/interfaces/produc
     TextBadgeComponent,
   ],
   templateUrl: './products-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class ProductsListPageComponent implements OnInit {
   private service = inject(ProductApplicationService);

@@ -3,15 +3,15 @@
     class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
   >
     <i class="pi pi-list text-surface-500"></i>
-    Líneas de Devolución
+    {{ 'finance.billing.returns.returnLines2' | translate }}
   </h3>
 
   <p-popover #allocationPopover appendTo="body">
     <app-warehouse-stock-popover
       [entries]="popoverAllocations()"
       [total]="allocationTotal()"
-      confirmLabel="Guardar"
-      emptyMessage="Sin stock disponible en almacenes"
+      [confirmLabel]="'finance.billing.creditnotes.save' | translate"
+      [emptyMessage]="'finance.billing.returns.noStockAvailableInWarehouses' | translate"
       (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
       (confirm)="confirmAllocations()"
     />
@@ -21,14 +21,28 @@
     <table class="w-full text-sm">
       <thead>
         <tr class="border-b border-surface-200 dark:border-surface-700">
-          <th class="text-left py-2 font-semibold">Producto</th>
-          <th class="text-center py-2 font-semibold w-20">Fact.</th>
-          <th class="text-center py-2 font-semibold w-20">Dev.</th>
-          <th class="text-center py-2 font-semibold w-20">Pend.</th>
-          <th class="text-center py-2 font-semibold w-20">A dev.</th>
-          <th class="text-center py-2 font-semibold w-10">Stock</th>
-          <th class="text-right py-2 font-semibold w-24">Precio Unit.</th>
-          <th class="text-right py-2 font-semibold w-24">Total</th>
+          <th class="text-left py-2 font-semibold">
+            {{ 'finance.billing.returns.product' | translate }}
+          </th>
+          <th class="text-center py-2 font-semibold w-20">
+            {{ 'finance.billing.returns.inv' | translate }}
+          </th>
+          <th class="text-center py-2 font-semibold w-20">
+            {{ 'finance.billing.returns.ret' | translate }}
+          </th>
+          <th class="text-center py-2 font-semibold w-20">
+            {{ 'finance.billing.returns.pend' | translate }}
+          </th>
+          <th class="text-center py-2 font-semibold w-20">
+            {{ 'finance.billing.returns.toReturn' | translate }}
+          </th>
+          <th class="text-center py-2 font-semibold w-10">
+            {{ 'finance.billing.returns.stock' | translate }}
+          </th>
+          <th class="text-right py-2 font-semibold w-24">
+            {{ 'finance.billing.returns.unitPrice' | translate }}
+          </th>
+          <th class="text-right py-2 font-semibold w-24">{{ 'shared.total' | translate }}</th>
         </tr>
       </thead>
       <tbody>
@@ -46,20 +60,24 @@
                 type="button"
                 (click)="openAllocationPopover($event, idx)"
                 class="w-9 h-9 rounded-lg bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 flex items-center justify-center transition-colors mx-auto"
-                pTooltip="Distribuir por almacenes"
+                [pTooltip]="'finance.billing.returns.distributeAcrossWarehouses' | translate"
               >
                 <i class="pi pi-warehouse text-sm text-surface-600 dark:text-surface-300"></i>
               </button>
             </td>
-            <td class="text-right py-2">{{ line.unitPrice | number: '1.2-2' }}</td>
-            <td class="text-right py-2 font-medium">{{ line.quantity * line.unitPrice | number: '1.2-2' }}</td>
+            <td class="text-right py-2">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
+            <td class="text-right py-2 font-medium">
+              {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
+            </td>
           </tr>
         }
       </tbody>
       <tfoot>
         <tr class="border-t border-surface-200 dark:border-surface-700">
-          <td colspan="7" class="text-right py-3 font-semibold">Total:</td>
-          <td class="text-right py-3 font-bold">{{ totalAmount() | number: '1.2-2' }}</td>
+          <td colspan="7" class="text-right py-3 font-semibold">
+            {{ 'finance.billing.returns.total' | translate }}
+          </td>
+          <td class="text-right py-3 font-bold">{{ totalAmount() | localizedNumber: '1.2-2' }}</td>
         </tr>
       </tfoot>
     </table>

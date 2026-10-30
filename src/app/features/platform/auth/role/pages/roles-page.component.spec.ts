@@ -169,13 +169,14 @@ describe('Role permission matrix', () => {
     accept?.();
     expect(service.delete).not.toHaveBeenCalled();
   });
-  it.each([false, true])('opens the saved detail after create or update (editing=%s)', (editing) => {
-
-    service.saveRole.mockReturnValue(of({ id: 'saved-id' }));
-    component.editing.set({ name: 'Saved record', ...(editing ? { id: 'saved-id' } : {}) });
-    const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
-    component.save();
-    expect(navigate).toHaveBeenCalledWith(['/platform/roles', 'saved-id']);
-  });
-
+  it.each([false, true])(
+    'opens the saved detail after create or update (editing=%s)',
+    (editing) => {
+      service.saveRole.mockReturnValue(of({ id: 'saved-id' }));
+      component.editing.set({ name: 'Saved record', ...(editing ? { id: 'saved-id' } : {}) });
+      const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+      component.save();
+      expect(navigate).toHaveBeenCalledWith(['/platform/roles', 'saved-id']);
+    },
+  );
 });

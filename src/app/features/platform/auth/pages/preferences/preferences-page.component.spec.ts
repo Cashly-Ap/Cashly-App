@@ -6,6 +6,8 @@ import { PreferencesPageComponent } from './preferences-page.component';
 
 describe('personal settings controls', () => {
   const preferences = {
+    language: signal('es'),
+    setLanguage: vi.fn(),
     themeMode: signal('system'),
     colorMode: signal('minimal'),
     shortcutsEnabled: signal(false),

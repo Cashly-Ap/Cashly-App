@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
@@ -16,6 +17,7 @@ import { createPasswordForm } from '@features/platform/auth/pages/change-passwor
   selector: 'app-change-password-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
     FormCardComponent,

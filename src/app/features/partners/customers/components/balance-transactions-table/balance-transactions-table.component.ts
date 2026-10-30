@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -18,7 +20,7 @@ const TYPE_TRANSLATIONS: Record<string, string> = {
   selector: 'app-balance-transactions-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, TableModule, PaginatorModule],
+  imports: [TranslatePipe, LocalizedDatePipe, LocalizedCurrencyPipe, CommonModule, TableModule, PaginatorModule],
   templateUrl: './balance-transactions-table.component.html',
 })
 export class BalanceTransactionsTableComponent {

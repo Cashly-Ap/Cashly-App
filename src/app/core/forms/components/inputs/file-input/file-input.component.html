@@ -2,7 +2,7 @@
   class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
 >
   <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
-    {{ label() }}
+    {{ label() | translate }}
   </label>
 
   @if (previewImageUrl()) {
@@ -13,20 +13,20 @@
         >
           <img
             [src]="previewImageUrl()!"
-            alt="Vista previa"
+            [alt]="'core.forms.labels.preview' | translate"
             (error)="onPreviewError()"
             class="w-full h-full object-contain p-4"
           />
         </div>
         <p-button
           icon="pi pi-times"
-          ariaLabel="Eliminar imagen"
+          [ariaLabel]="'core.forms.removeImage' | translate"
           severity="secondary"
           [rounded]="true"
           size="small"
           class="absolute -top-2 -right-2"
           (onClick)="removeCurrentImage()"
-          pTooltip="Eliminar imagen"
+          [pTooltip]="'core.forms.removeImage' | translate"
         />
       </div>
     </div>
@@ -48,18 +48,18 @@
 
   <div class="min-h-[20px] mt-1.5">
     @if (optimizing()) {
-      <p role="status" class="text-xs text-surface-500">Optimizando imagen…</p>
+      <p role="status" class="text-xs text-surface-500">{{ 'core.forms.optimizingImage' | translate }}</p>
     } @else if (imageError()) {
-      <p role="alert" class="text-xs text-red-500">{{ imageError() }}</p>
+      <p role="alert" class="text-xs text-red-500">{{ imageError() | translate }}</p>
     } @else if (control().invalid && control().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
-        {{ errorMessage() }}
+        {{ errorMessage() | translate }}
       </small>
     } @else if (helpText()) {
       <p class="flex items-center gap-1 text-xs text-surface-500 dark:text-surface-400">
         <i class="pi pi-info-circle text-xs"></i>
-        {{ helpText() }}
+        {{ helpText() | translate }}
       </p>
     }
   </div>

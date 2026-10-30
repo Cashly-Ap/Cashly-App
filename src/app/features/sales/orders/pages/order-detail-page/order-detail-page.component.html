@@ -5,16 +5,19 @@
     }
     @if (order(); as currentOrder) {
       <div class="flex flex-col gap-6">
-        <app-page-header title="Detalles del Pedido" subtitle="Información completa del pedido" />
+        <app-page-header
+          [title]="'sales.orders.orderDetails2' | translate"
+          [subtitle]="'sales.orders.completeOrderInformation' | translate"
+        />
 
         <app-details-card>
           <app-details-card-header
-            [title]="'Pedido #' + currentOrder.orderNumber"
+            [title]="('finance.billing.invoices.order2' | translate) + currentOrder.orderNumber"
             [subtitle]="currentOrder.customerAlias"
           >
             <div actions class="flex gap-3 flex-wrap">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -25,7 +28,7 @@
                   <p-button
                     [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                     [appPermission]="'UPDATE'"
-                    label="Editar"
+                    [label]="'finance.billing.invoices.edit' | translate"
                     icon="pi pi-pencil"
                     [link]="true"
                     (onClick)="actionsMenu.hide(); onEdit()"
@@ -39,45 +42,54 @@
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
               <app-details-info-field
-                label="Número de Pedido"
+                [label]="'sales.orders.orderNumber' | translate"
                 [value]="'#' + currentOrder.orderNumber"
                 type="code"
               />
-              <app-details-info-field label="Estado" type="badge">
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
                 <app-text-badge
-                  [label]="getStatusLabel(currentOrder.status)"
+                  [label]="getStatusLabel(currentOrder.status) | translate"
                   [variant]="getStatusVariant(currentOrder.status)"
                 />
               </app-details-info-field>
-              <app-details-info-field label="Cliente" [value]="currentOrder.customerAlias" />
               <app-details-info-field
-                label="Razón Social"
+                [label]="'shared.customer' | translate"
+                [value]="currentOrder.customerAlias"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.legalName' | translate"
                 [value]="currentOrder.customerLegalName"
               />
               <app-details-info-field
-                label="Total"
-                [value]="(currentOrder.totalAmount | number: '1.2-2') || ''"
+                [label]="'shared.total' | translate"
+                [value]="(currentOrder.totalAmount | localizedNumber: '1.2-2') || ''"
                 type="currency"
               />
               <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(currentOrder.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentOrder.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
-                [value]="(currentOrder.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(currentOrder.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>
         </app-details-card>
 
         @if (currentOrder.notes) {
-          <app-details-section-card title="Notas" icon="pi-align-left">
+          <app-details-section-card
+            [title]="'finance.billing.invoices.notes' | translate"
+            icon="pi-align-left"
+          >
             <p class="text-sm whitespace-pre-wrap">{{ currentOrder.notes }}</p>
           </app-details-section-card>
         }
 
-        <app-details-section-card title="Ítems del Pedido" icon="pi-list">
+        <app-details-section-card [title]="'sales.orders.orderItems' | translate" icon="pi-list">
           @if (currentOrder.items && currentOrder.items.length > 0) {
             <div class="flex flex-col gap-3 md:hidden">
               @for (item of currentOrder.items; track item.id) {
@@ -94,17 +106,23 @@
                   </div>
                   <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Cantidad</span>
-                      <span class="font-mono">{{ item.quantity | number: '1.0-3' }}</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.quantity' | translate
+                      }}</span>
+                      <span class="font-mono">{{ item.quantity | localizedNumber: '1.0-3' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Precio Unit.</span>
-                      <span class="font-mono">{{ item.unitPrice | number: '1.2-2' }}</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.unitPrice' | translate
+                      }}</span>
+                      <span class="font-mono">{{ item.unitPrice | localizedNumber: '1.2-2' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Subtotal</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.subtotal' | translate
+                      }}</span>
                       <span class="font-mono font-semibold">{{
-                        item.subtotal | number: '1.2-2'
+                        item.subtotal | localizedNumber: '1.2-2'
                       }}</span>
                     </div>
                   </div>
@@ -113,9 +131,9 @@
               <div
                 class="flex justify-between text-sm font-semibold pt-2 border-t border-surface-200 dark:border-surface-700"
               >
-                <span>Total:</span>
+                <span>{{ 'finance.billing.returns.total' | translate }}</span>
                 <span class="font-mono text-lg">{{
-                  currentOrder.totalAmount | number: '1.2-2'
+                  currentOrder.totalAmount | localizedNumber: '1.2-2'
                 }}</span>
               </div>
             </div>
@@ -123,10 +141,12 @@
               <p-table [value]="currentOrder.items" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Producto</th>
-                    <th class="text-right">Cantidad</th>
-                    <th class="text-right">Precio Unit.</th>
-                    <th class="text-right">Subtotal</th>
+                    <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="text-right">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                    <th class="text-right">
+                      {{ 'finance.billing.returns.unitPrice' | translate }}
+                    </th>
+                    <th class="text-right">{{ 'finance.billing.returns.subtotal' | translate }}</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-item>
@@ -142,24 +162,26 @@
                       </div>
                     </td>
                     <td class="text-right">
-                      <span class="font-mono">{{ item.quantity | number: '1.0-3' }}</span>
+                      <span class="font-mono">{{ item.quantity | localizedNumber: '1.0-3' }}</span>
                     </td>
                     <td class="text-right">
-                      <span class="font-mono">{{ item.unitPrice | number: '1.2-2' }}</span>
+                      <span class="font-mono">{{ item.unitPrice | localizedNumber: '1.2-2' }}</span>
                     </td>
                     <td class="text-right">
                       <span class="font-mono font-semibold">{{
-                        item.subtotal | number: '1.2-2'
+                        item.subtotal | localizedNumber: '1.2-2'
                       }}</span>
                     </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
                   <tr>
-                    <td colspan="3" class="text-right font-semibold">Total:</td>
+                    <td colspan="3" class="text-right font-semibold">
+                      {{ 'finance.billing.returns.total' | translate }}
+                    </td>
                     <td class="text-right">
                       <span class="font-mono font-bold text-lg">
-                        {{ currentOrder.totalAmount | number: '1.2-2' }}
+                        {{ currentOrder.totalAmount | localizedNumber: '1.2-2' }}
                       </span>
                     </td>
                   </tr>
@@ -167,7 +189,10 @@
               </p-table>
             </div>
           } @else {
-            <app-empty-state icon="pi-inbox" message="No hay ítems en este pedido" />
+            <app-empty-state
+              icon="pi-inbox"
+              [message]="'sales.orders.thisOrderHasNoItems' | translate"
+            />
           }
         </app-details-section-card>
       </div>

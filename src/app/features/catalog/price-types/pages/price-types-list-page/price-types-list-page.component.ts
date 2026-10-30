@@ -1,3 +1,5 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -39,7 +41,7 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
   selector: 'app-price-types-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -61,7 +63,7 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
     StatusBadgeComponent,
   ],
   templateUrl: './price-types-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class PriceTypesListPageComponent implements OnInit {
   private service = inject(PriceTypeApplicationService);

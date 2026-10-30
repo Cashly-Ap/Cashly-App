@@ -1,10 +1,11 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-field-group',
   standalone: true,
-  imports: [CommonModule],
+  imports: [TranslatePipe, CommonModule],
   templateUrl: './field-group.component.html',
 })
 export class FieldGroupComponent {

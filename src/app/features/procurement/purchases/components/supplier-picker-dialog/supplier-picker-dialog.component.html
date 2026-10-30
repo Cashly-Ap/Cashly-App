@@ -14,12 +14,12 @@
         <i class="pi pi-truck text-surface-600 dark:text-surface-300 text-lg"></i>
       </div>
       <div class="flex flex-col">
-        <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-          >Seleccionar Proveedor</span
-        >
-        <span class="text-xs text-surface-500 dark:text-surface-400"
-          >Busque y seleccione el proveedor para la compra</span
-        >
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
+          'procurement.purchases.selectSupplier' | translate
+        }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{
+          'procurement.purchases.findAndSelectTheSupplierForThePurchase' | translate
+        }}</span>
       </div>
     </div>
   </ng-template>
@@ -53,7 +53,12 @@
       </button>
 
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
-        {{ totalElements() }} {{ totalElements() === 1 ? 'proveedor' : 'proveedores' }}
+        {{ totalElements() }}
+        {{
+          totalElements() === 1
+            ? ('procurement.purchases.supplier3' | translate)
+            : ('procurement.purchases.suppliers' | translate)
+        }}
       </span>
     </div>
 
@@ -62,14 +67,16 @@
         <div
           class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
         >
-          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+            'shared.filters' | translate
+          }}</span>
           @if (activeFilterCount() > 0) {
             <button
               type="button"
               class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
               (click)="clearFilters()"
             >
-              Limpiar
+              {{ 'finance.billing.creditnotes.clear' | translate }}
             </button>
           }
         </div>
@@ -77,22 +84,22 @@
         <div class="px-4 py-3 flex flex-col gap-3">
           <app-search-field
             [value]="search()"
-            placeholder="Buscar proveedor..."
+            [placeholder]="'procurement.purchases.searchSuppliers' | translate"
             (search)="onSearchChange($event)"
           />
 
           <div class="flex flex-col gap-1.5">
             <span
               class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Tipo</span
+              >{{ 'shared.type' | translate }}</span
             >
             <p-select
-              [options]="supplierTypes"
+              [options]="supplierTypes | translateOptions"
               [ngModel]="filterType()"
               (ngModelChange)="selectType($event)"
               optionLabel="label"
               optionValue="value"
-              placeholder="Todos"
+              [placeholder]="'finance.treasury.paymentmethods.all' | translate"
               [showClear]="true"
               styleClass="w-full"
             />
@@ -112,22 +119,22 @@
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-20"
             >
-              Código
+              {{ 'finance.treasury.paymentmethods.code' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Razón Social
+              {{ 'partners.suppliers.legalName' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-36"
             >
-              RIF
+              {{ 'finance.treasury.receivables.customerTaxId' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
             >
-              Tipo
+              {{ 'shared.type' | translate }}
             </th>
           </tr>
         </thead>
@@ -149,7 +156,7 @@
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
-                No se encontraron proveedores
+                {{ 'procurement.purchases.noSuppliersFound' | translate }}
               </td>
             </tr>
           } @else {
@@ -168,7 +175,7 @@
                   {{ supplier.rif }}
                 </td>
                 <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
-                  {{ getSupplierTypeLabel(supplier.type) }}
+                  {{ getSupplierTypeLabel(supplier.type) | translate }}
                 </td>
               </tr>
             }
@@ -192,7 +199,7 @@
       } @else if (suppliers().length === 0) {
         <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
           <i class="pi pi-search text-2xl block mb-2"></i>
-          No se encontraron proveedores
+          {{ 'procurement.purchases.noSuppliersFound' | translate }}
         </div>
       } @else {
         @for (supplier of suppliers(); track supplier.id) {
@@ -215,7 +222,7 @@
                 supplier.rif
               }}</span>
               <span class="text-xs text-surface-600 dark:text-surface-300">{{
-                getSupplierTypeLabel(supplier.type)
+                getSupplierTypeLabel(supplier.type) | translate
               }}</span>
             </div>
           </div>
@@ -225,7 +232,7 @@
 
     @if (totalPages() > 1) {
       <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ (pageLabel()) | translate }}</span>
         <div class="flex gap-1">
           <button
             type="button"
@@ -252,7 +259,7 @@
     <div class="flex justify-end pt-1">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         [outlined]="true"
         severity="secondary"

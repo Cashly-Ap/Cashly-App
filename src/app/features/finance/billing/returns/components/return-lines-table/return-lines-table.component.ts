@@ -1,3 +1,5 @@
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -38,6 +40,8 @@ export interface ReturnLineFormData {
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedNumberPipe,
     CommonModule,
     DecimalPipe,
     PopoverModule,

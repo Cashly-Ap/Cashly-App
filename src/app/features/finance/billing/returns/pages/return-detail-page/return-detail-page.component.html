@@ -6,18 +6,21 @@
     @if (returnDetail(); as ret) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles de la Devolución"
-          subtitle="Información completa de la devolución"
+          [title]="'finance.billing.returns.returnDetails2' | translate"
+          [subtitle]="'finance.billing.returns.completeReturnInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header
             [title]="ret.returnNumber"
-            [subtitle]="'Monto: ' + (ret.totalAmount | number: '1.2-2')"
+            [subtitle]="
+              ('finance.billing.invoices.amountPrefix' | translate) +
+              (ret.totalAmount | localizedNumber: '1.2-2')
+            "
           >
             <div actions class="flex gap-3 flex-wrap">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -27,7 +30,7 @@
                 <p-button
                   [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                   [appPermission]="'DELETE'"
-                  label="Eliminar"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
                   icon="pi pi-trash"
                   severity="danger"
                   [link]="true"
@@ -40,29 +43,42 @@
 
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Número" [value]="ret.returnNumber" type="code" />
-              <app-details-info-field label="Cliente" [value]="ret.customerName || '—'" />
-              <app-details-info-field label="RIF" [value]="ret.customerRif || '—'" type="code" />
               <app-details-info-field
-                label="Factura"
+                [label]="'analytics.dashboard.number' | translate"
+                [value]="ret.returnNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.customer' | translate"
+                [value]="ret.customerName || '—'"
+              />
+              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="ret.customerRif || '—'" type="code" />
+              <app-details-info-field
+                [label]="'shared.invoice' | translate"
                 [value]="ret.invoiceNumber || '—'"
                 type="code"
               />
-              <app-details-info-field label="Tipo" type="badge">
-                <app-text-badge [label]="getReturnTypeLabel(ret.returnType)" variant="label" />
+              <app-details-info-field [label]="'shared.type' | translate" type="badge">
+                <app-text-badge
+                  [label]="getReturnTypeLabel(ret.returnType) | translate"
+                  variant="label"
+                />
               </app-details-info-field>
               <app-details-info-field
-                label="Monto Total"
-                [value]="(ret.totalAmount | number: '1.2-2') || ''"
-              />
-              <app-details-info-field label="Creado por" [value]="ret.createdByName" />
-              <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(ret.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.returns.totalAmount' | translate"
+                [value]="(ret.totalAmount | localizedNumber: '1.2-2') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
-                [value]="(ret.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="ret.createdByName"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(ret.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(ret.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>
@@ -71,8 +87,8 @@
         @if (ret.reason) {
           <app-details-card>
             <app-details-card-header
-              title="Motivo de la Devolución"
-              subtitle="Razón registrada para esta devolución"
+              [title]="'finance.billing.returns.reasonForReturn' | translate"
+              [subtitle]="'finance.billing.returns.reasonRecordedForThisReturn' | translate"
             />
             <div class="p-4 sm:p-6">
               <div
@@ -89,8 +105,10 @@
         @if (ret.lines && ret.lines.length > 0) {
           <app-details-card>
             <app-details-card-header
-              title="Líneas de la Devolución"
-              [subtitle]="ret.lines.length + ' línea(s)'"
+              [title]="'finance.billing.returns.returnLines' | translate"
+              [subtitle]="
+                ret.lines.length + ('finance.billing.invoices.lineCountSuffix' | translate)
+              "
             />
             <div class="p-4 sm:p-6">
               <div class="flex flex-col gap-3 md:hidden">
@@ -111,17 +129,25 @@
                     </div>
                     <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
                       <div class="flex flex-col gap-0.5">
-                        <span class="text-xs text-surface-400">Cantidad</span>
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.quantity' | translate
+                        }}</span>
                         <span class="font-mono">{{ line.quantity }}</span>
                       </div>
                       <div class="flex flex-col gap-0.5">
-                        <span class="text-xs text-surface-400">Precio Unit.</span>
-                        <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.unitPrice' | translate
+                        }}</span>
+                        <span class="font-mono">{{
+                          line.unitPrice | localizedNumber: '1.2-2'
+                        }}</span>
                       </div>
                       <div class="flex flex-col gap-0.5">
-                        <span class="text-xs text-surface-400">Subtotal</span>
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.subtotal' | translate
+                        }}</span>
                         <span class="font-mono font-semibold">
-                          {{ line.quantity * line.unitPrice | number: '1.2-2' }}
+                          {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
                         </span>
                       </div>
                     </div>
@@ -129,9 +155,9 @@
                       <div
                         class="flex flex-col gap-1 pl-3 border-l-2 border-surface-200 dark:border-surface-700"
                       >
-                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400"
-                          >Asignaciones a almacén:</span
-                        >
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">{{
+                          'finance.billing.returns.warehouseAllocations' | translate
+                        }}</span>
                         @for (alloc of line.allocations; track alloc.warehouseId) {
                           <span class="text-xs text-surface-600 dark:text-surface-400">
                             {{ alloc.warehouseName || alloc.warehouseId }}: {{ alloc.allocated }}
@@ -147,10 +173,16 @@
                   <ng-template pTemplate="header">
                     <tr>
                       <th class="w-12">#</th>
-                      <th>Producto</th>
-                      <th class="w-28 text-right">Cantidad</th>
-                      <th class="w-36 text-right">Precio Unit.</th>
-                      <th class="w-36 text-right">Subtotal</th>
+                      <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                      <th class="w-28 text-right">
+                        {{ 'finance.billing.returns.quantity' | translate }}
+                      </th>
+                      <th class="w-36 text-right">
+                        {{ 'finance.billing.returns.unitPrice' | translate }}
+                      </th>
+                      <th class="w-36 text-right">
+                        {{ 'finance.billing.returns.subtotal' | translate }}
+                      </th>
                     </tr>
                   </ng-template>
                   <ng-template pTemplate="body" let-line let-index="rowIndex">
@@ -168,10 +200,10 @@
                       </td>
                       <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
                       <td class="text-right font-mono text-sm">
-                        {{ line.unitPrice | number: '1.2-2' }}
+                        {{ line.unitPrice | localizedNumber: '1.2-2' }}
                       </td>
                       <td class="text-right font-mono font-semibold text-sm">
-                        {{ line.quantity * line.unitPrice | number: '1.2-2' }}
+                        {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
                       </td>
                     </tr>
                     @if (line.allocations && line.allocations.length > 0) {
@@ -180,8 +212,11 @@
                           <div
                             class="flex flex-col gap-1 pl-4 border-l-2 border-surface-200 dark:border-surface-700 ml-2"
                           >
-                            <span class="text-xs font-medium text-surface-500 dark:text-surface-400"
-                              >Asignaciones a almacén:</span
+                            <span
+                              class="text-xs font-medium text-surface-500 dark:text-surface-400"
+                              >{{
+                                'finance.billing.returns.warehouseAllocations' | translate
+                              }}</span
                             >
                             @for (alloc of line.allocations; track alloc.warehouseId) {
                               <span class="text-xs text-surface-600 dark:text-surface-400">

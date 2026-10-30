@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import {
@@ -19,6 +20,7 @@ import { MessageService } from 'primeng/api';
   selector: 'app-change-password-dialog',
   standalone: true,
   imports: [
+    TranslatePipe,
     ShortcutDirective,
     ReactiveFormsModule,
     NgClass,

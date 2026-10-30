@@ -5,12 +5,15 @@
     }
     @if (user(); as currentUser) {
       <div class="flex flex-col gap-6">
-        <app-page-header title="Detalles del Usuario" subtitle="Información completa del usuario" />
+        <app-page-header
+          [title]="'users.profile.user.details' | translate"
+          [subtitle]="'users.profile.complete.user.information' | translate"
+        />
         <app-details-card>
           <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
             <div actions class="flex gap-3">
               <p-button
-                label="Volver"
+                [label]="'users.profile.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -19,7 +22,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Editar"
+                  [label]="'users.profile.edit' | translate"
                   icon="pi pi-pencil"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onEdit()"
@@ -27,7 +30,7 @@
                 />
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Cambiar Contraseña"
+                  [label]="'users.profile.change.password' | translate"
                   icon="pi pi-lock"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); showChangePasswordDialog.set(true)"
@@ -35,7 +38,7 @@
                 />
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Cambiar Correo"
+                  [label]="'users.profile.change.email' | translate"
                   icon="pi pi-envelope"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); showChangeEmailDialog.set(true)"
@@ -45,37 +48,62 @@
             </div>
           </app-details-card-header>
           <div class="p-4 sm:p-6">
-            <div class="mb-6"><app-user-avatar [userId]="currentUser.id" [photoPath]="currentUser.photoPath" [name]="currentUser.userName" size="xlarge" /></div>
+            <div class="mb-6">
+              <app-user-avatar
+                [userId]="currentUser.id"
+                [photoPath]="currentUser.photoPath"
+                [name]="currentUser.userName"
+                size="xlarge"
+              />
+            </div>
             <app-details-info-grid [columns]="2" [fillLastRow]="true">
-              <app-details-info-field label="Nombre" [value]="currentUser.firstName" />
-              <app-details-info-field label="Apellidos" [value]="currentUser.lastName" />
-              <app-details-info-field label="Usuario" [value]="currentUser.userName" />
-              <app-details-info-field label="Estado" type="badge"
+              <app-details-info-field
+                [label]="'users.profile.first.name' | translate"
+                [value]="currentUser.firstName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.last.name' | translate"
+                [value]="currentUser.lastName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.user' | translate"
+                [value]="currentUser.userName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.language' | translate"
+                [value]="currentUser.language === 'en' ? 'English' : 'Español'"
+              />
+              <app-details-info-field [label]="'users.profile.status' | translate" type="badge"
                 ><app-status-badge [active]="currentUser.active"
               /></app-details-info-field>
               <app-details-info-field
-                label="Email Verificado"
-                [value]="currentUser.emailVerified ? 'Verificado' : 'No verificado'"
+                [label]="'users.profile.verified.email' | translate"
+                [value]="
+                  currentUser.emailVerified
+                    ? ('auth.profile.verified' | translate)
+                    : 'No verificado'
+                "
               />
               <app-details-info-field
-                label="Fecha de Creación"
+                [label]="'users.profile.created.on' | translate"
                 [value]="(currentUser.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
+                [label]="'users.profile.last.updated' | translate"
                 [value]="(currentUser.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>
         </app-details-card>
         <app-details-card>
-          <app-details-card-header title="Contacto" />
+          <app-details-card-header [title]="'users.profile.contact' | translate" />
           <div class="p-4 sm:p-6 flex flex-col gap-6">
             <section>
               <h3
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
-                <i class="pi pi-envelope text-surface-400"></i>Correo Electrónico
+                <i class="pi pi-envelope text-surface-400"></i
+                >{{ 'users.profile.email.alternate' | translate }}
               </h3>
               <div
                 class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
@@ -89,7 +117,7 @@
               <h3
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
-                <i class="pi pi-phone text-surface-400"></i>Teléfono
+                <i class="pi pi-phone text-surface-400"></i>{{ 'users.profile.phone' | translate }}
               </h3>
               @if (currentUser.phone) {
                 <div
@@ -100,7 +128,7 @@
                 </div>
               } @else {
                 <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
-                  Sin teléfono registrado
+                  {{ 'users.profile.no.phone.registered' | translate }}
                 </p>
               }
             </section>
@@ -109,38 +137,51 @@
               <h3
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
-                <i class="pi pi-map-marker text-surface-400"></i>Dirección
+                <i class="pi pi-map-marker text-surface-400"></i
+                >{{ 'users.profile.address' | translate }}
               </h3>
               @if (currentUser.address; as address) {
                 <app-details-info-grid [columns]="2" [fillLastRow]="true">
-                  <app-details-info-field label="Dirección" [value]="address.street || '—'" />
-                  <app-details-info-field label="Ciudad" [value]="address.city || '—'" />
-                  <app-details-info-field label="Provincia" [value]="address.region || '—'" />
-                  <app-details-info-field label="País" [value]="address.country || '—'" />
                   <app-details-info-field
-                    label="Código postal"
+                    [label]="'users.profile.address' | translate"
+                    [value]="address.street || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.city' | translate"
+                    [value]="address.city || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.region' | translate"
+                    [value]="address.region || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.country' | translate"
+                    [value]="address.country || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.postal.code' | translate"
                     [value]="address.postalCode || '—'"
                   />
                 </app-details-info-grid>
               } @else {
                 <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
-                  Sin dirección registrada
+                  {{ 'users.profile.no.address.registered' | translate }}
                 </p>
               }
             </section>
           </div>
         </app-details-card>
         <app-details-card>
-          <app-details-card-header title="Acceso" />
+          <app-details-card-header [title]="'users.profile.access' | translate" />
           <div class="p-4 sm:p-6">
             <app-details-info-grid [columns]="2" [fillLastRow]="true">
-              <app-details-info-field label="Rol" type="badge"
+              <app-details-info-field [label]="'users.profile.role' | translate" type="badge"
                 ><app-text-badge
                   [label]="currentUser.roleName || currentUser.roleId"
                   variant="label"
               /></app-details-info-field>
               <app-details-info-field
-                label="Departamento"
+                [label]="'users.profile.department' | translate"
                 [value]="currentUser.departmentName || currentUser.departmentId"
               />
             </app-details-info-grid>

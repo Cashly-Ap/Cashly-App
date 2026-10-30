@@ -6,14 +6,14 @@
     [for]="label()"
     class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
   >
-    {{ label() }}
+    {{ label() | translate }}
   </label>
   @if (variant() === 'password') {
     <p-password
       [formControl]="control()"
       [toggleMask]="true"
       [feedback]="false"
-      [placeholder]="placeholder()"
+      [placeholder]="placeholder() | translate"
       styleClass="w-full"
       inputStyleClass="w-full"
     />
@@ -21,7 +21,7 @@
     <input
       [id]="label()"
       [formControl]="control()"
-      [placeholder]="placeholder()"
+      [placeholder]="placeholder() | translate"
       [readonly]="readonly()"
       pInputText
       class="w-full"
@@ -34,7 +34,7 @@
     @if (control().invalid && control().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
-        {{ errorMessage() }}
+        {{ errorMessage() | translate }}
       </small>
     }
   </div>

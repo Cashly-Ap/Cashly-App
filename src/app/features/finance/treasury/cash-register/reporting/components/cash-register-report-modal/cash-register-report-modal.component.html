@@ -1,5 +1,5 @@
 <p-dialog
-  header="Reportes de Caja"
+  [header]="'finance.treasury.cashregister.cashRegisterReports' | translate"
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
@@ -15,7 +15,9 @@
   } @else {
     <div class="flex flex-col gap-5 pt-2">
       <div class="flex flex-col gap-2">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Formato</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+          'finance.treasury.cashregister.format' | translate
+        }}</label>
         <p-selectButton
           [options]="formatOptions"
           [ngModel]="format()"
@@ -27,9 +29,9 @@
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div class="flex flex-col gap-1 sm:col-span-2">
-          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-            >Tipo de Reporte</label
-          >
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+            'finance.treasury.cashregister.reportType' | translate
+          }}</label>
           <p-selectButton
             [options]="typeOptions"
             [ngModel]="reportType()"
@@ -40,25 +42,25 @@
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-            >Desde Fecha</label
-          >
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+            'finance.billing.invoices.startDate2' | translate
+          }}</label>
           <p-datepicker
             [(ngModel)]="dateFrom"
-            dateFormat="dd/mm/yy"
-            placeholder="Seleccione fecha inicial"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.treasury.cashregister.selectStartDate' | translate"
             styleClass="w-full"
             appendTo="body"
           />
         </div>
         <div class="flex flex-col gap-1">
-          <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-            >Hasta Fecha</label
-          >
+          <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+            'finance.billing.invoices.endDate2' | translate
+          }}</label>
           <p-datepicker
             [(ngModel)]="dateTo"
-            dateFormat="dd/mm/yy"
-            placeholder="Seleccione fecha final"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.treasury.cashregister.selectEndDate' | translate"
             styleClass="w-full"
             appendTo="body"
           />
@@ -66,43 +68,49 @@
       </div>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="flex flex-col gap-2">
-          <label for="cash-report-customer" class="text-sm font-medium">Cliente</label>
+          <label for="cash-report-customer" class="text-sm font-medium">{{
+            'shared.customer' | translate
+          }}</label>
           <p-select
             id="cash-report-customer"
-            [options]="customerOptions()"
+            [options]="customerOptions() | translateOptions: true"
             [(ngModel)]="customerId"
             optionLabel="label"
             optionValue="value"
             [filter]="true"
-            filterPlaceholder="Buscar cliente"
+            [filterPlaceholder]="'partners.customers.searchCustomers' | translate"
             styleClass="w-full"
             appendTo="body"
           />
         </div>
         <div class="flex flex-col gap-2">
-          <label for="cash-report-product" class="text-sm font-medium">Producto</label>
+          <label for="cash-report-product" class="text-sm font-medium">{{
+            'finance.billing.returns.product' | translate
+          }}</label>
           <p-select
             id="cash-report-product"
-            [options]="productOptions()"
+            [options]="productOptions() | translateOptions: true"
             [(ngModel)]="productId"
             optionLabel="label"
             optionValue="value"
             [filter]="true"
-            filterPlaceholder="Buscar producto"
+            [filterPlaceholder]="'finance.billing.invoices.searchProducts' | translate"
             styleClass="w-full"
             appendTo="body"
           />
         </div>
         <div class="flex flex-col gap-2">
-          <label for="cash-report-category" class="text-sm font-medium">Categoría</label>
+          <label for="cash-report-category" class="text-sm font-medium">{{
+            'finance.billing.invoices.category' | translate
+          }}</label>
           <p-select
             id="cash-report-category"
-            [options]="categoryOptions()"
+            [options]="categoryOptions() | translateOptions: true"
             [(ngModel)]="categoryId"
             optionLabel="label"
             optionValue="value"
             [filter]="true"
-            filterPlaceholder="Buscar categoría"
+            [filterPlaceholder]="'finance.billing.invoices.searchCategories' | translate"
             styleClass="w-full"
             appendTo="body"
           />
@@ -110,7 +118,7 @@
       </div>
       @if (invalidDateRange()) {
         <small class="text-red-600 dark:text-red-400">
-          La fecha inicial no puede ser posterior a la fecha final.
+          {{ 'finance.treasury.cashregister.theStartDateCannotBeLaterThanTheEndDate' | translate }}
         </small>
       }
     </div>
@@ -120,13 +128,17 @@
     <div class="flex gap-2 justify-end">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         [text]="true"
         severity="secondary"
         (onClick)="onHide()"
       />
       <p-button
-        [label]="format() === 'PDF' ? 'Generar PDF' : 'Exportar Excel'"
+        [label]="
+          format() === 'PDF'
+            ? ('finance.billing.invoices.generatePdf' | translate)
+            : 'Exportar Excel'
+        "
         [icon]="format() === 'PDF' ? 'pi pi-file-pdf' : 'pi pi-file-excel'"
         (onClick)="generateReport()"
         [disabled]="!dateFrom() || !dateTo() || invalidDateRange()"

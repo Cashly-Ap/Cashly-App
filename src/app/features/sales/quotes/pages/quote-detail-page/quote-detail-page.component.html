@@ -6,18 +6,18 @@
     @if (quote(); as currentQuote) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles del Presupuesto"
-          subtitle="Información completa del presupuesto"
+          [title]="'sales.quotes.quoteDetails2' | translate"
+          [subtitle]="'sales.quotes.completeQuoteInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header
-            [title]="'Presupuesto #' + currentQuote.quoteNumber"
+            [title]="('sales.quotes.quote2' | translate) + currentQuote.quoteNumber"
             [subtitle]="currentQuote.customerName"
           >
             <div actions class="flex gap-3 flex-wrap">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -29,7 +29,7 @@
                     <p-button
                       [appRequiredPermissions]="['INVENTORY:READ']"
                       [appPermission]="'UPDATE'"
-                      label="Editar"
+                      [label]="'finance.billing.invoices.edit' | translate"
                       icon="pi pi-pencil"
                       [link]="true"
                       (onClick)="actionsMenu.hide(); onEdit()"
@@ -43,7 +43,7 @@
                   class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg"
                 >
                   <i class="pi pi-check-circle"></i>
-                  <span>Este presupuesto fue convertido a pedido</span>
+                  <span>{{ 'sales.quotes.thisQuoteWasConvertedToAnOrder' | translate }}</span>
                 </span>
               }
               @if (currentQuote.status === QuoteStatus.CONVERTED_TO_INVOICE) {
@@ -51,7 +51,7 @@
                   class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg"
                 >
                   <i class="pi pi-check-circle"></i>
-                  <span>Este presupuesto fue convertido a factura</span>
+                  <span>{{ 'sales.quotes.thisQuoteWasConvertedToAnInvoice' | translate }}</span>
                 </span>
               }
               @if (currentQuote.status === QuoteStatus.CANCELLED) {
@@ -59,7 +59,7 @@
                   class="flex items-center gap-2 text-sm text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 px-3 py-2 rounded-lg"
                 >
                   <i class="pi pi-ban"></i>
-                  <span>Presupuesto cancelado</span>
+                  <span>{{ 'sales.quotes.quoteCancelled' | translate }}</span>
                 </span>
               }
             </div>
@@ -68,42 +68,51 @@
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
               <app-details-info-field
-                label="Número de Presupuesto"
+                [label]="'sales.quotes.quoteNumber' | translate"
                 [value]="'#' + currentQuote.quoteNumber"
                 type="code"
               />
-              <app-details-info-field label="Estado" type="badge">
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
                 <app-text-badge
-                  [label]="getStatusLabel(currentQuote.status)"
+                  [label]="getStatusLabel(currentQuote.status) | translate"
                   [variant]="getStatusVariant(currentQuote.status)"
                 />
               </app-details-info-field>
-              <app-details-info-field label="Cliente" [value]="currentQuote.customerName" />
-              <app-details-info-field label="RIF" [value]="currentQuote.customerRif" />
               <app-details-info-field
-                label="Total"
-                [value]="(currentQuote.subtotal | number: '1.2-2') || ''"
+                [label]="'shared.customer' | translate"
+                [value]="currentQuote.customerName"
+              />
+              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="currentQuote.customerRif" />
+              <app-details-info-field
+                [label]="'shared.total' | translate"
+                [value]="(currentQuote.subtotal | localizedNumber: '1.2-2') || ''"
                 type="currency"
               />
               <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(currentQuote.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentQuote.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Última Actualización"
-                [value]="(currentQuote.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(currentQuote.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
           </div>
         </app-details-card>
 
         @if (currentQuote.notes) {
-          <app-details-section-card title="Notas" icon="pi-align-left">
+          <app-details-section-card
+            [title]="'finance.billing.invoices.notes' | translate"
+            icon="pi-align-left"
+          >
             <p class="text-sm whitespace-pre-wrap">{{ currentQuote.notes }}</p>
           </app-details-section-card>
         }
 
-        <app-details-section-card title="Líneas del Presupuesto" icon="pi-list">
+        <app-details-section-card [title]="'sales.quotes.quoteLines' | translate" icon="pi-list">
           @if (currentQuote.lines && currentQuote.lines.length > 0) {
             <div class="flex flex-col gap-3 md:hidden">
               @for (line of currentQuote.lines; track line.id) {
@@ -120,17 +129,23 @@
                   </div>
                   <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Cantidad</span>
-                      <span class="font-mono">{{ line.quantity | number: '1.0-3' }}</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.quantity' | translate
+                      }}</span>
+                      <span class="font-mono">{{ line.quantity | localizedNumber: '1.0-3' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Precio Unit.</span>
-                      <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.unitPrice' | translate
+                      }}</span>
+                      <span class="font-mono">{{ line.unitPrice | localizedNumber: '1.2-2' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Subtotal</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.subtotal' | translate
+                      }}</span>
                       <span class="font-mono font-semibold">{{
-                        line.subtotal | number: '1.2-2'
+                        line.subtotal | localizedNumber: '1.2-2'
                       }}</span>
                     </div>
                   </div>
@@ -139,18 +154,22 @@
               <div
                 class="flex justify-between text-sm font-semibold pt-2 border-t border-surface-200 dark:border-surface-700"
               >
-                <span>Total:</span>
-                <span class="font-mono text-lg">{{ currentQuote.subtotal | number: '1.2-2' }}</span>
+                <span>{{ 'finance.billing.returns.total' | translate }}</span>
+                <span class="font-mono text-lg">{{
+                  currentQuote.subtotal | localizedNumber: '1.2-2'
+                }}</span>
               </div>
             </div>
             <div class="hidden md:block overflow-x-auto">
               <p-table [value]="currentQuote.lines" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Producto</th>
-                    <th class="text-right">Cantidad</th>
-                    <th class="text-right">Precio Unit.</th>
-                    <th class="text-right">Subtotal</th>
+                    <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="text-right">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                    <th class="text-right">
+                      {{ 'finance.billing.returns.unitPrice' | translate }}
+                    </th>
+                    <th class="text-right">{{ 'finance.billing.returns.subtotal' | translate }}</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-line>
@@ -166,24 +185,26 @@
                       </div>
                     </td>
                     <td class="text-right">
-                      <span class="font-mono">{{ line.quantity | number: '1.0-3' }}</span>
+                      <span class="font-mono">{{ line.quantity | localizedNumber: '1.0-3' }}</span>
                     </td>
                     <td class="text-right">
-                      <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                      <span class="font-mono">{{ line.unitPrice | localizedNumber: '1.2-2' }}</span>
                     </td>
                     <td class="text-right">
                       <span class="font-mono font-semibold">{{
-                        line.subtotal | number: '1.2-2'
+                        line.subtotal | localizedNumber: '1.2-2'
                       }}</span>
                     </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
                   <tr>
-                    <td colspan="3" class="text-right font-semibold">Total:</td>
+                    <td colspan="3" class="text-right font-semibold">
+                      {{ 'finance.billing.returns.total' | translate }}
+                    </td>
                     <td class="text-right">
                       <span class="font-mono font-bold text-lg">
-                        {{ currentQuote.subtotal | number: '1.2-2' }}
+                        {{ currentQuote.subtotal | localizedNumber: '1.2-2' }}
                       </span>
                     </td>
                   </tr>
@@ -191,7 +212,10 @@
               </p-table>
             </div>
           } @else {
-            <app-empty-state icon="pi-inbox" message="No hay líneas en este presupuesto" />
+            <app-empty-state
+              icon="pi-inbox"
+              [message]="'sales.quotes.thisQuoteHasNoLines' | translate"
+            />
           }
         </app-details-section-card>
       </div>

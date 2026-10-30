@@ -1,15 +1,17 @@
 <div class="space-y-4">
   <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
     <div>
-      <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 m-0">Mis Pagos</h3>
+      <h3 class="text-lg font-bold text-surface-900 dark:text-surface-0 m-0">
+        {{ 'finance.treasury.receivables.myPayments' | translate }}
+      </h3>
       <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
-        Historial de pagos registrados
+        {{ 'finance.treasury.receivables.recordedPaymentHistory' | translate }}
       </p>
     </div>
     <p-button
       [appPermission]="'UPDATE'"
       severity="contrast"
-      label="Actualizar"
+      [label]="'finance.treasury.receivables.refresh' | translate"
       icon="pi pi-refresh"
       (onClick)="loadPayments()"
       [loading]="loading()"
@@ -19,21 +21,21 @@
   <div class="flex flex-wrap gap-2 mb-4">
     <p-button
       severity="contrast"
-      label="Todos"
+      [label]="'finance.treasury.paymentmethods.all' | translate"
       [outlined]="statusFilter() !== null"
       size="small"
       (onClick)="filterByStatus(null)"
     />
     <p-button
       severity="contrast"
-      label="Aplicados"
+      [label]="'finance.treasury.receivables.applied2' | translate"
       [outlined]="statusFilter() !== 'APPLIED'"
       size="small"
       (onClick)="filterByStatus('APPLIED')"
     />
     <p-button
       severity="contrast"
-      label="Cancelados"
+      [label]="'finance.treasury.receivables.canceled2' | translate"
       [outlined]="statusFilter() !== 'CANCELLED'"
       size="small"
       (onClick)="filterByStatus('CANCELLED')"
@@ -43,16 +45,18 @@
   @if (loading() && payments().length === 0) {
     <div class="flex flex-col items-center justify-center py-16">
       <i class="pi pi-spin pi-spinner text-3xl text-surface-500 mb-4"></i>
-      <p class="text-surface-500">Cargando pagos...</p>
+      <p class="text-surface-500">
+        {{ 'finance.treasury.receivables.loadingPayments' | translate }}
+      </p>
     </div>
   } @else if (payments().length === 0) {
     <div class="flex flex-col items-center justify-center py-16">
       <i class="pi pi-inbox text-5xl text-surface-300 mb-4"></i>
       <h4 class="font-bold text-surface-700 dark:text-surface-300 m-0 text-lg">
-        No hay pagos registrados
+        {{ 'finance.treasury.receivables.noPaymentsRegistered2' | translate }}
       </h4>
       <p class="text-surface-500 dark:text-surface-400 m-0 mt-1">
-        Seleccione un cliente y registre un pago
+        {{ 'finance.treasury.receivables.selectACustomerAndRecordAPayment' | translate }}
       </p>
     </div>
   } @else {
@@ -69,12 +73,12 @@
     >
       <ng-template pTemplate="header">
         <tr>
-          <th>N° Pago</th>
-          <th>Factura</th>
-          <th>Monto</th>
-          <th>Método</th>
-          <th>Fecha</th>
-          <th>Estado</th>
+          <th>{{ 'finance.treasury.receivables.paymentNo' | translate }}</th>
+          <th>{{ 'shared.invoice' | translate }}</th>
+          <th>{{ 'shared.amount' | translate }}</th>
+          <th>{{ 'finance.treasury.receivables.method' | translate }}</th>
+          <th>{{ 'finance.billing.invoices.date' | translate }}</th>
+          <th>{{ 'finance.billing.invoices.status' | translate }}</th>
           <th style="width: 60px"></th>
         </tr>
       </ng-template>
@@ -87,19 +91,21 @@
             {{ payment.invoiceNumber }}
           </td>
           <td class="font-semibold font-mono text-green-600 dark:text-green-400">
-            {{ payment.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </td>
           <td class="text-surface-700 dark:text-surface-300">
             {{
-              payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName
+              payment.source === 'CUSTOMER_BALANCE'
+                ? ('finance.billing.invoices.creditBalance' | translate)
+                : payment.paymentMethodName
             }}
           </td>
           <td class="text-surface-600 dark:text-surface-400 text-sm">
-            {{ payment.paymentDate | date: 'dd/MM/yyyy' }}
+            {{ payment.paymentDate | localizedDate: 'dd/MM/yyyy' }}
           </td>
           <td>
             <p-tag
-              [value]="getStatusLabel(payment.status)"
+              [value]="getStatusLabel(payment.status) | translate"
               [severity]="getStatusSeverity(payment.status)"
               [rounded]="true"
             />
@@ -110,7 +116,7 @@
               [rounded]="true"
               [text]="true"
               severity="contrast"
-              pTooltip="Ver detalle"
+              [pTooltip]="'finance.billing.creditnotes.viewDetails' | translate"
               tooltipPosition="top"
               (onClick)="onViewDetail(payment)"
             />
@@ -119,7 +125,9 @@
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="7" class="text-center py-8 text-surface-500">No se encontraron pagos</td>
+          <td colspan="7" class="text-center py-8 text-surface-500">
+            {{ 'finance.treasury.receivables.noPaymentsFound' | translate }}
+          </td>
         </tr>
       </ng-template>
     </p-table>

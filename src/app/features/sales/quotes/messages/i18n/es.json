@@ -1,0 +1,13 @@
+{
+  "sales.quotes.messages.unableToCreateTheQuotePleaseTryAgain": "Error al crear el presupuesto. Por favor, intente nuevamente.",
+  "sales.quotes.messages.unableToUpdateTheQuotePleaseTryAgain": "Error al actualizar el presupuesto. Por favor, intente nuevamente.",
+  "sales.quotes.messages.unableToDeleteTheQuotePleaseTryAgain": "Error al eliminar el presupuesto. Por favor, intente nuevamente.",
+  "sales.quotes.messages.quoteCreatedSuccessfully": "Presupuesto creado exitosamente",
+  "sales.quotes.messages.quoteUpdatedSuccessfully": "Presupuesto actualizado exitosamente",
+  "sales.quotes.messages.quoteDeletedSuccessfully": "Presupuesto eliminado exitosamente",
+  "sales.quotes.messages.unableToLoadTheQuoteItMayNotExist": "Error al cargar el presupuesto. Es posible que no exista.",
+  "sales.quotes.messages.unableToConvertTheQuoteToAnOrderPleaseTryAgain": "Error al convertir el presupuesto a pedido. Por favor, intente nuevamente.",
+  "sales.quotes.messages.quoteConvertedToAnOrderSuccessfully": "Presupuesto convertido a pedido exitosamente",
+  "sales.quotes.messages.unableToConvertTheQuoteToAnInvoicePleaseTryAgain": "Error al convertir el presupuesto a factura. Por favor, intente nuevamente.",
+  "sales.quotes.messages.quoteConvertedToAnInvoiceSuccessfully": "Presupuesto convertido a factura exitosamente"
+}

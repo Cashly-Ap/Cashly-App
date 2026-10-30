@@ -4,7 +4,7 @@
   (onShow)="loadFilters()"
   [modal]="true"
   [style]="{ width: '500px' }"
-  header="Historial de Movimientos"
+  [header]="'inventory.warehouses.movementHistory2' | translate"
   [draggable]="false"
   [resizable]="false"
 >
@@ -15,50 +15,50 @@
   } @else {
     <div class="flex flex-col gap-4 pt-2">
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Almacén</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'inventory.warehouses.warehouse' | translate }}</label>
         <p-select
-          [options]="warehouseOptions()"
+          [options]="warehouseOptions() | translateOptions: true"
           [(ngModel)]="warehouseId"
           optionLabel="label"
           optionValue="value"
           appendTo="body"
-          placeholder="Todos los almacenes"
+          [placeholder]="'inventory.warehouses.allWarehouses' | translate"
           styleClass="w-full"
         />
       </div>
 
       <div class="flex flex-col gap-1">
         <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-          >Tipo de Movimiento</label
+          >{{ 'inventory.warehouses.movementType' | translate }}</label
         >
         <p-select
-          [options]="movementTypeOptions"
+          [options]="movementTypeOptions | translateOptions"
           [(ngModel)]="movementType"
           optionLabel="label"
           optionValue="value"
           appendTo="body"
-          placeholder="Todos los tipos"
+          [placeholder]="'finance.billing.invoices.allTypes' | translate"
           styleClass="w-full"
         />
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Desde</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'finance.billing.invoices.from' | translate }}</label>
         <p-datepicker
           [(ngModel)]="from"
           dateFormat="dd/mm/yy"
-          placeholder="Seleccione fecha inicial"
+          [placeholder]="'finance.treasury.cashregister.selectStartDate' | translate"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">Hasta</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'finance.billing.invoices.to' | translate }}</label>
         <p-datepicker
           [(ngModel)]="to"
           dateFormat="dd/mm/yy"
-          placeholder="Seleccione fecha final"
+          [placeholder]="'finance.treasury.cashregister.selectEndDate' | translate"
           styleClass="w-full"
           appendTo="body"
         />
@@ -71,7 +71,7 @@
       <p-button
         [appPermissionModule]="'INVENTORY'"
         [appPermission]="'EXPORT'"
-        label="Excel"
+        [label]="'finance.treasury.cashregister.excel' | translate"
         icon="pi pi-file-excel"
         (onClick)="generateExcel()"
         severity="success"
@@ -80,7 +80,7 @@
       <p-button
         [appPermissionModule]="'INVENTORY'"
         [appPermission]="'EXPORT'"
-        label="Ver PDF"
+        [label]="'inventory.warehouses.viewPdf' | translate"
         icon="pi pi-file-pdf"
         (onClick)="generatePdf()"
         severity="primary"

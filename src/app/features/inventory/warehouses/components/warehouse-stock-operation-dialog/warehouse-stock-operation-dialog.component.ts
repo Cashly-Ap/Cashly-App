@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -32,7 +35,7 @@ export type WarehouseStockOperation = 'entry' | 'exit';
 @Component({
   selector: 'app-warehouse-stock-operation-dialog',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedCurrencyPipe,
     ShortcutDirective,
     CurrencyPipe,
     ReactiveFormsModule,

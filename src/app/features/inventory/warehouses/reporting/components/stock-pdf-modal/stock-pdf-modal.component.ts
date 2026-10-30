@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -22,7 +24,7 @@ import { StockPdfFilters } from '@features/inventory/warehouses/reporting/models
   selector: 'app-stock-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,

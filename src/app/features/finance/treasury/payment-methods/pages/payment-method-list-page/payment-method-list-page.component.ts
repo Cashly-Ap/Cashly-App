@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -42,6 +45,8 @@ import { PaymentMethodList } from '@features/finance/treasury/payment-methods/mo
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -65,7 +70,7 @@ import { PaymentMethodList } from '@features/finance/treasury/payment-methods/mo
     StatusBadgeComponent,
   ],
   templateUrl: './payment-method-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class PaymentMethodListPageComponent implements OnInit {
   private service = inject(PaymentMethodApplicationService);

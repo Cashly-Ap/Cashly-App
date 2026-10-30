@@ -1,3 +1,6 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
@@ -22,6 +25,9 @@ import { ReturnApplicationService } from '@features/finance/billing/returns/serv
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     PermissionDirective,
     DatePipe,
     DecimalPipe,
@@ -37,7 +43,7 @@ import { ReturnApplicationService } from '@features/finance/billing/returns/serv
     PageHeaderComponent,
     TextBadgeComponent,
   ],
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   templateUrl: './return-detail-page.component.html',
 })
 export class ReturnDetailPageComponent implements OnInit {

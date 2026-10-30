@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -55,7 +58,7 @@ import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages
   selector: 'app-customers-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -81,7 +84,7 @@ import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages
     TextBadgeComponent,
   ],
   templateUrl: './customers-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class CustomersListPageComponent implements OnInit {
   private service = inject(CustomerApplicationService);

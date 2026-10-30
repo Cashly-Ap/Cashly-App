@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
@@ -12,7 +13,14 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   selector: 'app-payment-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ShortcutDirective, PermissionDirective, CommonModule, DialogModule, ButtonModule],
+  imports: [
+    TranslatePipe,
+    ShortcutDirective,
+    PermissionDirective,
+    CommonModule,
+    DialogModule,
+    ButtonModule,
+  ],
   templateUrl: './payment-pdf-modal.component.html',
 })
 export class PaymentPdfModalComponent {

@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,7 +13,7 @@ import { Popover, PopoverModule } from 'primeng/popover';
 @Component({
   selector: 'app-detail-actions-menu',
   standalone: true,
-  imports: [ButtonModule, PopoverModule],
+  imports: [TranslatePipe, ButtonModule, PopoverModule],
   templateUrl: './detail-actions-menu.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

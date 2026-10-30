@@ -12,14 +12,14 @@
           [rounded]="true"
           severity="secondary"
           (onClick)="toggleMobileMenu()"
-          ariaLabel="Menú"
+          [ariaLabel]="'navigation.menu' | translate"
         />
       </div>
 
       <button
         type="button"
         class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2 cursor-pointer border-0 bg-transparent p-0 text-inherit rounded focus-visible:outline-2 focus-visible:outline-offset-4"
-        [attr.aria-label]="companyName() + ' — Ir al dashboard'"
+        [attr.aria-label]="companyName() + ' — ' + ('navigation.labels.goToDashboard' | translate)"
         (click)="goToDashboard()"
       >
         @if (companyService.logoUrl(); as logo) {
@@ -53,7 +53,7 @@
         <button
           #userButton
           (click)="toggleUserMenu($event)"
-          aria-label="Abrir menú de usuario"
+          [attr.aria-label]="'navigation.openUserMenu' | translate"
           class="hidden sm:flex items-center gap-2 p-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
         >
           <app-user-avatar
@@ -64,7 +64,7 @@
           <span
             class="hidden min-[1800px]:inline font-medium text-surface-900 dark:text-surface-100 max-w-32 truncate"
           >
-            {{ currentUser()?.userName || 'Usuario' }}
+            {{ currentUser()?.userName || ('auth.profile.user' | translate) }}
           </span>
           <i
             class="hidden! min-[1800px]:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-xs"
@@ -98,7 +98,7 @@
           } @else {
             <img
               [ngSrc]="logoSrc"
-              alt="Logo Cashly"
+              [alt]="'core.layouts.labels.cashlyLogo' | translate"
               width="120"
               height="32"
               class="h-8 w-auto object-contain"
@@ -111,7 +111,7 @@
           [rounded]="true"
           severity="secondary"
           (onClick)="closeMobileMenu()"
-          ariaLabel="Cerrar menú"
+          [ariaLabel]="'navigation.closeMenu' | translate"
         />
       </div>
     </ng-template>
@@ -127,7 +127,7 @@
             />
             <div>
               <p class="font-bold text-surface-900 dark:text-surface-100">
-                {{ currentUser()?.userName || 'Usuario' }}
+                {{ currentUser()?.userName || ('auth.profile.user' | translate) }}
               </p>
               <p class="text-sm text-surface-500 dark:text-surface-400">
                 {{ currentUser()?.email || '' }}
@@ -150,7 +150,7 @@
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
           >
             <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
-            <span class="font-medium">Perfil</span>
+            <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
           </button>
           @if (canViewCompany()) {
             <button
@@ -158,18 +158,18 @@
               pRipple
               class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
             >
-              <i class="pi pi-building"></i><span class="font-medium">Empresa</span>
+              <i class="pi pi-building"></i><span class="font-medium">{{ 'platform.company.company' | translate }}</span>
             </button>
           }
           <button (click)="goToPreferences()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
-            <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">Configuración</span>
+            <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
           </button>
           <button
             (click)="goToSecurity(); closeMobileMenu()"
             pRipple
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
           >
-            <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
+            <i class="pi pi-shield"></i><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
           </button>
           <button
             (click)="logout()"
@@ -177,7 +177,7 @@
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
           >
             <i class="pi pi-sign-out"></i>
-            <span class="font-medium">Cerrar Sesión</span>
+            <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
           </button>
         </div>
       </div>
@@ -192,7 +192,7 @@
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
       >
         <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
-        <span class="font-medium">Perfil</span>
+        <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
       </button>
       @if (canViewCompany()) {
         <button
@@ -200,18 +200,18 @@
           pRipple
           class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
         >
-          <i class="pi pi-building"></i><span class="font-medium">Empresa</span>
+          <i class="pi pi-building"></i><span class="font-medium">{{ 'platform.company.company' | translate }}</span>
         </button>
       }
       <button (click)="goToPreferences()" pRipple class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer">
-        <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">Configuración</span>
+        <i class="pi pi-cog" aria-hidden="true"></i><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
       </button>
       <button
         (click)="goToSecurity()"
         pRipple
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
       >
-        <i class="pi pi-shield"></i><span class="font-medium">Seguridad</span>
+        <i class="pi pi-shield"></i><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
       </button>
       <button
         (click)="logout()"
@@ -219,7 +219,7 @@
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
       >
         <i class="pi pi-sign-out"></i>
-        <span class="font-medium">Cerrar Sesión</span>
+        <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
       </button>
     </div>
   </p-popover>

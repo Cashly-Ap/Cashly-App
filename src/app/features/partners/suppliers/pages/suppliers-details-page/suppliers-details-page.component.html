@@ -6,8 +6,8 @@
     @if (supplier(); as currentSupplier) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles del Proveedor"
-          subtitle="Información completa del proveedor"
+          [title]="'partners.suppliers.supplierDetails' | translate"
+          [subtitle]="'partners.suppliers.completeSupplierInformation' | translate"
         />
 
         <app-details-card>
@@ -17,7 +17,7 @@
           >
             <div actions class="flex gap-3">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -26,7 +26,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Editar"
+                  [label]="'finance.billing.invoices.edit' | translate"
                   icon="pi pi-pencil"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onEdit()"
@@ -37,25 +37,25 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Código" [value]="'#' + currentSupplier.code" />
-              <app-details-info-field label="Razón Social" [value]="currentSupplier.legalName" />
-              <app-details-info-field label="Alias" [value]="currentSupplier.alias" />
-              <app-details-info-field label="RIF" [value]="currentSupplier.rif" />
-              <app-details-info-field label="Tipo" type="badge"
+              <app-details-info-field [label]="'finance.treasury.paymentmethods.code' | translate" [value]="'#' + currentSupplier.code" />
+              <app-details-info-field [label]="'partners.suppliers.legalName' | translate" [value]="currentSupplier.legalName" />
+              <app-details-info-field [label]="'partners.suppliers.alias' | translate" [value]="currentSupplier.alias" />
+              <app-details-info-field [label]="'partners.suppliers.labels.taxId' | translate" [value]="currentSupplier.rif" />
+              <app-details-info-field [label]="'shared.type' | translate" type="badge"
                 ><app-text-badge [label]="getTypeLabel(currentSupplier.type)" variant="label"
               /></app-details-info-field>
-              <app-details-info-field label="Estado" type="badge"
+              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge"
                 ><app-status-badge [active]="currentSupplier.active"
               /></app-details-info-field>
               <app-details-info-field
-                label="Fecha de Registro"
-                [value]="(currentSupplier.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'partners.suppliers.registrationDate' | translate"
+                [value]="(currentSupplier.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
             </app-details-info-grid>
             @if (currentSupplier.notes) {
               <div class="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
                 <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1">
-                  Notas
+                  {{ 'finance.billing.invoices.notes' | translate }}
                 </p>
                 <p class="text-sm text-surface-600 dark:text-surface-400 whitespace-pre-wrap">
                   {{ currentSupplier.notes }}
@@ -66,7 +66,7 @@
         </app-details-card>
 
         <app-details-card>
-          <app-details-card-header title="Contacto" />
+          <app-details-card-header [title]="'partners.suppliers.contact' | translate" />
           <div class="p-4 sm:p-6 flex flex-col gap-6">
             <!-- Emails -->
             <section>
@@ -74,11 +74,11 @@
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
                 <i class="pi pi-envelope text-surface-400"></i>
-                Correos Electrónicos
+                {{ 'partners.suppliers.emailAddresses' | translate }}
               </h3>
               @if (currentSupplier.emails.length === 0) {
                 <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
-                  Sin correos registrados
+                  {{ 'partners.suppliers.noEmailAddressesRegistered' | translate }}
                 </p>
               }
               @for (email of currentSupplier.emails; track email.id) {
@@ -99,11 +99,11 @@
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
                 <i class="pi pi-phone text-surface-400"></i>
-                Teléfonos
+                {{ 'partners.suppliers.phoneNumbers' | translate }}
               </h3>
               @if (currentSupplier.phones.length === 0) {
                 <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
-                  Sin teléfonos registrados
+                  {{ 'partners.suppliers.noPhoneNumbersRegistered' | translate }}
                 </p>
               }
               @for (phone of currentSupplier.phones; track phone.id) {
@@ -124,11 +124,11 @@
                 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
               >
                 <i class="pi pi-map-marker text-surface-400"></i>
-                Direcciones
+                {{ 'partners.suppliers.addresses' | translate }}
               </h3>
               @if (currentSupplier.addresses.length === 0) {
                 <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
-                  Sin direcciones registradas
+                  {{ 'partners.suppliers.noAddressesRegistered' | translate }}
                 </p>
               }
               @for (address of currentSupplier.addresses; track address.id) {
@@ -154,7 +154,7 @@
                         @if (address.billing) {
                           <span
                             class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
-                            >Facturación</span
+                            >{{ 'finance.treasury.cashregister.billing' | translate }}</span
                           >
                         }
                         <span
@@ -165,7 +165,7 @@
                             'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active,
                           }"
                         >
-                          {{ address.active ? 'Activa' : 'Inactiva' }}
+                          {{ address.active ? ('partners.suppliers.active' | translate) : ('partners.suppliers.inactive' | translate) }}
                         </span>
                       </div>
                     </div>

@@ -14,7 +14,7 @@
     </div>
   } @else if (pdfUrl()) {
     <iframe
-      title="Documento PDF"
+      [title]="'shared.pdfDocument' | translate"
       [src]="pdfUrl()"
       width="100%"
       height="600px"
@@ -22,7 +22,7 @@
     ></iframe>
   } @else {
     <div class="flex justify-center items-center h-64 text-surface-500">
-      <p>Seleccione los filtros y cargue el PDF.</p>
+      <p>{{ 'shared.selectFiltersAndLoadThePdf' | translate }}</p>
     </div>
   }
 </p-dialog>

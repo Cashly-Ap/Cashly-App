@@ -1,3 +1,7 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -45,6 +49,9 @@ import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/ord
     `,
   ],
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     DialogModule,
@@ -60,6 +67,8 @@ import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/ord
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConvertToInvoiceDialogComponent implements OnChanges {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly paymentMethodApi = inject(PaymentMethodApiService);

@@ -4,24 +4,24 @@
       <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
         <app-page-header
           class="min-w-0"
-          title="Saldo del Cliente"
-          subtitle="Resumen de saldo y movimientos"
+          [title]="'partners.customers.customerBalance' | translate"
+          [subtitle]="'partners.customers.balanceAndMovementsOverview' | translate"
         />
         <div class="flex flex-col gap-2 sm:flex-row">
           <p-button
-            label="Buscar cliente"
+            [label]="'finance.billing.creditnotes.back' | translate"
+            icon="pi pi-arrow-left"
+            severity="contrast"
+            styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
+            (onClick)="onBack()"
+          />
+          <p-button
+            [label]="'partners.customers.searchCustomers' | translate"
             icon="pi pi-search"
             severity="secondary"
             [outlined]="true"
             styleClass="w-full sm:w-auto"
             (onClick)="customerPickerVisible.set(true)"
-          />
-          <p-button
-            label="Volver"
-            icon="pi pi-arrow-left"
-            severity="contrast"
-            styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
-            (onClick)="onBack()"
           />
         </div>
       </div>
@@ -39,7 +39,7 @@
         <div class="p-3 sm:p-5 lg:p-6">
           <div class="mb-4 flex items-center justify-between gap-3">
             <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100">
-              Historial de Movimientos
+              {{ 'inventory.warehouses.movementHistory2' | translate }}
             </h2>
             <p-button
               appShortcut="filter"
@@ -47,20 +47,20 @@
               icon="pi pi-filter"
               [outlined]="true"
               severity="secondary"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
-              ariaLabel="Filtros"
+              [ariaLabel]="'shared.filters' | translate"
               styleClass="shrink-0"
               (onClick)="filterPopover.toggle($event)"
             />
             <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
               <div class="flex w-[calc(100vw-2rem)] max-w-[380px] flex-col gap-4 p-1">
                 <div class="flex items-center justify-between gap-3">
-                  <span class="text-sm font-semibold">Filtros de movimientos</span>
+                  <span class="text-sm font-semibold">{{ 'partners.customers.movementFilters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -72,7 +72,7 @@
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div class="flex flex-col gap-1">
                     <label for="balance-filter-from" class="text-xs font-medium text-surface-500"
-                      >Desde</label
+                      >{{ 'finance.billing.invoices.from' | translate }}</label
                     >
                     <p-datepicker
                       inputId="balance-filter-from"
@@ -80,13 +80,13 @@
                       (ngModelChange)="filterDateFrom.set($event)"
                       [showIcon]="true"
                       dateFormat="dd/mm/yy"
-                      placeholder="Fecha inicial"
+                      [placeholder]="'finance.billing.invoices.startDate' | translate"
                       styleClass="w-full"
                     />
                   </div>
                   <div class="flex flex-col gap-1">
                     <label for="balance-filter-to" class="text-xs font-medium text-surface-500"
-                      >Hasta</label
+                      >{{ 'finance.billing.invoices.to' | translate }}</label
                     >
                     <p-datepicker
                       inputId="balance-filter-to"
@@ -94,7 +94,7 @@
                       (ngModelChange)="filterDateTo.set($event)"
                       [showIcon]="true"
                       dateFormat="dd/mm/yy"
-                      placeholder="Fecha final"
+                      [placeholder]="'finance.billing.invoices.endDate' | translate"
                       styleClass="w-full"
                     />
                   </div>
@@ -102,16 +102,16 @@
 
                 <div class="flex flex-col gap-1">
                   <label for="balance-filter-type" class="text-xs font-medium text-surface-500"
-                    >Tipo</label
+                    >{{ 'shared.type' | translate }}</label
                   >
                   <p-select
                     inputId="balance-filter-type"
-                    [options]="transactionTypeOptions"
+                    [options]="transactionTypeOptions | translateOptions"
                     [ngModel]="filterType()"
                     (ngModelChange)="filterType.set($event)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos los tipos"
+                    [placeholder]="'finance.billing.invoices.allTypes' | translate"
                     [showClear]="true"
                     styleClass="w-full"
                   />
@@ -120,7 +120,7 @@
                 <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div class="flex flex-col gap-1">
                     <label for="balance-filter-number" class="text-xs font-medium text-surface-500"
-                      >Número</label
+                      >{{ 'analytics.dashboard.number' | translate }}</label
                     >
                     <input
                       id="balance-filter-number"
@@ -128,14 +128,14 @@
                       type="text"
                       [ngModel]="filterNumber()"
                       (ngModelChange)="filterNumber.set($event)"
-                      placeholder="Ej. INV-001"
+                      [placeholder]="'partners.customers.eGInv001' | translate"
                     />
                   </div>
                   <div class="flex flex-col gap-1">
                     <label
                       for="balance-filter-reference"
                       class="text-xs font-medium text-surface-500"
-                      >Referencia</label
+                      >{{ 'finance.treasury.receivables.reference' | translate }}</label
                     >
                     <input
                       id="balance-filter-reference"
@@ -143,14 +143,14 @@
                       type="text"
                       [ngModel]="filterReference()"
                       (ngModelChange)="filterReference.set($event)"
-                      placeholder="Buscar referencia"
+                      [placeholder]="'partners.customers.searchReference' | translate"
                     />
                   </div>
                 </div>
 
                 <div class="flex flex-col gap-1">
                   <label for="balance-filter-amount" class="text-xs font-medium text-surface-500"
-                    >Monto</label
+                    >{{ 'shared.amount' | translate }}</label
                   >
                   <p-inputnumber
                     inputId="balance-filter-amount"
@@ -169,7 +169,7 @@
                   class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
                 >
                   <p-button
-                    label="Aplicar filtros"
+                    [label]="'partners.customers.applyFilters' | translate"
                     icon="pi pi-check"
                     severity="contrast"
                     (onClick)="applyFilters(); filterPopover.hide()"
@@ -196,7 +196,7 @@
   <app-customer-picker-dialog
     [requireConfirmation]="true"
     [visible]="true"
-    description="Busque y seleccione el cliente para consultar su saldo"
+    [description]="'partners.customers.searchForAndSelectACustomerToViewTheirBalance' | translate"
     (customerSelected)="onCustomerSelected($event)"
     (cancelled)="customerPickerVisible.set(false)"
   />

@@ -1,0 +1,19 @@
+{
+  "core.shortcuts.goToAModule": "Ir a un módulo",
+  "core.shortcuts.availableModules": "Módulos disponibles",
+  "core.shortcuts.navigateResults": "Navegar resultados",
+  "core.shortcuts.selectEnterOpensEscLeavesTheFieldJKNavigateOutsideTheField": "↑/↓ seleccionan · Enter abre · Esc sale del campo · J/K navegan fuera del campo",
+  "core.shortcuts.noModulesAvailable": "No hay módulos disponibles.",
+  "core.shortcuts.down": "bajar ·",
+  "core.shortcuts.up": "subir ·",
+  "core.shortcuts.esc": "Esc",
+  "core.shortcuts.leaveTheField": "salir del campo",
+  "core.shortcuts.unfocusField": "Quitar foco del campo",
+  "core.shortcuts.letterShortcutsWorkWhenYouAreNotTypingYouCanHideThisHelpInSettings": "Las letras funcionan cuando no estás escribiendo. Puedes ocultar esta ayuda en Configuración.",
+  "core.shortcuts.newRecord": "Nuevo registro",
+  "core.shortcuts.openFilters": "Abrir filtros",
+  "core.shortcuts.focusSearch": "Enfocar búsqueda",
+  "core.shortcuts.saveOrAccept": "Guardar o aceptar",
+  "core.shortcuts.cancelOrGoBack": "Cancelar o volver",
+  "core.shortcuts.messages.dialogShortcuts": "Atajos de este diálogo"
+}

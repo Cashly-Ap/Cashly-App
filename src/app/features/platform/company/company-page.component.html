@@ -1,16 +1,20 @@
 <app-form-container>
   <app-form-header
-    title="Editar empresa"
-    subtitle="Datos fiscales, contacto e identidad de tu empresa"
+    [title]="'platform.company.editCompany' | translate"
+    [subtitle]="'platform.company.yourCompanyTaxDetailsContactInformationAndIdentity' | translate"
   />
   @if (loading()) {
-    <app-form-card><div class="p-6" role="status">Cargando empresa…</div></app-form-card>
+    <app-form-card
+      ><div class="p-6" role="status">
+        {{ 'platform.company.loadingCompany' | translate }}
+      </div></app-form-card
+    >
   } @else if (error()) {
     <app-form-card
       ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
-        <p>No pudimos cargar la empresa.</p>
+        <p>{{ 'platform.company.weCouldNotLoadTheCompany' | translate }}</p>
         <p-button
-          label="Reintentar"
+          [label]="'inventory.warehouses.retry' | translate"
           icon="pi pi-refresh"
           [outlined]="true"
           (onClick)="load()"
@@ -21,9 +25,12 @@
       <app-form-card>
         <p-tabs value="general"
           ><p-tablist
-            ><p-tab value="general"><i class="pi pi-building mr-2"></i>Empresa</p-tab
+            ><p-tab value="general"
+              ><i class="pi pi-building mr-2"></i
+              >{{ 'platform.company.company' | translate }}</p-tab
             ><p-tab value="address"
-              ><i class="pi pi-map-marker mr-2"></i>Dirección fiscal</p-tab
+              ><i class="pi pi-map-marker mr-2"></i
+              >{{ 'platform.company.registeredBusinessAddress' | translate }}</p-tab
             ></p-tablist
           >
           <p-tabpanels
@@ -31,11 +38,14 @@
               ><app-tab-content [columns]="2">
                 <app-file-input
                   class="md:col-span-full"
-                  label="Logotipo"
+                  [label]="'platform.company.logo' | translate"
                   [control]="photo"
                   accept="image/png,image/jpeg"
                   [optimizeImage]="true"
-                  helpText="PNG o JPG. La imagen se optimiza automáticamente antes de guardarla."
+                  [helpText]="
+                    'platform.company.pngOrJpgTheImageIsOptimizedAutomaticallyBeforeSaving'
+                      | translate
+                  "
                   (optimizingChange)="logoOptimizing.set($event)"
                   [previewUrl]="removeLogo() ? null : service.logoUrl()"
                   (fileSelected)="removeLogo.set(false)"
@@ -43,20 +53,23 @@
                 />
                 <app-file-input
                   class="md:col-span-full"
-                  label="Logotipo de documentos PDF"
+                  [label]="'platform.company.pdfDocumentLogo' | translate"
                   [control]="pdfPhoto"
                   (optimizingChange)="pdfLogoOptimizing.set($event)"
                   accept="image/png,image/jpeg"
                   [optimizeImage]="true"
-                  helpText="Para facturas, presupuestos, pedidos y todos los PDF. PNG o JPG. La imagen se optimiza automáticamente. Se recortan los márgenes blancos o transparentes y se ajusta sin deformar. Sin imagen propia se usa el logotipo de empresa; si tampoco existe, aparece «Logotipo»."
+                  [helpText]="
+                    'platform.company.forInvoicesQuotesOrdersAndAllPdfsPngOrJpgImagesAreOptimizedAutomaticallyEmptyMarginsAreCroppedAndProportionsArePreservedIfNoDocumentLogoIsSetTheCompanyLogoIsUsedIfNeitherExistsALogoPlaceholderIsDisplayed'
+                      | translate
+                  "
                   [previewUrl]="removePdfLogo() ? null : service.pdfLogoUrl()"
                   (fileSelected)="removePdfLogo.set(false)"
                   (deleteExistingPhoto)="removePdfLogo.set(true)"
                 />
                 <div class="md:col-span-full flex flex-col sm:flex-row sm:items-center gap-3">
                   <p-button
-                    label="Vista previa PDF"
-                    ariaLabel="Vista previa PDF"
+                    [label]="'platform.company.pdfPreview' | translate"
+                    [ariaLabel]="'platform.company.pdfPreview' | translate"
                     icon="pi pi-file-pdf"
                     [outlined]="true"
                     [loading]="previewLoading()"
@@ -66,14 +79,14 @@
                     (onClick)="previewPdf()"
                   />
                   <p class="text-sm text-surface-500">
-                    Comprueba el logotipo en un documento de ejemplo antes de guardar.
+                    {{ 'platform.company.checkTheLogoInASampleDocumentBeforeSaving' | translate }}
                   </p>
                 </div>
                 @for (field of fields; track field.key) {
                   <app-text-input
-                    [label]="field.label"
+                    [label]="field.label | translate"
                     [control]="control(field.key)"
-                    errorMessage="Revisa el formato y la longitud de este campo"
+                    [errorMessage]="'platform.company.checkTheFormatAndLengthOfThisField' | translate"
                   />
                 }</app-tab-content></p-tabpanel
             ><p-tabpanel value="address"
@@ -83,17 +96,19 @@
                     <app-country-input [control]="control(field.key)" />
                   } @else {
                     <app-text-input
-                      [label]="field.label"
+                      [label]="field.label | translate"
                       [control]="control(field.key)"
-                      errorMessage="El texto supera la longitud permitida"
+                      [errorMessage]="
+                        'users.profile.the.text.exceeds.the.maximum.length' | translate
+                      "
                     />
                   }
                 }</app-tab-content></p-tabpanel
           ></p-tabpanels>
         </p-tabs>
         <app-form-actions
-          submitLabel="Guardar cambios"
-          cancelLabel="Cancelar"
+          [submitLabel]="'platform.company.saveChanges' | translate"
+          [cancelLabel]="'shared.cancel' | translate"
           [loading]="saving()"
           [disabled]="form.invalid || saving() || logoOptimizing() || pdfLogoOptimizing()"
           (cancel)="cancel()"
@@ -107,6 +122,6 @@
   [visible]="previewVisible()"
   [loading]="previewLoading()"
   [pdfUrl]="previewUrl()"
-  title="Vista previa del logotipo en PDF"
+  [title]="'platform.company.pdfLogoPreview' | translate"
   (visibleChange)="closePreview()"
 />

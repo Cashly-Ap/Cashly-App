@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -10,6 +11,7 @@ import { TextareaModule } from 'primeng/textarea';
   selector: 'app-cancel-purchase-dialog',
   standalone: true,
   imports: [
+    TranslatePipe,
     PermissionDirective,
     DialogModule,
     ButtonModule,

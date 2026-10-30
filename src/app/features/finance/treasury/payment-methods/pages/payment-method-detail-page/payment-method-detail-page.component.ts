@@ -1,3 +1,6 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
@@ -21,6 +24,8 @@ import { PaymentMethodApplicationService } from '@features/finance/treasury/paym
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
     PermissionDirective,
     DatePipe,
     ButtonModule,
@@ -34,7 +39,7 @@ import { PaymentMethodApplicationService } from '@features/finance/treasury/paym
     PageHeaderComponent,
     StatusBadgeComponent,
   ],
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   templateUrl: './payment-method-detail-page.component.html',
 })
 export class PaymentMethodDetailPageComponent implements OnInit {

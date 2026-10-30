@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -33,7 +35,7 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
   selector: 'app-products-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe, LocalizedDatePipe, LocalizedCurrencyPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,

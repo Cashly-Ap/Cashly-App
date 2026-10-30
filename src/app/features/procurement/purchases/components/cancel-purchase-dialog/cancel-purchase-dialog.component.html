@@ -13,18 +13,23 @@
       >
         <i class="pi pi-ban text-red-600 dark:text-red-400 text-lg"></i>
       </div>
-      <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-        >Cancelar Compra</span
-      >
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
+        'procurement.purchases.cancelPurchase2' | translate
+      }}</span>
     </div>
   </ng-template>
 
   <div class="flex flex-col gap-4">
     @if (purchaseNumber(); as number) {
       <div class="bg-surface-50 dark:bg-surface-800 rounded-lg p-4 text-sm">
-        <span class="font-medium">Compra #{{ number }}</span>
+        <span class="font-medium"
+          >{{ 'procurement.purchases.purchase3' | translate }}{{ number }}</span
+        >
         <p class="text-surface-500 mt-1">
-          Se cancelará la compra y se revertirán los movimientos de stock.
+          {{
+            'procurement.purchases.thePurchaseWillBeCancelledAndItsStockMovementsReversed'
+              | translate
+          }}
         </p>
       </div>
     }
@@ -34,7 +39,7 @@
         for="cancelReason"
         class="text-sm font-semibold text-surface-700 dark:text-surface-300"
       >
-        Motivo de Cancelación *
+        {{ 'procurement.purchases.cancellationReason' | translate }}
       </label>
       <input
         id="cancelReason"
@@ -42,17 +47,20 @@
         type="text"
         [ngModel]="reason()"
         (ngModelChange)="reason.set($event)"
-        placeholder="Ej: Error en datos del proveedor"
+        [placeholder]="'procurement.purchases.eGIncorrectSupplierDetails' | translate"
         class="w-full"
       />
       @if (!reason() && reason() === '') {
-        <small class="text-red-500 text-xs">El motivo es requerido</small>
+        <small class="text-red-500 text-xs">{{ 'shared.aReasonIsRequired' | translate }}</small>
       }
     </div>
 
     <div class="flex flex-col gap-1.5">
       <label for="cancelNotes" class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-        Notas <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span>
+        {{ 'finance.billing.invoices.notes' | translate }}
+        <span class="text-surface-400 text-xs font-normal ml-1">{{
+          'finance.billing.invoices.optional' | translate
+        }}</span>
       </label>
       <textarea
         id="cancelNotes"
@@ -61,18 +69,23 @@
         (ngModelChange)="notes.set($event)"
         rows="3"
         class="w-full"
-        placeholder="Notas adicionales..."
+        [placeholder]="'procurement.purchases.additionalNotes' | translate"
       ></textarea>
     </div>
   </div>
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button label="Volver" severity="secondary" [outlined]="true" (onClick)="onCancel()" />
+      <p-button
+        [label]="'finance.billing.creditnotes.back' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="onCancel()"
+      />
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
         [appPermission]="'EXECUTE'"
-        label="Cancelar Compra"
+        [label]="'procurement.purchases.cancelPurchase2' | translate"
         icon="pi pi-ban"
         severity="danger"
         [disabled]="!reason()"

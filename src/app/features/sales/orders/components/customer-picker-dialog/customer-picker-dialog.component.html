@@ -15,10 +15,12 @@
       </div>
       <div class="flex flex-col">
         <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
-          multiple() ? 'Seleccionar Clientes' : 'Seleccionar Cliente'
+          multiple()
+            ? ('sales.orders.selectCustomers' | translate)
+            : ('finance.billing.invoices.selectCustomer' | translate)
         }}</span>
         <span class="text-xs text-surface-500 dark:text-surface-400">{{
-          multiple() ? 'Seleccione uno o varios clientes' : description()
+          multiple() ? ('sales.orders.selectOneOrMoreCustomers' | translate) : description()
         }}</span>
       </div>
     </div>
@@ -33,9 +35,9 @@
           <i
             class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 text-sm mt-0.5 shrink-0"
           ></i>
-          <span class="text-sm text-amber-700 dark:text-amber-400"
-            >Al cambiar de cliente se eliminaran los productos agregados.</span
-          >
+          <span class="text-sm text-amber-700 dark:text-amber-400">{{
+            'sales.orders.changingTheCustomerWillRemoveTheProductsAlreadyAdded' | translate
+          }}</span>
         </div>
       </div>
     }
@@ -43,7 +45,9 @@
       <div class="rounded-lg p-3 border border-primary/30 bg-primary/5">
         <div class="flex items-center gap-2 text-sm font-semibold text-primary mb-2">
           <i class="pi pi-check-circle"></i>
-          <span>Clientes seleccionados ({{ selected().length }})</span>
+          <span>{{
+            'sales.orders.selectedCustomerCount' | translate: { count: selected().length }
+          }}</span>
         </div>
         <div class="flex flex-wrap gap-2">
           @for (customer of selected(); track customer.id) {
@@ -62,14 +66,14 @@
         data-testid="desktop-customer-search"
         class="hidden min-w-0 flex-1 sm:block"
         [value]="search()"
-        placeholder="Buscar cliente..."
+        [placeholder]="'sales.orders.searchCustomers' | translate"
         (search)="onSearchChange($event)"
       />
 
       <button
         type="button"
-        aria-label="Filtros"
-        title="Filtros"
+        [attr.aria-label]="'shared.filters' | translate"
+        [title]="'shared.filters' | translate"
         class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors shrink-0"
         [class.border-surface-900]="activeFilterCount() > 0"
         [class.bg-surface-900]="activeFilterCount() > 0"
@@ -95,7 +99,12 @@
       </button>
 
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
-        {{ totalElements() }} {{ totalElements() === 1 ? 'cliente' : 'clientes' }}
+        {{ totalElements() }}
+        {{
+          totalElements() === 1
+            ? ('sales.orders.customer' | translate)
+            : ('sales.orders.customers' | translate)
+        }}
       </span>
     </div>
 
@@ -104,14 +113,16 @@
         <div
           class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
         >
-          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+            'shared.filters' | translate
+          }}</span>
           @if (activeFilterCount() > 0) {
             <button
               type="button"
               class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
               (click)="clearFilters()"
             >
-              Limpiar
+              {{ 'finance.billing.creditnotes.clear' | translate }}
             </button>
           }
         </div>
@@ -121,22 +132,22 @@
             data-testid="mobile-customer-search"
             class="block sm:hidden"
             [value]="search()"
-            placeholder="Buscar cliente..."
+            [placeholder]="'sales.orders.searchCustomers' | translate"
             (search)="onSearchChange($event)"
           />
 
           <div class="flex flex-col gap-1.5">
             <span
               class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >Tipo</span
+              >{{ 'shared.type' | translate }}</span
             >
             <p-select
-              [options]="customerTypes"
+              [options]="customerTypes | translateOptions"
               [ngModel]="filterType()"
               (ngModelChange)="selectType($event)"
               optionLabel="label"
               optionValue="value"
-              placeholder="Todos"
+              [placeholder]="'finance.treasury.paymentmethods.all' | translate"
               [showClear]="true"
               styleClass="w-full"
             />
@@ -157,22 +168,22 @@
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-20"
             >
-              Código
+              {{ 'finance.treasury.paymentmethods.code' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Razón Social
+              {{ 'partners.suppliers.legalName' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-36"
             >
-              RIF
+              {{ 'finance.treasury.receivables.customerTaxId' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
             >
-              Tipo
+              {{ 'shared.type' | translate }}
             </th>
           </tr>
         </thead>
@@ -194,7 +205,7 @@
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
-                No se encontraron clientes
+                {{ 'finance.treasury.receivables.noCustomersFound' | translate }}
               </td>
             </tr>
           } @else {
@@ -208,7 +219,7 @@
                   @if (isSelected(customer)) {
                     <i
                       class="pi pi-check-circle text-primary text-lg"
-                      aria-label="Seleccionado"
+                      [attr.aria-label]="'shared.selected' | translate"
                     ></i>
                   }
                 </td>
@@ -222,7 +233,7 @@
                   {{ customer.rif }}
                 </td>
                 <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
-                  {{ getCustomerTypeLabel(customer.type) }}
+                  {{ getCustomerTypeLabel(customer.type) | translate }}
                 </td>
               </tr>
             }
@@ -246,7 +257,7 @@
       } @else if (customers().length === 0) {
         <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
           <i class="pi pi-search text-2xl block mb-2"></i>
-          No se encontraron clientes
+          {{ 'finance.treasury.receivables.noCustomersFound' | translate }}
         </div>
       } @else {
         @for (customer of customers(); track customer.id) {
@@ -266,7 +277,7 @@
             @if (isSelected(customer)) {
               <div class="flex items-center gap-1.5 mt-2 text-xs font-semibold text-primary">
                 <i class="pi pi-check-circle"></i>
-                Seleccionado
+                {{ 'shared.selected' | translate }}
               </div>
             }
             <div
@@ -276,7 +287,7 @@
                 customer.rif
               }}</span>
               <span class="text-xs text-surface-600 dark:text-surface-300">{{
-                getCustomerTypeLabel(customer.type)
+                getCustomerTypeLabel(customer.type) | translate
               }}</span>
             </div>
           </div>
@@ -286,7 +297,7 @@
 
     @if (totalPages() > 1) {
       <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ (pageLabel()) | translate }}</span>
         <div class="flex gap-1">
           <button
             type="button"
@@ -316,10 +327,10 @@
           <strong class="font-semibold text-surface-700 dark:text-surface-200">{{
             selected().length
           }}</strong>
-          <span>seleccionados</span>
+          <span>{{ 'sales.orders.selected' | translate }}</span>
         </span>
         <p-button
-          label="Usar seleccionados"
+          [label]="'sales.orders.useSelected' | translate"
           icon="pi pi-check"
           [disabled]="selected().length === 0"
           (onClick)="confirmMultiple()"
@@ -327,7 +338,7 @@
       }
       @if (!multiple() && requireConfirmation()) {
         <p-button
-          label="Aceptar"
+          [label]="'shared.accept' | translate"
           icon="pi pi-check"
           [disabled]="!confirmedCustomer()"
           (onClick)="confirmSingle()"
@@ -335,7 +346,7 @@
       }
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         [outlined]="true"
         severity="secondary"

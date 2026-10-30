@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { Language } from '@core/i18n/language';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { DetailsCardComponent, DetailsCardHeaderComponent } from '@shared/components/details';
@@ -12,13 +14,23 @@ import { KEYBOARD_ACTION_SHORTCUTS } from '@core/shortcuts/shortcut-reference';
 @Component({
   selector: 'app-preferences-page',
   standalone: true,
-  imports: [ButtonModule, DetailsCardComponent, DetailsCardHeaderComponent, PageHeaderComponent],
+  imports: [
+    TranslatePipe,
+    ButtonModule,
+    DetailsCardComponent,
+    DetailsCardHeaderComponent,
+    PageHeaderComponent,
+  ],
   templateUrl: './preferences-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreferencesPageComponent {
   readonly preferences = inject(UserPreferencesService);
   readonly shortcuts = KEYBOARD_ACTION_SHORTCUTS;
+  readonly languages: { value: Language; label: string }[] = [
+    { value: 'es', label: 'Español' },
+    { value: 'en', label: 'English' },
+  ];
   readonly themes: { value: ThemeMode; label: string; icon: string; description: string }[] = [
     {
       value: 'light',

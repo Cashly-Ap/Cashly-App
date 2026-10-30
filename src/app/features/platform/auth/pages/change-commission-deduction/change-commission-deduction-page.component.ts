@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
@@ -15,6 +16,7 @@ import { createCommissionDeductionForm } from '@features/platform/auth/pages/cha
   selector: 'app-change-commission-deduction-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
     FormCardComponent,

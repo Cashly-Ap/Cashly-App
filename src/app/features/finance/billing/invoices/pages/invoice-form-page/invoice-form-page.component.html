@@ -1,9 +1,15 @@
 <p-toast />
 <app-form-container>
   <app-form-header
-    [title]="isEditMode() ? 'Editar Factura' : 'Nueva Factura'"
+    [title]="
+      isEditMode()
+        ? ('finance.billing.invoices.editInvoice' | translate)
+        : ('finance.billing.invoices.newInvoice' | translate)
+    "
     [subtitle]="
-      isEditMode() ? 'Modifica los datos de la factura' : 'Complete la información de la factura'
+      isEditMode()
+        ? ('finance.billing.invoices.updateInvoiceDetails' | translate)
+        : ('finance.billing.invoices.completeTheInvoiceInformation' | translate)
     "
   />
   <form [formGroup]="form" (ngSubmit)="submit()">
@@ -13,47 +19,96 @@
           class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
         >
           <i class="pi pi-info-circle text-surface-500"></i>
-          Información de la Factura
+          {{ 'finance.billing.invoices.invoiceInformation' | translate }}
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div
             class="col-span-full lg:col-span-2 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
           >
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              >Cliente *</label
+            <label
+              class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >{{ 'finance.billing.debitnotes.customer' | translate }}</label
             >
             @if (bulkMode()) {
               @if (selectedCustomers().length > 0) {
                 <div class="flex flex-col gap-2">
                   @for (customer of selectedCustomers(); track customer.id) {
-                    <div class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700">
+                    <div
+                      class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700"
+                    >
                       <i class="pi pi-check-circle text-primary"></i>
                       <div class="flex flex-col min-w-0 flex-1">
-                        <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{ customer.alias }}</span>
-                        <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{ customer.legalName }}</span>
+                        <span
+                          class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate"
+                          >{{ customer.alias }}</span
+                        >
+                        <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{
+                          customer.legalName
+                        }}</span>
                         @if (isCreditPayment()) {
                           @if (dueDateForCustomer(customer.id); as customerDueDate) {
                             <span class="text-xs text-surface-500 dark:text-surface-400 mt-1">
-                              Vence: <strong class="text-surface-700 dark:text-surface-200">{{ customerDueDate | date: 'dd/MM/yyyy' }}</strong>
+                              {{ 'finance.billing.invoices.due' | translate }}
+                              <strong class="text-surface-700 dark:text-surface-200">{{
+                                customerDueDate | localizedDate: 'dd/MM/yyyy'
+                              }}</strong>
                             </span>
                           } @else {
-                            <span class="text-xs text-surface-400 mt-1">Calculando vencimiento...</span>
+                            <span class="text-xs text-surface-400 mt-1">{{
+                              'finance.billing.invoices.calculatingDueDate' | translate
+                            }}</span>
                           }
                         }
                         @if (creditWarningForCustomer(customer.id); as warning) {
-                          <div class="mt-2 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2">
+                          <div
+                            class="mt-2 rounded-lg border border-amber-300 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 px-3 py-2"
+                          >
                             <div class="flex items-start gap-2">
-                              <i class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"></i>
+                              <i
+                                class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"
+                              ></i>
                               <div class="min-w-0">
-                                <span class="font-semibold text-xs text-amber-800 dark:text-amber-300">Advertencia de Crédito</span>
-                                <p class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed mt-1">{{ warning.message }}</p>
-                                <div class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[11px] text-amber-600 dark:text-amber-400">
-                                  <span>Límite: <strong>${{ warning.creditLimit | number: '1.2-2' }}</strong></span>
-                                  <span>Disponible: <strong>${{ warning.availableCredit | number: '1.2-2' }}</strong></span>
-                                  <span>Total: <strong>${{ warning.invoiceTotal | number: '1.2-2' }}</strong></span>
+                                <span
+                                  class="font-semibold text-xs text-amber-800 dark:text-amber-300"
+                                  >{{ 'finance.billing.invoices.creditWarning' | translate }}</span
+                                >
+                                <p
+                                  class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed mt-1"
+                                >
+                                  {{ (warning.message) | translate }}
+                                </p>
+                                <div
+                                  class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[11px] text-amber-600 dark:text-amber-400"
+                                >
+                                  <span
+                                    >{{ 'finance.billing.invoices.limit' | translate }}
+                                    <strong
+                                      >${{ warning.creditLimit | localizedNumber: '1.2-2' }}</strong
+                                    ></span
+                                  >
+                                  <span
+                                    >{{ 'finance.billing.invoices.available' | translate }}
+                                    <strong
+                                      >${{
+                                        warning.availableCredit | localizedNumber: '1.2-2'
+                                      }}</strong
+                                    ></span
+                                  >
+                                  <span
+                                    >{{ 'finance.billing.returns.total' | translate }}
+                                    <strong
+                                      >${{
+                                        warning.invoiceTotal | localizedNumber: '1.2-2'
+                                      }}</strong
+                                    ></span
+                                  >
                                 </div>
                                 <p class="text-[11px] text-amber-600 dark:text-amber-400 mt-1">
-                                  <i class="pi pi-info-circle mr-1"></i>La factura se creará como borrador. Al confirmarla deberá ingresar su contraseña.
+                                  <i class="pi pi-info-circle mr-1"></i
+                                  >{{
+                                    'finance.billing.invoices.theInvoiceWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt'
+                                      | translate
+                                  }}
                                 </p>
                               </div>
                             </div>
@@ -67,7 +122,7 @@
                     class="self-start text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
                     (click)="openPicker()"
                   >
-                    Cambiar selección
+                    {{ 'finance.billing.invoices.changeSelection' | translate }}
                   </button>
                 </div>
               } @else {
@@ -77,7 +132,7 @@
                   (click)="openPicker()"
                 >
                   <i class="pi pi-users text-sm"></i>
-                  Seleccionar varios clientes...
+                  {{ 'finance.billing.invoices.selectMultipleCustomers' | translate }}
                 </button>
               }
             } @else if (selectedCustomerLabel(); as customer) {
@@ -98,7 +153,7 @@
                     class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
                     (click)="openPicker()"
                   >
-                    Cambiar
+                    {{ 'finance.billing.creditnotes.change' | translate }}
                   </button>
                 }
               </div>
@@ -107,21 +162,21 @@
                   class="flex flex-wrap gap-3 mt-2 px-3 py-2 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-xs"
                 >
                   <span class="text-surface-600 dark:text-surface-400"
-                    >Limite:
+                    >{{ 'finance.billing.invoices.limit2' | translate }}
                     <strong class="text-surface-900 dark:text-surface-0"
-                      >${{ info.creditLimit | number: '1.2-2' }}</strong
+                      >${{ info.creditLimit | localizedNumber: '1.2-2' }}</strong
                     ></span
                   >
                   <span class="text-surface-600 dark:text-surface-400"
-                    >Saldo a favor:
+                    >{{ 'finance.billing.invoices.creditBalance2' | translate }}
                     <strong class="text-green-600"
-                      >${{ info.customerBalance | number: '1.2-2' }}</strong
+                      >${{ info.customerBalance | localizedNumber: '1.2-2' }}</strong
                     ></span
                   >
                   <span class="text-surface-600 dark:text-surface-400"
-                    >Credito disponible:
+                    >{{ 'finance.billing.invoices.availableCredit' | translate }}
                     <strong class="text-surface-900 dark:text-surface-0"
-                      >${{ info.availableCredit | number: '1.2-2' }}</strong
+                      >${{ info.availableCredit | localizedNumber: '1.2-2' }}</strong
                     ></span
                   >
                 </div>
@@ -133,12 +188,13 @@
                 (click)="openPicker()"
               >
                 <i class="pi pi-search text-sm"></i>
-                Buscar y seleccionar cliente...
+                {{ 'finance.billing.creditnotes.searchAndSelectACustomer' | translate }}
               </button>
             }
             @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
               <small class="flex items-center gap-1 text-red-500 text-xs mt-1.5"
-                ><i class="pi pi-exclamation-circle text-xs"></i> El cliente es requerido</small
+                ><i class="pi pi-exclamation-circle text-xs"></i>
+                {{ 'finance.billing.creditnotes.aCustomerIsRequired' | translate }}</small
               >
             }
           </div>
@@ -146,29 +202,49 @@
           <div
             class="col-span-full lg:col-span-1 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
           >
-            <label for="issueDate" class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              >Fecha de emisión *</label
+            <label
+              for="issueDate"
+              class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >{{ 'finance.billing.invoices.issueDate2' | translate }}</label
             >
             <p-datepicker
               inputId="issueDate"
               formControlName="issueDate"
-              dateFormat="dd/mm/yy"
+              [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
               [showIcon]="true"
               styleClass="w-full"
             />
             @if (isCreditPayment() && !bulkMode()) {
               @if (dueDate(); as calculatedDueDate) {
-                <div class="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 px-3 py-2">
-                  <span class="text-sm text-surface-600 dark:text-surface-400">Fecha de vencimiento</span>
-                  <strong class="text-sm text-surface-900 dark:text-surface-0">{{ calculatedDueDate | date: 'dd/MM/yyyy' }}</strong>
+                <div
+                  class="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 px-3 py-2"
+                >
+                  <span class="text-sm text-surface-600 dark:text-surface-400">{{
+                    'finance.billing.invoices.dueDate2' | translate
+                  }}</span>
+                  <strong class="text-sm text-surface-900 dark:text-surface-0">{{
+                    calculatedDueDate | localizedDate: 'dd/MM/yyyy'
+                  }}</strong>
                 </div>
               } @else if (selectedCustomer()) {
-                <p class="text-xs text-surface-500 mt-1">Calculando vencimiento según los días de crédito del cliente...</p>
+                <p class="text-xs text-surface-500 mt-1">
+                  {{
+                    'finance.billing.invoices.calculatingTheDueDateUsingTheCustomerSCreditTerms'
+                      | translate
+                  }}
+                </p>
               }
             } @else if (isCreditPayment() && bulkMode()) {
-              <p class="text-xs text-surface-500 mt-1">El vencimiento se calcula individualmente para cada cliente seleccionado.</p>
+              <p class="text-xs text-surface-500 mt-1">
+                {{
+                  'finance.billing.invoices.theDueDateIsCalculatedSeparatelyForEachSelectedCustomer'
+                    | translate
+                }}
+              </p>
             } @else if (!isCreditPayment()) {
-              <p class="text-xs text-surface-500 mt-1">El vencimiento no aplica para pagos de contado.</p>
+              <p class="text-xs text-surface-500 mt-1">
+                {{ 'finance.billing.invoices.dueDatesDoNotApplyToImmediatePayments' | translate }}
+              </p>
             }
           </div>
 
@@ -176,7 +252,11 @@
             <div class="col-span-full flex flex-wrap gap-2">
               <p-button
                 type="button"
-                [label]="bulkMode() ? 'Modo factura individual' : 'Crear factura para varios clientes'"
+                [label]="
+                  bulkMode()
+                    ? ('finance.billing.invoices.individualInvoiceMode' | translate)
+                    : ('finance.billing.invoices.createInvoicesForMultipleCustomers' | translate)
+                "
                 [icon]="bulkMode() ? 'pi pi-user' : 'pi pi-users'"
                 severity="secondary"
                 [outlined]="true"
@@ -185,7 +265,7 @@
               @if (selectedCustomerId() && !bulkMode()) {
                 <p-button
                   type="button"
-                  label="Cargar pedidos y presupuestos"
+                  [label]="'finance.billing.invoices.loadOrdersAndQuotes' | translate"
                   icon="pi pi-download"
                   severity="secondary"
                   [outlined]="true"
@@ -199,28 +279,31 @@
             class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
           >
             <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              >Notas
-              <span class="text-surface-400 text-xs font-normal ml-1">(opcional)</span></label
+              >{{ 'finance.billing.invoices.notes' | translate }}
+              <span class="text-surface-400 text-xs font-normal ml-1">{{
+                'finance.billing.invoices.optional' | translate
+              }}</span></label
             >
             <textarea
               pTextarea
               formControlName="notes"
               rows="3"
               class="w-full"
-              placeholder="Notas o instrucciones adicionales..."
+              [placeholder]="'finance.billing.invoices.additionalNotesOrInstructions' | translate"
             ></textarea>
           </div>
 
           <div
             class="col-span-full rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
           >
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              >Tipo de Pago *</label
+            <label
+              class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >{{ 'finance.billing.invoices.paymentType2' | translate }}</label
             >
             @if (hasCreditEnabled()) {
               <p-select
                 formControlName="paymentType"
-                [options]="paymentTypeOptions()"
+                [options]="paymentTypeOptions() | translateOptions"
                 optionLabel="label"
                 optionValue="value"
                 styleClass="w-full"
@@ -244,27 +327,34 @@
                   class="pi pi-exclamation-triangle text-amber-600 dark:text-amber-400 mt-0.5 shrink-0"
                 ></i>
                 <div>
-                  <span class="font-semibold text-sm text-amber-800 dark:text-amber-300"
-                    >Advertencia de Credito</span
-                  >
+                  <span class="font-semibold text-sm text-amber-800 dark:text-amber-300">{{
+                    'finance.billing.invoices.creditWarning2' | translate
+                  }}</span>
                   <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed mt-1">
-                    {{ warning.message }}
+                    {{ (warning.message) | translate }}
                   </p>
                   <div class="flex flex-wrap gap-4 mt-1 text-xs text-amber-600 dark:text-amber-400">
                     <span
-                      >Limite: <strong>${{ warning.creditLimit | number: '1.2-2' }}</strong></span
+                      >{{ 'finance.billing.invoices.limit2' | translate }}
+                      <strong>${{ warning.creditLimit | localizedNumber: '1.2-2' }}</strong></span
                     >
                     <span
-                      >Disponible:
-                      <strong>${{ warning.availableCredit | number: '1.2-2' }}</strong></span
+                      >{{ 'finance.billing.invoices.available' | translate }}
+                      <strong
+                        >${{ warning.availableCredit | localizedNumber: '1.2-2' }}</strong
+                      ></span
                     >
                     <span
-                      >Total: <strong>${{ warning.invoiceTotal | number: '1.2-2' }}</strong></span
+                      >{{ 'finance.billing.returns.total' | translate }}
+                      <strong>${{ warning.invoiceTotal | localizedNumber: '1.2-2' }}</strong></span
                     >
                   </div>
                   <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
-                    <i class="pi pi-info-circle mr-1"></i>La factura se creara como borrador. Al
-                    confirmarla debera ingresar su contrasena.
+                    <i class="pi pi-info-circle mr-1"></i
+                    >{{
+                      'finance.billing.invoices.theInvoiceWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt2'
+                        | translate
+                    }}
                   </p>
                 </div>
               </div>
@@ -284,8 +374,8 @@
         />
       </div>
       <app-form-actions
-        submitLabel="Guardar"
-        cancelLabel="Cancelar"
+        [submitLabel]="'finance.billing.creditnotes.save' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"
         [tooltipMessage]="submitTooltip()"

@@ -4,22 +4,22 @@
   >
     <div class="flex items-center gap-2">
       <i class="pi pi-warehouse text-sm text-surface-500 dark:text-surface-400"></i>
-      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0"
-        >Stock por Almacén</span
-      >
+      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+        'catalog.products.stockByWarehouse' | translate
+      }}</span>
     </div>
     @if (entries().length > 0 && total() > 0) {
       <span
         class="text-xs font-mono px-1.5 py-0.5 rounded bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300"
       >
-        {{ total() | number: '1.0-3' }}
+        {{ total() | localizedNumber: '1.0-3' }}
       </span>
     }
   </div>
 
   <div class="px-4 py-3 flex flex-col gap-3">
     @if (entries().length === 0) {
-      <span class="text-xs text-surface-400 dark:text-surface-500 py-2">{{ emptyMessage() }}</span>
+      <span class="text-xs text-surface-400 dark:text-surface-500 py-2">{{ (emptyMessage()) | translate }}</span>
     } @else {
       @for (entry of entries(); track entry.warehouseId; let i = $index) {
         <div class="flex items-center justify-between gap-3">
@@ -29,16 +29,19 @@
             }}</span>
             @if (showStockDetails()) {
               <span class="text-xs text-surface-400 dark:text-surface-500">
-                disp: {{ entry.available | number: '1.0-3' }}
+                {{ 'sales.orders.availablePrefix' | translate }}
+                {{ entry.available | localizedNumber: '1.0-3' }}
                 @if (entry.reserved > 0) {
                   <span class="text-amber-500 dark:text-amber-400 ml-1"
-                    >| res: {{ entry.reserved | number: '1.0-3' }}</span
+                    >{{ 'sales.orders.reserved' | translate }}
+                    {{ entry.reserved | localizedNumber: '1.0-3' }}</span
                   >
                 }
               </span>
             }
           </div>
           <p-inputNumber
+            [locale]="locale()"
             [ngModel]="entry.allocated"
             (ngModelChange)="onValueChange(i, $event ?? 0)"
             [min]="0"
@@ -61,7 +64,7 @@
         (click)="confirm.emit()"
       >
         <i class="pi pi-check text-xs"></i>
-        {{ confirmLabel() }}
+        {{ (confirmLabel()) | translate }}
       </button>
     </div>
   }

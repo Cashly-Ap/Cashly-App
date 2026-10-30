@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -13,7 +14,7 @@ import { SUPPLIER_TYPES } from '@features/partners/suppliers/models/enums/suppli
   selector: 'app-supplier-general-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     ReactiveFormsModule,
     ToggleSwitchModule,
     TextareaModule,

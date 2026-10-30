@@ -15,10 +15,10 @@
       </div>
       <div class="flex flex-col">
         <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-          >Seleccionar Factura</span
+          >{{ 'shared.selectInvoice' | translate }}</span
         >
         <span class="text-xs text-surface-500 dark:text-surface-400"
-          >Busque y seleccione la factura asociada</span
+          >{{ 'shared.searchForAndSelectTheAssociatedInvoice' | translate }}</span
         >
       </div>
     </div>
@@ -27,12 +27,12 @@
   <div class="flex flex-col gap-4 pt-1">
     <app-search-field
       [value]="search()"
-      placeholder="Buscar por número o cliente..."
+      [placeholder]="'shared.searchByNumberOrCustomer' | translate"
       (search)="onSearchChange($event)"
     />
 
     <div class="text-xs text-surface-500 dark:text-surface-400">
-      {{ filteredInvoices().length }} {{ filteredInvoices().length === 1 ? 'factura' : 'facturas' }}
+      {{ filteredInvoices().length }} {{ filteredInvoices().length === 1 ? ('shared.invoice2' | translate) : ('shared.invoices' | translate) }}
     </div>
 
     <div
@@ -46,17 +46,17 @@
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Factura
+              {{ 'shared.invoice' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Cliente
+              {{ 'shared.customer' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Total
+              {{ 'shared.total' | translate }}
             </th>
           </tr>
         </thead>
@@ -78,7 +78,7 @@
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
-                No se encontraron facturas
+                {{ 'shared.noInvoicesFound' | translate }}
               </td>
             </tr>
           } @else {
@@ -98,7 +98,7 @@
                 <td
                   class="px-4 py-3 text-right font-mono text-xs text-surface-700 dark:text-surface-200"
                 >
-                  {{ inv.subtotal | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ inv.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </td>
               </tr>
             }
@@ -122,7 +122,7 @@
       } @else if (filteredInvoices().length === 0) {
         <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
           <i class="pi pi-search text-2xl block mb-2"></i>
-          No se encontraron facturas
+          {{ 'shared.noInvoicesFound' | translate }}
         </div>
       } @else {
         @for (inv of filteredInvoices(); track inv.id) {
@@ -142,7 +142,7 @@
               class="border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 flex items-center justify-between"
             >
               <span class="font-mono text-xs font-medium text-surface-700 dark:text-surface-200">{{
-                inv.subtotal | currency: 'USD' : 'symbol' : '1.2-2'
+                inv.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
               }}</span>
             </div>
           </div>
@@ -155,7 +155,7 @@
     <div class="flex justify-end pt-1">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         [outlined]="true"
         severity="secondary"

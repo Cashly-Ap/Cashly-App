@@ -1,3 +1,5 @@
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -40,6 +42,8 @@ interface LineWithStockInfo {
   selector: 'app-convert-to-order-dialog',
   standalone: true,
   imports: [
+    TranslatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,

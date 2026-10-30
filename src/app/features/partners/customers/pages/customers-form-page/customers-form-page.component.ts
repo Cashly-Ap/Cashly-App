@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule, FormGroup, FormArray, Validators } from '@angular/forms';
@@ -58,7 +60,7 @@ interface CustomerFormData {
 @Component({
   selector: 'app-customers-form-page',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,

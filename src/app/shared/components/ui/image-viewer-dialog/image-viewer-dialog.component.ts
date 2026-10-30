@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output, computed, signal } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +9,7 @@ import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 @Component({
   selector: 'app-image-viewer-dialog',
   standalone: true,
-  imports: [CommonModule, DialogModule, ButtonModule, TooltipModule],
+  imports: [TranslatePipe, CommonModule, DialogModule, ButtonModule, TooltipModule],
   templateUrl: './image-viewer-dialog.component.html',
 })
 export class ImageViewerDialogComponent {

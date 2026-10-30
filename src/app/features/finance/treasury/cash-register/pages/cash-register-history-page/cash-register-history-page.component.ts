@@ -1,3 +1,6 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
@@ -35,6 +38,9 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     ShortcutDirective,
     CommonModule,
     FormsModule,
@@ -57,6 +63,8 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
   templateUrl: './cash-register-history-page.component.html',
 })
 export class CashRegisterHistoryPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly service = inject(CashRegisterApplicationService);
   private readonly router = inject(Router);

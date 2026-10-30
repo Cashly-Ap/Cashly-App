@@ -1,3 +1,5 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
@@ -61,7 +63,7 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
 @Component({
   selector: 'app-customer-balance-page',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     CustomerPickerDialogComponent,
     ShortcutDirective,
     CommonModule,

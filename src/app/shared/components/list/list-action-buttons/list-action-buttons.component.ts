@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { inject } from '@angular/core';
@@ -23,7 +24,7 @@ export interface ListAction {
 @Component({
   selector: 'app-list-action-buttons',
   standalone: true,
-  imports: [ButtonModule, PopoverModule, TooltipModule],
+  imports: [TranslatePipe, ButtonModule, PopoverModule, TooltipModule],
   templateUrl: './list-action-buttons.component.html',
   host: { class: 'flex w-full justify-center' },
   changeDetection: ChangeDetectionStrategy.OnPush,

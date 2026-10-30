@@ -4,11 +4,11 @@
       class="text-base font-medium text-surface-800 dark:text-surface-200 flex items-center gap-2"
     >
       <i class="pi pi-list text-surface-500"></i>
-      Líneas de Compra
+      {{ 'procurement.purchases.purchaseLines2' | translate }}
     </h3>
     @if (!readonly()) {
       <p-button
-        label="Agregar Producto"
+        [label]="'procurement.purchases.addProduct' | translate"
         icon="pi pi-plus"
         severity="secondary"
         [outlined]="true"
@@ -50,9 +50,11 @@
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'procurement.purchases.qty' | translate
+                }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.quantity | number: '1.0-3' }}
+                  {{ item.quantity | localizedNumber: '1.0-3' }}
                 </span>
                 <button
                   type="button"
@@ -67,7 +69,7 @@
                   [class.dark:text-surface-400]="item.quantity === 0"
                   [class.hover:bg-surface-100]="item.quantity === 0"
                   [class.dark:hover:bg-surface-800]="item.quantity === 0"
-                  pTooltip="Distribuir stock por almacén"
+                  [pTooltip]="'procurement.purchases.allocateStockByWarehouse' | translate"
                   tooltipPosition="top"
                   (click)="openAllocationPopover($event, itemIdx)"
                 >
@@ -78,20 +80,24 @@
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'procurement.purchases.unitCost2' | translate
+                }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitCost | number: '1.2-2' }}
+                  {{ item.unitCost | localizedNumber: '1.2-2' }}
                 </span>
               </div>
 
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
 
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'finance.billing.invoices.subtotal' | translate
+                }}</span>
                 <span
                   class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100"
                 >
-                  {{ item.quantity * item.unitCost | number: '1.2-2' }}
+                  {{ item.quantity * item.unitCost | localizedNumber: '1.2-2' }}
                 </span>
               </div>
 
@@ -103,7 +109,7 @@
                 [rounded]="true"
                 [text]="true"
                 size="small"
-                pTooltip="Eliminar línea"
+                [pTooltip]="'procurement.purchases.deleteLine' | translate"
                 class="shrink-0"
                 (onClick)="removeItem(itemIdx)"
               />
@@ -124,25 +130,31 @@
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">Cant.:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'procurement.purchases.qty' | translate
+                }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.quantity | number: '1.0-3' }}
+                  {{ item.quantity | localizedNumber: '1.0-3' }}
                 </span>
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">C.U.:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'procurement.purchases.unitCost2' | translate
+                }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitCost | number: '1.2-2' }}
+                  {{ item.unitCost | localizedNumber: '1.2-2' }}
                 </span>
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
               <div class="flex items-center gap-1 shrink-0">
-                <span class="text-xs text-surface-500 dark:text-surface-400">Subtotal:</span>
+                <span class="text-xs text-surface-500 dark:text-surface-400">{{
+                  'finance.billing.invoices.subtotal' | translate
+                }}</span>
                 <span
                   class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100"
                 >
-                  {{ item.quantity * item.unitCost | number: '1.2-2' }}
+                  {{ item.quantity * item.unitCost | localizedNumber: '1.2-2' }}
                 </span>
               </div>
               @if (item.warehouseAllocations.length > 0) {
@@ -151,7 +163,10 @@
                   class="flex items-center gap-1 shrink-0 text-xs text-surface-500 dark:text-surface-400"
                 >
                   <i class="pi pi-warehouse text-xs"></i>
-                  <span>{{ item.warehouseAllocations.length }} almacén(es)</span>
+                  <span
+                    >{{ item.warehouseAllocations.length }}
+                    {{ 'procurement.purchases.warehouseS' | translate }}</span
+                  >
                 </div>
               }
             </div>
@@ -163,9 +178,11 @@
         class="flex justify-end p-3 sm:p-4 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800"
       >
         <div class="flex items-center gap-3">
-          <span class="text-sm text-surface-600 dark:text-surface-400">Total Compra:</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">{{
+            'procurement.purchases.purchaseTotal' | translate
+          }}</span>
           <span class="font-mono font-semibold text-lg text-surface-900 dark:text-surface-100">
-            {{ total() | number: '1.2-2' }}
+            {{ total() | localizedNumber: '1.2-2' }}
           </span>
         </div>
       </div>
@@ -173,13 +190,13 @@
   } @else {
     <app-empty-state
       icon="pi-shopping-cart"
-      title="Sin líneas de compra"
-      message="Agrega productos a la compra"
+      [title]="'procurement.purchases.noPurchaseLines' | translate"
+      [message]="'procurement.purchases.addProductsToThePurchase' | translate"
     >
       @if (!readonly()) {
         <div class="flex justify-center mt-4">
           <p-button
-            label="Agregar Producto"
+            [label]="'procurement.purchases.addProduct' | translate"
             icon="pi pi-plus"
             severity="secondary"
             styleClass="w-full sm:w-auto"
@@ -195,8 +212,8 @@
   <app-warehouse-stock-popover
     [entries]="popoverAllocations()"
     [total]="allocationTotal()"
-    confirmLabel="Confirmar"
-    emptyMessage="Sin almacenes disponibles para este producto"
+    [confirmLabel]="'finance.billing.invoices.confirm' | translate"
+    [emptyMessage]="'procurement.purchases.noWarehousesAvailableForThisProduct' | translate"
     [showStockDetails]="false"
     (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
     (confirm)="confirmAllocations()"

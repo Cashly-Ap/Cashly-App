@@ -1,6 +1,6 @@
 <p-dialog
   [visible]="visible()"
-  [header]="title()"
+  [header]="title() | translate"
   [modal]="true"
   [style]="{ width: '90vw', maxWidth: '550px' }"
   [dismissableMask]="false"
@@ -17,11 +17,11 @@
           class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
         >
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-              >Saldo Pendiente</span
-            >
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.treasury.receivables.outstandingBalance' | translate
+            }}</span>
             <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
-              {{ invoice()!.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ invoice()!.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
@@ -32,17 +32,19 @@
           class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
         >
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">Cliente</span>
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'shared.customer' | translate
+            }}</span>
             <span class="font-semibold text-surface-900 dark:text-surface-0">
               {{ customerName() }}
             </span>
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-              >Deuda Total</span
-            >
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.treasury.receivables.totalDebt' | translate
+            }}</span>
             <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
-              {{ totalDebt() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ totalDebt() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
@@ -55,12 +57,12 @@
           <div class="flex items-center justify-between mb-3">
             <div class="flex items-center gap-2">
               <i class="pi pi-wallet text-surface-900 dark:text-surface-100 text-sm"></i>
-              <span class="text-sm font-medium text-surface-900 dark:text-surface-100"
-                >Saldo a Favor</span
-              >
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-100">{{
+                'finance.billing.invoices.creditBalance' | translate
+              }}</span>
             </div>
             <span class="font-mono font-bold text-blue-600 dark:text-blue-400">
-              {{ customerBalance() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ customerBalance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
           <div class="flex gap-3">
@@ -79,7 +81,9 @@
                 name="balanceGroup"
                 inputId="useBalance"
               />
-              <span class="text-sm font-medium">Usar saldo</span>
+              <span class="text-sm font-medium">{{
+                'finance.billing.invoices.useCreditBalance' | translate
+              }}</span>
             </label>
             <label
               class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
@@ -96,7 +100,9 @@
                 name="balanceGroup"
                 inputId="noBalance"
               />
-              <span class="text-sm font-medium">No usar</span>
+              <span class="text-sm font-medium">{{
+                'finance.billing.invoices.doNotUse' | translate
+              }}</span>
             </label>
           </div>
         </div>
@@ -107,12 +113,12 @@
           >
             <div class="flex items-center gap-2">
               <i class="pi pi-check-circle text-surface-900 dark:text-surface-100"></i>
-              <span class="text-sm font-medium text-surface-900 dark:text-surface-100"
-                >Saldo aplicado</span
-              >
+              <span class="text-sm font-medium text-surface-900 dark:text-surface-100">{{
+                'finance.billing.invoices.balanceApplied' | translate
+              }}</span>
             </div>
             <span class="font-mono font-bold text-blue-600 dark:text-blue-400">
-              -{{ balanceApplied() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              -{{ balanceApplied() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         }
@@ -124,7 +130,7 @@
             for="amount"
             class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
           >
-            Monto
+            {{ 'shared.amount' | translate }}
             <span class="text-red-500">*</span>
           </label>
           <p-inputNumber
@@ -132,7 +138,7 @@
             formControlName="amount"
             mode="currency"
             currency="USD"
-            locale="en-US"
+            [locale]="locale()"
             [min]="0.01"
             [max]="maxAmount()"
             [maxFractionDigits]="2"
@@ -143,34 +149,44 @@
           @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
             <small class="text-red-500 text-xs block mt-1">
               @if (form.get('amount')?.errors?.['required']) {
-                El monto es requerido
+                {{ 'finance.treasury.receivables.amountRequired' | translate }}
               }
               @if (form.get('amount')?.errors?.['min']) {
-                El monto debe ser mayor a cero
+                {{ 'finance.treasury.receivables.amountMustBePositive' | translate }}
               }
             </small>
           }
           <small class="text-surface-500 dark:text-surface-400 text-xs block mt-1">
             @if (isFullyCoveredByBalance()) {
-              Pago cubierto completamente por saldo a favor
+              {{ 'finance.treasury.receivables.coveredByCreditBalance' | translate }}
             } @else if (useBalance()) {
-              Máximo: {{ maxAmount() | currency: 'USD' : 'symbol' : '1.2-2' }} (saldo aplicado:
-              {{ balanceApplied() | currency: 'USD' : 'symbol' : '1.2-2' }})
+              {{
+                'finance.treasury.receivables.maximumAmountWithBalance'
+                  | translate
+                    : {
+                        amount: (maxAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2'),
+                        balance: (balanceApplied() | localizedCurrency: 'USD' : 'symbol' : '1.2-2'),
+                      }
+              }}
             } @else {
-              Máximo: {{ maxAmount() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{
+                'finance.treasury.receivables.maximumAmount'
+                  | translate
+                    : { amount: (maxAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2') }
+              }}
             }
           </small>
         </div>
       } @else {
         <div class="space-y-2">
           <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
-            Monto Total a Pagar
+            {{ 'finance.treasury.receivables.totalAmountToPay' | translate }}
           </label>
           <div
             class="bg-surface-50 dark:bg-surface-900/50 border-2 border-surface-200 dark:border-surface-700 rounded-lg p-4 text-center"
           >
             <span class="font-mono text-2xl font-bold text-green-600 dark:text-green-400">
-              {{ totalDebt() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ totalDebt() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
@@ -181,14 +197,14 @@
           for="paymentDate"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Fecha de Pago
+          {{ 'finance.treasury.receivables.paymentDate' | translate }}
         </label>
         <p-datepicker
           id="paymentDate"
           formControlName="paymentDate"
           [showIcon]="true"
           [showButtonBar]="true"
-          dateFormat="dd/mm/yy"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
           [defaultDate]="maxDate"
           [maxDate]="maxDate"
           [autofocus]="false"
@@ -197,7 +213,9 @@
           [class.ng-invalid]="form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched"
         />
         @if (form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched) {
-          <small class="text-red-500 text-xs block mt-1"> La fecha es requerida </small>
+          <small class="text-red-500 text-xs block mt-1">
+            {{ 'finance.treasury.receivables.dateIsRequired' | translate }}
+          </small>
         }
       </div>
 
@@ -206,7 +224,7 @@
           for="paymentMethod"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Método de Pago
+          {{ 'finance.treasury.cashregister.paymentMethod' | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-select
@@ -215,7 +233,7 @@
           [options]="paymentMethods()"
           optionLabel="label"
           optionValue="value"
-          placeholder="Seleccione un método de pago"
+          [placeholder]="'finance.treasury.receivables.selectAPaymentMethod' | translate"
           appendTo="body"
           styleClass="w-full"
           [class.opacity-60]="isFullyCoveredByBalance()"
@@ -224,7 +242,9 @@
           "
         />
         @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {
-          <small class="text-red-500 text-xs block mt-1"> El método de pago es requerido </small>
+          <small class="text-red-500 text-xs block mt-1">
+            {{ 'finance.treasury.receivables.paymentMethodIsRequired' | translate }}
+          </small>
         }
       </div>
 
@@ -233,7 +253,7 @@
           for="reference"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Referencia
+          {{ 'finance.treasury.receivables.reference' | translate }}
           <span class="text-red-500">*</span>
         </label>
         <input
@@ -241,7 +261,7 @@
           type="text"
           pInputText
           formControlName="referenceNumber"
-          placeholder="Ingrese la referencia del pago"
+          [placeholder]="'finance.treasury.receivables.enterThePaymentReference' | translate"
           class="w-full"
           [class.ng-invalid]="
             form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched
@@ -250,10 +270,10 @@
         @if (form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched) {
           <small class="text-red-500 text-xs block mt-1">
             @if (form.get('referenceNumber')?.errors?.['required']) {
-              La referencia es requerida
+              {{ 'finance.treasury.receivables.referenceRequired' | translate }}
             }
             @if (form.get('referenceNumber')?.errors?.['maxlength']) {
-              La referencia no puede exceder 100 caracteres
+              {{ 'finance.treasury.receivables.referenceLengthLimit' | translate }}
             }
           </small>
         }
@@ -266,7 +286,7 @@
       <p-button
         appShortcut="cancel"
         severity="secondary"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         (onClick)="onCancel()"
         [disabled]="loading()"
@@ -276,7 +296,7 @@
         appShortcut="submit"
         [appPermission]="'EXECUTE'"
         severity="contrast"
-        label="Registrar Pago"
+        [label]="'finance.treasury.receivables.recordPayment' | translate"
         icon="pi pi-check"
         (onClick)="onSubmit()"
         [disabled]="form.invalid || loading()"

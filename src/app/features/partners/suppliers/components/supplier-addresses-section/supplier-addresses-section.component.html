@@ -1,10 +1,10 @@
 <div class="p-6">
   <app-list-section
-    title="Direcciones"
+    [title]="'partners.suppliers.addresses' | translate"
     icon="pi-map-marker"
     [isEmpty]="addressesArray.length === 0"
     emptyIcon="pi-map-marker"
-    emptyMessage="No hay direcciones registradas. Agregue al menos una."
+    [emptyMessage]="'partners.suppliers.noAddressesRegisteredAddAtLeastOne' | translate"
     addButtonLabel="Agregar Dirección"
     (add)="addAddress()"
   >
@@ -17,7 +17,7 @@
           <input
             pInputText
             formControlName="address"
-            placeholder="Av. Principal, Edificio Acme, Piso 5"
+            [placeholder]="'partners.suppliers.mainAvenueAcmeBuildingFloor5' | translate"
             class="flex-1 min-w-0"
             [ngClass]="{
               'ng-invalid ng-dirty':
@@ -41,37 +41,37 @@
           addressGroup($index).get('address')?.touched
         ) {
           <small class="block mt-1.5 text-red-500 text-xs">
-            La dirección es requerida (máximo 500 caracteres)
+            {{ 'partners.suppliers.anAddressIsRequiredMaximum500Characters' | translate }}
           </small>
         }
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">Estado</label>
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'finance.billing.invoices.status' | translate }}</label>
             <p-select
               formControlName="state"
               [options]="stateOptions"
-              placeholder="Seleccione el estado"
+              [placeholder]="'partners.suppliers.selectTheState' | translate"
               [filter]="true"
-              filterPlaceholder="Buscar estado..."
+              [filterPlaceholder]="'partners.suppliers.labels.searchStates' | translate"
               styleClass="w-full"
               (onChange)="onStateChange($index)"
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">Municipio</label>
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'inventory.warehouses.municipality' | translate }}</label>
             <p-select
               formControlName="municipality"
               [options]="municipalityOptions($index)"
-              placeholder="Seleccione el municipio"
+              [placeholder]="'partners.suppliers.selectTheMunicipality' | translate"
               [filter]="true"
-              filterPlaceholder="Buscar municipio..."
+              [filterPlaceholder]="'partners.suppliers.labels.searchMunicipalities' | translate"
               styleClass="w-full"
               [disabled]="!addressGroup($index).get('state')?.value"
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">Código Postal</label>
-            <input pInputText formControlName="postalCode" placeholder="Ej: 1060" class="w-full" />
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'partners.suppliers.postalCode' | translate }}</label>
+            <input pInputText formControlName="postalCode" [placeholder]="'partners.suppliers.eG1060' | translate" class="w-full" />
           </div>
         </div>
         <div class="flex gap-6 mt-3">
@@ -86,7 +86,7 @@
               [for]="'billing-' + $index"
               class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer"
             >
-              Dirección de Facturación
+              {{ 'partners.suppliers.billingAddress' | translate }}
             </label>
           </div>
           <div class="flex items-center gap-2">
@@ -99,7 +99,7 @@
               [for]="'addrActive-' + $index"
               class="text-sm text-surface-700 dark:text-surface-300 cursor-pointer"
             >
-              Activa
+              {{ 'partners.suppliers.active' | translate }}
             </label>
           </div>
         </div>
@@ -109,7 +109,7 @@
   @if (addressesArray.invalid && addressesArray.touched) {
     <small class="flex items-center gap-1 mt-2 text-red-500 text-xs">
       <i class="pi pi-exclamation-circle text-xs"></i>
-      Debe agregar al menos una dirección
+      {{ 'partners.suppliers.youMustAddAtLeastOneAddress' | translate }}
     </small>
   }
 </div>

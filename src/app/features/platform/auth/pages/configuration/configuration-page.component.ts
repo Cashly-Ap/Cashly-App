@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import {
   ChangeDetectionStrategy,
@@ -43,6 +45,7 @@ const ACTION_LABELS: Record<PermissionAction, string> = {
   selector: 'app-configuration-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     UserAvatarComponent,
     CommonModule,
     ButtonModule,
@@ -58,6 +61,7 @@ const ACTION_LABELS: Record<PermissionAction, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigurationPageComponent {
+  private readonly translations = inject(TranslationService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly profiles = inject(SelfProfileService);
@@ -73,7 +77,7 @@ export class ConfigurationPageComponent {
     return (
       [user?.firstName, user?.lastName].filter(Boolean).join(' ').trim() ||
       user?.userName ||
-      'Mi cuenta'
+      this.translations.t('auth.profile.my.account')
     );
   });
   readonly initials = computed(() =>
@@ -89,8 +93,8 @@ export class ConfigurationPageComponent {
       .filter(([, actions]) => actions?.includes('READ'))
       .map(([module, actions]) => ({
         id: module,
-        label: BUSINESS_MODULE_LABELS[module as BusinessModule] ?? module,
-        actions: (actions ?? []).map((action) => ACTION_LABELS[action]),
+        label: this.translations.t(BUSINESS_MODULE_LABELS[module as BusinessModule] ?? module),
+        actions: (actions ?? []).map((action) => this.translations.t(ACTION_LABELS[action])),
       })),
   );
 
@@ -136,7 +140,7 @@ export class ConfigurationPageComponent {
   }
 
   display(value: string | null | undefined): string {
-    return value?.trim() || 'No indicado';
+    return value?.trim() || this.translations.t('auth.profile.not.provided');
   }
   onEditName(): void {
     void this.router.navigate(['/platform/auth/change-username']);

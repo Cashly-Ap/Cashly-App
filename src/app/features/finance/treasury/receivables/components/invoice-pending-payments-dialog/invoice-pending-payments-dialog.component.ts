@@ -1,3 +1,6 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output, inject, signal, effect, computed } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -11,7 +14,17 @@ import { PendingPayment } from '@features/finance/treasury/receivables/models/in
 @Component({
   selector: 'app-invoice-pending-payments-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TableModule, TooltipModule, CurrencyPipe, DatePipe],
+  imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    TooltipModule,
+    CurrencyPipe,
+    DatePipe,
+  ],
   templateUrl: './invoice-pending-payments-dialog.component.html',
 })
 export class InvoicePendingPaymentsDialogComponent {
@@ -27,9 +40,15 @@ export class InvoicePendingPaymentsDialogComponent {
   protected payments = signal<PendingPayment[]>([]);
   protected loading = signal(false);
 
+  private readonly translations = inject(TranslationService);
+
   protected dialogTitle = computed(() => {
     const num = this.invoiceNumber();
-    return num ? `Historial de Pagos - Factura ${num}` : 'Historial de Pagos';
+    return num
+      ? this.translations.t('finance.treasury.receivables.paymentsHistoryForInvoice', {
+          number: num,
+        })
+      : this.translations.t('finance.treasury.receivables.paymentHistory');
   });
 
   protected readonly isMerchant = computed(() => this.service.isMerchant());

@@ -1,3 +1,5 @@
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -25,6 +27,8 @@ import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse
   selector: 'app-order-items-table',
   standalone: true,
   imports: [
+    TranslatePipe,
+    LocalizedNumberPipe,
     DecimalPipe,
     FormsModule,
     ButtonModule,

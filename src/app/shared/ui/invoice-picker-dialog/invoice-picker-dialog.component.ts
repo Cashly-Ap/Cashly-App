@@ -1,3 +1,5 @@
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -21,7 +23,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe, LocalizedCurrencyPipe,
     ShortcutDirective,
     DialogModule,
     ButtonModule,

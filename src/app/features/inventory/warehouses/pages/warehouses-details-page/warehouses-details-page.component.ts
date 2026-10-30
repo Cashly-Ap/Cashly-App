@@ -1,3 +1,6 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
@@ -26,7 +29,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
 @Component({
   selector: 'app-warehouses-details-page',
   standalone: true,
-  imports: [
+  imports: [TranslatePipe, LocalizedDatePipe,
     PermissionDirective,
     DatePipe,
     ButtonModule,
@@ -41,7 +44,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
     StatusBadgeComponent,
     WarehouseStockOperationDialogComponent,
   ],
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   templateUrl: './warehouses-details-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

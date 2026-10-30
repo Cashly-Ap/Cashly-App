@@ -1,3 +1,7 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -68,6 +72,9 @@ interface LineWithStockInfo {
     `,
   ],
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -86,6 +93,8 @@ interface LineWithStockInfo {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConvertToInvoiceDialogComponent implements OnChanges {
+  readonly locale = inject(LanguageService).locale;
+
   private readonly api = inject(QuoteApiService);
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);

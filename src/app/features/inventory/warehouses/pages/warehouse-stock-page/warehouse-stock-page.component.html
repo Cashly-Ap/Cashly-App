@@ -1,8 +1,8 @@
 <div class="min-h-screen">
   <div class="mx-auto max-w-[1800px] px-4 py-4 sm:px-6 sm:py-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-      <app-page-header title="Ver stock" [subtitle]="warehouseName()" />
-      <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" />
+      <app-page-header [title]="'inventory.warehouses.viewStock' | translate" [subtitle]="warehouseName()" />
+      <p-button [label]="'finance.billing.creditnotes.back' | translate" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" />
     </div>
 
     <app-list-container>
@@ -14,14 +14,14 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[300px]"
               [value]="search()"
-              placeholder="Buscar producto, código o almacén..."
+              [placeholder]="'inventory.warehouses.searchByProductCodeOrWarehouse' | translate"
               (search)="onSearchChange($event)"
             />
             <p-button
               appShortcut="filter"
               icon="pi pi-filter"
-              ariaLabel="Filtros"
-              pTooltip="Filtros"
+              [ariaLabel]="'shared.filters' | translate"
+              [pTooltip]="'shared.filters' | translate"
               [outlined]="true"
               severity="secondary"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
@@ -31,10 +31,10 @@
             <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 w-[calc(100vw-3rem)] max-w-[300px]">
                 <div class="flex items-center justify-between gap-3">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (hasFilters()) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -44,7 +44,7 @@
                 </div>
                 <div class="flex flex-col gap-1.5">
                   <label for="stock-warehouse" class="text-xs font-medium text-surface-500"
-                    >Almacén</label
+                    >{{ 'inventory.warehouses.warehouse' | translate }}</label
                   >
                   <p-select
                     inputId="stock-warehouse"
@@ -53,7 +53,7 @@
                     optionValue="id"
                     [ngModel]="warehouseId()"
                     (ngModelChange)="onWarehouseChange($event)"
-                    placeholder="Todos los almacenes"
+                    [placeholder]="'inventory.warehouses.allWarehouses' | translate"
                     [showClear]="true"
                     [filter]="true"
                     filterBy="name"
@@ -63,7 +63,7 @@
                 </div>
                 <div class="flex flex-col gap-1.5">
                   <label for="stock-category" class="text-xs font-medium text-surface-500"
-                    >Categoría</label
+                    >{{ 'finance.billing.invoices.category' | translate }}</label
                   >
                   <p-select
                     inputId="stock-category"
@@ -72,7 +72,7 @@
                     optionValue="id"
                     [ngModel]="categoryId()"
                     (ngModelChange)="onCategoryChange($event)"
-                    placeholder="Todas las categorías"
+                    [placeholder]="'finance.billing.invoices.allCategories' | translate"
                     [showClear]="true"
                     [filter]="true"
                     filterBy="name"
@@ -83,13 +83,13 @@
                 <div
                   class="flex flex-col gap-2 border-t border-surface-200 pt-3 dark:border-surface-700"
                 >
-                  <span class="text-sm font-semibold">Vista</span>
+                  <span class="text-sm font-semibold">{{ 'inventory.warehouses.view' | translate }}</span>
                   <label for="stock-group-by" class="text-xs font-medium text-surface-500"
-                    >Agrupar por</label
+                    >{{ 'inventory.warehouses.groupBy' | translate }}</label
                   >
                   <p-select
                     inputId="stock-group-by"
-                    [options]="groupOptions"
+                    [options]="groupOptions | translateOptions"
                     optionLabel="label"
                     optionValue="value"
                     [ngModel]="groupBy()"
@@ -102,14 +102,14 @@
             </p-popover>
           </div>
           <p class="text-xs text-surface-500">
-            Los totales abarcan todos los resultados filtrados.
+            {{ 'inventory.warehouses.totalsIncludeAllFilteredResults' | translate }}
           </p>
         </div>
       </div>
     </app-list-container>
 
     @if (loading()) {
-      <app-loading-spinner message="Cargando stock..." />
+      <app-loading-spinner [message]="'inventory.warehouses.loadingStock' | translate" />
     } @else if (failed()) {
       <div
         role="alert"
@@ -117,7 +117,7 @@
       >
         <p>{{ errorMessage }}</p>
         <p-button
-          label="Reintentar"
+          [label]="'inventory.warehouses.retry' | translate"
           icon="pi pi-refresh"
           severity="secondary"
           [outlined]="true"
@@ -130,50 +130,50 @@
           <div
             class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
           >
-            <p class="text-xs text-surface-500">Productos</p>
-            <p class="mt-2 text-2xl font-semibold">{{ totals.productCount | number: '1.0-0' }}</p>
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.products' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.productCount | localizedNumber: '1.0-0' }}</p>
           </div>
           <div
             class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
           >
-            <p class="text-xs text-surface-500">Almacenes con productos</p>
-            <p class="mt-2 text-2xl font-semibold">{{ totals.warehouseCount | number: '1.0-0' }}</p>
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.warehousesWithProducts' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.warehouseCount | localizedNumber: '1.0-0' }}</p>
           </div>
           <div
             class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
           >
-            <p class="text-xs text-surface-500">Stock físico</p>
-            <p class="mt-2 text-2xl font-semibold">{{ totals.totalQuantity | number: '1.0-2' }}</p>
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.physicalStock' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.totalQuantity | localizedNumber: '1.0-2' }}</p>
           </div>
           <div
             class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
           >
-            <p class="text-xs text-surface-500">Reservado</p>
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.reserved' | translate }}</p>
             <p class="mt-2 text-2xl font-semibold">
-              {{ totals.reservedQuantity | number: '1.0-2' }}
+              {{ totals.reservedQuantity | localizedNumber: '1.0-2' }}
             </p>
           </div>
           <div
             class="col-span-2 rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900 lg:col-span-1"
           >
-            <p class="text-xs text-surface-500">Disponible</p>
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.available' | translate }}</p>
             <p
               class="mt-2 text-2xl font-semibold"
               [class.text-red-600]="totals.availableQuantity < 0"
             >
-              {{ totals.availableQuantity | number: '1.0-2' }}
+              {{ totals.availableQuantity | localizedNumber: '1.0-2' }}
             </p>
           </div>
         </div>
       }
 
       <app-details-card>
-        <app-details-card-header title="Stock actual" [subtitle]="resultLabel()" />
+        <app-details-card-header [title]="'inventory.warehouses.currentStock' | translate" [subtitle]="resultLabel()" />
         @if (totalElements() === 0) {
           <div class="p-4 sm:p-6">
             <app-empty-state
               icon="pi-box"
-              message="No hay existencias que coincidan con los filtros"
+              [message]="'inventory.warehouses.noStockMatchesTheFilters' | translate"
             />
           </div>
         } @else if (displayedGroupBy() !== 'NONE') {
@@ -190,39 +190,39 @@
                     <h2 class="text-base font-semibold break-words">{{ group.name }}</h2>
                     @if (displayedGroupBy() === 'PRODUCT') {
                       <p class="mt-1 text-xs text-surface-500">
-                        {{ group.productCode }} · {{ group.categoryName || 'Sin categoría' }}
+                        {{ group.productCode }} · {{ group.categoryName || ('inventory.warehouses.uncategorized' | translate) }}
                       </p>
                       <p class="mt-1 text-xs text-surface-500">
                         {{ group.warehouseCount }}
-                        {{ group.warehouseCount === 1 ? 'almacén' : 'almacenes' }}
+                        {{ group.warehouseCount === 1 ? ('inventory.warehouses.warehouse2' | translate) : ('inventory.warehouses.warehouses2' | translate) }}
                       </p>
                     } @else {
                       <p class="mt-1 text-xs text-surface-500">
                         {{ group.productCount }}
-                        {{ group.productCount === 1 ? 'producto' : 'productos' }}
+                        {{ group.productCount === 1 ? ('inventory.warehouses.product' | translate) : ('inventory.warehouses.products2' | translate) }}
                       </p>
                     }
                   </div>
                   <dl class="grid grid-cols-3 gap-4 lg:min-w-[320px]">
                     <div>
-                      <dt class="text-xs text-surface-500">Físico</dt>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.physical' | translate }}</dt>
                       <dd class="mt-1 font-mono font-semibold">
-                        {{ group.quantity | number: '1.0-2' }}
+                        {{ group.quantity | localizedNumber: '1.0-2' }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Reservado</dt>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.reserved' | translate }}</dt>
                       <dd class="mt-1 font-mono font-semibold">
-                        {{ group.reserved | number: '1.0-2' }}
+                        {{ group.reserved | localizedNumber: '1.0-2' }}
                       </dd>
                     </div>
                     <div>
-                      <dt class="text-xs text-surface-500">Disponible</dt>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.available' | translate }}</dt>
                       <dd
                         class="mt-1 font-mono font-semibold"
                         [class.text-red-600]="group.available < 0"
                       >
-                        {{ group.available | number: '1.0-2' }}
+                        {{ group.available | localizedNumber: '1.0-2' }}
                       </dd>
                     </div>
                   </dl>
@@ -234,29 +234,29 @@
                         <th
                           class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide"
                         >
-                          {{ displayedGroupBy() === 'PRODUCT' ? 'Almacén' : 'Producto' }}
+                          {{ displayedGroupBy() === 'PRODUCT' ? ('inventory.warehouses.warehouse' | translate) : ('finance.billing.returns.product' | translate) }}
                         </th>
                         @if (displayedGroupBy() === 'WAREHOUSE') {
                           <th
                             class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide"
                           >
-                            Categoría
+                            {{ 'finance.billing.invoices.category' | translate }}
                           </th>
                         }
                         <th
                           class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide"
                         >
-                          Físico
+                          {{ 'inventory.warehouses.physical' | translate }}
                         </th>
                         <th
                           class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide"
                         >
-                          Reservado
+                          {{ 'inventory.warehouses.reserved' | translate }}
                         </th>
                         <th
                           class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide"
                         >
-                          Disponible
+                          {{ 'inventory.warehouses.available' | translate }}
                         </th>
                       </tr>
                     </thead>
@@ -272,26 +272,26 @@
                               <span class="block font-medium">{{ item.productName }}</span>
                               <span class="text-xs text-surface-500"
                                 >{{ item.productCode }} ·
-                                {{ item.composite ? 'Compuesto' : 'Simple' }}</span
+                                {{ item.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate) }}</span
                               >
                             }
                           </td>
                           @if (displayedGroupBy() === 'WAREHOUSE') {
                             <td class="px-4 py-3 text-surface-500">
-                              {{ item.categoryName || 'Sin categoría' }}
+                              {{ item.categoryName || ('inventory.warehouses.uncategorized' | translate) }}
                             </td>
                           }
                           <td class="px-4 py-3 text-right font-mono">
-                            {{ item.quantity | number: '1.0-2' }}
+                            {{ item.quantity | localizedNumber: '1.0-2' }}
                           </td>
                           <td class="px-4 py-3 text-right font-mono">
-                            {{ item.reserved | number: '1.0-2' }}
+                            {{ item.reserved | localizedNumber: '1.0-2' }}
                           </td>
                           <td
                             class="px-4 py-3 text-right font-mono font-semibold"
                             [class.text-red-600]="item.available < 0"
                           >
-                            {{ item.available | number: '1.0-2' }}
+                            {{ item.available | localizedNumber: '1.0-2' }}
                           </td>
                         </tr>
                       }
@@ -310,29 +310,29 @@
                       </h3>
                       @if (displayedGroupBy() === 'WAREHOUSE') {
                         <p class="mt-1 text-xs text-surface-500">
-                          {{ item.productCode }} · {{ item.categoryName || 'Sin categoría' }}
+                          {{ item.productCode }} · {{ item.categoryName || ('inventory.warehouses.uncategorized' | translate) }}
                         </p>
                       }
                       <dl class="mt-3 grid grid-cols-3 gap-2">
                         <div>
-                          <dt class="text-xs text-surface-500">Físico</dt>
+                          <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.physical' | translate }}</dt>
                           <dd class="mt-1 font-mono text-sm">
-                            {{ item.quantity | number: '1.0-2' }}
+                            {{ item.quantity | localizedNumber: '1.0-2' }}
                           </dd>
                         </div>
                         <div>
-                          <dt class="text-xs text-surface-500">Reservado</dt>
+                          <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.reserved' | translate }}</dt>
                           <dd class="mt-1 font-mono text-sm">
-                            {{ item.reserved | number: '1.0-2' }}
+                            {{ item.reserved | localizedNumber: '1.0-2' }}
                           </dd>
                         </div>
                         <div>
-                          <dt class="text-xs text-surface-500">Disponible</dt>
+                          <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.available' | translate }}</dt>
                           <dd
                             class="mt-1 font-mono text-sm font-semibold"
                             [class.text-red-600]="item.available < 0"
                           >
-                            {{ item.available | number: '1.0-2' }}
+                            {{ item.available | localizedNumber: '1.0-2' }}
                           </dd>
                         </div>
                       </dl>
@@ -350,22 +350,22 @@
                   class="border-b border-surface-200 bg-surface-50 dark:border-surface-700 dark:bg-surface-800"
                 >
                   <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                    Producto
+                    {{ 'finance.billing.returns.product' | translate }}
                   </th>
                   <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                    Almacén
+                    {{ 'inventory.warehouses.warehouse' | translate }}
                   </th>
                   <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                    Categoría
+                    {{ 'finance.billing.invoices.category' | translate }}
                   </th>
                   <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
-                    Físico
+                    {{ 'inventory.warehouses.physical' | translate }}
                   </th>
                   <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
-                    Reservado
+                    {{ 'inventory.warehouses.reserved' | translate }}
                   </th>
                   <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
-                    Disponible
+                    {{ 'inventory.warehouses.available' | translate }}
                   </th>
                 </tr>
               </thead>
@@ -376,24 +376,24 @@
                       <span class="block font-medium">{{ item.productName }}</span>
                       <span class="text-xs text-surface-500"
                         >{{ item.productCode }} ·
-                        {{ item.composite ? 'Compuesto' : 'Simple' }}</span
+                        {{ item.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate) }}</span
                       >
                     </td>
                     <td class="px-4 py-3">{{ item.warehouseName }}</td>
                     <td class="px-4 py-3 text-surface-500">
-                      {{ item.categoryName || 'Sin categoría' }}
+                      {{ item.categoryName || ('inventory.warehouses.uncategorized' | translate) }}
                     </td>
                     <td class="px-4 py-3 text-right font-mono">
-                      {{ item.quantity | number: '1.0-2' }}
+                      {{ item.quantity | localizedNumber: '1.0-2' }}
                     </td>
                     <td class="px-4 py-3 text-right font-mono">
-                      {{ item.reserved | number: '1.0-2' }}
+                      {{ item.reserved | localizedNumber: '1.0-2' }}
                     </td>
                     <td
                       class="px-4 py-3 text-right font-mono font-semibold"
                       [class.text-red-600]="item.available < 0"
                     >
-                      {{ item.available | number: '1.0-2' }}
+                      {{ item.available | localizedNumber: '1.0-2' }}
                     </td>
                   </tr>
                 }
@@ -406,30 +406,30 @@
                 <div class="flex items-start justify-between gap-3">
                   <h2 class="font-semibold">{{ item.productName }}</h2>
                   <span class="shrink-0 text-xs text-surface-500">{{
-                    item.composite ? 'Compuesto' : 'Simple'
+                    item.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate)
                   }}</span>
                 </div>
                 <p class="mt-1 font-mono text-xs text-surface-500">{{ item.productCode }}</p>
                 <p class="mt-3 text-sm font-medium">{{ item.warehouseName }}</p>
-                <p class="text-xs text-surface-500">{{ item.categoryName || 'Sin categoría' }}</p>
+                <p class="text-xs text-surface-500">{{ item.categoryName || ('inventory.warehouses.uncategorized' | translate) }}</p>
                 <dl
                   class="mt-3 grid grid-cols-3 gap-2 border-t border-surface-100 pt-3 dark:border-surface-700"
                 >
                   <div>
-                    <dt class="text-xs text-surface-500">Físico</dt>
-                    <dd class="mt-1 font-mono text-sm">{{ item.quantity | number: '1.0-2' }}</dd>
+                    <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.physical' | translate }}</dt>
+                    <dd class="mt-1 font-mono text-sm">{{ item.quantity | localizedNumber: '1.0-2' }}</dd>
                   </div>
                   <div>
-                    <dt class="text-xs text-surface-500">Reservado</dt>
-                    <dd class="mt-1 font-mono text-sm">{{ item.reserved | number: '1.0-2' }}</dd>
+                    <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.reserved' | translate }}</dt>
+                    <dd class="mt-1 font-mono text-sm">{{ item.reserved | localizedNumber: '1.0-2' }}</dd>
                   </div>
                   <div>
-                    <dt class="text-xs text-surface-500">Disponible</dt>
+                    <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.available' | translate }}</dt>
                     <dd
                       class="mt-1 font-mono text-sm font-semibold"
                       [class.text-red-600]="item.available < 0"
                     >
-                      {{ item.available | number: '1.0-2' }}
+                      {{ item.available | localizedNumber: '1.0-2' }}
                     </dd>
                   </div>
                 </dl>

@@ -1,3 +1,8 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
@@ -40,6 +45,9 @@ export interface PaymentMethodOption {
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     ShortcutDirective,
     PermissionDirective,
     DialogModule,
@@ -68,6 +76,8 @@ export interface PaymentMethodOption {
   ],
 })
 export class PaymentFormDialogComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
   private fb = inject(FormBuilder);
   private paymentMethodApi = inject(PaymentMethodApiService);
   protected receivablesService = inject(ReceivablesApplicationService);
@@ -90,14 +100,22 @@ export class PaymentFormDialogComponent implements OnInit {
   protected form!: FormGroup;
   protected maxDate = new Date();
 
+  private readonly translations = inject(TranslationService);
+
   protected title = computed(() => {
     switch (this.mode()) {
       case 'single':
-        return `Registrar Pago - ${this.invoice()?.invoiceNumber || ''}`;
+        return this.translations.t('finance.treasury.receivables.paymentForInvoice', {
+          number: this.invoice()?.invoiceNumber || '',
+        });
       case 'all':
-        return `Pagar Toda la Deuda - ${this.customerName()}`;
+        return this.translations.t('finance.treasury.receivables.payCustomerDebt', {
+          customer: this.customerName(),
+        });
       case 'partial':
-        return `Pago Parcial - ${this.customerName()}`;
+        return this.translations.t('finance.treasury.receivables.partialPaymentForCustomer', {
+          customer: this.customerName(),
+        });
       default:
         return 'Registrar Pago';
     }

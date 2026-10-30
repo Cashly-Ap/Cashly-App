@@ -1,0 +1,10 @@
+{
+  "partners.customers.messages.couldNotCreateTheCustomerPleaseTryAgain": "Error al crear el cliente. Por favor, intente nuevamente.",
+  "partners.customers.messages.couldNotUpdateTheCustomerPleaseTryAgain": "Error al actualizar el cliente. Por favor, intente nuevamente.",
+  "partners.customers.messages.couldNotLoadTheCustomerItMayNotExist": "Error al cargar el cliente. Es posible que no exista.",
+  "partners.customers.messages.couldNotDeleteTheCustomerPleaseTryAgain": "Error al eliminar el cliente. Por favor, intente nuevamente.",
+  "partners.customers.messages.customerCreatedSuccessfully": "Cliente creado exitosamente",
+  "partners.customers.messages.customerUpdatedSuccessfully": "Cliente actualizado exitosamente",
+  "partners.customers.messages.customerDeletedSuccessfully": "Cliente eliminado exitosamente",
+  "partners.customers.messages.messages.theCustomerDataIsInvalidCheckTheInformation": "Los datos del cliente son incorrectos. Verifica la información."
+}

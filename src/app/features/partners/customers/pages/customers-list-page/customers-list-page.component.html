@@ -4,11 +4,11 @@
       <p
         class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
       >
-        Cashly / Gestión
+        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">Clientes</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">{{ 'partners.customers.customers' | translate }}</h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        Gestiona los clientes del sistema
+        {{ 'partners.customers.manageSystemCustomers' | translate }}
       </p>
     </div>
 
@@ -21,7 +21,7 @@
             <app-search-field
               class="flex-1 sm:flex-none sm:min-w-[300px]"
               [value]="searchTerm()"
-              placeholder="Buscar por nombre, alias o RIF..."
+              [placeholder]="'partners.suppliers.searchByNameAliasOrTaxId' | translate"
               (search)="onSearch($event)"
             />
             <p-button
@@ -31,17 +31,17 @@
               [outlined]="true"
               severity="secondary"
               (onClick)="filterPopover.toggle($event)"
-              pTooltip="Filtros"
+              [pTooltip]="'shared.filters' | translate"
               [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
               badgeSeverity="contrast"
             />
             <p-popover #filterPopover [focusOnShow]="false">
               <div class="flex flex-col gap-4 p-1 min-w-[260px]">
                 <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">Filtros</span>
+                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
                   @if (activeFilterCount() > 0) {
                     <p-button
-                      label="Limpiar"
+                      [label]="'finance.billing.creditnotes.clear' | translate"
                       [text]="true"
                       size="small"
                       severity="secondary"
@@ -50,51 +50,51 @@
                   }
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Tipo de cliente</label>
+                  <label class="text-xs font-medium text-surface-500">{{ 'partners.customers.customerType' | translate }}</label>
                   <p-select
-                    [options]="customerTypeOptions"
+                    [options]="customerTypeOptions | translateOptions"
                     [ngModel]="filterType()"
                     (onChange)="onTypeFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos los tipos"
+                    [placeholder]="'finance.billing.invoices.allTypes' | translate"
                     styleClass="w-full"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Estado</label>
+                  <label class="text-xs font-medium text-surface-500">{{ 'finance.billing.invoices.status' | translate }}</label>
                   <p-select
-                    [options]="activeOptions"
+                    [options]="activeOptions | translateOptions"
                     [ngModel]="filterActive()"
                     (onChange)="onActiveFilterChange($event.value)"
                     optionLabel="label"
                     optionValue="value"
-                    placeholder="Todos"
+                    [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                     styleClass="w-full"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Estado venezolano</label>
+                  <label class="text-xs font-medium text-surface-500">{{ 'partners.suppliers.venezuelanState' | translate }}</label>
                   <p-select
                     [options]="stateOptions"
                     [ngModel]="filterState()"
                     (onChange)="onStateFilterChange($event.value)"
-                    placeholder="Todos los estados"
+                    [placeholder]="'finance.billing.invoices.allStatuses' | translate"
                     styleClass="w-full"
                     [filter]="true"
-                    filterPlaceholder="Buscar estado..."
+                    [filterPlaceholder]="'partners.customers.labels.searchStates' | translate"
                   />
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">Municipio</label>
+                  <label class="text-xs font-medium text-surface-500">{{ 'inventory.warehouses.municipality' | translate }}</label>
                   <p-select
                     [options]="municipalityOptions()"
                     [ngModel]="filterMunicipality()"
                     (onChange)="onMunicipalityFilterChange($event.value)"
-                    placeholder="Todos los municipios"
+                    [placeholder]="'partners.suppliers.allMunicipalities' | translate"
                     styleClass="w-full"
                     [filter]="true"
-                    filterPlaceholder="Buscar municipio..."
+                    [filterPlaceholder]="'partners.customers.labels.searchMunicipalities' | translate"
                     [disabled]="!filterState()"
                   />
                 </div>
@@ -104,7 +104,7 @@
           <p-button
             appShortcut="new"
             [appPermission]="'CREATE'"
-            label="Nuevo Cliente"
+            [label]="'partners.customers.newCustomer' | translate"
             icon="pi pi-plus"
             (onClick)="onCreate()"
             severity="contrast"
@@ -118,14 +118,14 @@
 
     @if (showInitialLoading()) {
       <app-content-card>
-        <app-loading-spinner message="Cargando clientes..." />
+        <app-loading-spinner [message]="'partners.customers.loadingCustomers' | translate" />
       </app-content-card>
     } @else if (isEmptyDatabase()) {
       <app-content-card>
         <app-empty-state
           icon="pi-building"
-          title="No hay clientes registrados"
-          message="Comienza a gestionar clientes agregando el primero."
+          [title]="'partners.customers.noCustomersRegistered' | translate"
+          [message]="'partners.customers.startManagingCustomersByAddingTheFirstOne' | translate"
         />
       </app-content-card>
     } @else {
@@ -141,8 +141,8 @@
           @if (hasFilteredResults()) {
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay clientes que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo cliente."
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'partners.customers.noCustomersMatchYourSearchTryOtherTermsOrCreateANewCustomer' | translate"
             />
           } @else {
             <div class="overflow-x-auto rounded-t-2xl">
@@ -156,19 +156,19 @@
                   <tr>
                     <th pSortableColumn="code" class="w-20">
                       <div class="flex items-center gap-2 font-semibold">
-                        Código
+                        {{ 'finance.treasury.paymentmethods.code' | translate }}
                         <p-sortIcon field="code" />
                       </div>
                     </th>
                     <th pSortableColumn="legalName" class="w-auto">
                       <div class="flex items-center gap-2 font-semibold">
-                        Razón Social
+                        {{ 'partners.suppliers.legalName' | translate }}
                         <p-sortIcon field="legalName" />
                       </div>
                     </th>
                     <th pSortableColumn="alias" class="w-auto hidden lg:table-cell">
                       <div class="flex items-center gap-2 font-semibold">
-                        Alias
+                        {{ 'partners.suppliers.alias' | translate }}
                         <p-sortIcon field="alias" />
                       </div>
                     </th>
@@ -180,15 +180,15 @@
                     </th>
                     <th pSortableColumn="type" class="w-32">
                       <div class="flex items-center gap-2 font-semibold">
-                        Tipo
+                        {{ 'shared.type' | translate }}
                         <p-sortIcon field="type" />
                       </div>
                     </th>
                     <th class="w-24">
-                      <div class="font-semibold">Estado</div>
+                      <div class="font-semibold">{{ 'finance.billing.invoices.status' | translate }}</div>
                     </th>
                     <th class="w-20">
-                      <div class="font-semibold text-center">Acciones</div>
+                      <div class="font-semibold text-center">{{ 'shared.actions' | translate }}</div>
                     </th>
                   </tr>
                 </ng-template>
@@ -218,7 +218,7 @@
                       <div class="flex justify-center">
                         <app-list-action-buttons
                           [actions]="actionsFor(customer)"
-                          ariaLabel="Abrir acciones del cliente"
+                          [ariaLabel]="'finance.treasury.receivables.openCustomerActions' | translate"
                         />
                       </div>
                     </td>
@@ -233,7 +233,7 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+                [currentPageReportTemplate]="'partners.customers.labels.showingFirstToLastOfTotalrecordsCustomers' | translate"
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -253,8 +253,8 @@
           <app-content-card>
             <app-empty-state
               icon="pi-search"
-              title="No se encontraron resultados"
-              message="No hay clientes que coincidan con tu búsqueda. Intenta con otros términos o crea un nuevo cliente."
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'partners.customers.noCustomersMatchYourSearchTryOtherTermsOrCreateANewCustomer' | translate"
             />
           </app-content-card>
         } @else {
@@ -288,7 +288,7 @@
                 >
                   <app-list-action-buttons
                     [actions]="actionsFor(customer)"
-                    ariaLabel="Abrir acciones del cliente"
+                    [ariaLabel]="'finance.treasury.receivables.openCustomerActions' | translate"
                   />
                 </div>
               </div>
@@ -301,7 +301,7 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
-              currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} clientes"
+              [currentPageReportTemplate]="'partners.customers.labels.showingFirstToLastOfTotalrecordsCustomers' | translate"
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

@@ -1,11 +1,11 @@
 <app-select-input
-  label="País"
-  placeholder="Selecciona un país"
-  filterPlaceholder="Buscar país…"
+  [label]="'platform.company.country' | translate"
+  [placeholder]="'core.forms.selectACountry' | translate"
+  [filterPlaceholder]="'core.forms.searchCountry' | translate"
   optionImage="flagUrl"
   [control]="control()"
   [options]="options()"
   [filter]="true"
   [showClear]="true"
-  errorMessage="Selecciona un país válido"
+  [errorMessage]="'core.forms.selectValidCountry' | translate"
 />

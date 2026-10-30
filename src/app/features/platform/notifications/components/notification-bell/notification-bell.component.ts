@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -14,7 +15,7 @@ import { Subject, takeUntil } from 'rxjs';
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
-  imports: [CommonModule, ButtonModule, PopoverModule, TooltipModule],
+  imports: [TranslatePipe, CommonModule, ButtonModule, PopoverModule, TooltipModule],
   templateUrl: './notification-bell.component.html',
 })
 export class NotificationBellComponent implements OnInit, OnDestroy {

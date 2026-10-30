@@ -1,3 +1,7 @@
+import { inject as i18nInject } from '@angular/core';
+import { LanguageService as I18nLanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
@@ -25,7 +29,7 @@ type NoteType = 'CREDIT' | 'DEBIT';
   selector: 'app-note-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     ShortcutDirective,
     FormsModule,
     ButtonModule,
@@ -37,6 +41,7 @@ type NoteType = 'CREDIT' | 'DEBIT';
   templateUrl: './note-form-dialog.component.html',
 })
 export class NoteFormDialogComponent {
+  readonly i18nLanguage = i18nInject(I18nLanguageService);
   private readonly creditNoteApi = inject(CreditNoteApiService);
   private readonly debitNoteApi = inject(DebitNoteApiService);
   private readonly messageService = inject(MessageService);

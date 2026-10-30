@@ -7,6 +7,6 @@
   }
   <label class="flex-1 cursor-pointer flex items-center">
     <p-checkbox [formControl]="internalControl()" [binary]="true" />
-    <span class="ml-2.5 font-semibold text-surface-700 dark:text-surface-300">{{ label() }}</span>
+    <span class="ml-2.5 font-semibold text-surface-700 dark:text-surface-300">{{ label() | translate }}</span>
   </label>
 </div>

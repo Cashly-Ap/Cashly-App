@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, inject, signal, ChangeDetectionStrategy, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,7 +16,7 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
   selector: 'app-product-prices-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, ReactiveFormsModule, InputNumberModule, ButtonModule],
+  imports: [TranslatePipe, CommonModule, ReactiveFormsModule, InputNumberModule, ButtonModule],
   templateUrl: './product-prices-section.component.html',
 })
 export class ProductPricesSectionComponent {

@@ -4,6 +4,7 @@ const fb = new FormBuilder();
 export function createUserNameForm() {
   const name = [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)];
   return fb.group({
+    language: ['es', [Validators.required, Validators.pattern(/^(es|en)$/)]],
     firstName: ['', name],
     lastName: ['', name],
     userName: ['', [...name, Validators.minLength(3)]],

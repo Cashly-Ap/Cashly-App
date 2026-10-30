@@ -1,8 +1,8 @@
 <div class="p-6">
   <div class="flex justify-between items-center mb-4">
-    <h3 class="text-lg font-semibold">Componentes del Producto</h3>
+    <h3 class="text-lg font-semibold">{{ 'catalog.products.productComponents' | translate }}</h3>
     <p-button
-      label="Agregar Componente"
+      [label]="'catalog.products.addComponent' | translate"
       icon="pi pi-plus"
       severity="secondary"
       [outlined]="true"
@@ -16,9 +16,9 @@
         <ng-template pTemplate="header">
           <tr>
             <th class="w-12">#</th>
-            <th>Producto Componente</th>
-            <th>Cantidad Requerida</th>
-            <th class="w-24 text-center">Acciones</th>
+            <th>{{ 'catalog.products.componentProduct' | translate }}</th>
+            <th>{{ 'catalog.products.requiredQuantity' | translate }}</th>
+            <th class="w-24 text-center">{{ 'shared.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-control let-index="rowIndex">
@@ -30,15 +30,15 @@
                 [options]="getAvailableProductOptions(index)"
                 optionLabel="label"
                 optionValue="id"
-                placeholder="Seleccionar producto"
+                [placeholder]="'catalog.products.selectProduct' | translate"
                 [filter]="true"
-                filterPlaceholder="Buscar producto..."
+                [filterPlaceholder]="'catalog.products.labels.searchProducts' | translate"
                 appendTo="body"
                 styleClass="w-full"
               />
             </td>
             <td>
-              <p-inputNumber
+              <p-inputNumber [locale]="i18nLanguage.locale()"
                 [formControl]="getControl(index, 'quantity')"
                 [minFractionDigits]="0"
                 [maxFractionDigits]="3"
@@ -54,7 +54,7 @@
                 severity="danger"
                 [rounded]="true"
                 [text]="true"
-                pTooltip="Eliminar componente"
+                [pTooltip]="'catalog.products.removeComponent' | translate"
                 (onClick)="onRemoveComponent(index)"
               />
             </td>
@@ -65,9 +65,9 @@
   } @else {
     <app-empty-state
       icon="pi-sitemap"
-      title="Sin componentes"
-      message="Agrega los productos que componen este artículo"
-      buttonLabel="Agregar Primer Componente"
+      [title]="'catalog.products.noComponents' | translate"
+      [message]="'catalog.products.addTheProductsThatMakeUpThisItem' | translate"
+      [buttonLabel]="'catalog.products.addFirstComponent' | translate"
       (buttonClick)="onAddComponent()"
     />
   }

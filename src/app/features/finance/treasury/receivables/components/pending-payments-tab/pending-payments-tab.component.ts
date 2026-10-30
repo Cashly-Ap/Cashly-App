@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -34,6 +36,9 @@ const IMAGE_EXTENSION_PATTERN = /\.(png|jpe?g|gif|webp|svg|bmp)(\?.*)?$/i;
   selector: 'app-pending-payments-tab',
   standalone: true,
   imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     CommonModule,
     CurrencyPipe,

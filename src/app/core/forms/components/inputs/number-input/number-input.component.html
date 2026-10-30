@@ -6,10 +6,10 @@
     @if (icon()) {
       <i class="pi {{ icon() }} mr-1.5 text-primary-500 dark:text-primary-400"></i>
     }
-    {{ label() }}
+    {{ label() | translate }}
   </label>
   <div class="w-full">
-    <p-inputNumber
+    <p-inputNumber [locale]="i18nLanguage.locale()"
       [formControl]="control()"
       [name]="label()"
       [min]="min()"
@@ -17,7 +17,7 @@
       [mode]="mode() ?? 'decimal'"
       [prefix]="prefix()"
       [suffix]="suffix()"
-      [placeholder]="placeholder()"
+      [placeholder]="placeholder() | translate"
       [minFractionDigits]="minFractionDigits()"
       [maxFractionDigits]="maxFractionDigits()"
       [showButtons]="showButtons()"
@@ -33,12 +33,12 @@
     @if (control().invalid && control().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
-        {{ errorMessage() }}
+        {{ errorMessage() | translate }}
       </small>
     } @else if (helpText()) {
       <p class="flex items-center gap-1 text-xs text-surface-500 dark:text-surface-400">
         <i class="pi pi-info-circle text-xs"></i>
-        {{ helpText() }}
+        {{ helpText() | translate }}
       </p>
     }
   </div>

@@ -1,5 +1,5 @@
 <p-dialog
-  header="Reporte de Compras - PDF"
+  [header]="'procurement.purchases.purchasesReportPdf' | translate"
   [modal]="true"
   [visible]="visible()"
   (visibleChange)="onHide()"
@@ -15,10 +15,12 @@
   } @else {
     <div class="flex flex-col gap-4">
       <div class="flex flex-col gap-2">
-        <label for="mode" class="text-sm font-medium">Modo de Reporte</label>
+        <label for="mode" class="text-sm font-medium">{{
+          'finance.billing.invoices.reportMode' | translate
+        }}</label>
         <p-select
           id="mode"
-          [options]="modeOptions"
+          [options]="modeOptions | translateOptions"
           [(ngModel)]="mode"
           optionLabel="label"
           optionValue="value"
@@ -29,24 +31,28 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-2">
-          <label for="dateFrom" class="text-sm font-medium">Desde</label>
+          <label for="dateFrom" class="text-sm font-medium">{{
+            'finance.billing.invoices.from' | translate
+          }}</label>
           <p-datepicker
             id="dateFrom"
             [(ngModel)]="dateFrom"
-            dateFormat="yy-mm-dd"
-            placeholder="Fecha inicial"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.billing.invoices.startDate' | translate"
             styleClass="w-full"
             appendTo="body"
           />
         </div>
 
         <div class="flex flex-col gap-2">
-          <label for="dateTo" class="text-sm font-medium">Hasta</label>
+          <label for="dateTo" class="text-sm font-medium">{{
+            'finance.billing.invoices.to' | translate
+          }}</label>
           <p-datepicker
             id="dateTo"
             [(ngModel)]="dateTo"
-            dateFormat="yy-mm-dd"
-            placeholder="Fecha final"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.billing.invoices.endDate' | translate"
             styleClass="w-full"
             appendTo="body"
           />
@@ -54,62 +60,70 @@
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="supplier" class="text-sm font-medium">Proveedor</label>
+        <label for="supplier" class="text-sm font-medium">{{
+          'procurement.purchases.supplier2' | translate
+        }}</label>
         <p-select
           id="supplier"
-          [options]="supplierOptions()"
+          [options]="supplierOptions() | translateOptions: true"
           [(ngModel)]="supplierId"
           optionLabel="label"
           optionValue="value"
-          placeholder="Todos los proveedores"
+          [placeholder]="'procurement.purchases.allSuppliers' | translate"
           [filter]="true"
-          filterPlaceholder="Buscar proveedor"
+          [filterPlaceholder]="'procurement.purchases.searchSuppliersLabel' | translate"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="status" class="text-sm font-medium">Estado de la Compra</label>
+        <label for="status" class="text-sm font-medium">{{
+          'procurement.purchases.purchaseStatus' | translate
+        }}</label>
         <p-select
           id="status"
-          [options]="statusOptions"
+          [options]="statusOptions | translateOptions"
           [(ngModel)]="status"
           optionLabel="label"
           optionValue="value"
-          placeholder="Todos los estados"
+          [placeholder]="'finance.billing.invoices.allStatuses' | translate"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="product" class="text-sm font-medium">Producto</label>
+        <label for="product" class="text-sm font-medium">{{
+          'finance.billing.returns.product' | translate
+        }}</label>
         <p-select
           id="product"
-          [options]="productOptions()"
+          [options]="productOptions() | translateOptions: true"
           [(ngModel)]="productId"
           optionLabel="label"
           optionValue="value"
-          placeholder="Todos los productos"
+          [placeholder]="'finance.billing.invoices.allProducts' | translate"
           [filter]="true"
-          filterPlaceholder="Buscar producto"
+          [filterPlaceholder]="'finance.billing.invoices.searchProducts' | translate"
           styleClass="w-full"
           appendTo="body"
         />
       </div>
 
       <div class="flex flex-col gap-2">
-        <label for="category" class="text-sm font-medium">Categoría</label>
+        <label for="category" class="text-sm font-medium">{{
+          'finance.billing.invoices.category' | translate
+        }}</label>
         <p-select
           id="category"
-          [options]="categoryOptions()"
+          [options]="categoryOptions() | translateOptions: true"
           [(ngModel)]="categoryId"
           optionLabel="label"
           optionValue="value"
-          placeholder="Todas las categorías"
+          [placeholder]="'finance.billing.invoices.allCategories' | translate"
           [filter]="true"
-          filterPlaceholder="Buscar categoría"
+          [filterPlaceholder]="'finance.billing.invoices.searchCategories' | translate"
           styleClass="w-full"
           appendTo="body"
         />
@@ -121,7 +135,7 @@
     <div class="flex justify-end gap-2">
       <p-button
         appShortcut="cancel"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         [text]="true"
         severity="secondary"
         (onClick)="onHide()"
@@ -129,7 +143,7 @@
       <p-button
         [appPermissionModule]="'PURCHASES'"
         [appPermission]="'EXPORT'"
-        label="Generar PDF"
+        [label]="'finance.billing.invoices.generatePdf' | translate"
         icon="pi pi-file-pdf"
         (onClick)="generatePdf()"
       />

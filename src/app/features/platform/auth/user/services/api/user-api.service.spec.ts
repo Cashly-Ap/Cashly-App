@@ -151,7 +151,7 @@ describe('UserApiService', () => {
 
       const req = httpMock.expectOne(baseUrl);
       expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(createData);
+      expect(req.request.body).toEqual({ ...createData, language: 'es' });
       req.flush({ ...mockUserDetails, ...createData });
 
       const user = await promise;
@@ -269,6 +269,7 @@ describe('UserApiService', () => {
     const request = httpMock.expectOne(baseUrl);
     expect(Object.keys(request.request.body).sort()).toEqual(
       [
+        'language',
         'email',
         'password',
         'userName',

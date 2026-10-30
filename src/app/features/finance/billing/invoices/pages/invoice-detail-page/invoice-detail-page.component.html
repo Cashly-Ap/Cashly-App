@@ -6,18 +6,20 @@
     @if (invoice(); as currentInvoice) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles de la Factura"
-          subtitle="Información completa de la factura"
+          [title]="'finance.billing.invoices.invoiceDetails2' | translate"
+          [subtitle]="'finance.billing.invoices.completeInvoiceInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header
-            [title]="'Factura #' + currentInvoice.invoiceNumber"
+            [title]="
+              ('finance.billing.creditnotes.invoice' | translate) + currentInvoice.invoiceNumber
+            "
             [subtitle]="currentInvoice.customerName"
           >
             <div actions class="flex gap-3 flex-wrap">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -28,7 +30,7 @@
                   <p-button
                     [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                     [appPermission]="'UPDATE'"
-                    label="Editar"
+                    [label]="'finance.billing.invoices.edit' | translate"
                     icon="pi pi-pencil"
                     [link]="true"
                     (onClick)="actionsMenu.hide(); onEdit()"
@@ -38,7 +40,7 @@
                 <p-button
                   [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                   [appPermission]="'CREATE'"
-                  label="Duplicar"
+                  [label]="'finance.billing.invoices.duplicate' | translate"
                   icon="pi pi-copy"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onDuplicate()"
@@ -51,75 +53,90 @@
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
               <app-details-info-field
-                label="Número de Factura"
+                [label]="'finance.billing.invoices.invoiceNumber' | translate"
                 [value]="'#' + currentInvoice.invoiceNumber"
                 type="code"
               />
-              <app-details-info-field label="Estado" type="badge">
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
                 <div class="flex gap-2 flex-wrap">
                   <app-text-badge
-                    [label]="currentInvoice.statusLabel"
+                    [label]="currentInvoice.statusLabel | translate"
                     [variant]="getStatusVariant(currentInvoice.status)"
                   />
                   @if (currentInvoice.returnStatus === 'PARTIAL') {
-                    <app-text-badge label="Parcialmente Devuelta" variant="warning" />
+                    <app-text-badge
+                      [label]="'finance.billing.invoices.partiallyReturned' | translate"
+                      variant="warning"
+                    />
                   }
                 </div>
               </app-details-info-field>
-              <app-details-info-field label="Cliente" [value]="currentInvoice.customerName" />
-              <app-details-info-field label="RIF" [value]="currentInvoice.customerRif" />
               <app-details-info-field
-                label="Tipo de Pago"
-                [value]="getPaymentTypeLabel(currentInvoice.paymentType)"
+                [label]="'shared.customer' | translate"
+                [value]="currentInvoice.customerName"
+              />
+              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="currentInvoice.customerRif" />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.paymentType' | translate"
+                [value]="getPaymentTypeLabel(currentInvoice.paymentType) | translate"
                 colspan="full"
               />
-              <app-details-info-field label="Total" type="badge">
+              <app-details-info-field [label]="'shared.total' | translate" type="badge">
                 <span class="font-mono font-bold text-lg">
-                  {{ currentInvoice.total | number: '1.2-2' }}
+                  {{ currentInvoice.total | localizedNumber: '1.2-2' }}
                 </span>
               </app-details-info-field>
-              <app-details-info-field label="Subtotal" type="badge">
+              <app-details-info-field
+                [label]="'finance.billing.returns.subtotal' | translate"
+                type="badge"
+              >
                 <span class="font-mono">
-                  {{ currentInvoice.subtotal | number: '1.2-2' }}
+                  {{ currentInvoice.subtotal | localizedNumber: '1.2-2' }}
                 </span>
               </app-details-info-field>
               @if (currentInvoice.returnedTotal > 0) {
-                <app-details-info-field label="Total Devuelto" type="badge">
+                <app-details-info-field
+                  [label]="'finance.billing.invoices.totalReturned' | translate"
+                  type="badge"
+                >
                   <span class="font-mono font-semibold text-amber-600 dark:text-amber-400">
-                    -{{ currentInvoice.returnedTotal | number: '1.2-2' }}
+                    -{{ currentInvoice.returnedTotal | localizedNumber: '1.2-2' }}
                   </span>
                 </app-details-info-field>
               }
               <app-details-info-field
-                label="Creado por"
-                [value]="currentInvoice.createdByName || 'Automático'"
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="currentInvoice.createdByName || ('sales.quotes.automatic' | translate)"
               />
               <app-details-info-field
-                label="Fecha de Creación"
-                [value]="(currentInvoice.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentInvoice.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Fecha de Emisión"
-                [value]="(currentInvoice.issueDate | date: 'dd/MM/yyyy') || ''"
+                [label]="'finance.billing.invoices.issueDate' | translate"
+                [value]="(currentInvoice.issueDate | localizedDate: 'dd/MM/yyyy') || ''"
               />
               <app-details-info-field
-                label="Fecha de Vencimiento"
-                [value]="(currentInvoice.dueDate | date: 'dd/MM/yyyy') || ''"
+                [label]="'finance.billing.invoices.dueDate' | translate"
+                [value]="(currentInvoice.dueDate | localizedDate: 'dd/MM/yyyy') || ''"
               />
               @if (currentInvoice.orderNumber) {
                 <app-details-info-field
-                  label="Pedido Origen"
+                  [label]="'finance.billing.invoices.sourceOrder' | translate"
                   [value]="'#' + currentInvoice.orderNumber"
                   type="code"
                 />
               }
               @if (currentInvoice.cancelledAt) {
                 <app-details-info-field
-                  label="Fecha de Cancelación"
-                  [value]="(currentInvoice.cancelledAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                  [label]="'finance.billing.invoices.cancellationDate' | translate"
+                  [value]="(currentInvoice.cancelledAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
                 />
                 <app-details-info-field
-                  label="Razón de Cancelación"
+                  [label]="'finance.billing.invoices.cancellationReason2' | translate"
                   [value]="currentInvoice.cancelledReason || ''"
                 />
               }
@@ -128,38 +145,57 @@
         </app-details-card>
 
         @if (currentInvoice.notes) {
-          <app-details-section-card title="Notas" icon="pi-align-left">
+          <app-details-section-card
+            [title]="'finance.billing.invoices.notes' | translate"
+            icon="pi-align-left"
+          >
             <p class="text-sm whitespace-pre-wrap">{{ currentInvoice.notes }}</p>
           </app-details-section-card>
         }
 
         @if (currentInvoice.returns.length > 0) {
-          <app-details-section-card title="Devoluciones" icon="pi-undo">
+          <app-details-section-card
+            [title]="'finance.billing.returns.returns' | translate"
+            icon="pi-undo"
+          >
             <div class="flex flex-col gap-6">
               @for (ret of currentInvoice.returns; track ret.id) {
                 <div class="border border-surface-200 dark:border-surface-700 rounded-xl p-4">
                   <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-3">
-                      <span class="font-semibold text-sm">Devolución #{{ ret.returnNumber }}</span>
+                      <span class="font-semibold text-sm"
+                        >{{ 'finance.billing.invoices.return2' | translate
+                        }}{{ ret.returnNumber }}</span
+                      >
                       <app-text-badge
-                        [label]="ret.returnType === 'AUTOMATIC' ? 'Automática' : 'Manual'"
+                        [label]="
+                          ret.returnType === 'AUTOMATIC'
+                            ? ('finance.billing.returns.automatic' | translate)
+                            : ('finance.billing.returns.manual' | translate)
+                        "
                         variant="info"
                       />
                     </div>
                     <span
                       class="font-mono text-sm font-semibold text-amber-600 dark:text-amber-400"
                     >
-                      -{{ ret.total | number: '1.2-2' }}
+                      -{{ ret.total | localizedNumber: '1.2-2' }}
                     </span>
                   </div>
                   @if (ret.reason) {
                     <p class="text-sm text-surface-600 dark:text-surface-400 mb-3">
-                      <span class="font-medium">Motivo:</span> {{ ret.reason }}
+                      <span class="font-medium">{{
+                        'finance.billing.invoices.reason' | translate
+                      }}</span>
+                      {{ ret.reason }}
                     </p>
                   }
                   <div class="flex gap-4 text-xs text-surface-500 dark:text-surface-400 mb-4">
-                    <span>Creado por: {{ ret.createdByName }}</span>
-                    <span>{{ ret.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+                    <span
+                      >{{ 'finance.billing.invoices.createdBy' | translate }}
+                      {{ ret.createdByName }}</span
+                    >
+                    <span>{{ ret.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}</span>
                   </div>
                   <div class="flex flex-col gap-3 md:hidden">
                     @for (line of ret.lines; track line.productCode) {
@@ -176,17 +212,25 @@
                         </div>
                         <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
                           <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400">Cantidad</span>
+                            <span class="text-xs text-surface-400">{{
+                              'finance.billing.returns.quantity' | translate
+                            }}</span>
                             <span class="font-mono">{{ line.quantity }}</span>
                           </div>
                           <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400">Precio Unit.</span>
-                            <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                            <span class="text-xs text-surface-400">{{
+                              'finance.billing.returns.unitPrice' | translate
+                            }}</span>
+                            <span class="font-mono">{{
+                              line.unitPrice | localizedNumber: '1.2-2'
+                            }}</span>
                           </div>
                           <div class="flex flex-col gap-0.5">
-                            <span class="text-xs text-surface-400">Subtotal</span>
+                            <span class="text-xs text-surface-400">{{
+                              'finance.billing.returns.subtotal' | translate
+                            }}</span>
                             <span class="font-mono font-semibold">{{
-                              line.subtotal | number: '1.2-2'
+                              line.subtotal | localizedNumber: '1.2-2'
                             }}</span>
                           </div>
                         </div>
@@ -194,8 +238,11 @@
                           <div
                             class="flex flex-col gap-1 pl-3 border-l-2 border-surface-200 dark:border-surface-700"
                           >
-                            <span class="text-xs font-medium text-surface-500 dark:text-surface-400"
-                              >Asignaciones a almacén:</span
+                            <span
+                              class="text-xs font-medium text-surface-500 dark:text-surface-400"
+                              >{{
+                                'finance.billing.returns.warehouseAllocations' | translate
+                              }}</span
                             >
                             @for (alloc of line.allocations; track alloc.warehouseId) {
                               <span class="text-xs text-surface-600 dark:text-surface-400">
@@ -211,10 +258,16 @@
                     <p-table [value]="ret.lines" styleClass="p-datatable-sm">
                       <ng-template pTemplate="header">
                         <tr>
-                          <th>Producto</th>
-                          <th class="w-24 text-right">Cantidad</th>
-                          <th class="w-32 text-right">Precio Unit.</th>
-                          <th class="w-32 text-right">Subtotal</th>
+                          <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                          <th class="w-24 text-right">
+                            {{ 'finance.billing.returns.quantity' | translate }}
+                          </th>
+                          <th class="w-32 text-right">
+                            {{ 'finance.billing.returns.unitPrice' | translate }}
+                          </th>
+                          <th class="w-32 text-right">
+                            {{ 'finance.billing.returns.subtotal' | translate }}
+                          </th>
                         </tr>
                       </ng-template>
                       <ng-template pTemplate="body" let-line>
@@ -231,10 +284,10 @@
                           </td>
                           <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
                           <td class="text-right font-mono text-sm">
-                            {{ line.unitPrice | number: '1.2-2' }}
+                            {{ line.unitPrice | localizedNumber: '1.2-2' }}
                           </td>
                           <td class="text-right font-mono font-semibold text-sm">
-                            {{ line.subtotal | number: '1.2-2' }}
+                            {{ line.subtotal | localizedNumber: '1.2-2' }}
                           </td>
                         </tr>
                         @if (line.allocations.length > 0) {
@@ -245,7 +298,9 @@
                               >
                                 <span
                                   class="text-xs font-medium text-surface-500 dark:text-surface-400"
-                                  >Asignaciones a almacén:</span
+                                  >{{
+                                    'finance.billing.returns.warehouseAllocations' | translate
+                                  }}</span
                                 >
                                 @for (alloc of line.allocations; track alloc.warehouseId) {
                                   <span class="text-xs text-surface-600 dark:text-surface-400">
@@ -265,7 +320,10 @@
           </app-details-section-card>
         }
 
-        <app-details-section-card title="Líneas de la Factura" icon="pi-list">
+        <app-details-section-card
+          [title]="'finance.billing.returns.invoiceLines' | translate"
+          icon="pi-list"
+        >
           @if (currentInvoice.lines && currentInvoice.lines.length > 0) {
             <div class="flex flex-col gap-3 md:hidden">
               @for (line of currentInvoice.lines; track $index; let i = $index) {
@@ -285,11 +343,15 @@
                   </div>
                   <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Cantidad</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.quantity' | translate
+                      }}</span>
                       <span class="font-mono">{{ line.quantity }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Devuelto</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.invoices.returned' | translate
+                      }}</span>
                       @if (line.returnedQuantity > 0) {
                         <span class="font-mono text-amber-600 dark:text-amber-400">{{
                           line.returnedQuantity
@@ -299,19 +361,26 @@
                       }
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Precio Unit.</span>
-                      <span class="font-mono">{{ line.unitPrice | number: '1.2-2' }}</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.unitPrice' | translate
+                      }}</span>
+                      <span class="font-mono">{{ line.unitPrice | localizedNumber: '1.2-2' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Subtotal</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.subtotal' | translate
+                      }}</span>
                       <span class="font-mono font-semibold">{{
-                        line.lineTotal | number: '1.2-2'
+                        line.lineTotal | localizedNumber: '1.2-2'
                       }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
-                      <span class="text-xs text-surface-400">Total Neto</span>
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.invoices.netTotal' | translate
+                      }}</span>
                       <span class="font-mono">{{
-                        line.lineTotal - line.returnedQuantity * line.unitPrice | number: '1.2-2'
+                        line.lineTotal - line.returnedQuantity * line.unitPrice
+                          | localizedNumber: '1.2-2'
                       }}</span>
                     </div>
                   </div>
@@ -321,16 +390,19 @@
                 class="flex flex-col gap-1 pt-2 border-t border-surface-200 dark:border-surface-700"
               >
                 <div class="flex justify-between text-sm font-semibold">
-                  <span>Subtotal:</span>
-                  <span class="font-mono">{{ currentInvoice.subtotal | number: '1.2-2' }}</span>
+                  <span>{{ 'finance.billing.invoices.subtotal' | translate }}</span>
+                  <span class="font-mono">{{
+                    currentInvoice.subtotal | localizedNumber: '1.2-2'
+                  }}</span>
                 </div>
                 @if (currentInvoice.returnedTotal > 0) {
                   <div
                     class="flex justify-between text-sm font-semibold text-amber-600 dark:text-amber-400"
                   >
-                    <span>Total Neto:</span>
+                    <span>{{ 'finance.billing.invoices.netTotal2' | translate }}</span>
                     <span class="font-mono">{{
-                      currentInvoice.subtotal - currentInvoice.returnedTotal | number: '1.2-2'
+                      currentInvoice.subtotal - currentInvoice.returnedTotal
+                        | localizedNumber: '1.2-2'
                     }}</span>
                   </div>
                 }
@@ -341,12 +413,22 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th class="w-12">#</th>
-                    <th>Producto</th>
-                    <th class="w-32 text-right">Cantidad</th>
-                    <th class="w-32 text-right">Devuelto</th>
-                    <th class="w-40 text-right">Precio Unit.</th>
-                    <th class="w-40 text-right">Subtotal</th>
-                    <th class="w-40 text-right">Total Neto</th>
+                    <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="w-32 text-right">
+                      {{ 'finance.billing.returns.quantity' | translate }}
+                    </th>
+                    <th class="w-32 text-right">
+                      {{ 'finance.billing.invoices.returned' | translate }}
+                    </th>
+                    <th class="w-40 text-right">
+                      {{ 'finance.billing.returns.unitPrice' | translate }}
+                    </th>
+                    <th class="w-40 text-right">
+                      {{ 'finance.billing.returns.subtotal' | translate }}
+                    </th>
+                    <th class="w-40 text-right">
+                      {{ 'finance.billing.invoices.netTotal' | translate }}
+                    </th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-line let-index="rowIndex">
@@ -371,23 +453,26 @@
                       }
                     </td>
                     <td class="text-right font-mono text-sm">
-                      {{ line.unitPrice | number: '1.2-2' }}
+                      {{ line.unitPrice | localizedNumber: '1.2-2' }}
                     </td>
                     <td class="text-right font-mono font-semibold text-sm">
-                      {{ line.lineTotal | number: '1.2-2' }}
+                      {{ line.lineTotal | localizedNumber: '1.2-2' }}
                     </td>
                     <td class="text-right font-mono text-sm">
                       {{
-                        line.lineTotal - line.returnedQuantity * line.unitPrice | number: '1.2-2'
+                        line.lineTotal - line.returnedQuantity * line.unitPrice
+                          | localizedNumber: '1.2-2'
                       }}
                     </td>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="footer">
                   <tr>
-                    <td colspan="6" class="text-right font-semibold">Subtotal:</td>
+                    <td colspan="6" class="text-right font-semibold">
+                      {{ 'finance.billing.invoices.subtotal' | translate }}
+                    </td>
                     <td class="text-right font-mono text-sm">
-                      {{ currentInvoice.subtotal | number: '1.2-2' }}
+                      {{ currentInvoice.subtotal | localizedNumber: '1.2-2' }}
                     </td>
                   </tr>
                   @if (currentInvoice.returnedTotal > 0) {
@@ -396,11 +481,12 @@
                         colspan="6"
                         class="text-right font-semibold text-amber-600 dark:text-amber-400"
                       >
-                        Total Neto:
+                        {{ 'finance.billing.invoices.netTotal2' | translate }}
                       </td>
                       <td class="text-right font-mono text-sm font-semibold">
                         {{
-                          currentInvoice.subtotal - currentInvoice.returnedTotal | number: '1.2-2'
+                          currentInvoice.subtotal - currentInvoice.returnedTotal
+                            | localizedNumber: '1.2-2'
                         }}
                       </td>
                     </tr>
@@ -409,12 +495,18 @@
               </p-table>
             </div>
           } @else {
-            <app-empty-state icon="pi-inbox" message="No hay líneas en esta factura" />
+            <app-empty-state
+              icon="pi-inbox"
+              [message]="'finance.billing.invoices.thisInvoiceHasNoLines' | translate"
+            />
           }
         </app-details-section-card>
 
         @if (creditNotes().length > 0) {
-          <app-details-section-card title="Notas de Crédito" icon="pi-arrow-down">
+          <app-details-section-card
+            [title]="'finance.billing.creditnotes.creditNotes' | translate"
+            icon="pi-arrow-down"
+          >
             <div class="flex flex-col gap-3 md:hidden">
               @for (note of creditNotes(); track note.id) {
                 <div
@@ -423,15 +515,15 @@
                   <div class="flex items-start justify-between gap-2">
                     <span class="font-mono text-sm">{{ note.noteNumber }}</span>
                     <span class="font-mono text-sm text-green-600 dark:text-green-400">
-                      -{{ note.amount | number: '1.2-2' }}
+                      -{{ note.amount | localizedNumber: '1.2-2' }}
                     </span>
                   </div>
                   <div class="flex flex-col gap-0.5">
-                    <span class="text-xs text-surface-400">Motivo</span>
+                    <span class="text-xs text-surface-400">{{ 'shared.reason' | translate }}</span>
                     <span class="text-sm">{{ note.reason }}</span>
                   </div>
                   <span class="text-xs text-surface-400">{{
-                    note.applicationDate | date: 'dd/MM/yyyy'
+                    note.applicationDate | localizedDate: 'dd/MM/yyyy'
                   }}</span>
                 </div>
               }
@@ -440,20 +532,22 @@
               <p-table [value]="creditNotes()" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Número</th>
-                    <th class="text-right">Monto</th>
-                    <th>Motivo</th>
-                    <th>Fecha</th>
+                    <th>{{ 'analytics.dashboard.number' | translate }}</th>
+                    <th class="text-right">{{ 'shared.amount' | translate }}</th>
+                    <th>{{ 'shared.reason' | translate }}</th>
+                    <th>{{ 'finance.billing.invoices.date' | translate }}</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-note>
                   <tr>
                     <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                     <td class="text-right font-mono text-green-600 dark:text-green-400">
-                      -{{ note.amount | number: '1.2-2' }}
+                      -{{ note.amount | localizedNumber: '1.2-2' }}
                     </td>
                     <td class="text-sm">{{ note.reason }}</td>
-                    <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
+                    <td class="text-sm">
+                      {{ note.applicationDate | localizedDate: 'dd/MM/yyyy' }}
+                    </td>
                   </tr>
                 </ng-template>
               </p-table>
@@ -462,7 +556,10 @@
         }
 
         @if (debitNotes().length > 0) {
-          <app-details-section-card title="Notas de Débito" icon="pi-arrow-up">
+          <app-details-section-card
+            [title]="'finance.billing.debitnotes.debitNotes' | translate"
+            icon="pi-arrow-up"
+          >
             <div class="flex flex-col gap-3 md:hidden">
               @for (note of debitNotes(); track note.id) {
                 <div
@@ -471,15 +568,15 @@
                   <div class="flex items-start justify-between gap-2">
                     <span class="font-mono text-sm">{{ note.noteNumber }}</span>
                     <span class="font-mono text-sm text-red-600 dark:text-red-400">
-                      +{{ note.amount | number: '1.2-2' }}
+                      +{{ note.amount | localizedNumber: '1.2-2' }}
                     </span>
                   </div>
                   <div class="flex flex-col gap-0.5">
-                    <span class="text-xs text-surface-400">Motivo</span>
+                    <span class="text-xs text-surface-400">{{ 'shared.reason' | translate }}</span>
                     <span class="text-sm">{{ note.reason }}</span>
                   </div>
                   <span class="text-xs text-surface-400">{{
-                    note.applicationDate | date: 'dd/MM/yyyy'
+                    note.applicationDate | localizedDate: 'dd/MM/yyyy'
                   }}</span>
                 </div>
               }
@@ -488,20 +585,22 @@
               <p-table [value]="debitNotes()" styleClass="p-datatable-sm">
                 <ng-template pTemplate="header">
                   <tr>
-                    <th>Número</th>
-                    <th class="text-right">Monto</th>
-                    <th>Motivo</th>
-                    <th>Fecha</th>
+                    <th>{{ 'analytics.dashboard.number' | translate }}</th>
+                    <th class="text-right">{{ 'shared.amount' | translate }}</th>
+                    <th>{{ 'shared.reason' | translate }}</th>
+                    <th>{{ 'finance.billing.invoices.date' | translate }}</th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-note>
                   <tr>
                     <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                     <td class="text-right font-mono text-red-600 dark:text-red-400">
-                      +{{ note.amount | number: '1.2-2' }}
+                      +{{ note.amount | localizedNumber: '1.2-2' }}
                     </td>
                     <td class="text-sm">{{ note.reason }}</td>
-                    <td class="text-sm">{{ note.applicationDate | date: 'dd/MM/yyyy' }}</td>
+                    <td class="text-sm">
+                      {{ note.applicationDate | localizedDate: 'dd/MM/yyyy' }}
+                    </td>
                   </tr>
                 </ng-template>
               </p-table>

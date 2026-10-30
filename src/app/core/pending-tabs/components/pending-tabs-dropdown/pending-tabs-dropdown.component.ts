@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, ViewChild, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
@@ -14,7 +15,7 @@ import { fromEvent, interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-pending-tabs-dropdown',
   standalone: true,
-  imports: [CommonModule, ButtonModule, Popover, TooltipModule],
+  imports: [TranslatePipe, CommonModule, ButtonModule, Popover, TooltipModule],
   templateUrl: './pending-tabs-dropdown.component.html',
 })
 export class PendingTabsDropdownComponent implements OnInit, OnDestroy {

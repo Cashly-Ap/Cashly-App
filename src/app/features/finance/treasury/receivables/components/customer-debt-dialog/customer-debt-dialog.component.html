@@ -2,7 +2,7 @@
 
 <p-dialog
   [visible]="visible()"
-  [header]="customer()?.customerName || 'Detalles de Deuda'"
+  [header]="customer()?.customerName || ('finance.treasury.receivables.debtDetails' | translate)"
   [modal]="true"
   [style]="{ width: '90vw', maxWidth: '1200px' }"
   [dismissableMask]="true"
@@ -14,7 +14,9 @@
     <div class="flex justify-center items-center py-16">
       <div class="text-center">
         <i class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100 mb-4"></i>
-        <p class="text-surface-600 dark:text-surface-400">Cargando información...</p>
+        <p class="text-surface-600 dark:text-surface-400">
+          {{ 'finance.treasury.receivables.loadingInformation' | translate }}
+        </p>
       </div>
     </div>
   } @else if (customer()) {
@@ -29,14 +31,16 @@
             <i class="pi pi-user text-surface-0 dark:text-surface-900 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
-            Información del Cliente
+            {{ 'finance.treasury.receivables.customerInformation' | translate }}
           </h3>
         </div>
         <div class="space-y-3">
           <div
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
-            <span class="text-sm text-surface-500 dark:text-surface-400">RIF</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.customerTaxId' | translate
+            }}</span>
             <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-0">
               {{ customer()!.customerRif }}
             </span>
@@ -44,15 +48,25 @@
           <div
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
-            <span class="text-sm text-surface-500 dark:text-surface-400">Teléfono</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.phone' | translate
+            }}</span>
             <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
-              {{ customer()!.customerPhone || 'No especificado' }}
+              {{
+                customer()!.customerPhone ||
+                  ('finance.treasury.receivables.notSpecified' | translate)
+              }}
             </span>
           </div>
           <div class="flex items-center justify-between py-2">
-            <span class="text-sm text-surface-500 dark:text-surface-400">Email</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.email' | translate
+            }}</span>
             <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
-              {{ customer()!.customerEmail || 'No especificado' }}
+              {{
+                customer()!.customerEmail ||
+                  ('finance.treasury.receivables.notSpecified' | translate)
+              }}
             </span>
           </div>
         </div>
@@ -68,42 +82,50 @@
             <i class="pi pi-dollar text-surface-0 dark:text-surface-900 text-xl"></i>
           </div>
           <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
-            Resumen de Deuda
+            {{ 'finance.treasury.receivables.debtSummary' | translate }}
           </h3>
         </div>
         <div class="space-y-3">
           <div
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
-            <span class="text-sm text-surface-500 dark:text-surface-400">Deuda Total</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.totalDebt' | translate
+            }}</span>
             <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
-              {{ customer()!.totalDebt | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ customer()!.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
           <div
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
-            <span class="text-sm text-surface-500 dark:text-surface-400">Límite de Crédito</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.creditLimit' | translate
+            }}</span>
             <span class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0">
-              {{ customer()!.creditLimit | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ customer()!.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
           <div
             class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
-            <span class="text-sm text-surface-500 dark:text-surface-400">Saldo a Favor</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.billing.invoices.creditBalance' | translate
+            }}</span>
             <span class="font-mono text-base font-bold text-blue-600 dark:text-blue-400">
-              {{ customer()!.customerBalance | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ customer()!.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
           <div class="flex items-center justify-between py-2">
-            <span class="text-sm text-surface-500 dark:text-surface-400">Crédito Disponible</span>
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.availableCredit' | translate
+            }}</span>
             <span
               class="font-mono text-base font-bold"
               [class.text-green-600]="customer()!.availableCredit > 0"
               [class.text-red-600]="customer()!.availableCredit <= 0"
             >
-              {{ customer()!.availableCredit | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ customer()!.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
         </div>
@@ -121,12 +143,14 @@
             >
               <i class="pi pi-file text-surface-700 dark:text-surface-300 text-lg"></i>
             </div>
-            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">Facturas</h3>
+            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+              {{ 'finance.billing.invoices.invoices' | translate }}
+            </h3>
           </div>
           <div class="flex gap-2 w-full sm:w-auto">
             <p-button
               [appPermission]="'EXECUTE'"
-              label="Pagar Todo"
+              [label]="'finance.treasury.receivables.payAll2' | translate"
               icon="pi pi-check-circle"
               severity="contrast"
               [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
@@ -134,7 +158,7 @@
               styleClass="flex-1 sm:flex-none font-medium"
             />
             <p-button
-              label="Pago Parcial"
+              [label]="'finance.treasury.receivables.partialPayment2' | translate"
               icon="pi pi-percentage"
               severity="contrast"
               [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
@@ -147,24 +171,27 @@
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
-              Filtrar por estado
+              {{ 'finance.treasury.receivables.filterByStatus' | translate }}
             </span>
             <span
               class="text-xs text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-700 px-2 py-1 rounded-full"
             >
-              {{ invoices().length }} factura{{ invoices().length !== 1 ? 's' : '' }}
+              {{ invoices().length }} {{ 'shared.invoice2' | translate
+              }}{{ invoices().length !== 1 ? ('finance.treasury.receivables.s' | translate) : '' }}
             </span>
           </div>
           <div class="flex flex-col gap-1 w-full sm:max-w-xs">
-            <label for="status-filter" class="text-xs font-medium text-surface-500">Estado</label>
+            <label for="status-filter" class="text-xs font-medium text-surface-500">{{
+              'finance.billing.invoices.status' | translate
+            }}</label>
             <p-select
               inputId="status-filter"
-              [options]="statusFilterOptions"
+              [options]="statusFilterOptions | translateOptions"
               [ngModel]="selectedStatusFilter()"
               (onChange)="onStatusFilterChange($event.value)"
               optionLabel="label"
               optionValue="value"
-              placeholder="Todos"
+              [placeholder]="'finance.treasury.paymentmethods.all' | translate"
               appendTo="body"
               styleClass="w-full"
             />
@@ -183,28 +210,44 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Factura</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.invoice' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Fecha</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Vencimiento</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'analytics.dashboard.dueDate' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Estado</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.billing.invoices.status' | translate }}
+                </div>
               </th>
               <th class="text-right bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Total</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.total' | translate }}
+                </div>
               </th>
               <th class="text-right bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Pagado</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.treasury.receivables.paid2' | translate }}
+                </div>
               </th>
               <th class="text-right bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Saldo</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.treasury.receivables.balance' | translate }}
+                </div>
               </th>
               <th class="text-center bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Acciones</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.actions' | translate }}
+                </div>
               </th>
             </tr>
           </ng-template>
@@ -219,7 +262,7 @@
               </td>
               <td>
                 <span class="text-sm text-surface-600 dark:text-surface-400">
-                  {{ invoice.invoiceDate | date: 'dd/MM/yyyy' }}
+                  {{ invoice.invoiceDate | localizedDate: 'dd/MM/yyyy' }}
                 </span>
               </td>
               <td>
@@ -228,7 +271,7 @@
                   [class.font-semibold]="invoice.dueDate < todayDate"
                   class="text-sm text-surface-600 dark:text-surface-400"
                 >
-                  {{ invoice.dueDate | date: 'dd/MM/yyyy' }}
+                  {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
                 </span>
                 @if (invoice.dueDate < todayDate) {
                   <p-tag value="Vencida" severity="danger" class="ml-2" />
@@ -236,29 +279,29 @@
               </td>
               <td>
                 <p-tag
-                  [value]="getStatusLabel(invoice.status)"
+                  [value]="getStatusLabel(invoice.status) | translate"
                   [severity]="getStatusSeverity(invoice.status)"
                 />
               </td>
               <td class="text-right">
                 <span class="font-mono text-sm text-surface-900 dark:text-surface-0">
-                  {{ invoice.total | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td class="text-right">
                 <span class="font-mono text-sm text-green-600 dark:text-green-400">
-                  {{ invoice.totalPaid | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td class="text-right">
                 <span class="font-mono text-sm font-bold text-red-600 dark:text-red-400">
-                  {{ invoice.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td class="text-center">
                 <app-list-action-buttons
                   [actions]="invoiceActions(invoice)"
-                  ariaLabel="Abrir acciones de la factura"
+                  [ariaLabel]="'finance.treasury.receivables.openInvoiceActions' | translate"
                 />
               </td>
             </tr>
@@ -274,7 +317,9 @@
                       class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"
                     ></i>
                   </div>
-                  <p class="text-surface-600 dark:text-surface-400">No hay facturas</p>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    {{ 'finance.treasury.receivables.noInvoices' | translate }}
+                  </p>
                 </div>
               </td>
             </tr>
@@ -291,7 +336,7 @@
           [totalRecords]="invoiceTotalRecords()"
           [rowsPerPageOptions]="[5, 10, 25]"
           [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} facturas"
+          [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
           (onPageChange)="onInvoicePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
@@ -308,7 +353,7 @@
           [showPageLinks]="false"
           [showFirstLastIcon]="false"
           [showCurrentPageReport]="true"
-          currentPageReportTemplate="{first}-{last} de {totalRecords}"
+          [currentPageReportTemplate]="'finance.treasury.receivables.firstLastOfTotalrecords' | translate"
           (onPageChange)="onInvoicePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
@@ -322,7 +367,9 @@
               <i
                 class="pi pi-spin pi-spinner text-3xl text-surface-900 dark:text-surface-100 mb-3"
               ></i>
-              <p class="text-surface-600 dark:text-surface-400 text-sm">Cargando facturas...</p>
+              <p class="text-surface-600 dark:text-surface-400 text-sm">
+                {{ 'finance.billing.invoices.loadingInvoices' | translate }}
+              </p>
             </div>
           </div>
         } @else if (invoices().length === 0) {
@@ -333,7 +380,7 @@
               <i class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"></i>
             </div>
             <p class="text-surface-600 dark:text-surface-400">
-              No hay facturas con saldo pendiente
+              {{ 'finance.treasury.receivables.noInvoicesWithAnOutstandingBalance' | translate }}
             </p>
           </div>
         } @else {
@@ -346,40 +393,48 @@
                   {{ invoice.invoiceNumber }}
                 </span>
                 <p-tag
-                  [value]="getStatusLabel(invoice.status)"
+                  [value]="getStatusLabel(invoice.status) | translate"
                   [severity]="getStatusSeverity(invoice.status)"
                   size="small"
                 />
               </div>
               <div class="space-y-2 mb-3">
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Fecha</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.billing.invoices.date' | translate
+                  }}</span>
                   <span class="text-surface-900 dark:text-surface-0">
-                    {{ invoice.invoiceDate | date: 'dd/MM/yyyy' }}
+                    {{ invoice.invoiceDate | localizedDate: 'dd/MM/yyyy' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Total</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'shared.total' | translate
+                  }}</span>
                   <span class="font-mono text-surface-900 dark:text-surface-0">
-                    {{ invoice.total | currency: 'USD' : 'symbol' : '1.2-2' }}
+                    {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Pagado</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.paid2' | translate
+                  }}</span>
                   <span class="font-mono text-green-600 dark:text-green-400">
-                    {{ invoice.totalPaid | currency: 'USD' : 'symbol' : '1.2-2' }}
+                    {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Saldo</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.balance' | translate
+                  }}</span>
                   <span class="font-mono font-bold text-red-600 dark:text-red-400">
-                    {{ invoice.balance | currency: 'USD' : 'symbol' : '1.2-2' }}
+                    {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
               </div>
               <app-list-action-buttons
                 [actions]="invoiceActions(invoice)"
-                ariaLabel="Abrir acciones de la factura"
+                [ariaLabel]="'finance.treasury.receivables.openInvoiceActions' | translate"
               />
             </div>
           }
@@ -399,13 +454,13 @@
               <i class="pi pi-history text-surface-700 dark:text-surface-300 text-lg"></i>
             </div>
             <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
-              Movimientos del Balance
+              {{ 'finance.treasury.receivables.balanceMovements' | translate }}
             </h3>
           </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <p-button
               [appPermission]="'CREATE'"
-              label="Reintegro"
+              [label]="'finance.treasury.receivables.refund' | translate"
               icon="pi pi-undo"
               severity="contrast"
               [disabled]="balance() <= 0"
@@ -414,7 +469,7 @@
             />
             <p-button
               [appPermission]="'CREATE'"
-              label="Generar Anticipo"
+              [label]="'finance.treasury.receivables.recordAdvance2' | translate"
               icon="pi pi-plus-circle"
               severity="contrast"
               (onClick)="onCreateAdvance()"
@@ -423,17 +478,17 @@
           </div>
         </div>
         <div class="flex flex-col gap-1 w-full sm:max-w-xs">
-          <label for="balance-filter" class="text-xs font-medium text-surface-500"
-            >Tipo de movimiento</label
-          >
+          <label for="balance-filter" class="text-xs font-medium text-surface-500">{{
+            'finance.treasury.receivables.movementType' | translate
+          }}</label>
           <p-select
             inputId="balance-filter"
-            [options]="balanceFilterOptions"
+            [options]="balanceFilterOptions | translateOptions"
             [ngModel]="selectedBalanceFilter()"
             (onChange)="onBalanceFilterChange($event.value)"
             optionLabel="label"
             optionValue="value"
-            placeholder="Todos"
+            [placeholder]="'finance.treasury.paymentmethods.all' | translate"
             appendTo="body"
             styleClass="w-full"
           />
@@ -451,19 +506,29 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Fecha</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Tipo</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.type' | translate }}
+                </div>
               </th>
               <th class="text-right bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Monto</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.amount' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Número</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'analytics.dashboard.number' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Referencia</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.treasury.receivables.reference' | translate }}
+                </div>
               </th>
             </tr>
           </ng-template>
@@ -473,12 +538,12 @@
             >
               <td>
                 <span class="text-sm text-surface-600 dark:text-surface-400">
-                  {{ tx.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                  {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                 </span>
               </td>
               <td>
                 <p-tag
-                  [value]="getBalanceTypeLabel(tx.type)"
+                  [value]="getBalanceTypeLabel(tx.type) | translate"
                   [severity]="getBalanceTypeSeverity(tx.type)"
                   size="small"
                 />
@@ -489,7 +554,7 @@
                   [class.text-green-600]="isPositive(tx.type)"
                   [class.text-red-600]="isNegative(tx.type)"
                 >
-                  {{ tx.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td>
@@ -513,7 +578,9 @@
                   >
                     <i class="pi pi-inbox text-3xl text-surface-400"></i>
                   </div>
-                  <p class="text-surface-600 dark:text-surface-400">No hay movimientos</p>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    {{ 'finance.treasury.receivables.noMovements' | translate }}
+                  </p>
                 </div>
               </td>
             </tr>
@@ -528,7 +595,9 @@
               <i
                 class="pi pi-spin pi-spinner text-3xl text-surface-900 dark:text-surface-100 mb-3"
               ></i>
-              <p class="text-surface-600 dark:text-surface-400 text-sm">Cargando movimientos...</p>
+              <p class="text-surface-600 dark:text-surface-400 text-sm">
+                {{ 'finance.treasury.receivables.loadingMovements' | translate }}
+              </p>
             </div>
           </div>
         } @else if (transactions().length === 0) {
@@ -538,7 +607,9 @@
             >
               <i class="pi pi-inbox text-3xl text-surface-400"></i>
             </div>
-            <p class="text-surface-600 dark:text-surface-400">No hay movimientos</p>
+            <p class="text-surface-600 dark:text-surface-400">
+              {{ 'finance.treasury.receivables.noMovements' | translate }}
+            </p>
           </div>
         } @else {
           @for (tx of transactions(); track tx.id) {
@@ -547,7 +618,7 @@
             >
               <div class="flex items-center justify-between mb-3">
                 <p-tag
-                  [value]="getBalanceTypeLabel(tx.type)"
+                  [value]="getBalanceTypeLabel(tx.type) | translate"
                   [severity]="getBalanceTypeSeverity(tx.type)"
                   size="small"
                 />
@@ -556,24 +627,30 @@
                   [class.text-green-600]="isPositive(tx.type)"
                   [class.text-red-600]="isNegative(tx.type)"
                 >
-                  {{ tx.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </div>
               <div class="space-y-2">
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Fecha</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.billing.invoices.date' | translate
+                  }}</span>
                   <span class="text-surface-900 dark:text-surface-0">
-                    {{ tx.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                    {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Número</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'analytics.dashboard.number' | translate
+                  }}</span>
                   <span class="font-mono text-surface-900 dark:text-surface-0">
                     {{ tx.number || '-' }}
                   </span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-surface-500 dark:text-surface-400">Referencia</span>
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.reference' | translate
+                  }}</span>
                   <span class="font-mono text-surface-900 dark:text-surface-0">
                     {{ tx.referenceNumber || '-' }}
                   </span>
@@ -593,7 +670,7 @@
           [totalRecords]="balanceTotalRecords()"
           [rowsPerPageOptions]="[5, 10, 25]"
           [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} movimientos"
+          [currentPageReportTemplate]="'finance.treasury.receivables.showingFirstToLastOfTotalrecordsMovements' | translate"
           (onPageChange)="onBalancePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
@@ -610,7 +687,7 @@
           [showPageLinks]="false"
           [showFirstLastIcon]="false"
           [showCurrentPageReport]="true"
-          currentPageReportTemplate="{first}-{last} de {totalRecords}"
+          [currentPageReportTemplate]="'finance.treasury.receivables.firstLastOfTotalrecords' | translate"
           (onPageChange)="onBalancePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
@@ -623,7 +700,7 @@
     <div class="flex justify-end">
       <p-button
         severity="secondary"
-        label="Cerrar"
+        [label]="'shared.close' | translate"
         icon="pi pi-times"
         (onClick)="onClose()"
         styleClass="font-medium"
@@ -634,7 +711,7 @@
 
 <p-dialog
   [(visible)]="showRefundDialog"
-  header="Reintegro de Dinero"
+  [header]="'finance.treasury.receivables.refundMoney' | translate"
   [modal]="true"
   [style]="{ width: '90vw', maxWidth: '550px' }"
   [dismissableMask]="false"
@@ -649,11 +726,11 @@
         class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
       >
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-            >Balance Actual del Cliente</span
-          >
+          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+            'finance.treasury.receivables.currentCustomerBalance' | translate
+          }}</span>
           <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
-            {{ balance() | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
       </div>
@@ -662,7 +739,7 @@
           for="refundAmount"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Monto a Reintegrar
+          {{ 'finance.treasury.receivables.amountToRefund' | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-inputNumber
@@ -670,7 +747,7 @@
           formControlName="amount"
           mode="currency"
           currency="USD"
-          locale="en-US"
+          [locale]="locale()"
           [min]="0.01"
           [max]="balance()"
           [maxFractionDigits]="2"
@@ -682,17 +759,18 @@
         @if (refundForm.get('amount')?.invalid && refundForm.get('amount')?.touched) {
           <small class="text-red-500 text-xs block mt-1">
             @if (refundForm.get('amount')?.errors?.['required']) {
-              El monto es requerido
+              {{ 'finance.treasury.receivables.amountRequired' | translate }}
             }
             @if (refundForm.get('amount')?.errors?.['min']) {
-              El monto debe ser mayor a cero
+              {{ 'finance.treasury.receivables.amountMustBePositive' | translate }}
             }
           </small>
         }
       </div>
       <div class="space-y-2">
         <label for="refundPaymentMethod" class="block text-sm font-semibold"
-          >Método de pago <span class="text-red-500">*</span></label
+          >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
+          <span class="text-red-500">*</span></label
         >
         <p-select
           inputId="refundPaymentMethod"
@@ -700,17 +778,19 @@
           [options]="paymentMethods()"
           optionLabel="label"
           optionValue="value"
-          placeholder="Seleccionar método"
+          [placeholder]="'finance.treasury.receivables.selectMethod' | translate"
           fluid
         />
       </div>
       <div class="space-y-2">
-        <label for="refundNotes" class="block text-sm font-semibold">Notas</label>
+        <label for="refundNotes" class="block text-sm font-semibold">{{
+          'finance.billing.invoices.notes' | translate
+        }}</label>
         <input
           id="refundNotes"
           pInputText
           formControlName="notes"
-          placeholder="Motivo del reintegro (opcional)"
+          [placeholder]="'finance.treasury.receivables.refundReasonOptional' | translate"
           class="w-full"
         />
       </div>
@@ -720,7 +800,7 @@
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
         severity="secondary"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         (onClick)="onCancelRefund()"
         [disabled]="creatingRefund()"
@@ -728,7 +808,7 @@
       />
       <p-button
         severity="contrast"
-        label="Reintegrar"
+        [label]="'finance.treasury.receivables.refund2' | translate"
         icon="pi pi-undo"
         (onClick)="submitRefund()"
         [disabled]="refundForm.invalid || creatingRefund()"
@@ -741,7 +821,7 @@
 
 <p-dialog
   [(visible)]="showAdvanceDialog"
-  header="Registrar Anticipo"
+  [header]="'finance.treasury.receivables.recordAdvance3' | translate"
   [modal]="true"
   [style]="{ width: '90vw', maxWidth: '550px' }"
   [dismissableMask]="false"
@@ -757,18 +837,19 @@
         class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
       >
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-surface-600 dark:text-surface-400"
-            >Balance Actual del Cliente</span
-          >
+          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+            'finance.treasury.receivables.currentCustomerBalance' | translate
+          }}</span>
           <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
-            {{ balance() | currency: 'USD' : 'symbol' : '1.2-2' }}
+            {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
       </div>
 
       <div class="space-y-2">
         <label for="advancePaymentMethod" class="block text-sm font-semibold"
-          >Método de pago <span class="text-red-500">*</span></label
+          >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
+          <span class="text-red-500">*</span></label
         >
         <p-select
           inputId="advancePaymentMethod"
@@ -776,7 +857,7 @@
           [options]="paymentMethods()"
           optionLabel="label"
           optionValue="value"
-          placeholder="Seleccionar método"
+          [placeholder]="'finance.treasury.receivables.selectMethod' | translate"
           fluid
         />
       </div>
@@ -786,7 +867,7 @@
           for="advanceAmount"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Monto del Anticipo
+          {{ 'finance.treasury.receivables.advanceAmount' | translate }}
           <span class="text-red-500">*</span>
         </label>
         <p-inputNumber
@@ -794,7 +875,7 @@
           formControlName="amount"
           mode="currency"
           currency="USD"
-          locale="en-US"
+          [locale]="locale()"
           [min]="0.01"
           [maxFractionDigits]="2"
           fluid
@@ -805,10 +886,10 @@
         @if (advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched) {
           <small class="text-red-500 text-xs block mt-1">
             @if (advanceForm.get('amount')?.errors?.['required']) {
-              El monto es requerido
+              {{ 'finance.treasury.receivables.amountRequired' | translate }}
             }
             @if (advanceForm.get('amount')?.errors?.['min']) {
-              El monto debe ser mayor a cero
+              {{ 'finance.treasury.receivables.amountMustBePositive' | translate }}
             }
           </small>
         }
@@ -819,14 +900,14 @@
           for="advanceNotes"
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
-          Notas
+          {{ 'finance.billing.invoices.notes' | translate }}
         </label>
         <input
           id="advanceNotes"
           type="text"
           pInputText
           formControlName="notes"
-          placeholder="Motivo del anticipo (opcional)"
+          [placeholder]="'finance.treasury.receivables.advanceReasonOptional' | translate"
           class="w-full"
         />
       </div>
@@ -837,7 +918,7 @@
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
       <p-button
         severity="secondary"
-        label="Cancelar"
+        [label]="'shared.cancel' | translate"
         icon="pi pi-times"
         (onClick)="onCancelAdvance()"
         [disabled]="creatingAdvance()"
@@ -846,7 +927,7 @@
       <p-button
         [appPermission]="'EXECUTE'"
         severity="contrast"
-        label="Registrar Anticipo"
+        [label]="'finance.treasury.receivables.recordAdvance3' | translate"
         icon="pi pi-plus-circle"
         (onClick)="submitAdvance()"
         [disabled]="advanceForm.invalid || creatingAdvance()"

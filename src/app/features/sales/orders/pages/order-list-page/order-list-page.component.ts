@@ -1,3 +1,7 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
@@ -58,6 +62,10 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -83,7 +91,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     ConvertToInvoiceDialogComponent,
   ],
   templateUrl: './order-list-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
 })
 export class OrderListPageComponent implements OnInit {
   private readonly orderService = inject(OrderApplicationService);

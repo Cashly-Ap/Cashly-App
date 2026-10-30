@@ -1,40 +1,40 @@
 <div class="min-h-screen">
   <div class="mx-auto max-w-[1800px] px-4 py-4 sm:px-6 sm:py-6">
-    <app-page-header title="Historial de Movimientos" [subtitle]="warehouseName()">
+    <app-page-header [title]="'inventory.warehouses.movementHistory2' | translate" [subtitle]="warehouseName()">
       <div actions>
-        <p-button label="Volver" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" />
+        <p-button [label]="'finance.billing.creditnotes.back' | translate" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" />
       </div>
     </app-page-header>
 
     <app-details-card>
-      <app-details-card-header title="Movimientos" [subtitle]="totalElements() + ' registros'" />
+      <app-details-card-header [title]="'finance.treasury.cashregister.movements' | translate" [subtitle]="totalElements() + ' registros'" />
       <div class="flex flex-col gap-4 p-4 sm:p-6">
         <p-select
-          [options]="movementTypeOptions"
+          [options]="movementTypeOptions | translateOptions"
           optionLabel="label"
           optionValue="value"
           [ngModel]="movementType()"
           (ngModelChange)="onTypeChange($event)"
-          placeholder="Filtrar por tipo"
+          [placeholder]="'inventory.warehouses.filterByType' | translate"
           styleClass="w-full sm:w-64"
         />
 
         @if (loading()) {
-          <app-loading-spinner message="Cargando movimientos..." />
+          <app-loading-spinner [message]="'finance.treasury.receivables.loadingMovements' | translate" />
         } @else if (movements().length === 0) {
-          <app-empty-state icon="pi-history" message="No hay movimientos para mostrar" />
+          <app-empty-state icon="pi-history" [message]="'inventory.warehouses.noMovementsToDisplay' | translate" />
         } @else {
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
                 <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="px-3 py-2 text-left font-medium">Producto</th>
-                  <th class="px-3 py-2 text-left font-medium">Tipo</th>
-                  <th class="px-3 py-2 text-left font-medium">Referencia</th>
-                  <th class="px-3 py-2 text-right font-medium">Cantidad</th>
-                  <th class="px-3 py-2 text-right font-medium">Anterior</th>
-                  <th class="px-3 py-2 text-right font-medium">Nuevo</th>
-                  <th class="px-3 py-2 text-left font-medium">Fecha</th>
+                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.billing.returns.product' | translate }}</th>
+                  <th class="px-3 py-2 text-left font-medium">{{ 'shared.type' | translate }}</th>
+                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.treasury.receivables.reference' | translate }}</th>
+                  <th class="px-3 py-2 text-right font-medium">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                  <th class="px-3 py-2 text-right font-medium">{{ 'inventory.warehouses.previous' | translate }}</th>
+                  <th class="px-3 py-2 text-right font-medium">{{ 'inventory.warehouses.new' | translate }}</th>
+                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.billing.invoices.date' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -61,16 +61,16 @@
                       }
                     </td>
                     <td class="px-3 py-3 text-right font-mono">
-                      {{ movement.quantity | number: '1.0-2' }}
+                      {{ movement.quantity | localizedNumber: '1.0-2' }}
                     </td>
                     <td class="px-3 py-3 text-right font-mono text-surface-500">
-                      {{ movement.previousStock | number: '1.0-2' }}
+                      {{ movement.previousStock | localizedNumber: '1.0-2' }}
                     </td>
                     <td class="px-3 py-3 text-right font-mono text-surface-500">
-                      {{ movement.newStock | number: '1.0-2' }}
+                      {{ movement.newStock | localizedNumber: '1.0-2' }}
                     </td>
                     <td class="px-3 py-3 whitespace-nowrap">
-                      {{ movement.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                      {{ movement.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                     </td>
                   </tr>
                 }
@@ -81,7 +81,7 @@
           @if (totalPages() > 1) {
             <div class="flex items-center justify-between pt-2">
               <span class="text-xs text-surface-500"
-                >Página {{ page() + 1 }} de {{ totalPages() }}</span
+                >{{ 'shared.page' | translate }} {{ page() + 1 }} {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
               >
               <div class="flex gap-2">
                 <p-button

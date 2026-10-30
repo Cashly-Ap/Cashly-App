@@ -1,3 +1,6 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -46,7 +49,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -70,7 +73,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
     StatusBadgeComponent,
     WarehouseStockOperationDialogComponent,
   ],
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   templateUrl: './warehouses-list-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

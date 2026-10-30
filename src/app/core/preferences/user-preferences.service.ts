@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { Language } from '@core/i18n/language';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import {
   DestroyRef,
@@ -17,12 +19,14 @@ import { AuthService } from '@features/platform/auth/services/application/auth-a
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type ColorMode = 'minimal' | 'informative';
 export interface UserPreferences {
+  language: Language;
   themeMode: ThemeMode;
   colorMode: ColorMode;
   shortcutsEnabled: boolean;
   showShortcutHints: boolean;
 }
 export const DEFAULT_USER_PREFERENCES: UserPreferences = {
+  language: 'es',
   themeMode: 'system',
   colorMode: 'minimal',
   shortcutsEnabled: false,
@@ -33,6 +37,7 @@ function validPreferences(value: unknown): value is UserPreferences {
   if (typeof value !== 'object' || value === null) return false;
   const preferences = value as Partial<UserPreferences>;
   return (
+    ['es', 'en'].includes(preferences.language ?? '') &&
     ['system', 'light', 'dark'].includes(preferences.themeMode ?? '') &&
     ['minimal', 'informative'].includes(preferences.colorMode ?? '') &&
     typeof preferences.shortcutsEnabled === 'boolean' &&
@@ -42,6 +47,7 @@ function validPreferences(value: unknown): value is UserPreferences {
 
 @Injectable({ providedIn: 'root' })
 export class UserPreferencesService {
+  private readonly translations = inject(TranslationService);
   private readonly http = inject(HttpClient);
   private readonly auth = inject(AuthService);
   private readonly document = inject(DOCUMENT);
@@ -49,6 +55,7 @@ export class UserPreferencesService {
   private readonly identity = computed(() => this.auth.currentUser()?.id ?? null);
   private readonly endpoint = `${environment.apiUrl}/auth/preferences`;
   private readonly state = signal<UserPreferences>(this.guestDefaults());
+  readonly language = computed(() => this.state().language);
   readonly themeMode = computed(() => this.state().themeMode);
   readonly colorMode = computed(() => this.state().colorMode);
   readonly shortcutsEnabled = computed(() => this.state().shortcutsEnabled);
@@ -78,6 +85,19 @@ export class UserPreferencesService {
         );
     });
     inject(DestroyRef).onDestroy(() => this.requests.unsubscribe());
+  }
+
+  setLanguage(language: Language): void {
+    this.update({ language });
+  }
+
+  syncLanguage(language: Language): void {
+    if (!['es', 'en'].includes(language) || this.identity() !== this.userId) return;
+    this.confirmed = { ...this.confirmed, language };
+    this.state.update((preferences) => ({ ...preferences, language }));
+    this.queue = this.queue.map((preferences) => ({ ...preferences, language }));
+    if (this.failed) this.failed = { ...this.failed, language };
+    this.writeCache(this.confirmed);
   }
 
   setThemeMode(themeMode: ThemeMode): void {
@@ -152,7 +172,9 @@ export class UserPreferencesService {
   private loadError(): void {
     this.loading.set(false);
     this.loadFailed = true;
-    this.error.set('No se pudo cargar tu configuración. Reintenta antes de cambiarla.');
+    this.error.set(
+      this.translations.t('auth.profile.could.not.load.your.settings.retry.before.changing.them'),
+    );
   }
 
   private update(patch: Partial<UserPreferences>): void {
@@ -208,7 +230,11 @@ export class UserPreferencesService {
     this.queue = [];
     this.state.set(this.confirmed);
     this.saving.set(false);
-    this.error.set('No se pudo guardar tu configuración. Se ha restaurado la última guardada.');
+    this.error.set(
+      this.translations.t(
+        'auth.profile.could.not.save.your.settings.the.last.saved.settings.have.been.restored',
+      ),
+    );
   }
 
   private guestDefaults(): UserPreferences {

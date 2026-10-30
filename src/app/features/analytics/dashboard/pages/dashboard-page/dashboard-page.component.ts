@@ -1,3 +1,7 @@
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslationService } from '@core/i18n/translation.service';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
   inject,
@@ -37,10 +41,12 @@ const DASHBOARD_CHART_COLORS = {
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, DecimalPipe, BaseChartDirective],
+  imports: [TranslatePipe, LocalizedNumberPipe, CommonModule, DecimalPipe, BaseChartDirective],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {
+  private readonly language = inject(LanguageService);
+  private readonly translations = inject(TranslationService);
   private readonly api = inject(DashboardApiService);
   private readonly themeService = inject(ThemeService);
   private readonly preferences = inject(UserPreferencesService);
@@ -62,7 +68,7 @@ export class DashboardPageComponent implements OnInit {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+      y: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
     },
   };
 
@@ -73,7 +79,7 @@ export class DashboardPageComponent implements OnInit {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
       y: { ticks: { font: { size: 11 } } },
     },
   };
@@ -85,7 +91,7 @@ export class DashboardPageComponent implements OnInit {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString() } },
+      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
       y: { ticks: { font: { size: 11 } } },
     },
   };
@@ -97,7 +103,7 @@ export class DashboardPageComponent implements OnInit {
     interaction: { intersect: false, mode: 'index' },
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, ticks: { callback: (v) => '$' + Number(v).toLocaleString() } },
+      y: { beginAtZero: true, ticks: { callback: (v) => '$' + Number(v).toLocaleString(this.language.locale()) } },
     },
   };
 
@@ -109,8 +115,10 @@ export class DashboardPageComponent implements OnInit {
     const source = this.salesChartSource();
     return {
       ...source,
+      labels: this.monthlySales().map((month) => this.formatMonth(month.month)),
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
+        label: this.translations.t(dataset.label),
         backgroundColor: color,
         borderColor: color,
         pointBackgroundColor: color,
@@ -134,6 +142,7 @@ export class DashboardPageComponent implements OnInit {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
+        label: this.translations.t(dataset.label),
         backgroundColor: color,
         borderColor: color,
         pointBackgroundColor: color,
@@ -160,6 +169,7 @@ export class DashboardPageComponent implements OnInit {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
+        label: this.translations.t(dataset.label),
         backgroundColor: color,
         borderColor: color,
         pointBackgroundColor: color,
@@ -187,6 +197,7 @@ export class DashboardPageComponent implements OnInit {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
+        label: this.translations.t(dataset.label),
         backgroundColor: informative ? `${color}20` : isDark
           ? DASHBOARD_CHART_COLORS.darkFill
           : DASHBOARD_CHART_COLORS.lightFill,
@@ -305,27 +316,12 @@ export class DashboardPageComponent implements OnInit {
   }
 
   private formatMonth(month: string): string {
-    const months = [
-      'Ene',
-      'Feb',
-      'Mar',
-      'Abr',
-      'May',
-      'Jun',
-      'Jul',
-      'Ago',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dic',
-    ];
-    const [year, m] = month.split('-');
-    const monthIndex = parseInt(m, 10) - 1;
-    return months[monthIndex] + ' ' + year;
+    const [year, index] = month.split('-').map(Number);
+    return new Intl.DateTimeFormat(this.language.locale(), { month: 'short', year: 'numeric' }).format(new Date(year, index - 1, 1));
   }
 
   formatDueDate(date: string): string {
-    return new Intl.DateTimeFormat('es-ES', {
+    return new Intl.DateTimeFormat(this.language.locale(), {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -337,7 +333,7 @@ export class DashboardPageComponent implements OnInit {
   }
 
   private formatDate(date: string): string {
-    return new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short' }).format(
+    return new Intl.DateTimeFormat(this.language.locale(), { day: '2-digit', month: 'short' }).format(
       new Date(`${date}T00:00:00`),
     );
   }

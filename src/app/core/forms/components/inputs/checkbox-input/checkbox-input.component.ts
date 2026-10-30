@@ -1,10 +1,11 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, computed, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { CheckboxModule } from 'primeng/checkbox';
 
 @Component({
   selector: 'app-checkbox-input',
-  imports: [ReactiveFormsModule, CheckboxModule],
+  imports: [TranslatePipe, ReactiveFormsModule, CheckboxModule],
   templateUrl: './checkbox-input.component.html',
 })
 export class CheckboxInputComponent {

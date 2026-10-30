@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,7 +25,7 @@ interface ModuleDestination {
 @Component({
   selector: 'app-module-navigator',
   standalone: true,
-  imports: [DialogModule, InputTextModule],
+  imports: [TranslatePipe, DialogModule, InputTextModule],
   templateUrl: './module-navigator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

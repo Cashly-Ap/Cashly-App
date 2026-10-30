@@ -6,15 +6,15 @@
     @if (category(); as currentCategory) {
       <div class="flex flex-col gap-6">
         <app-page-header
-          title="Detalles de Categoría"
-          subtitle="Información completa de la categoría"
+          [title]="'catalog.categories.categoryDetails' | translate"
+          [subtitle]="'catalog.categories.completeCategoryInformation' | translate"
         />
 
         <app-details-card>
           <app-details-card-header [title]="currentCategory.name">
             <div actions class="flex gap-3">
               <p-button
-                label="Volver"
+                [label]="'finance.billing.creditnotes.back' | translate"
                 icon="pi pi-arrow-left"
                 [outlined]="true"
                 (onClick)="onBack()"
@@ -22,7 +22,7 @@
               <app-detail-actions-menu #actionsMenu>
                 <p-button
                   [appPermission]="'UPDATE'"
-                  label="Editar"
+                  [label]="'finance.billing.invoices.edit' | translate"
                   icon="pi pi-pencil"
                   [link]="true"
                   (onClick)="actionsMenu.hide(); onEdit()"
@@ -33,28 +33,28 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field label="Nombre" [value]="currentCategory.name" />
+              <app-details-info-field [label]="'finance.treasury.paymentmethods.name' | translate" [value]="currentCategory.name" />
               <app-details-info-field
-                label="Productos"
+                [label]="'inventory.warehouses.products' | translate"
                 [value]="currentCategory.productCount.toString()"
               />
-              <app-details-info-field label="Estado" type="badge"
+              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge"
                 ><app-status-badge
                   [active]="currentCategory.active"
                   activeLabel="Activa"
                   inactiveLabel="Inactiva"
               /></app-details-info-field>
               <app-details-info-field
-                label="Creada"
-                [value]="(currentCategory.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'catalog.categories.created' | translate"
+                [value]="(currentCategory.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
-                label="Actualizada"
-                [value]="(currentCategory.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+                [label]="'catalog.categories.updated' | translate"
+                [value]="(currentCategory.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
               />
               <app-details-info-field
                 class="col-span-full"
-                label="Descripción"
+                [label]="'finance.treasury.paymentmethods.description' | translate"
                 [value]="currentCategory.description || '—'"
               />
             </app-details-info-grid>

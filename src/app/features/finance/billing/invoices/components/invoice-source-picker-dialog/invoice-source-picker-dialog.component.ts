@@ -1,3 +1,5 @@
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
@@ -50,7 +52,14 @@ interface SourceStockStatus {
 @Component({
   selector: 'app-invoice-source-picker-dialog',
   standalone: true,
-  imports: [ShortcutDirective, DialogModule, ButtonModule, DecimalPipe],
+  imports: [
+    TranslatePipe,
+    LocalizedNumberPipe,
+    ShortcutDirective,
+    DialogModule,
+    ButtonModule,
+    DecimalPipe,
+  ],
   templateUrl: './invoice-source-picker-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

@@ -1,3 +1,7 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -50,7 +54,7 @@ const PAGE_SIZE = 10;
 @Component({
   selector: 'app-warehouse-stock-page',
   standalone: true,
-  imports: [
+  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedNumberPipe,
     DecimalPipe,
     FormsModule,
     ButtonModule,
@@ -71,6 +75,7 @@ const PAGE_SIZE = 10;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehouseStockPageComponent implements OnInit {
+  private readonly translations = inject(TranslationService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly api = inject(StockOverviewApiService);
@@ -102,9 +107,9 @@ export class WarehouseStockPageComponent implements OnInit {
   readonly errorMessage = WAREHOUSE_ERROR_MESSAGES.loadStock;
   readonly warehouseName = computed(() => {
     const id = this.warehouseId();
-    if (!id) return 'Todos los almacenes';
+    if (!id) return this.translations.t('inventory.warehouses.allWarehouses');
     return (
-      this.warehouses().find((warehouse) => warehouse.id === id)?.name ?? 'Almacén seleccionado'
+      this.warehouses().find((warehouse) => warehouse.id === id)?.name ?? this.translations.t('inventory.warehouses.selectedWarehouse')
     );
   });
   readonly activeFilterCount = computed(
@@ -117,17 +122,17 @@ export class WarehouseStockPageComponent implements OnInit {
   readonly resultLabel = computed(() => {
     const count = this.totalElements();
     if (this.displayedGroupBy() === 'PRODUCT')
-      return `${count} ${count === 1 ? 'producto' : 'productos'}`;
+      return this.translations.t(count === 1 ? 'inventory.warehouses.countProduct' : 'inventory.warehouses.countProducts', { count });
     if (this.displayedGroupBy() === 'WAREHOUSE')
-      return `${count} ${count === 1 ? 'almacén' : 'almacenes'}`;
-    return `${count} ${count === 1 ? 'registro de producto y almacén' : 'registros de producto y almacén'}`;
+      return this.translations.t(count === 1 ? 'inventory.warehouses.countWarehouse' : 'inventory.warehouses.countWarehouses', { count });
+    return this.translations.t(count === 1 ? 'inventory.warehouses.countRecord' : 'inventory.warehouses.countRecords', { count });
   });
   readonly paginationLabel = computed(() =>
     this.displayedGroupBy() === 'PRODUCT'
-      ? '{first} - {last} de {totalRecords} productos'
+      ? this.translations.t('inventory.warehouses.paginationProducts')
       : this.displayedGroupBy() === 'WAREHOUSE'
-        ? '{first} - {last} de {totalRecords} almacenes'
-        : '{first} - {last} de {totalRecords} registros',
+        ? this.translations.t('inventory.warehouses.paginationWarehouses')
+        : this.translations.t('inventory.warehouses.paginationRecords'),
   );
 
   constructor() {

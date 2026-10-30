@@ -21,13 +21,13 @@
       class="flex items-center justify-between p-4 border-b border-surface-200 dark:border-surface-700"
     >
       <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-100 m-0">
-        Pestañas Pendientes
+        {{ 'core.pendingtabs.pendingTabs' | translate }}
       </h3>
       @if (tabs().length > 0) {
         <button
           (click)="clearAllTabs()"
           pButton
-          label="Borrar Todas"
+          [label]="'core.pendingtabs.clearAll' | translate"
           icon="pi pi-trash"
           severity="danger"
           [text]="true"
@@ -39,7 +39,7 @@
     @if (tabs().length === 0) {
       <div class="flex flex-col items-center justify-center p-8 text-center">
         <i class="pi pi-inbox text-6xl text-surface-300 dark:text-surface-600 mb-4"></i>
-        <p class="text-surface-600 dark:text-surface-400 m-0">No hay pestañas pendientes</p>
+        <p class="text-surface-600 dark:text-surface-400 m-0">{{ 'core.pendingtabs.noPendingTabs' | translate }}</p>
       </div>
     } @else {
       <div class="flex flex-col max-h-96 overflow-y-auto">
@@ -50,22 +50,22 @@
             <div
               (click)="goToTab(tab)"
               class="flex-1 min-w-0 cursor-pointer"
-              [pTooltip]="'Ir a pestaña'"
+              [pTooltip]="'Ir a pestaña' | translate"
               tooltipPosition="left"
             >
               <div class="flex items-center gap-2 mb-1">
                 <span [class]="'px-2 py-1 text-xs font-medium rounded ' + getTypeClass(tab.type)">
-                  {{ getTypeLabel(tab.type) }}
+                  {{ getTypeLabel(tab.type) | translate }}
                 </span>
                 <span class="text-xs text-surface-500 dark:text-surface-400">
-                  {{ getModuleLabel(tab.module) }}
+                  {{ getModuleLabel(tab.module) | translate }}
                 </span>
               </div>
               <p class="text-sm font-medium text-surface-900 dark:text-surface-100 m-0 truncate">
-                {{ tab.title }}
+                {{ tab.title | translate }}
               </p>
               <p class="text-xs text-surface-500 dark:text-surface-400 m-0 mt-1">
-                {{ tab.timeLabel }}
+                {{ tab.timeLabel | translate }}
               </p>
             </div>
             <div class="flex gap-1">
@@ -77,7 +77,7 @@
                 [rounded]="true"
                 size="small"
                 severity="danger"
-                pTooltip="Eliminar"
+                [pTooltip]="'finance.billing.creditnotes.delete' | translate"
               ></button>
             </div>
           </div>

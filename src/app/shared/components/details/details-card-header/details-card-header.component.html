@@ -10,11 +10,11 @@
         [class.text-red-600]="titleClass().includes('text-red-600')"
         [class.text-surface-500]="titleClass().includes('text-surface-500')"
       >
-        {{ title() }}
+        {{ title() | translate }}
       </h1>
       @if (subtitle()) {
         <p class="text-base text-surface-600 dark:text-surface-400">
-          {{ subtitle() }}
+          {{ subtitle() | translate }}
         </p>
       }
     </div>

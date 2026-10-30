@@ -1,3 +1,4 @@
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { FormMode } from '@core/forms/enums/form-mode.enum';
 import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -25,6 +26,10 @@ describe('User profile form', () => {
       imports: [UsersFormPageComponent],
       providers: [
         provideRouter([]),
+        {
+          provide: UserPreferencesService,
+          useValue: { syncLanguage: vi.fn(), ready: signal(true), shortcutsEnabled: signal(false) },
+        },
         provideHttpClient(),
         MessageService,
         { provide: UserApplicationService, useValue: userService },
@@ -59,6 +64,20 @@ describe('User profile form', () => {
       departmentId: 'd',
     });
   }
+  it('defaults new users to Spanish and sends the selected language', () => {
+    expect(component.control('language').value).toBe('es');
+    valid();
+    component.control('language').setValue('en');
+    component.onSubmit();
+    expect(userService.createUser).toHaveBeenCalledWith(
+      expect.objectContaining({ language: 'en' }),
+    );
+  });
+  it('rejects unsupported languages before saving', () => {
+    valid();
+    component.control('language').setValue('fr');
+    expect(component.form.invalid).toBe(true);
+  });
   it('requires profile references and removes editable enum/direct grants', () => {
     expect(component.form.get('role')).toBeNull();
     expect(component.form.get('modulePermissions')).toBeNull();
@@ -161,5 +180,4 @@ describe('User profile form', () => {
     component.onSubmit();
     expect(navigate).toHaveBeenCalledWith(['/platform/users', 'edited-user']);
   });
-
 });

@@ -1,3 +1,5 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output, inject, signal, effect, computed } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -11,7 +13,17 @@ import { PendingPayment } from '@features/finance/treasury/receivables/models/in
 @Component({
   selector: 'app-payment-history-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TableModule, PaginatorModule, CurrencyPipe, DatePipe],
+  imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    DialogModule,
+    ButtonModule,
+    TableModule,
+    PaginatorModule,
+    CurrencyPipe,
+    DatePipe,
+  ],
   templateUrl: './payment-history-dialog.component.html',
 })
 export class PaymentHistoryDialogComponent {

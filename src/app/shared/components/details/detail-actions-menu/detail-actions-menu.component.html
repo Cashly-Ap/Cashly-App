@@ -1,9 +1,9 @@
 @if (hasActions()) {
   <p-button
-    label="Acciones"
+    [label]="'shared.actions' | translate"
     icon="pi pi-ellipsis-v"
     severity="contrast"
-    ariaLabel="Abrir acciones del registro"
+    [ariaLabel]="'shared.openRecordActions' | translate"
     (onClick)="actionsPopover.toggle($event)"
   />
 }

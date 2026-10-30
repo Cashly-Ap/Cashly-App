@@ -1,10 +1,11 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, computed, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { SelectModule } from 'primeng/select';
 
 @Component({
   selector: 'app-select-input',
-  imports: [ReactiveFormsModule, SelectModule],
+  imports: [TranslatePipe, ReactiveFormsModule, SelectModule],
   templateUrl: './select-input.component.html',
 })
 export class SelectInputComponent {

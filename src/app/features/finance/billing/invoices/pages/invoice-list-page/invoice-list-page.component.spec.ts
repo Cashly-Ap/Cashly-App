@@ -167,12 +167,26 @@ describe('InvoiceListPageComponent', () => {
     });
   });
 
-  it.each([['Editar', 'EDIT'], ['Confirmar', 'CONFIRM'], ['Cancelar', 'CANCEL'], ['Duplicar', 'DUPLICATE']])('uses backend eligibility for %s and removes it after closing', async (label, action) => {
+  it.each([
+    ['Editar', 'EDIT'],
+    ['Confirmar', 'CONFIRM'],
+    ['Cancelar', 'CANCEL'],
+    ['Duplicar', 'DUPLICATE'],
+  ])('uses backend eligibility for %s and removes it after closing', async (label, action) => {
     queryParams.next(convertToParamMap({ navAction: label }));
     await Promise.resolve();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, orderBy: 'createdAt', orderDir: 'desc' });
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({
+      action,
+      orderBy: 'createdAt',
+      orderDir: 'desc',
+    });
     component.onSearch('FAC');
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action, search: 'FAC', orderBy: 'createdAt', orderDir: 'desc' });
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({
+      action,
+      search: 'FAC',
+      orderBy: 'createdAt',
+      orderDir: 'desc',
+    });
     queryParams.next(convertToParamMap({}));
     expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
   });
@@ -184,7 +198,11 @@ describe('InvoiceListPageComponent', () => {
     queryParams.next(convertToParamMap({ navAction: 'Confirmar' }));
     await Promise.resolve();
     expect(cancelled).toHaveBeenCalledOnce();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({ action: 'CONFIRM', orderBy: 'createdAt', orderDir: 'desc' });
+    expect(mockService.loadAll).toHaveBeenLastCalledWith({
+      action: 'CONFIRM',
+      orderBy: 'createdAt',
+      orderDir: 'desc',
+    });
   });
 
   describe('navigation', () => {

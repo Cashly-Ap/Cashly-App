@@ -4,8 +4,8 @@
     [text]="true"
     [rounded]="true"
     severity="secondary"
-    [ariaLabel]="ariaLabel()"
-    pTooltip="Acciones"
+    [ariaLabel]="ariaLabel() | translate"
+    [pTooltip]="'shared.actions' | translate"
     tooltipPosition="top"
     (onClick)="actionsPopover.toggle($event)"
   />
@@ -13,7 +13,7 @@
     <div class="flex min-w-52 flex-col gap-1 p-1">
       @for (action of orderedActions(); track action.label) {
         <p-button
-          [label]="action.label"
+          [label]="action.label | translate"
           [icon]="action.icon"
           [link]="true"
           [severity]="action.danger ? 'danger' : 'secondary'"

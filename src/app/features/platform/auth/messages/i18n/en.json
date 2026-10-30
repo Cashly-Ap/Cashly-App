@@ -1,0 +1,20 @@
+{
+  "platform.auth.messages.couldNotChangeThePasswordPleaseTryAgain": "Could not change the password. Please try again.",
+  "platform.auth.messages.couldNotChangeTheUsernamePleaseTryAgain": "Could not change the username. Please try again.",
+  "platform.auth.messages.couldNotUpdateTheMonthlyDeductionPleaseTryAgain": "Could not update the monthly deduction. Please try again.",
+  "platform.auth.messages.sessionExpired": "Session expired",
+  "platform.auth.messages.yourSessionHasExpiredPleaseSignInAgain": "Your session has expired. Please sign in again.",
+  "platform.auth.messages.connectionError": "Connection error",
+  "platform.auth.messages.cannotConnectToTheServerPleaseTryAgainLater": "Cannot connect to the server. Please try again later.",
+  "platform.auth.messages.serverError": "Server error",
+  "platform.auth.messages.aServerErrorOccurredPleaseTryAgainLater": "A server error occurred. Please try again later.",
+  "platform.auth.messages.authenticationError": "Authentication error",
+  "platform.auth.messages.couldNotSignInCheckYourCredentials": "Could not sign in. Check your credentials.",
+  "platform.auth.messages.passwordChangedSuccessfully": "Password changed successfully",
+  "platform.auth.messages.usernameUpdatedSuccessfully": "Username updated successfully",
+  "platform.auth.messages.monthlyLatePaymentDeductionUpdatedSuccessfully": "Monthly late payment deduction updated successfully",
+  "platform.auth.messages.welcome": "Welcome",
+  "platform.auth.messages.youHaveSignedInSuccessfully": "You have signed in successfully",
+  "platform.auth.messages.signedOut": "Signed out",
+  "platform.auth.messages.youHaveSignedOutSuccessfully": "You have signed out successfully"
+}

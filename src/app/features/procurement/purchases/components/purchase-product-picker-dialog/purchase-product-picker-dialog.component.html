@@ -14,12 +14,12 @@
         <i class="pi pi-box text-surface-600 dark:text-surface-300 text-lg"></i>
       </div>
       <div class="flex flex-col">
-        <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-          >Seleccionar Productos</span
-        >
-        <span class="text-xs text-surface-500 dark:text-surface-400"
-          >Busque y seleccione los productos para agregar a la compra</span
-        >
+        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
+          'procurement.purchases.selectProducts' | translate
+        }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{
+          'procurement.purchases.findAndSelectProductsToAddToThePurchase' | translate
+        }}</span>
       </div>
     </div>
   </ng-template>
@@ -54,7 +54,12 @@
         </button>
       </div>
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
-        {{ totalElements() }} {{ totalElements() === 1 ? 'producto' : 'productos' }}
+        {{ totalElements() }}
+        {{
+          totalElements() === 1
+            ? ('inventory.warehouses.product' | translate)
+            : ('inventory.warehouses.products2' | translate)
+        }}
       </span>
     </div>
 
@@ -70,27 +75,27 @@
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
             >
-              Código
+              {{ 'finance.treasury.paymentmethods.code' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
             >
-              Nombre
+              {{ 'finance.treasury.paymentmethods.name' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-32"
             >
-              Categoría
+              {{ 'finance.billing.invoices.category' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-24"
             >
-              Precio
+              {{ 'procurement.purchases.price' | translate }}
             </th>
             <th
               class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
             >
-              Stock
+              {{ 'finance.billing.returns.stock' | translate }}
             </th>
           </tr>
         </thead>
@@ -112,7 +117,7 @@
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
-                No se encontraron productos
+                {{ 'procurement.purchases.noProductsFound' | translate }}
               </td>
             </tr>
           } @else {
@@ -158,7 +163,7 @@
                 </td>
                 <td class="px-4 py-3 text-right">
                   <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                    ${{ product.purchasePrice | number: '1.2-2' }}
+                    ${{ product.purchasePrice | localizedNumber: '1.2-2' }}
                   </span>
                 </td>
                 <td class="px-4 py-3">
@@ -166,17 +171,22 @@
                     <div class="flex flex-col items-end">
                       @if (getAllocationQuantity(product.id) > 0) {
                         <span class="text-xs text-surface-400 dark:text-surface-500">
-                          Stock: {{ product.stock | number: '1.0-3' }}
+                          {{ 'procurement.purchases.stock' | translate }}
+                          {{ product.stock | localizedNumber: '1.0-3' }}
                         </span>
                         <span
                           class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
                         >
-                          +{{ getAllocationQuantity(product.id) | number: '1.0-3' }} →
-                          {{ product.stock + getAllocationQuantity(product.id) | number: '1.0-3' }}
+                          +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
+                          {{
+                            product.stock + getAllocationQuantity(product.id)
+                              | localizedNumber: '1.0-3'
+                          }}
                         </span>
                       } @else {
                         <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                          Stock: {{ product.stock | number: '1.0-3' }}
+                          {{ 'procurement.purchases.stock' | translate }}
+                          {{ product.stock | localizedNumber: '1.0-3' }}
                         </span>
                       }
                     </div>
@@ -191,7 +201,7 @@
                       [class.dark:hover:text-surface-200]="popoverProductId() !== product.id"
                       [class.hover:bg-surface-100]="popoverProductId() !== product.id"
                       [class.dark:hover:bg-surface-700]="popoverProductId() !== product.id"
-                      pTooltip="Stock por almacén"
+                      [pTooltip]="'procurement.purchases.stockByWarehouse' | translate"
                       tooltipPosition="left"
                       (click)="openStockPopover($event, product)"
                     >
@@ -221,7 +231,7 @@
       } @else if (visibleProducts().length === 0) {
         <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
           <i class="pi pi-search text-2xl block mb-2"></i>
-          No se encontraron productos
+          {{ 'procurement.purchases.noProductsFound' | translate }}
         </div>
       } @else {
         @for (product of visibleProducts(); track product.id) {
@@ -268,24 +278,28 @@
               class="border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 flex items-center justify-between"
             >
               <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
-                ${{ product.purchasePrice | number: '1.2-2' }}
+                ${{ product.purchasePrice | localizedNumber: '1.2-2' }}
               </span>
               <div class="flex items-center gap-2">
                 @if (getAllocationQuantity(product.id) > 0) {
                   <div class="flex flex-col items-end">
                     <span class="text-xs text-surface-400 dark:text-surface-500">
-                      Stock: {{ product.stock | number: '1.0-3' }}
+                      {{ 'procurement.purchases.stock' | translate }}
+                      {{ product.stock | localizedNumber: '1.0-3' }}
                     </span>
                     <span
                       class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
                     >
-                      +{{ getAllocationQuantity(product.id) | number: '1.0-3' }} →
-                      {{ product.stock + getAllocationQuantity(product.id) | number: '1.0-3' }}
+                      +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
+                      {{
+                        product.stock + getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
+                      }}
                     </span>
                   </div>
                 } @else {
                   <span class="text-sm text-surface-500 dark:text-surface-400">
-                    Stock: <span class="font-mono">{{ product.stock | number: '1.0-3' }}</span>
+                    {{ 'procurement.purchases.stock' | translate }}
+                    <span class="font-mono">{{ product.stock | localizedNumber: '1.0-3' }}</span>
                   </span>
                 }
                 <button
@@ -310,7 +324,7 @@
 
     @if (totalPages() > 1) {
       <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{ pageLabel() }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{ (pageLabel()) | translate }}</span>
         <div class="flex gap-1">
           <button
             type="button"
@@ -338,13 +352,17 @@
       <span class="text-xs text-surface-500 dark:text-surface-400">
         @if (selectedCount() > 0) {
           {{ selectedCount() }}
-          {{ selectedCount() === 1 ? 'producto seleccionado' : 'productos seleccionados' }}
+          {{
+            selectedCount() === 1
+              ? ('procurement.purchases.productSelected' | translate)
+              : ('procurement.purchases.productsSelected' | translate)
+          }}
         }
       </span>
       <div class="flex flex-col sm:flex-row gap-2">
         <p-button
           appShortcut="cancel"
-          label="Cancelar"
+          [label]="'shared.cancel' | translate"
           icon="pi pi-times"
           [outlined]="true"
           severity="secondary"
@@ -352,7 +370,7 @@
         />
         <p-button
           appShortcut="submit"
-          label="Agregar"
+          [label]="'finance.billing.invoices.add' | translate"
           icon="pi pi-plus"
           [disabled]="selectedCount() === 0"
           (onClick)="onAdd()"
@@ -367,14 +385,16 @@
     <div
       class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
     >
-      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">Filtros</span>
+      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+        'shared.filters' | translate
+      }}</span>
       @if (activeFilterCount() > 0) {
         <button
           type="button"
           class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
           (click)="clearFilters()"
         >
-          Limpiar
+          {{ 'finance.billing.creditnotes.clear' | translate }}
         </button>
       }
     </div>
@@ -382,21 +402,21 @@
       <div class="flex flex-col gap-1.5">
         <span
           class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >Buscar</span
+          >{{ 'procurement.purchases.search' | translate }}</span
         >
         <app-search-field
           [value]="search()"
-          placeholder="Código o nombre..."
+          [placeholder]="'procurement.purchases.codeOrName' | translate"
           (search)="onSearchChange($event)"
         />
       </div>
       <div class="flex flex-col gap-1.5">
         <span
           class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >Categoría</span
+          >{{ 'finance.billing.invoices.category' | translate }}</span
         >
         <p-select
-          [options]="categoryOptions()"
+          [options]="categoryOptions() | translateOptions: true"
           optionLabel="label"
           optionValue="value"
           [ngModel]="filterCategoryId()"
@@ -411,8 +431,8 @@
 <p-popover #stockPopover appendTo="body" (onHide)="popoverProductId.set(null)">
   <app-warehouse-stock-popover
     [entries]="popoverAllocations()"
-    confirmLabel="Guardar"
-    emptyMessage="Seleccione la cantidad por almacén"
+    [confirmLabel]="'finance.billing.creditnotes.save' | translate"
+    [emptyMessage]="'procurement.purchases.selectTheQuantityPerWarehouse' | translate"
     [showStockDetails]="false"
     (allocationChange)="updateAllocation($event.index, $event.value)"
     (confirm)="saveAllocation()"

@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,11 +29,12 @@ export type PermissionPreset = 'none' | 'read' | 'custom' | 'all';
 @Component({
   selector: 'app-permission-editor',
   standalone: true,
-  imports: [FormsModule, ButtonModule, CheckboxModule, InputTextModule],
+  imports: [TranslatePipe, FormsModule, ButtonModule, CheckboxModule, InputTextModule],
   templateUrl: './permission-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PermissionEditorComponent {
+  private readonly translations = inject(TranslationService);
   private readonly authorization = inject(AuthorizationService);
   readonly registry = input.required<PermissionRegistry[]>();
   readonly permissions = input.required<PermissionMatrix>();
@@ -72,7 +75,9 @@ export class PermissionEditorComponent {
         .replace(/[\u0300-\u036f]/g, '')
         .toLocaleLowerCase('es');
     const term = normalize(this.search().trim());
-    return this.registry().filter((entry) => normalize(this.labels[entry.module]).includes(term));
+    return this.registry().filter((entry) =>
+      normalize(this.translations.t(this.labels[entry.module])).includes(term),
+    );
   });
   readonly selectedCount = computed(
     () => this.registry().filter((entry) => this.selected(entry.module, 'READ')).length,

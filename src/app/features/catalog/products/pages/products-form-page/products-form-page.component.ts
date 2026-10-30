@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
   inject,
@@ -46,7 +47,7 @@ interface ProductFormData {
   selector: 'app-products-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,

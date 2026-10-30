@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -32,6 +33,7 @@ import { QUOTE_SUCCESS_MESSAGES } from '@features/sales/quotes/messages/success-
   selector: 'app-quote-form-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
     TextareaModule,

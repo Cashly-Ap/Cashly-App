@@ -1,3 +1,6 @@
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -32,6 +35,7 @@ import { ChangeEmailDialogComponent } from '@features/platform/auth/user/compone
   selector: 'app-users-details-page',
   standalone: true,
   imports: [
+    TranslatePipe,
     UserAvatarComponent,
     PermissionDirective,
     CommonModule,
@@ -49,10 +53,11 @@ import { ChangeEmailDialogComponent } from '@features/platform/auth/user/compone
     TextBadgeComponent,
   ],
   templateUrl: './users-details-page.component.html',
-  providers: [ConfirmationService],
+  providers: [provideTranslatedConfirmation()],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UsersDetailsPageComponent implements OnInit {
+  private readonly translations = inject(TranslationService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private service = inject(UserApplicationService);
   private route = inject(ActivatedRoute);
@@ -85,7 +90,7 @@ export class UsersDetailsPageComponent implements OnInit {
         this.loading.set(false);
         this.messageService.add({
           severity: 'error',
-          summary: 'Error',
+          summary: this.translations.t('users.profile.error'),
           detail: 'Error al cargar el usuario. Es posible que no exista.',
           life: 5000,
         });

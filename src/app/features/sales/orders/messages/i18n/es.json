@@ -1,0 +1,13 @@
+{
+  "sales.orders.messages.unableToCreateTheOrderPleaseTryAgain": "Error al crear el pedido. Por favor, intente nuevamente.",
+  "sales.orders.messages.unableToUpdateTheOrderPleaseTryAgain": "Error al actualizar el pedido. Por favor, intente nuevamente.",
+  "sales.orders.messages.unableToDeleteTheOrderPleaseTryAgain": "Error al eliminar el pedido. Por favor, intente nuevamente.",
+  "sales.orders.messages.unableToConfirmTheOrderPleaseTryAgain": "Error al confirmar el pedido. Por favor, intente nuevamente.",
+  "sales.orders.messages.unableToCancelTheOrderPleaseTryAgain": "Error al cancelar el pedido. Por favor, intente nuevamente.",
+  "sales.orders.messages.orderCreatedSuccessfully": "Pedido creado exitosamente",
+  "sales.orders.messages.orderUpdatedSuccessfully": "Pedido actualizado exitosamente",
+  "sales.orders.messages.orderDeletedSuccessfully": "Pedido eliminado exitosamente",
+  "sales.orders.messages.orderConfirmedSuccessfully": "Pedido confirmado exitosamente",
+  "sales.orders.messages.orderCancelledSuccessfully": "Pedido cancelado exitosamente",
+  "sales.orders.messages.unableToLoadTheOrderItMayNotExist": "Error al cargar el pedido. Es posible que no exista."
+}

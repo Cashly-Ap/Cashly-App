@@ -15,15 +15,21 @@
         <i class="pi pi-history text-surface-0 dark:text-surface-900 text-xl"></i>
       </div>
       <div>
-        <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0">Historial de Pagos</h2>
-        <p class="text-sm text-surface-500">Pagos registrados del cliente</p>
+        <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+          {{ 'finance.treasury.receivables.paymentHistory' | translate }}
+        </h2>
+        <p class="text-sm text-surface-500">
+          {{ 'finance.treasury.receivables.customerPaymentRecords' | translate }}
+        </p>
       </div>
     </div>
 
     @if (loading()) {
       <div class="flex flex-col items-center justify-center py-16">
         <i class="pi pi-spin pi-spinner text-4xl text-surface-400 mb-4"></i>
-        <p class="text-surface-500 font-medium">Cargando historial...</p>
+        <p class="text-surface-500 font-medium">
+          {{ 'finance.treasury.cashregister.loadingHistory' | translate }}
+        </p>
       </div>
     } @else if (payments().length === 0) {
       <div class="flex flex-col items-center justify-center py-16">
@@ -33,10 +39,10 @@
           <i class="pi pi-history text-3xl text-surface-400"></i>
         </div>
         <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-1">
-          Sin pagos registrados
+          {{ 'finance.treasury.receivables.noPaymentsRegistered' | translate }}
         </h3>
         <p class="text-sm text-surface-500">
-          Este cliente no tiene pagos registrados hasta el momento
+          {{ 'finance.treasury.receivables.thisCustomerHasNoPaymentRecordsYet' | translate }}
         </p>
       </div>
     } @else {
@@ -48,23 +54,31 @@
             <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
               {{ payments().length }}
             </p>
-            <p class="text-xs text-surface-500 mt-1">Total Pagos</p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.totalPayments' | translate }}
+            </p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-              {{ totalAmount() | currency: 'USD' : 'symbol' : '1.2-2' }}
+              {{ totalAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </p>
-            <p class="text-xs text-surface-500 mt-1">Monto Total</p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.billing.returns.totalAmount' | translate }}
+            </p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-green-600 dark:text-green-400">
               {{ approvedCount() }}
             </p>
-            <p class="text-xs text-surface-500 mt-1">Aprobados</p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.approved' | translate }}
+            </p>
           </div>
           <div class="text-center">
             <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ rejectedCount() }}</p>
-            <p class="text-xs text-surface-500 mt-1">Rechazados</p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.rejected' | translate }}
+            </p>
           </div>
         </div>
       </div>
@@ -85,16 +99,24 @@
           <ng-template pTemplate="header">
             <tr>
               <th class="bg-surface-50 dark:bg-surface-800 w-auto">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">N° Pago</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.treasury.receivables.paymentNo' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800 text-right">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Monto</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'shared.amount' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Método</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.treasury.receivables.method' | translate }}
+                </div>
               </th>
               <th class="bg-surface-50 dark:bg-surface-800">
-                <div class="font-semibold text-surface-700 dark:text-surface-200">Fecha</div>
+                <div class="font-semibold text-surface-700 dark:text-surface-200">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
               </th>
             </tr>
           </ng-template>
@@ -109,19 +131,19 @@
               </td>
               <td class="text-right">
                 <span class="font-mono font-semibold text-green-600 dark:text-green-400">
-                  {{ payment.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                  {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td>
                 <span class="text-sm text-surface-600 dark:text-surface-400">{{
                   payment.source === 'CUSTOMER_BALANCE'
-                    ? 'Saldo a Favor'
+                    ? ('finance.billing.invoices.creditBalance' | translate)
                     : payment.paymentMethodName
                 }}</span>
               </td>
               <td>
                 <span class="text-sm text-surface-600 dark:text-surface-400">{{
-                  payment.paymentDate | date: 'dd/MM/yyyy'
+                  payment.paymentDate | localizedDate: 'dd/MM/yyyy'
                 }}</span>
               </td>
             </tr>
@@ -140,22 +162,26 @@
                   payment.paymentNumber
                 }}</span>
                 <p class="text-xs text-surface-500 mt-0.5">
-                  {{ payment.paymentDate | date: 'dd/MM/yyyy' }}
+                  {{ payment.paymentDate | localizedDate: 'dd/MM/yyyy' }}
                 </p>
               </div>
             </div>
             <div
               class="flex items-center justify-between py-2 border-t border-surface-200 dark:border-surface-700"
             >
-              <span class="text-sm text-surface-500">Monto</span>
+              <span class="text-sm text-surface-500">{{ 'shared.amount' | translate }}</span>
               <span class="font-mono font-bold text-green-600 dark:text-green-400">
-                {{ payment.amount | currency: 'USD' : 'symbol' : '1.2-2' }}
+                {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
               </span>
             </div>
             <div class="flex items-center justify-between pt-2">
-              <span class="text-sm text-surface-500">Método</span>
+              <span class="text-sm text-surface-500">{{
+                'finance.treasury.receivables.method' | translate
+              }}</span>
               <span class="text-sm text-surface-600 dark:text-surface-400">{{
-                payment.source === 'CUSTOMER_BALANCE' ? 'Saldo a Favor' : payment.paymentMethodName
+                payment.source === 'CUSTOMER_BALANCE'
+                  ? ('finance.billing.invoices.creditBalance' | translate)
+                  : payment.paymentMethodName
               }}</span>
             </div>
           </div>
@@ -175,7 +201,7 @@
     <div class="flex justify-end">
       <p-button
         severity="secondary"
-        label="Cerrar"
+        [label]="'shared.close' | translate"
         icon="pi pi-times"
         (onClick)="onClose()"
         styleClass="font-medium"
