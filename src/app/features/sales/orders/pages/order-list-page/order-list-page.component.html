@@ -201,7 +201,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'sales.orders.showingFirstToLastOfTotalrecordsOrders' | translate"
+                [currentPageReportTemplate]="
+                  'sales.orders.showingFirstToLastOfTotalrecordsOrders' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -272,7 +274,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'sales.orders.showingFirstToLastOfTotalrecordsOrders' | translate"
+              [currentPageReportTemplate]="
+                'sales.orders.showingFirstToLastOfTotalrecordsOrders' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>
@@ -288,12 +292,20 @@
   (confirmed)="onCancelDialogConfirmed($event)"
   (cancelled)="onCancelDialogDismissed()"
 />
-<app-convert-to-invoice-dialog
+<app-convert-order-to-invoice-dialog
   [visible]="invoiceDialogVisible()"
+  [orderId]="orderToInvoice()?.id ?? null"
   [orderNumber]="orderToInvoice()?.orderNumber ?? ''"
   [customerName]="orderToInvoice()?.customerAlias ?? ''"
   [totalAmount]="orderToInvoice()?.totalAmount ?? 0"
   [customerId]="orderToInvoice()?.customerId ?? ''"
   (confirmed)="onInvoiceDialogConfirmed($event)"
   (cancelled)="onInvoiceDialogDismissed()"
+/>
+
+<app-confirm-order-dialog
+  [visible]="!!confirmOrderId()"
+  [orderId]="confirmOrderId()"
+  (confirmed)="onOrderConfirmed($event)"
+  (cancelled)="confirmOrderId.set(null)"
 />

@@ -13,6 +13,7 @@ import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { MessageService } from 'primeng/api';
+import { DocumentActionDialogService } from './document-action-dialog.service';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
@@ -20,6 +21,7 @@ export class NavigationLookupService {
   private readonly router = inject(Router);
   private readonly navigation = inject(ListNavigationService);
   private readonly messages = inject(MessageService);
+  private readonly documentActions = inject(DocumentActionDialogService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
     const definition = LIST_NAVIGATION_DEFINITIONS.find((item) => item.route === route);
@@ -38,7 +40,8 @@ export class NavigationLookupService {
     let request: Subscription | undefined;
     const owner = {};
     const modalAction =
-      (route === '/sales/orders' && label === 'Confirmar') ||
+      (route === '/sales/orders' &&
+        ['Confirmar', 'Convertir a factura', 'Cancelar'].includes(label)) ||
       (route === '/sales/quotes' &&
         ['Convertir a pedido', 'Convertir a factura'].includes(label)) ||
       (route === '/procurement/purchases' &&
@@ -51,6 +54,15 @@ export class NavigationLookupService {
         action: () => ({
           ...definitionAction,
           command: () => {
+            if (modalAction) {
+              this.documentActions.open({
+                route: route as '/sales/quotes' | '/sales/orders' | '/procurement/purchases',
+                label,
+                recordId: item.id,
+                recordLabel: item.label,
+              });
+              return;
+            }
             void this.router.navigate([route], {
               queryParams: {
                 ...queryParams,
@@ -59,7 +71,6 @@ export class NavigationLookupService {
                   ? {}
                   : { navRecord: item.id, navSearch: item.label }),
               },
-              ...(modalAction ? { skipLocationChange: true } : {}),
             });
           },
         }),

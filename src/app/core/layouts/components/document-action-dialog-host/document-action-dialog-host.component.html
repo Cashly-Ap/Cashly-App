@@ -1,0 +1,71 @@
+@if (actions.request(); as request) {
+  @if (request.route === '/sales/orders' && request.label === 'Confirmar') {
+    <app-confirm-order-dialog
+      [visible]="true"
+      [orderId]="request.recordId"
+      (confirmed)="confirmOrder($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (request.route === '/sales/orders' && request.label === 'Cancelar') {
+    <app-cancel-order-dialog
+      [visible]="true"
+      [order]="orderForCancellation()"
+      (confirmed)="cancelOrder($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (
+    request.route === '/sales/orders' && request.label === 'Convertir a factura' && orderDetails();
+    as order
+  ) {
+    <app-convert-order-to-invoice-dialog
+      [visible]="true"
+      [orderId]="request.recordId"
+      [orderNumber]="order.orderNumber"
+      [customerName]="order.customerAlias"
+      [customerId]="order.customerId"
+      [totalAmount]="order.totalAmount"
+      (confirmed)="convertOrderToInvoice($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (request.route === '/sales/quotes' && request.label === 'Convertir a pedido') {
+    <app-convert-to-order-dialog
+      [visible]="true"
+      [quoteId]="request.recordId"
+      (confirmed)="convertQuoteToOrder()"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (request.route === '/sales/quotes' && request.label === 'Convertir a factura') {
+    <app-convert-to-invoice-dialog
+      [visible]="true"
+      [quoteId]="request.recordId"
+      (confirmed)="convertQuoteToInvoice($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (request.route === '/procurement/purchases' && request.label === 'Confirmar compra') {
+    <app-confirm-purchase-dialog
+      [visible]="true"
+      [purchaseId]="request.recordId"
+      (confirmed)="confirmPurchase($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+
+  @if (request.route === '/procurement/purchases' && request.label === 'Cancelar compra') {
+    <app-cancel-purchase-dialog
+      [visible]="true"
+      [purchaseNumber]="request.recordLabel"
+      (confirmed)="cancelPurchase($event)"
+      (cancelled)="actions.close()"
+    />
+  }
+}

@@ -10,6 +10,7 @@ import { PurchaseApiService } from '@features/procurement/purchases/services/api
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { NavigationLookupService } from './navigation-lookup.service';
+import { DocumentActionDialogService } from './document-action-dialog.service';
 
 describe('Navbar lookup without navigation', () => {
   const navigate = vi.fn().mockResolvedValue(true);
@@ -19,6 +20,7 @@ describe('Navbar lookup without navigation', () => {
   const purchaseApi = { getAll: vi.fn().mockReturnValue(of([])) };
   let lookup: NavigationLookupService;
   let navigation: ListNavigationService;
+  let documentActions: DocumentActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -44,6 +46,7 @@ describe('Navbar lookup without navigation', () => {
     });
     lookup = TestBed.inject(NavigationLookupService);
     navigation = TestBed.inject(ListNavigationService);
+    documentActions = TestBed.inject(DocumentActionDialogService);
   });
 
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
@@ -99,7 +102,7 @@ describe('Navbar lookup without navigation', () => {
     expect(api.getAll).toHaveBeenLastCalledWith({ search: number, action: expect.any(String) });
   });
 
-  it('opens confirmation actions without changing the visible route', async () => {
+  it('opens confirmation actions on the current screen without routing', async () => {
     orderApi.getAll.mockReturnValue(
       of([
         {
@@ -112,13 +115,12 @@ describe('Navbar lookup without navigation', () => {
     );
     lookup.open('/sales/orders', 'Confirmar');
     await navigation.select(navigation.session()!.records()[0]);
-    expect(navigate).toHaveBeenCalledWith(['/sales/orders'], {
-      queryParams: {
-        navAction: 'Confirmar',
-        navRecord: 'order-1',
-        navSearch: 'ORD-001',
-      },
-      skipLocationChange: true,
+    expect(navigate).not.toHaveBeenCalled();
+    expect(documentActions.request()).toEqual({
+      route: '/sales/orders',
+      label: 'Confirmar',
+      recordId: 'order-1',
+      recordLabel: 'ORD-001',
     });
   });
 });

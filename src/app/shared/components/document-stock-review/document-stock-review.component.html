@@ -1,0 +1,27 @@
+<div class="overflow-x-auto">
+  <table class="w-full text-sm">
+    <thead>
+      <tr>
+        <th class="p-2 text-left">{{ 'finance.billing.returns.product' | translate }}</th>
+        <th class="p-2 text-left">{{ 'inventory.warehouses.warehouse' | translate }}</th>
+        <th class="p-2 text-right">{{ 'finance.billing.returns.quantity' | translate }}</th>
+        <th class="p-2 text-right">{{ 'finance.billing.invoices.availableStock' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track $index) {
+        <tr [class.text-red-600]="!row.sufficient">
+          <td class="p-2">{{ row.productName }}</td>
+          <td class="p-2">{{ row.warehouseName }}</td>
+          <td class="p-2 text-right">{{ row.quantity | localizedNumber: '1.0-3' }}</td>
+          <td class="p-2 text-right">
+            {{ row.available | localizedNumber: '1.0-3' }}
+            @if (!row.sufficient) {
+              <i class="pi pi-exclamation-triangle"></i>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

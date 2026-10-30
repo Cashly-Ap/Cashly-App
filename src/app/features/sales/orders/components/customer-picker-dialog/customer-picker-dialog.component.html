@@ -297,7 +297,9 @@
 
     @if (totalPages() > 1) {
       <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{ (pageLabel()) | translate }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{
+          pageLabel() | translate
+        }}</span>
         <div class="flex gap-1">
           <button
             type="button"
@@ -322,28 +324,6 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-between items-center gap-4 pt-1">
-      @if (multiple()) {
-        <span class="inline-flex items-center gap-2 text-sm text-surface-500 whitespace-nowrap">
-          <strong class="font-semibold text-surface-700 dark:text-surface-200">{{
-            selected().length
-          }}</strong>
-          <span>{{ 'sales.orders.selected' | translate }}</span>
-        </span>
-        <p-button
-          [label]="'sales.orders.useSelected' | translate"
-          icon="pi pi-check"
-          [disabled]="selected().length === 0"
-          (onClick)="confirmMultiple()"
-        />
-      }
-      @if (!multiple() && requireConfirmation()) {
-        <p-button
-          [label]="'shared.accept' | translate"
-          icon="pi pi-check"
-          [disabled]="!confirmedCustomer()"
-          (onClick)="confirmSingle()"
-        />
-      }
       <p-button
         appShortcut="cancel"
         [label]="'shared.cancel' | translate"
@@ -352,6 +332,30 @@
         severity="secondary"
         (onClick)="onCancel()"
       />
+      <div class="flex items-center justify-end gap-4">
+        @if (multiple()) {
+          <span class="inline-flex items-center gap-2 text-sm text-surface-500 whitespace-nowrap">
+            <strong class="font-semibold text-surface-700 dark:text-surface-200">{{
+              selected().length
+            }}</strong>
+            <span>{{ 'sales.orders.selected' | translate }}</span>
+          </span>
+          <p-button
+            [label]="'sales.orders.useSelected' | translate"
+            icon="pi pi-check"
+            [disabled]="selected().length === 0"
+            (onClick)="confirmMultiple()"
+          />
+        }
+        @if (!multiple() && requireConfirmation()) {
+          <p-button
+            [label]="'shared.accept' | translate"
+            icon="pi pi-check"
+            [disabled]="!confirmedCustomer()"
+            (onClick)="confirmSingle()"
+          />
+        }
+      </div>
     </div>
   </ng-template>
 </p-dialog>

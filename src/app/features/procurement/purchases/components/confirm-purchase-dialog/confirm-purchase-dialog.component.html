@@ -153,6 +153,12 @@
                               <span class="font-medium text-surface-900 dark:text-surface-0">{{
                                 line.productName
                               }}</span>
+                              <span class="text-xs text-surface-500"
+                                >{{ 'finance.billing.invoices.availableStock' | translate }}:
+                                {{
+                                  availableStock(line, alloc.warehouseId) | localizedNumber: '1.0-3'
+                                }}</span
+                              >
                               <span class="font-mono text-xs text-surface-500">{{
                                 line.productCode
                               }}</span>
@@ -183,6 +189,12 @@
                             <span class="text-surface-700 dark:text-surface-300">{{
                               alloc.warehouseName
                             }}</span>
+                            <span class="text-xs text-surface-500"
+                              >{{ 'finance.billing.invoices.availableStock' | translate }}:
+                              {{
+                                availableStock(line, alloc.warehouseId) | localizedNumber: '1.0-3'
+                              }}</span
+                            >
                             <span class="font-mono text-xs text-surface-500"
                               >({{ alloc.allocatedQuantity | localizedNumber: '1.0-3' }})</span
                             >
@@ -260,6 +272,7 @@
           icon="pi pi-check"
           severity="success"
           [loading]="confirming()"
+          [disabled]="loading() || !!error() || !purchase()?.lines?.length || confirming()"
           (onClick)="onConfirm()"
         />
       </div>

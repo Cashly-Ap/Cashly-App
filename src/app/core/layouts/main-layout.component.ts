@@ -87,6 +87,7 @@ import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
+import { DocumentActionDialogHostComponent } from '@core/layouts/components/document-action-dialog-host/document-action-dialog-host.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -104,7 +105,8 @@ export type ContentMaxWidth =
   selector: 'app-main-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     ListNavigationPickerComponent,
     CustomerPickerDialogComponent,
     ShortcutHelpComponent,
@@ -134,13 +136,16 @@ export type ContentMaxWidth =
     PurchasePdfModalComponent,
     CashRegisterReportModalComponent,
     AccountsReceivablePdfModalComponent,
+    DocumentActionDialogHostComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly translations = inject(TranslationService);
   @ViewChild(ModuleNavigatorComponent) moduleNavigator?: ModuleNavigatorComponent;
-  readonly navigationMenuItems = computed(() => this.buildMenuItems((this.currentUser()?.role || this.currentUser()?.type) as UserType));
+  readonly navigationMenuItems = computed(() =>
+    this.buildMenuItems((this.currentUser()?.role || this.currentUser()?.type) as UserType),
+  );
   private readonly keyboardShortcuts = inject(KeyboardShortcutService);
   @ViewChild('userMenu') userMenu!: Popover;
   @ViewChild('mobileDrawer') mobileDrawer!: Drawer;
@@ -186,7 +191,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   );
   private readonly brandingUserId = computed(() => this.currentUser()?.id);
   constructor() {
-    const unregisterNavigation = this.keyboardShortcuts.registerNavigation(() => this.moduleNavigator?.open());
+    const unregisterNavigation = this.keyboardShortcuts.registerNavigation(() =>
+      this.moduleNavigator?.open(),
+    );
     inject(DestroyRef).onDestroy(unregisterNavigation);
     effect((onCleanup) => {
       const userId = this.brandingUserId();
@@ -236,12 +243,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertMenuItem(item, this.menuGroup(item)));
+    return this.buildMenuItems(userType).map((item) =>
+      this.convertMenuItem(item, this.menuGroup(item)),
+    );
   });
 
   mobileMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertToMobileMenuItem(item, this.menuGroup(item)));
+    return this.buildMenuItems(userType).map((item) =>
+      this.convertToMobileMenuItem(item, this.menuGroup(item)),
+    );
   });
 
   maxWidthClass = computed(() => {
@@ -320,7 +331,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
               action as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
             );
           })
-        ) return false;
+        )
+          return false;
         if (
           item.requiredAction === 'EXPORT' &&
           !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)
@@ -348,7 +360,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     return descendant ? this.menuGroup(descendant) : 'platform';
   }
 
-  private convertMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
+  private convertMenuItem(
+    item: MenuItem,
+    group: ModuleGroup = this.menuGroup(item),
+  ): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
       styleClass: `cashly-module-${group}`,
       label: this.translations.t(item.label),
@@ -632,7 +647,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.isMobile.set(window.innerWidth < 1024);
   }
 
-  private convertToMobileMenuItem(item: MenuItem, group: ModuleGroup = this.menuGroup(item)): PrimeMenuItem {
+  private convertToMobileMenuItem(
+    item: MenuItem,
+    group: ModuleGroup = this.menuGroup(item),
+  ): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
       styleClass: `cashly-module-${group}`,
       label: this.translations.t(item.label),

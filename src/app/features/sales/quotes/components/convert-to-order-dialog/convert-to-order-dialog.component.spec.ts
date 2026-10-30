@@ -97,9 +97,9 @@ describe('ConvertToOrderDialogComponent', () => {
     expect(dialog.quoteId()).toBeNull();
   });
 
-  it('should emit confirmed on confirm', () => {
+  it('should not confirm without loaded quote data', () => {
     dialog.onConfirm();
-    expect(hostComponent.onConfirmed).toHaveBeenCalled();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
   });
 
   it('should emit cancelled on cancel', () => {
@@ -226,7 +226,27 @@ describe('ConvertToOrderDialogComponent - visible with data', () => {
     expect(dialog.lines()).toEqual([]);
     expect(dialog.quoteInfo()).toBeNull();
     expect(dialog.error()).toBeNull();
-    expect(dialog.hasAnyNegativeStock()).toBe(false);
+    expect(dialog.hasAnyNegativeStock()).toBe(true);
+  });
+
+  it('blocks repeated product demand exceeding warehouse availability', () => {
+    const request = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    request.flush({
+      ...mockQuote,
+      lines: [mockQuote.lines[0], { ...mockQuote.lines[0], id: 'line-2' }].map((line) => ({
+        ...line,
+        warehouseStocks: [{ warehouseId: 'wh-001', warehouseName: 'Central', available: 6 }],
+      })),
+    });
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+  });
+
+  it('blocks products without warehouse allocations', () => {
+    const request = httpMock.expectOne((r) => r.url.includes('/q-001'));
+    request.flush({ ...mockQuote, lines: [{ ...mockQuote.lines[0], allocations: [] }] });
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
   });
 
   it('should emit confirmed when stock is OK', () => {

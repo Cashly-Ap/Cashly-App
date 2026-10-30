@@ -38,6 +38,7 @@ import { PurchaseStatus } from '@features/procurement/purchases/models/enums/pur
 })
 export class ConfirmPurchaseDialogComponent {
   private readonly api = inject(PurchaseApiService);
+  private requestVersion = 0;
 
   readonly purchaseId = input<string | null>(null);
   readonly visible = input<boolean>(false);
@@ -55,14 +56,18 @@ export class ConfirmPurchaseDialogComponent {
     const id = this.purchaseId();
     if (!id || this.details()?.id === id) return;
 
+    const version = ++this.requestVersion;
+    this.details.set(null);
     this.loading.set(true);
     this.error.set(null);
     this.api.getById(id).subscribe({
       next: (result) => {
+        if (version !== this.requestVersion) return;
         this.details.set(result);
         this.loading.set(false);
       },
       error: () => {
+        if (version !== this.requestVersion) return;
         this.loading.set(false);
         this.error.set('Error al cargar los detalles de la compra.');
       },
@@ -71,7 +76,15 @@ export class ConfirmPurchaseDialogComponent {
 
   onConfirm(): void {
     const id = this.purchaseId();
-    if (!id) return;
+    if (
+      !id ||
+      this.loading() ||
+      this.error() ||
+      this.confirming() ||
+      this.details()?.id !== id ||
+      !this.details()?.lines.length
+    )
+      return;
 
     this.confirming.set(true);
     this.confirmed.emit(id);
@@ -86,10 +99,15 @@ export class ConfirmPurchaseDialogComponent {
   }
 
   reset(): void {
+    ++this.requestVersion;
     this.details.set(null);
     this.loading.set(false);
     this.confirming.set(false);
     this.error.set(null);
+  }
+
+  availableStock(line: PurchaseDetails['lines'][number], warehouseId: string): number {
+    return line.stockItems.find((stock) => stock.warehouseId === warehouseId)?.available ?? 0;
   }
 
   getStatusLabel(status: PurchaseStatus): string {

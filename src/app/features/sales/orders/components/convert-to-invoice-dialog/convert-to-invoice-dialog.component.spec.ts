@@ -1,3 +1,38 @@
+import { of } from 'rxjs';
+import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
+import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
+const stockOrder = {
+  id: 'o1',
+  orderNumber: '1',
+  customerId: 'c1',
+  customerAlias: 'Customer',
+  customerLegalName: 'Customer',
+  status: OrderStatus.CONFIRMED,
+  notes: null,
+  totalAmount: 1250.5,
+  createdAt: '',
+  updatedAt: '',
+  items: [
+    {
+      id: 'l1',
+      productId: 'p1',
+      productName: 'Product',
+      productCode: 'P',
+      quantity: 2,
+      unitPrice: 5,
+      subtotal: 10,
+      warehouseAllocations: [
+        {
+          warehouseId: 'w1',
+          warehouseName: 'Main',
+          warehouseCode: 'W',
+          allocated: 2,
+          available: 0,
+        },
+      ],
+    },
+  ],
+};
 import { provideRouter } from '@angular/router';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -7,14 +42,15 @@ import { ConvertToInvoiceDialogComponent } from '@features/sales/orders/componen
 import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 
 @Component({
-  template: `<app-convert-to-invoice-dialog
+  template: `<app-convert-order-to-invoice-dialog
     [visible]="visible"
+    [orderId]="'o1'"
     [orderNumber]="orderNumber"
     [customerName]="customerName"
     [totalAmount]="totalAmount"
     (confirmed)="onConfirmed($event)"
     (cancelled)="onCancelled()"
-  ></app-convert-to-invoice-dialog>`,
+  ></app-convert-order-to-invoice-dialog>`,
   imports: [ConvertToInvoiceDialogComponent],
 })
 class HostComponent {
@@ -32,6 +68,7 @@ describe('ConvertToInvoiceDialogComponent', () => {
   let dialog: ConvertToInvoiceDialogComponent;
 
   beforeEach(() => {
+    TestBed.overrideProvider(OrderApiService, { useValue: { getById: () => of(stockOrder) } });
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
@@ -73,6 +110,7 @@ describe('ConvertToInvoiceDialogComponent - visible', () => {
   let dialog: ConvertToInvoiceDialogComponent;
 
   beforeEach(() => {
+    TestBed.overrideProvider(OrderApiService, { useValue: { getById: () => of(stockOrder) } });
     TestBed.configureTestingModule({
       imports: [HostComponent],
       schemas: [NO_ERRORS_SCHEMA],
@@ -92,6 +130,22 @@ describe('ConvertToInvoiceDialogComponent - visible', () => {
     dialog.paymentType.set(PaymentType.CASH);
     dialog.useBalance.set(false);
     dialog.paymentLines.set([]);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+  });
+
+  it('blocks conversion while stock is loading even when payments cover the total', () => {
+    dialog.stockLoading.set(true);
+    dialog.paymentType.set(PaymentType.CASH);
+    dialog.useBalance.set(true);
+    dialog.customerBalance.set(2000);
+    dialog.onConfirm();
+    expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
+  });
+
+  it('blocks conversion when stock cannot be loaded', () => {
+    dialog.stockError.set(true);
+    dialog.paymentType.set(PaymentType.CREDIT);
     dialog.onConfirm();
     expect(hostComponent.onConfirmed).not.toHaveBeenCalled();
   });

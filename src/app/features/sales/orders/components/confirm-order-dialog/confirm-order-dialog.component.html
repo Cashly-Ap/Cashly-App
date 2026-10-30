@@ -1,0 +1,40 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [header]="'Confirmar Pedido' | translate"
+  [style]="{ width: '56rem', maxWidth: '95vw' }"
+>
+  @if (loading()) {
+    <i class="pi pi-spin pi-spinner" role="status"></i>
+  }
+  @if (error(); as message) {
+    <p role="alert" class="text-red-600">{{ message | translate }}</p>
+  }
+  @if (details(); as order) {
+    <p class="mb-4">#{{ order.orderNumber }} · {{ order.customerAlias }}</p>
+    <app-document-stock-review [rows]="stock().rows" />
+    @if (!stock().valid) {
+      <p role="alert" class="mt-3 text-red-600">
+        {{ 'sales.quotes.unableToConvert' | translate }}
+        {{
+          'shared.thereIsNotEnoughStockInOneOrMoreWarehousesConversionWouldReserveStockAndResultInNegativeInventory'
+            | translate
+        }}
+      </p>
+    }
+  }
+  <ng-template pTemplate="footer">
+    <p-button
+      [label]="'shared.cancel' | translate"
+      severity="secondary"
+      (onClick)="cancelled.emit()"
+    />
+    <p-button
+      [label]="'Sí, confirmar' | translate"
+      [disabled]="!canConfirm()"
+      [loading]="submitting()"
+      (onClick)="onConfirm()"
+    />
+  </ng-template>
+</p-dialog>

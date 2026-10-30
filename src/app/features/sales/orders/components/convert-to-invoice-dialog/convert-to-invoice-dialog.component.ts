@@ -1,3 +1,8 @@
+import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
+import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
+import { orderStockLines } from '@features/sales/orders/models/order-stock';
+import { reviewDocumentStock } from '@shared/utils/document-stock';
+import { DocumentStockReviewComponent } from '@shared/components/document-stock-review/document-stock-review.component';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -34,7 +39,7 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/order-api.service';
 
 @Component({
-  selector: 'app-convert-to-invoice-dialog',
+  selector: 'app-convert-order-to-invoice-dialog',
   standalone: true,
   styles: [
     `
@@ -49,6 +54,7 @@ import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/ord
     `,
   ],
   imports: [
+    DocumentStockReviewComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -72,6 +78,14 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly paymentMethodApi = inject(PaymentMethodApiService);
+
+  private readonly orderApi = inject(OrderApiService);
+  private stockRequestVersion = 0;
+  readonly orderId = input<string | null>(null);
+  readonly orderDetails = signal<OrderDetails | null>(null);
+  readonly stockLoading = signal(false);
+  readonly stockError = signal(false);
+  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.orderDetails()), true));
 
   readonly visible = input<boolean>(false);
   readonly orderNumber = input<string>('');
@@ -151,6 +165,14 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   }
 
   readonly canConfirm = computed(() => {
+    if (
+      !this.orderDetails() ||
+      this.stockLoading() ||
+      this.stockError() ||
+      !this.stock().valid ||
+      this.isConfirming()
+    )
+      return false;
     if (this.isCash()) return this.allPaymentsValid();
     if (this.creditLoading()) return false;
     if (this.creditWarningMessage()) return !!this.confirmationPassword();
@@ -161,6 +183,26 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   readonly cancelled = output<void>();
 
   ngOnChanges(): void {
+    const version = ++this.stockRequestVersion;
+    this.orderDetails.set(null);
+    this.stockError.set(false);
+    this.stockLoading.set(false);
+    const id = this.orderId();
+    if (this.visible() && id) {
+      this.stockLoading.set(true);
+      this.orderApi.getById(id).subscribe({
+        next: (order) => {
+          if (version !== this.stockRequestVersion) return;
+          this.orderDetails.set(order);
+          this.stockLoading.set(false);
+        },
+        error: () => {
+          if (version !== this.stockRequestVersion) return;
+          this.stockError.set(true);
+          this.stockLoading.set(false);
+        },
+      });
+    }
     if (this.visible() && this.customerId()) {
       const cid = this.customerId();
       if (this.paymentType() === PaymentType.CREDIT) {

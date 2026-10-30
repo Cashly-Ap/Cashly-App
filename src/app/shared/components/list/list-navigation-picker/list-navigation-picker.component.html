@@ -15,11 +15,12 @@
           <i class="pi pi-search text-surface-600 dark:text-surface-300 text-lg"></i>
         </div>
         <div class="flex flex-col">
-          <span class="text-base font-semibold text-surface-900 dark:text-surface-0"
-            >{{ 'shared.selectRecord' | translate }}</span
-          >
+          <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
+            'shared.selectRecord' | translate
+          }}</span>
           <span class="text-xs text-surface-500 dark:text-surface-400"
-            >{{ session.title | translate }} {{ 'shared.searchForAndSelectARecord' | translate }}</span
+            >{{ session.title | translate }}
+            {{ 'shared.searchForAndSelectARecord' | translate }}</span
           >
         </div>
       </div>
@@ -43,7 +44,10 @@
           <i class="pi pi-filter text-sm"></i>
         </button>
         <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
-          {{ session.total() }} {{ session.total() === 1 ? ('shared.record2' | translate) : ('shared.records' | translate) }}
+          {{ session.total() }}
+          {{
+            session.total() === 1 ? ('shared.record2' | translate) : ('shared.records' | translate)
+          }}
         </span>
       </div>
 
@@ -52,7 +56,9 @@
           <div
             class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
           >
-            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{ 'shared.filters' | translate }}</span>
+            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
+              'shared.filters' | translate
+            }}</span>
           </div>
           <div class="px-4 py-3 flex flex-col gap-3">
             <app-search-field
@@ -213,7 +219,8 @@
       @if (totalPages() > 1) {
         <div class="flex items-center justify-between">
           <span class="text-xs text-surface-500 dark:text-surface-400"
-            >{{ 'shared.page' | translate }} {{ currentPage() + 1 }} {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
+            >{{ 'shared.page' | translate }} {{ currentPage() + 1 }}
+            {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
           >
           <div class="flex gap-1">
             <button
@@ -242,19 +249,19 @@
     <ng-template pTemplate="footer">
       <div class="flex justify-between items-center gap-4 pt-1">
         <p-button
-          [label]="'shared.accept' | translate"
-          icon="pi pi-check"
-          [disabled]="!selectedRecord() || accepting()"
-          [loading]="accepting()"
-          (onClick)="acceptSelection()"
-        />
-        <p-button
           appShortcut="cancel"
           [label]="'shared.cancel' | translate"
           icon="pi pi-times"
           [outlined]="true"
           severity="secondary"
           (onClick)="navigation.dismiss()"
+        />
+        <p-button
+          [label]="'shared.accept' | translate"
+          icon="pi pi-check"
+          [disabled]="!selectedRecord() || accepting()"
+          [loading]="accepting()"
+          (onClick)="acceptSelection()"
         />
       </div>
     </ng-template>

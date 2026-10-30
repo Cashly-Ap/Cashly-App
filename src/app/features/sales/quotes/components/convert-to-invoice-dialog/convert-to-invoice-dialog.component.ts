@@ -1,3 +1,4 @@
+import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -96,6 +97,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   readonly locale = inject(LanguageService).locale;
 
   private readonly api = inject(QuoteApiService);
+  private requestVersion = 0;
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly paymentMethodApi = inject(PaymentMethodApiService);
@@ -198,7 +200,15 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   }
 
   readonly canConfirm = computed(() => {
-    if (this.hasAnyNegativeStock()) return false;
+    if (
+      !this.visible() ||
+      this.loading() ||
+      this.error() ||
+      !this.quoteInfo() ||
+      this.hasAnyNegativeStock() ||
+      this.isConfirming()
+    )
+      return false;
     if (this.isCash()) return this.allPaymentsValid();
     if (this.creditLoading()) return false;
     if (this.creditWarningMessage()) return !!this.confirmationPassword();
@@ -232,6 +242,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
+    ++this.requestVersion;
     if (this.visible() && this.quoteId()) {
       this.loadQuoteData();
     }
@@ -244,11 +255,16 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     const id = this.quoteId();
     if (!id) return;
 
+    const version = this.requestVersion;
+    this.quoteInfo.set(null);
+    this.lines.set([]);
+    this.hasAnyNegativeStock.set(true);
     this.loading.set(true);
     this.error.set(null);
 
     this.api.getById(id).subscribe({
       next: (quote) => {
+        if (version !== this.requestVersion) return;
         this.quoteInfo.set({
           number: quote.quoteNumber,
           customerName: quote.customerName,
@@ -259,7 +275,24 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
         const mappedLines = quote.lines.map((line) => this.mapLineWithStock(line, quote));
 
         this.lines.set(mappedLines);
-        this.hasAnyNegativeStock.set(mappedLines.some((l) => l.hasNegativeStock));
+        this.hasAnyNegativeStock.set(
+          !reviewDocumentStock(
+            quote.lines.map((line) => ({
+              productId: line.productId,
+              productName: line.productName,
+              quantity: line.quantity,
+              allocations: line.allocations.map((allocation) => ({
+                warehouseId: allocation.warehouseId,
+                warehouseName: allocation.warehouseName,
+                quantity: allocation.allocatedQuantity,
+                available:
+                  line.warehouseStocks?.find(
+                    (stock) => stock.warehouseId === allocation.warehouseId,
+                  )?.available ?? 0,
+              })),
+            })),
+          ).valid,
+        );
         this.loading.set(false);
 
         if (this.paymentType() === PaymentType.CREDIT) {
@@ -269,6 +302,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
         }
       },
       error: (err) => {
+        if (version !== this.requestVersion) return;
         this.error.set(
           err?.error?.message || err?.message || 'Error al cargar datos del presupuesto',
         );
@@ -368,6 +402,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     this.paymentType.set(PaymentType.CASH);
     this.creditStatus.set(null);
     this.creditLoading.set(false);
+    this.isConfirming.set(false);
     this.resetPaymentData();
   }
 

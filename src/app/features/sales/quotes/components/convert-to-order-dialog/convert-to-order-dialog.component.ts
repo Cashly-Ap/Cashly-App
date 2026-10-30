@@ -1,3 +1,4 @@
+import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
@@ -58,6 +59,7 @@ interface LineWithStockInfo {
 })
 export class ConvertToOrderDialogComponent implements OnChanges {
   private readonly api = inject(QuoteApiService);
+  private requestVersion = 0;
 
   readonly visible = input<boolean>(false);
   readonly quoteId = input<string | null>(null);
@@ -66,6 +68,7 @@ export class ConvertToOrderDialogComponent implements OnChanges {
   readonly cancelled = output<void>();
 
   readonly loading = signal(false);
+  readonly confirming = signal(false);
   readonly error = signal<string | null>(null);
   readonly lines = signal<LineWithStockInfo[]>([]);
   readonly quoteInfo = signal<{ number: string; customerName: string; subtotal: number } | null>(
@@ -74,10 +77,12 @@ export class ConvertToOrderDialogComponent implements OnChanges {
   readonly hasAnyNegativeStock = signal(false);
 
   ngOnChanges(): void {
+    ++this.requestVersion;
     if (this.visible() && this.quoteId()) {
       this.loadQuoteData();
     }
     if (!this.visible()) {
+      this.confirming.set(false);
       this.lines.set([]);
       this.quoteInfo.set(null);
       this.error.set(null);
@@ -89,11 +94,16 @@ export class ConvertToOrderDialogComponent implements OnChanges {
     const id = this.quoteId();
     if (!id) return;
 
+    const version = this.requestVersion;
+    this.quoteInfo.set(null);
+    this.lines.set([]);
+    this.hasAnyNegativeStock.set(true);
     this.loading.set(true);
     this.error.set(null);
 
     this.api.getById(id).subscribe({
       next: (quote) => {
+        if (version !== this.requestVersion) return;
         this.quoteInfo.set({
           number: quote.quoteNumber,
           customerName: quote.customerName,
@@ -103,10 +113,28 @@ export class ConvertToOrderDialogComponent implements OnChanges {
         const mappedLines = quote.lines.map((line) => this.mapLineWithStock(line, quote));
 
         this.lines.set(mappedLines);
-        this.hasAnyNegativeStock.set(mappedLines.some((l) => l.hasNegativeStock));
+        this.hasAnyNegativeStock.set(
+          !reviewDocumentStock(
+            quote.lines.map((line) => ({
+              productId: line.productId,
+              productName: line.productName,
+              quantity: line.quantity,
+              allocations: line.allocations.map((allocation) => ({
+                warehouseId: allocation.warehouseId,
+                warehouseName: allocation.warehouseName,
+                quantity: allocation.allocatedQuantity,
+                available:
+                  line.warehouseStocks?.find(
+                    (stock) => stock.warehouseId === allocation.warehouseId,
+                  )?.available ?? 0,
+              })),
+            })),
+          ).valid,
+        );
         this.loading.set(false);
       },
       error: (err) => {
+        if (version !== this.requestVersion) return;
         this.error.set(
           err?.error?.message || err?.message || 'Error al cargar datos del presupuesto',
         );
@@ -145,7 +173,16 @@ export class ConvertToOrderDialogComponent implements OnChanges {
   }
 
   onConfirm(): void {
-    if (this.hasAnyNegativeStock()) return;
+    if (
+      !this.visible() ||
+      this.loading() ||
+      this.error() ||
+      !this.quoteInfo() ||
+      this.hasAnyNegativeStock() ||
+      this.confirming()
+    )
+      return;
+    this.confirming.set(true);
     this.confirmed.emit();
   }
 

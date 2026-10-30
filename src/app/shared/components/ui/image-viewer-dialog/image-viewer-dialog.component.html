@@ -66,7 +66,9 @@
         @if (!isImageLoaded() && !isImageError()) {
           <div class="flex flex-col items-center justify-center py-12">
             <i class="pi pi-spin pi-spinner text-5xl text-primary-500 mb-4"></i>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">{{ 'shared.loadingImage' | translate }}</p>
+            <p class="text-gray-600 dark:text-gray-400 text-lg">
+              {{ 'shared.loadingImage' | translate }}
+            </p>
           </div>
         }
 
@@ -119,7 +121,14 @@
     <div
       class="flex justify-between items-center w-full gap-3 pt-4 border-t border-gray-200 dark:border-gray-700"
     >
-      <div class="flex gap-2">
+      <p-button
+        [label]="'shared.close' | translate"
+        icon="pi pi-times"
+        severity="secondary"
+        (onClick)="onHide()"
+      />
+
+      <div class="flex gap-2 justify-end">
         @if (downloadable() && imageUrl() && isImageLoaded()) {
           <p-button
             [label]="'shared.downloadImage' | translate"
@@ -130,8 +139,6 @@
           />
         }
       </div>
-
-      <p-button [label]="'shared.close' | translate" icon="pi pi-times" severity="secondary" (onClick)="onHide()" />
     </div>
   </ng-template>
 </p-dialog>

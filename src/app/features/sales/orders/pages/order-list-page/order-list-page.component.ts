@@ -1,3 +1,4 @@
+import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -87,6 +88,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     ListContainerComponent,
     ListActionButtonsComponent,
     TextBadgeComponent,
+    ConfirmOrderDialogComponent,
     CancelOrderDialogComponent,
     ConvertToInvoiceDialogComponent,
   ],
@@ -109,6 +111,8 @@ export class OrderListPageComponent implements OnInit {
   readonly first = signal(0);
   readonly rows = signal(10);
   readonly filterStatus = signal('');
+
+  readonly confirmOrderId = signal<string | null>(null);
 
   readonly cancelDialogVisible = signal(false);
   readonly orderToCancel = signal<OrderList | null>(null);
@@ -317,37 +321,28 @@ export class OrderListPageComponent implements OnInit {
   }
 
   onConfirm(order: OrderList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea confirmar el pedido #${order.orderNumber}?`,
-      header: 'Confirmar Pedido',
-      icon: 'pi pi-check-circle',
-      acceptLabel: 'Sí, confirmar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-success',
-      accept: () => {
-        this.orderService.confirm(order.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: `Pedido #${order.orderNumber} confirmado exitosamente`,
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al confirmar el pedido. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.confirmOrderId.set(order.id);
   }
 
+  onOrderConfirmed(id: string): void {
+    this.confirmOrderId.set(null);
+    this.orderService.confirm(id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Pedido confirmado exitosamente',
+        });
+        this.loadWithFilters();
+      },
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al confirmar el pedido. Por favor, intente nuevamente.',
+        }),
+    });
+  }
   onCancelOrder(order: OrderList): void {
     this.orderToCancel.set(order);
     this.cancelDialogVisible.set(true);

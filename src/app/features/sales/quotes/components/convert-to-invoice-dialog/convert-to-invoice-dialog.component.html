@@ -98,10 +98,19 @@
                   @if (alloc.wouldBeNegative) {
                     <i
                       class="pi pi-exclamation-triangle text-surface-900 dark:text-surface-100 ml-1"
-                      [pTooltip]="'sales.quotes.insufficientStockTooltip' | translate: { available: alloc.available, allocated: alloc.allocated }"
+                      [pTooltip]="
+                        'sales.quotes.insufficientStockTooltip'
+                          | translate: { available: alloc.available, allocated: alloc.allocated }
+                      "
                     ></i>
                   }
                 </td>
+              </tr>
+            } @empty {
+              <tr class="text-red-600">
+                <td>{{ line.productName }}</td>
+                <td>{{ line.quantity }}</td>
+                <td colspan="4">{{ 'procurement.purchases.unallocated' | translate }}</td>
               </tr>
             }
           </ng-container>
@@ -200,7 +209,7 @@
                     'shared.insufficientCredit' | translate
                   }}</span>
                   <p class="text-sm text-surface-900 dark:text-surface-100 leading-relaxed mt-1">
-                    {{ (warning.message) | translate }}
+                    {{ warning.message | translate }}
                   </p>
                 </div>
               </div>

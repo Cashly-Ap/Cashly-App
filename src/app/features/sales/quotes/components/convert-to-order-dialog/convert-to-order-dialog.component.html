@@ -99,10 +99,19 @@
                   @if (alloc.wouldBeNegative) {
                     <i
                       class="pi pi-exclamation-triangle text-surface-900 dark:text-surface-100 ml-1"
-                      [pTooltip]="'sales.quotes.insufficientStockTooltip' | translate: { available: alloc.available, allocated: alloc.allocated }"
+                      [pTooltip]="
+                        'sales.quotes.insufficientStockTooltip'
+                          | translate: { available: alloc.available, allocated: alloc.allocated }
+                      "
                     ></i>
                   }
                 </td>
+              </tr>
+            } @empty {
+              <tr class="text-red-600">
+                <td>{{ line.productName }}</td>
+                <td>{{ line.quantity }}</td>
+                <td colspan="4">{{ 'procurement.purchases.unallocated' | translate }}</td>
               </tr>
             }
           </ng-container>
@@ -141,7 +150,7 @@
         [label]="'sales.quotes.convertToOrder2' | translate"
         icon="pi pi-shopping-cart"
         severity="contrast"
-        [disabled]="loading() || hasAnyNegativeStock() || !quoteInfo()"
+        [disabled]="loading() || !!error() || hasAnyNegativeStock() || !quoteInfo() || confirming()"
         (onClick)="onConfirm()"
       />
     </div>
