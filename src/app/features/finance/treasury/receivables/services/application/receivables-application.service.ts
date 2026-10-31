@@ -49,6 +49,7 @@ export class ReceivablesApplicationService {
   readonly totalCustomerInvoices = signal(0);
 
   readonly customerDebtChange = new Subject<void>();
+  readonly pendingPaymentsChange = new Subject<void>();
 
   readonly isAdmin = computed(() =>
     this.authService.hasPermission(BusinessModule.FINANCE, 'EXECUTE'),

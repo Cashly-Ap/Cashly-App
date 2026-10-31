@@ -21,6 +21,7 @@ import {
   CashRegisterActionDialogService,
   CashRegisterActionKind,
 } from './cash-register-action-dialog.service';
+import { PendingPaymentActionDialogService } from './pending-payment-action-dialog.service';
 import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
@@ -37,6 +38,7 @@ describe('Navbar lookup without navigation', () => {
   let invoiceActions: InvoiceActionDialogService;
   let warehouseActions: WarehouseActionDialogService;
   let cashRegisterActions: CashRegisterActionDialogService;
+  let pendingPaymentActions: PendingPaymentActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -71,6 +73,7 @@ describe('Navbar lookup without navigation', () => {
     invoiceActions = TestBed.inject(InvoiceActionDialogService);
     warehouseActions = TestBed.inject(WarehouseActionDialogService);
     cashRegisterActions = TestBed.inject(CashRegisterActionDialogService);
+    pendingPaymentActions = TestBed.inject(PendingPaymentActionDialogService);
   });
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
     lookup.open('/catalog/categories', 'Editar');
@@ -262,6 +265,27 @@ describe('Navbar lookup without navigation', () => {
       });
       expect(navigation.session()).toBeNull();
       expect(navigate).not.toHaveBeenCalled();
+    },
+  );
+  it.each([
+    ['Aprobar pago', 'approve'],
+    ['Rechazar pago', 'reject'],
+  ] as const)(
+    'opens the %s pending payment dialog without routing',
+    async (label, action) => {
+      vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+        of({ items: [{ id: 'payment-1', label: 'PAY-001', description: '' }], total: 1 }),
+      );
+      lookup.open('/finance/treasury/receivables', label);
+
+      await navigation.select(navigation.session()!.records()[0]);
+
+      expect(navigate).not.toHaveBeenCalled();
+      expect(navigation.session()).toBeNull();
+      expect(pendingPaymentActions.request()).toEqual({
+        paymentId: 'payment-1',
+        action: action satisfies 'approve' | 'reject',
+      });
     },
   );
 });

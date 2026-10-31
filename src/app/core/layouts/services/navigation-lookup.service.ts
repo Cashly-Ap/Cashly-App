@@ -31,6 +31,7 @@ import {
   CashRegisterActionDialogService,
   CashRegisterActionKind,
 } from './cash-register-action-dialog.service';
+import { PendingPaymentActionDialogService } from './pending-payment-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
@@ -101,6 +102,7 @@ export class NavigationLookupService {
   private readonly invoiceActions = inject(InvoiceActionDialogService);
   private readonly warehouseActions = inject(WarehouseActionDialogService);
   private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
+  private readonly pendingPaymentActions = inject(PendingPaymentActionDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -162,6 +164,9 @@ export class NavigationLookupService {
     const warehouseAction =
       route === '/inventory/warehouses' &&
       ['Registrar entrada', 'Registrar salida'].includes(label);
+    const pendingPaymentAction =
+      route === '/finance/treasury/receivables' &&
+      ['Aprobar pago', 'Rechazar pago'].includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -209,6 +214,13 @@ export class NavigationLookupService {
                 warehouseId: item.id,
                 warehouseName: item.label,
                 operation: label === 'Registrar entrada' ? 'entry' : 'exit',
+              });
+              return;
+            }
+            if (pendingPaymentAction) {
+              this.pendingPaymentActions.open({
+                paymentId: item.id,
+                action: label === 'Aprobar pago' ? 'approve' : 'reject',
               });
               return;
             }

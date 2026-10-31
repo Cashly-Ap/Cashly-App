@@ -1,0 +1,102 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="'finance.treasury.receivables.rejectPayment2' | translate"
+  [modal]="true"
+  [style]="{ width: '28rem' }"
+  [draggable]="false"
+  (visibleChange)="visible.set($event)"
+>
+  <div class="flex flex-col gap-3">
+    <p class="text-sm text-surface-500">
+      {{ 'finance.treasury.receivables.youAreAboutToRejectPayment' | translate }}
+      <strong>{{ payment()?.paymentNumber }}</strong
+      >.
+    </p>
+    @if (payment(); as payment) {
+      <div
+        class="grid grid-cols-2 gap-x-4 gap-y-3 rounded-lg border border-surface-200 bg-surface-50 p-3 text-sm dark:border-surface-700 dark:bg-surface-800/50"
+      >
+        <div>
+          <span class="block text-xs text-surface-500">{{ 'shared.customer' | translate }}</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.customerName || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">{{ 'shared.invoice' | translate }}</span>
+          <span class="font-mono font-medium text-surface-900 dark:text-surface-0">{{
+            payment.invoiceNumber || '-'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">{{
+            'finance.treasury.receivables.paymentMethod' | translate
+          }}</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">
+            {{
+              payment.source === 'CUSTOMER_BALANCE'
+                ? ('finance.treasury.receivables.creditBalance' | translate)
+                : payment.paymentMethodName || '-'
+            }}
+          </span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">{{
+            'finance.treasury.receivables.paymentDate2' | translate
+          }}</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.paymentDate | localizedDate: 'dd/MM/yyyy'
+          }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">{{
+            'finance.treasury.receivables.reference' | translate
+          }}</span>
+          <span class="font-medium text-surface-900 dark:text-surface-0">{{
+            payment.referenceNumber || '-'
+          }}</span>
+        </div>
+        @if (payment.notes) {
+          <div class="col-span-2">
+            <span class="block text-xs text-surface-500">{{
+              'finance.billing.invoices.notes' | translate
+            }}</span>
+            <span class="text-surface-900 dark:text-surface-0">{{ payment.notes }}</span>
+          </div>
+        }
+      </div>
+    }
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium text-surface-700"
+        >{{ 'finance.treasury.receivables.reasonForRejection' | translate }}
+        <span class="text-red-500">*</span></label
+      >
+      <textarea
+        pTextarea
+        [ngModel]="reason()"
+        (ngModelChange)="reason.set($event)"
+        rows="2"
+        [placeholder]="'finance.treasury.receivables.explainWhyThisPaymentIsRejected' | translate"
+        class="w-full"
+        [disabled]="submitting()"
+      ></textarea>
+    </div>
+  </div>
+  <ng-template pTemplate="footer">
+    <p-button
+      severity="secondary"
+      [label]="'shared.cancel' | translate"
+      (click)="visible.set(false)"
+      [disabled]="submitting()"
+    />
+    <p-button
+      [appPermission]="'EXECUTE'"
+      severity="secondary"
+      [label]="'finance.treasury.receivables.reject' | translate"
+      icon="pi pi-times"
+      [loading]="submitting()"
+      [disabled]="!reason().trim()"
+      (click)="submit()"
+    />
+  </ng-template>
+</p-dialog>

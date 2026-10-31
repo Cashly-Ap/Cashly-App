@@ -92,6 +92,7 @@ import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/r
 import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
 import { WarehouseActionDialogHostComponent } from '@core/layouts/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
 import { CashRegisterActionDialogHostComponent } from '@core/layouts/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
+import { PendingPaymentActionDialogHostComponent } from '@core/layouts/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -145,6 +146,7 @@ export type ContentMaxWidth =
     InvoiceActionDialogHostComponent,
     WarehouseActionDialogHostComponent,
     CashRegisterActionDialogHostComponent,
+    PendingPaymentActionDialogHostComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
