@@ -127,6 +127,22 @@ describe('Navbar lookup without navigation', () => {
     expect(navigation.session()).toBeNull();
   });
 
+  it('navigates directly from the navbar to the warehouse movements history', async () => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'record-1', label: 'Central', description: '' }], total: 1 }),
+    );
+    lookup.open('/inventory/warehouses', 'Historial de movimientos');
+    expect(navigate).not.toHaveBeenCalled();
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(
+      ['/inventory/warehouses', 'record-1', 'movements'],
+      { queryParams: undefined },
+    );
+    expect(navigation.session()).toBeNull();
+  });
+
   it('preserves explicit destination query parameters without list navigation commands', async () => {
     lookup.open('/catalog/categories', 'Ver detalle', { source: 'menu' });
 

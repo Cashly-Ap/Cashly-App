@@ -37,6 +37,7 @@ import { PdfViewerService } from '@core/pdf-viewer/services';
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
+  'Historial de movimientos': ['movements'],
 };
 
 const RECEIVABLES_ACTIONS: readonly string[] = [
