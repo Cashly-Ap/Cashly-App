@@ -156,7 +156,7 @@
           [appPermission]="action"
           [label]="model().acceptLabel | translate"
           [icon]="model().acceptIcon ?? 'pi pi-check'"
-          [severity]="model().acceptSeverity ?? 'contrast'"
+          [severity]="acceptSeverity()"
           [disabled]="!canAccept() || loading() || !!error() || submitting()"
           [loading]="submitting()"
           (onClick)="accepted.emit()"
@@ -165,7 +165,7 @@
         <p-button
           [label]="model().acceptLabel | translate"
           [icon]="model().acceptIcon ?? 'pi pi-check'"
-          [severity]="model().acceptSeverity ?? 'contrast'"
+          [severity]="acceptSeverity()"
           [disabled]="!canAccept() || loading() || !!error() || submitting()"
           [loading]="submitting()"
           (onClick)="accepted.emit()"
