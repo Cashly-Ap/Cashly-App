@@ -13,7 +13,7 @@
   "sales.orders.allDrafts": "Todos los borradores",
   "sales.orders.convertToInvoice": "Convertir a factura",
   "sales.orders.confirmOrder": "Confirmar Pedido",
-  "sales.orders.yesConfirm": "Sí, confirmar",
+  "sales.orders.yesConfirm": "Confirmar Pedido",
   "sales.orders.areYouSureYouWantToDeleteOrder": "¿Está seguro de que desea eliminar el pedido #${order.orderNumber}?",
   "sales.orders.areYouSureYouWantToConfirmOrder": "¿Está seguro de que desea confirmar el pedido #${order.orderNumber}?",
   "sales.orders.orderConfirmedSuccessfully": "Pedido #${order.orderNumber} confirmado exitosamente",

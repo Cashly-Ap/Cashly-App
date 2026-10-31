@@ -23,6 +23,7 @@
   "finance.billing.invoices.optional": "(opcional)",
   "finance.billing.invoices.add": "Agregar",
   "finance.billing.invoices.confirm": "Confirmar",
+  "finance.billing.invoices.confirmInvoiceAction": "Confirmar Factura",
   "finance.billing.invoices.creditBalance": "Saldo a Favor",
   "finance.billing.invoices.useCreditBalance": "Usar saldo",
   "finance.billing.invoices.doNotUse": "No usar",
