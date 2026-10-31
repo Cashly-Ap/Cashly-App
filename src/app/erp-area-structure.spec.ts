@@ -22,8 +22,8 @@ const modulePaths = [
   'partners/customers',
   'partners/suppliers',
   'analytics/dashboard',
-  'analytics/reporting',
   'platform/auth',
+  'platform/company',
   'platform/notifications',
 ];
 const publicScreens = [
@@ -40,7 +40,6 @@ const publicScreens = [
   'sales/orders',
   'sales/quotes',
   'finance/billing/invoices',
-  'analytics/reports',
   'finance/treasury/payment-methods',
   'finance/billing/credit-notes',
   'finance/billing/debit-notes',

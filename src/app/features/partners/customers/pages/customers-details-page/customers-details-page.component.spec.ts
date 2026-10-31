@@ -134,7 +134,7 @@ describe('CustomersDetailsPageComponent', () => {
   it('should show actions dropdown button', () => {
     vi.spyOn(router, 'url', 'get').mockReturnValue('/partners/customers/uuid-001');
     fixture.detectChanges();
-    const button = fixture.nativeElement.querySelector('p-button[label="Acciones"]');
+    const button = fixture.nativeElement.querySelector('app-detail-actions-menu p-button button');
     expect(button).not.toBeNull();
   });
 });

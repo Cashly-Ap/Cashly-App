@@ -103,13 +103,13 @@ describe('ConfirmOrderDialogComponent stock guard', () => {
     TestBed.inject(LanguageService).setLanguage('en');
     const translations = TestBed.inject(TranslationService);
     const model = dialog.confirmationModel();
-    expect(translations.t(model.title)).toBe('Confirm order');
+    expect(translations.t(model.title)).toBe('Confirm Order');
     expect(translations.t(model.subtitle)).toBe('Review stock before confirming the order');
     expect(translations.t(model.summaryFields?.[1].label)).toBe('Customer');
     expect(translations.t(model.notice?.title)).toBe(
       'Confirming this order will deduct its reserved stock from the assigned warehouses.',
     );
-    expect(translations.t(model.acceptLabel)).toBe('Yes, confirm');
+    expect(translations.t(model.acceptLabel)).toBe('Confirm Order');
   });
 
   it('gates the accept action on the sales module instead of the current page module', () => {

@@ -59,7 +59,7 @@ describe('DetailActionsMenuComponent', () => {
   it('renders the labeled trigger for an allowed projected action', () => {
     grants.set(['CATALOG:READ', 'CATALOG:UPDATE']);
     fixture.detectChanges();
-    expect(trigger()?.getAttribute('label')).toBe('Acciones');
+    expect(trigger()?.querySelector('button')?.textContent?.trim()).toBe('Acciones');
   });
 
   it('supports projected read actions for a reader', () => {

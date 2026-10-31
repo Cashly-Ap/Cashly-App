@@ -42,6 +42,6 @@ describe('BalanceTransactionsTableComponent', () => {
     expect(desktop.className).toContain('md:block');
     expect(mobile.textContent).toContain('INV-001');
     expect(mobile.textContent).toContain('PED-001');
-    expect(mobile.textContent).toContain('$125.00');
+    expect(mobile.textContent?.replace(/\u00a0/g, ' ')).toContain('125,00 US$');
   });
 });

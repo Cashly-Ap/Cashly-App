@@ -16,19 +16,19 @@ describe('BusinessModule', () => {
     expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');
   });
 
-  it('should have exactly 10 enum values', () => {
-    expect(Object.keys(BusinessModule).length).toBe(10);
+  it('should have exactly 11 enum values', () => {
+    expect(Object.keys(BusinessModule).length).toBe(11);
   });
 });
 
 describe('BUSINESS_MODULE_LABELS', () => {
   it('should map each module to its label', () => {
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('Gestión de Usuarios');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('Inventario');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('Gestión Comercial');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('Finanzas');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('Compras');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('Reportes');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('platform.auth.userManagement');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('platform.auth.inventory');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('platform.auth.salesManagement');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('platform.auth.finance');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('platform.auth.purchases');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('platform.auth.reports');
   });
 
   it('should have labels for all enum values', () => {
