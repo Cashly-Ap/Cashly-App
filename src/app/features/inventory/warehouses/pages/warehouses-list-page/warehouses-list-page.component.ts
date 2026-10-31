@@ -153,14 +153,6 @@ export class WarehousesListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
-  onViewAllStock(): void {
-    void this.router.navigate(['/inventory/warehouses/stock']);
-  }
-
-  onViewAllMovements(): void {
-    void this.router.navigate(['/inventory/warehouses/movements']);
-  }
-
   onCreate(): void {
     this.router.navigate(['/inventory/warehouses', 'new']);
   }

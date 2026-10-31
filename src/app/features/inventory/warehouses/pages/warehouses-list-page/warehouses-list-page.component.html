@@ -66,24 +66,6 @@
           </div>
           <div class="flex flex-col gap-2 sm:flex-row">
             <p-button
-              [appPermission]="'READ'"
-              [label]="'inventory.warehouses.viewStock' | translate"
-              icon="pi pi-box"
-              severity="secondary"
-              [outlined]="true"
-              styleClass="w-full sm:w-auto"
-              (onClick)="onViewAllStock()"
-            />
-            <p-button
-              [appPermission]="'READ'"
-              [label]="'inventory.warehouses.viewMovements' | translate"
-              icon="pi pi-history"
-              severity="secondary"
-              [outlined]="true"
-              styleClass="w-full sm:w-auto"
-              (onClick)="onViewAllMovements()"
-            />
-            <p-button
               appShortcut="new"
               [appPermission]="'CREATE'"
               [label]="'inventory.warehouses.newWarehouse' | translate"
