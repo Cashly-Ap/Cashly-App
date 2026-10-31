@@ -14,6 +14,7 @@ import { DocumentConfirmationDialogComponent } from '@shared/components/document
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { orderStockLines } from '@features/sales/orders/models/order-stock';
+import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
 
 @Component({
   selector: 'app-confirm-order-dialog',
@@ -33,7 +34,7 @@ export class ConfirmOrderDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
-  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.details())));
+  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.details()), true));
   readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
     const order = this.details();
     const rows = this.stock().rows.map((row) => ({
@@ -41,30 +42,28 @@ export class ConfirmOrderDialogComponent implements OnChanges {
       availableAfter: row.available - row.quantity,
     }));
     return {
-      title: 'Confirmar Pedido',
-      subtitle: 'Revise el stock antes de confirmar el pedido',
+      title: 'sales.orders.confirmOrder',
+      subtitle: 'sales.orders.reviewStockBeforeConfirming',
       icon: 'pi-check-circle',
       summaryFields: order
         ? [
             {
-              label: 'finance.billing.invoices.order',
+              label: 'sales.orders.orderNumber',
               value: `#${order.orderNumber}`,
               monospace: true,
             },
-            { label: 'finance.billing.invoices.customer', value: order.customerAlias },
+            { label: 'shared.customer', value: order.customerAlias },
           ]
         : [],
       notice: {
         severity: this.stock().valid ? 'info' : 'danger',
         title: this.stock().valid
-          ? 'El stock se reservará al confirmar el pedido.'
-          : 'sales.quotes.unableToConvert',
-        description: this.stock().valid
-          ? undefined
-          : 'shared.thereIsNotEnoughStockInOneOrMoreWarehousesConversionWouldReserveStockAndResultInNegativeInventory',
+          ? 'sales.orders.confirmationStockNotice'
+          : 'sales.orders.unableToConfirm',
+        description: this.stock().valid ? undefined : 'sales.orders.insufficientConfirmationStock',
       },
       inventory: { rows, blocking: !this.stock().valid },
-      acceptLabel: 'Sí, confirmar',
+      acceptLabel: 'sales.orders.yesConfirm',
       acceptIcon: 'pi pi-check',
       acceptSeverity: 'success',
       permissionAction: 'EXECUTE',
@@ -74,6 +73,8 @@ export class ConfirmOrderDialogComponent implements OnChanges {
   readonly canConfirm = computed(
     () =>
       !!this.details() &&
+      this.details()?.id === this.orderId() &&
+      this.details()?.status === OrderStatus.DRAFT &&
       !this.loading() &&
       !this.error() &&
       !this.submitting() &&
@@ -97,7 +98,7 @@ export class ConfirmOrderDialogComponent implements OnChanges {
       },
       error: () => {
         if (version !== this.requestVersion) return;
-        this.error.set('Error al cargar los detalles del pedido.');
+        this.error.set('sales.orders.confirmationPreviewUnavailable');
         this.loading.set(false);
       },
     });

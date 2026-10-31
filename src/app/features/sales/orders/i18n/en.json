@@ -1,4 +1,9 @@
 {
+  "sales.orders.reviewStockBeforeConfirming": "Review stock before confirming the order",
+  "sales.orders.confirmationStockNotice": "Confirming this order will deduct its reserved stock from the assigned warehouses.",
+  "sales.orders.unableToConfirm": "Unable to confirm the order",
+  "sales.orders.insufficientConfirmationStock": "Stock is insufficient in one or more assigned warehouses. Review the quantities before confirming.",
+  "sales.orders.confirmationPreviewUnavailable": "The order details could not be loaded. Close this dialog and try again.",
   "sales.orders.orders": "Orders",
   "sales.orders.newOrder": "New order",
   "sales.orders.orderDetails": "Order details",

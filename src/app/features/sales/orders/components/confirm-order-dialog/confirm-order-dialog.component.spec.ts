@@ -5,6 +5,8 @@ import { ConfirmOrderDialogComponent } from './confirm-order-dialog.component';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
 import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslationService } from '@core/i18n/translation.service';
 
 describe('ConfirmOrderDialogComponent stock guard', () => {
   let response: Subject<OrderDetails>;
@@ -92,5 +94,47 @@ describe('ConfirmOrderDialogComponent stock guard', () => {
     fixture.detectChanges();
     response.next(order);
     expect(dialog.details()).toBeNull();
+  });
+
+  it('uses English labels and inventory notices when English is selected', () => {
+    const { dialog } = open();
+    response.next(order);
+    TestBed.inject(LanguageService).setLanguage('en');
+    const translations = TestBed.inject(TranslationService);
+    const model = dialog.confirmationModel();
+    expect(translations.t(model.title)).toBe('Confirm order');
+    expect(translations.t(model.subtitle)).toBe('Review stock before confirming the order');
+    expect(translations.t(model.summaryFields?.[1].label)).toBe('Customer');
+    expect(translations.t(model.notice?.title)).toBe(
+      'Confirming this order will deduct its reserved stock from the assigned warehouses.',
+    );
+    expect(translations.t(model.acceptLabel)).toBe('Yes, confirm');
+  });
+
+  it('confirms against the stock already reserved by the draft even when free stock is zero', () => {
+    const { dialog, emit } = open();
+    response.next({
+      ...order,
+      items: [
+        {
+          ...order.items[0],
+          warehouseAllocations: [{ ...order.items[0].warehouseAllocations[0], available: 0 }],
+          warehouseStocks: [
+            {
+              warehouseId: 'w1',
+              warehouseCode: 'W',
+              warehouseName: 'Main',
+              quantity: 2,
+              reserved: 2,
+              available: 0,
+            },
+          ],
+        },
+      ],
+    });
+    expect(dialog.canConfirm()).toBe(true);
+    expect(dialog.confirmationModel().inventory?.rows[0].availableAfter).toBe(0);
+    dialog.onConfirm();
+    expect(emit).toHaveBeenCalledExactlyOnceWith('o1');
   });
 });

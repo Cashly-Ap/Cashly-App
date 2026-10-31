@@ -1,4 +1,9 @@
 {
+  "sales.orders.reviewStockBeforeConfirming": "Revise el stock antes de confirmar el pedido",
+  "sales.orders.confirmationStockNotice": "Al confirmar el pedido se descontará su stock reservado de los almacenes asignados.",
+  "sales.orders.unableToConfirm": "No se puede confirmar el pedido",
+  "sales.orders.insufficientConfirmationStock": "No hay stock suficiente en uno o más almacenes asignados. Revise las cantidades antes de confirmar.",
+  "sales.orders.confirmationPreviewUnavailable": "No se pudieron cargar los detalles del pedido. Cierre este diálogo e inténtelo de nuevo.",
   "sales.orders.orders": "Pedidos",
   "sales.orders.newOrder": "Nuevo Pedido",
   "sales.orders.orderDetails": "Detalle del Pedido",
