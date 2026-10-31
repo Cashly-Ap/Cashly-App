@@ -140,7 +140,9 @@ describe('WarehousesListPageComponent', () => {
     expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses/stock'], {
       queryParams: { warehouseId: 'wh-1' },
     });
-    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/inventory/warehouses', 'wh-1', 'movements']);
+    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/inventory/warehouses/movements'], {
+      queryParams: { warehouseId: 'wh-1' },
+    });
     expect(navigateSpy).toHaveBeenNthCalledWith(3, ['/inventory/warehouses', 'wh-1']);
     expect(navigateSpy).toHaveBeenNthCalledWith(4, ['/inventory/warehouses', 'wh-1', 'edit']);
   });

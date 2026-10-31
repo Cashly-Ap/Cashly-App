@@ -127,20 +127,30 @@ describe('Navbar lookup without navigation', () => {
     expect(navigation.session()).toBeNull();
   });
 
-  it('navigates directly from the navbar to the warehouse movements history', async () => {
-    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
-      of({ items: [{ id: 'record-1', label: 'Central', description: '' }], total: 1 }),
-    );
+  it('navigates straight to the global movements history without opening a lookup session', () => {
+    const loadLookup = vi.spyOn(navigationDataSource, 'loadNavigationLookup');
+
     lookup.open('/inventory/warehouses', 'Historial de movimientos');
-    expect(navigate).not.toHaveBeenCalled();
 
-    await navigation.select(navigation.session()!.records()[0]);
-
-    expect(navigate).toHaveBeenCalledExactlyOnceWith(
-      ['/inventory/warehouses', 'record-1', 'movements'],
-      { queryParams: undefined },
-    );
+    expect(loadLookup).not.toHaveBeenCalled();
     expect(navigation.session()).toBeNull();
+    expect(warehouseActions.request()).toBeNull();
+    expect(documentActions.request()).toBeNull();
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/inventory/warehouses/movements'], {
+      queryParams: undefined,
+    });
+  });
+
+  it('keeps the warehouse as an optional query filter on the global movements history', () => {
+    const loadLookup = vi.spyOn(navigationDataSource, 'loadNavigationLookup');
+
+    lookup.open('/inventory/warehouses', 'Historial de movimientos', { warehouseId: 'wh-1' });
+
+    expect(loadLookup).not.toHaveBeenCalled();
+    expect(navigation.session()).toBeNull();
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/inventory/warehouses/movements'], {
+      queryParams: { warehouseId: 'wh-1' },
+    });
   });
 
   it('preserves explicit destination query parameters without list navigation commands', async () => {
@@ -286,22 +296,19 @@ describe('Navbar lookup without navigation', () => {
   it.each([
     ['Aprobar pago', 'approve'],
     ['Rechazar pago', 'reject'],
-  ] as const)(
-    'opens the %s pending payment dialog without routing',
-    async (label, action) => {
-      vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
-        of({ items: [{ id: 'payment-1', label: 'PAY-001', description: '' }], total: 1 }),
-      );
-      lookup.open('/finance/treasury/receivables', label);
+  ] as const)('opens the %s pending payment dialog without routing', async (label, action) => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'payment-1', label: 'PAY-001', description: '' }], total: 1 }),
+    );
+    lookup.open('/finance/treasury/receivables', label);
 
-      await navigation.select(navigation.session()!.records()[0]);
+    await navigation.select(navigation.session()!.records()[0]);
 
-      expect(navigate).not.toHaveBeenCalled();
-      expect(navigation.session()).toBeNull();
-      expect(pendingPaymentActions.request()).toEqual({
-        paymentId: 'payment-1',
-        action: action satisfies 'approve' | 'reject',
-      });
-    },
-  );
+    expect(navigate).not.toHaveBeenCalled();
+    expect(navigation.session()).toBeNull();
+    expect(pendingPaymentActions.request()).toEqual({
+      paymentId: 'payment-1',
+      action: action satisfies 'approve' | 'reject',
+    });
+  });
 });

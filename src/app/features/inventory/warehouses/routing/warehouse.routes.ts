@@ -43,12 +43,19 @@ export const WAREHOUSE_ROUTES: Routes = [
           }),
       },
       {
-        path: ':id/movements',
+        path: 'movements',
         loadComponent: () =>
           import(
             '@features/inventory/warehouses/pages/warehouse-movements-page/warehouse-movements-page.component'
           ).then((m) => m.WarehouseMovementsPageComponent),
         title: 'Movimientos de Almacén',
+      },
+      {
+        path: ':id/movements',
+        redirectTo: ({ params, queryParams }) =>
+          inject(Router).createUrlTree(['/inventory/warehouses/movements'], {
+            queryParams: { ...queryParams, warehouseId: params['id'] },
+          }),
       },
       {
         path: ':id',

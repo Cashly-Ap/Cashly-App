@@ -26,6 +26,42 @@ const stockItem: StockOverviewItem = {
   available: 3,
 };
 
+function emptyOverview(mode: StockGroupBy = 'PRODUCT'): StockOverviewResponse {
+  const common = {
+    summary: {
+      productCount: 0,
+      warehouseCount: 0,
+      totalQuantity: 0,
+      reservedQuantity: 0,
+      availableQuantity: 0,
+    },
+    warehouses: [],
+    categories: [],
+  };
+  const paging = {
+    totalElements: 0,
+    totalPages: 0,
+    number: 0,
+    size: 10,
+    first: true,
+    last: true,
+    empty: true,
+  };
+  if (mode === 'NONE')
+    return {
+      ...common,
+      groupBy: mode,
+      groups: null,
+      stock: { ...paging, content: [] },
+    };
+  return {
+    ...common,
+    groupBy: mode,
+    stock: null,
+    groups: { ...paging, content: [] },
+  };
+}
+
 function overview(mode: StockGroupBy = 'PRODUCT'): StockOverviewResponse {
   const common = {
     summary: {
@@ -152,6 +188,24 @@ describe('WarehouseStockPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Ver stock');
   });
 
+  it('loads the global stock view by default when no warehouse is selected', () => {
+    params.next(convertToParamMap({}));
+    fixture.detectChanges();
+
+    expect(api.getOverview).toHaveBeenCalledWith({
+      groupBy: 'PRODUCT',
+      warehouseId: undefined,
+      categoryId: undefined,
+      search: undefined,
+      page: 0,
+      size: 10,
+    });
+    expect(component.warehouseId()).toBeNull();
+    expect(component.warehouseName()).toBe('Todos los almacenes');
+    expect(component.activeFilterCount()).toBe(0);
+    expect(component.hasFilters()).toBe(false);
+  });
+
   it('sends filters to the server, resets pagination and synchronizes warehouse query once', () => {
     fixture.detectChanges();
     component.onPageChange({ first: 20, rows: 10 });
@@ -192,6 +246,25 @@ describe('WarehouseStockPageComponent', () => {
       [],
       expect.objectContaining({ queryParams: { warehouseId: null }, replaceUrl: true }),
     );
+  });
+
+  it('combines search, category, warehouse and grouping in a single server request', () => {
+    fixture.detectChanges();
+
+    component.onSearchChange(' M-01 ');
+    component.onCategoryChange('cat-1');
+    component.onWarehouseChange('wh-2');
+    component.onGroupByChange('NONE');
+
+    expect(api.getOverview).toHaveBeenLastCalledWith({
+      groupBy: 'NONE',
+      warehouseId: 'wh-2',
+      categoryId: 'cat-1',
+      search: 'M-01',
+      page: 0,
+      size: 10,
+    });
+    expect(component.activeFilterCount()).toBe(3);
   });
 
   it('paginates server groups without slicing group members or calculating page totals', () => {
@@ -266,6 +339,21 @@ describe('WarehouseStockPageComponent', () => {
     fixture.detectChanges();
     expect(component.failed()).toBe(false);
     expect(component.groups()).toHaveLength(1);
+  });
+
+  it('renders the empty state without an error when filters match no stock', () => {
+    api.getOverview.mockReturnValue(of(emptyOverview()));
+    fixture.detectChanges();
+
+    expect(component.failed()).toBe(false);
+    expect(component.totalElements()).toBe(0);
+    expect(component.groups()).toEqual([]);
+    expect(component.stock()).toEqual([]);
+    expect(component.summary()?.totalQuantity).toBe(0);
+    expect(fixture.nativeElement.textContent).toContain(
+      'No hay existencias que coincidan con los filtros',
+    );
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
   });
 
   it('returns through navigation history', () => {

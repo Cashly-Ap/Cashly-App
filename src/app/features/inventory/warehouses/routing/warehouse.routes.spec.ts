@@ -1,8 +1,35 @@
+import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router, RedirectFunction } from '@angular/router';
+import { provideRouter, RedirectFunction, Router, Routes } from '@angular/router';
 import { describe, it, expect } from 'vitest';
 import { WAREHOUSE_ROUTES } from '@features/inventory/warehouses/routing/warehouse.routes';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
+@Component({ selector: 'app-routing-stub', template: '' })
+class RoutingStubComponent {}
+
+const buildNavigableRoutes = (): Routes => {
+  const children = WAREHOUSE_ROUTES[0].children ?? [];
+
+  return [
+    {
+      path: 'inventory',
+      children: [
+        {
+          path: 'warehouses',
+          children: children.map((child) =>
+            child.redirectTo
+              ? { path: child.path, title: child.title, redirectTo: child.redirectTo }
+              : { path: child.path, title: child.title, component: RoutingStubComponent },
+          ),
+        },
+      ],
+    },
+  ];
+};
+
+const matchedChildPath = (router: Router): string | undefined =>
+  router.routerState.snapshot.root.children[0]?.children[0]?.children[0]?.routeConfig?.path;
 
 describe('WAREHOUSE_ROUTES', () => {
   it('should define routes array', () => {
@@ -21,9 +48,9 @@ describe('WAREHOUSE_ROUTES', () => {
     expect(parent.data?.module).toBe(BusinessModule.INVENTORY);
   });
 
-  it('should have 7 child routes', () => {
+  it('should have 8 child routes', () => {
     const children = WAREHOUSE_ROUTES[0].children;
-    expect(children).toHaveLength(7);
+    expect(children).toHaveLength(8);
   });
 
   it('should have list route at empty path', () => {
@@ -64,16 +91,37 @@ describe('WAREHOUSE_ROUTES', () => {
 
   it('should have dedicated stock and movements routes', () => {
     const children = WAREHOUSE_ROUTES[0].children;
+    const legacyMovements = children?.find((route) => route.path === ':id/movements');
 
     expect(children?.find((route) => route.path === ':id/stock')?.path).toBe(':id/stock');
     expect(typeof children?.find((route) => route.path === ':id/stock')?.redirectTo).toBe(
       'function',
     );
     expect(children?.find((route) => route.path === ':id/stock')?.loadComponent).toBeUndefined();
-    expect(children?.find((route) => route.path === ':id/movements')?.path).toBe(':id/movements');
-    expect(children?.find((route) => route.path === ':id/movements')?.title).toBe(
-      'Movimientos de Almacén',
+    expect(legacyMovements?.path).toBe(':id/movements');
+    expect(typeof legacyMovements?.redirectTo).toBe('function');
+    expect(legacyMovements?.loadComponent).toBeUndefined();
+  });
+
+  it('resolves the consolidated movements view before the warehouse id route', () => {
+    const children = WAREHOUSE_ROUTES[0].children ?? [];
+    const movements = children.find((route) => route.path === 'movements');
+    expect(movements?.loadComponent).toBeDefined();
+    expect(movements?.title).toBe('Movimientos de Almacén');
+    expect(children.findIndex((route) => route.path === 'movements')).toBeLessThan(
+      children.findIndex((route) => route.path === ':id'),
     );
+  });
+
+  it('opens /inventory/warehouses/movements without requiring a warehouse id', async () => {
+    const children = WAREHOUSE_ROUTES[0].children ?? [];
+    const movements = children.find((route) => route.path === 'movements');
+
+    expect(movements?.path).toBe('movements');
+    expect(movements?.redirectTo).toBeUndefined();
+    expect(movements?.loadComponent).toBeDefined();
+    const component = await movements?.loadComponent!();
+    expect(component.name).toBe('WarehouseMovementsPageComponent');
   });
 
   it('redirects old warehouse stock links to the single stock screen with its filter', () => {
@@ -89,6 +137,51 @@ describe('WAREHOUSE_ROUTES', () => {
     expect(TestBed.inject(Router).serializeUrl(result as ReturnType<Router['createUrlTree']>)).toBe(
       '/inventory/warehouses/stock?source=warehouse&warehouseId=wh-001',
     );
+    TestBed.resetTestingModule();
+  });
+
+  it('redirects legacy warehouse movement links to the consolidated view with its filter', () => {
+    TestBed.configureTestingModule({ providers: [provideRouter([])] });
+    const redirect = WAREHOUSE_ROUTES[0].children?.find((route) => route.path === ':id/movements')
+      ?.redirectTo as RedirectFunction;
+    const result = TestBed.runInInjectionContext(() =>
+      redirect({
+        params: { id: 'wh-001' },
+        queryParams: { source: 'warehouse' },
+      } as Parameters<RedirectFunction>[0]),
+    );
+    expect(TestBed.inject(Router).serializeUrl(result as ReturnType<Router['createUrlTree']>)).toBe(
+      '/inventory/warehouses/movements?source=warehouse&warehouseId=wh-001',
+    );
+    TestBed.resetTestingModule();
+  });
+
+  it('declares the legacy movements redirect before the warehouse id route', () => {
+    const children = WAREHOUSE_ROUTES[0].children ?? [];
+    expect(children.findIndex((route) => route.path === ':id/movements')).toBeLessThan(
+      children.findIndex((route) => route.path === ':id'),
+    );
+  });
+
+  it('navigates the legacy /inventory/warehouses/:id/movements URL to the filtered view', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(buildNavigableRoutes())] });
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl('/inventory/warehouses/wh-001/movements?source=warehouse');
+
+    expect(router.url).toBe('/inventory/warehouses/movements?source=warehouse&warehouseId=wh-001');
+    expect(matchedChildPath(router)).toBe('movements');
+    TestBed.resetTestingModule();
+  });
+
+  it('navigates /inventory/warehouses/movements without a warehouse id', async () => {
+    TestBed.configureTestingModule({ providers: [provideRouter(buildNavigableRoutes())] });
+    const router = TestBed.inject(Router);
+
+    await router.navigateByUrl('/inventory/warehouses/movements');
+
+    expect(router.url).toBe('/inventory/warehouses/movements');
+    expect(matchedChildPath(router)).toBe('movements');
     TestBed.resetTestingModule();
   });
 

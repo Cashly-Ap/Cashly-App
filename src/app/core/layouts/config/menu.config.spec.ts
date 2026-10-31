@@ -202,6 +202,34 @@ describe('ERP navigation', () => {
     ).toBe(false);
   });
 
+  it('declares the warehouse movements history as a global destination action', () => {
+    const definition = LIST_NAVIGATION_DEFINITIONS.find(
+      (entry) => entry.route === '/inventory/warehouses',
+    );
+    const movements = definition?.actions.find(
+      (entry) => entry.label === 'Historial de movimientos',
+    );
+
+    expect(movements?.destination).toBe('/inventory/warehouses/movements');
+    expect(movements?.queryParams).toBeUndefined();
+  });
+
+  it('keeps the movements history navbar action as a command without a record picker route', () => {
+    const callbacks = createCallbacks();
+    const item = flatten(buildMenuItems(callbacks)).find(
+      (entry) => entry.label === 'Historial de movimientos',
+    );
+
+    expect(item?.routerLink).toBeUndefined();
+    expect(item?.requiredAction).toBe('READ');
+    item?.command?.();
+    expect(callbacks.openListAction).toHaveBeenCalledWith(
+      '/inventory/warehouses',
+      'Historial de movimientos',
+      undefined,
+    );
+  });
+
   it('exposes every list action and create destination', () => {
     const callbacks = createCallbacks();
     const items = flatten(buildMenuItems(callbacks));

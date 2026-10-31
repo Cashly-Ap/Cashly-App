@@ -43,4 +43,22 @@ describe('StockOverviewApiService', () => {
     expect(req.request.params.keys().sort()).toEqual(['page', 'size']);
     req.flush({});
   });
+
+  it('sends NONE when the ungrouped view is requested explicitly', () => {
+    service.getOverview({ groupBy: 'NONE', page: 0, size: 10 }).subscribe();
+    const req = http.expectOne((request) => request.url === '/api/warehouses/stock');
+    expect(req.request.params.get('groupBy')).toBe('NONE');
+    expect(req.request.params.has('warehouseId')).toBe(false);
+    expect(req.request.params.has('categoryId')).toBe(false);
+    expect(req.request.params.has('search')).toBe(false);
+    req.flush({});
+  });
+
+  it('omits whitespace-only search while keeping the requested grouping', () => {
+    service.getOverview({ groupBy: 'PRODUCT', search: '   ', page: 0, size: 10 }).subscribe();
+    const req = http.expectOne((request) => request.url === '/api/warehouses/stock');
+    expect(req.request.params.get('groupBy')).toBe('PRODUCT');
+    expect(req.request.params.has('search')).toBe(false);
+    req.flush({});
+  });
 });

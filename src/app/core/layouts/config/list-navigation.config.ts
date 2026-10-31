@@ -8,6 +8,7 @@ export interface NavigationActionDefinition {
   icon: string;
   requiredPermissions?: string[];
   queryParams?: Record<string, string>;
+  destination?: string;
 }
 
 export interface ListNavigationDefinition {
@@ -33,6 +34,16 @@ const action = (
 const view = (permissions?: string[]) => action('Ver detalle', 'READ', 'eye', permissions);
 const edit = (permissions?: string[]) => action('Editar', 'UPDATE', 'pencil', permissions);
 const pdf = () => action('Descargar PDF', 'EXPORT', 'file-pdf');
+const destinationAction = (
+  label: string,
+  requiredAction: PermissionAction,
+  icon: string,
+  destination: string,
+  requiredPermissions?: string[],
+): NavigationActionDefinition => ({
+  ...action(label, requiredAction, icon, requiredPermissions),
+  destination,
+});
 const recordActions = () => [view(), edit()];
 const inventoryRead = ['INVENTORY:READ'];
 const inventoryExecute = ['INVENTORY:EXECUTE'];
@@ -104,7 +115,12 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     actions: [
       action('Registrar entrada', 'EXECUTE', 'arrow-circle-down'),
       action('Registrar salida', 'EXECUTE', 'arrow-circle-up'),
-      action('Historial de movimientos', 'READ', 'history'),
+      destinationAction(
+        'Historial de movimientos',
+        'READ',
+        'history',
+        '/inventory/warehouses/movements',
+      ),
       ...recordActions(),
     ],
   },

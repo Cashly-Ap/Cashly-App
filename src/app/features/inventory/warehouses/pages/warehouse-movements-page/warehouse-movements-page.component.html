@@ -1,75 +1,480 @@
 <div class="min-h-screen">
   <div class="mx-auto max-w-[1800px] px-4 py-4 sm:px-6 sm:py-6">
-    <app-page-header [title]="'inventory.warehouses.movementHistory2' | translate" [subtitle]="warehouseName()">
-      <div actions>
-        <p-button [label]="'finance.billing.creditnotes.back' | translate" icon="pi pi-arrow-left" [outlined]="true" (onClick)="onBack()" />
-      </div>
-    </app-page-header>
+    <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <app-page-header
+        [title]="'inventory.warehouses.viewMovements' | translate"
+        [subtitle]="warehouseName()"
+      />
+      <p-button
+        [label]="'finance.billing.creditnotes.back' | translate"
+        icon="pi pi-arrow-left"
+        [outlined]="true"
+        (onClick)="onBack()"
+      />
+    </div>
 
-    <app-details-card>
-      <app-details-card-header [title]="'finance.treasury.cashregister.movements' | translate" [subtitle]="totalElements() + ' registros'" />
-      <div class="flex flex-col gap-4 p-4 sm:p-6">
-        <p-select
-          [options]="movementTypeOptions | translateOptions"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="movementType()"
-          (ngModelChange)="onTypeChange($event)"
-          [placeholder]="'inventory.warehouses.filterByType' | translate"
-          styleClass="w-full sm:w-64"
+    <app-list-container>
+      <div class="px-4 py-4 sm:px-6">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="search()"
+              [placeholder]="'inventory.warehouses.searchByProductCodeOrReference' | translate"
+              (search)="onSearchChange($event)"
+            />
+            <p-button
+              data-testid="movement-filters-trigger"
+              appShortcut="filter"
+              icon="pi pi-filter"
+              [ariaLabel]="'shared.filters' | translate"
+              [pTooltip]="'shared.filters' | translate"
+              [outlined]="true"
+              severity="secondary"
+              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
+              badgeSeverity="contrast"
+              (onClick)="filterPopover.toggle($event)"
+            />
+            <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
+              <div
+                data-testid="movement-filters-panel"
+                class="flex w-[calc(100vw-3rem)] max-w-[300px] flex-col gap-4 p-1"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <span class="text-sm font-semibold">{{ 'shared.filters' | translate }}</span>
+                  @if (hasFilters()) {
+                    <p-button
+                      [label]="'finance.billing.creditnotes.clear' | translate"
+                      [text]="true"
+                      size="small"
+                      severity="secondary"
+                      (onClick)="clearFilters()"
+                    />
+                  }
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label for="movement-product" class="text-xs font-medium text-surface-500">
+                    {{ 'finance.billing.returns.product' | translate }}
+                  </label>
+                  <p-select
+                    inputId="movement-product"
+                    [options]="products()"
+                    optionLabel="name"
+                    optionValue="id"
+                    [ngModel]="productId()"
+                    (ngModelChange)="onProductChange($event)"
+                    [placeholder]="'inventory.warehouses.allProducts' | translate"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="name,code"
+                    styleClass="w-full"
+                    appendTo="body"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label for="movement-warehouse" class="text-xs font-medium text-surface-500">
+                    {{ 'inventory.warehouses.warehouse' | translate }}
+                  </label>
+                  <p-select
+                    inputId="movement-warehouse"
+                    [options]="warehouses()"
+                    optionLabel="name"
+                    optionValue="id"
+                    [ngModel]="warehouseId()"
+                    (ngModelChange)="onWarehouseChange($event)"
+                    [placeholder]="'inventory.warehouses.allWarehouses' | translate"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterBy="name"
+                    styleClass="w-full"
+                    appendTo="body"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                  <label for="movement-type" class="text-xs font-medium text-surface-500">
+                    {{ 'inventory.warehouses.movementType' | translate }}
+                  </label>
+                  <p-select
+                    inputId="movement-type"
+                    [options]="movementTypeOptions | translateOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngModel]="movementType()"
+                    (ngModelChange)="onMovementTypeChange($event)"
+                    [placeholder]="'inventory.warehouses.allMovementTypes' | translate"
+                    styleClass="w-full"
+                    appendTo="body"
+                  />
+                </div>
+
+                <div class="flex flex-col gap-2 border-t border-surface-200 pt-3 dark:border-surface-700">
+                  <span class="text-sm font-semibold">{{ 'inventory.warehouses.view' | translate }}</span>
+                  <label for="movement-group-by" class="text-xs font-medium text-surface-500">
+                    {{ 'inventory.warehouses.groupBy' | translate }}
+                  </label>
+                  <p-select
+                    inputId="movement-group-by"
+                    [options]="groupOptions | translateOptions"
+                    optionLabel="label"
+                    optionValue="value"
+                    [ngModel]="groupBy()"
+                    (ngModelChange)="onGroupByChange($event)"
+                    styleClass="w-full"
+                    appendTo="body"
+                  />
+                </div>
+              </div>
+            </p-popover>
+          </div>
+
+          <p class="text-xs text-surface-500">
+            {{ 'inventory.warehouses.totalsIncludeAllFilteredResults' | translate }}
+          </p>
+        </div>
+      </div>
+    </app-list-container>
+
+    @if (loading()) {
+      <app-loading-spinner [message]="'inventory.warehouses.loadingMovements' | translate" />
+    } @else if (failed()) {
+      <div
+        role="alert"
+        class="mt-5 flex flex-col gap-3 rounded-2xl border border-red-200 bg-red-50 p-5 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <p>{{ errorMessage }}</p>
+        <p-button
+          [label]="'inventory.warehouses.retry' | translate"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="load()"
+        />
+      </div>
+    } @else {
+      @if (summary(); as totals) {
+        <div class="my-5 grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6" data-testid="movement-summary">
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.movements' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.movementCount | localizedNumber: '1.0-0' }}</p>
+          </div>
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.entries' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold text-green-600 dark:text-green-400">
+              {{ totals.entryQuantity | localizedNumber: '1.0-2' }}
+            </p>
+          </div>
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.exits' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold text-red-600 dark:text-red-400">
+              {{ totals.exitQuantity | localizedNumber: '1.0-2' }}
+            </p>
+          </div>
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.netVariation' | translate }}</p>
+            <p
+              class="mt-2 text-2xl font-semibold"
+              [class.text-red-600]="totals.netQuantity < 0"
+              [class.text-green-600]="totals.netQuantity > 0"
+            >
+              {{ totals.netQuantity | localizedNumber: '1.0-2' }}
+            </p>
+          </div>
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.products' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.productCount | localizedNumber: '1.0-0' }}</p>
+          </div>
+          <div
+            class="rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900"
+          >
+            <p class="text-xs text-surface-500">{{ 'inventory.warehouses.warehouses' | translate }}</p>
+            <p class="mt-2 text-2xl font-semibold">{{ totals.warehouseCount | localizedNumber: '1.0-0' }}</p>
+          </div>
+        </div>
+      }
+
+      <app-details-card>
+        <app-details-card-header
+          [title]="'inventory.warehouses.movementHistory2' | translate"
+          [subtitle]="resultLabel()"
         />
 
-        @if (loading()) {
-          <app-loading-spinner [message]="'finance.treasury.receivables.loadingMovements' | translate" />
-        } @else if (movements().length === 0) {
-          <app-empty-state icon="pi-history" [message]="'inventory.warehouses.noMovementsToDisplay' | translate" />
+        @if (totalElements() === 0) {
+          <div class="p-4 sm:p-6">
+            <app-empty-state
+              icon="pi-history"
+              [message]="'inventory.warehouses.noMovementsMatchTheFilters' | translate"
+            />
+          </div>
+        } @else if (displayedGroupBy() !== 'NONE') {
+          <div class="flex flex-col gap-4 p-4 sm:p-6">
+            @for (group of groups(); track group.id) {
+              <section
+                class="overflow-hidden rounded-2xl border border-surface-200 dark:border-surface-700"
+                data-testid="movement-group"
+              >
+                <div
+                  class="flex flex-col gap-4 bg-surface-50 p-4 dark:bg-surface-800 lg:flex-row lg:items-start lg:justify-between"
+                >
+                  <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                      <h2 class="text-base font-semibold break-words">
+                        @if (displayedGroupBy() === 'MOVEMENT_TYPE') {
+                          {{ getMovementTypeLabel(group.movementType ?? group.name) }}
+                        } @else {
+                          {{ group.name }}
+                        }
+                      </h2>
+                    </div>
+                    @if (displayedGroupBy() === 'PRODUCT') {
+                      <p class="mt-1 text-xs text-surface-500">
+                        {{ group.productCode }} ·
+                        {{ group.categoryName || ('inventory.warehouses.uncategorized' | translate) }}
+                      </p>
+                    }
+                    <p class="mt-1 text-xs text-surface-500">
+                      {{ group.movementCount }}
+                      {{
+                        group.movementCount === 1
+                          ? ('inventory.warehouses.movement' | translate)
+                          : ('inventory.warehouses.movements2' | translate)
+                      }}
+                    </p>
+                  </div>
+                  <dl class="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:min-w-[420px]">
+                    <div>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.movements' | translate }}</dt>
+                      <dd class="mt-1 font-mono font-semibold">
+                        {{ group.movementCount | localizedNumber: '1.0-0' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.entries' | translate }}</dt>
+                      <dd class="mt-1 font-mono font-semibold text-green-600 dark:text-green-400">
+                        {{ group.entryQuantity | localizedNumber: '1.0-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.exits' | translate }}</dt>
+                      <dd class="mt-1 font-mono font-semibold text-red-600 dark:text-red-400">
+                        {{ group.exitQuantity | localizedNumber: '1.0-2' }}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.netVariation' | translate }}</dt>
+                      <dd
+                        class="mt-1 font-mono font-semibold"
+                        [class.text-red-600]="group.netQuantity < 0"
+                        [class.text-green-600]="group.netQuantity > 0"
+                      >
+                        {{ group.netQuantity | localizedNumber: '1.0-2' }}
+                      </dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <div class="hidden overflow-x-auto sm:block">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr class="border-y border-surface-200 dark:border-surface-700">
+                        @if (displayedGroupBy() !== 'PRODUCT') {
+                          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                            {{ 'finance.billing.returns.product' | translate }}
+                          </th>
+                        }
+                        @if (displayedGroupBy() !== 'WAREHOUSE') {
+                          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                            {{ 'inventory.warehouses.warehouse' | translate }}
+                          </th>
+                        }
+                        @if (displayedGroupBy() !== 'MOVEMENT_TYPE') {
+                          <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                            {{ 'inventory.warehouses.movementType' | translate }}
+                          </th>
+                        }
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                          {{ 'finance.billing.returns.quantity' | translate }}
+                        </th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                          {{ 'inventory.warehouses.previous' | translate }}
+                        </th>
+                        <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                          {{ 'inventory.warehouses.new' | translate }}
+                        </th>
+                        <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                          {{ 'finance.billing.invoices.date' | translate }}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (item of group.items; track item.id) {
+                        <tr class="border-b border-surface-100 last:border-b-0 dark:border-surface-800">
+                          @if (displayedGroupBy() !== 'PRODUCT') {
+                            <td class="px-4 py-3">
+                              <span class="block font-medium">{{ item.productName }}</span>
+                              <span class="text-xs text-surface-500">{{ item.productCode }}</span>
+                            </td>
+                          }
+                          @if (displayedGroupBy() !== 'WAREHOUSE') {
+                            <td class="px-4 py-3">{{ item.warehouseName }}</td>
+                          }
+                          @if (displayedGroupBy() !== 'MOVEMENT_TYPE') {
+                            <td class="px-4 py-3">
+                              <app-text-badge
+                                [label]="getMovementTypeLabel(item.movementType)"
+                                [variant]="getMovementTypeVariant(item.movementType)"
+                              />
+                            </td>
+                          }
+                          <td class="px-4 py-3 text-right font-mono">
+                            {{ item.quantity | localizedNumber: '1.0-2' }}
+                          </td>
+                          <td class="px-4 py-3 text-right font-mono text-surface-500">
+                            {{ item.previousStock | localizedNumber: '1.0-2' }}
+                          </td>
+                          <td class="px-4 py-3 text-right font-mono text-surface-500">
+                            {{ item.newStock | localizedNumber: '1.0-2' }}
+                          </td>
+                          <td class="px-4 py-3 whitespace-nowrap">
+                            {{ item.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="flex flex-col divide-y divide-surface-100 dark:divide-surface-800 sm:hidden">
+                  @for (item of group.items; track item.id) {
+                    <article class="p-4">
+                      <div class="flex items-start justify-between gap-3">
+                        <div class="min-w-0">
+                          <h3 class="text-sm font-medium break-words">{{ item.productName }}</h3>
+                          <p class="mt-1 font-mono text-xs text-surface-500">{{ item.productCode }}</p>
+                        </div>
+                        <app-text-badge
+                          [label]="getMovementTypeLabel(item.movementType)"
+                          [variant]="getMovementTypeVariant(item.movementType)"
+                        />
+                      </div>
+                      <p class="mt-2 text-sm">{{ item.warehouseName }}</p>
+                      <p class="mt-1 text-xs text-surface-500">
+                        {{ item.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                      </p>
+                      <dl class="mt-3 grid grid-cols-3 gap-2">
+                        <div>
+                          <dt class="text-xs text-surface-500">
+                            {{ 'finance.billing.returns.quantity' | translate }}
+                          </dt>
+                          <dd class="mt-1 font-mono text-sm">
+                            {{ item.quantity | localizedNumber: '1.0-2' }}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt class="text-xs text-surface-500">
+                            {{ 'inventory.warehouses.previous' | translate }}
+                          </dt>
+                          <dd class="mt-1 font-mono text-sm">
+                            {{ item.previousStock | localizedNumber: '1.0-2' }}
+                          </dd>
+                        </div>
+                        <div>
+                          <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.new' | translate }}</dt>
+                          <dd class="mt-1 font-mono text-sm">
+                            {{ item.newStock | localizedNumber: '1.0-2' }}
+                          </dd>
+                        </div>
+                      </dl>
+                    </article>
+                  }
+                </div>
+              </section>
+            }
+          </div>
         } @else {
-          <div class="overflow-x-auto">
+          <div class="hidden overflow-x-auto sm:block">
             <table class="w-full text-sm">
               <thead>
-                <tr class="border-b border-surface-200 dark:border-surface-700">
-                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.billing.returns.product' | translate }}</th>
-                  <th class="px-3 py-2 text-left font-medium">{{ 'shared.type' | translate }}</th>
-                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.treasury.receivables.reference' | translate }}</th>
-                  <th class="px-3 py-2 text-right font-medium">{{ 'finance.billing.returns.quantity' | translate }}</th>
-                  <th class="px-3 py-2 text-right font-medium">{{ 'inventory.warehouses.previous' | translate }}</th>
-                  <th class="px-3 py-2 text-right font-medium">{{ 'inventory.warehouses.new' | translate }}</th>
-                  <th class="px-3 py-2 text-left font-medium">{{ 'finance.billing.invoices.date' | translate }}</th>
+                <tr
+                  class="border-b border-surface-200 bg-surface-50 dark:border-surface-700 dark:bg-surface-800"
+                >
+                  <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                    {{ 'finance.billing.returns.product' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                    {{ 'inventory.warehouses.warehouse' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                    {{ 'inventory.warehouses.movementType' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                    {{ 'finance.treasury.receivables.reference' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                    {{ 'finance.billing.returns.quantity' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                    {{ 'inventory.warehouses.previous' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide">
+                    {{ 'inventory.warehouses.new' | translate }}
+                  </th>
+                  <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide">
+                    {{ 'finance.billing.invoices.date' | translate }}
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 @for (movement of movements(); track movement.id) {
-                  <tr class="border-b border-surface-100 dark:border-surface-800">
-                    <td class="px-3 py-3">
-                      <div class="font-medium">{{ movement.productName }}</div>
-                      <div class="text-xs text-surface-500">{{ movement.productCode }}</div>
+                  <tr
+                    class="border-b border-surface-100 dark:border-surface-800"
+                    data-testid="movement-row"
+                  >
+                    <td class="px-4 py-3">
+                      <span class="block font-medium">{{ movement.productName }}</span>
+                      <span class="text-xs text-surface-500">{{ movement.productCode }}</span>
                     </td>
-                    <td class="px-3 py-3">
+                    <td class="px-4 py-3">{{ movement.warehouseName }}</td>
+                    <td class="px-4 py-3">
                       <app-text-badge
                         [label]="getMovementTypeLabel(movement.movementType)"
                         [variant]="getMovementTypeVariant(movement.movementType)"
                       />
                     </td>
-                    <td class="px-3 py-3">
+                    <td class="px-4 py-3">
                       @if (movement.referenceType) {
-                        <div>{{ getReferenceTypeLabel(movement.referenceType) }}</div>
-                        <div class="font-mono text-xs text-surface-500">
+                        <span class="block">{{ getReferenceTypeLabel(movement.referenceType) }}</span>
+                        <span class="font-mono text-xs text-surface-500">
                           {{ movement.referenceNumber || '—' }}
-                        </div>
+                        </span>
                       } @else {
                         —
                       }
                     </td>
-                    <td class="px-3 py-3 text-right font-mono">
+                    <td class="px-4 py-3 text-right font-mono">
                       {{ movement.quantity | localizedNumber: '1.0-2' }}
                     </td>
-                    <td class="px-3 py-3 text-right font-mono text-surface-500">
+                    <td class="px-4 py-3 text-right font-mono text-surface-500">
                       {{ movement.previousStock | localizedNumber: '1.0-2' }}
                     </td>
-                    <td class="px-3 py-3 text-right font-mono text-surface-500">
+                    <td class="px-4 py-3 text-right font-mono text-surface-500">
                       {{ movement.newStock | localizedNumber: '1.0-2' }}
                     </td>
-                    <td class="px-3 py-3 whitespace-nowrap">
+                    <td class="px-4 py-3 whitespace-nowrap">
                       {{ movement.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
                     </td>
                   </tr>
@@ -78,31 +483,79 @@
             </table>
           </div>
 
-          @if (totalPages() > 1) {
-            <div class="flex items-center justify-between pt-2">
-              <span class="text-xs text-surface-500"
-                >{{ 'shared.page' | translate }} {{ page() + 1 }} {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
+          <div class="flex flex-col gap-3 p-4 sm:hidden">
+            @for (movement of movements(); track movement.id) {
+              <article
+                class="rounded-xl border border-surface-200 p-4 dark:border-surface-700"
+                data-testid="movement-row"
               >
-              <div class="flex gap-2">
-                <p-button
-                  icon="pi pi-chevron-left"
-                  [outlined]="true"
-                  size="small"
-                  [disabled]="page() === 0"
-                  (onClick)="onPageChange(page() - 1)"
-                />
-                <p-button
-                  icon="pi pi-chevron-right"
-                  [outlined]="true"
-                  size="small"
-                  [disabled]="page() >= totalPages() - 1"
-                  (onClick)="onPageChange(page() + 1)"
-                />
-              </div>
-            </div>
-          }
+                <div class="flex items-start justify-between gap-3">
+                  <div class="min-w-0">
+                    <h2 class="font-semibold break-words">{{ movement.productName }}</h2>
+                    <p class="mt-1 font-mono text-xs text-surface-500">{{ movement.productCode }}</p>
+                  </div>
+                  <app-text-badge
+                    [label]="getMovementTypeLabel(movement.movementType)"
+                    [variant]="getMovementTypeVariant(movement.movementType)"
+                  />
+                </div>
+                <p class="mt-3 text-sm font-medium">{{ movement.warehouseName }}</p>
+                @if (movement.referenceType) {
+                  <p class="text-xs text-surface-500">
+                    {{ getReferenceTypeLabel(movement.referenceType) }} ·
+                    {{ movement.referenceNumber || '—' }}
+                  </p>
+                }
+                <p class="mt-1 text-xs text-surface-500">
+                  {{ movement.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                </p>
+                <dl
+                  class="mt-3 grid grid-cols-3 gap-2 border-t border-surface-100 pt-3 dark:border-surface-700"
+                >
+                  <div>
+                    <dt class="text-xs text-surface-500">
+                      {{ 'finance.billing.returns.quantity' | translate }}
+                    </dt>
+                    <dd class="mt-1 font-mono text-sm">
+                      {{ movement.quantity | localizedNumber: '1.0-2' }}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs text-surface-500">
+                      {{ 'inventory.warehouses.previous' | translate }}
+                    </dt>
+                    <dd class="mt-1 font-mono text-sm">
+                      {{ movement.previousStock | localizedNumber: '1.0-2' }}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs text-surface-500">{{ 'inventory.warehouses.new' | translate }}</dt>
+                    <dd class="mt-1 font-mono text-sm">
+                      {{ movement.newStock | localizedNumber: '1.0-2' }}
+                    </dd>
+                  </div>
+                </dl>
+              </article>
+            }
+          </div>
         }
-      </div>
-    </app-details-card>
+
+        @if (totalElements() > 0) {
+          <div class="border-t border-surface-100 px-2 py-3 dark:border-surface-800 sm:px-4">
+            <p-paginator
+              [first]="page() * rows()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="paginationLabel()"
+              (onPageChange)="
+                onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? rows() })
+              "
+            />
+          </div>
+        }
+      </app-details-card>
+    }
   </div>
 </div>

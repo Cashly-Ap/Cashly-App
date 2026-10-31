@@ -37,7 +37,6 @@ import { PdfViewerService } from '@core/pdf-viewer/services';
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
-  'Historial de movimientos': ['movements'],
 };
 
 const RECEIVABLES_ACTIONS: readonly string[] = [
@@ -114,6 +113,10 @@ export class NavigationLookupService {
     const permission = { ...definitionAction, command: () => undefined };
     if (!this.navigation.allowed(permission, module)) return;
     this.navigation.dismiss();
+    if (definitionAction.destination) {
+      void this.router.navigate([definitionAction.destination], { queryParams });
+      return;
+    }
     if (route === '/finance/treasury/cash-register') {
       this.cashRegisterActions.open({ action: cashRegisterActionKind(label) });
       return;

@@ -157,6 +157,10 @@ export class WarehousesListPageComponent implements OnInit {
     void this.router.navigate(['/inventory/warehouses/stock']);
   }
 
+  onViewAllMovements(): void {
+    void this.router.navigate(['/inventory/warehouses/movements']);
+  }
+
   onCreate(): void {
     this.router.navigate(['/inventory/warehouses', 'new']);
   }
@@ -176,7 +180,9 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   onViewMovements(warehouse: WarehouseList): void {
-    this.router.navigate(['/inventory/warehouses', warehouse.id, 'movements']);
+    this.router.navigate(['/inventory/warehouses/movements'], {
+      queryParams: { warehouseId: warehouse.id },
+    });
   }
 
   onOpenEntry(warehouse: WarehouseList): void {

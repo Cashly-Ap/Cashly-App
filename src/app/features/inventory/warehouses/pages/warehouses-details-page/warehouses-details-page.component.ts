@@ -81,7 +81,11 @@ export class WarehousesDetailsPageComponent implements OnInit {
   }
 
   onViewMovements(): void {
-    this.navigateToChild('movements');
+    const id = this.warehouse()?.id;
+    if (id)
+      this.router.navigate(['/inventory/warehouses/movements'], {
+        queryParams: { warehouseId: id },
+      });
   }
 
   onEdit(): void {
@@ -149,10 +153,5 @@ export class WarehousesDetailsPageComponent implements OnInit {
   private openOperation(operation: WarehouseStockOperation): void {
     this.selectedOperation.set(operation);
     this.operationDialogVisible.set(true);
-  }
-
-  private navigateToChild(path: 'movements'): void {
-    const id = this.warehouse()?.id;
-    if (id) this.router.navigate(['/inventory/warehouses', id, path]);
   }
 }

@@ -75,6 +75,15 @@
               (onClick)="onViewAllStock()"
             />
             <p-button
+              [appPermission]="'READ'"
+              [label]="'inventory.warehouses.viewMovements' | translate"
+              icon="pi pi-history"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full sm:w-auto"
+              (onClick)="onViewAllMovements()"
+            />
+            <p-button
               appShortcut="new"
               [appPermission]="'CREATE'"
               [label]="'inventory.warehouses.newWarehouse' | translate"

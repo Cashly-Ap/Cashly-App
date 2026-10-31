@@ -70,11 +70,9 @@ describe('WarehousesDetailsPageComponent', () => {
     expect(navigateSpy).toHaveBeenNthCalledWith(1, ['/inventory/warehouses/stock'], {
       queryParams: { warehouseId: 'wh-001' },
     });
-    expect(navigateSpy).toHaveBeenNthCalledWith(2, [
-      '/inventory/warehouses',
-      'wh-001',
-      'movements',
-    ]);
+    expect(navigateSpy).toHaveBeenNthCalledWith(2, ['/inventory/warehouses/movements'], {
+      queryParams: { warehouseId: 'wh-001' },
+    });
   });
 
   it('opens the shared stock operation dialog for entries and exits', () => {
