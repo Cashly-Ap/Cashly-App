@@ -1,4 +1,7 @@
 {
+  "procurement.purchases.taxId": "Tax ID",
+  "procurement.purchases.confirmationPreviewUnavailable": "The purchase details could not be loaded. Close this dialog and try again.",
+  "procurement.purchases.confirmationPreviewIncomplete": "The purchase preview is incomplete. Every product must be fully allocated to a warehouse before confirmation.",
   "procurement.purchases.price": "Price",
   "procurement.purchases.purchases": "Purchases",
   "procurement.purchases.newPurchase": "New purchase",

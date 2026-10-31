@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  OnChanges,
   inject,
   input,
   output,
@@ -11,6 +12,9 @@ import { PurchaseApiService } from '@features/procurement/purchases/services/api
 import { PurchaseDetails } from '@features/procurement/purchases/models/interfaces/purchase-details.interface';
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
+import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
+
+const QUANTITY_TOLERANCE = 0.000001;
 @Component({
   selector: 'app-confirm-purchase-dialog',
   standalone: true,
@@ -18,7 +22,7 @@ import { DocumentConfirmationModel } from '@shared/models/document-confirmation'
   imports: [DocumentConfirmationDialogComponent],
   templateUrl: './confirm-purchase-dialog.component.html',
 })
-export class ConfirmPurchaseDialogComponent {
+export class ConfirmPurchaseDialogComponent implements OnChanges {
   private readonly api = inject(PurchaseApiService);
   private requestVersion = 0;
 
@@ -33,6 +37,39 @@ export class ConfirmPurchaseDialogComponent {
   readonly error = signal<string | null>(null);
 
   readonly purchase = computed(() => this.details());
+  readonly previewComplete = computed(() => {
+    const purchase = this.details();
+    return (
+      !!purchase?.lines.length &&
+      purchase.lines.every(
+        (line) =>
+          Number.isFinite(line.quantity) &&
+          line.quantity > 0 &&
+          line.allocations.length > 0 &&
+          line.allocations.every(
+            (allocation) =>
+              !!allocation.warehouseId &&
+              Number.isFinite(allocation.allocatedQuantity) &&
+              allocation.allocatedQuantity > 0,
+          ) &&
+          Math.abs(
+            line.allocations.reduce(
+              (total, allocation) => total + allocation.allocatedQuantity,
+              0,
+            ) - line.quantity,
+          ) < QUANTITY_TOLERANCE,
+      )
+    );
+  });
+  readonly canConfirm = computed(
+    () =>
+      this.details()?.id === this.purchaseId() &&
+      this.details()?.status === PurchaseStatus.DRAFT &&
+      this.previewComplete() &&
+      !this.loading() &&
+      !this.error() &&
+      !this.confirming(),
+  );
   readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
     const purchase = this.details();
     const rows =
@@ -63,15 +100,15 @@ export class ConfirmPurchaseDialogComponent {
             },
             { label: 'procurement.purchases.supplier2', value: purchase.supplierName },
             {
-              label: 'finance.treasury.receivables.customerTaxId',
+              label: 'procurement.purchases.taxId',
               value: purchase.supplierRif,
               monospace: true,
             },
-            { label: 'finance.billing.returns.total', value: purchase.subtotal },
+            { label: 'shared.total', value: purchase.subtotal },
           ]
         : [],
       notice: {
-        severity: 'warning',
+        severity: 'info',
         title: 'procurement.purchases.areYouSureYouWantToConfirmThisPurchase',
         description:
           'procurement.purchases.confirmingWillGenerateStockMovementsAndYouWillNoLongerBeAbleToEditThePurchase',
@@ -85,9 +122,14 @@ export class ConfirmPurchaseDialogComponent {
     };
   });
 
+  ngOnChanges(): void {
+    this.reset();
+    if (this.visible() && this.purchaseId()) this.onDialogShow();
+  }
+
   onDialogShow(): void {
     const id = this.purchaseId();
-    if (!id || this.details()?.id === id) return;
+    if (!id || this.loading() || this.details()?.id === id) return;
 
     const version = ++this.requestVersion;
     this.details.set(null);
@@ -96,28 +138,28 @@ export class ConfirmPurchaseDialogComponent {
     this.api.getById(id).subscribe({
       next: (result) => {
         if (version !== this.requestVersion) return;
+        if (result.id !== id) {
+          this.error.set('procurement.purchases.confirmationPreviewUnavailable');
+          this.loading.set(false);
+          return;
+        }
         this.details.set(result);
         this.loading.set(false);
+        if (!this.previewComplete()) {
+          this.error.set('procurement.purchases.confirmationPreviewIncomplete');
+        }
       },
       error: () => {
         if (version !== this.requestVersion) return;
         this.loading.set(false);
-        this.error.set('Error al cargar los detalles de la compra.');
+        this.error.set('procurement.purchases.confirmationPreviewUnavailable');
       },
     });
   }
 
   onConfirm(): void {
     const id = this.purchaseId();
-    if (
-      !id ||
-      this.loading() ||
-      this.error() ||
-      this.confirming() ||
-      this.details()?.id !== id ||
-      !this.details()?.lines.length
-    )
-      return;
+    if (!id || !this.canConfirm()) return;
 
     this.confirming.set(true);
     this.confirmed.emit(id);

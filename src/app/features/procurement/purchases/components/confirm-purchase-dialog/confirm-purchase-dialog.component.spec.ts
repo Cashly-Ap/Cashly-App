@@ -8,6 +8,7 @@ import { PurchaseStatus } from '@features/procurement/purchases/models/enums/pur
 
 describe('ConfirmPurchaseDialogComponent', () => {
   let response: Subject<PurchaseDetails>;
+  const getById = vi.fn();
   const purchase: PurchaseDetails = {
     id: 'p1',
     purchaseNumber: '1',
@@ -38,8 +39,9 @@ describe('ConfirmPurchaseDialogComponent', () => {
 
   beforeEach(() => {
     response = new Subject<PurchaseDetails>();
+    getById.mockReset().mockReturnValue(response);
     TestBed.configureTestingModule({
-      providers: [{ provide: PurchaseApiService, useValue: { getById: () => response } }],
+      providers: [{ provide: PurchaseApiService, useValue: { getById } }],
     });
     TestBed.overrideComponent(ConfirmPurchaseDialogComponent, {
       set: { template: '', imports: [] },
@@ -53,9 +55,59 @@ describe('ConfirmPurchaseDialogComponent', () => {
     fixture.detectChanges();
     const dialog = fixture.componentInstance;
     const emit = vi.spyOn(dialog.confirmed, 'emit');
-    dialog.onDialogShow();
-    return { dialog, emit };
+    return { fixture, dialog, emit };
   }
+
+  it('loads the purchase automatically when the dialog opens and shows its products', () => {
+    const { dialog } = open();
+    expect(getById).toHaveBeenCalledExactlyOnceWith('p1');
+    expect(dialog.loading()).toBe(true);
+    response.next(purchase);
+    expect(dialog.confirmationModel().inventory?.rows).toEqual([
+      expect.objectContaining({ productName: 'Product', warehouseName: 'Main', quantity: 2 }),
+    ]);
+    expect(dialog.canConfirm()).toBe(true);
+  });
+
+  it('does not load details until the dialog is visible', () => {
+    const fixture = TestBed.createComponent(ConfirmPurchaseDialogComponent);
+    fixture.componentRef.setInput('purchaseId', 'p1');
+    fixture.detectChanges();
+    expect(getById).not.toHaveBeenCalled();
+  });
+
+  it('blocks confirmation when the detail request fails', () => {
+    const { dialog, emit } = open();
+    response.error(new Error('Unavailable'));
+    dialog.onConfirm();
+    expect(emit).not.toHaveBeenCalled();
+    expect(dialog.error()).toBe('procurement.purchases.confirmationPreviewUnavailable');
+  });
+
+  it('blocks an incomplete warehouse allocation preview', () => {
+    const { dialog, emit } = open();
+    response.next({ ...purchase, lines: [{ ...purchase.lines[0], allocations: [] }] });
+    dialog.onConfirm();
+    expect(emit).not.toHaveBeenCalled();
+    expect(dialog.canConfirm()).toBe(false);
+    expect(dialog.error()).toBe('procurement.purchases.confirmationPreviewIncomplete');
+  });
+
+  it('rejects details belonging to another purchase', () => {
+    const { dialog, emit } = open();
+    response.next({ ...purchase, id: 'another-purchase' });
+    dialog.onConfirm();
+    expect(dialog.details()).toBeNull();
+    expect(emit).not.toHaveBeenCalled();
+  });
+
+  it('ignores a response received after the dialog closes', () => {
+    const { fixture, dialog } = open();
+    fixture.componentRef.setInput('visible', false);
+    fixture.detectChanges();
+    response.next(purchase);
+    expect(dialog.details()).toBeNull();
+  });
 
   it('blocks confirmation while loading', () => {
     const { dialog, emit } = open();

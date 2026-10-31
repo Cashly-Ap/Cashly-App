@@ -4,7 +4,7 @@
   [loading]="loading()"
   [error]="error()"
   [submitting]="confirming()"
-  [canAccept]="!!purchase()?.lines?.length"
+  [canAccept]="canConfirm()"
   (accepted)="onConfirm()"
   (cancelled)="onCancel()"
 />

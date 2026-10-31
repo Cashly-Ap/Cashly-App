@@ -1,4 +1,7 @@
 {
+  "procurement.purchases.taxId": "RIF",
+  "procurement.purchases.confirmationPreviewUnavailable": "No se pudieron cargar los detalles de la compra. Cierre este diálogo e inténtelo de nuevo.",
+  "procurement.purchases.confirmationPreviewIncomplete": "La vista previa de la compra está incompleta. Todos los productos deben estar asignados por completo a un almacén antes de confirmar.",
   "procurement.purchases.price": "Precio",
   "procurement.purchases.purchases": "Compras",
   "procurement.purchases.newPurchase": "Nueva Compra",
