@@ -15,6 +15,7 @@ import {
   ReceivablesActionDialogService,
   ReceivablesActionKind,
 } from './receivables-action-dialog.service';
+import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
 import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
@@ -28,6 +29,7 @@ describe('Navbar lookup without navigation', () => {
   let navigation: ListNavigationService;
   let documentActions: DocumentActionDialogService;
   let receivablesActions: ReceivablesActionDialogService;
+  let invoiceActions: InvoiceActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -59,6 +61,7 @@ describe('Navbar lookup without navigation', () => {
     navigation = TestBed.inject(ListNavigationService);
     documentActions = TestBed.inject(DocumentActionDialogService);
     receivablesActions = TestBed.inject(ReceivablesActionDialogService);
+    invoiceActions = TestBed.inject(InvoiceActionDialogService);
   });
 
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
@@ -195,6 +198,26 @@ describe('Navbar lookup without navigation', () => {
       customerId: 'customer-1',
       customerName: 'Acme',
       action: action satisfies ReceivablesActionKind,
+    });
+  });
+
+  it.each([
+    ['Confirmar', 'confirm'],
+    ['Cancelar', 'cancel'],
+    ['Duplicar', 'duplicate'],
+  ] as const)('opens the invoice %s action dialog without routing', async (label, action) => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'invoice-1', label: 'FAC-001', description: '' }], total: 1 }),
+    );
+    lookup.open('/finance/billing/invoices', label);
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(invoiceActions.request()).toEqual({
+      invoiceId: 'invoice-1',
+      invoiceNumber: 'FAC-001',
+      action: action satisfies InvoiceActionKind,
     });
   });
 });

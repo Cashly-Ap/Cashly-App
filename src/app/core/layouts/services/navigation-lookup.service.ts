@@ -26,6 +26,7 @@ import {
   ReceivablesActionDialogService,
   ReceivablesActionKind,
 } from './receivables-action-dialog.service';
+import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
@@ -58,6 +59,19 @@ function receivablesActionKind(label: string): ReceivablesActionKind {
   }
 }
 
+function invoiceActionKind(label: string): InvoiceActionKind {
+  switch (label) {
+    case 'Confirmar':
+      return 'confirm';
+    case 'Cancelar':
+      return 'cancel';
+    case 'Duplicar':
+      return 'duplicate';
+    default:
+      return 'confirm';
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
   private readonly injector = inject(Injector);
@@ -67,6 +81,7 @@ export class NavigationLookupService {
   private readonly messages = inject(MessageService);
   private readonly documentActions = inject(DocumentActionDialogService);
   private readonly receivablesActions = inject(ReceivablesActionDialogService);
+  private readonly invoiceActions = inject(InvoiceActionDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -93,16 +108,18 @@ export class NavigationLookupService {
       roles: [] as LookupFilterOption[],
     };
     const filters = () =>
-      lookupFilterDefinitions(route, { ...filterSources, values: filterValues() }).map((filter) => ({
-        label: filter.label,
-        value: filterValues()[filter.key] ?? filter.defaultValue,
-        options: [...filter.options],
-        change: (value: string) => {
-          filterValues.update((values) => ({ ...values, [filter.key]: value }));
-          first.set(0);
-          load();
-        },
-      }));
+      lookupFilterDefinitions(route, { ...filterSources, values: filterValues() }).map(
+        (filter) => ({
+          label: filter.label,
+          value: filterValues()[filter.key] ?? filter.defaultValue,
+          options: [...filter.options],
+          change: (value: string) => {
+            filterValues.update((values) => ({ ...values, [filter.key]: value }));
+            first.set(0);
+            load();
+          },
+        }),
+      );
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
@@ -116,6 +133,9 @@ export class NavigationLookupService {
     const pdfAction = label === 'Descargar PDF';
     const receivablesAction =
       route === '/finance/treasury/receivables' && RECEIVABLES_ACTIONS.includes(label);
+    const invoiceAction =
+      route === '/finance/billing/invoices' &&
+      ['Confirmar', 'Cancelar', 'Duplicar'].includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -147,6 +167,14 @@ export class NavigationLookupService {
                 customerId: item.id,
                 customerName: item.label,
                 action: receivablesActionKind(label),
+              });
+              return;
+            }
+            if (invoiceAction) {
+              this.invoiceActions.open({
+                invoiceId: item.id,
+                invoiceNumber: item.label,
+                action: invoiceActionKind(label),
               });
               return;
             }
@@ -197,10 +225,10 @@ export class NavigationLookupService {
             route,
             label,
             search,
-             Math.floor(first() / rows()),
-             rows(),
-             filterValues(),
-           );
+            Math.floor(first() / rows()),
+            rows(),
+            filterValues(),
+          );
       request = source.subscribe({
         next: (result) => {
           items.set(result.items);

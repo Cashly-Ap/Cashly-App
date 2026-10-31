@@ -6,6 +6,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { DocumentListAction, documentListAction } from '@shared/models/document-list-action';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
@@ -24,7 +25,6 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { SelectModule } from 'primeng/select';
 import { PaginatorModule } from 'primeng/paginator';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -33,9 +33,6 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PopoverModule } from 'primeng/popover';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
-import { DialogModule } from 'primeng/dialog';
-import { PasswordModule } from 'primeng/password';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -48,9 +45,11 @@ import {
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import { CancelInvoiceDialogComponent } from '@features/finance/billing/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
+import {
+  ConfirmInvoiceDialogComponent,
+  ConfirmInvoiceSubmit,
+} from '@features/finance/billing/invoices/components/confirm-invoice-dialog/confirm-invoice-dialog.component';
 import { DuplicateInvoiceDialogComponent } from '@features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
-import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
-import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
 import { InvoiceFilters } from '@features/finance/billing/invoices/services/api/invoice-api.service';
 import {
@@ -65,24 +64,11 @@ import {
 } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
-import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 
 @Component({
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: [
-    `
-      ::ng-deep .confirm-invoice-dialog .p-select,
-      ::ng-deep .confirm-invoice-dialog .p-inputnumber {
-        width: 100% !important;
-      }
-      ::ng-deep .confirm-invoice-dialog .p-select .p-select-label,
-      ::ng-deep .confirm-invoice-dialog .p-inputnumber .p-inputnumber-input {
-        width: 100% !important;
-      }
-    `,
-  ],
   imports: [
     TranslateOptionsPipe,
     TranslatePipe,
@@ -104,10 +90,6 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
     PopoverModule,
     ConfirmDialogModule,
     DatePickerModule,
-    DialogModule,
-    PasswordModule,
-    RadioButtonModule,
-    InputNumberModule,
     ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
@@ -116,6 +98,7 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
     ListActionButtonsComponent,
     TextBadgeComponent,
     CancelInvoiceDialogComponent,
+    ConfirmInvoiceDialogComponent,
     DuplicateInvoiceDialogComponent,
   ],
   templateUrl: './invoice-list-page.component.html',
@@ -129,8 +112,6 @@ export class InvoiceListPageComponent implements OnInit {
   private readonly confirmationService = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
   private readonly pdfViewerService = inject(PdfViewerService);
-  private readonly balanceApi = inject(CustomerBalanceApiService);
-  private readonly paymentMethodApi = inject(PaymentMethodApiService);
 
   readonly invoices = this.invoiceService.invoices;
   readonly loading = this.invoiceService.loading;
@@ -165,52 +146,7 @@ export class InvoiceListPageComponent implements OnInit {
 
   readonly confirmDialogVisible = signal(false);
   readonly invoiceToConfirm = signal<InvoiceList | null>(null);
-  readonly customerBalanceConfirm = signal(0);
-  readonly useBalanceConfirm = signal(false);
-  readonly confirmationPassword = signal('');
   readonly isConfirming = signal(false);
-  readonly paymentMethods = signal<PaymentMethodList[]>([]);
-  readonly paymentLines = signal<{ methodId: string; amount: number }[]>([]);
-
-  readonly totalPayments = computed(() => {
-    const balance = this.useBalanceConfirm()
-      ? Math.min(this.customerBalanceConfirm(), this.invoiceToConfirm()?.total ?? 0)
-      : 0;
-    const methods = this.paymentLines().reduce((s, l) => s + (l.amount || 0), 0);
-    return balance + methods;
-  });
-
-  readonly remainingToPay = computed(() => {
-    const total = this.invoiceToConfirm()?.total ?? 0;
-    return Math.max(0, total - this.totalPayments());
-  });
-
-  readonly maxPaymentPerLine = computed(() => {
-    const total = this.invoiceToConfirm()?.total ?? 0;
-    const balanceUsed = this.useBalanceConfirm()
-      ? Math.min(this.customerBalanceConfirm(), total)
-      : 0;
-    const alreadyAssigned = this.paymentLines().reduce((s, l) => s + (l.amount || 0), 0);
-    return Math.max(0, total - balanceUsed - alreadyAssigned);
-  });
-
-  maxForLine(index: number): number {
-    const total = this.invoiceToConfirm()?.total ?? 0;
-    const balanceUsed = this.useBalanceConfirm()
-      ? Math.min(this.customerBalanceConfirm(), total)
-      : 0;
-    const otherLines = this.paymentLines()
-      .filter((_, i) => i !== index)
-      .reduce((s, l) => s + (l.amount || 0), 0);
-    return Math.max(0, total - balanceUsed - otherLines);
-  }
-
-  readonly allPaymentsValid = computed(() => {
-    const lines = this.paymentLines();
-    const total = this.invoiceToConfirm()?.total ?? 0;
-    if (lines.length === 0 && !this.useBalanceConfirm()) return false;
-    return lines.every((l) => l.methodId && l.amount > 0) && this.totalPayments() === total;
-  });
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -290,10 +226,7 @@ export class InvoiceListPageComponent implements OnInit {
     total: () => this.navigationRecords().length,
     first: () => this.first(),
     rows: () => this.rows(),
-    acceptsAction: () => {
-      this.selectedStatus.set('ALL');
-      return true;
-    },
+    acceptsAction: () => false,
     search: (term) => {
       this.selectedReturnStatus.set('');
       this.selectedDueStatus.set('');
@@ -507,101 +440,42 @@ export class InvoiceListPageComponent implements OnInit {
 
   onConfirmInvoice(invoice: InvoiceList): void {
     this.invoiceToConfirm.set(invoice);
-    this.confirmationPassword.set('');
-    this.useBalanceConfirm.set(false);
-    this.paymentLines.set([]);
-    if (invoice.paymentType === PaymentType.CASH) {
-      this.balanceApi.getBalance(invoice.customerId).subscribe({
-        next: (b) => this.customerBalanceConfirm.set(b.totalBalance),
-        error: () => this.customerBalanceConfirm.set(0),
-      });
-      this.paymentMethodApi.getAll({ active: true }).subscribe({
-        next: (methods) => this.paymentMethods.set(methods.content),
-        error: () => this.paymentMethods.set([]),
-      });
-    }
     this.confirmDialogVisible.set(true);
   }
 
-  addPaymentLine(): void {
-    this.paymentLines.update((lines) => [...lines, { methodId: '', amount: 0 }]);
-  }
-
-  trackByIndex(index: number): number {
-    return index;
-  }
-
-  removePaymentLine(index: number): void {
-    this.paymentLines.update((lines) => lines.filter((_, i) => i !== index));
-  }
-
-  updatePaymentLine(index: number, field: 'methodId' | 'amount', value: any): void {
-    this.paymentLines.update((lines) => {
-      const updated = [...lines];
-      if (field === 'amount') {
-        const v = Number(value) || 0;
-        const max = this.maxForLine(index);
-        updated[index] = { ...updated[index], amount: v > max ? max : v };
-      } else {
-        updated[index] = { ...updated[index], [field]: value };
-      }
-      return updated;
-    });
-  }
-
-  submitConfirm(): void {
+  onConfirmDialogConfirmed(data: ConfirmInvoiceSubmit): void {
     const invoice = this.invoiceToConfirm();
     if (!invoice) return;
-    const isCash = invoice.paymentType === PaymentType.CASH;
-
     this.isConfirming.set(true);
-    const confirmData: any = {};
-    if (isCash) {
-      const balanceToUse = this.useBalanceConfirm()
-        ? Math.min(this.customerBalanceConfirm(), invoice.total)
-        : 0;
-      confirmData.useBalance = this.useBalanceConfirm();
-      confirmData.balanceAmount = balanceToUse;
-      const lines = this.paymentLines();
-      if (lines.length > 0) {
-        confirmData.paymentMethodId = lines[0].methodId;
-      }
-    } else {
-      if (!this.confirmationPassword()) {
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'Advertencia',
-          detail: 'Debe ingresar su contraseña.',
-          life: 4000,
-        });
-        this.isConfirming.set(false);
-        return;
-      }
-      confirmData.confirmationPassword = this.confirmationPassword();
-    }
+    this.invoiceService
+      .confirm(invoice.id, data)
+      .pipe(finalize(() => this.isConfirming.set(false)))
+      .subscribe({
+        next: () => {
+          this.confirmDialogVisible.set(false);
+          this.invoiceToConfirm.set(null);
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: 'Factura confirmada exitosamente',
+            life: 3000,
+          });
+          this.loadWithFilters();
+        },
+        error: (err: { error?: { message?: string } }) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err?.error?.message || 'Error al confirmar.',
+            life: 5000,
+          });
+        },
+      });
+  }
 
-    this.invoiceService.confirm(invoice.id, confirmData).subscribe({
-      next: () => {
-        this.isConfirming.set(false);
-        this.confirmDialogVisible.set(false);
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Factura confirmada exitosamente',
-          life: 3000,
-        });
-        this.loadWithFilters();
-      },
-      error: (err) => {
-        this.isConfirming.set(false);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: err?.error?.message || 'Error al confirmar.',
-          life: 5000,
-        });
-      },
-    });
+  onConfirmDialogDismissed(): void {
+    this.confirmDialogVisible.set(false);
+    this.invoiceToConfirm.set(null);
   }
 
   onCancelInvoice(invoice: InvoiceList): void {

@@ -3,13 +3,15 @@ import { ComponentFixture, TestBed, TestBedStatic } from '@angular/core/testing'
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ActivatedRoute, Router, convertToParamMap, provideRouter } from '@angular/router';
 import { signal, NO_ERRORS_SCHEMA } from '@angular/core';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InvoiceListPageComponent } from '@features/finance/billing/invoices/pages/invoice-list-page/invoice-list-page.component';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
 import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
 import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 import { PdfViewerService } from '@core/pdf-viewer';
+import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
+import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 
 describe('InvoiceListPageComponent', () => {
   let component: InvoiceListPageComponent;
@@ -82,6 +84,14 @@ describe('InvoiceListPageComponent', () => {
           },
         },
         { provide: InvoiceApplicationService, useValue: mockService },
+        {
+          provide: CustomerBalanceApiService,
+          useValue: { getBalance: vi.fn(() => of({ totalBalance: 0 })) },
+        },
+        {
+          provide: PaymentMethodApiService,
+          useValue: { getAll: vi.fn(() => of({ content: [] })) },
+        },
         ConfirmationService,
         MessageService,
         { provide: PdfViewerService, useValue: mockPdfViewer },
@@ -142,67 +152,23 @@ describe('InvoiceListPageComponent', () => {
     });
   });
 
-  it('searches every invoice status from the navbar without retaining list filters', async () => {
+  it('ignores navbar modal actions delivered as query parameters', async () => {
     component.selectedStatus.set('DRAFT');
-    component.filterDateFrom.set(new Date('2026-01-01'));
-    component.filterPaymentType.set('CASH');
-    queryParams.next(convertToParamMap({ navAction: 'Ver detalle' }));
-    await Promise.resolve();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({
-      statuses: Object.values(InvoiceStatus),
-      orderBy: 'createdAt',
-      orderDir: 'desc',
-    });
-  });
-
-  it('searches cancellable invoice states after a draft-only list filter', async () => {
-    component.selectedStatus.set('DRAFT');
-    queryParams.next(convertToParamMap({ navAction: 'Cancelar' }));
-    await Promise.resolve();
-    expect(component.selectedStatus()).toBe('ALL');
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({
-      action: 'CANCEL',
-      orderBy: 'createdAt',
-      orderDir: 'desc',
-    });
-  });
-
-  it.each([
-    ['Editar', 'EDIT'],
-    ['Confirmar', 'CONFIRM'],
-    ['Cancelar', 'CANCEL'],
-    ['Duplicar', 'DUPLICATE'],
-  ])('uses backend eligibility for %s and removes it after closing', async (label, action) => {
-    queryParams.next(convertToParamMap({ navAction: label }));
-    await Promise.resolve();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({
-      action,
-      orderBy: 'createdAt',
-      orderDir: 'desc',
-    });
-    component.onSearch('FAC');
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({
-      action,
-      search: 'FAC',
-      orderBy: 'createdAt',
-      orderDir: 'desc',
-    });
-    queryParams.next(convertToParamMap({}));
-    expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));
-  });
-
-  it('cancels outdated list requests before loading records for a new action', async () => {
-    const cancelled = vi.fn();
-    vi.mocked(mockService.loadAll!).mockReturnValueOnce(new Observable(() => cancelled));
-    component.onSearch('old search');
     queryParams.next(convertToParamMap({ navAction: 'Confirmar' }));
     await Promise.resolve();
-    expect(cancelled).toHaveBeenCalledOnce();
-    expect(mockService.loadAll).toHaveBeenLastCalledWith({
-      action: 'CONFIRM',
-      orderBy: 'createdAt',
-      orderDir: 'desc',
-    });
+    expect(component.selectedStatus()).toBe('DRAFT');
+    expect(mockService.loadAll).not.toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'CONFIRM' }),
+    );
+  });
+
+  it('keeps the accepted list state when a modal action parameter is cleared', async () => {
+    const calls = (mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length;
+    queryParams.next(convertToParamMap({ navAction: 'Duplicar' }));
+    await Promise.resolve();
+    queryParams.next(convertToParamMap({}));
+    await Promise.resolve();
+    expect((mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length).toBe(calls);
   });
 
   describe('navigation', () => {
@@ -334,6 +300,40 @@ describe('InvoiceListPageComponent', () => {
       component.duplicateDialogVisible.set(true);
       component.onDuplicateDialogDismissed();
       expect(component.duplicateDialogVisible()).toBe(false);
+    });
+  });
+
+  describe('confirm dialog', () => {
+    it('should open confirm dialog', () => {
+      fixture.detectChanges();
+      component.onConfirmInvoice(mockInvoices[0]);
+      expect(component.confirmDialogVisible()).toBe(true);
+      expect(component.invoiceToConfirm()).toEqual(mockInvoices[0]);
+    });
+
+    it('should call confirm service on dialog confirmed', () => {
+      fixture.detectChanges();
+      component.invoiceToConfirm.set(mockInvoices[0]);
+      component.onConfirmDialogConfirmed({
+        useBalance: true,
+        balanceAmount: 100,
+        paymentMethodId: 'pm-1',
+      });
+      expect(mockService.confirm).toHaveBeenCalledWith('inv-001', {
+        useBalance: true,
+        balanceAmount: 100,
+        paymentMethodId: 'pm-1',
+      });
+      expect(component.isConfirming()).toBe(false);
+    });
+
+    it('should close dialog on dismissed', () => {
+      fixture.detectChanges();
+      component.confirmDialogVisible.set(true);
+      component.invoiceToConfirm.set(mockInvoices[0]);
+      component.onConfirmDialogDismissed();
+      expect(component.confirmDialogVisible()).toBe(false);
+      expect(component.invoiceToConfirm()).toBeNull();
     });
   });
 

@@ -314,7 +314,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
+                [currentPageReportTemplate]="
+                  'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -411,7 +413,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
+              [currentPageReportTemplate]="
+                'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>
@@ -434,277 +438,10 @@
   (cancelled)="onDuplicateDialogDismissed()"
 />
 
-<p-dialog
+<app-confirm-invoice-dialog
   [visible]="confirmDialogVisible()"
-  (visibleChange)="confirmDialogVisible.set($event)"
-  [header]="'finance.billing.invoices.confirmInvoice' | translate"
-  [modal]="true"
-  [style]="{ width: '90vw', maxWidth: '520px' }"
-  [contentStyle]="{ overflow: 'visible', padding: '0' }"
-  [closable]="false"
-  appendTo="body"
-  styleClass="confirm-invoice-dialog"
->
-  @if (invoiceToConfirm()?.paymentType === 'CASH') {
-    <div class="p-5 space-y-5">
-      <div
-        class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-xl p-4"
-      >
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">{{
-              'finance.billing.invoices.totalToPay' | translate
-            }}</span>
-            <div class="font-mono text-2xl font-bold text-surface-900 dark:text-surface-0 mt-0.5">
-              ${{ invoiceToConfirm()?.total ?? 0 | localizedNumber: '1.2-2' }}
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-medium text-surface-500 uppercase tracking-wide">{{
-              'shared.customer' | translate
-            }}</span>
-            <div
-              class="font-semibold text-surface-700 dark:text-surface-300 mt-0.5 max-w-[180px] truncate"
-            >
-              {{ invoiceToConfirm()?.customerName }}
-            </div>
-          </div>
-        </div>
-        @if (customerBalanceConfirm() > 0) {
-          <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-2">
-                <i class="pi pi-wallet text-green-600 text-sm"></i>
-                <span class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
-                  'finance.billing.invoices.creditBalance' | translate
-                }}</span>
-              </div>
-              <span class="font-mono font-bold text-green-600"
-                >${{ customerBalanceConfirm() | localizedNumber: '1.2-2' }}</span
-              >
-            </div>
-            <div class="flex gap-3">
-              <label
-                class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
-                [class.border-primary]="useBalanceConfirm()"
-                [class]="useBalanceConfirm() ? 'bg-primary/5' : ''"
-                [class.border-surface-200]="!useBalanceConfirm()"
-                [class.dark:border-surface-600]="!useBalanceConfirm()"
-              >
-                <p-radioButton
-                  [value]="true"
-                  [ngModel]="useBalanceConfirm()"
-                  (ngModelChange)="useBalanceConfirm.set($event)"
-                  name="balanceGroup"
-                  inputId="useBalance"
-                />
-                <span class="text-sm font-medium">{{
-                  'finance.billing.invoices.useCreditBalance' | translate
-                }}</span>
-              </label>
-              <label
-                class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all"
-                [class.border-primary]="!useBalanceConfirm()"
-                [class]="!useBalanceConfirm() ? 'bg-primary/5' : ''"
-                [class.border-surface-200]="useBalanceConfirm()"
-                [class.dark:border-surface-600]="useBalanceConfirm()"
-              >
-                <p-radioButton
-                  [value]="false"
-                  [ngModel]="useBalanceConfirm()"
-                  (ngModelChange)="useBalanceConfirm.set($event)"
-                  name="balanceGroup"
-                  inputId="noBalance"
-                />
-                <span class="text-sm font-medium">{{
-                  'finance.billing.invoices.doNotUse' | translate
-                }}</span>
-              </label>
-            </div>
-          </div>
-        }
-      </div>
-
-      @if (useBalanceConfirm()) {
-        <div
-          class="flex items-center justify-between px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl"
-        >
-          <div class="flex items-center gap-2">
-            <i class="pi pi-check-circle text-green-600"></i>
-            <span class="text-sm font-medium text-green-700 dark:text-green-300">{{
-              'finance.billing.invoices.balanceApplied' | translate
-            }}</span>
-          </div>
-          <span class="font-mono font-bold text-green-600"
-            >-${{
-              (customerBalanceConfirm() >= (invoiceToConfirm()?.total ?? 0)
-                ? (invoiceToConfirm()?.total ?? 0)
-                : customerBalanceConfirm()
-              ) | localizedNumber: '1.2-2'
-            }}</span
-          >
-        </div>
-      }
-
-      <div class="space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
-            'finance.billing.invoices.paymentMethods' | translate
-          }}</span>
-          @if (remainingToPay() > 0) {
-            <p-button
-              [label]="'finance.billing.invoices.add' | translate"
-              icon="pi pi-plus"
-              size="small"
-              severity="info"
-              [outlined]="true"
-              (onClick)="addPaymentLine()"
-            />
-          }
-        </div>
-
-        <div class="space-y-2">
-          @for (line of paymentLines(); track trackByIndex($index); let i = $index) {
-            <div
-              class="grid grid-cols-[1fr_140px_40px] gap-2 items-center p-2 border border-surface-200 dark:border-surface-700 rounded-xl"
-            >
-              <div class="min-w-0">
-                <p-select
-                  [options]="paymentMethods()"
-                  optionLabel="name"
-                  optionValue="id"
-                  [placeholder]="'finance.billing.invoices.selectMethod' | translate"
-                  fluid
-                  [ngModel]="line.methodId"
-                  (ngModelChange)="updatePaymentLine(i, 'methodId', $event)"
-                  appendTo="body"
-                />
-              </div>
-              <div>
-                <p-inputNumber
-                  [ngModel]="line.amount"
-                  (ngModelChange)="updatePaymentLine(i, 'amount', $event)"
-                  mode="currency"
-                  currency="USD"
-                  [locale]="locale()"
-                  [min]="0"
-                  [maxFractionDigits]="2"
-                  fluid
-                  placeholder="0.00"
-                />
-              </div>
-              <div class="flex justify-center">
-                <p-button
-                  icon="pi pi-trash"
-                  size="small"
-                  severity="danger"
-                  [text]="true"
-                  [rounded]="true"
-                  (onClick)="removePaymentLine(i)"
-                />
-              </div>
-            </div>
-          } @empty {
-            <div
-              class="text-center py-6 text-sm text-surface-400 border-2 border-dashed border-surface-200 dark:border-surface-700 rounded-xl"
-            >
-              <i class="pi pi-credit-card text-2xl mb-2 block text-surface-300"></i>
-              {{ 'finance.billing.invoices.addAPaymentMethodOrUseTheCreditBalance' | translate }}
-            </div>
-          }
-        </div>
-
-        <div class="pt-3 border-t border-surface-200 dark:border-surface-700">
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
-              'finance.billing.invoices.totalAllocated' | translate
-            }}</span>
-            <span
-              class="font-mono font-bold text-lg"
-              [class.text-green-600]="totalPayments() === (invoiceToConfirm()?.total ?? 0)"
-              [class.text-red-500]="totalPayments() !== (invoiceToConfirm()?.total ?? 0)"
-            >
-              ${{ totalPayments() | localizedNumber: '1.2-2' }}
-            </span>
-          </div>
-          @if (remainingToPay() > 0) {
-            <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
-              <i class="pi pi-exclamation-circle text-xs"></i>
-              <span class="text-xs font-medium">{{
-                'finance.billing.invoices.remainingAllocation'
-                  | translate: { amount: (remainingToPay() | localizedNumber: '1.2-2') }
-              }}</span>
-            </div>
-          }
-          @if (totalPayments() > (invoiceToConfirm()?.total ?? 0)) {
-            <div class="flex items-center gap-1.5 mt-1.5 text-red-500">
-              <i class="pi pi-exclamation-circle text-xs"></i>
-              <span class="text-xs font-medium"
-                >{{ 'finance.billing.invoices.exceedsTheTotalBy' | translate
-                }}{{
-                  totalPayments() - (invoiceToConfirm()?.total ?? 0) | localizedNumber: '1.2-2'
-                }}</span
-              >
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  } @else {
-    <div class="p-5 space-y-5">
-      <div
-        class="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl"
-      >
-        <i class="pi pi-exclamation-triangle text-amber-600 text-lg mt-0.5"></i>
-        <div>
-          <div class="font-semibold text-amber-800 dark:text-amber-300 text-sm">
-            {{ 'finance.billing.invoices.creditLimitExceeded' | translate }}
-          </div>
-          <p class="text-amber-700 dark:text-amber-400 text-sm mt-1">
-            {{
-              'finance.billing.invoices.theInvoiceExceedsTheAvailableCreditEnterYourPasswordToConfirm'
-                | translate
-            }}
-          </p>
-        </div>
-      </div>
-      <div class="space-y-2">
-        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">{{
-          'finance.billing.invoices.password' | translate
-        }}</label>
-        <p-password
-          [ngModel]="confirmationPassword()"
-          (ngModelChange)="confirmationPassword.set($event)"
-          [feedback]="false"
-          [toggleMask]="true"
-          fluid
-          inputStyleClass="w-full"
-          (keyup.enter)="submitConfirm()"
-        />
-      </div>
-    </div>
-  }
-  <ng-template pTemplate="footer">
-    <div
-      class="flex items-center justify-end gap-2 px-5 py-4 bg-surface-50 dark:bg-surface-900/50 border-t border-surface-200 dark:border-surface-700"
-    >
-      <p-button
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="confirmDialogVisible.set(false)"
-        severity="secondary"
-        [text]="true"
-      />
-      <p-button
-        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
-        [appPermission]="'EXECUTE'"
-        [label]="'finance.billing.invoices.confirm' | translate"
-        icon="pi pi-check"
-        (onClick)="submitConfirm()"
-        [loading]="isConfirming()"
-        severity="contrast"
-        [disabled]="invoiceToConfirm()?.paymentType === 'CASH' && !allPaymentsValid()"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+  [invoice]="invoiceToConfirm()"
+  [submitting]="isConfirming()"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>
