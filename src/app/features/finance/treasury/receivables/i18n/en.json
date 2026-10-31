@@ -1,4 +1,9 @@
 {
+  "finance.treasury.receivables.allStatuses": "All",
+  "finance.treasury.receivables.overdue": "Overdue",
+  "finance.treasury.receivables.current": "Current",
+  "finance.treasury.receivables.delivered": "Delivered",
+  "finance.treasury.receivables.invoicePaymentRecords": "Invoice payment records",
   "finance.treasury.receivables.openCustomerActions": "Open customer actions",
   "finance.treasury.receivables.reference": "Reference",
   "finance.treasury.receivables.creditBalance": "Credit balance",

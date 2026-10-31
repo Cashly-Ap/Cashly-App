@@ -19,7 +19,12 @@
           {{ 'finance.treasury.receivables.paymentHistory' | translate }}
         </h2>
         <p class="text-sm text-surface-500">
-          {{ 'finance.treasury.receivables.customerPaymentRecords' | translate }}
+          {{
+            (invoiceId()
+              ? 'finance.treasury.receivables.invoicePaymentRecords'
+              : 'finance.treasury.receivables.customerPaymentRecords'
+            ) | translate
+          }}
         </p>
       </div>
     </div>
@@ -42,7 +47,12 @@
           {{ 'finance.treasury.receivables.noPaymentsRegistered' | translate }}
         </h3>
         <p class="text-sm text-surface-500">
-          {{ 'finance.treasury.receivables.thisCustomerHasNoPaymentRecordsYet' | translate }}
+          {{
+            (invoiceId()
+              ? 'finance.treasury.receivables.noPaymentsRegisteredForThisInvoice'
+              : 'finance.treasury.receivables.thisCustomerHasNoPaymentRecordsYet'
+            ) | translate
+          }}
         </p>
       </div>
     } @else {
@@ -59,7 +69,7 @@
             </p>
           </div>
           <div class="text-center">
-            <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+            <p class="text-2xl font-bold" [class]="amountColor('success')">
               {{ totalAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </p>
             <p class="text-xs text-surface-500 mt-1">
@@ -67,7 +77,7 @@
             </p>
           </div>
           <div class="text-center">
-            <p class="text-2xl font-bold text-green-600 dark:text-green-400">
+            <p class="text-2xl font-bold" [class]="amountColor('success')">
               {{ approvedCount() }}
             </p>
             <p class="text-xs text-surface-500 mt-1">
@@ -75,7 +85,7 @@
             </p>
           </div>
           <div class="text-center">
-            <p class="text-2xl font-bold text-red-600 dark:text-red-400">{{ rejectedCount() }}</p>
+            <p class="text-2xl font-bold" [class]="amountColor('danger')">{{ rejectedCount() }}</p>
             <p class="text-xs text-surface-500 mt-1">
               {{ 'finance.treasury.receivables.rejected' | translate }}
             </p>
@@ -130,7 +140,7 @@
                 }}</span>
               </td>
               <td class="text-right">
-                <span class="font-mono font-semibold text-green-600 dark:text-green-400">
+                <span class="font-mono font-semibold" [class]="amountColor('success')">
                   {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
@@ -170,7 +180,7 @@
               class="flex items-center justify-between py-2 border-t border-surface-200 dark:border-surface-700"
             >
               <span class="text-sm text-surface-500">{{ 'shared.amount' | translate }}</span>
-              <span class="font-mono font-bold text-green-600 dark:text-green-400">
+              <span class="font-mono font-bold" [class]="amountColor('success')">
                 {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
               </span>
             </div>

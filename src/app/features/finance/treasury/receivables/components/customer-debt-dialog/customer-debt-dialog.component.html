@@ -92,7 +92,7 @@
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.totalDebt' | translate
             }}</span>
-            <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+            <span class="font-mono text-lg font-bold" [class]="amountColor('danger')">
               {{ customer()!.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
@@ -112,7 +112,7 @@
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.billing.invoices.creditBalance' | translate
             }}</span>
-            <span class="font-mono text-base font-bold text-blue-600 dark:text-blue-400">
+            <span class="font-mono text-base font-bold" [class]="amountColor('info')">
               {{ customer()!.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
@@ -122,8 +122,7 @@
             }}</span>
             <span
               class="font-mono text-base font-bold"
-              [class.text-green-600]="customer()!.availableCredit > 0"
-              [class.text-red-600]="customer()!.availableCredit <= 0"
+              [class]="amountColor(customer()!.availableCredit > 0 ? 'success' : 'danger')"
             >
               {{ customer()!.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
@@ -267,14 +266,22 @@
               </td>
               <td>
                 <span
-                  [class.text-red-600]="invoice.dueDate < todayDate"
-                  [class.font-semibold]="invoice.dueDate < todayDate"
-                  class="text-sm text-surface-600 dark:text-surface-400"
+                  [class]="
+                    isOverdue(invoice)
+                      ? amountColor('danger')
+                      : 'text-surface-600 dark:text-surface-400'
+                  "
+                  [class.font-semibold]="isOverdue(invoice)"
+                  class="text-sm"
                 >
                   {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
                 </span>
-                @if (invoice.dueDate < todayDate) {
-                  <p-tag value="Vencida" severity="danger" class="ml-2" />
+                @if (isOverdue(invoice)) {
+                  <p-tag
+                    [value]="'finance.treasury.receivables.overdue' | translate"
+                    [severity]="overdueSeverity()"
+                    class="ml-2"
+                  />
                 }
               </td>
               <td>
@@ -289,12 +296,12 @@
                 </span>
               </td>
               <td class="text-right">
-                <span class="font-mono text-sm text-green-600 dark:text-green-400">
+                <span class="font-mono text-sm" [class]="amountColor('success')">
                   {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
               <td class="text-right">
-                <span class="font-mono text-sm font-bold text-red-600 dark:text-red-400">
+                <span class="font-mono text-sm font-bold" [class]="amountColor('danger')">
                   {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </td>
@@ -308,7 +315,7 @@
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="7" class="py-12">
+              <td colspan="8" class="py-12">
                 <div class="flex flex-col items-center gap-3">
                   <div
                     class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
@@ -336,7 +343,9 @@
           [totalRecords]="invoiceTotalRecords()"
           [rowsPerPageOptions]="[5, 10, 25]"
           [showCurrentPageReport]="true"
-          [currentPageReportTemplate]="'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate"
+          [currentPageReportTemplate]="
+            'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+          "
           (onPageChange)="onInvoicePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
@@ -353,7 +362,9 @@
           [showPageLinks]="false"
           [showFirstLastIcon]="false"
           [showCurrentPageReport]="true"
-          [currentPageReportTemplate]="'finance.treasury.receivables.firstLastOfTotalrecords' | translate"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.firstLastOfTotalrecords' | translate
+          "
           (onPageChange)="onInvoicePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
@@ -419,7 +430,7 @@
                   <span class="text-surface-500 dark:text-surface-400">{{
                     'finance.treasury.receivables.paid2' | translate
                   }}</span>
-                  <span class="font-mono text-green-600 dark:text-green-400">
+                  <span class="font-mono" [class]="amountColor('success')">
                     {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
@@ -427,7 +438,7 @@
                   <span class="text-surface-500 dark:text-surface-400">{{
                     'finance.treasury.receivables.balance' | translate
                   }}</span>
-                  <span class="font-mono font-bold text-red-600 dark:text-red-400">
+                  <span class="font-mono font-bold" [class]="amountColor('danger')">
                     {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                   </span>
                 </div>
@@ -551,8 +562,11 @@
               <td class="text-right">
                 <span
                   class="font-mono text-sm font-bold"
-                  [class.text-green-600]="isPositive(tx.type)"
-                  [class.text-red-600]="isNegative(tx.type)"
+                  [class]="
+                    amountColor(
+                      isPositive(tx.type) ? 'success' : isNegative(tx.type) ? 'danger' : 'info'
+                    )
+                  "
                 >
                   {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
@@ -624,8 +638,11 @@
                 />
                 <span
                   class="font-mono text-base font-bold"
-                  [class.text-green-600]="isPositive(tx.type)"
-                  [class.text-red-600]="isNegative(tx.type)"
+                  [class]="
+                    amountColor(
+                      isPositive(tx.type) ? 'success' : isNegative(tx.type) ? 'danger' : 'info'
+                    )
+                  "
                 >
                   {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
@@ -670,7 +687,9 @@
           [totalRecords]="balanceTotalRecords()"
           [rowsPerPageOptions]="[5, 10, 25]"
           [showCurrentPageReport]="true"
-          [currentPageReportTemplate]="'finance.treasury.receivables.showingFirstToLastOfTotalrecordsMovements' | translate"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.showingFirstToLastOfTotalrecordsMovements' | translate
+          "
           (onPageChange)="onBalancePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
@@ -687,7 +706,9 @@
           [showPageLinks]="false"
           [showFirstLastIcon]="false"
           [showCurrentPageReport]="true"
-          [currentPageReportTemplate]="'finance.treasury.receivables.firstLastOfTotalrecords' | translate"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.firstLastOfTotalrecords' | translate
+          "
           (onPageChange)="onBalancePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
@@ -729,7 +750,7 @@
           <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
             'finance.treasury.receivables.currentCustomerBalance' | translate
           }}</span>
-          <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
+          <span class="font-mono text-lg font-bold" [class]="amountColor('info')">
             {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
@@ -740,7 +761,7 @@
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
           {{ 'finance.treasury.receivables.amountToRefund' | translate }}
-          <span class="text-red-500">*</span>
+          <span [class]="amountColor('danger')">*</span>
         </label>
         <p-inputNumber
           id="refundAmount"
@@ -757,7 +778,7 @@
           "
         />
         @if (refundForm.get('amount')?.invalid && refundForm.get('amount')?.touched) {
-          <small class="text-red-500 text-xs block mt-1">
+          <small class="text-xs block mt-1" [class]="amountColor('danger')">
             @if (refundForm.get('amount')?.errors?.['required']) {
               {{ 'finance.treasury.receivables.amountRequired' | translate }}
             }
@@ -770,7 +791,7 @@
       <div class="space-y-2">
         <label for="refundPaymentMethod" class="block text-sm font-semibold"
           >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
-          <span class="text-red-500">*</span></label
+          <span [class]="amountColor('danger')">*</span></label
         >
         <p-select
           inputId="refundPaymentMethod"
@@ -840,7 +861,7 @@
           <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
             'finance.treasury.receivables.currentCustomerBalance' | translate
           }}</span>
-          <span class="font-mono text-lg font-bold text-blue-600 dark:text-blue-400">
+          <span class="font-mono text-lg font-bold" [class]="amountColor('info')">
             {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
@@ -849,7 +870,7 @@
       <div class="space-y-2">
         <label for="advancePaymentMethod" class="block text-sm font-semibold"
           >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
-          <span class="text-red-500">*</span></label
+          <span [class]="amountColor('danger')">*</span></label
         >
         <p-select
           inputId="advancePaymentMethod"
@@ -868,7 +889,7 @@
           class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
         >
           {{ 'finance.treasury.receivables.advanceAmount' | translate }}
-          <span class="text-red-500">*</span>
+          <span [class]="amountColor('danger')">*</span>
         </label>
         <p-inputNumber
           id="advanceAmount"
@@ -884,7 +905,7 @@
           "
         />
         @if (advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched) {
-          <small class="text-red-500 text-xs block mt-1">
+          <small class="text-xs block mt-1" [class]="amountColor('danger')">
             @if (advanceForm.get('amount')?.errors?.['required']) {
               {{ 'finance.treasury.receivables.amountRequired' | translate }}
             }

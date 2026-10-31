@@ -1,4 +1,12 @@
 import { LanguageService } from '@core/i18n/language.service';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
+import {
+  ReceivableTone,
+  receivableAmountClass,
+  invoiceStatusTranslationKey,
+  invoiceStatusSeverity,
+  isInvoiceOverdue,
+} from '../receivables-presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
@@ -8,7 +16,16 @@ import {
   ListActionButtonsComponent,
   ListAction,
 } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
-import { Component, input, output, inject, signal, computed, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+  inject,
+  signal,
+  computed,
+  effect,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -86,9 +103,11 @@ interface BalanceFilterOption {
   ],
   providers: [provideTranslatedMessages()],
   templateUrl: './customer-debt-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CustomerDebtDialogComponent {
   readonly locale = inject(LanguageService).locale;
+  private readonly preferences = inject(UserPreferencesService);
 
   protected service = inject(ReceivablesApplicationService);
   private balanceApi = inject(CustomerBalanceApiService);
@@ -126,15 +145,15 @@ export class CustomerDebtDialogComponent {
   );
 
   protected readonly statusFilterOptions: StatusFilterOption[] = [
-    { label: 'Todos', value: 'ALL' },
-    { label: 'Pendientes', value: 'PENDING' },
-    { label: 'Parcial', value: 'PARTIAL' },
-    { label: 'Pagados', value: 'PAID' },
-    { label: 'Devueltas', value: 'RETURNED' },
-    { label: 'Parcialmente Devueltas', value: 'PARTIAL_RETURN' },
-    { label: 'Canceladas', value: 'CANCELLED' },
-    { label: 'Vencidas', value: 'OVERDUE' },
-    { label: 'Al día', value: 'CURRENT' },
+    { label: 'finance.treasury.receivables.allStatuses', value: 'ALL' },
+    { label: 'finance.treasury.receivables.pending', value: 'PENDING' },
+    { label: 'finance.treasury.receivables.partial', value: 'PARTIAL' },
+    { label: 'finance.treasury.receivables.paid', value: 'PAID' },
+    { label: 'finance.treasury.receivables.returned', value: 'RETURNED' },
+    { label: 'finance.treasury.receivables.partiallyReturned', value: 'PARTIAL_RETURN' },
+    { label: 'finance.treasury.receivables.cancelled', value: 'CANCELLED' },
+    { label: 'finance.treasury.receivables.overdue', value: 'OVERDUE' },
+    { label: 'finance.treasury.receivables.current', value: 'CURRENT' },
   ];
 
   protected balance = signal<number>(0);
@@ -299,45 +318,23 @@ export class CustomerDebtDialogComponent {
   }
 
   protected getStatusLabel(status: string): string {
-    switch (status) {
-      case 'PENDING':
-      case 'PENDING_PAYMENT':
-        return 'Pendiente';
-      case 'DELIVERED':
-        return 'Entregada';
-      case 'PARTIAL':
-        return 'Parcial';
-      case 'PAID':
-        return 'Pagado';
-      case 'PARTIALLY_PAID':
-        return 'Pagada parcialmente';
-      case 'FULLY_RETURNED':
-        return 'Devuelta';
-      case 'CANCELLED':
-        return 'Cancelada';
-      default:
-        return status;
-    }
+    return invoiceStatusTranslationKey(status);
   }
 
   protected getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
-    switch (status) {
-      case 'PAID':
-        return 'success';
-      case 'PARTIAL':
-        return 'warn';
-      case 'DELIVERED':
-        return 'info';
-      case 'PENDING':
-      case 'PENDING_PAYMENT':
-        return 'warn';
-      case 'FULLY_RETURNED':
-        return 'info';
-      case 'CANCELLED':
-        return 'danger';
-      default:
-        return 'info';
-    }
+    return invoiceStatusSeverity(status, this.preferences.colorMode() === 'informative');
+  }
+
+  protected amountColor(tone: ReceivableTone): string {
+    return receivableAmountClass(this.preferences.colorMode() === 'informative', tone);
+  }
+
+  protected isOverdue(invoice: CustomerInvoiceDebt): boolean {
+    return isInvoiceOverdue(invoice, this.todayDate);
+  }
+
+  protected overdueSeverity(): 'danger' | 'contrast' {
+    return this.preferences.colorMode() === 'informative' ? 'danger' : 'contrast';
   }
 
   protected isInvoiceFullyBlocked(_invoice: CustomerInvoiceDebt): boolean {
@@ -444,6 +441,7 @@ export class CustomerDebtDialogComponent {
   protected getBalanceTypeSeverity(
     type: string,
   ): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
+    if (this.preferences.colorMode() !== 'informative') return 'contrast';
     switch (type) {
       case 'ADVANCED':
         return 'info';

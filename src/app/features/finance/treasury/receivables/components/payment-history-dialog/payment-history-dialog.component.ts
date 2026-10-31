@@ -1,6 +1,17 @@
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { Component, input, output, inject, signal, effect, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+  inject,
+  signal,
+  effect,
+  computed,
+} from '@angular/core';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
+import { ReceivableTone, receivableAmountClass } from '../receivables-presentation';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -25,9 +36,11 @@ import { PendingPayment } from '@features/finance/treasury/receivables/models/in
     DatePipe,
   ],
   templateUrl: './payment-history-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PaymentHistoryDialogComponent {
   private apiService = inject(ReceivablesApiService);
+  private readonly preferences = inject(UserPreferencesService);
 
   readonly visible = input.required<boolean>();
   readonly customerId = input.required<string>();
@@ -41,33 +54,40 @@ export class PaymentHistoryDialogComponent {
   protected totalAmount = computed(() => this.payments().reduce((sum, p) => sum + p.amount, 0));
 
   protected approvedCount = computed(
-    () => this.payments().filter((p) => p.status === 'APPROVED').length,
+    () => this.payments().filter((p) => p.status === 'APPROVED' || p.status === 'APPLIED').length,
   );
 
   protected rejectedCount = computed(
     () => this.payments().filter((p) => p.status === 'REJECTED').length,
   );
 
-  protected dialogTitle = computed(() => {
-    if (this.payments().length > 0) {
-      return `Historial de Pagos - ${this.payments()[0].invoiceNumber}`;
-    }
-    return 'Historial de Pagos';
-  });
-
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       const customerId = this.customerId();
       const invoiceId = this.invoiceId();
       const isVisible = this.visible();
 
-      if (isVisible && customerId) {
-        if (invoiceId) {
-          this.loadInvoicePaymentHistory(invoiceId);
-        } else {
-          this.loadCustomerPaymentHistory(customerId);
-        }
-      }
+      this.payments.set([]);
+      this.loading.set(false);
+      if (!isVisible || !customerId) return;
+      this.loading.set(true);
+      const request = this.apiService
+        .getCustomerPaymentHistory(customerId, {
+          page: 0,
+          size: 100,
+          ...(invoiceId ? { invoiceId } : {}),
+        })
+        .subscribe({
+          next: (response) => {
+            this.payments.set(response.content ?? []);
+            this.loading.set(false);
+          },
+          error: () => {
+            this.payments.set([]);
+            this.loading.set(false);
+          },
+        });
+      onCleanup(() => request.unsubscribe());
     });
   }
 
@@ -82,37 +102,7 @@ export class PaymentHistoryDialogComponent {
     }
   }
 
-  private loadCustomerPaymentHistory(customerId: string): void {
-    this.loading.set(true);
-    this.apiService.getCustomerPaymentHistory(customerId, { page: 0, size: 100 }).subscribe({
-      next: (response) => {
-        this.payments.set(response.content ?? []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.payments.set([]);
-        this.loading.set(false);
-      },
-    });
-  }
-
-  private loadInvoicePaymentHistory(invoiceId: string): void {
-    this.loading.set(true);
-    const customerId = this.customerId();
-    if (customerId) {
-      this.apiService.getCustomerPaymentHistory(customerId, { page: 0, size: 100 }).subscribe({
-        next: (response) => {
-          this.payments.set(response.content ?? []);
-          this.loading.set(false);
-        },
-        error: () => {
-          this.payments.set([]);
-          this.loading.set(false);
-        },
-      });
-    } else {
-      this.payments.set([]);
-      this.loading.set(false);
-    }
+  protected amountColor(tone: ReceivableTone): string {
+    return receivableAmountClass(this.preferences.colorMode() === 'informative', tone);
   }
 }

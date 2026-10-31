@@ -1,4 +1,9 @@
 {
+  "finance.treasury.receivables.allStatuses": "Todos",
+  "finance.treasury.receivables.overdue": "Vencida",
+  "finance.treasury.receivables.current": "Al día",
+  "finance.treasury.receivables.delivered": "Entregada",
+  "finance.treasury.receivables.invoicePaymentRecords": "Pagos de la factura",
   "finance.treasury.receivables.openCustomerActions": "Abrir acciones del cliente",
   "finance.treasury.receivables.reference": "Referencia",
   "finance.treasury.receivables.creditBalance": "Saldo a favor",
