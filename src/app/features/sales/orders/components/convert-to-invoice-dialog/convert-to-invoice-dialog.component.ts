@@ -35,6 +35,7 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/order-api.service';
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
+import { TranslationService } from '@core/i18n/translation.service';
 
 @Component({
   selector: 'app-convert-order-to-invoice-dialog',
@@ -73,6 +74,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly paymentMethodApi = inject(PaymentMethodApiService);
+  private readonly translations = inject(TranslationService);
 
   private readonly orderApi = inject(OrderApiService);
   private stockRequestVersion = 0;
@@ -83,7 +85,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.orderDetails()), true));
   readonly confirmationModel = computed<DocumentConfirmationModel>(() => ({
     title: 'sales.orders.convertToInvoice2',
-    subtitle: 'Revise el stock y los datos de pago antes de continuar',
+    subtitle: 'sales.orders.reviewStockAndPaymentBeforeContinuing',
     icon: 'pi-file',
     acceptLabel: 'sales.orders.convertToInvoice2',
     acceptIcon: 'pi pi-check',
@@ -114,14 +116,20 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
       return null;
 
     const parts: string[] = [];
-    if (status.hasOverdue) parts.push('El cliente tiene facturas vencidas.');
+    if (status.hasOverdue)
+      parts.push(this.translations.t('sales.orders.theCustomerHasOverdueInvoices'));
     if (total > status.availableCredit) {
       const deficit = total - status.availableCredit;
       parts.push(
-        `El total de la factura (${total.toLocaleString()}) excede el crédito disponible (${status.availableCredit.toLocaleString()}) por ${deficit.toLocaleString()}.`,
+        this.translations.t('sales.orders.theInvoiceTotalExceedsTheAvailableCreditByFormatted', {
+          total: total.toLocaleString(),
+          availableCredit: status.availableCredit.toLocaleString(),
+          deficit: deficit.toLocaleString(),
+        }),
       );
     }
-    if (!status.canCreateCreditInvoice) parts.push('El cliente no puede crear facturas a crédito.');
+    if (!status.canCreateCreditInvoice)
+      parts.push(this.translations.t('sales.orders.theCustomerCannotCreateCreditInvoices'));
 
     return {
       message: parts.join(' '),

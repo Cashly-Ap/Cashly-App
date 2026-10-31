@@ -1,5 +1,7 @@
 {
   "sales.orders.reviewStockBeforeConfirming": "Revise el stock antes de confirmar el pedido",
+  "sales.orders.reviewStockAndPaymentBeforeContinuing": "Revise el stock y los datos de pago antes de continuar",
+  "sales.orders.theInvoiceTotalExceedsTheAvailableCreditByFormatted": "El total de la factura ({{total}}) excede el crédito disponible ({{availableCredit}}) por {{deficit}}.",
   "sales.orders.confirmationStockNotice": "Al confirmar el pedido se descontará su stock reservado de los almacenes asignados.",
   "sales.orders.unableToConfirm": "No se puede confirmar el pedido",
   "sales.orders.insufficientConfirmationStock": "No hay stock suficiente en uno o más almacenes asignados. Revise las cantidades antes de confirmar.",

@@ -1,6 +1,7 @@
 {
   "finance.billing.invoices.edit": "Editar",
   "finance.billing.invoices.status": "Estado",
+  "finance.billing.invoices.customer": "Cliente",
   "finance.billing.invoices.notes": "Notas",
   "finance.billing.invoices.date": "Fecha",
   "finance.billing.invoices.allTypes": "Todos los tipos",

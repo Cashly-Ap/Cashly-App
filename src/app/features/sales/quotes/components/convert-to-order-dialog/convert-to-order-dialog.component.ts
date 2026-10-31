@@ -78,7 +78,7 @@ export class ConvertToOrderDialogComponent implements OnChanges {
       summaryFields: info
         ? [
             { label: 'sales.quotes.quote2', value: info.number, monospace: true },
-            { label: 'finance.billing.invoices.customer', value: info.customerName },
+            { label: 'shared.customer', value: info.customerName },
             { label: 'finance.billing.returns.total', value: info.subtotal },
           ]
         : [],
