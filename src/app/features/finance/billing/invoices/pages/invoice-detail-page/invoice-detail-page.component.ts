@@ -10,7 +10,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -45,8 +45,6 @@ import {
     LocalizedDatePipe,
     LocalizedNumberPipe,
     PermissionDirective,
-    DatePipe,
-    DecimalPipe,
     ButtonModule,
     TableModule,
     DetailActionsMenuComponent,

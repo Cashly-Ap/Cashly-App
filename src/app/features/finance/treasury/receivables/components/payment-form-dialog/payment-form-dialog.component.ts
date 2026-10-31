@@ -1,6 +1,6 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
-import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+
 import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
@@ -13,7 +13,7 @@ import {
   Validators,
   FormsModule,
 } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -45,7 +45,6 @@ export interface PaymentMethodOption {
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
-    TranslateOptionsPipe,
     TranslatePipe,
     LocalizedCurrencyPipe,
     ShortcutDirective,
@@ -59,7 +58,6 @@ export interface PaymentMethodOption {
     RadioButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    CurrencyPipe,
   ],
   templateUrl: './payment-form-dialog.component.html',
   styles: [

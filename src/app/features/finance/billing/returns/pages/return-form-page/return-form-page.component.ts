@@ -10,7 +10,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -58,7 +58,6 @@ interface ReturnLineFormData {
     TranslatePipe,
     LocalizedNumberPipe,
     CommonModule,
-    DecimalPipe,
     ReactiveFormsModule,
     FormsModule,
     ButtonModule,

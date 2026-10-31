@@ -13,7 +13,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -59,8 +59,6 @@ import { InvoiceCreate } from '@features/finance/billing/invoices/models/interfa
     LocalizedDatePipe,
     LocalizedNumberPipe,
     ReactiveFormsModule,
-    DecimalPipe,
-    DatePipe,
     ButtonModule,
     TextareaModule,
     SelectModule,

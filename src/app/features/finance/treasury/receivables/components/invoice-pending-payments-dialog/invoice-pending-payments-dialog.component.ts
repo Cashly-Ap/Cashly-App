@@ -6,7 +6,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
@@ -22,8 +22,6 @@ import { PendingPayment } from '@features/finance/treasury/receivables/models/in
     ButtonModule,
     TableModule,
     TooltipModule,
-    CurrencyPipe,
-    DatePipe,
   ],
   templateUrl: './invoice-pending-payments-dialog.component.html',
 })

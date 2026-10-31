@@ -14,7 +14,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, of } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
@@ -35,9 +35,11 @@ export type WarehouseStockOperation = 'entry' | 'exit';
 @Component({
   selector: 'app-warehouse-stock-operation-dialog',
   standalone: true,
-  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedCurrencyPipe,
+  imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     ShortcutDirective,
-    CurrencyPipe,
     ReactiveFormsModule,
     ButtonModule,
     DialogModule,

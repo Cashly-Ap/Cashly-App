@@ -11,7 +11,7 @@ import {
   computed,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -23,13 +23,14 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedCurrencyPipe,
+  imports: [
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,
     InputTextModule,
-    CurrencyPipe,
     SearchFieldComponent,
   ],
   templateUrl: './invoice-picker-dialog.component.html',

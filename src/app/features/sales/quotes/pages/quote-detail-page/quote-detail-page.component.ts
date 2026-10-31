@@ -3,7 +3,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -33,8 +33,6 @@ import {
     LocalizedDatePipe,
     LocalizedNumberPipe,
     PermissionDirective,
-    DatePipe,
-    DecimalPipe,
     ButtonModule,
     TableModule,
     DetailActionsMenuComponent,

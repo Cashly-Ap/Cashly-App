@@ -4,7 +4,7 @@ import { Component, input, output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 
 function getPaymentStatusLabel(status: string): string {
@@ -41,8 +41,6 @@ function getPaymentStatusSeverity(
     DialogModule,
     ButtonModule,
     TagModule,
-    CurrencyPipe,
-    DatePipe,
   ],
   templateUrl: './payment-detail-dialog.component.html',
 })

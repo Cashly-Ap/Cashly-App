@@ -17,7 +17,7 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
@@ -76,7 +76,6 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
     PermissionDirective,
     CommonModule,
     FormsModule,
-    DecimalPipe,
     ButtonModule,
     TableModule,
     InputTextModule,

@@ -11,7 +11,7 @@ import {
   signal,
   OnInit,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
@@ -43,7 +43,6 @@ export interface ReturnLineFormData {
     TranslatePipe,
     LocalizedNumberPipe,
     CommonModule,
-    DecimalPipe,
     PopoverModule,
     ButtonModule,
     TooltipModule,

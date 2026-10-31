@@ -17,7 +17,7 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { PaginatorModule } from 'primeng/paginator';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 
@@ -32,8 +32,6 @@ import { PendingPayment } from '@features/finance/treasury/receivables/models/in
     ButtonModule,
     TableModule,
     PaginatorModule,
-    CurrencyPipe,
-    DatePipe,
   ],
   templateUrl: './payment-history-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

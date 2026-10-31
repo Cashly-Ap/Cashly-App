@@ -14,7 +14,7 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { TableModule } from 'primeng/table';
@@ -51,7 +51,6 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
     ListActionButtonsComponent,
     CommonModule,
     FormsModule,
-    CurrencyPipe,
     TableModule,
     ButtonModule,
     TagModule,

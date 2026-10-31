@@ -12,7 +12,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -44,7 +44,6 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
     ShortcutDirective,
     CommonModule,
     FormsModule,
-    DatePipe,
     RouterModule,
     ContentCardComponent,
     ListContainerComponent,

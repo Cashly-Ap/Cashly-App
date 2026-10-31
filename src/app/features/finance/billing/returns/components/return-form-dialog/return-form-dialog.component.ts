@@ -13,7 +13,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
@@ -44,10 +44,12 @@ interface InvoiceLineFormData {
   selector: 'app-return-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LocalizedNumberPipe, TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    LocalizedNumberPipe,
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     CommonModule,
-    DecimalPipe,
     FormsModule,
     ButtonModule,
     TextareaModule,

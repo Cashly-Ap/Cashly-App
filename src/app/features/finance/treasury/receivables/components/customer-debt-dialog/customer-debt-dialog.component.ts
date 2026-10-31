@@ -37,7 +37,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { CustomerInvoiceDebt } from '@features/finance/treasury/receivables/models/interfaces/customer-invoice-debt.interface';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
@@ -95,8 +95,6 @@ interface BalanceFilterOption {
     SelectModule,
     FormsModule,
     ReactiveFormsModule,
-    CurrencyPipe,
-    DatePipe,
     ToastModule,
     ReturnFormDialogComponent,
     NoteFormDialogComponent,

@@ -10,7 +10,7 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { chartPalette, moduleColor } from '@core/preferences/module-appearance';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
@@ -41,7 +41,7 @@ const DASHBOARD_CHART_COLORS = {
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedNumberPipe, CommonModule, DecimalPipe, BaseChartDirective],
+  imports: [TranslatePipe, LocalizedNumberPipe, CommonModule, BaseChartDirective],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {
@@ -68,7 +68,10 @@ export class DashboardPageComponent implements OnInit {
     responsive: true,
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
+      y: {
+        beginAtZero: true,
+        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+      },
     },
   };
 
@@ -79,7 +82,10 @@ export class DashboardPageComponent implements OnInit {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
+      x: {
+        beginAtZero: true,
+        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+      },
       y: { ticks: { font: { size: 11 } } },
     },
   };
@@ -91,7 +97,10 @@ export class DashboardPageComponent implements OnInit {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { beginAtZero: true, ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) } },
+      x: {
+        beginAtZero: true,
+        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+      },
       y: { ticks: { font: { size: 11 } } },
     },
   };
@@ -103,15 +112,21 @@ export class DashboardPageComponent implements OnInit {
     interaction: { intersect: false, mode: 'index' },
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, ticks: { callback: (v) => '$' + Number(v).toLocaleString(this.language.locale()) } },
+      y: {
+        beginAtZero: true,
+        ticks: { callback: (v) => '$' + Number(v).toLocaleString(this.language.locale()) },
+      },
     },
   };
 
   readonly salesChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = this.preferences.colorMode() === 'informative'
-      ? moduleColor('sales', isDark)
-      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color =
+      this.preferences.colorMode() === 'informative'
+        ? moduleColor('sales', isDark)
+        : isDark
+          ? DASHBOARD_CHART_COLORS.darkSeries
+          : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.salesChartSource();
     return {
       ...source,
@@ -134,9 +149,12 @@ export class DashboardPageComponent implements OnInit {
 
   readonly productsChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = this.preferences.colorMode() === 'informative'
-      ? chartPalette(this.productsChartSource().labels?.length ?? 0, isDark)
-      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color =
+      this.preferences.colorMode() === 'informative'
+        ? chartPalette(this.productsChartSource().labels?.length ?? 0, isDark)
+        : isDark
+          ? DASHBOARD_CHART_COLORS.darkSeries
+          : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.productsChartSource();
     return {
       ...source,
@@ -161,9 +179,12 @@ export class DashboardPageComponent implements OnInit {
 
   readonly customersChartData = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const color = this.preferences.colorMode() === 'informative'
-      ? chartPalette(this.customersChartSource().labels?.length ?? 0, isDark).reverse()
-      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+    const color =
+      this.preferences.colorMode() === 'informative'
+        ? chartPalette(this.customersChartSource().labels?.length ?? 0, isDark).reverse()
+        : isDark
+          ? DASHBOARD_CHART_COLORS.darkSeries
+          : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.customersChartSource();
     return {
       ...source,
@@ -191,16 +212,20 @@ export class DashboardPageComponent implements OnInit {
     const informative = this.preferences.colorMode() === 'informative';
     const color = informative
       ? moduleColor('finance', isDark)
-      : isDark ? DASHBOARD_CHART_COLORS.darkSeries : DASHBOARD_CHART_COLORS.lightSeries;
+      : isDark
+        ? DASHBOARD_CHART_COLORS.darkSeries
+        : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.dueChartSource();
     return {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
         label: this.translations.t(dataset.label),
-        backgroundColor: informative ? `${color}20` : isDark
-          ? DASHBOARD_CHART_COLORS.darkFill
-          : DASHBOARD_CHART_COLORS.lightFill,
+        backgroundColor: informative
+          ? `${color}20`
+          : isDark
+            ? DASHBOARD_CHART_COLORS.darkFill
+            : DASHBOARD_CHART_COLORS.lightFill,
         borderColor: color,
         pointBackgroundColor: color,
       })),
@@ -317,7 +342,10 @@ export class DashboardPageComponent implements OnInit {
 
   private formatMonth(month: string): string {
     const [year, index] = month.split('-').map(Number);
-    return new Intl.DateTimeFormat(this.language.locale(), { month: 'short', year: 'numeric' }).format(new Date(year, index - 1, 1));
+    return new Intl.DateTimeFormat(this.language.locale(), {
+      month: 'short',
+      year: 'numeric',
+    }).format(new Date(year, index - 1, 1));
   }
 
   formatDueDate(date: string): string {
@@ -333,8 +361,9 @@ export class DashboardPageComponent implements OnInit {
   }
 
   private formatDate(date: string): string {
-    return new Intl.DateTimeFormat(this.language.locale(), { day: '2-digit', month: 'short' }).format(
-      new Date(`${date}T00:00:00`),
-    );
+    return new Intl.DateTimeFormat(this.language.locale(), {
+      day: '2-digit',
+      month: 'short',
+    }).format(new Date(`${date}T00:00:00`));
   }
 }

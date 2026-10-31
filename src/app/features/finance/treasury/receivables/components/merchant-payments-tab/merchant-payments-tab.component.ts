@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { CurrencyPipe, DatePipe } from '@angular/common';
+
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
@@ -47,8 +47,6 @@ function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'inf
     TableModule,
     ButtonModule,
     TagModule,
-    CurrencyPipe,
-    DatePipe,
     PaymentDetailDialogComponent,
   ],
   templateUrl: './merchant-payments-tab.component.html',

@@ -14,7 +14,7 @@ import {
   computed,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DecimalPipe } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
@@ -64,7 +64,6 @@ interface ProductSelection {
     InputNumberModule,
     TooltipModule,
     PopoverModule,
-    DecimalPipe,
     SelectModule,
     WarehouseStockPopoverComponent,
     SearchFieldComponent,

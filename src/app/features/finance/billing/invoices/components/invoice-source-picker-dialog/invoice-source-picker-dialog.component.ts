@@ -5,7 +5,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output, signal } fro
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { DecimalPipe } from '@angular/common';
+
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
@@ -52,14 +52,7 @@ interface SourceStockStatus {
 @Component({
   selector: 'app-invoice-source-picker-dialog',
   standalone: true,
-  imports: [
-    TranslatePipe,
-    LocalizedNumberPipe,
-    ShortcutDirective,
-    DialogModule,
-    ButtonModule,
-    DecimalPipe,
-  ],
+  imports: [TranslatePipe, LocalizedNumberPipe, ShortcutDirective, DialogModule, ButtonModule],
   templateUrl: './invoice-source-picker-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

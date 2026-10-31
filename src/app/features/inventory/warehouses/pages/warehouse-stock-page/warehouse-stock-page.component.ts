@@ -13,7 +13,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DecimalPipe } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -54,8 +54,10 @@ const PAGE_SIZE = 10;
 @Component({
   selector: 'app-warehouse-stock-page',
   standalone: true,
-  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedNumberPipe,
-    DecimalPipe,
+  imports: [
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedNumberPipe,
     FormsModule,
     ButtonModule,
     SelectModule,
@@ -109,7 +111,8 @@ export class WarehouseStockPageComponent implements OnInit {
     const id = this.warehouseId();
     if (!id) return this.translations.t('inventory.warehouses.allWarehouses');
     return (
-      this.warehouses().find((warehouse) => warehouse.id === id)?.name ?? this.translations.t('inventory.warehouses.selectedWarehouse')
+      this.warehouses().find((warehouse) => warehouse.id === id)?.name ??
+      this.translations.t('inventory.warehouses.selectedWarehouse')
     );
   });
   readonly activeFilterCount = computed(
@@ -122,10 +125,21 @@ export class WarehouseStockPageComponent implements OnInit {
   readonly resultLabel = computed(() => {
     const count = this.totalElements();
     if (this.displayedGroupBy() === 'PRODUCT')
-      return this.translations.t(count === 1 ? 'inventory.warehouses.countProduct' : 'inventory.warehouses.countProducts', { count });
+      return this.translations.t(
+        count === 1 ? 'inventory.warehouses.countProduct' : 'inventory.warehouses.countProducts',
+        { count },
+      );
     if (this.displayedGroupBy() === 'WAREHOUSE')
-      return this.translations.t(count === 1 ? 'inventory.warehouses.countWarehouse' : 'inventory.warehouses.countWarehouses', { count });
-    return this.translations.t(count === 1 ? 'inventory.warehouses.countRecord' : 'inventory.warehouses.countRecords', { count });
+      return this.translations.t(
+        count === 1
+          ? 'inventory.warehouses.countWarehouse'
+          : 'inventory.warehouses.countWarehouses',
+        { count },
+      );
+    return this.translations.t(
+      count === 1 ? 'inventory.warehouses.countRecord' : 'inventory.warehouses.countRecords',
+      { count },
+    );
   });
   readonly paginationLabel = computed(() =>
     this.displayedGroupBy() === 'PRODUCT'

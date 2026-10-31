@@ -4,7 +4,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -29,9 +29,10 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
 @Component({
   selector: 'app-warehouses-details-page',
   standalone: true,
-  imports: [TranslatePipe, LocalizedDatePipe,
+  imports: [
+    TranslatePipe,
+    LocalizedDatePipe,
     PermissionDirective,
-    DatePipe,
     ButtonModule,
     ConfirmDialogModule,
     DetailActionsMenuComponent,

@@ -9,7 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -29,7 +29,6 @@ import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse
   imports: [
     TranslatePipe,
     LocalizedNumberPipe,
-    DecimalPipe,
     FormsModule,
     ButtonModule,
     InputNumberModule,

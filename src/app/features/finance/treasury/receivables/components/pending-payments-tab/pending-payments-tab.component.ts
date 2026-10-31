@@ -1,6 +1,6 @@
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
+
 import {
   Component,
   inject,
@@ -12,7 +12,7 @@ import {
   input,
   output,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
@@ -34,10 +34,7 @@ const IMAGE_EXTENSION_PATTERN = /\.(png|jpe?g|gif|webp|svg|bmp)(\?.*)?$/i;
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
-    PermissionDirective,
     CommonModule,
-    CurrencyPipe,
-    DatePipe,
     TableModule,
     ButtonModule,
     TagModule,
