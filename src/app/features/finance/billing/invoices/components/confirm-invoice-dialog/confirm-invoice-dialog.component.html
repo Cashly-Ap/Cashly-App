@@ -259,8 +259,9 @@
       />
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermissionModule]="'FINANCES'"
         [appPermission]="'EXECUTE'"
-        [label]="'finance.billing.invoices.confirm' | translate"
+        [label]="'finance.billing.invoices.confirmInvoiceAction' | translate"
         icon="pi pi-check"
         (onClick)="submitConfirm()"
         [loading]="submitting()"

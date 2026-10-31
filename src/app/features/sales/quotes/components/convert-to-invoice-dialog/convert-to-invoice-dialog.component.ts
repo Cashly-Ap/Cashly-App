@@ -36,6 +36,7 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { ConvertToInvoiceRequest } from '@features/sales/quotes/services/api/quote-api.service';
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 interface AllocationWithStock {
   warehouseName: string;
@@ -125,6 +126,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     acceptLabel: 'sales.orders.convertToInvoice2',
     acceptIcon: 'pi pi-file',
     permissionAction: 'EXECUTE',
+    permissionModule: BusinessModule.SALES,
     requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
   }));
 

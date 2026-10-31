@@ -5,6 +5,7 @@ import { ConfirmOrderDialogComponent } from './confirm-order-dialog.component';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
 import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 
@@ -109,6 +110,15 @@ describe('ConfirmOrderDialogComponent stock guard', () => {
       'Confirming this order will deduct its reserved stock from the assigned warehouses.',
     );
     expect(translations.t(model.acceptLabel)).toBe('Yes, confirm');
+  });
+
+  it('gates the accept action on the sales module instead of the current page module', () => {
+    const { dialog } = open();
+    response.next(order);
+    const model = dialog.confirmationModel();
+    expect(model.permissionAction).toBe('EXECUTE');
+    expect(model.permissionModule).toBe(BusinessModule.SALES);
+    expect(model.requiredPermissions).toEqual(['INVENTORY:EXECUTE']);
   });
 
   it('confirms against the stock already reserved by the draft even when free stock is zero', () => {

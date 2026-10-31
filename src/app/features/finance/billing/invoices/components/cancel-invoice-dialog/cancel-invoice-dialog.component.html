@@ -66,6 +66,7 @@
       />
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermissionModule]="'FINANCES'"
         [appPermission]="'EXECUTE'"
         [label]="'finance.billing.invoices.cancelInvoice' | translate"
         icon="pi pi-times"

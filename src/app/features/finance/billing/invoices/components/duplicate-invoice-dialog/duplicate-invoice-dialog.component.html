@@ -132,7 +132,10 @@
                   @if (alloc.wouldBeNegative) {
                     <i
                       class="pi pi-exclamation-triangle text-red-500 ml-1"
-                      [pTooltip]="'finance.billing.invoices.insufficientStockAllocation' | translate: { available: alloc.realAvailable, reserved: alloc.allocated }"
+                      [pTooltip]="
+                        'finance.billing.invoices.insufficientStockAllocation'
+                          | translate: { available: alloc.realAvailable, reserved: alloc.allocated }
+                      "
                     ></i>
                   }
                 </td>
@@ -172,6 +175,7 @@
       />
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermissionModule]="'FINANCES'"
         [appPermission]="'CREATE'"
         [label]="'finance.billing.invoices.duplicateInvoice' | translate"
         icon="pi pi-copy"

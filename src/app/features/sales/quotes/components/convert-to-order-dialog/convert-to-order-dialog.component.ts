@@ -13,6 +13,7 @@ import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.s
 import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 interface AllocationWithStock {
   warehouseName: string;
@@ -95,6 +96,7 @@ export class ConvertToOrderDialogComponent implements OnChanges {
       acceptLabel: 'sales.quotes.convertToOrder2',
       acceptIcon: 'pi pi-shopping-cart',
       permissionAction: 'EXECUTE',
+      permissionModule: BusinessModule.SALES,
       requiredPermissions: ['SALES:CREATE', 'INVENTORY:EXECUTE'],
     };
   });

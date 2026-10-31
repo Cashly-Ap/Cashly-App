@@ -154,6 +154,7 @@
         <p-button
           [appRequiredPermissions]="model().requiredPermissions ?? []"
           [appPermission]="action"
+          [appPermissionModule]="model().permissionModule ?? null"
           [label]="model().acceptLabel | translate"
           [icon]="model().acceptIcon ?? 'pi pi-check'"
           [severity]="acceptSeverity()"

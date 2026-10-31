@@ -148,6 +148,7 @@
           </div>
           <div class="flex gap-2 w-full sm:w-auto">
             <p-button
+              [appPermissionModule]="'FINANCES'"
               [appPermission]="'EXECUTE'"
               [label]="'finance.treasury.receivables.payAll2' | translate"
               icon="pi pi-check-circle"
@@ -470,6 +471,7 @@
           </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <p-button
+              [appPermissionModule]="'FINANCES'"
               [appPermission]="'CREATE'"
               [label]="'finance.treasury.receivables.refund' | translate"
               icon="pi pi-undo"
@@ -479,6 +481,7 @@
               styleClass="w-full sm:w-auto font-medium"
             />
             <p-button
+              [appPermissionModule]="'FINANCES'"
               [appPermission]="'CREATE'"
               [label]="'finance.treasury.receivables.recordAdvance2' | translate"
               icon="pi pi-plus-circle"
@@ -946,6 +949,7 @@
         styleClass="font-medium w-full sm:w-auto"
       />
       <p-button
+        [appPermissionModule]="'FINANCES'"
         [appPermission]="'EXECUTE'"
         severity="contrast"
         [label]="'finance.treasury.receivables.recordAdvance3' | translate"

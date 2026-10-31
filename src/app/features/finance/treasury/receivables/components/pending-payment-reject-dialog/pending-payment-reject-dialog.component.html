@@ -90,6 +90,7 @@
       [disabled]="submitting()"
     />
     <p-button
+      [appPermissionModule]="'FINANCES'"
       [appPermission]="'EXECUTE'"
       severity="secondary"
       [label]="'finance.treasury.receivables.reject' | translate"

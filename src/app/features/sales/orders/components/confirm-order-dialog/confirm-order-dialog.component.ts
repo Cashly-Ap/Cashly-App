@@ -15,6 +15,7 @@ import { DocumentConfirmationModel } from '@shared/models/document-confirmation'
 import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { orderStockLines } from '@features/sales/orders/models/order-stock';
 import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 @Component({
   selector: 'app-confirm-order-dialog',
@@ -67,6 +68,7 @@ export class ConfirmOrderDialogComponent implements OnChanges {
       acceptIcon: 'pi pi-check',
       acceptSeverity: 'success',
       permissionAction: 'EXECUTE',
+      permissionModule: BusinessModule.SALES,
       requiredPermissions: ['INVENTORY:EXECUTE'],
     };
   });

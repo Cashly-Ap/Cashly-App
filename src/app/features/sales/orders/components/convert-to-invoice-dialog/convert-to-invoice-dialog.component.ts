@@ -36,6 +36,7 @@ import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/ord
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { TranslationService } from '@core/i18n/translation.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 @Component({
   selector: 'app-convert-order-to-invoice-dialog',
@@ -90,6 +91,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     acceptLabel: 'sales.orders.convertToInvoice2',
     acceptIcon: 'pi pi-check',
     permissionAction: 'EXECUTE',
+    permissionModule: BusinessModule.SALES,
     requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
   }));
 

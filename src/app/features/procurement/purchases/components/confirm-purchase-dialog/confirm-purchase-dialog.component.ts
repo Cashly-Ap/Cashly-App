@@ -13,6 +13,7 @@ import { PurchaseDetails } from '@features/procurement/purchases/models/interfac
 import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const QUANTITY_TOLERANCE = 0.000001;
 @Component({
@@ -118,6 +119,7 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
       acceptIcon: 'pi pi-check',
       acceptSeverity: 'success',
       permissionAction: 'EXECUTE',
+      permissionModule: BusinessModule.PURCHASES,
       requiredPermissions: ['INVENTORY:EXECUTE'],
     };
   });

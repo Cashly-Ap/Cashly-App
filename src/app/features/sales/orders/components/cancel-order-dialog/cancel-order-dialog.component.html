@@ -66,6 +66,7 @@
       />
       <p-button
         [appRequiredPermissions]="['INVENTORY:EXECUTE']"
+        [appPermissionModule]="'SALES'"
         [appPermission]="'EXECUTE'"
         [label]="'sales.orders.cancelOrder' | translate"
         icon="pi pi-times"
