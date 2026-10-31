@@ -10,18 +10,34 @@ import {
   NavigationLookupItem,
 } from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
+import {
+  lookupFilterDefaults,
+  lookupFilterDefinitions,
+  LookupFilterOption,
+} from '../config/list-navigation-filters';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
+import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
+import { TranslationService } from '@core/i18n/translation.service';
 import { MessageService } from 'primeng/api';
 import { DocumentActionDialogService } from './document-action-dialog.service';
+import { PdfViewerService } from '@core/pdf-viewer/services';
+
+const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
+  'Ver detalle': [],
+  Editar: ['edit'],
+};
 
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
   private readonly injector = inject(Injector);
   private readonly router = inject(Router);
   private readonly navigation = inject(ListNavigationService);
+  private readonly translations = inject(TranslationService);
   private readonly messages = inject(MessageService);
   private readonly documentActions = inject(DocumentActionDialogService);
+  private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
     const definition = LIST_NAVIGATION_DEFINITIONS.find((item) => item.route === route);
@@ -36,6 +52,27 @@ export class NavigationLookupService {
     const total = signal(0);
     const first = signal(0);
     const rows = signal(10);
+    const filterValues = signal(lookupFilterDefaults(route));
+    const filterSources: {
+      values: Record<string, string>;
+      categories: LookupFilterOption[];
+      roles: LookupFilterOption[];
+    } = {
+      values: filterValues(),
+      categories: [] as LookupFilterOption[],
+      roles: [] as LookupFilterOption[],
+    };
+    const filters = () =>
+      lookupFilterDefinitions(route, { ...filterSources, values: filterValues() }).map((filter) => ({
+        label: filter.label,
+        value: filterValues()[filter.key] ?? filter.defaultValue,
+        options: [...filter.options],
+        change: (value: string) => {
+          filterValues.update((values) => ({ ...values, [filter.key]: value }));
+          first.set(0);
+          load();
+        },
+      }));
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
@@ -46,6 +83,7 @@ export class NavigationLookupService {
         ['Convertir a pedido', 'Convertir a factura'].includes(label)) ||
       (route === '/procurement/purchases' &&
         ['Confirmar compra', 'Cancelar compra'].includes(label));
+    const pdfAction = label === 'Descargar PDF';
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -61,6 +99,15 @@ export class NavigationLookupService {
                 recordId: item.id,
                 recordLabel: item.label,
               });
+              return;
+            }
+            if (pdfAction) {
+              this.openRecordPdf(route, item.id, item.label);
+              return;
+            }
+            const recordPath = RECORD_PATH_SEGMENTS[label];
+            if (recordPath) {
+              void this.router.navigate([route, item.id, ...recordPath], { queryParams });
               return;
             }
             void this.router.navigate([route], {
@@ -110,9 +157,10 @@ export class NavigationLookupService {
             route,
             label,
             search,
-            Math.floor(first() / rows()),
-            rows(),
-          );
+             Math.floor(first() / rows()),
+             rows(),
+             filterValues(),
+           );
       request = source.subscribe({
         next: (result) => {
           items.set(result.items);
@@ -131,11 +179,37 @@ export class NavigationLookupService {
         },
       });
     };
+    if (route === '/catalog/products') {
+      this.injector
+        .get(CategoryApiService)
+        .getAll({ active: true, page: 0, size: 1000 })
+        .subscribe({
+          next: (response) => {
+            filterSources.categories = response.content.map((category) => ({
+              label: category.name,
+              value: category.id,
+            }));
+          },
+          error: () => undefined,
+        });
+    }
+    if (route === '/platform/users') {
+      this.injector
+        .get(AccessManagementService)
+        .roleOptions()
+        .subscribe({
+          next: (roles) => {
+            filterSources.roles = roles.map((role) => ({ label: role.name, value: role.id }));
+          },
+          error: () => undefined,
+        });
+    }
     this.navigation.session.set({
       owner,
       title: label,
       module,
       records,
+      filters,
       loading,
       total,
       first,
@@ -153,5 +227,33 @@ export class NavigationLookupService {
       onClose: () => request?.unsubscribe(),
     });
     load();
+  }
+
+  private openRecordPdf(route: string, id: string, recordLabel: string): void {
+    const configuration: Record<string, { url: string; title: string; fileName: string }> = {
+      '/sales/quotes': {
+        url: `/api/reports/quotes/${id}/pdf`,
+        title: `Presupuesto ${recordLabel}`,
+        fileName: `presupuesto-${recordLabel}.pdf`,
+      },
+      '/sales/orders': {
+        url: `/api/reports/orders/${id}/pdf`,
+        title: `Pedido ${recordLabel}`,
+        fileName: `pedido-${recordLabel}.pdf`,
+      },
+      '/procurement/purchases': {
+        url: `/api/reports/purchases/${id}/pdf`,
+        title: `Compra ${recordLabel}`,
+        fileName: `compra-${recordLabel}.pdf`,
+      },
+      '/finance/billing/invoices': {
+        url: `/api/reports/invoices/${id}/pdf`,
+        title: `Factura ${recordLabel}`,
+        fileName: `factura-${recordLabel}.pdf`,
+      },
+    };
+    const selected = configuration[route];
+    if (!selected) return;
+    this.pdfViewer.open(selected);
   }
 }

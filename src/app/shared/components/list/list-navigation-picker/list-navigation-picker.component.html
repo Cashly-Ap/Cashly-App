@@ -71,14 +71,14 @@
               <div class="flex flex-col gap-1.5">
                 <span
                   class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-                  >{{ filter.label }}</span
+                  >{{ filter.label | translate }}</span
                 >
                 <p-select
                   [options]="filter.options | translateOptions"
                   [ngModel]="filter.value"
                   optionLabel="label"
                   optionValue="value"
-                  [ariaLabel]="filter.label"
+                   [ariaLabel]="filter.label | translate"
                   styleClass="w-full"
                   (onChange)="changeFilter(filter.change, $event.value)"
                 />
@@ -151,7 +151,7 @@
                     </button>
                   </td>
                   <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
-                    {{ record.description }}
+                     {{ displayDescription(record.description) }}
                   </td>
                 </tr>
               } @empty {
@@ -204,7 +204,7 @@
               }
               <span
                 class="block border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 font-mono text-xs text-surface-500 dark:text-surface-400"
-                >{{ record.description }}</span
+               >{{ displayDescription(record.description) }}</span
               >
             </button>
           } @empty {

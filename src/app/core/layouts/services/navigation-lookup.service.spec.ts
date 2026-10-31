@@ -28,6 +28,9 @@ describe('Navbar lookup without navigation', () => {
     TestBed.resetTestingModule();
     vi.restoreAllMocks();
     vi.clearAllMocks();
+    orderApi.getAll.mockReturnValue(of([]));
+    quoteApi.getAll.mockReturnValue(of([]));
+    purchaseApi.getAll.mockReturnValue(of([]));
     categoryApi.getAll.mockReturnValue(
       of({
         content: [
@@ -58,7 +61,12 @@ describe('Navbar lookup without navigation', () => {
     const session = navigation.session()!;
     session.search('Hard');
     session.paginate({ first: 10, rows: 10 });
-    expect(categoryApi.getAll).toHaveBeenLastCalledWith({ search: 'Hard', page: 1, size: 10 });
+    expect(categoryApi.getAll).toHaveBeenLastCalledWith({
+      search: 'Hard',
+      page: 1,
+      size: 10,
+      active: true,
+    });
     navigation.dismiss();
     expect(navigation.session()).toBeNull();
     expect(navigate).not.toHaveBeenCalled();

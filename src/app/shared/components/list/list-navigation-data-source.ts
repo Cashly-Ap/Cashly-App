@@ -20,6 +20,7 @@ import { ReceivablesApiService } from '@features/finance/treasury/receivables/se
 import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
 import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
 import { documentListAction } from '@shared/models/document-list-action';
+import type { LookupFilterValueMap } from '@core/layouts/config/list-navigation-filters';
 
 export interface NavigationLookupItem {
   id: string;
@@ -34,6 +35,33 @@ export interface NavigationLookupResult {
 
 function description(...parts: (string | number | null | undefined)[]): string {
   return parts.filter((part) => part !== null && part !== undefined && part !== '').join(' · ');
+}
+
+function booleanFilter(value: string | undefined): boolean | undefined {
+  if (value === undefined || value === '') return undefined;
+  return value === 'true';
+}
+
+function textFilter(value: string | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  const trimmed = value.trim();
+  return trimmed === '' ? undefined : trimmed;
+}
+
+function statusKey(status: string | null | undefined): string {
+  const keys: Record<string, string> = {
+    DRAFT: 'navigation.options.draft',
+    CONFIRMED: 'navigation.options.confirmed',
+    CANCELLED: 'navigation.options.cancelled',
+    INVOICED: 'navigation.options.invoiced',
+    CONVERTED_TO_ORDER: 'navigation.options.convertedToOrder',
+    CONVERTED_TO_INVOICE: 'navigation.options.convertedToInvoice',
+    PENDING_PAYMENT: 'navigation.options.pendingPayment',
+    PARTIALLY_PAID: 'navigation.options.partiallyPaid',
+    PAID: 'navigation.options.paid',
+    FULLY_RETURNED: 'navigation.options.fullyReturned',
+  };
+  return keys[status ?? ''] ?? status ?? '';
 }
 
 function pageResult<T>(
@@ -64,14 +92,21 @@ export function loadNavigationLookup(
   search: string,
   page: number,
   size: number,
+  filterValues: LookupFilterValueMap = {},
 ): Observable<NavigationLookupResult> {
   const filters = { search: search.trim() || undefined, page, size };
+  const active = booleanFilter(filterValues['active']);
   const action = documentListAction(label);
   switch (route) {
     case '/catalog/products':
       return injector
         .get(ProductApiService)
-        .getAll(filters)
+        .getAll({
+          ...filters,
+          active,
+          composite: booleanFilter(filterValues['composite']),
+          categoryId: textFilter(filterValues['categoryId']),
+        })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -84,7 +119,7 @@ export function loadNavigationLookup(
     case '/catalog/categories':
       return injector
         .get(CategoryApiService)
-        .getAll(filters)
+        .getAll({ ...filters, active })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -97,7 +132,7 @@ export function loadNavigationLookup(
     case '/catalog/price-types':
       return injector
         .get(PriceTypeApiService)
-        .getAll(filters)
+        .getAll({ ...filters, active })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -110,7 +145,7 @@ export function loadNavigationLookup(
     case '/inventory/warehouses':
       return injector
         .get(WarehouseApiService)
-        .getAll(filters)
+        .getAll({ ...filters, active })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -123,7 +158,13 @@ export function loadNavigationLookup(
     case '/partners/customers':
       return injector
         .get(CustomerApiService)
-        .getAll(filters)
+        .getAll({
+          ...filters,
+          type: textFilter(filterValues['type']),
+          active,
+          state: textFilter(filterValues['state']),
+          municipality: textFilter(filterValues['municipality']),
+        })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -136,7 +177,13 @@ export function loadNavigationLookup(
     case '/partners/suppliers':
       return injector
         .get(SupplierApiService)
-        .getAll(filters)
+        .getAll({
+          ...filters,
+          type: textFilter(filterValues['type']),
+          active,
+          state: textFilter(filterValues['state']),
+          municipality: textFilter(filterValues['municipality']),
+        })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -149,7 +196,7 @@ export function loadNavigationLookup(
     case '/platform/users':
       return injector
         .get(UserApiService)
-        .getAll(filters)
+        .getAll({ ...filters, role: textFilter(filterValues['role']), active })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({
@@ -192,7 +239,11 @@ export function loadNavigationLookup(
     case '/sales/orders':
       return injector
         .get(OrderApiService)
-        .getAll({ search: filters.search, action, ...(!action ? { status: 'ALL' } : {}) })
+        .getAll({
+          search: filters.search,
+          action,
+          ...(!action ? { status: filterValues['status'] || 'ALL' } : {}),
+        })
         .pipe(
           map((items) =>
             arrayResult(
@@ -200,7 +251,7 @@ export function loadNavigationLookup(
               (item) => ({
                 id: item.id,
                 label: item.orderNumber,
-                description: description(item.customerAlias, item.status),
+                description: description(item.customerAlias, statusKey(item.status)),
               }),
               search,
               page,
@@ -211,7 +262,11 @@ export function loadNavigationLookup(
     case '/sales/quotes':
       return injector
         .get(QuoteApiService)
-        .getAll({ search: filters.search, action, ...(!action ? { status: 'ALL' } : {}) })
+        .getAll({
+          search: filters.search,
+          action,
+          ...(!action ? { status: filterValues['status'] || 'ALL' } : {}),
+        })
         .pipe(
           map((items) =>
             arrayResult(
@@ -219,7 +274,7 @@ export function loadNavigationLookup(
               (item) => ({
                 id: item.id,
                 label: item.quoteNumber,
-                description: description(item.customerName, item.status),
+                description: description(item.customerName, statusKey(item.status)),
               }),
               search,
               page,
@@ -229,17 +284,20 @@ export function loadNavigationLookup(
         );
     case '/procurement/purchases': {
       const api = injector.get(PurchaseApiService);
+      const status = textFilter(filterValues['status']);
       const request = action
         ? api.getAll({ search: filters.search, action })
-        : forkJoin(
-            Object.values(PurchaseStatus).map((status) =>
-              api.getAll({ search: filters.search, status }),
-            ),
-          ).pipe(
-            map((pages) =>
-              pages.flat().sort((left, right) => right.createdAt.localeCompare(left.createdAt)),
-            ),
-          );
+        : status
+          ? api.getAll({ search: filters.search, status })
+          : forkJoin(
+              Object.values(PurchaseStatus).map((status) =>
+                api.getAll({ search: filters.search, status }),
+              ),
+            ).pipe(
+              map((pages) =>
+                pages.flat().sort((left, right) => right.createdAt.localeCompare(left.createdAt)),
+              ),
+            );
       return request.pipe(
         map((items) =>
           arrayResult(
@@ -247,7 +305,7 @@ export function loadNavigationLookup(
             (item) => ({
               id: item.id,
               label: item.purchaseNumber,
-              description: description(item.supplierName, item.status),
+              description: description(item.supplierName, statusKey(item.status)),
             }),
             search,
             page,
@@ -256,13 +314,23 @@ export function loadNavigationLookup(
         ),
       );
     }
-    case '/finance/billing/invoices':
+    case '/finance/billing/invoices': {
+      const invoiceStatus = textFilter(filterValues['status']);
+      const statuses =
+        !invoiceStatus || invoiceStatus === 'ALL'
+          ? Object.values(InvoiceStatus)
+          : [invoiceStatus];
+      const returnStatus = textFilter(filterValues['returnStatus']);
+      const dueStatus = textFilter(filterValues['dueStatus']);
       return injector
         .get(InvoiceApiService)
         .getAll({
           search: filters.search,
           action,
-          ...(!action ? { statuses: Object.values(InvoiceStatus) } : {}),
+          ...(!action ? { statuses } : {}),
+          paymentType: textFilter(filterValues['paymentType']),
+          dueStatus: dueStatus as 'OVERDUE' | 'CURRENT' | undefined,
+          returnStatus: returnStatus ? [returnStatus] : undefined,
         })
         .pipe(
           map((items) =>
@@ -271,7 +339,7 @@ export function loadNavigationLookup(
               (item) => ({
                 id: item.id,
                 label: item.invoiceNumber,
-                description: description(item.customerName, item.statusLabel),
+                description: description(item.customerName, statusKey(item.status)),
               }),
               '',
               page,
@@ -279,6 +347,7 @@ export function loadNavigationLookup(
             ),
           ),
         );
+    }
     case '/finance/billing/returns':
       return injector
         .get(ReturnApiService)
@@ -339,7 +408,7 @@ export function loadNavigationLookup(
     case '/finance/treasury/payment-methods':
       return injector
         .get(PaymentMethodApiService)
-        .getAll(filters)
+        .getAll({ ...filters, active })
         .pipe(
           map((response) =>
             pageResult(response, (item) => ({

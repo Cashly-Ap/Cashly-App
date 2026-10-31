@@ -1,5 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { TranslationService } from '@core/i18n/translation.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -38,6 +39,7 @@ import {
 })
 export class ListNavigationPickerComponent {
   readonly navigation = inject(ListNavigationService);
+  private readonly translations = inject(TranslationService);
   readonly search = signal('');
   readonly accepting = signal(false);
   private readonly selection = signal<{
@@ -73,6 +75,25 @@ export class ListNavigationPickerComponent {
 
   isSelected(record: NavigationRecord): boolean {
     return this.selectedRecord() === record;
+  }
+
+  displayDescription(description: string): string {
+    const statusKeys: Record<string, string> = {
+      DRAFT: 'navigation.options.draft',
+      CONFIRMED: 'navigation.options.confirmed',
+      CANCELLED: 'navigation.options.cancelled',
+      INVOICED: 'navigation.options.invoiced',
+      CONVERTED_TO_ORDER: 'navigation.options.convertedToOrder',
+      CONVERTED_TO_INVOICE: 'navigation.options.convertedToInvoice',
+      PENDING_PAYMENT: 'navigation.options.pendingPayment',
+      PARTIALLY_PAID: 'navigation.options.partiallyPaid',
+      PAID: 'navigation.options.paid',
+      FULLY_RETURNED: 'navigation.options.fullyReturned',
+    };
+    return description
+      .split(' · ')
+      .map((part) => statusKeys[part] ? this.translations.t(statusKeys[part]) : this.translations.t(part))
+      .join(' · ');
   }
 
   async acceptSelection(): Promise<void> {
