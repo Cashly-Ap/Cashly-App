@@ -7,8 +7,6 @@ import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { DocumentListAction, documentListAction } from '@shared/models/document-list-action';
-import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -204,53 +202,8 @@ export class InvoiceListPageComponent implements OnInit {
       (this.activeFilterCount() > 0 || !!this.searchTerm()),
   );
 
-  private readonly navigationRecords = computed(() => {
-    const term = this.searchTerm().trim().toLocaleLowerCase();
-    return this.invoices().filter((record) =>
-      `${record.invoiceNumber} ${record.customerName ?? ''}`.toLocaleLowerCase().includes(term),
-    );
-  });
-
   private readonly listDestroyRef = inject(DestroyRef);
   private listRequest?: Subscription;
-  private readonly navigationAction = signal<DocumentListAction | undefined>(undefined);
-
-  private readonly listNavigation = connectListNavigation({
-    onActionChange: (action) => {
-      const previous = this.navigationAction();
-      this.navigationAction.set(documentListAction(action));
-      if (!action && previous) this.loadWithFilters();
-    },
-    records: () => this.navigationRecords().slice(this.first(), this.first() + this.rows()),
-    loading: () => this.loading(),
-    total: () => this.navigationRecords().length,
-    first: () => this.first(),
-    rows: () => this.rows(),
-    acceptsAction: () => false,
-    search: (term) => {
-      this.selectedReturnStatus.set('');
-      this.selectedDueStatus.set('');
-      this.filterPaymentType.set('');
-      this.filterDateFrom.set(null);
-      this.filterDateTo.set(null);
-      this.onSearch(term);
-    },
-    filters: () =>
-      this.navigationAction()
-        ? []
-        : [
-            {
-              label: 'Estado',
-              value: this.selectedStatus(),
-              options: this.statusOptions,
-              change: (value) => this.onStatusFilterChange(value),
-            },
-          ],
-    paginate: (event) => this.onPageChange(event),
-    label: (record) => record.invoiceNumber,
-    description: (record) => record.customerName,
-    actions: (record) => this.actionsFor(record),
-  });
 
   ngOnInit(): void {
     this.loadWithFilters();
@@ -606,10 +559,8 @@ export class InvoiceListPageComponent implements OnInit {
 
   private loadWithFilters(): void {
     const filters: InvoiceFilters = {};
-    if (this.navigationAction()) filters.action = this.navigationAction();
     if (this.searchTerm()) filters.search = this.searchTerm();
-    if (!this.navigationAction() && this.filterStatus().length > 0)
-      filters.statuses = this.filterStatus();
+    if (this.filterStatus().length > 0) filters.statuses = this.filterStatus();
     if (this.selectedReturnStatus()) filters.returnStatus = [this.selectedReturnStatus()];
     if (this.selectedDueStatus())
       filters.dueStatus = this.selectedDueStatus() as 'OVERDUE' | 'CURRENT';

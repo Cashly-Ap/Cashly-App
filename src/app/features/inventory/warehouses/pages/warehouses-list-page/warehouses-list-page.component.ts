@@ -1,7 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
@@ -115,23 +114,6 @@ export class WarehousesListPageComponent implements OnInit {
       (this.filterActive() !== 'true' || !!this.searchTerm()),
   );
   readonly activeFilterCount = computed(() => (this.filterActive() !== 'true' ? 1 : 0));
-
-  private readonly listNavigation = connectListNavigation({
-    records: () => this.warehouses(),
-    loading: () => this.loading(),
-    total: () => this.totalElements(),
-    first: () => this.first(),
-    rows: () => this.rows(),
-    search: (term) => {
-      this.filterActive.set('');
-      this.onSearch(term);
-    },
-    paginate: (event) => this.onPageChange(event),
-    label: (record) => record.name,
-    description: (record) => `${record.state} · ${record.municipality}`,
-    actions: (record) => this.actionsFor(record),
-    acceptsAction: (label) => label === 'Historial de movimientos',
-  });
 
   ngOnInit(): void {
     this.loadWithFilters();

@@ -122,11 +122,11 @@ describe('WarehousesListPageComponent', () => {
     },
   );
 
-  it('accepts the movements history navbar action as a page navigation', async () => {
+  it('ignores the movements history navbar action delivered as a query parameter', async () => {
     queryParams.next(convertToParamMap({ navAction: 'Historial de movimientos' }));
     await Promise.resolve();
 
-    expect(navigation.session()?.title).toBe('Historial de movimientos');
+    expect(navigation.session()).toBeNull();
   });
 
   it('navigates to stock, movements, details, and edit pages', () => {
