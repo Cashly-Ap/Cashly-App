@@ -11,6 +11,10 @@ import { AuthorizationService } from '@features/platform/auth/authorization/serv
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { NavigationLookupService } from './navigation-lookup.service';
 import { DocumentActionDialogService } from './document-action-dialog.service';
+import {
+  ReceivablesActionDialogService,
+  ReceivablesActionKind,
+} from './receivables-action-dialog.service';
 import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
@@ -23,6 +27,7 @@ describe('Navbar lookup without navigation', () => {
   let lookup: NavigationLookupService;
   let navigation: ListNavigationService;
   let documentActions: DocumentActionDialogService;
+  let receivablesActions: ReceivablesActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -53,6 +58,7 @@ describe('Navbar lookup without navigation', () => {
     lookup = TestBed.inject(NavigationLookupService);
     navigation = TestBed.inject(ListNavigationService);
     documentActions = TestBed.inject(DocumentActionDialogService);
+    receivablesActions = TestBed.inject(ReceivablesActionDialogService);
   });
 
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
@@ -77,9 +83,12 @@ describe('Navbar lookup without navigation', () => {
     const record = navigation.session()!.records()[0];
     expect(navigate).not.toHaveBeenCalled();
     await navigation.select(record);
-    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/catalog/categories', 'category-1', 'edit'], {
-      queryParams: undefined,
-    });
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(
+      ['/catalog/categories', 'category-1', 'edit'],
+      {
+        queryParams: undefined,
+      },
+    );
   });
 
   it.each(
@@ -164,6 +173,28 @@ describe('Navbar lookup without navigation', () => {
       label: 'Confirmar',
       recordId: 'order-1',
       recordLabel: 'ORD-001',
+    });
+  });
+
+  it.each([
+    ['Ver deuda', 'view'],
+    ['Pagar todo', 'pay_all'],
+    ['Pago parcial', 'pay_partial'],
+    ['Reintegro', 'refund'],
+    ['Generar anticipo', 'advance'],
+  ] as const)('opens the %s action dialog without routing', async (label, action) => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'customer-1', label: 'Acme', description: '' }], total: 1 }),
+    );
+    lookup.open('/finance/treasury/receivables', label);
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(receivablesActions.request()).toEqual({
+      customerId: 'customer-1',
+      customerName: 'Acme',
+      action: action satisfies ReceivablesActionKind,
     });
   });
 });

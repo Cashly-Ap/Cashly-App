@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { signal } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { EMPTY, of } from 'rxjs';
+import { EMPTY, of, Subject } from 'rxjs';
 import { MainLayoutComponent } from '@core/layouts/main-layout.component';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
@@ -27,6 +27,8 @@ import { NotificationWebSocketService } from '@features/platform/notifications/s
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
+import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 
 function createPdfApiMock() {
   return {
@@ -153,9 +155,21 @@ describe('MainLayoutComponent', () => {
             snapshot: { params: {}, queryParams: {} },
           },
         },
+        {
+          provide: ReceivablesApplicationService,
+          useValue: {
+            currentCustomer: signal(null),
+            customerDebtChange: new Subject<void>(),
+            clearCurrentCustomer: vi.fn(),
+          },
+        },
         MessageService,
       ],
-    }).compileComponents();
+    })
+      .overrideComponent(ReceivablesActionDialogHostComponent, {
+        set: { template: '', imports: [] },
+      })
+      .compileComponents();
 
     fixture = TestBed.createComponent(MainLayoutComponent);
     component = fixture.componentInstance;

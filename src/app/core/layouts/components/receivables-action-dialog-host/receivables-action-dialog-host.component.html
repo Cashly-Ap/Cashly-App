@@ -1,0 +1,28 @@
+<app-customer-debt-dialog
+  [visible]="debtVisible()"
+  [customerId]="customerId()"
+  (close)="onCloseDebt()"
+  (payInvoice)="onPayInvoice($event)"
+  (payAll)="onPayAll()"
+  (payPartial)="onPayPartial()"
+  (viewInvoicePdf)="onViewInvoicePdf($event)"
+  (viewInvoicePaymentHistory)="onViewPaymentHistory($event)"
+/>
+
+<app-payment-form-dialog
+  [visible]="paymentFormVisible()"
+  [mode]="paymentFormMode()"
+  [invoice]="paymentInvoice()"
+  [customerName]="paymentCustomerName()"
+  [totalDebt]="paymentTotalDebt()"
+  [customerBalance]="service.currentCustomer()?.customerBalance ?? 0"
+  (close)="onClosePaymentForm()"
+  (submit)="onSubmitPayment($event)"
+/>
+
+<app-payment-history-dialog
+  [visible]="paymentHistoryVisible()"
+  [customerId]="paymentHistoryCustomerId()"
+  [invoiceId]="paymentHistoryInvoiceId()"
+  (close)="onClosePaymentHistory()"
+/>

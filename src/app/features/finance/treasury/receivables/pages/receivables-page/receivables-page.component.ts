@@ -137,8 +137,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     label: (record) => record.customerName,
     description: (record) => record.customerRif,
     actions: (record) => this.customerActions(record),
-    acceptsAction: (label) =>
-      ['Ver deuda', 'Pagar todo', 'Pago parcial', 'Reintegro', 'Generar anticipo'].includes(label),
+    acceptsAction: () => false,
   });
 
   ngOnInit(): void {

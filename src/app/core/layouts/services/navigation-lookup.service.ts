@@ -22,12 +22,41 @@ import { AccessManagementService } from '@features/platform/auth/authorization/s
 import { TranslationService } from '@core/i18n/translation.service';
 import { MessageService } from 'primeng/api';
 import { DocumentActionDialogService } from './document-action-dialog.service';
+import {
+  ReceivablesActionDialogService,
+  ReceivablesActionKind,
+} from './receivables-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
 };
+
+const RECEIVABLES_ACTIONS: readonly string[] = [
+  'Ver deuda',
+  'Pagar todo',
+  'Pago parcial',
+  'Reintegro',
+  'Generar anticipo',
+];
+
+function receivablesActionKind(label: string): ReceivablesActionKind {
+  switch (label) {
+    case 'Ver deuda':
+      return 'view';
+    case 'Pagar todo':
+      return 'pay_all';
+    case 'Pago parcial':
+      return 'pay_partial';
+    case 'Reintegro':
+      return 'refund';
+    case 'Generar anticipo':
+      return 'advance';
+    default:
+      return 'view';
+  }
+}
 
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
@@ -37,6 +66,7 @@ export class NavigationLookupService {
   private readonly translations = inject(TranslationService);
   private readonly messages = inject(MessageService);
   private readonly documentActions = inject(DocumentActionDialogService);
+  private readonly receivablesActions = inject(ReceivablesActionDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -84,6 +114,8 @@ export class NavigationLookupService {
       (route === '/procurement/purchases' &&
         ['Confirmar compra', 'Cancelar compra'].includes(label));
     const pdfAction = label === 'Descargar PDF';
+    const receivablesAction =
+      route === '/finance/treasury/receivables' && RECEIVABLES_ACTIONS.includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -108,6 +140,14 @@ export class NavigationLookupService {
             const recordPath = RECORD_PATH_SEGMENTS[label];
             if (recordPath) {
               void this.router.navigate([route, item.id, ...recordPath], { queryParams });
+              return;
+            }
+            if (receivablesAction) {
+              this.receivablesActions.open({
+                customerId: item.id,
+                customerName: item.label,
+                action: receivablesActionKind(label),
+              });
               return;
             }
             void this.router.navigate([route], {
