@@ -1,0 +1,75 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="'finance.treasury.cashregister.breakdownByPaymentMethod' | translate"
+  [modal]="true"
+  [style]="{ width: 'min(600px, calc(100vw - 2rem))' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="visible.set($event)"
+>
+  @if (details().length === 0) {
+    <div class="flex flex-col items-center px-4 py-10 text-center" role="status">
+      <div
+        class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+      >
+        <i class="pi pi-inbox text-2xl text-surface-500 dark:text-surface-400"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-surface-900 dark:text-surface-0">
+        {{ 'finance.treasury.cashregister.noMovements' | translate }}
+      </h3>
+      <p class="mt-2 max-w-sm text-sm text-surface-500 dark:text-surface-400">
+        {{
+          'finance.treasury.cashregister.thisSessionHasNoTransactionsGroupedByPaymentMethodYet'
+            | translate
+        }}
+      </p>
+    </div>
+  } @else {
+    <div class="relative overflow-x-auto">
+      <p-table [value]="details()" styleClass="p-datatable-striped">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="w-auto">
+              <div class="font-semibold">
+                {{ 'finance.treasury.cashregister.paymentMethod' | translate }}
+              </div>
+            </th>
+            <th class="w-24">
+              <div class="font-semibold text-right">
+                {{ 'finance.treasury.cashregister.transactions2' | translate }}
+              </div>
+            </th>
+            <th class="w-36">
+              <div class="font-semibold text-right">{{ 'shared.amount' | translate }}</div>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-detail>
+          <tr>
+            <td>
+              <div class="font-medium">{{ detail.paymentMethodName }}</div>
+            </td>
+            <td>
+              <div class="text-right">{{ detail.transactionCount }}</div>
+            </td>
+            <td>
+              <div class="text-right font-mono">
+                {{ detail.expectedAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.close' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="visible.set(false)"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

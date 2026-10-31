@@ -1,0 +1,60 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="'finance.treasury.cashregister.openCashRegister2' | translate"
+  [modal]="true"
+  [style]="{ width: 'min(450px, calc(100vw - 2rem))' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="visible.set($event)"
+>
+  <form [formGroup]="openForm">
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label for="openedByName" class="text-xs font-medium text-surface-500">{{
+          'finance.treasury.cashregister.openedBy' | translate
+        }}</label>
+        <input
+          id="openedByName"
+          pInputText
+          formControlName="openedByName"
+          class="w-full"
+          style="width: 100%"
+          [placeholder]="'finance.treasury.cashregister.cashierName' | translate"
+        />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="openingBalance" class="text-xs font-medium text-surface-500">{{
+          'finance.treasury.cashregister.openingBalance' | translate
+        }}</label>
+        <p-inputnumber
+          [locale]="locale()"
+          inputId="openingBalance"
+          formControlName="openingBalance"
+          mode="currency"
+          currency="USD"
+          [min]="0"
+          styleClass="w-full"
+        />
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="visible.set(false)"
+      />
+      <p-button
+        [appPermission]="'EXECUTE'"
+        [label]="'finance.treasury.cashregister.openCashRegister2' | translate"
+        icon="pi pi-plus"
+        severity="contrast"
+        [disabled]="openForm.invalid || isSubmitting()"
+        [loading]="isSubmitting()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

@@ -17,6 +17,10 @@ import {
 } from './receivables-action-dialog.service';
 import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
 import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
+import {
+  CashRegisterActionDialogService,
+  CashRegisterActionKind,
+} from './cash-register-action-dialog.service';
 import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
@@ -32,6 +36,7 @@ describe('Navbar lookup without navigation', () => {
   let receivablesActions: ReceivablesActionDialogService;
   let invoiceActions: InvoiceActionDialogService;
   let warehouseActions: WarehouseActionDialogService;
+  let cashRegisterActions: CashRegisterActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -65,6 +70,7 @@ describe('Navbar lookup without navigation', () => {
     receivablesActions = TestBed.inject(ReceivablesActionDialogService);
     invoiceActions = TestBed.inject(InvoiceActionDialogService);
     warehouseActions = TestBed.inject(WarehouseActionDialogService);
+    cashRegisterActions = TestBed.inject(CashRegisterActionDialogService);
   });
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
     lookup.open('/catalog/categories', 'Editar');
@@ -241,4 +247,21 @@ describe('Navbar lookup without navigation', () => {
       operation,
     });
   });
+
+  it.each([
+    ['Abrir caja', 'open'],
+    ['Cerrar caja', 'close'],
+    ['Ver detalles', 'detail'],
+  ] as const)(
+    'opens the cash register %s action dialog without a picker or routing',
+    (label, action) => {
+      lookup.open('/finance/treasury/cash-register', label);
+
+      expect(cashRegisterActions.request()).toEqual({
+        action: action satisfies CashRegisterActionKind,
+      });
+      expect(navigation.session()).toBeNull();
+      expect(navigate).not.toHaveBeenCalled();
+    },
+  );
 });

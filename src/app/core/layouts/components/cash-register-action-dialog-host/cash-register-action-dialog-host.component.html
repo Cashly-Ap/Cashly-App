@@ -1,0 +1,9 @@
+<app-cash-register-open-dialog [visible]="openVisible()" (visibleChange)="onOpenClosed($event)" />
+<app-cash-register-close-dialog
+  [visible]="closeVisible()"
+  (visibleChange)="onCloseClosed($event)"
+/>
+<app-cash-register-detail-dialog
+  [visible]="detailVisible()"
+  (visibleChange)="onDetailClosed($event)"
+/>

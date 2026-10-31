@@ -1,0 +1,98 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="'finance.treasury.cashregister.closeCashRegister2' | translate"
+  [modal]="true"
+  [style]="{ width: 'min(500px, calc(100vw - 2rem))' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="visible.set($event)"
+>
+  <form [formGroup]="closeForm">
+    <div class="flex flex-col gap-4">
+      <div
+        class="flex gap-4 p-4 bg-surface-50 dark:bg-surface-800/50 rounded-lg border border-surface-200 dark:border-surface-700"
+      >
+        <div class="flex-1">
+          <p class="text-xs text-surface-500 uppercase font-medium mb-1">
+            {{ 'finance.treasury.cashregister.expectedBalance' | translate }}
+          </p>
+          <p
+            class="text-lg font-bold"
+            [class.text-green-600]="expectedBalance() >= 0"
+            [class.text-red-600]="expectedBalance() < 0"
+          >
+            {{ expectedBalance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </p>
+        </div>
+      </div>
+      <div>
+        <label for="declaredBalance" class="text-xs font-medium text-surface-500 block mb-1"
+          >{{ 'finance.treasury.cashregister.countedBalance' | translate }}
+          <span class="text-red-500">*</span></label
+        >
+        <p-inputnumber
+          [locale]="locale()"
+          inputId="declaredBalance"
+          formControlName="declaredBalance"
+          mode="currency"
+          currency="USD"
+          [min]="0"
+          styleClass="w-full"
+        />
+        <p class="mt-1 text-xs text-surface-500">
+          {{ 'finance.treasury.cashregister.theDifferenceWillBeRecordedWhenClosing' | translate }}
+        </p>
+      </div>
+      <div>
+        <label for="closedByName" class="text-xs font-medium text-surface-500 block mb-1"
+          >{{ 'finance.treasury.cashregister.closedBy2' | translate }}
+          <span class="text-red-500">*</span></label
+        >
+        <input
+          id="closedByName"
+          pInputText
+          formControlName="closedByName"
+          style="width: 100%"
+          [placeholder]="'finance.treasury.cashregister.closedBy' | translate"
+        />
+        @if (closeForm.get('closedByName')?.invalid && closeForm.get('closedByName')?.touched) {
+          <p class="text-xs text-red-500 mt-1">
+            {{ 'finance.treasury.cashregister.thisFieldIsRequired' | translate }}
+          </p>
+        }
+      </div>
+      <div>
+        <label for="closingNotes" class="text-xs font-medium text-surface-500 block mb-1">{{
+          'finance.treasury.cashregister.closingNotes' | translate
+        }}</label>
+        <textarea
+          id="closingNotes"
+          pInputTextarea
+          formControlName="closingNotes"
+          style="width: 100%; resize: none"
+          rows="3"
+          [placeholder]="'finance.treasury.cashregister.optionalNotes' | translate"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="visible.set(false)"
+      />
+      <p-button
+        [appPermission]="'EXECUTE'"
+        [label]="'finance.treasury.cashregister.closeCashRegister2' | translate"
+        icon="pi pi-lock"
+        severity="contrast"
+        [disabled]="closeForm.invalid || isSubmitting()"
+        [loading]="isSubmitting()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,6 +1,6 @@
 import { Injectable, Injector, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription, map } from 'rxjs';
+import { Subscription } from 'rxjs';
 import {
   ListNavigationService,
   NavigationRecord,
@@ -16,7 +16,6 @@ import {
   LookupFilterOption,
 } from '../config/list-navigation-filters';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
-import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { TranslationService } from '@core/i18n/translation.service';
@@ -28,6 +27,10 @@ import {
 } from './receivables-action-dialog.service';
 import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
 import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
+import {
+  CashRegisterActionDialogService,
+  CashRegisterActionKind,
+} from './cash-register-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
@@ -73,6 +76,19 @@ function invoiceActionKind(label: string): InvoiceActionKind {
   }
 }
 
+function cashRegisterActionKind(label: string): CashRegisterActionKind {
+  switch (label) {
+    case 'Abrir caja':
+      return 'open';
+    case 'Cerrar caja':
+      return 'close';
+    case 'Ver detalles':
+      return 'detail';
+    default:
+      return 'detail';
+  }
+}
+
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
   private readonly injector = inject(Injector);
@@ -84,6 +100,7 @@ export class NavigationLookupService {
   private readonly receivablesActions = inject(ReceivablesActionDialogService);
   private readonly invoiceActions = inject(InvoiceActionDialogService);
   private readonly warehouseActions = inject(WarehouseActionDialogService);
+  private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -94,6 +111,10 @@ export class NavigationLookupService {
     const permission = { ...definitionAction, command: () => undefined };
     if (!this.navigation.allowed(permission, module)) return;
     this.navigation.dismiss();
+    if (route === '/finance/treasury/cash-register') {
+      this.cashRegisterActions.open({ action: cashRegisterActionKind(label) });
+      return;
+    }
     const items = signal<NavigationLookupItem[]>([]);
     const loading = signal(false);
     const total = signal(0);
@@ -195,9 +216,8 @@ export class NavigationLookupService {
               queryParams: {
                 ...queryParams,
                 navAction: label,
-                ...(route.endsWith('/cash-register')
-                  ? {}
-                  : { navRecord: item.id, navSearch: item.label }),
+                navRecord: item.id,
+                navSearch: item.label,
               },
             });
           },
@@ -207,41 +227,15 @@ export class NavigationLookupService {
     const load = () => {
       request?.unsubscribe();
       loading.set(true);
-      const source = route.endsWith('/cash-register')
-        ? this.injector
-            .get(CashRegisterApiService)
-            .getActive()
-            .pipe(
-              map((closure) => {
-                const eligible =
-                  label === 'Abrir caja'
-                    ? !closure
-                    : label === 'Cerrar caja'
-                      ? closure?.status === 'OPEN'
-                      : !!closure;
-                const entries = eligible
-                  ? [
-                      {
-                        id: closure?.id ?? 'new',
-                        label: 'Caja',
-                        description: closure
-                          ? `${closure.openedByName} · ${closure.status}`
-                          : 'Abrir una nueva sesión de caja',
-                      },
-                    ]
-                  : [];
-                return { items: entries, total: entries.length };
-              }),
-            )
-        : loadNavigationLookup(
-            this.injector,
-            route,
-            label,
-            search,
-            Math.floor(first() / rows()),
-            rows(),
-            filterValues(),
-          );
+      const source = loadNavigationLookup(
+        this.injector,
+        route,
+        label,
+        search,
+        Math.floor(first() / rows()),
+        rows(),
+        filterValues(),
+      );
       request = source.subscribe({
         next: (result) => {
           items.set(result.items);

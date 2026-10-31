@@ -1,8 +1,5 @@
-import { LanguageService } from '@core/i18n/language.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
@@ -13,23 +10,18 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
 } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
-import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { TextareaModule } from 'primeng/textarea';
 import { Popover } from 'primeng/popover';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
+import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
+import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
+import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 
 @Component({
   selector: 'app-cash-register-page',
@@ -40,36 +32,25 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
     PermissionDirective,
-    CommonModule,
-    ReactiveFormsModule,
-    CurrencyPipe,
-    DatePipe,
-    RouterModule,
     ContentCardComponent,
     ListContainerComponent,
     LoadingSpinnerComponent,
-    TableModule,
     ButtonModule,
     TagModule,
-    DialogModule,
-    InputTextModule,
-    InputNumberModule,
-    TextareaModule,
     Popover,
+    CashRegisterOpenDialogComponent,
+    CashRegisterCloseDialogComponent,
+    CashRegisterDetailDialogComponent,
   ],
   templateUrl: './cash-register-page.component.html',
 })
 export class CashRegisterPageComponent implements OnInit {
-  readonly locale = inject(LanguageService).locale;
-
   private readonly service = inject(CashRegisterApplicationService);
-  private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly activeClosure = this.service.activeClosure;
   readonly loading = this.service.loading;
-  readonly currentUserName = this.service.currentUserName;
 
   readonly showInitialLoading = computed(
     () => this.service.loading() && this.service.activeClosure() === null,
@@ -90,139 +71,20 @@ export class CashRegisterPageComponent implements OnInit {
   readonly closeDialogVisible = signal(false);
   readonly detailDialogVisible = signal(false);
 
-  readonly isSubmitting = signal(false);
-
-  readonly openForm = this.fb.group({
-    openedByName: ['', Validators.required],
-    openingBalance: [0, [Validators.required, Validators.min(0)]],
-  });
-
-  readonly closeForm = this.fb.group({
-    closedByName: ['', Validators.required],
-    declaredBalance: [0, [Validators.required, Validators.min(0)]],
-    closingNotes: [''],
-  });
-
-  private readonly listNavigation = connectListNavigation({
-    records: () => [],
-    loading: () => this.loading(),
-    total: () => 0,
-    first: () => 0,
-    rows: () => 10,
-    search: () => undefined,
-    paginate: () => undefined,
-    label: () => '',
-    actions: () => [],
-    globalActions: () => this.navigationActions(),
-  });
-
-  private navigationActions(): ListAction[] {
-    return [
-      {
-        label: 'Abrir caja',
-        icon: 'pi pi-lock-open',
-        requiredAction: 'EXECUTE',
-        disabled: this.closure() !== null,
-        command: () => this.onOpenDialogOpen(),
-      },
-      {
-        label: 'Cerrar caja',
-        icon: 'pi pi-lock',
-        requiredAction: 'EXECUTE',
-        disabled: !this.isOpen(),
-        command: () => this.onOpenCloseDialog(),
-      },
-      {
-        label: 'Ver detalles',
-        icon: 'pi pi-eye',
-        requiredAction: 'READ',
-        disabled: this.closure() === null,
-        command: () => this.onOpenDetailDialog(),
-      },
-    ];
-  }
-
   ngOnInit(): void {
     this.service.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   onOpenDialogOpen(): void {
-    this.openForm.reset({ openedByName: this.currentUserName(), openingBalance: 0 });
     this.openDialogVisible.set(true);
   }
 
-  onOpenSubmit(): void {
-    if (this.openForm.invalid) return;
-
-    const openedByName = this.openForm.get('openedByName')?.value ?? '';
-    const openingBalance = this.openForm.get('openingBalance')?.value ?? 0;
-    this.isSubmitting.set(true);
-
-    this.service
-      .openRegister(openedByName, openingBalance)
-      .pipe(
-        finalize(() => this.isSubmitting.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          if (!result) return;
-          this.openDialogVisible.set(false);
-          this.openForm.reset();
-        },
-      });
-  }
-
-  onOpenDialogClose(): void {
-    this.openDialogVisible.set(false);
-  }
-
   onOpenCloseDialog(): void {
-    this.closeForm.reset({
-      closedByName: this.currentUserName(),
-      declaredBalance: this.closure()?.expectedBalance ?? 0,
-      closingNotes: '',
-    });
     this.closeDialogVisible.set(true);
-  }
-
-  onCloseSubmit(): void {
-    if (this.closeForm.invalid) return;
-
-    const id = this.closure()?.id;
-    if (!id) return;
-
-    this.isSubmitting.set(true);
-
-    this.service
-      .closeRegister(id, {
-        closedByName: this.closeForm.get('closedByName')?.value ?? '',
-        declaredBalance: this.closeForm.get('declaredBalance')?.value ?? 0,
-        closingNotes: this.closeForm.get('closingNotes')?.value ?? '',
-      })
-      .pipe(
-        finalize(() => this.isSubmitting.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (result) => {
-          if (!result) return;
-          this.closeDialogVisible.set(false);
-          this.closeForm.reset();
-        },
-      });
-  }
-
-  onCloseDialogClose(): void {
-    this.closeDialogVisible.set(false);
   }
 
   onOpenDetailDialog(): void {
     this.detailDialogVisible.set(true);
-  }
-
-  onDetailDialogClose(): void {
-    this.detailDialogVisible.set(false);
   }
 
   onViewHistory(): void {
