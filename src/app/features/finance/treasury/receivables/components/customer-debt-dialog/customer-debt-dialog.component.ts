@@ -4,7 +4,6 @@ import {
   ReceivableTone,
   receivableAmountClass,
   invoiceStatusTranslationKey,
-  invoiceStatusSeverity,
   isInvoiceOverdue,
 } from '../receivables-presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
@@ -31,7 +30,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
-import { TagModule } from 'primeng/tag';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
@@ -82,13 +81,13 @@ interface BalanceFilterOption {
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
+    TextBadgeComponent,
     PermissionDirective,
     ListActionButtonsComponent,
     DialogModule,
     ButtonModule,
     TableModule,
     PaginatorModule,
-    TagModule,
     TooltipModule,
     InputNumberModule,
     InputTextModule,
@@ -319,8 +318,16 @@ export class CustomerDebtDialogComponent {
     return invoiceStatusTranslationKey(status);
   }
 
-  protected getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
-    return invoiceStatusSeverity(status, this.preferences.colorMode() === 'informative');
+  protected getStatusVariant(status: string): 'success' | 'danger' | 'info' | 'label' | 'warning' {
+    const variants: Record<string, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
+      DRAFT: 'label',
+      PENDING_PAYMENT: 'info',
+      PARTIALLY_PAID: 'info',
+      PAID: 'success',
+      CANCELLED: 'danger',
+      FULLY_RETURNED: 'info',
+    };
+    return variants[status] ?? 'label';
   }
 
   protected amountColor(tone: ReceivableTone): string {
@@ -329,10 +336,6 @@ export class CustomerDebtDialogComponent {
 
   protected isOverdue(invoice: CustomerInvoiceDebt): boolean {
     return isInvoiceOverdue(invoice, this.todayDate);
-  }
-
-  protected overdueSeverity(): 'danger' | 'contrast' {
-    return this.preferences.colorMode() === 'informative' ? 'danger' : 'contrast';
   }
 
   protected isInvoiceFullyBlocked(_invoice: CustomerInvoiceDebt): boolean {
@@ -436,19 +439,18 @@ export class CustomerDebtDialogComponent {
     }
   }
 
-  protected getBalanceTypeSeverity(
+  protected getBalanceTypeVariant(
     type: string,
-  ): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
-    if (this.preferences.colorMode() !== 'informative') return 'contrast';
+  ): 'success' | 'warning' | 'danger' | 'info' | 'label' {
     switch (type) {
       case 'ADVANCED':
         return 'info';
       case 'RETURNS':
-        return 'warn';
+        return 'warning';
       case 'PAYMENTS':
         return 'success';
       case 'INVOICES':
-        return 'contrast';
+        return 'label';
       case 'REFUND':
         return 'danger';
       case 'CREDIT_NOTE':
