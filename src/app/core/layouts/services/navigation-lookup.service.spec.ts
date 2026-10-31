@@ -11,6 +11,8 @@ import { AuthorizationService } from '@features/platform/auth/authorization/serv
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { NavigationLookupService } from './navigation-lookup.service';
 import { DocumentActionDialogService } from './document-action-dialog.service';
+import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
+import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
 describe('Navbar lookup without navigation', () => {
   const navigate = vi.fn().mockResolvedValue(true);
@@ -24,6 +26,7 @@ describe('Navbar lookup without navigation', () => {
 
   beforeEach(() => {
     TestBed.resetTestingModule();
+    vi.restoreAllMocks();
     vi.clearAllMocks();
     categoryApi.getAll.mockReturnValue(
       of({
@@ -66,8 +69,40 @@ describe('Navbar lookup without navigation', () => {
     const record = navigation.session()!.records()[0];
     expect(navigate).not.toHaveBeenCalled();
     await navigation.select(record);
-    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/catalog/categories'], {
-      queryParams: { navAction: 'Editar', navRecord: 'category-1', navSearch: 'Hardware' },
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/catalog/categories', 'category-1', 'edit'], {
+      queryParams: undefined,
+    });
+  });
+
+  it.each(
+    LIST_NAVIGATION_DEFINITIONS.flatMap((definition) =>
+      definition.actions
+        .filter((action) => action.label === 'Ver detalle' || action.label === 'Editar')
+        .map((action) => [definition.route, action.label]),
+    ),
+  )('navigates directly from %s to the selected %s screen', async (route, label) => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'record-1', label: 'Selected record', description: '' }], total: 1 }),
+    );
+    lookup.open(route, label);
+    expect(navigate).not.toHaveBeenCalled();
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(
+      [route, 'record-1', ...(label === 'Editar' ? ['edit'] : [])],
+      { queryParams: undefined },
+    );
+    expect(navigation.session()).toBeNull();
+  });
+
+  it('preserves explicit destination query parameters without list navigation commands', async () => {
+    lookup.open('/catalog/categories', 'Ver detalle', { source: 'menu' });
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith(['/catalog/categories', 'category-1'], {
+      queryParams: { source: 'menu' },
     });
   });
 
