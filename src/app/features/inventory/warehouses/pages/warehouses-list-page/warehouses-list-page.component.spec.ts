@@ -1,20 +1,23 @@
-import { provideRouter } from '@angular/router';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, convertToParamMap } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { signal } from '@angular/core';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { WarehousesListPageComponent } from '@features/inventory/warehouses/pages/warehouses-list-page/warehouses-list-page.component';
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { WarehouseList } from '@features/inventory/warehouses/models/interfaces/warehouse.interfaces';
 import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
+import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 
 describe('WarehousesListPageComponent', () => {
   let fixture: ComponentFixture<WarehousesListPageComponent>;
   let component: WarehousesListPageComponent;
   let router: Router;
+  let navigation: ListNavigationService;
+  const navigate = vi.fn().mockResolvedValue(true);
+  const queryParams = new BehaviorSubject(convertToParamMap({}));
   const warehouse: WarehouseList = {
     id: 'wh-1',
     name: 'Central',
@@ -36,11 +39,28 @@ describe('WarehousesListPageComponent', () => {
   };
 
   beforeEach(() => {
+    TestBed.resetTestingModule();
     vi.clearAllMocks();
+    navigate.mockClear();
+    queryParams.next(convertToParamMap({}));
     TestBed.configureTestingModule({
       imports: [WarehousesListPageComponent],
       providers: [
-        provideRouter([]),
+        {
+          provide: Router,
+          useValue: {
+            url: '/inventory/warehouses',
+            events: of(new NavigationEnd(1, '/inventory/warehouses', '/inventory/warehouses')),
+            navigate,
+          },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParamMap: queryParams,
+            snapshot: { paramMap: { get: () => null }, queryParamMap: { get: () => null } },
+          },
+        },
         { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: WarehouseApplicationService, useValue: service },
         {
@@ -57,6 +77,7 @@ describe('WarehousesListPageComponent', () => {
     fixture = TestBed.createComponent(WarehousesListPageComponent);
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
+    navigation = TestBed.inject(ListNavigationService);
   });
 
   it('loads warehouses on init', () => {
@@ -89,6 +110,23 @@ describe('WarehousesListPageComponent', () => {
     expect(component.selectedOperation()).toBe('exit');
     expect(component.operationDialogVisible()).toBe(true);
     expect(component.selectedWarehouse()).toEqual(warehouse);
+  });
+
+  it.each(['Registrar entrada', 'Registrar salida'])(
+    'ignores the %s navbar action delivered as a query parameter',
+    async (label) => {
+      queryParams.next(convertToParamMap({ navAction: label }));
+      await Promise.resolve();
+
+      expect(navigation.session()).toBeNull();
+    },
+  );
+
+  it('accepts the movements history navbar action as a page navigation', async () => {
+    queryParams.next(convertToParamMap({ navAction: 'Historial de movimientos' }));
+    await Promise.resolve();
+
+    expect(navigation.session()?.title).toBe('Historial de movimientos');
   });
 
   it('navigates to stock, movements, details, and edit pages', () => {

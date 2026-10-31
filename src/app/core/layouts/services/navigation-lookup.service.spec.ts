@@ -16,6 +16,7 @@ import {
   ReceivablesActionKind,
 } from './receivables-action-dialog.service';
 import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
+import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
 import * as navigationDataSource from '@shared/components/list/list-navigation-data-source';
 import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
 
@@ -30,6 +31,7 @@ describe('Navbar lookup without navigation', () => {
   let documentActions: DocumentActionDialogService;
   let receivablesActions: ReceivablesActionDialogService;
   let invoiceActions: InvoiceActionDialogService;
+  let warehouseActions: WarehouseActionDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -62,8 +64,8 @@ describe('Navbar lookup without navigation', () => {
     documentActions = TestBed.inject(DocumentActionDialogService);
     receivablesActions = TestBed.inject(ReceivablesActionDialogService);
     invoiceActions = TestBed.inject(InvoiceActionDialogService);
+    warehouseActions = TestBed.inject(WarehouseActionDialogService);
   });
-
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
     lookup.open('/catalog/categories', 'Editar');
     expect(navigation.session()?.records()[0].label).toBe('Hardware');
@@ -218,6 +220,25 @@ describe('Navbar lookup without navigation', () => {
       invoiceId: 'invoice-1',
       invoiceNumber: 'FAC-001',
       action: action satisfies InvoiceActionKind,
+    });
+  });
+
+  it.each([
+    ['Registrar entrada', 'entry'],
+    ['Registrar salida', 'exit'],
+  ] as const)('opens the warehouse %s action dialog without routing', async (label, operation) => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'warehouse-1', label: 'Central', description: '' }], total: 1 }),
+    );
+    lookup.open('/inventory/warehouses', label);
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(warehouseActions.request()).toEqual({
+      warehouseId: 'warehouse-1',
+      warehouseName: 'Central',
+      operation,
     });
   });
 });

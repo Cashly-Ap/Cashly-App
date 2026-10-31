@@ -1,0 +1,9 @@
+@if (warehouseId()) {
+  <app-warehouse-stock-operation-dialog
+    [warehouseId]="warehouseId()"
+    [warehouseName]="warehouseName()"
+    [operation]="operation()"
+    [visible]="visible()"
+    (visibleChange)="onVisibleChange($event)"
+  />
+}

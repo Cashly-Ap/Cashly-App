@@ -27,6 +27,7 @@ import {
   ReceivablesActionKind,
 } from './receivables-action-dialog.service';
 import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
+import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
@@ -82,6 +83,7 @@ export class NavigationLookupService {
   private readonly documentActions = inject(DocumentActionDialogService);
   private readonly receivablesActions = inject(ReceivablesActionDialogService);
   private readonly invoiceActions = inject(InvoiceActionDialogService);
+  private readonly warehouseActions = inject(WarehouseActionDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -136,6 +138,9 @@ export class NavigationLookupService {
     const invoiceAction =
       route === '/finance/billing/invoices' &&
       ['Confirmar', 'Cancelar', 'Duplicar'].includes(label);
+    const warehouseAction =
+      route === '/inventory/warehouses' &&
+      ['Registrar entrada', 'Registrar salida'].includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         key: item.id,
@@ -175,6 +180,14 @@ export class NavigationLookupService {
                 invoiceId: item.id,
                 invoiceNumber: item.label,
                 action: invoiceActionKind(label),
+              });
+              return;
+            }
+            if (warehouseAction) {
+              this.warehouseActions.open({
+                warehouseId: item.id,
+                warehouseName: item.label,
+                operation: label === 'Registrar entrada' ? 'entry' : 'exit',
               });
               return;
             }

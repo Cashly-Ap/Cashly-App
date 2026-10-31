@@ -130,6 +130,7 @@ export class WarehousesListPageComponent implements OnInit {
     label: (record) => record.name,
     description: (record) => `${record.state} · ${record.municipality}`,
     actions: (record) => this.actionsFor(record),
+    acceptsAction: (label) => label === 'Historial de movimientos',
   });
 
   ngOnInit(): void {

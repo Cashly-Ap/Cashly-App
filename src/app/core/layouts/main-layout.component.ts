@@ -90,6 +90,7 @@ import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 import { DocumentActionDialogHostComponent } from '@core/layouts/components/document-action-dialog-host/document-action-dialog-host.component';
 import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
+import { WarehouseActionDialogHostComponent } from '@core/layouts/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -141,6 +142,7 @@ export type ContentMaxWidth =
     DocumentActionDialogHostComponent,
     ReceivablesActionDialogHostComponent,
     InvoiceActionDialogHostComponent,
+    WarehouseActionDialogHostComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
