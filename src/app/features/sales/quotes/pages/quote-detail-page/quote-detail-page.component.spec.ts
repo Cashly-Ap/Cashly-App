@@ -137,6 +137,15 @@ describe('QuoteDetailPageComponent', () => {
     expect(fixture.nativeElement.querySelector('app-assign-warehouses-dialog')).toBeNull();
   });
 
+  it('should render the creator name in the details', () => {
+    fixture.detectChanges();
+    const creatorField = Array.from(
+      fixture.nativeElement.querySelectorAll('app-details-info-field') as NodeListOf<HTMLElement>,
+    ).find((field) => field.textContent?.includes('Creado por'));
+
+    expect(creatorField?.textContent).toContain('Admin');
+  });
+
   it('should expose QuoteStatus enum', () => {
     fixture.detectChanges();
     expect(component.QuoteStatus).toBe(QuoteStatus);

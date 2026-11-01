@@ -146,11 +146,6 @@
                         {{ 'shared.total' | translate }} <p-sortIcon field="subtotal" />
                       </div>
                     </th>
-                    <th class="w-36 hidden lg:table-cell">
-                      <div class="font-semibold">
-                        {{ 'finance.billing.creditnotes.createdBy' | translate }}
-                      </div>
-                    </th>
                     <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
                       <div class="font-semibold">
                         {{ 'finance.billing.invoices.date' | translate }}
@@ -187,11 +182,6 @@
                     </td>
                     <td class="hidden lg:table-cell">
                       <div class="text-sm text-surface-500">
-                        {{ quote.createdByName || ('sales.quotes.automatic' | translate) }}
-                      </div>
-                    </td>
-                    <td class="hidden lg:table-cell">
-                      <div class="text-sm text-surface-500">
                         {{ quote.createdAt | localizedDate: 'dd/MM/yyyy' }}
                       </div>
                     </td>
@@ -211,7 +201,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate"
+                [currentPageReportTemplate]="
+                  'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -261,10 +253,6 @@
                         [label]="getStatusLabel(quote.status) | translate"
                         [variant]="getStatusVariant(quote.status)"
                       />
-                      <span class="text-xs text-surface-400"
-                        >{{ 'finance.billing.creditnotes.createdBy' | translate }}
-                        {{ quote.createdByName || ('sales.quotes.automatic' | translate) }}</span
-                      >
                     </div>
                   </div>
                   <div class="text-xs text-surface-400 ml-2">
@@ -286,7 +274,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50, 100]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate"
+              [currentPageReportTemplate]="
+                'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

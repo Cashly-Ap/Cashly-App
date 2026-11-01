@@ -85,11 +85,18 @@
                 [label]="'shared.customer' | translate"
                 [value]="currentQuote.customerName"
               />
-              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="currentQuote.customerRif" />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="currentQuote.customerRif"
+              />
               <app-details-info-field
                 [label]="'shared.total' | translate"
                 [value]="(currentQuote.subtotal | localizedNumber: '1.2-2') || ''"
                 type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="currentQuote.createdByName || ('sales.quotes.automatic' | translate)"
               />
               <app-details-info-field
                 [label]="'finance.billing.creditnotes.createdOn' | translate"
