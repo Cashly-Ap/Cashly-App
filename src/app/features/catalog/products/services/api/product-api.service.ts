@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable, map } from 'rxjs';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 import { ProductDetails } from '@features/catalog/products/models/interfaces/product-details.interface';
@@ -11,6 +12,7 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ProductFilters {
+  action?: DocumentListAction;
   search?: string;
   categoryId?: string;
   composite?: boolean;
@@ -28,6 +30,7 @@ export class ProductApiService {
 
   getAll(filters?: ProductFilters): Observable<PagedResponse<ProductList>> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.categoryId !== undefined)
       params = params.set('categoryId', String(filters.categoryId));

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable, map } from 'rxjs';
 import {
   CreditNoteList,
@@ -8,6 +9,7 @@ import {
 } from '@features/finance/billing/credit-notes/models/interfaces/credit-note.interface';
 
 export interface CreditNoteFilters {
+  action?: DocumentListAction;
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
@@ -47,6 +49,7 @@ export class CreditNoteApiService {
 
   getAll(filters?: CreditNoteFilters): Observable<CreditNoteList[]> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);

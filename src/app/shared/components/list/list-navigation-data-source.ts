@@ -97,123 +97,120 @@ export function loadNavigationLookup(
   const filters = { search: search.trim() || undefined, page, size };
   const active = booleanFilter(filterValues['active']);
   const action = documentListAction(label);
+  const requestedAction = action === 'DELETE' ? 'DELETE' : undefined;
   switch (route) {
     case '/catalog/products':
       return injector
         .get(ProductApiService)
         .getAll({
-          ...filters,
+           ...filters,
+            action: requestedAction,
           active,
           composite: booleanFilter(filterValues['composite']),
           categoryId: textFilter(filterValues['categoryId']),
         })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.name,
               description: description(item.code, item.categoryName),
-            })),
+              })),
           ),
         );
     case '/catalog/categories':
       return injector
         .get(CategoryApiService)
-        .getAll({ ...filters, active })
+         .getAll({ ...filters, action: requestedAction, active })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.name,
               description: item.description ?? '',
-            })),
+              })),
           ),
         );
     case '/catalog/price-types':
       return injector
         .get(PriceTypeApiService)
-        .getAll({ ...filters, active })
+         .getAll({ ...filters, action: requestedAction, active })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.name,
               description: item.active ? 'Activo' : 'Inactivo',
-            })),
+              })),
           ),
         );
     case '/inventory/warehouses':
       return injector
         .get(WarehouseApiService)
-        .getAll({ ...filters, active })
+         .getAll({ ...filters, action: requestedAction, active })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.name,
               description: description(item.state, item.municipality),
-            })),
+              })),
           ),
         );
     case '/partners/customers':
       return injector
         .get(CustomerApiService)
         .getAll({
-          ...filters,
-          type: textFilter(filterValues['type']),
+           ...filters,
+           action: requestedAction,
+           type: textFilter(filterValues['type']),
           active,
           state: textFilter(filterValues['state']),
           municipality: textFilter(filterValues['municipality']),
         })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.legalName,
               description: description(`#${item.code}`, item.rif),
-            })),
+              })),
           ),
         );
     case '/partners/suppliers':
       return injector
         .get(SupplierApiService)
         .getAll({
-          ...filters,
+           ...filters,
+           action: requestedAction,
           type: textFilter(filterValues['type']),
           active,
           state: textFilter(filterValues['state']),
           municipality: textFilter(filterValues['municipality']),
         })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.legalName,
               description: description(`#${item.code}`, item.rif),
-            })),
+              })),
           ),
         );
     case '/platform/users':
       return injector
         .get(UserApiService)
-        .getAll({ ...filters, role: textFilter(filterValues['role']), active })
+       .getAll({ ...filters, action: requestedAction, role: textFilter(filterValues['role']), active })
         .pipe(
-          map((response) =>
-            pageResult(response, (item) => ({
-              id: item.id,
+             map((response) => pageResult(response, (item) => ({
+               id: item.id,
               label: item.userName,
               description: item.email,
-            })),
+              })),
           ),
         );
     case '/platform/roles':
-      return injector
-        .get(AccessManagementService)
-        .roles(action === 'EDIT' ? 'EDIT' : undefined)
+       return injector
+         .get(AccessManagementService)
+         .roles(action === 'EDIT' ? 'EDIT' : requestedAction)
         .pipe(
           map((items) =>
             arrayResult(
-              items,
+                 items,
               (item) => ({ id: item.id, label: item.name, description: item.description ?? '' }),
               search,
               page,
@@ -222,13 +219,13 @@ export function loadNavigationLookup(
           ),
         );
     case '/platform/departments':
-      return injector
-        .get(AccessManagementService)
-        .departments()
+       return injector
+         .get(AccessManagementService)
+         .departments(requestedAction)
         .pipe(
           map((items) =>
             arrayResult(
-              items,
+                 items,
               (item) => ({ id: item.id, label: item.name, description: item.description ?? '' }),
               search,
               page,
@@ -239,15 +236,18 @@ export function loadNavigationLookup(
     case '/sales/orders':
       return injector
         .get(OrderApiService)
-        .getAll({
-          search: filters.search,
-          action,
-          ...(!action ? { status: filterValues['status'] || 'ALL' } : {}),
-        })
+        .getAll(
+          requestedAction
+             ? { search: filters.search, action: requestedAction }
+            : {
+                search: filters.search,
+                ...(action ? { action } : { status: filterValues['status'] || 'ALL' }),
+              },
+        )
         .pipe(
           map((items) =>
             arrayResult(
-              items,
+               items,
               (item) => ({
                 id: item.id,
                 label: item.orderNumber,
@@ -262,15 +262,18 @@ export function loadNavigationLookup(
     case '/sales/quotes':
       return injector
         .get(QuoteApiService)
-        .getAll({
-          search: filters.search,
-          action,
-          ...(!action ? { status: filterValues['status'] || 'ALL' } : {}),
-        })
+        .getAll(
+          requestedAction
+             ? { search: filters.search, action: requestedAction }
+            : {
+                search: filters.search,
+                ...(action ? { action } : { status: filterValues['status'] || 'ALL' }),
+              },
+        )
         .pipe(
           map((items) =>
             arrayResult(
-              items,
+                items,
               (item) => ({
                 id: item.id,
                 label: item.quoteNumber,
@@ -285,7 +288,9 @@ export function loadNavigationLookup(
     case '/procurement/purchases': {
       const api = injector.get(PurchaseApiService);
       const status = textFilter(filterValues['status']);
-      const request = action
+      const request = requestedAction
+        ? api.getAll({ search: filters.search, action: requestedAction })
+        : action
         ? api.getAll({ search: filters.search, action })
         : status
           ? api.getAll({ search: filters.search, status })
@@ -351,11 +356,11 @@ export function loadNavigationLookup(
     case '/finance/billing/returns':
       return injector
         .get(ReturnApiService)
-        .getAll({ search: filters.search })
+       .getAll({ search: filters.search, action: requestedAction })
         .pipe(
           map((items) =>
-            arrayResult(
-              items,
+             arrayResult(
+               items,
               (item) => ({
                 id: item.id,
                 label: item.returnNumber,
@@ -370,11 +375,11 @@ export function loadNavigationLookup(
     case '/finance/billing/credit-notes':
       return injector
         .get(CreditNoteApiService)
-        .getAll()
+       .getAll({ action: requestedAction })
         .pipe(
           map((items) =>
             arrayResult(
-              items,
+               items,
               (item) => ({
                 id: item.id,
                 label: item.noteNumber,
@@ -389,12 +394,12 @@ export function loadNavigationLookup(
     case '/finance/billing/debit-notes':
       return injector
         .get(DebitNoteApiService)
-        .getAll({ search: filters.search })
+       .getAll({ search: filters.search, action: requestedAction })
         .pipe(
-          map((items) =>
-            arrayResult(
-              items,
-              (item) => ({
+             map((items) =>
+             arrayResult(
+               items,
+               (item) => ({
                 id: item.id,
                 label: item.noteNumber,
                 description: description(item.customerName, item.invoiceNumber),
@@ -408,10 +413,10 @@ export function loadNavigationLookup(
     case '/finance/treasury/payment-methods':
       return injector
         .get(PaymentMethodApiService)
-        .getAll({ ...filters, active })
+       .getAll({ ...filters, action: requestedAction, active })
         .pipe(
           map((response) =>
-            pageResult(response, (item) => ({
+             pageResult(response, (item) => ({
               id: item.id,
               label: item.name,
               description: description(item.code, item.description),

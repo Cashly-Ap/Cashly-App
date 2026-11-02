@@ -155,15 +155,13 @@ export class PriceTypesListPageComponent implements OnInit {
         command: () => this.onEdit(priceType),
       },
     ];
-    if (priceType.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(priceType),
       });
-    }
     return actions;
   }
 

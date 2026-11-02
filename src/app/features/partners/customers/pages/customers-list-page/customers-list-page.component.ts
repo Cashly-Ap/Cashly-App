@@ -294,15 +294,13 @@ export class CustomersListPageComponent implements OnInit {
       });
     }
 
-    if (customer.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(customer),
       });
-    }
 
     return actions;
   }

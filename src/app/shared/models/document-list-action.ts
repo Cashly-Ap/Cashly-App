@@ -1,4 +1,5 @@
 export type DocumentListAction =
+  | 'DELETE'
   | 'EDIT'
   | 'CONFIRM'
   | 'CANCEL'
@@ -7,6 +8,7 @@ export type DocumentListAction =
   | 'DUPLICATE';
 
 const DOCUMENT_LIST_ACTIONS: Readonly<Record<string, DocumentListAction>> = {
+  Eliminar: 'DELETE',
   Editar: 'EDIT',
   Confirmar: 'CONFIRM',
   'Confirmar compra': 'CONFIRM',

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable, map } from 'rxjs';
 import {
   WarehouseList,
@@ -15,6 +16,7 @@ import {
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface WarehouseFilters {
+  action?: DocumentListAction;
   search?: string;
   state?: string;
   active?: boolean;
@@ -31,6 +33,7 @@ export class WarehouseApiService {
 
   getAll(filters?: WarehouseFilters): Observable<PagedResponse<WarehouseList>> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.state) params = params.set('state', filters.state);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));

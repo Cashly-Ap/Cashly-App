@@ -62,6 +62,7 @@ import {
 } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 
 @Component({
   selector: 'app-invoice-list-page',
@@ -203,6 +204,19 @@ export class InvoiceListPageComponent implements OnInit {
 
   private readonly listDestroyRef = inject(DestroyRef);
   private listRequest?: Subscription;
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.invoices(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => this.onSearch(term),
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.invoiceNumber,
+    description: (record) => `${record.customerName} · ${record.status}`,
+    actions: (record) => this.actionsFor(record),
+  });
 
   ngOnInit(): void {
     this.loadWithFilters();

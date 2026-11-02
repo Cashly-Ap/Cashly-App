@@ -33,7 +33,8 @@ const action = (
 const view = () => action('Ver detalle', 'READ', 'eye');
 const edit = () => action('Editar', 'UPDATE', 'pencil');
 const pdf = () => action('Descargar PDF', 'EXPORT', 'file-pdf');
-const recordActions = () => [view(), edit()];
+const remove = () => action('Eliminar', 'DELETE', 'trash');
+const recordActions = () => [view(), edit(), remove()];
 const destination = (
   label: string,
   routerLink: string,
@@ -53,6 +54,7 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
       edit(),
       action('Convertir a pedido', 'CREATE', 'shopping-cart', BusinessModule.SALES_ORDERS),
       action('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
+      remove(),
     ],
   },
   {
@@ -66,6 +68,7 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
        action('Confirmar', 'CONFIRM', 'check', BusinessModule.FINANCE_INVOICES),
       action('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
        action('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
+       remove(),
     ],
   },
   {
@@ -78,6 +81,7 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
       edit(),
       action('Confirmar compra', 'CONFIRM', 'check'),
       action('Cancelar compra', 'CANCEL', 'ban'),
+      remove(),
     ],
   },
   { route: '/catalog/products', singular: 'producto', create: true, actions: recordActions() },
@@ -111,7 +115,7 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     actions: [
         action('Registrar entrada', 'EXECUTE', 'arrow-circle-down', BusinessModule.INVENTORY_WAREHOUSES),
         action('Registrar salida', 'EXECUTE', 'arrow-circle-up', BusinessModule.INVENTORY_WAREHOUSES),
-      ...recordActions(),
+       ...recordActions(),
     ],
   },
   {
@@ -124,21 +128,22 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
        action('Confirmar', 'CONFIRM', 'check', BusinessModule.FINANCE_INVOICES),
       edit(),
        action('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
-        action('Duplicar', 'INVOICE_DUPLICATE', 'copy', BusinessModule.FINANCE_INVOICES),
+       action('Duplicar', 'INVOICE_DUPLICATE', 'copy', BusinessModule.FINANCE_INVOICES),
+       remove(),
     ],
   },
-  { route: '/finance/billing/returns', singular: 'devolución', create: true, actions: [view()] },
+  { route: '/finance/billing/returns', singular: 'devolución', create: true, actions: [view(), remove()] },
   {
     route: '/finance/billing/credit-notes',
     singular: 'nota de crédito',
     create: true,
-    actions: [view()],
+     actions: [view(), remove()],
   },
   {
     route: '/finance/billing/debit-notes',
     singular: 'nota de débito',
     create: true,
-    actions: [view()],
+     actions: [view(), remove()],
   },
   {
     route: '/finance/treasury/payment-methods',
@@ -153,7 +158,8 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     actions: [
       view(),
       edit(),
-        action('Ver saldo', 'CUSTOMER_BALANCE', 'wallet', BusinessModule.CONTACTS_CUSTOMERS),
+      action('Ver saldo', 'CUSTOMER_BALANCE', 'wallet', BusinessModule.CONTACTS_CUSTOMERS),
+      remove(),
     ],
   },
   { route: '/partners/suppliers', singular: 'proveedor', create: true, actions: recordActions() },
@@ -200,7 +206,7 @@ export interface ListNavigationCallbacks {
 function actionLabel(action: string, singular: string): string {
   if (action === 'Ver detalle') return `Ver detalle de ${singular}`;
   if (action === 'Ver saldo') return `Ver saldo de ${singular}`;
-  if (['Editar', 'Confirmar', 'Cancelar', 'Duplicar'].includes(action))
+  if (['Editar', 'Confirmar', 'Cancelar', 'Duplicar', 'Eliminar'].includes(action))
     return `${action} ${singular}`;
   if (action === 'Descargar PDF') return `Descargar PDF de ${singular}`;
   return action;

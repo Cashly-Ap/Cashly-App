@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable } from 'rxjs';
 import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/price-type-list.interface';
 import { PriceTypeDetails } from '@features/catalog/price-types/models/interfaces/price-type-details.interface';
@@ -8,6 +9,7 @@ import { PriceTypeUpdate } from '@features/catalog/price-types/models/interfaces
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface PriceTypeFilters {
+  action?: DocumentListAction;
   search?: string;
   active?: boolean;
   page?: number;
@@ -23,6 +25,7 @@ export class PriceTypeApiService {
 
   getAll(filters?: PriceTypeFilters): Observable<PagedResponse<PriceTypeList>> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));
     if (filters?.page !== undefined) params = params.set('page', String(filters.page));

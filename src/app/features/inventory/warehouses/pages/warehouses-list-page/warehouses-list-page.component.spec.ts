@@ -100,6 +100,16 @@ describe('WarehousesListPageComponent', () => {
     ]);
   });
 
+  it('executes the registered delete action on the active warehouse list', () => {
+    const confirmSpy = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+
+    expect(navigation.executeRegistered('/inventory/warehouses', 'Eliminar', warehouse.id)).toBe(
+      true,
+    );
+    expect(confirmSpy).toHaveBeenCalledOnce();
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
   it('opens the shared stock operation dialog for entries and exits', () => {
     component.onOpenEntry(warehouse);
     expect(component.selectedOperation()).toBe('entry');

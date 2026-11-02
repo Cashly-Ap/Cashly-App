@@ -259,15 +259,13 @@ export class UsersListPageComponent implements OnInit {
         command: () => this.onEdit(user),
       },
     ];
-    if (user.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(user),
       });
-    }
     return actions;
   }
 

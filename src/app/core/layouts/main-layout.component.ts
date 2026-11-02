@@ -93,6 +93,7 @@ import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoi
 import { WarehouseActionDialogHostComponent } from '@core/layouts/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
 import { CashRegisterActionDialogHostComponent } from '@core/layouts/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
 import { PendingPaymentActionDialogHostComponent } from '@core/layouts/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -147,6 +148,7 @@ export type ContentMaxWidth =
     WarehouseActionDialogHostComponent,
     CashRegisterActionDialogHostComponent,
     PendingPaymentActionDialogHostComponent,
+    ConfirmDialogModule,
   ],
   templateUrl: './main-layout.component.html',
 })

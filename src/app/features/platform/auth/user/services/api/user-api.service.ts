@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable } from 'rxjs';
 import { UserList } from '@features/platform/auth/user/models/interfaces/user-list.interface';
 import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
@@ -9,6 +10,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface UserFilters {
+  action?: DocumentListAction;
   search?: string;
   role?: string;
   active?: boolean;
@@ -25,6 +27,7 @@ export class UserApiService {
 
   getAll(filters?: UserFilters): Observable<PagedResponse<UserList>> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.role) params = params.set('roleId', filters.role);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));

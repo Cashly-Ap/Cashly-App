@@ -30,6 +30,7 @@ import {
   ListActionButtonsComponent,
   ListContainerComponent,
 } from '@shared/components/list';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -98,6 +99,19 @@ export class WarehousesListPageComponent implements OnInit {
     { label: 'Activos', value: 'true' },
     { label: 'Inactivos', value: 'false' },
   ];
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.warehouses(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => this.onSearch(term),
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.name,
+    description: (record) => `${record.state} · ${record.municipality}`,
+    actions: (record) => this.actionsFor(record),
+  });
 
   readonly showInitialLoading = computed(() => this.loading() && this.warehouses().length === 0);
   readonly isEmptyDatabase = computed(
@@ -224,15 +238,13 @@ export class WarehousesListPageComponent implements OnInit {
         command: () => this.onEdit(warehouse),
       },
     ];
-    if (warehouse.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(warehouse),
       });
-    }
     return actions;
   }
 

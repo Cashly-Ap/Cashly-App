@@ -190,15 +190,13 @@ export class CategoriesListPageComponent implements OnInit {
         command: () => this.onEdit(category),
       },
     ];
-    if (category.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(category),
       });
-    }
     return actions;
   }
 

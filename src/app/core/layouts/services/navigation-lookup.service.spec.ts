@@ -1,13 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
 import { PurchaseApiService } from '@features/procurement/purchases/services/api/purchase-api.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { NavigationLookupService } from './navigation-lookup.service';
 import { DocumentActionDialogService } from './document-action-dialog.service';
@@ -31,6 +32,7 @@ describe('Navbar lookup without navigation', () => {
   const orderApi = { getAll: vi.fn().mockReturnValue(of([])) };
   const quoteApi = { getAll: vi.fn().mockReturnValue(of([])) };
   const purchaseApi = { getAll: vi.fn().mockReturnValue(of([])) };
+  const confirmation = { confirm: vi.fn() };
   let lookup: NavigationLookupService;
   let navigation: ListNavigationService;
   let documentActions: DocumentActionDialogService;
@@ -57,9 +59,10 @@ describe('Navbar lookup without navigation', () => {
     );
     TestBed.configureTestingModule({
       providers: [
-        { provide: Router, useValue: { url: '/analytics/dashboard', navigate } },
+        { provide: Router, useValue: { url: '/catalog/categories', navigate } },
         { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: MessageService, useValue: { add: vi.fn() } },
+        { provide: ConfirmationService, useValue: confirmation },
         { provide: CategoryApiService, useValue: categoryApi },
         { provide: OrderApiService, useValue: orderApi },
         { provide: QuoteApiService, useValue: quoteApi },
@@ -167,6 +170,72 @@ describe('Navbar lookup without navigation', () => {
     lookup.open('/sales/orders', 'Confirmar');
     expect(orderApi.getAll).toHaveBeenCalledWith({ search: undefined, action: 'CONFIRM' });
     expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it('delegates delete to the active list action without changing the current route', async () => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'category-1', label: 'Hardware', description: '' }], total: 1 }),
+    );
+    const activeListOwner = {};
+    navigation.register({
+      owner: activeListOwner,
+      module: BusinessModule.CATALOG_CATEGORIES,
+      records: () => [{ id: 'category-1', name: 'Hardware' }],
+      actions: (record) => [
+        {
+          label: 'Eliminar',
+          icon: 'pi pi-trash',
+          requiredAction: 'DELETE',
+          command: () => confirmation.confirm({ record }),
+        },
+      ],
+    });
+    lookup.open('/catalog/categories', 'Eliminar');
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(confirmation.confirm).toHaveBeenCalledWith(
+      expect.objectContaining({ record: { id: 'category-1', name: 'Hardware' } }),
+    );
+  });
+
+  it.each([
+    ['/sales/quotes', quoteApi, 'quoteNumber', 'Eliminar'],
+    ['/sales/orders', orderApi, 'orderNumber', 'Eliminar'],
+    ['/procurement/purchases', purchaseApi, 'purchaseNumber', 'Eliminar'],
+  ] as const)('requests all records for deleting %s with the DELETE action', (route, api, numberKey, label) => {
+    api.getAll.mockReturnValue(
+      of([
+        {
+          id: 'draft-record',
+          [numberKey]: 'DOC-001',
+          customerName: 'Customer',
+          customerAlias: 'Customer',
+          supplierName: 'Supplier',
+          status: 'DRAFT',
+          createdAt: '2026-01-01T00:00:00Z',
+        },
+        {
+          id: 'confirmed-record',
+          [numberKey]: 'DOC-002',
+          customerName: 'Customer',
+          customerAlias: 'Customer',
+          supplierName: 'Supplier',
+          status: 'CONFIRMED',
+          createdAt: '2026-01-02T00:00:00Z',
+        },
+      ]),
+    );
+
+    lookup.open(route, label);
+
+    expect(api.getAll).toHaveBeenCalledWith({ search: undefined, action: 'DELETE' });
+    expect(navigation.session()!.records().map((record) => record.id)).toEqual([
+      'draft-record',
+      'confirmed-record',
+    ]);
+    expect(navigation.session()!.total()).toBe(2);
   });
 
   it.each([

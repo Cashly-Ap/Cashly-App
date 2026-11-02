@@ -34,6 +34,7 @@ export interface ListNavigationOptions<T> {
 }
 
 export interface NavigationRecord {
+  id?: string;
   key?: string;
   label: string;
   description: string;
@@ -56,12 +57,63 @@ export interface ListNavigationSession {
   paginate: (event: { first: number; rows: number }) => void;
 }
 
+export interface ListNavigationRegistration<T> {
+  owner: object;
+  module: BusinessModule | null;
+  records: () => readonly T[];
+  actions: (record: T) => readonly ListAction[];
+  extras?: (record: T) => readonly ListAction[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class ListNavigationService {
   private readonly router = inject(Router);
   private readonly authorization = inject(AuthorizationService);
   private readonly messages = inject(MessageService, { optional: true });
   readonly session = signal<ListNavigationSession | null>(null);
+  private readonly registrations = new Map<object, ListNavigationRegistration<unknown>>();
+
+  register<T>(registration: ListNavigationRegistration<T>): void {
+    this.registrations.set(
+      registration.owner,
+      registration as ListNavigationRegistration<unknown>,
+    );
+  }
+
+  unregister(owner: object): void {
+    this.registrations.delete(owner);
+  }
+
+  executeRecordAction(route: string, label: string, recordId: string): boolean {
+    const module = moduleForUrl(route);
+    const currentModule = moduleForUrl(this.router.url);
+    if (!module || module !== currentModule) return false;
+
+    for (const registration of this.registrations.values()) {
+      if (registration.module !== currentModule) continue;
+      const record = registration.records().find((item) => this.keyFor(item) === recordId);
+      if (!record) continue;
+      const action = [
+        ...registration.actions(record),
+        ...(registration.extras?.(record) ?? []),
+      ].find((item) => item.label === label);
+      if (!action || action.disabled || !this.allowed(action, currentModule)) return false;
+      action.command();
+      return true;
+    }
+    return false;
+  }
+
+  executeRegistered(route: string, label: string, recordId: string): boolean {
+    return this.executeRecordAction(route, label, recordId);
+  }
+
+  private keyFor(record: unknown): string | undefined {
+    if (typeof record !== 'object' || record === null) return undefined;
+    if ('id' in record && typeof record.id === 'string') return record.id;
+    if ('customerId' in record && typeof record.customerId === 'string') return record.customerId;
+    return undefined;
+  }
 
   allowed(action: ListAction | undefined, module: BusinessModule | null): boolean {
     return (
@@ -195,6 +247,14 @@ export function connectListNavigation<T>(options: ListNavigationOptions<T>): voi
   destroyRef.onDestroy(() => {
     destroyed = true;
     navigation.detach(owner);
+    navigation.unregister(owner);
+  });
+  navigation.register({
+    owner,
+    module: moduleForUrl(router.url),
+    records: options.records,
+    actions: options.actions,
+    extras: options.extras,
   });
   route.queryParamMap.pipe(takeUntilDestroyed(destroyRef)).subscribe((params) => {
     const action = params.get('navAction');
@@ -227,8 +287,9 @@ export function connectListNavigation<T>(options: ListNavigationOptions<T>): voi
       const records = computed(() =>
         options
           .records()
-          .map((record) => ({
-            label: options.label(record),
+           .map((record) => ({
+             id: keyFor(record),
+             label: options.label(record),
             description: options.description?.(record) ?? '',
             action: () =>
               [...options.actions(record), ...(options.extras?.(record) ?? [])].find(

@@ -61,6 +61,14 @@ describe('Department management navigation and form', () => {
     expect(navigate).toHaveBeenCalledWith(['/platform/departments', 'd', 'edit']);
   });
 
+  it('does not expose delete without the API referenced-record indicator', () => {
+    createComponent();
+    expect(component.actionsFor(department).map((action) => action.label)).toEqual([
+      'Ver detalle',
+      'Editar',
+    ]);
+  });
+
   it('retains entered fields and version when a concurrent update conflicts', () => {
     snapshot.data = { view: 'form' };
     snapshot.paramMap = convertToParamMap({ id: 'd' });

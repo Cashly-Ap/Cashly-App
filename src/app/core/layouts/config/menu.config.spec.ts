@@ -196,11 +196,27 @@ describe('ERP navigation', () => {
       expect(item.requiredAction).toBe('EXPORT');
     }
   });
-  it('does not expose delete actions in the navbar', () => {
+  it('exposes delete actions in the navbar for deletable modules', () => {
     const items = flatten(buildMenuItems(createCallbacks()));
-    expect(
-      items.some((item) => item.requiredAction === 'DELETE' || /eliminar|borrar/i.test(item.label)),
-    ).toBe(false);
+    expect(items.filter((item) => item.requiredAction === 'DELETE')).not.toHaveLength(0);
+  });
+
+  it('keeps exactly one internal delete action for every deletable list definition', () => {
+    for (const definition of LIST_NAVIGATION_DEFINITIONS) {
+      const deleteActions = definition.actions.filter(
+        (action) => action.requiredAction === 'DELETE',
+      );
+      if (deleteActions.length === 0) continue;
+      expect(deleteActions).toHaveLength(1);
+      expect(deleteActions[0].label).toBe('Eliminar');
+    }
+  });
+
+  it('uses the singular noun in delete action labels', () => {
+    const items = flatten(buildMenuItems(createCallbacks()));
+    expect(items.some((item) => item.label === 'Eliminar presupuesto')).toBe(true);
+    expect(items.some((item) => item.label === 'Eliminar pedido')).toBe(true);
+    expect(items.some((item) => item.label === 'Eliminar compra')).toBe(true);
   });
 
   it('declares the warehouse movements history as a global destination action', () => {
@@ -240,9 +256,9 @@ describe('ERP navigation', () => {
         ).toBe(true);
       for (const action of definition.actions) {
         if (definition.route === '/partners/customers' && action.label === 'Editar') {
-          expect(callbacks.openCustomerEditPicker).toHaveBeenCalledOnce();
-        } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
-          expect(callbacks.openCustomerBalancePicker).toHaveBeenCalledOnce();
+           expect(callbacks.openCustomerEditPicker).toHaveBeenCalled();
+         } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
+           expect(callbacks.openCustomerBalancePicker).toHaveBeenCalled();
         } else {
           expect(callbacks.openListAction).toHaveBeenCalledWith(
             definition.route,

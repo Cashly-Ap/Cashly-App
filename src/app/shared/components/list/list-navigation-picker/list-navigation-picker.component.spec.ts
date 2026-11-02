@@ -94,4 +94,12 @@ describe('ListNavigationPickerComponent acceptance', () => {
     await component.acceptSelection();
     expect(select).not.toHaveBeenCalled();
   });
+
+  it('does not select a record when its requested action is unavailable', () => {
+    vi.spyOn(TestBed.inject(ListNavigationService), 'available').mockReturnValue(false);
+
+    component.selectRecord(record);
+
+    expect(component.selectedRecord()).toBeNull();
+  });
 });

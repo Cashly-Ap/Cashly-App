@@ -188,12 +188,14 @@ export class NavigationLookupService {
       ['Aprobar pago', 'Rechazar pago'].includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
+        id: item.id,
         key: item.id,
         label: item.label,
         description: item.description,
         action: () => ({
           ...definitionAction,
           command: () => {
+            if (this.navigation.executeRecordAction(route, label, item.id)) return;
             if (modalAction) {
               this.documentActions.open({
                 route: route as '/sales/quotes' | '/sales/orders' | '/procurement/purchases',

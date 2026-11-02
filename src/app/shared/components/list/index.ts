@@ -3,3 +3,8 @@ export {
   ListActionButtonsComponent,
   type ListAction,
 } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
+export {
+  ListNavigationService,
+  connectListNavigation,
+  type ListNavigationRegistration,
+} from '@shared/components/list/list-navigation.service';

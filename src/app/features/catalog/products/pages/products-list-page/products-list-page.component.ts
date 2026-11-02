@@ -265,15 +265,13 @@ export class ProductsListPageComponent implements OnInit {
         command: () => this.onEdit(product),
       },
     ];
-    if (product.deletable) {
-      actions.push({
+    actions.push({
         requiredAction: 'DELETE',
         label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(product),
       });
-    }
     return actions;
   }
 

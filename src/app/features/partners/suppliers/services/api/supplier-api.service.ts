@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable } from 'rxjs';
 import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
 import { SupplierDetails } from '@features/partners/suppliers/models/interfaces/supplier-details.interface';
@@ -8,6 +9,7 @@ import { SupplierEdit } from '@features/partners/suppliers/models/interfaces/sup
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface SupplierFilters {
+  action?: DocumentListAction;
   search?: string;
   type?: string;
   active?: boolean;
@@ -30,6 +32,7 @@ export class SupplierApiService {
 
   getAll(filters?: SupplierFilters): Observable<PagedResponse<SupplierList>> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.type) params = params.set('type', filters.type);
     if (filters?.active !== undefined) params = params.set('active', String(filters.active));

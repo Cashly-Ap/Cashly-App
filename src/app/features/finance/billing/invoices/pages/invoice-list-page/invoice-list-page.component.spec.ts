@@ -120,6 +120,20 @@ describe('InvoiceListPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('exposes one internal delete action without routing', () => {
+    const deleteActions = component
+      .actionsFor(mockInvoices[0])
+      .filter((action) => action.label === 'Eliminar');
+    const confirmSpy = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    const navigateSpy = vi.spyOn(router, 'navigate');
+
+    expect(deleteActions).toHaveLength(1);
+    deleteActions[0].command();
+
+    expect(confirmSpy).toHaveBeenCalledOnce();
+    expect(navigateSpy).not.toHaveBeenCalled();
+  });
+
   it('should load invoices on init', () => {
     fixture.detectChanges();
     expect(mockService.loadAll).toHaveBeenCalled();

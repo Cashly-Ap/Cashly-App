@@ -1,14 +1,15 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Department, Role, SelectionOption, PermissionRegistry } from '../models/access.model';
+import { DocumentListAction } from '@shared/models/document-list-action';
 @Injectable({ providedIn: 'root' })
 export class AccessManagementService {
   private readonly http = inject(HttpClient);
-  roles(action?: 'EDIT') {
+  roles(action?: 'EDIT' | DocumentListAction) {
     return this.http.get<Role[]>('/api/roles', action ? { params: { action } } : {});
   }
-  departments() {
-    return this.http.get<Department[]>('/api/departments');
+  departments(action?: DocumentListAction) {
+    return this.http.get<Department[]>('/api/departments', action ? { params: { action } } : {});
   }
   roleOptions() {
     return this.http.get<SelectionOption[]>('/api/roles/options');

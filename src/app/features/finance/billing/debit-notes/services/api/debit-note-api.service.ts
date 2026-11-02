@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable, map } from 'rxjs';
 import {
   DebitNoteList,
@@ -8,6 +9,7 @@ import {
 } from '@features/finance/billing/debit-notes/models/interfaces/debit-note.interface';
 
 export interface DebitNoteFilters {
+  action?: DocumentListAction;
   search?: string;
   customerId?: string;
   dateFrom?: string;
@@ -49,6 +51,7 @@ export class DebitNoteApiService {
 
   getAll(filters?: DebitNoteFilters): Observable<DebitNoteList[]> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);

@@ -13,7 +13,7 @@ describe('List navigation actions', () => {
   const navigate = vi.fn().mockResolvedValue(true);
   const can = vi.fn().mockReturnValue(true);
   const command = vi.fn();
-  const records = signal([{ name: 'First record', deletable: true }]);
+  const records = signal([{ id: 'first-record', name: 'First record' }]);
   const loading = signal(false);
   const search = vi.fn();
   const paginate = vi.fn();
@@ -32,17 +32,14 @@ describe('List navigation actions', () => {
         paginate,
         onActionChange,
         label: (record) => record.name,
-        actions: (record): ListAction[] =>
-          record.deletable
-            ? [
-                {
-                  label: 'Eliminar',
-                  requiredAction: 'DELETE',
-                  icon: 'pi pi-trash',
-                  command,
-                },
-              ]
-            : [],
+        actions: (): ListAction[] => [
+          {
+            label: 'Eliminar',
+            requiredAction: 'DELETE',
+            icon: 'pi pi-trash',
+            command,
+          },
+        ],
       }),
     );
   }
@@ -52,7 +49,7 @@ describe('List navigation actions', () => {
     vi.clearAllMocks();
     can.mockReturnValue(true);
     navigate.mockResolvedValue(true);
-    records.set([{ name: 'First record', deletable: true }]);
+    records.set([{ id: 'first-record', name: 'First record' }]);
     loading.set(false);
     params.next(convertToParamMap({}));
     TestBed.configureTestingModule({
@@ -88,14 +85,75 @@ describe('List navigation actions', () => {
     expect(navigation.session()).toBeNull();
   });
 
+  it('executes the registered active-list action for a matching module', () => {
+    const registeredCommand = vi.fn();
+    navigation.register({
+      owner: {},
+      module: BusinessModule.CATALOG_PRODUCTS,
+      records: () => [{ id: 'first-record' }],
+      actions: () => [
+        {
+          label: 'Eliminar',
+          requiredAction: 'DELETE',
+          icon: 'pi pi-trash',
+          command: registeredCommand,
+        },
+      ],
+    });
+
+    expect(navigation.executeRegistered('/catalog/products', 'Eliminar', 'first-record')).toBe(true);
+    expect(registeredCommand).toHaveBeenCalledOnce();
+  });
+
+  it('executes any eligible registered record action, not only deletion', () => {
+    const registeredCommand = vi.fn();
+    navigation.register({
+      owner: {},
+      module: BusinessModule.CATALOG_PRODUCTS,
+      records: () => [{ id: 'first-record' }],
+      actions: () => [
+        {
+          label: 'Editar',
+          requiredAction: 'UPDATE',
+          icon: 'pi pi-pencil',
+          command: registeredCommand,
+        },
+      ],
+    });
+
+    expect(navigation.executeRecordAction('/catalog/products', 'Editar', 'first-record')).toBe(true);
+    expect(registeredCommand).toHaveBeenCalledOnce();
+  });
+
+  it('does not execute a registered action from another module or when disabled', () => {
+    const registeredCommand = vi.fn();
+    navigation.register({
+      owner: {},
+      module: BusinessModule.CATALOG_PRODUCTS,
+      records: () => [{ id: 'first-record' }],
+      actions: () => [
+        {
+          label: 'Eliminar',
+          requiredAction: 'DELETE',
+          icon: 'pi pi-trash',
+          disabled: true,
+          command: registeredCommand,
+        },
+      ],
+    });
+
+    expect(navigation.executeRegistered('/partners/customers', 'Eliminar', 'first-record')).toBe(false);
+    expect(registeredCommand).not.toHaveBeenCalled();
+  });
+
   it('blocks unavailable states and stale records', async () => {
     connect();
     params.next(convertToParamMap({ navAction: 'Eliminar' }));
     await Promise.resolve();
     const stale = navigation.session()!.records()[0];
-    records.set([{ name: 'Protected record', deletable: false }]);
+    records.set([{ id: 'other-record', name: 'Protected record' }]);
     await navigation.select(stale);
-    expect(navigation.session()!.records()).toEqual([]);
+    expect(navigation.session()!.records().map((record) => record.label)).toEqual(['Protected record']);
     expect(command).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
   });

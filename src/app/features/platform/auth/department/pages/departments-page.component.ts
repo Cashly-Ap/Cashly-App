@@ -170,14 +170,6 @@ export class DepartmentsPageComponent {
       icon: 'pi pi-pencil',
       command: () => this.onEdit(item),
     });
-    actions.push({
-      label: 'Eliminar',
-      requiredAction: 'DELETE',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.remove(item),
-    });
-
     return actions;
   }
   private selectRoute(): void {

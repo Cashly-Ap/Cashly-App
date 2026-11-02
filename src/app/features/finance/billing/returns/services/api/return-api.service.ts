@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { DocumentListAction } from '@shared/models/document-list-action';
 import { Observable, map } from 'rxjs';
 import {
   ReturnList,
@@ -8,6 +9,7 @@ import {
 } from '@features/finance/billing/returns/models/interfaces/return.interface';
 
 export interface ReturnFilters {
+  action?: DocumentListAction;
   search?: string;
   customerId?: string;
   dateFrom?: string;
@@ -74,6 +76,7 @@ export class ReturnApiService {
 
   getAll(filters?: ReturnFilters): Observable<ReturnList[]> {
     let params = new HttpParams();
+    if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
