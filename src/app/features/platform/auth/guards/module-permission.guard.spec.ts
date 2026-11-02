@@ -15,7 +15,7 @@ describe('modulePermissionGuard', () => {
     auth.ensureAccess.mockReturnValue(of({}));
     auth.hasPermission.mockReturnValue(false);
   });
-  function route(path: string, module = BusinessModule.CATALOG): ActivatedRouteSnapshot {
+  function route(path: string, module = BusinessModule.CATALOG_PRODUCTS): ActivatedRouteSnapshot {
     return {
       data: {},
       routeConfig: { path },
@@ -31,13 +31,13 @@ describe('modulePermissionGuard', () => {
   it('checks CREATE and UPDATE on direct child URLs using the parent module', async () => {
     auth.hasPermission.mockReturnValue(true);
     expect(await run('new')).toBe(true);
-    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG, 'CREATE');
+    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     expect(await run(':id/edit')).toBe(true);
-    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG, 'UPDATE');
+    expect(auth.hasPermission).toHaveBeenLastCalledWith(BusinessModule.CATALOG_PRODUCTS, 'UPDATE');
   });
   it('checks READ for details and redirects denied actions', async () => {
     const result = await run(':id');
-    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.CATALOG, 'READ');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.CATALOG_PRODUCTS, 'READ');
     expect(TestBed.inject(Router).serializeUrl(result as never)).toBe(
       '/platform/auth/configuration',
     );
@@ -49,28 +49,28 @@ describe('modulePermissionGuard', () => {
     );
   });
   it('requires explicit cross-owner stock grants before activating a write route', async () => {
-    const snapshot = route('new', BusinessModule.SALES);
-    snapshot.data = { requiredPermissions: ['INVENTORY:EXECUTE'] };
-    auth.hasPermission.mockImplementation((module) => module === BusinessModule.SALES);
+    const snapshot = route('new', BusinessModule.SALES_QUOTES);
+    snapshot.data = { requiredPermissions: ['INVENTORY_WAREHOUSES:EXECUTE'] };
+    auth.hasPermission.mockImplementation((module) => module === BusinessModule.SALES_QUOTES);
     const result = TestBed.runInInjectionContext(() =>
       modulePermissionGuard(snapshot, {} as never),
     );
     const destination = await firstValueFrom(result as ReturnType<typeof of>);
     expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
-    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.INVENTORY, 'EXECUTE');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.INVENTORY_WAREHOUSES, 'EXECUTE');
   });
   it('rechecks ancestor modules when a child has a different owner', async () => {
-    const snapshot = route('', BusinessModule.DOCUMENT_ADMIN);
+    const snapshot = route('', BusinessModule.FINANCE_INVOICES);
     snapshot.pathFromRoot.push({
-      data: { module: BusinessModule.INVENTORY },
+      data: { module: BusinessModule.INVENTORY_WAREHOUSES },
     } as ActivatedRouteSnapshot);
-    auth.hasPermission.mockImplementation((module) => module === BusinessModule.INVENTORY);
+    auth.hasPermission.mockImplementation((module) => module === BusinessModule.INVENTORY_WAREHOUSES);
     const result = TestBed.runInInjectionContext(() =>
       modulePermissionGuard(snapshot, {} as never),
     );
     const destination = await firstValueFrom(result as ReturnType<typeof of>);
     expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
-    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.DOCUMENT_ADMIN, 'READ');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.FINANCE_INVOICES, 'READ');
   });
   it('fails closed when a guarded route has no module metadata', async () => {
     const snapshot = route('new');

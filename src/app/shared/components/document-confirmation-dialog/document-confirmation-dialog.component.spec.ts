@@ -101,7 +101,7 @@ describe('DocumentConfirmationDialogComponent', () => {
           provide: AuthorizationService,
           useValue: {
             can: (module: string, action: string) =>
-              action === 'EXECUTE' && (module === 'SALES' || module === 'INVENTORY'),
+              action === 'CONFIRM' && module === 'SALES_ORDERS',
           },
         },
       ],
@@ -110,9 +110,8 @@ describe('DocumentConfirmationDialogComponent', () => {
     fixture.componentRef.setInput('visible', true);
     fixture.componentRef.setInput('model', {
       ...model,
-      permissionAction: 'EXECUTE',
-      permissionModule: BusinessModule.SALES,
-      requiredPermissions: ['INVENTORY:EXECUTE'],
+      permissionAction: 'CONFIRM',
+      permissionModule: BusinessModule.SALES_ORDERS,
     });
     fixture.detectChanges();
 

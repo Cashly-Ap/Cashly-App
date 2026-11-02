@@ -67,9 +67,8 @@ export class ConfirmOrderDialogComponent implements OnChanges {
       acceptLabel: 'sales.orders.yesConfirm',
       acceptIcon: 'pi pi-check',
       acceptSeverity: 'success',
-      permissionAction: 'EXECUTE',
-      permissionModule: BusinessModule.SALES,
-      requiredPermissions: ['INVENTORY:EXECUTE'],
+      permissionAction: 'CONFIRM',
+      permissionModule: BusinessModule.SALES_ORDERS,
     };
   });
   readonly canConfirm = computed(

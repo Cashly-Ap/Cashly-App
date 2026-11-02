@@ -7,7 +7,7 @@ export const PRICE_TYPE_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.CATALOG },
+    data: { module: BusinessModule.CATALOG_PRICES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

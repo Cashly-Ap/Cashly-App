@@ -52,7 +52,7 @@ export class ReceivablesApplicationService {
   readonly pendingPaymentsChange = new Subject<void>();
 
   readonly isAdmin = computed(() =>
-    this.authService.hasPermission(BusinessModule.FINANCE, 'EXECUTE'),
+    this.authService.hasPermission(BusinessModule.FINANCE_RECEIVABLES, 'EXECUTE'),
   );
   readonly isMerchant = computed(() => !this.isAdmin());
 

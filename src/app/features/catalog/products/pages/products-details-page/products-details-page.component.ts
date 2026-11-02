@@ -54,7 +54,7 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
 export class ProductsDetailsPageComponent implements OnInit {
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly authorization = inject(AuthorizationService);
-  readonly canViewStock = computed(() => this.authorization.can(BusinessModule.INVENTORY));
+  readonly canViewStock = computed(() => this.authorization.can(BusinessModule.INVENTORY_WAREHOUSES, 'READ'));
   private service = inject(ProductApplicationService);
   private photoService = inject(ProductPhotoService);
   private route = inject(ActivatedRoute);

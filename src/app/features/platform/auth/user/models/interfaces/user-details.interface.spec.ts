@@ -20,7 +20,7 @@ describe('UserDetails interface', () => {
       emailVerified: true,
       createdAt: '2025-01-01T00:00:00Z',
       updatedAt: '2025-01-02T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY],
+      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     expect(user.id).toBe('u-001');
@@ -31,7 +31,7 @@ describe('UserDetails interface', () => {
     expect(user.emailVerified).toBe(true);
     expect(user.createdAt).toBe('2025-01-01T00:00:00Z');
     expect(user.updatedAt).toBe('2025-01-02T00:00:00Z');
-    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY]);
+    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY_WAREHOUSES]);
   });
 
   it('should accept all UserType values', () => {

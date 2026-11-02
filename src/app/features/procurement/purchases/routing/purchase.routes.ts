@@ -20,7 +20,7 @@ export const PURCHASE_ROUTES: Routes = [
       },
       {
         path: 'new',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['PURCHASES:CREATE'] },
         loadComponent: () =>
           import(
             '@features/procurement/purchases/pages/purchase-form-page/purchase-form-page.component'
@@ -29,7 +29,7 @@ export const PURCHASE_ROUTES: Routes = [
       },
       {
         path: ':id',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['PURCHASES:READ'] },
         loadComponent: () =>
           import(
             '@features/procurement/purchases/pages/purchase-detail-page/purchase-detail-page.component'
@@ -38,7 +38,7 @@ export const PURCHASE_ROUTES: Routes = [
       },
       {
         path: ':id/edit',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['PURCHASES:UPDATE'] },
         loadComponent: () =>
           import(
             '@features/procurement/purchases/pages/purchase-form-page/purchase-form-page.component'

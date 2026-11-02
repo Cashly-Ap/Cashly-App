@@ -230,7 +230,6 @@ export class PurchaseListPageComponent implements OnInit {
     const actions: ListAction[] = [
       {
         requiredAction: 'READ',
-        requiredPermissions: ['INVENTORY:READ'],
         label: 'Ver detalle',
         icon: 'pi pi-eye',
         command: () => this.onView(purchase),
@@ -246,15 +245,13 @@ export class PurchaseListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'UPDATE',
-          requiredPermissions: ['INVENTORY:READ'],
           label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(purchase),
         },
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Confirmar compra',
+          requiredAction: 'CONFIRM',
+                    label: 'Confirmar compra',
           icon: 'pi pi-check',
           command: () => this.onConfirm(purchase),
         },
@@ -269,9 +266,8 @@ export class PurchaseListPageComponent implements OnInit {
     }
     if (purchase.status === 'CONFIRMED') {
       actions.push({
-        requiredAction: 'EXECUTE',
-        requiredPermissions: ['INVENTORY:EXECUTE'],
-        label: 'Cancelar compra',
+        requiredAction: 'CANCEL',
+                label: 'Cancelar compra',
         icon: 'pi pi-ban',
         danger: true,
         command: () => this.onCancelPurchase(purchase),

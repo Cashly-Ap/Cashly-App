@@ -43,9 +43,9 @@ describe('WAREHOUSE_ROUTES', () => {
     expect(parent.canActivate).toHaveLength(2);
   });
 
-  it('should have INVENTORY module data', () => {
+  it('should have INVENTORY_WAREHOUSES module data', () => {
     const parent = WAREHOUSE_ROUTES[0];
-    expect(parent.data?.module).toBe(BusinessModule.INVENTORY);
+    expect(parent.data?.module).toBe(BusinessModule.INVENTORY_WAREHOUSES);
   });
 
   it('should have 8 child routes', () => {

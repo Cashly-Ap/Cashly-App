@@ -179,8 +179,7 @@ export class ReturnListPageComponent implements OnInit {
       },
       {
         requiredAction: 'DELETE',
-        requiredPermissions: ['INVENTORY:EXECUTE'],
-        label: 'Eliminar',
+                label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(ret),

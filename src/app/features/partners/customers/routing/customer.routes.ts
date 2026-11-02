@@ -7,7 +7,7 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.SALES },
+    data: { module: BusinessModule.CONTACTS_CUSTOMERS },
     canActivateChild: [modulePermissionGuard],
     children: [
       {
@@ -48,7 +48,7 @@ export const CUSTOMER_ROUTES: Routes = [
           import(
             '@features/partners/customers/pages/customer-balance-page/customer-balance-page.component'
           ).then((m) => m.CustomerBalancePageComponent),
-        data: { module: BusinessModule.FINANCE },
+        data: { module: BusinessModule.CONTACTS_CUSTOMERS },
         title: 'Saldo del Cliente',
       },
     ],

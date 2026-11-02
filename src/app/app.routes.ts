@@ -82,7 +82,7 @@ export const routes: Routes = [
           {
             path: 'company/edit',
             canActivate: [authGuard, modulePermissionGuard],
-            data: { module: BusinessModule.COMPANY, action: 'UPDATE' },
+            data: { module: BusinessModule.USERS, action: 'UPDATE' },
             loadComponent: () =>
               import('@features/platform/company/company-page.component').then(
                 (m) => m.CompanyPageComponent,
@@ -91,7 +91,7 @@ export const routes: Routes = [
           {
             path: 'company',
             canActivate: [authGuard, modulePermissionGuard],
-            data: { module: BusinessModule.COMPANY, action: 'READ' },
+            data: { module: BusinessModule.USERS, action: 'UPDATE' },
             loadComponent: () =>
               import('@features/platform/company/company-details.component').then(
                 (m) => m.CompanyDetailsComponent,

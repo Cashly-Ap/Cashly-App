@@ -16,8 +16,8 @@ describe('Price Type Routes', () => {
     expect(PRICE_TYPE_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have CATALOG module data', () => {
-    expect(PRICE_TYPE_ROUTES[0].data).toEqual({ module: BusinessModule.CATALOG });
+  it('should have CATALOG_PRICES module data', () => {
+    expect(PRICE_TYPE_ROUTES[0].data).toEqual({ module: BusinessModule.CATALOG_PRICES });
   });
 
   it('should have list route as default child', () => {

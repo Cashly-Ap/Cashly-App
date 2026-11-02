@@ -61,7 +61,7 @@ export class CustomersDetailsPageComponent implements OnInit {
   warehouseAccessLoading = signal(false);
 
   showBalance = computed(() => {
-    return this.authService.hasModulePermission(BusinessModule.FINANCE);
+    return this.authService.hasModulePermission(BusinessModule.CONTACTS_CUSTOMERS);
   });
 
   ngOnInit(): void {

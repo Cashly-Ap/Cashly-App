@@ -53,24 +53,24 @@ describe('Current role authorization', () => {
     auth.currentAccess.set({
       ...access,
       roleName: 'SUPER_ADMIN',
-      permissions: { [BusinessModule.CATALOG]: ['UPDATE'] },
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['UPDATE'] },
     });
     expect(auth.isSuperAdmin()).toBe(false);
-    expect(authorization.can(BusinessModule.CATALOG, 'UPDATE')).toBe(false);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'UPDATE')).toBe(false);
   });
   it('replaces existing grants on a server refresh and fails closed', () => {
     auth.currentAccess.set({
       ...access,
-      permissions: { [BusinessModule.CATALOG]: ['READ', 'CREATE'] },
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ', 'CREATE'] },
     });
     auth.refreshAccess().subscribe();
     http
       .expectOne('/api/auth/access')
-      .flush({ ...access, permissions: { [BusinessModule.CATALOG]: ['READ'] } });
-    expect(authorization.can(BusinessModule.CATALOG, 'CREATE')).toBe(false);
+      .flush({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] } });
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(false);
     auth.refreshAccess().subscribe({ error: () => undefined });
     http.expectOne('/api/auth/access').flush({}, { status: 403, statusText: 'Forbidden' });
-    expect(authorization.can(BusinessModule.CATALOG)).toBe(false);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS)).toBe(false);
     http.verify();
   });
   it('silent token refresh reloads current grants before completing without allowing access-fetch refresh recursion', () => {
@@ -82,16 +82,16 @@ describe('Current role authorization', () => {
       entity: { id: 'u' },
     } as AuthenticationResponse;
     auth.setAuthState(response);
-    auth.currentAccess.set({ ...access, permissions: { [BusinessModule.CATALOG]: ['READ'] } });
+    auth.currentAccess.set({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] } });
     vi.spyOn(TestBed.inject(AuthApiService), 'refresh').mockReturnValue(of(response));
     let completed = false;
     auth.refreshTokenSilently().subscribe(() => (completed = true));
     expect(completed).toBe(false);
     const request = http.expectOne('/api/auth/access');
     expect(request.request.context.get(ACCESS_REFRESH_REQUEST)).toBe(true);
-    request.flush({ ...access, permissions: { [BusinessModule.CATALOG]: ['READ', 'CREATE'] } });
+    request.flush({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ', 'CREATE'] } });
     expect(completed).toBe(true);
-    expect(authorization.can(BusinessModule.CATALOG, 'CREATE')).toBe(true);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(true);
     auth.clearAuthState();
     http.verify();
   });
@@ -113,9 +113,9 @@ describe('Current role authorization', () => {
     expect(refresh).toHaveBeenCalledWith({ refreshToken: 'valid-refresh' });
     http
       .expectOne('/api/auth/access')
-      .flush({ ...access, permissions: { [BusinessModule.CATALOG]: ['READ'] } });
+      .flush({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] } });
     expect(completed).toBe(true);
-    expect(authorization.can(BusinessModule.CATALOG)).toBe(true);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS)).toBe(true);
     auth.clearAuthState();
     http.verify();
   });

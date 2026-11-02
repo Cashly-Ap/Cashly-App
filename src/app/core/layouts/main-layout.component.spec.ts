@@ -274,7 +274,7 @@ describe('MainLayoutComponent', () => {
 
     it('should prune recursively empty report areas and preserve actionable leaves', () => {
       authServiceMock.hasModulePermission.mockImplementation(
-        (module: BusinessModule) => module === BusinessModule.DOCUMENT_ADMIN,
+        () => false,
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(items.map((item) => item.label)).toEqual([]);
@@ -293,7 +293,8 @@ describe('MainLayoutComponent', () => {
 
     it('should keep inventory pricing accessible without sales permission', () => {
       authServiceMock.hasModulePermission.mockImplementation(
-        (module: BusinessModule) => module === BusinessModule.INVENTORY,
+        (module: BusinessModule) =>
+          [BusinessModule.INVENTORY_WAREHOUSES, BusinessModule.INVENTORY_WAREHOUSES].includes(module),
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
@@ -323,11 +324,11 @@ describe('MainLayoutComponent', () => {
       ).toBe(false);
     });
 
-    it('hides report actions without owner EXPORT even with document EXPORT', () => {
+    it('hides report actions without the owner module EXPORT grant', () => {
       authServiceMock.hasPermission.mockImplementation(
         (module, action = 'READ') =>
-          module === BusinessModule.DOCUMENT_ADMIN ||
-          (module === BusinessModule.SALES && action === 'READ'),
+          [BusinessModule.SALES_QUOTES, BusinessModule.SALES_ORDERS].includes(module) &&
+          action === 'READ',
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(
@@ -335,38 +336,25 @@ describe('MainLayoutComponent', () => {
       ).toEqual(['Presupuestos', 'Pedidos']);
     });
 
-    it('hides report actions without document EXPORT even with owner EXPORT', () => {
+    it('shows a report action only when its own module grants EXPORT', () => {
       authServiceMock.hasPermission.mockImplementation(
         (module, action = 'READ') =>
-          module === BusinessModule.SALES ||
-          (module === BusinessModule.DOCUMENT_ADMIN && action === 'READ'),
+          module === BusinessModule.SALES_QUOTES ||
+          (module === BusinessModule.SALES_ORDERS && action !== 'EXPORT'),
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      expect(
-        items.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
-      ).toEqual(['Presupuestos', 'Pedidos']);
-    });
-
-    it('should require both document access and the corresponding area for report actions', () => {
-      authServiceMock.hasModulePermission.mockImplementation((module: BusinessModule) =>
-        [BusinessModule.SALES, BusinessModule.DOCUMENT_ADMIN].includes(module),
-      );
-      const items = component['filterMenuByRole'](menu(), 'OPERATOR');
-      const reports = items
+      const quotes = items
         .find((item) => item.label === 'Ventas')
         ?.children?.find((item) => item.label === 'Presupuestos');
-      expect(reports?.children?.some((item) => item.label === 'Reporte de Presupuestos PDF')).toBe(
+      expect(quotes?.children?.some((item) => item.label === 'Reporte de Presupuestos PDF')).toBe(
         true,
       );
-      authServiceMock.hasModulePermission.mockImplementation(
-        (module: BusinessModule) => module === BusinessModule.SALES,
+      const orders = items
+        .find((item) => item.label === 'Ventas')
+        ?.children?.find((item) => item.label === 'Pedidos');
+      expect(orders?.children?.some((item) => item.label === 'Reporte de Pedidos PDF')).toBe(
+        false,
       );
-      expect(
-        component['filterMenuByRole'](menu(), 'OPERATOR')
-          .flatMap((item) => item.children ?? [])
-          .flatMap((item) => item.children ?? [])
-          .some((item) => item.label === 'Reporte de Presupuestos PDF'),
-      ).toBe(false);
     });
   });
 

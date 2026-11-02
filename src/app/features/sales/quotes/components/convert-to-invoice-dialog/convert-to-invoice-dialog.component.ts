@@ -125,9 +125,8 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     icon: 'pi-file',
     acceptLabel: 'sales.orders.convertToInvoice2',
     acceptIcon: 'pi pi-file',
-    permissionAction: 'EXECUTE',
-    permissionModule: BusinessModule.SALES,
-    requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
+    permissionAction: 'CREATE',
+    permissionModule: BusinessModule.FINANCE_INVOICES,
   }));
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);

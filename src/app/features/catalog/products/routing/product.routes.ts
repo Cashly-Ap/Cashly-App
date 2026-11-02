@@ -7,7 +7,7 @@ export const PRODUCT_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.CATALOG },
+    data: { module: BusinessModule.CATALOG_PRODUCTS },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

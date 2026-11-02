@@ -42,7 +42,7 @@ describe('ConfigurationPageComponent', () => {
       roleName: 'Ventas regionales',
       departmentId: 'dept-1',
       systemAdministrator: false,
-      permissions: { [BusinessModule.SALES]: ['READ', 'CREATE'] },
+      permissions: { [BusinessModule.SALES_QUOTES]: ['READ', 'CREATE'] },
     });
     getProfile.mockReturnValue(of(profile));
     ensureAccess.mockReturnValue(of(access()));
@@ -87,7 +87,7 @@ describe('ConfigurationPageComponent', () => {
   it('shows translated effective permissions and self actions without users access', () => {
     const { text } = render();
     for (const value of [
-      'Gestión Comercial',
+      'Presupuestos',
       'Consultar',
       'Crear',
       'Editar perfil',
@@ -141,7 +141,7 @@ describe('ConfigurationPageComponent', () => {
     ensureAccess.mockReturnValue(of(access()));
     component.loadAccess();
     fixture.detectChanges();
-    expect(text()).toContain('Gestión Comercial');
+    expect(text()).toContain('Presupuestos');
   });
   it('explains empty permissions', () => {
     access.update((value) => (value ? { ...value, permissions: {} } : null));

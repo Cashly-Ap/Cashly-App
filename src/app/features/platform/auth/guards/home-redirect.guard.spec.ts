@@ -15,7 +15,7 @@ describe('homeRedirectGuard', () => {
   beforeEach(() => {
     auth.isAuthenticated.mockReturnValue(true);
     auth.ensureAccess.mockReturnValue(of({}));
-    auth.hasModulePermission.mockImplementation((module) => module === BusinessModule.CATALOG);
+    auth.hasModulePermission.mockImplementation((module) => module === BusinessModule.CATALOG_PRODUCTS);
     TestBed.configureTestingModule({
       providers: [provideRouter([]), { provide: AuthService, useValue: auth }],
     });

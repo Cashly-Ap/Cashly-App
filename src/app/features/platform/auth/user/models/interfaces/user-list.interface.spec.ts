@@ -20,7 +20,7 @@ describe('UserList interface', () => {
       active: true,
       emailVerified: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY],
+      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     expect(user.id).toBe('u-001');
@@ -30,7 +30,7 @@ describe('UserList interface', () => {
     expect(user.active).toBe(true);
     expect(user.emailVerified).toBe(true);
     expect(user.createdAt).toBe('2025-01-01T00:00:00Z');
-    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY]);
+    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY_WAREHOUSES]);
   });
 
   it('should accept all UserType values', () => {
@@ -76,14 +76,14 @@ describe('UserList interface', () => {
       createdAt: '2025-01-01T00:00:00Z',
       modulePermissions: [
         BusinessModule.USERS,
-        BusinessModule.INVENTORY,
-        BusinessModule.SALES,
-        BusinessModule.FINANCE,
+        BusinessModule.INVENTORY_WAREHOUSES,
+        BusinessModule.SALES_QUOTES,
+        BusinessModule.FINANCE_INVOICES,
       ],
     };
 
     expect(user.modulePermissions).toHaveLength(4);
     expect(user.modulePermissions).toContain(BusinessModule.USERS);
-    expect(user.modulePermissions).toContain(BusinessModule.INVENTORY);
+    expect(user.modulePermissions).toContain(BusinessModule.INVENTORY_WAREHOUSES);
   });
 });

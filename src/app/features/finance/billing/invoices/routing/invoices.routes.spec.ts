@@ -15,8 +15,8 @@ describe('Invoice Routes', () => {
     expect(INVOICE_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have FINANCES module data', () => {
-    expect(INVOICE_ROUTES[0].data).toEqual({ module: 'FINANCES' });
+  it('should have FINANCE_INVOICES module data', () => {
+    expect(INVOICE_ROUTES[0].data).toEqual({ module: 'FINANCE_INVOICES' });
   });
 
   it('should have list route as default child', () => {
@@ -56,16 +56,16 @@ describe('Invoice Routes', () => {
       INVOICE_ROUTES[0].children?.find((route) => route.path === ':id')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:READ']);
+    ).toEqual(['FINANCE_INVOICES:READ']);
     expect(
       INVOICE_ROUTES[0].children?.find((route) => route.path === 'new')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:EXECUTE']);
+    ).toEqual(['FINANCE_INVOICES:CREATE']);
     expect(
       INVOICE_ROUTES[0].children?.find((route) => route.path === ':id/edit')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:EXECUTE']);
+    ).toEqual(['FINANCE_INVOICES:UPDATE']);
   });
 });

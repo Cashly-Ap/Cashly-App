@@ -7,7 +7,7 @@ export const CREDIT_NOTE_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.FINANCE_CREDIT_NOTES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

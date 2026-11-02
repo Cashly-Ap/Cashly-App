@@ -25,6 +25,8 @@ import {
   TextInputComponent,
 } from '@core/forms/components';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { PermissionCatalogService } from '../../permissions/services/permission-catalog.service';
+import { PermissionCatalogModule } from '../../permissions/models/permission-catalog.model';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
@@ -165,6 +167,9 @@ export class RolesPageComponent {
   readonly pageItems = computed(() =>
     this.filteredItems().slice(this.first(), this.first() + this.rows()),
   );
+  isSystemAdministrator(role: { systemKey?: string | null } | null | undefined): boolean {
+    return role?.systemKey === 'SYSTEM_ADMIN';
+  }
   actionsFor(item: Role): ListAction[] {
     const actions: ListAction[] = [
       {
@@ -174,7 +179,7 @@ export class RolesPageComponent {
         command: () => this.onView(item),
       },
     ];
-    if (!item.systemKey) {
+    if (!this.isSystemAdministrator(item)) {
       actions.push({
         label: 'Editar',
         requiredAction: 'UPDATE',
@@ -207,9 +212,10 @@ export class RolesPageComponent {
       return;
     }
     this.edit(item);
-    if (mode === 'form' && item.systemKey) this.onView(item);
+    if (mode === 'form' && this.isSystemAdministrator(item)) this.onView(item);
   }
   private readonly service = inject(AccessManagementService);
+  private readonly catalogService = inject(PermissionCatalogService);
   private readonly messages = inject(MessageService);
   private readonly confirmation = inject(ConfirmationService);
   readonly authorization = inject(AuthorizationService);
@@ -217,6 +223,7 @@ export class RolesPageComponent {
   readonly labels = BUSINESS_MODULE_LABELS;
   readonly items = signal<Role[]>([]);
   readonly registry = signal<PermissionRegistry[]>([]);
+  readonly catalog = signal<PermissionCatalogModule[]>([]);
   readonly editing = signal<Partial<Role> | null>(null);
   readonly busy = signal(false);
   readonly search = signal('');
@@ -242,6 +249,33 @@ export class RolesPageComponent {
     EXPORT: 'platform.auth.permissionActionExport',
     IMPORT: 'platform.auth.permissionActionImport',
     EXECUTE: 'platform.auth.permissionActionExecute',
+    CONFIRM: 'platform.auth.permissionActionConfirm',
+    CANCEL: 'platform.auth.permissionActionCancel',
+    DUPLICATE: 'platform.auth.permissionActionDuplicate',
+    DETAILS: 'platform.auth.permissionActionDetails', BALANCE: 'platform.auth.permissionActionBalance', HISTORY: 'platform.auth.permissionActionHistory', OPEN: 'platform.auth.permissionActionOpen', CLOSE: 'platform.auth.permissionActionClose', REPORT: 'platform.auth.permissionActionReport', PARTIAL_PAYMENT: 'platform.auth.permissionActionPartialPayment', REFUND: 'platform.auth.permissionActionRefund', ADVANCE: 'platform.auth.permissionActionAdvance',
+    CUSTOMER_BALANCE: 'platform.auth.permissionActionCustomerBalance',
+    REPORT_QUOTES: 'platform.auth.permissionActionReportQuotes',
+    REPORT_ORDERS: 'platform.auth.permissionActionReportOrders',
+    REPORT_PURCHASES: 'platform.auth.permissionActionReportPurchases',
+    REPORT_PRODUCTS: 'platform.auth.permissionActionReportProducts',
+    REPORT_COMMERCIAL_CATALOG: 'platform.auth.permissionActionReportCommercialCatalog',
+    REPORT_STOCK: 'platform.auth.permissionActionReportStock',
+    REPORT_MOVEMENTS: 'platform.auth.permissionActionReportMovements',
+    REPORT_INVOICES: 'platform.auth.permissionActionReportInvoices',
+    REPORT_CASH_REGISTER: 'platform.auth.permissionActionReportCashRegister',
+    REPORT_RECEIVABLES: 'platform.auth.permissionActionReportReceivables',
+    CASH_HISTORY: 'platform.auth.permissionActionCashHistory',
+    INVOICE_DUPLICATE: 'platform.auth.permissionActionInvoiceDuplicate',
+    PAY_WITH_VALIDATION: 'platform.auth.permissionActionPayWithValidation',
+    PAY_DIRECT: 'platform.auth.permissionActionPayDirect',
+    PAY_ALL: 'platform.auth.permissionActionPayAll',
+    PAY_PARTIAL: 'platform.auth.permissionActionPayPartial',
+    APPROVE_PAYMENT: 'platform.auth.permissionActionApprovePayment',
+    REJECT_PAYMENT: 'platform.auth.permissionActionRejectPayment',
+    STOCK: 'platform.auth.permissionActionStock',
+    MOVEMENT_HISTORY: 'platform.auth.permissionActionMovementHistory',
+    RECORD_ENTRY: 'platform.auth.permissionActionRecordEntry',
+    RECORD_EXIT: 'platform.auth.permissionActionRecordExit',
   };
   readonly actions: PermissionAction[] = [
     'READ',
@@ -251,6 +285,8 @@ export class RolesPageComponent {
     'EXPORT',
     'IMPORT',
     'EXECUTE',
+    'CONFIRM',
+    'CANCEL',
   ];
   private readonly navigationAction = signal<'EDIT' | undefined>(undefined);
   private readonly listNavigation = connectListNavigation({
@@ -281,6 +317,10 @@ export class RolesPageComponent {
       next: (registry) => this.registry.set(registry),
       error: (error) => this.fail(error),
     });
+    this.catalogService.loadCatalog().subscribe({
+      next: (catalog) => this.catalog.set(catalog),
+      error: () => this.catalog.set([]),
+    });
   }
   load(): void {
     this.loading.set(true);
@@ -310,7 +350,7 @@ export class RolesPageComponent {
     return this.labels[module];
   }
   selected(module: BusinessModule, action: PermissionAction): boolean {
-    if (this.editing()?.systemKey === 'SYSTEM_ADMIN')
+    if (this.isSystemAdministrator(this.editing()))
       return (
         this.registry()
           .find((entry) => entry.module === module)
@@ -323,12 +363,10 @@ export class RolesPageComponent {
     const entry = this.registry().find((entry) => entry.module === module);
     if (
       !value ||
-      value.systemKey ||
+      this.isSystemAdministrator(value) ||
       this.busy() ||
       !entry?.actions.includes(action) ||
-      !entry.actions.includes('READ') ||
-      !this.authorization.can(module, action) ||
-      !this.authorization.can(module, 'READ') ||
+       !this.authorization.can(module, action) ||
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
@@ -343,8 +381,13 @@ export class RolesPageComponent {
     if (grants.includes(action))
       grants = action === 'READ' ? [] : grants.filter((a) => a !== action);
     else {
+      if (
+        action !== 'READ' &&
+        (!entry.actions.includes('READ') || !this.authorization.can(module, 'READ'))
+      )
+        return;
       grants.push(action);
-      if (!grants.includes('READ')) grants.unshift('READ');
+       if (entry.actions.includes('READ') && !grants.includes('READ')) grants.unshift('READ');
     }
     permissions[module] = grants;
     this.editing.set({ ...value, permissions });
@@ -353,7 +396,7 @@ export class RolesPageComponent {
     const value = this.editing();
     if (
       !value ||
-      value.systemKey ||
+      this.isSystemAdministrator(value) ||
       this.busy() ||
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
@@ -372,13 +415,24 @@ export class RolesPageComponent {
     const value = this.editing();
     if (
       !value?.name?.trim() ||
-      !!value.systemKey ||
+      this.isSystemAdministrator(value) ||
       this.busy() ||
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
+    const permissions = Object.fromEntries(
+      Object.entries(value.permissions ?? {}).flatMap(([module, actions]) => {
+        const entry = this.registry().find((candidate) => candidate.module === module);
+        if (!entry) return [];
+        let validActions = actions.filter((action) => entry.actions.includes(action));
+        if (validActions.includes('PAY_WITH_VALIDATION')) {
+          validActions = validActions.filter((action) => action !== 'PAY_DIRECT');
+        }
+        return validActions.length ? [[module, validActions]] : [];
+      }),
+    ) as PermissionMatrix;
     this.busy.set(true);
-    this.service.saveRole({ ...value, name: value.name.trim() }).subscribe({
+    this.service.saveRole({ ...value, name: value.name.trim(), permissions }).subscribe({
       next: (saved) => {
         this.busy.set(false);
         this.editing.set(null);

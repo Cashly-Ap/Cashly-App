@@ -32,11 +32,67 @@ export class TranslationService {
       }
     }
     const messages = this.language.language() === 'en' ? english : spanish;
-    const translated = (messages[resolved] ?? spanish[resolved] ?? key)
+    const translated = (messages[resolved] ?? spanish[resolved] ?? this.catalogFallback(key))
       .replace(/\$\{([^}]+)\}/g, (placeholder, expression: string) => captures?.[expression] ?? placeholder);
     return translated.replace(/\{\{?\s*([\w.]+)\s*\}?\}/g, (placeholder, name: string) => {
       const value = parameters?.[name];
       return value == null ? placeholder : String(value);
     });
+  }
+
+  private catalogFallback(key: string): string {
+    const rawValue = key
+      .replace(/^platform\.auth\.(domains|permissions)\./, '')
+      .replace(/^platform\.auth\./, '')
+      .replace(/\.description$/, '')
+      .replaceAll('.', ' ')
+      .replaceAll('_', ' ')
+      .replace(/([a-z])([A-Z])/g, '$1 $2');
+    if (!rawValue || rawValue === key) return key;
+    const moduleLabels: Record<string, string> = {
+      'catalog products': 'Products',
+      'catalog categories': 'Categories',
+      'catalog prices': 'Price types',
+      'catalog reports': 'Reports',
+      'inventory warehouses': 'Warehouses',
+      'inventory stock': 'Stock',
+      'inventory movements': 'Movements',
+      'inventory reports': 'Reports',
+      'sales quotes': 'Quotes',
+      'sales orders': 'Orders',
+      'sales customers': 'Customers',
+      'finance billing': 'Billing',
+      'finance treasury': 'Treasury',
+      'finance payment methods': 'Payment methods',
+      'finance reports': 'Reports',
+      'purchases orders': 'Purchase orders',
+      'purchases suppliers': 'Suppliers',
+      'finance invoices': 'Invoices',
+      'finance returns': 'Returns',
+      'finance credit notes': 'Credit notes',
+      'finance debit notes': 'Debit notes',
+      'finance cash register': 'Cash register',
+      'finance cash register history': 'Cash register history',
+      'finance receivables': 'Accounts receivable',
+    };
+    const actionLabels: Record<string, string> = {
+      read: 'View',
+      create: 'Create',
+      update: 'Edit',
+      delete: 'Delete',
+      export: 'Export',
+      execute: 'Execute',
+      confirm: 'Confirm',
+      cancel: 'Cancel',
+    };
+    const normalized = rawValue.toLowerCase();
+    const permissionMatch = normalized.match(/^(.*) (read|create|update|delete|export|execute|confirm|cancel)$/);
+    const value = permissionMatch
+      ? `${moduleLabels[permissionMatch[1]] ?? permissionMatch[1]} ${actionLabels[permissionMatch[2]]}`
+      : moduleLabels[normalized] ?? actionLabels[normalized] ?? rawValue;
+    return value
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
   }
 }

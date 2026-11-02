@@ -300,7 +300,6 @@ export class InvoiceListPageComponent implements OnInit {
     const actions: ListAction[] = [
       {
         requiredAction: 'READ',
-        requiredPermissions: ['INVENTORY:READ'],
         label: 'Ver detalle',
         icon: 'pi pi-eye',
         command: () => this.onView(invoice),
@@ -315,23 +314,20 @@ export class InvoiceListPageComponent implements OnInit {
     if (invoice.status === 'DRAFT') {
       actions.push(
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Confirmar',
+          requiredAction: 'CONFIRM',
+                    label: 'Confirmar',
           icon: 'pi pi-check',
           command: () => this.onConfirmInvoice(invoice),
         },
         {
           requiredAction: 'UPDATE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Editar',
+                    label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(invoice),
         },
         {
           requiredAction: 'DELETE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Eliminar',
+                    label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
           command: () => this.onDelete(invoice),
@@ -340,9 +336,8 @@ export class InvoiceListPageComponent implements OnInit {
     }
     if (this.canCancel(invoice.status)) {
       actions.push({
-        requiredAction: 'EXECUTE',
-        requiredPermissions: ['INVENTORY:EXECUTE'],
-        label: 'Cancelar',
+        requiredAction: 'CANCEL',
+                label: 'Cancelar',
         icon: 'pi pi-times',
         danger: true,
         command: () => this.onCancelInvoice(invoice),
@@ -350,8 +345,7 @@ export class InvoiceListPageComponent implements OnInit {
     }
     actions.push({
       requiredAction: 'CREATE',
-      requiredPermissions: ['INVENTORY:EXECUTE'],
-      label: 'Duplicar',
+            label: 'Duplicar',
       icon: 'pi pi-copy',
       command: () => this.onDuplicate(invoice),
     });

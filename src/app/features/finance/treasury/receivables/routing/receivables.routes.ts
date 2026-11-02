@@ -7,7 +7,7 @@ export const RECEIVABLES_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.FINANCE_RECEIVABLES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

@@ -22,7 +22,7 @@ describe('UserMapper', () => {
     emailVerified: true,
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-02T00:00:00Z',
-    modulePermissions: [BusinessModule.USERS, BusinessModule.SALES],
+    modulePermissions: [BusinessModule.USERS, BusinessModule.SALES_QUOTES],
   };
 
   describe('toList', () => {
@@ -36,7 +36,7 @@ describe('UserMapper', () => {
       expect(result.active).toBe(true);
       expect(result.emailVerified).toBe(true);
       expect(result.createdAt).toBe('2025-01-01T00:00:00Z');
-      expect(result.modulePermissions).toEqual([BusinessModule.USERS, BusinessModule.SALES]);
+      expect(result.modulePermissions).toEqual([BusinessModule.USERS, BusinessModule.SALES_QUOTES]);
     });
 
     it('should default modulePermissions to empty array when undefined', () => {

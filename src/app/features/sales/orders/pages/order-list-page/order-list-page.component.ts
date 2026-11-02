@@ -1,3 +1,4 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
@@ -228,7 +229,6 @@ export class OrderListPageComponent implements OnInit {
     const actions: ListAction[] = [
       {
         requiredAction: 'READ',
-        requiredPermissions: ['INVENTORY:READ'],
         label: 'Ver detalle',
         icon: 'pi pi-eye',
         command: () => this.onView(order),
@@ -244,22 +244,19 @@ export class OrderListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'UPDATE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Editar',
+                    label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(order),
         },
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Confirmar',
+          requiredAction: 'CONFIRM',
+                    label: 'Confirmar',
           icon: 'pi pi-check',
           command: () => this.onConfirm(order),
         },
         {
           requiredAction: 'DELETE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Eliminar',
+                    label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
           command: () => this.onDelete(order),
@@ -269,16 +266,15 @@ export class OrderListPageComponent implements OnInit {
     if (order.status === 'CONFIRMED') {
       actions.push(
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
-          label: 'Convertir a factura',
+          requiredAction: 'CREATE',
+                    module: BusinessModule.FINANCE_INVOICES,
+                    label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(order),
         },
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Cancelar',
+          requiredAction: 'CANCEL',
+                    label: 'Cancelar',
           icon: 'pi pi-times',
           danger: true,
           command: () => this.onCancelOrder(order),

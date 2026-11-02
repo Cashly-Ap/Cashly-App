@@ -174,8 +174,7 @@
         (onClick)="onCancel()"
       />
       <p-button
-        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
-        [appPermissionModule]="'FINANCES'"
+        [appPermissionModule]="'FINANCE_INVOICES'"
         [appPermission]="'CREATE'"
         [label]="'finance.billing.invoices.duplicateInvoice' | translate"
         icon="pi pi-copy"

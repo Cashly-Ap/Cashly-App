@@ -7,7 +7,7 @@ export const QUOTE_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.SALES },
+    data: { module: BusinessModule.SALES_QUOTES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {
@@ -20,7 +20,7 @@ export const QUOTE_ROUTES: Routes = [
       },
       {
         path: 'new',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['SALES_QUOTES:CREATE'] },
         loadComponent: () =>
           import('@features/sales/quotes/pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,
@@ -29,7 +29,7 @@ export const QUOTE_ROUTES: Routes = [
       },
       {
         path: ':id',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['SALES_QUOTES:READ'] },
         loadComponent: () =>
           import('@features/sales/quotes/pages/quote-detail-page/quote-detail-page.component').then(
             (m) => m.QuoteDetailPageComponent,
@@ -38,7 +38,7 @@ export const QUOTE_ROUTES: Routes = [
       },
       {
         path: ':id/edit',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['SALES_QUOTES:UPDATE'] },
         loadComponent: () =>
           import('@features/sales/quotes/pages/quote-form-page/quote-form-page.component').then(
             (m) => m.QuoteFormPageComponent,

@@ -13,6 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 export interface ListAction {
   label: string;
+  module?: BusinessModule;
   requiredPermissions?: string[];
   requiredAction?: import('@features/platform/auth/authorization/models/access.model').PermissionAction;
   icon: string;
@@ -64,7 +65,7 @@ export class ListActionButtonsComponent {
   }
 
   private isAllowed(action: ListAction): boolean {
-    const module = moduleForUrl(this.currentUrl());
+    const module = action.module ?? moduleForUrl(this.currentUrl());
     return (
       !!module &&
       !!action.requiredAction &&
@@ -75,9 +76,7 @@ export class ListActionButtonsComponent {
           owner as BusinessModule,
           required as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
         );
-      }) &&
-      (action.requiredAction !== 'EXPORT' ||
-        this.authorization.can(BusinessModule.DOCUMENT_ADMIN, 'EXPORT'))
+      })
     );
   }
 }

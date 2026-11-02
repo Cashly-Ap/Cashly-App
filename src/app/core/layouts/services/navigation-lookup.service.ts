@@ -107,16 +107,31 @@ export class NavigationLookupService {
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
     const definition = LIST_NAVIGATION_DEFINITIONS.find((item) => item.route === route);
+    const destinationItem = definition?.destinations?.find((item) => item.label === label);
+    if (destinationItem?.routerLink) {
+      const destinationModule = destinationItem.requiredModule ?? null;
+      if (
+        !this.navigation.allowed(
+          {
+            label,
+            icon: destinationItem.icon,
+            requiredAction: destinationItem.requiredAction ?? 'READ',
+            command: () => undefined,
+          },
+          destinationModule,
+        )
+      )
+        return;
+      this.navigation.dismiss();
+      void this.router.navigate([destinationItem.routerLink], { queryParams });
+      return;
+    }
     const definitionAction = definition?.actions.find((item) => item.label === label);
     const module = moduleForUrl(route);
     if (!definitionAction || !module) return;
     const permission = { ...definitionAction, command: () => undefined };
     if (!this.navigation.allowed(permission, module)) return;
     this.navigation.dismiss();
-    if (definitionAction.destination) {
-      void this.router.navigate([definitionAction.destination], { queryParams });
-      return;
-    }
     if (route === '/finance/treasury/cash-register') {
       this.cashRegisterActions.open({ action: cashRegisterActionKind(label) });
       return;

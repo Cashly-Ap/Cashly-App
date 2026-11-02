@@ -16,7 +16,7 @@ describe('Role permission matrix', () => {
   beforeEach(() => {
     service.roles.mockReturnValue(of([]));
     service.registry.mockReturnValue(
-      of([{ module: BusinessModule.CATALOG, actions: ['READ', 'CREATE', 'UPDATE'] }]),
+      of([{ module: BusinessModule.CATALOG_PRODUCTS, actions: ['READ', 'CREATE', 'UPDATE'] }]),
     );
     authorization.can.mockReturnValue(true);
     service.saveRole.mockReset();
@@ -36,11 +36,11 @@ describe('Role permission matrix', () => {
   });
   it('automatically includes READ and clears dependent actions when READ is removed', () => {
     component.create();
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
-    expect(component.selected(BusinessModule.CATALOG, 'READ')).toBe(true);
-    expect(component.selected(BusinessModule.CATALOG, 'CREATE')).toBe(true);
-    component.toggle(BusinessModule.CATALOG, 'READ');
-    expect(component.selected(BusinessModule.CATALOG, 'CREATE')).toBe(false);
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'READ')).toBe(true);
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(true);
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'READ');
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(false);
   });
   it('displays registry-provided effective privileges for the immutable administrator', () => {
     component.edit({
@@ -52,23 +52,23 @@ describe('Role permission matrix', () => {
       systemKey: 'SYSTEM_ADMIN',
       permissions: {},
     });
-    expect(component.selected(BusinessModule.CATALOG, 'READ')).toBe(true);
-    expect(component.selected(BusinessModule.CATALOG, 'CREATE')).toBe(true);
-    expect(component.selected(BusinessModule.CATALOG, 'IMPORT')).toBe(false);
-    component.toggle(BusinessModule.CATALOG, 'READ');
-    expect(component.selected(BusinessModule.CATALOG, 'READ')).toBe(true);
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'READ')).toBe(true);
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(true);
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'IMPORT')).toBe(false);
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'READ');
+    expect(component.selected(BusinessModule.CATALOG_PRODUCTS, 'READ')).toBe(true);
   });
   it('rejects unsupported, nondelegable and busy permission changes', () => {
     component.create();
-    component.toggle(BusinessModule.CATALOG, 'IMPORT');
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'IMPORT');
     expect(component.editing()?.permissions).toEqual({});
     authorization.can.mockImplementation((_module, action) => action !== 'CREATE');
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     expect(component.editing()?.permissions).toEqual({});
     authorization.can.mockReturnValue(true);
     component.busy.set(true);
-    component.toggle(BusinessModule.CATALOG, 'READ');
-    component.updatePermissions({ [BusinessModule.CATALOG]: ['READ'] });
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'READ');
+    component.updatePermissions({ [BusinessModule.CATALOG_PRODUCTS]: ['READ'] });
     expect(component.editing()?.permissions).toEqual({});
   });
   it('rejects a protected role save', () => {
@@ -86,12 +86,12 @@ describe('Role permission matrix', () => {
   });
   it('does not grant an action when READ is unsupported or outside actor access', () => {
     component.create();
-    component.registry.set([{ module: BusinessModule.CATALOG, actions: ['CREATE'] }]);
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    component.registry.set([{ module: BusinessModule.CATALOG_PRODUCTS, actions: ['CREATE'] }]);
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     expect(component.editing()?.permissions).toEqual({});
-    component.registry.set([{ module: BusinessModule.CATALOG, actions: ['READ', 'CREATE'] }]);
+    component.registry.set([{ module: BusinessModule.CATALOG_PRODUCTS, actions: ['READ', 'CREATE'] }]);
     authorization.can.mockImplementation((_module, action) => action !== 'READ');
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     expect(component.editing()?.permissions).toEqual({});
   });
   it('sends optimistic version and preserves the editor on conflict', () => {
@@ -102,7 +102,7 @@ describe('Role permission matrix', () => {
       active: true,
       version: 4,
       systemKey: null,
-      permissions: { [BusinessModule.CATALOG]: ['READ'] },
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] },
     });
     service.saveRole.mockReturnValue(throwError(() => ({ status: 409 })));
     component.save();
@@ -126,10 +126,10 @@ describe('Role permission matrix', () => {
       active: true,
       version: 4,
       systemKey: null,
-      permissions: { [BusinessModule.CATALOG]: ['READ'] },
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] },
     });
     component.form.patchValue({ name: '  Catalog manager  ', description: 'Catalog access' });
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     service.saveRole.mockReturnValue(throwError(() => ({ status: 409 })));
     component.submit();
     expect(service.saveRole).toHaveBeenCalledWith(
@@ -138,7 +138,7 @@ describe('Role permission matrix', () => {
         version: 4,
         name: 'Catalog manager',
         description: 'Catalog access',
-        permissions: { [BusinessModule.CATALOG]: ['READ', 'CREATE'] },
+        permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ', 'CREATE'] },
       }),
     );
     expect(component.form.controls.name.value).toBe('  Catalog manager  ');
@@ -146,7 +146,7 @@ describe('Role permission matrix', () => {
   });
   it('rejects an invalid general tab even when the permissions tab is complete', () => {
     component.create();
-    component.toggle(BusinessModule.CATALOG, 'CREATE');
+    component.toggle(BusinessModule.CATALOG_PRODUCTS, 'CREATE');
     component.form.controls.name.setValue('   ');
     component.submit();
     expect(service.saveRole).not.toHaveBeenCalled();
@@ -169,6 +169,50 @@ describe('Role permission matrix', () => {
     accept?.();
     expect(service.delete).not.toHaveBeenCalled();
   });
+  it('offers edit and delete for a named role that is not the system administrator', () => {
+    const actions = component.actionsFor({
+      id: 'operator',
+      name: 'Operator',
+      description: 'Daily sales operations',
+      active: true,
+      version: 0,
+      systemKey: 'OPERATOR',
+      permissions: {},
+    });
+    expect(actions.map((action) => action.label)).toEqual(['Ver detalle', 'Editar', 'Eliminar']);
+  });
+
+  it('hides edit and delete for the protected system administrator role', () => {
+    const actions = component.actionsFor({
+      id: 'system',
+      name: 'System administrator',
+      description: 'Full installation access',
+      active: true,
+      version: 0,
+      systemKey: 'SYSTEM_ADMIN',
+      permissions: {},
+    });
+    expect(actions.map((action) => action.label)).toEqual(['Ver detalle']);
+  });
+
+  it('saves a named role that is not the system administrator', () => {
+    service.saveRole.mockReturnValue(of({ id: 'operator' }));
+    vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
+    component.edit({
+      id: 'operator',
+      name: 'Operator',
+      description: 'Daily sales operations',
+      active: true,
+      version: 0,
+      systemKey: 'OPERATOR',
+      permissions: { [BusinessModule.SALES_QUOTES]: ['READ'] },
+    });
+    component.save();
+    expect(service.saveRole).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'operator', systemKey: 'OPERATOR' }),
+    );
+  });
+
   it.each([false, true])(
     'opens the saved detail after create or update (editing=%s)',
     (editing) => {

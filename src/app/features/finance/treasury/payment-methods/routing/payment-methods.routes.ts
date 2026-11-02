@@ -7,7 +7,7 @@ export const PAYMENT_METHOD_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.FINANCE_PAYMENT_METHODS },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

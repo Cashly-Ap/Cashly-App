@@ -66,15 +66,13 @@ export class ListNavigationService {
   allowed(action: ListAction | undefined, module: BusinessModule | null): boolean {
     return (
       !!action &&
-      !!module &&
+      !!(action.module ?? module) &&
       !!action.requiredAction &&
-      this.authorization.can(module, action.requiredAction) &&
+      this.authorization.can((action.module ?? module) as BusinessModule, action.requiredAction) &&
       (action.requiredPermissions ?? []).every((grant) => {
         const [owner, permission] = grant.split(':');
         return this.authorization.can(owner as BusinessModule, permission as PermissionAction);
-      }) &&
-      (action.requiredAction !== 'EXPORT' ||
-        this.authorization.can(BusinessModule.DOCUMENT_ADMIN, 'EXPORT'))
+      })
     );
   }
 

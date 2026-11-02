@@ -112,13 +112,13 @@ describe('ConfirmOrderDialogComponent stock guard', () => {
     expect(translations.t(model.acceptLabel)).toBe('Confirm Order');
   });
 
-  it('gates the accept action on the sales module instead of the current page module', () => {
+  it('gates the accept action on the orders confirm permission', () => {
     const { dialog } = open();
     response.next(order);
     const model = dialog.confirmationModel();
-    expect(model.permissionAction).toBe('EXECUTE');
-    expect(model.permissionModule).toBe(BusinessModule.SALES);
-    expect(model.requiredPermissions).toEqual(['INVENTORY:EXECUTE']);
+    expect(model.permissionAction).toBe('CONFIRM');
+    expect(model.permissionModule).toBe(BusinessModule.SALES_ORDERS);
+    expect(model.requiredPermissions).toBeUndefined();
   });
 
   it('confirms against the stock already reserved by the draft even when free stock is zero', () => {

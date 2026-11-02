@@ -21,7 +21,7 @@ describe('PermissionDirective', () => {
   let events: Subject<NavigationEnd>;
 
   beforeEach(() => {
-    grants.set(['CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:UPDATE']);
     events = new Subject<NavigationEnd>();
     TestBed.configureTestingModule({
       imports: [PermissionHost],
@@ -60,7 +60,7 @@ describe('PermissionDirective', () => {
     expect(fixture.componentInstance.edit).toHaveBeenCalledTimes(1);
     fixture.detectChanges();
     expect(button.style.display).toBe('none');
-    grants.set(['CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:UPDATE']);
     fixture.detectChanges();
     expect(button.style.display).toBe('');
     expect(button.hasAttribute('aria-hidden')).toBe(false);
@@ -71,10 +71,10 @@ describe('PermissionDirective', () => {
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
     expect(button.style.display).toBe('');
-    events.next(new NavigationEnd(1, '/finance/expenses', '/finance/expenses'));
+    events.next(new NavigationEnd(1, '/finance/billing/invoices', '/finance/billing/invoices'));
     fixture.detectChanges();
     expect(button.style.display).toBe('none');
-    grants.set([`${BusinessModule.FINANCE}:UPDATE`]);
+    grants.set([`${BusinessModule.FINANCE_INVOICES}:UPDATE`]);
     fixture.detectChanges();
     expect(button.style.display).toBe('');
   });

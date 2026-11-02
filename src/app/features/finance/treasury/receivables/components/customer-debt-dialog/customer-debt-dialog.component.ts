@@ -1,3 +1,4 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { LanguageService } from '@core/i18n/language.service';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import {
@@ -256,8 +257,8 @@ export class CustomerDebtDialogComponent {
       actions.push(
         {
           requiredAction: 'CREATE',
-          requiredPermissions: ['INVENTORY:EXECUTE'],
-          label: 'Devolución',
+                    module: BusinessModule.FINANCE_RETURNS,
+                    label: 'Devolución',
           icon: 'pi pi-undo',
           disabled: this.loadingReturnInvoice(),
           command: () => this.onViewInvoiceReturns(invoice),

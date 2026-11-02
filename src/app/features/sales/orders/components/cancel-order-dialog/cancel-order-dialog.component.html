@@ -65,9 +65,8 @@
         (onClick)="onCancel()"
       />
       <p-button
-        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
-        [appPermissionModule]="'SALES'"
-        [appPermission]="'EXECUTE'"
+        [appPermissionModule]="'SALES_ORDERS'"
+        [appPermission]="'CANCEL'"
         [label]="'sales.orders.cancelOrder' | translate"
         icon="pi pi-times"
         severity="danger"

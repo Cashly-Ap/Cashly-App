@@ -1,3 +1,4 @@
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -221,7 +222,6 @@ export class QuoteListPageComponent implements OnInit {
     const actions: ListAction[] = [
       {
         requiredAction: 'READ',
-        requiredPermissions: ['INVENTORY:READ'],
         label: 'Ver detalle',
         icon: 'pi pi-eye',
         command: () => this.onView(quote),
@@ -237,22 +237,21 @@ export class QuoteListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'UPDATE',
-          requiredPermissions: ['INVENTORY:READ'],
           label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(quote),
         },
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['SALES:CREATE', 'INVENTORY:EXECUTE'],
-          label: 'Convertir a pedido',
+          requiredAction: 'CREATE',
+                    module: BusinessModule.SALES_ORDERS,
+                    label: 'Convertir a pedido',
           icon: 'pi pi-shopping-cart',
           command: () => this.onConvertToOrder(quote),
         },
         {
-          requiredAction: 'EXECUTE',
-          requiredPermissions: ['FINANCES:CREATE', 'INVENTORY:EXECUTE'],
-          label: 'Convertir a factura',
+          requiredAction: 'CREATE',
+                    module: BusinessModule.FINANCE_INVOICES,
+                    label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(quote),
         },

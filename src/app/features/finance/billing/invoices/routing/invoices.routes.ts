@@ -7,7 +7,7 @@ export const INVOICE_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.FINANCE_INVOICES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {
@@ -20,7 +20,7 @@ export const INVOICE_ROUTES: Routes = [
       },
       {
         path: 'new',
-        data: { requiredPermissions: ['INVENTORY:EXECUTE'] },
+        data: { requiredPermissions: ['FINANCE_INVOICES:CREATE'] },
         loadComponent: () =>
           import(
             '@features/finance/billing/invoices/pages/invoice-form-page/invoice-form-page.component'
@@ -29,7 +29,7 @@ export const INVOICE_ROUTES: Routes = [
       },
       {
         path: ':id/edit',
-        data: { requiredPermissions: ['INVENTORY:EXECUTE'] },
+        data: { requiredPermissions: ['FINANCE_INVOICES:UPDATE'] },
         loadComponent: () =>
           import(
             '@features/finance/billing/invoices/pages/invoice-form-page/invoice-form-page.component'
@@ -38,7 +38,7 @@ export const INVOICE_ROUTES: Routes = [
       },
       {
         path: ':id',
-        data: { requiredPermissions: ['INVENTORY:READ'] },
+        data: { requiredPermissions: ['FINANCE_INVOICES:READ'] },
         loadComponent: () =>
           import(
             '@features/finance/billing/invoices/pages/invoice-detail-page/invoice-detail-page.component'

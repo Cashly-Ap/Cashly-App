@@ -55,7 +55,7 @@ describe('UserResponse interface', () => {
       role: 'OPERATOR',
       active: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY, BusinessModule.SALES],
+      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES, BusinessModule.SALES_QUOTES],
     };
 
     expect(response.id).toBe('u-001');

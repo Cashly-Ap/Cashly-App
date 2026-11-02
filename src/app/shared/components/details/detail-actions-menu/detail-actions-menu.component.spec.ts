@@ -28,7 +28,7 @@ describe('DetailActionsMenuComponent', () => {
   const grants = signal<string[]>([]);
 
   beforeEach(() => {
-    grants.set(['CATALOG:READ']);
+    grants.set(['CATALOG_PRODUCTS:READ']);
     events = new Subject<NavigationEnd>();
     TestBed.configureTestingModule({
       imports: [ActionsHost],
@@ -57,7 +57,7 @@ describe('DetailActionsMenuComponent', () => {
   });
 
   it('renders the labeled trigger for an allowed projected action', () => {
-    grants.set(['CATALOG:READ', 'CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:READ', 'CATALOG_PRODUCTS:UPDATE']);
     fixture.detectChanges();
     expect(trigger()?.querySelector('button')?.textContent?.trim()).toBe('Acciones');
   });
@@ -69,25 +69,25 @@ describe('DetailActionsMenuComponent', () => {
   });
 
   it('hides and restores the trigger when the last permitted action changes', () => {
-    grants.set(['CATALOG:READ', 'CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:READ', 'CATALOG_PRODUCTS:UPDATE']);
     fixture.detectChanges();
     expect(trigger()).not.toBeNull();
-    grants.set(['CATALOG:READ']);
+    grants.set(['CATALOG_PRODUCTS:READ']);
     fixture.detectChanges();
     expect(trigger()).toBeNull();
-    grants.set(['CATALOG:READ', 'CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:READ', 'CATALOG_PRODUCTS:UPDATE']);
     fixture.detectChanges();
     expect(trigger()).not.toBeNull();
   });
 
   it('rechecks projected actions after navigation reuses the component', () => {
-    grants.set(['CATALOG:READ', 'CATALOG:UPDATE']);
+    grants.set(['CATALOG_PRODUCTS:READ', 'CATALOG_PRODUCTS:UPDATE']);
     fixture.detectChanges();
     expect(trigger()).not.toBeNull();
     events.next(new NavigationEnd(1, '/sales/orders/item', '/sales/orders/item'));
     fixture.detectChanges();
     expect(trigger()).toBeNull();
-    grants.set(['SALES:READ', 'SALES:UPDATE']);
+    grants.set(['SALES_ORDERS:READ', 'SALES_ORDERS:UPDATE']);
     fixture.detectChanges();
     expect(trigger()).not.toBeNull();
   });

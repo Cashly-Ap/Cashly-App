@@ -15,8 +15,8 @@ describe('Quote Routes', () => {
     expect(QUOTE_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have SALES module data', () => {
-    expect(QUOTE_ROUTES[0].data).toEqual({ module: 'SALES' });
+  it('should have SALES_QUOTES module data', () => {
+    expect(QUOTE_ROUTES[0].data).toEqual({ module: 'SALES_QUOTES' });
   });
 
   it('should have list route as default child', () => {
@@ -56,16 +56,16 @@ describe('Quote Routes', () => {
       QUOTE_ROUTES[0].children?.find((route) => route.path === ':id')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:READ']);
+    ).toEqual(['SALES_QUOTES:READ']);
     expect(
       QUOTE_ROUTES[0].children?.find((route) => route.path === 'new')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:READ']);
+    ).toEqual(['SALES_QUOTES:CREATE']);
     expect(
       QUOTE_ROUTES[0].children?.find((route) => route.path === ':id/edit')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:READ']);
+    ).toEqual(['SALES_QUOTES:UPDATE']);
   });
 });

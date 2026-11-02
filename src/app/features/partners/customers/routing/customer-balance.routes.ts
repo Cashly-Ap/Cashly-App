@@ -11,7 +11,7 @@ export const customerBalanceRoutes: Routes = [
         '@features/partners/customers/pages/customer-balance-page/customer-balance-page.component'
       ).then((m) => m.CustomerBalancePageComponent),
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.CONTACTS_CUSTOMERS },
     title: 'Saldo del Cliente',
   },
 ];

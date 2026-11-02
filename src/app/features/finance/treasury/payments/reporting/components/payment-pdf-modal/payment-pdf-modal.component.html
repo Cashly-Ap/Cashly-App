@@ -35,7 +35,7 @@
       />
       @if (pdfUrl()) {
         <p-button
-          [appPermissionModule]="'FINANCES'"
+          [appPermissionModule]="'FINANCE_INVOICES'"
           [appPermission]="'EXPORT'"
           [label]="'finance.treasury.payments.download' | translate"
           icon="pi pi-download"
@@ -44,7 +44,7 @@
         />
       }
       <p-button
-        [appPermissionModule]="'FINANCES'"
+        [appPermissionModule]="'FINANCE_INVOICES'"
         [appPermission]="'EXPORT'"
         [label]="'finance.billing.invoices.generatePdf' | translate"
         icon="pi pi-file-pdf"

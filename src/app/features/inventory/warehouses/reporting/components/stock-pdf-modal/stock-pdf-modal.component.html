@@ -73,7 +73,7 @@
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
       <p-button
-        [appPermissionModule]="'INVENTORY'"
+        [appPermissionModule]="'INVENTORY_WAREHOUSES'"
         [appPermission]="'EXPORT'"
         [label]="'finance.treasury.cashregister.excel' | translate"
         icon="pi pi-file-excel"
@@ -82,7 +82,7 @@
         styleClass="p-button-outlined"
       />
       <p-button
-        [appPermissionModule]="'INVENTORY'"
+        [appPermissionModule]="'INVENTORY_WAREHOUSES'"
         [appPermission]="'EXPORT'"
         [label]="'inventory.warehouses.viewPdf' | translate"
         icon="pi pi-file-pdf"

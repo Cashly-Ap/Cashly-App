@@ -40,7 +40,6 @@ describe('List navigation actions', () => {
                   requiredAction: 'DELETE',
                   icon: 'pi pi-trash',
                   command,
-                  requiredPermissions: ['INVENTORY:EXECUTE'],
                 },
               ]
             : [],
@@ -109,7 +108,7 @@ describe('List navigation actions', () => {
     loading.set(true);
     await navigation.select(record);
     loading.set(false);
-    can.mockImplementation((module) => module !== BusinessModule.INVENTORY);
+    can.mockImplementation(() => false);
     await navigation.select(record);
     expect(command).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();

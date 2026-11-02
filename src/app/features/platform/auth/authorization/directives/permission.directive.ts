@@ -42,11 +42,8 @@ export class PermissionDirective {
       const [owner, action] = grant.split(':');
       return this.authorization.can(owner as BusinessModule, action as PermissionAction);
     });
-    const reportGrant =
-      this.appPermission() !== 'EXPORT' ||
-      this.authorization.can(BusinessModule.DOCUMENT_ADMIN, 'EXPORT');
     return module
-      ? this.authorization.can(module, this.appPermission()) && extraGrants && reportGrant
+      ? this.authorization.can(module, this.appPermission()) && extraGrants
       : selfService;
   });
 

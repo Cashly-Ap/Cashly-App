@@ -264,7 +264,7 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onViewBalance(customer: CustomerList): void {
-    if (!this.authService.hasModulePermission(BusinessModule.FINANCE)) return;
+    if (!this.authService.hasModulePermission(BusinessModule.CONTACTS_CUSTOMERS)) return;
     this.router.navigate(['/partners/customers', customer.id, 'balance']);
   }
 
@@ -284,10 +284,10 @@ export class CustomersListPageComponent implements OnInit {
       },
     ];
 
-    if (this.authService.hasModulePermission(BusinessModule.FINANCE)) {
+    if (this.authService.hasModulePermission(BusinessModule.CONTACTS_CUSTOMERS)) {
       actions.push({
         requiredAction: 'READ',
-        requiredPermissions: ['FINANCES:READ'],
+        module: BusinessModule.CONTACTS_CUSTOMERS,
         label: 'Ver saldo',
         icon: 'pi pi-wallet',
         command: () => this.onViewBalance(customer),

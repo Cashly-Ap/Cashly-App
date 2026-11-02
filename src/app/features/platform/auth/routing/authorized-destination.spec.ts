@@ -17,11 +17,11 @@ describe('authorizedDestination', () => {
   });
 
   it.each([
-    [BusinessModule.SALES, '/partners/customers'],
-    [BusinessModule.CATALOG, '/catalog/products'],
-    [BusinessModule.INVENTORY, '/inventory/warehouses'],
+    [BusinessModule.CONTACTS_CUSTOMERS, '/partners/customers'],
+    [BusinessModule.CATALOG_PRODUCTS, '/catalog/products'],
+    [BusinessModule.INVENTORY_WAREHOUSES, '/inventory/warehouses'],
     [BusinessModule.PURCHASES, '/procurement/purchases'],
-    [BusinessModule.FINANCE, '/finance/billing/invoices'],
+    [BusinessModule.FINANCE_INVOICES, '/finance/billing/invoices'],
     [BusinessModule.DASHBOARD, '/analytics/dashboard'],
   ])('selects an accessible landing page for %s', (module, destination) => {
     expect(authorizedDestination(auth([module]))).toBe(destination);
@@ -29,18 +29,18 @@ describe('authorizedDestination', () => {
 
   it('prefers an accessible page within the requested ERP area', () => {
     expect(
-      authorizedDestination(auth([BusinessModule.SALES, BusinessModule.INVENTORY]), 'inventory'),
+      authorizedDestination(auth([BusinessModule.CONTACTS_CUSTOMERS, BusinessModule.INVENTORY_WAREHOUSES]), 'inventory'),
     ).toBe('/inventory/warehouses');
   });
 
   it('selects treasury rather than billing when opening the treasury root', () => {
-    expect(authorizedDestination(auth([BusinessModule.FINANCE]), 'finance/treasury')).toBe(
+    expect(authorizedDestination(auth([BusinessModule.FINANCE_INVOICES, BusinessModule.FINANCE_CASH_REGISTER]), 'finance/treasury')).toBe(
       '/finance/treasury/cash-register',
     );
   });
 
   it('requires the inventory permission before offering consolidated inventory reporting', () => {
-    expect(authorizedDestination(auth([BusinessModule.DOCUMENT_ADMIN]), 'analytics')).toBe(
+    expect(authorizedDestination(auth([BusinessModule.FINANCE_INVOICES]), 'analytics')).toBe(
       '/platform/auth/configuration',
     );
   });
@@ -48,7 +48,7 @@ describe('authorizedDestination', () => {
   it('returns to warehouses instead of the removed report page', () => {
     expect(
       authorizedDestination(
-        auth([BusinessModule.DOCUMENT_ADMIN, BusinessModule.INVENTORY]),
+        auth([BusinessModule.FINANCE_INVOICES, BusinessModule.INVENTORY_WAREHOUSES]),
         'analytics',
       ),
     ).toBe('/inventory/warehouses');

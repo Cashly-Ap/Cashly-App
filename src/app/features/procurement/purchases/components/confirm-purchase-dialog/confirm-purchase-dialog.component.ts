@@ -118,9 +118,8 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
       acceptLabel: 'procurement.purchases.confirmPurchase2',
       acceptIcon: 'pi pi-check',
       acceptSeverity: 'success',
-      permissionAction: 'EXECUTE',
+      permissionAction: 'CONFIRM',
       permissionModule: BusinessModule.PURCHASES,
-      requiredPermissions: ['INVENTORY:EXECUTE'],
     };
   });
 

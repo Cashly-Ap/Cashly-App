@@ -16,8 +16,8 @@ describe('Customer Routes', () => {
     expect(CUSTOMER_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have SALES module data', () => {
-    expect(CUSTOMER_ROUTES[0].data).toEqual({ module: BusinessModule.SALES });
+  it('should have CONTACTS_CUSTOMERS module data', () => {
+    expect(CUSTOMER_ROUTES[0].data).toEqual({ module: BusinessModule.CONTACTS_CUSTOMERS });
   });
 
   it('should have list route as default child', () => {

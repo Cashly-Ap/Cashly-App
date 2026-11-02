@@ -44,7 +44,7 @@ export class CompanyDetailsComponent {
   readonly company = signal<Company | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
-  readonly canEdit = computed(() => this.auth.hasPermission(BusinessModule.COMPANY, 'UPDATE'));
+  readonly canEdit = computed(() => this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'));
 
   constructor() {
     this.load();

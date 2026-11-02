@@ -39,7 +39,7 @@ describe('PendingTabsDropdownComponent', () => {
   });
 
   beforeEach(async () => {
-    grants = signal(['SALES:CREATE', 'SALES:UPDATE']);
+    grants = signal(['CONTACTS_CUSTOMERS:CREATE', 'CONTACTS_CUSTOMERS:UPDATE']);
     authMock.hasPermission.mockImplementation((module, action) =>
       grants().includes(`${module}:${action}`),
     );
@@ -107,7 +107,7 @@ describe('PendingTabsDropdownComponent', () => {
     });
 
     it('does not expose edit drafts to a role allowed only to create', () => {
-      grants.set(['SALES:CREATE']);
+      grants.set(['CONTACTS_CUSTOMERS:CREATE']);
       tabsSignal.set([
         createMockTab(),
         createMockTab({ id: 'edit', type: 'edit', route: '/partners/customers/record-1/edit' }),
@@ -116,7 +116,7 @@ describe('PendingTabsDropdownComponent', () => {
     });
 
     it('does not expose create drafts to a role allowed only to update', () => {
-      grants.set(['SALES:UPDATE']);
+      grants.set(['CONTACTS_CUSTOMERS:UPDATE']);
       expect(component.tabs()).toEqual([]);
     });
 
@@ -140,7 +140,7 @@ describe('PendingTabsDropdownComponent', () => {
     it('restores draft visibility when permissions return', () => {
       grants.set([]);
       component.tabs();
-      grants.set(['SALES:CREATE']);
+      grants.set(['CONTACTS_CUSTOMERS:CREATE']);
       expect(component.tabs()).toHaveLength(1);
     });
 

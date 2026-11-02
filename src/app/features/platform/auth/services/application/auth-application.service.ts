@@ -208,6 +208,7 @@ export class AuthService {
   }
 
   hasPermission(module: BusinessModule, action: PermissionAction = 'READ'): boolean {
+    if (this.isSuperAdmin()) return true;
     const grants = this.currentAccess()?.permissions[module] ?? [];
     return grants.includes('READ') && grants.includes(action);
   }

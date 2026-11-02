@@ -32,7 +32,7 @@ describe('ListNavigationPickerComponent acceptance', () => {
     session.set({
       owner: {},
       title: 'Editar',
-      module: BusinessModule.SALES,
+      module: BusinessModule.SALES_QUOTES,
       route: new ActivatedRoute(),
       records,
       loading,

@@ -95,9 +95,8 @@ export class ConvertToOrderDialogComponent implements OnChanges {
       inventory: { rows, blocking: this.hasAnyNegativeStock() },
       acceptLabel: 'sales.quotes.convertToOrder2',
       acceptIcon: 'pi pi-shopping-cart',
-      permissionAction: 'EXECUTE',
-      permissionModule: BusinessModule.SALES,
-      requiredPermissions: ['SALES:CREATE', 'INVENTORY:EXECUTE'],
+      permissionAction: 'CREATE',
+      permissionModule: BusinessModule.SALES_ORDERS,
     };
   });
 

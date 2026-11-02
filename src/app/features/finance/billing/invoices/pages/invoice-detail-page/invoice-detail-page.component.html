@@ -28,7 +28,6 @@
               <app-detail-actions-menu #actionsMenu>
                 @if (currentInvoice.status === InvoiceStatus.DRAFT) {
                   <p-button
-                    [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                     [appPermission]="'UPDATE'"
                     [label]="'finance.billing.invoices.edit' | translate"
                     icon="pi pi-pencil"
@@ -38,7 +37,6 @@
                   />
                 }
                 <p-button
-                  [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                   [appPermission]="'CREATE'"
                   [label]="'finance.billing.invoices.duplicate' | translate"
                   icon="pi pi-copy"

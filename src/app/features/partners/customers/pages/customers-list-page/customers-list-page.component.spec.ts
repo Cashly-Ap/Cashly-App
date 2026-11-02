@@ -123,7 +123,7 @@ describe('CustomersListPageComponent', () => {
 
     component.onViewBalance(mockCustomer);
 
-    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.FINANCE);
+    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.CONTACTS_CUSTOMERS);
     expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', mockCustomer.id, 'balance']);
   });
 

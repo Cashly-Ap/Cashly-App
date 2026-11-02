@@ -3,39 +3,87 @@ import {
   BUSINESS_MODULE_LABELS,
 } from '@features/platform/auth/user/models/enums/business-module.enum';
 
+const NAVBAR_CONTRACT_MODULES = [
+  'USERS',
+  'ROLES',
+  'DEPARTMENTS',
+  'CATALOG_PRODUCTS',
+  'CATALOG_CATEGORIES',
+  'CATALOG_PRICES',
+  'INVENTORY_WAREHOUSES',
+  'SALES_QUOTES',
+  'SALES_ORDERS',
+  'CONTACTS_CUSTOMERS',
+  'FINANCE_INVOICES',
+  'FINANCE_RETURNS',
+  'FINANCE_CREDIT_NOTES',
+  'FINANCE_DEBIT_NOTES',
+  'FINANCE_CASH_REGISTER',
+  'FINANCE_RECEIVABLES',
+  'FINANCE_PAYMENT_METHODS',
+  'PURCHASES',
+  'CONTACTS_SUPPLIERS',
+  'DASHBOARD',
+];
+
+const LEGACY_MODULES = [
+  'COMPANY',
+  'DOCUMENTS',
+  'FINANCE_BILLING',
+  'FINANCE_TREASURY',
+  'INVENTORY',
+  'SALES',
+  'CATALOG',
+  'FINANCE',
+  'FINANCES',
+  'DOCUMENT_ADMIN',
+];
+
 describe('BusinessModule', () => {
-  it('should have all expected enum values', () => {
-    expect(BusinessModule.USERS).toBe('USERS');
-    expect(BusinessModule.ROLES).toBe('ROLES');
-    expect(BusinessModule.DEPARTMENTS).toBe('DEPARTMENTS');
-    expect(BusinessModule.CATALOG).toBe('CATALOG');
-    expect(BusinessModule.INVENTORY).toBe('INVENTORY');
-    expect(BusinessModule.SALES).toBe('SALES');
-    expect(BusinessModule.FINANCE).toBe('FINANCES');
-    expect(BusinessModule.PURCHASES).toBe('PURCHASES');
-    expect(BusinessModule.DOCUMENT_ADMIN).toBe('DOCUMENT_ADMIN');
+  it('matches exactly the navbar contract modules in contract order', () => {
+    expect(Object.values(BusinessModule)).toEqual(NAVBAR_CONTRACT_MODULES);
+    expect(Object.values(BusinessModule)).toHaveLength(20);
   });
 
-  it('should have exactly 11 enum values', () => {
-    expect(Object.keys(BusinessModule).length).toBe(11);
+  it('exposes each enum key as its own value', () => {
+    for (const [key, value] of Object.entries(BusinessModule)) {
+      expect(value).toBe(key);
+    }
+  });
+
+  it('does not expose legacy or aggregate modules', () => {
+    const values: string[] = Object.values(BusinessModule);
+    for (const legacy of LEGACY_MODULES) {
+      expect(values).not.toContain(legacy);
+    }
+  });
+
+  it('includes the consolidated customer contacts module', () => {
+    expect(BusinessModule.CONTACTS_CUSTOMERS).toBe('CONTACTS_CUSTOMERS');
   });
 });
 
 describe('BUSINESS_MODULE_LABELS', () => {
-  it('should map each module to its label', () => {
+  it('maps each contract module to its label key', () => {
     expect(BUSINESS_MODULE_LABELS[BusinessModule.USERS]).toBe('platform.auth.userManagement');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY]).toBe('platform.auth.inventory');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.SALES]).toBe('platform.auth.salesManagement');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE]).toBe('platform.auth.finance');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('platform.auth.purchases');
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.DOCUMENT_ADMIN]).toBe('platform.auth.reports');
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.INVENTORY_WAREHOUSES]).toBe(
+      'platform.auth.inventoryWarehouses',
+    );
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.CONTACTS_CUSTOMERS]).toBe(
+      'platform.auth.contactsCustomers',
+    );
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE_CASH_REGISTER]).toBe(
+      'platform.auth.financeCashRegister',
+    );
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe(
+      'platform.auth.purchases',
+    );
   });
 
-  it('should have labels for all enum values', () => {
-    const moduleKeys = Object.keys(BusinessModule) as BusinessModule[];
-    moduleKeys.forEach((module) => {
-      expect(BUSINESS_MODULE_LABELS[BusinessModule[module]]).toBeDefined();
-      expect(typeof BUSINESS_MODULE_LABELS[BusinessModule[module]]).toBe('string');
-    });
+  it('has a non-empty label key for every contract module and no extra keys', () => {
+    expect(Object.keys(BUSINESS_MODULE_LABELS).sort()).toEqual([...NAVBAR_CONTRACT_MODULES].sort());
+    for (const module of NAVBAR_CONTRACT_MODULES) {
+      expect(BUSINESS_MODULE_LABELS[module as BusinessModule]).toMatch(/^platform\.auth\./);
+    }
   });
 });

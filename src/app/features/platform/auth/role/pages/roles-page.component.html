@@ -167,7 +167,9 @@
                     [totalRecords]="filteredItems().length"
                     [rowsPerPageOptions]="[10, 25, 50, 100]"
                     [showCurrentPageReport]="true"
-                    [currentPageReportTemplate]="'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate"
+                    [currentPageReportTemplate]="
+                      'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate
+                    "
                     (onPageChange)="onPageChange($event)"
                   />
                 </div>
@@ -224,7 +226,9 @@
                   [totalRecords]="filteredItems().length"
                   [rowsPerPageOptions]="[10, 25, 50, 100]"
                   [showCurrentPageReport]="true"
-                  [currentPageReportTemplate]="'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate"
+                  [currentPageReportTemplate]="
+                    'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate
+                  "
                   (onPageChange)="onPageChange($event)"
                 />
               </div>
@@ -259,7 +263,7 @@
                     (onClick)="onBack()"
                     styleClass="w-full sm:w-auto"
                   />
-                  @if (!value.systemKey) {
+                  @if (!isSystemAdministrator(value)) {
                     <app-detail-actions-menu #actionsMenu>
                       <p-button
                         [appPermission]="'UPDATE'"
@@ -414,8 +418,9 @@
                 <p-tabpanel value="permissions">
                   <app-permission-editor
                     [registry]="registry()"
+                    [catalog]="catalog()"
                     [permissions]="value.permissions || {}"
-                    [protected]="!!value.systemKey"
+                    [protected]="isSystemAdministrator(value)"
                     [disabled]="
                       busy() ||
                       (value.id

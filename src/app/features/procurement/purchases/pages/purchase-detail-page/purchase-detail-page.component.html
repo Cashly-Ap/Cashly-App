@@ -28,7 +28,6 @@
               @if (currentPurchase.status === PurchaseStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   <p-button
-                    [appRequiredPermissions]="['INVENTORY:READ']"
                     [appPermission]="'UPDATE'"
                     [label]="'finance.billing.invoices.edit' | translate"
                     icon="pi pi-pencil"

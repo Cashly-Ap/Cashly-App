@@ -13,7 +13,7 @@ describe('AuthenticationResponse interface', () => {
       role: 'OPERATOR',
       active: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY],
+      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     const response: AuthenticationResponse = {

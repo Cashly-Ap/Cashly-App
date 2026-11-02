@@ -7,7 +7,7 @@ export const SUPPLIER_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.PURCHASES },
+    data: { module: BusinessModule.CONTACTS_SUPPLIERS },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

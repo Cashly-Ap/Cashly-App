@@ -8,7 +8,15 @@ export type PermissionAction =
   | 'DELETE'
   | 'EXPORT'
   | 'IMPORT'
-  | 'EXECUTE';
+  | 'EXECUTE'
+  | 'CONFIRM'
+   | 'CANCEL' | 'DUPLICATE'
+   | 'DETAILS' | 'BALANCE' | 'HISTORY' | 'OPEN' | 'CLOSE' | 'REPORT' | 'PARTIAL_PAYMENT' | 'REFUND' | 'ADVANCE'
+   | 'CUSTOMER_BALANCE' | 'REPORT_QUOTES' | 'REPORT_ORDERS' | 'REPORT_PURCHASES' | 'REPORT_PRODUCTS'
+  | 'REPORT_COMMERCIAL_CATALOG' | 'REPORT_STOCK' | 'REPORT_MOVEMENTS' | 'REPORT_INVOICES'
+   | 'REPORT_CASH_REGISTER' | 'REPORT_RECEIVABLES' | 'CASH_HISTORY' | 'INVOICE_DUPLICATE'
+   | 'STOCK' | 'MOVEMENT_HISTORY' | 'RECORD_ENTRY' | 'RECORD_EXIT'
+  | 'PAY_WITH_VALIDATION' | 'PAY_DIRECT' | 'PAY_ALL' | 'PAY_PARTIAL' | 'APPROVE_PAYMENT' | 'REJECT_PAYMENT';
 export type PermissionMatrix = Partial<Record<BusinessModule, PermissionAction[]>>;
 export interface CurrentAccess {
   roleId: string;

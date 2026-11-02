@@ -197,7 +197,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       'Cashly',
   );
   readonly canViewCompany = computed(() =>
-    this.authService.hasPermission(BusinessModule.COMPANY, 'READ'),
+    this.authService.hasPermission(BusinessModule.USERS, 'UPDATE'),
   );
   private readonly brandingUserId = computed(() => this.currentUser()?.id);
   constructor() {
@@ -341,11 +341,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
               action as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
             );
           })
-        )
-          return false;
-        if (
-          item.requiredAction === 'EXPORT' &&
-          !this.authService.hasPermission(BusinessModule.DOCUMENT_ADMIN, item.requiredAction)
         )
           return false;
         return true;

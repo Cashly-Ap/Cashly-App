@@ -7,7 +7,7 @@ export const DEBIT_NOTE_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE },
+    data: { module: BusinessModule.FINANCE_DEBIT_NOTES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

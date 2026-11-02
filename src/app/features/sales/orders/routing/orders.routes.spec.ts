@@ -15,8 +15,8 @@ describe('Order Routes', () => {
     expect(ORDER_ROUTES[0].canActivate).toHaveLength(2);
   });
 
-  it('should have SALES module data', () => {
-    expect(ORDER_ROUTES[0].data).toEqual({ module: 'SALES' });
+  it('should have SALES_ORDERS module data', () => {
+    expect(ORDER_ROUTES[0].data).toEqual({ module: 'SALES_ORDERS' });
   });
 
   it('should have list route as default child', () => {
@@ -56,16 +56,16 @@ describe('Order Routes', () => {
       ORDER_ROUTES[0].children?.find((route) => route.path === ':id')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:READ']);
+    ).toEqual(['SALES_ORDERS:READ']);
     expect(
       ORDER_ROUTES[0].children?.find((route) => route.path === 'new')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:EXECUTE']);
+    ).toEqual(['SALES_ORDERS:CREATE']);
     expect(
       ORDER_ROUTES[0].children?.find((route) => route.path === ':id/edit')?.data?.[
         'requiredPermissions'
       ],
-    ).toEqual(['INVENTORY:EXECUTE']);
+    ).toEqual(['SALES_ORDERS:UPDATE']);
   });
 });

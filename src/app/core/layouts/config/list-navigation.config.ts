@@ -1,21 +1,20 @@
 import { MenuItem } from '@core/layouts/models';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export interface NavigationActionDefinition {
   label: string;
   requiredAction: PermissionAction;
   icon: string;
-  requiredPermissions?: string[];
+  module?: BusinessModule;
   queryParams?: Record<string, string>;
-  destination?: string;
 }
 
 export interface ListNavigationDefinition {
   route: string;
   singular: string;
   create?: boolean;
-  createPermissions?: string[];
   actions: NavigationActionDefinition[];
   destinations?: MenuItem[];
 }
@@ -24,72 +23,61 @@ const action = (
   label: string,
   requiredAction: PermissionAction,
   icon: string,
-  requiredPermissions?: string[],
+  module?: BusinessModule,
 ): NavigationActionDefinition => ({
   label,
   requiredAction,
   icon: `pi pi-${icon}`,
-  ...(requiredPermissions ? { requiredPermissions } : {}),
+  ...(module ? { module } : {}),
 });
-const view = (permissions?: string[]) => action('Ver detalle', 'READ', 'eye', permissions);
-const edit = (permissions?: string[]) => action('Editar', 'UPDATE', 'pencil', permissions);
+const view = () => action('Ver detalle', 'READ', 'eye');
+const edit = () => action('Editar', 'UPDATE', 'pencil');
 const pdf = () => action('Descargar PDF', 'EXPORT', 'file-pdf');
-const destinationAction = (
+const recordActions = () => [view(), edit()];
+const destination = (
   label: string,
+  routerLink: string,
   requiredAction: PermissionAction,
   icon: string,
-  destination: string,
-  requiredPermissions?: string[],
-): NavigationActionDefinition => ({
-  ...action(label, requiredAction, icon, requiredPermissions),
-  destination,
-});
-const recordActions = () => [view(), edit()];
-const inventoryRead = ['INVENTORY:READ'];
-const inventoryExecute = ['INVENTORY:EXECUTE'];
+  module: BusinessModule,
+): MenuItem => ({ label, icon: `pi pi-${icon}`, routerLink, requiredAction, requiredModule: module });
 
 export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
   {
     route: '/sales/quotes',
     singular: 'presupuesto',
     create: true,
-    createPermissions: inventoryRead,
     actions: [
-      view(inventoryRead),
+      view(),
       pdf(),
-      edit(inventoryRead),
-      action('Convertir a pedido', 'EXECUTE', 'shopping-cart', [
-        'SALES:CREATE',
-        ...inventoryExecute,
-      ]),
-      action('Convertir a factura', 'EXECUTE', 'file', ['FINANCES:CREATE', ...inventoryExecute]),
+      edit(),
+      action('Convertir a pedido', 'CREATE', 'shopping-cart', BusinessModule.SALES_ORDERS),
+      action('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
     ],
   },
   {
     route: '/sales/orders',
     singular: 'pedido',
     create: true,
-    createPermissions: inventoryExecute,
     actions: [
-      view(inventoryRead),
+      view(),
       pdf(),
-      edit(inventoryExecute),
-      action('Confirmar', 'EXECUTE', 'check', inventoryExecute),
-      action('Convertir a factura', 'EXECUTE', 'file', ['FINANCES:CREATE', ...inventoryExecute]),
-      action('Cancelar', 'EXECUTE', 'times', inventoryExecute),
+      edit(),
+       action('Confirmar', 'CONFIRM', 'check', BusinessModule.FINANCE_INVOICES),
+      action('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
+       action('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
     ],
   },
   {
     route: '/procurement/purchases',
     singular: 'compra',
     create: true,
-    createPermissions: inventoryRead,
     actions: [
-      view(inventoryRead),
+      view(),
       pdf(),
-      edit(inventoryRead),
-      action('Confirmar compra', 'EXECUTE', 'check', inventoryExecute),
-      action('Cancelar compra', 'EXECUTE', 'ban', inventoryExecute),
+      edit(),
+      action('Confirmar compra', 'CONFIRM', 'check'),
+      action('Cancelar compra', 'CANCEL', 'ban'),
     ],
   },
   { route: '/catalog/products', singular: 'producto', create: true, actions: recordActions() },
@@ -105,22 +93,24 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     singular: 'almacén',
     create: true,
     destinations: [
-      {
-        label: 'Ver stock',
-        icon: 'pi pi-box',
-        routerLink: '/inventory/warehouses/stock',
-        requiredAction: 'READ',
-      },
-    ],
-    actions: [
-      action('Registrar entrada', 'EXECUTE', 'arrow-circle-down'),
-      action('Registrar salida', 'EXECUTE', 'arrow-circle-up'),
-      destinationAction(
+      destination(
+        'Ver stock',
+        '/inventory/warehouses/stock',
+        'READ',
+        'box',
+         BusinessModule.INVENTORY_WAREHOUSES,
+      ),
+      destination(
         'Historial de movimientos',
+        '/inventory/warehouses/movements',
         'READ',
         'history',
-        '/inventory/warehouses/movements',
+         BusinessModule.INVENTORY_WAREHOUSES,
       ),
+    ],
+    actions: [
+        action('Registrar entrada', 'EXECUTE', 'arrow-circle-down', BusinessModule.INVENTORY_WAREHOUSES),
+        action('Registrar salida', 'EXECUTE', 'arrow-circle-up', BusinessModule.INVENTORY_WAREHOUSES),
       ...recordActions(),
     ],
   },
@@ -128,23 +118,16 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     route: '/finance/billing/invoices',
     singular: 'factura',
     create: true,
-    createPermissions: inventoryExecute,
     actions: [
-      view(inventoryRead),
+      view(),
       pdf(),
-      action('Confirmar', 'EXECUTE', 'check', inventoryExecute),
-      edit(inventoryExecute),
-      action('Cancelar', 'EXECUTE', 'times', inventoryExecute),
-      action('Duplicar', 'CREATE', 'copy', inventoryExecute),
+       action('Confirmar', 'CONFIRM', 'check', BusinessModule.FINANCE_INVOICES),
+      edit(),
+       action('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
+        action('Duplicar', 'INVOICE_DUPLICATE', 'copy', BusinessModule.FINANCE_INVOICES),
     ],
   },
-  {
-    route: '/finance/billing/returns',
-    singular: 'devolución',
-    create: true,
-    createPermissions: inventoryExecute,
-    actions: [view()],
-  },
+  { route: '/finance/billing/returns', singular: 'devolución', create: true, actions: [view()] },
   {
     route: '/finance/billing/credit-notes',
     singular: 'nota de crédito',
@@ -167,7 +150,11 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     route: '/partners/customers',
     singular: 'cliente',
     create: true,
-    actions: [view(), edit(), action('Ver saldo', 'READ', 'wallet', ['FINANCES:READ'])],
+    actions: [
+      view(),
+      edit(),
+        action('Ver saldo', 'CUSTOMER_BALANCE', 'wallet', BusinessModule.CONTACTS_CUSTOMERS),
+    ],
   },
   { route: '/partners/suppliers', singular: 'proveedor', create: true, actions: recordActions() },
   { route: '/platform/users', singular: 'usuario', create: true, actions: recordActions() },
@@ -182,13 +169,13 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     route: '/finance/treasury/receivables',
     singular: 'cliente',
     actions: [
-      action('Ver deuda', 'READ', 'eye'),
-      action('Pagar todo', 'EXECUTE', 'check-circle'),
-      action('Pago parcial', 'EXECUTE', 'percentage'),
-      action('Reintegro', 'EXECUTE', 'undo'),
-      action('Generar anticipo', 'EXECUTE', 'plus-circle'),
-      ...['Aprobar pago', 'Rechazar pago'].map((label) => ({
-        ...action(label, 'EXECUTE', label === 'Aprobar pago' ? 'check' : 'times'),
+        action('Ver deuda', 'DETAILS', 'eye', BusinessModule.FINANCE_RECEIVABLES),
+        action('Pagar todo', 'PAY_ALL', 'check-circle', BusinessModule.FINANCE_RECEIVABLES),
+        action('Pago parcial', 'PARTIAL_PAYMENT', 'percentage', BusinessModule.FINANCE_RECEIVABLES),
+        action('Reintegro', 'REFUND', 'undo', BusinessModule.FINANCE_RECEIVABLES),
+        action('Generar anticipo', 'ADVANCE', 'plus-circle', BusinessModule.FINANCE_RECEIVABLES),
+        ...['Aprobar pago', 'Rechazar pago'].map((label) => ({
+          ...action(label, label === 'Aprobar pago' ? 'APPROVE_PAYMENT' : 'REJECT_PAYMENT', label === 'Aprobar pago' ? 'check' : 'times', BusinessModule.FINANCE_RECEIVABLES),
         queryParams: { tab: 'pending' },
       })),
     ],
@@ -197,9 +184,9 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
     route: '/finance/treasury/cash-register',
     singular: 'caja',
     actions: [
-      action('Abrir caja', 'EXECUTE', 'lock-open'),
-      action('Cerrar caja', 'EXECUTE', 'lock'),
-      action('Ver detalles', 'READ', 'eye'),
+        action('Abrir caja', 'OPEN', 'lock-open', BusinessModule.FINANCE_CASH_REGISTER),
+        action('Cerrar caja', 'CLOSE', 'lock', BusinessModule.FINANCE_CASH_REGISTER),
+        action('Ver detalles', 'DETAILS', 'eye', BusinessModule.FINANCE_CASH_REGISTER),
     ],
   },
 ];
@@ -262,22 +249,17 @@ export function addListNavigationActions(
                 routerLink: `${routerLink}/new`,
                 requiredModule: module,
                 requiredAction: 'CREATE' as const,
-                requiredPermissions: definition.createPermissions,
               },
             ]
           : []),
         ...(children ?? []),
-        ...(definition.destinations ?? []).map((destination) => ({
-          ...destination,
-          requiredModule: module,
-        })),
+        ...(definition.destinations ?? []),
         ...definition.actions.map(
           (entry): MenuItem => ({
             label: actionLabel(entry.label, definition.singular),
             icon: entry.icon,
-            requiredModule: module,
+            requiredModule: entry.module ?? module,
             requiredAction: entry.requiredAction,
-            requiredPermissions: entry.requiredPermissions,
             command:
               definition.route === '/partners/customers' && entry.label === 'Editar'
                 ? callbacks.openCustomerEditPicker

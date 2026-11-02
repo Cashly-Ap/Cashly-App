@@ -130,6 +130,7 @@ describe('ERP navigation', () => {
         '/catalog/categories',
         '/inventory/warehouses',
         '/inventory/warehouses/stock',
+        '/inventory/warehouses/movements',
         '/finance/treasury/cash-register',
         '/finance/treasury/cash-register/history',
         '/finance/treasury/receivables',
@@ -206,28 +207,23 @@ describe('ERP navigation', () => {
     const definition = LIST_NAVIGATION_DEFINITIONS.find(
       (entry) => entry.route === '/inventory/warehouses',
     );
-    const movements = definition?.actions.find(
+    const movements = definition?.destinations?.find(
       (entry) => entry.label === 'Historial de movimientos',
     );
 
-    expect(movements?.destination).toBe('/inventory/warehouses/movements');
-    expect(movements?.queryParams).toBeUndefined();
+    expect(movements?.routerLink).toBe('/inventory/warehouses/movements');
+    expect(movements?.requiredModule).toBe(BusinessModule.INVENTORY_WAREHOUSES);
   });
 
-  it('keeps the movements history navbar action as a command without a record picker route', () => {
-    const callbacks = createCallbacks();
-    const item = flatten(buildMenuItems(callbacks)).find(
+  it('navigates the movements history directly with INVENTORY_WAREHOUSES:READ', () => {
+    const item = flatten(buildMenuItems(createCallbacks())).find(
       (entry) => entry.label === 'Historial de movimientos',
     );
 
-    expect(item?.routerLink).toBeUndefined();
+    expect(item?.routerLink).toBe('/inventory/warehouses/movements');
+    expect(item?.requiredModule).toBe(BusinessModule.INVENTORY_WAREHOUSES);
     expect(item?.requiredAction).toBe('READ');
-    item?.command?.();
-    expect(callbacks.openListAction).toHaveBeenCalledWith(
-      '/inventory/warehouses',
-      'Historial de movimientos',
-      undefined,
-    );
+    expect(item?.command).toBeUndefined();
   });
 
   it('exposes every list action and create destination', () => {
@@ -258,14 +254,14 @@ describe('ERP navigation', () => {
     }
   });
 
-  it('uses inventory export for the inventory catalog report and catalog export for the commercial catalog', () => {
+  it('uses catalog reports module for the product catalog report and the commercial catalog', () => {
     const callbacks = createCallbacks();
     const items = flatten(buildMenuItems(callbacks));
     expect(items.find((item) => item.command === callbacks.openCatalogModal)?.requiredModule).toBe(
-      BusinessModule.INVENTORY,
+      BusinessModule.CATALOG_PRODUCTS,
     );
     expect(
       items.find((item) => item.command === callbacks.openCommercialCatalogModal)?.requiredModule,
-    ).toBe(BusinessModule.CATALOG);
+    ).toBe(BusinessModule.CATALOG_PRODUCTS);
   });
 });

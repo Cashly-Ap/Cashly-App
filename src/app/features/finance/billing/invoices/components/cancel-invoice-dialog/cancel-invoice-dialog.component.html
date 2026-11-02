@@ -65,9 +65,8 @@
         (onClick)="onCancel()"
       />
       <p-button
-        [appRequiredPermissions]="['INVENTORY:EXECUTE']"
-        [appPermissionModule]="'FINANCES'"
-        [appPermission]="'EXECUTE'"
+        [appPermissionModule]="'FINANCE_INVOICES'"
+        [appPermission]="'CANCEL'"
         [label]="'finance.billing.invoices.cancelInvoice' | translate"
         icon="pi pi-times"
         severity="danger"

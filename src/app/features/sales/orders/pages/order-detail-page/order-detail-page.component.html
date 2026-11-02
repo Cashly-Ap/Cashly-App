@@ -26,7 +26,6 @@
               @if (currentOrder.status === OrderStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>
                   <p-button
-                    [appRequiredPermissions]="['INVENTORY:EXECUTE']"
                     [appPermission]="'UPDATE'"
                     [label]="'finance.billing.invoices.edit' | translate"
                     icon="pi pi-pencil"
