@@ -4,7 +4,7 @@ Pages for creating and reviewing additional customer charges.
 
 ## Routes
 
-`/debit-notes`, `/debit-notes/new`, `/debit-notes/:id`.
+`/finance/billing/debit-notes`, `/finance/billing/debit-notes/new`, `/finance/billing/debit-notes/:id`.
 
 ## Architecture
 

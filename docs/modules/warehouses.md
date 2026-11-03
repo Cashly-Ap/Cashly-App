@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Warehouses module manages physical warehouses, product stock per warehouse, and maintains a complete audit trail of all inventory movements. It handles multi-warehouse support, stock operations (entry, exit, adjustments), and transfers between warehouses.
+The Warehouses module manages physical warehouses, product stock per warehouse, and maintains a complete audit trail of all inventory movements. It handles multi-warehouse support, stock operations (entry, exit, adjustments), and stock controls across warehouses.
 
 **Module Type**: `CRUD`
 
@@ -11,79 +11,18 @@ The Warehouses module manages physical warehouses, product stock per warehouse, 
 ## Module Structure
 
 ```
-src/app/features/warehouses/
-├── components/               # Reusable UI components
-│   ├── warehouse-general-section/
-│   │   ├── warehouse-general-section.component.ts
-│   │   ├── warehouse-general-section.component.html
-│   │   └── warehouse-general-section.component.spec.ts
-│   ├── warehouse-stock-section/
-│   │   ├── warehouse-stock-section.component.ts
-│   │   ├── warehouse-stock-section.component.html
-│   │   └── warehouse-stock-section.component.spec.ts
-│   └── index.ts
-├── models/
-│   ├── interfaces/
-│   │   ├── warehouse-list.interface.ts
-│   │   ├── warehouse-details.interface.ts
-│   │   ├── warehouse-edit.interface.ts
-│   │   ├── warehouse-create.interface.ts
-│   │   ├── stock-entry.interface.ts
-│   │   ├── stock-exit.interface.ts
-│   │   ├── stock-transfer.interface.ts
-│   │   └── index.ts
-│   ├── enums/
-│   │   ├── movement-type.enum.ts
-│   │   └── index.ts
-│   └── index.ts
-├── pages/
-│   ├── warehouses-list-page/
-│   │   ├── warehouses-list-page.component.ts
-│   │   ├── warehouses-list-page.component.html
-│   │   └── warehouses-list-page.component.spec.ts
-│   ├── warehouses-form-page/
-│   │   ├── warehouses-form-page.component.ts
-│   │   ├── warehouses-form-page.component.html
-│   │   └── warehouses-form-page.component.spec.ts
-│   ├── warehouses-details-page/
-│   │   ├── warehouses-details-page.component.ts
-│   │   ├── warehouses-details-page.component.html
-│   │   └── warehouses-details-page.component.spec.ts
-│   ├── stock-entry-page/
-│   │   ├── stock-entry-page.component.ts
-│   │   ├── stock-entry-page.component.html
-│   │   └── stock-entry-page.component.spec.ts
-│   ├── stock-exit-page/
-│   │   ├── stock-exit-page.component.ts
-│   │   ├── stock-exit-page.component.html
-│   │   └── stock-exit-page.component.spec.ts
-│   ├── stock-transfer-page/
-│   │   ├── stock-transfer-page.component.ts
-│   │   ├── stock-transfer-page.component.html
-│   │   └── stock-transfer-page.component.spec.ts
-│   └── index.ts
-├── services/
-│   ├── api/
-│   │   ├── warehouse-api.service.ts
-│   │   ├── warehouse-api.service.spec.ts
-│   │   └── index.ts
-│   ├── application/
-│   │   ├── warehouse-application.service.ts
-│   │   ├── warehouse-application.service.spec.ts
-│   │   └── index.ts
-│   ├── mappers/
-│   │   ├── warehouse.mapper.ts
-│   │   ├── warehouse.mapper.spec.ts
-│   │   └── index.ts
-│   └── index.ts
-├── validators/
-│   ├── warehouse.validators.ts
-│   ├── warehouse.validators.spec.ts
-│   └── index.ts
-├── router/
-│   ├── warehouse.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/inventory/warehouses/
+├── actions/                        # Row and toolbar actions
+├── components/                     # Stock operation and action dialogs
+├── i18n/                           # Translations
+├── messages/                       # Toast and error messages
+├── models/                         # Interfaces and enums
+├── navigation/                     # Menu and navigation contributions
+├── pages/                          # List, form, details, stock, and movements pages
+├── permissions/                    # Permission constants
+├── reporting/                      # Stock and movement reports
+├── routing/                        # Lazy-loaded routes
+└── services/                       # API and application services
 ```
 
 ---
@@ -94,7 +33,7 @@ src/app/features/warehouses/
 - Warehouse code validation (pattern WH-XXX)
 - Stock entry operations (add inventory)
 - Stock exit operations (remove inventory)
-- Stock transfer between warehouses
+- Stock entry and exit through the shared stock-operation dialog
 - Movement audit trail with full traceability
 - Active/Inactive warehouse status management
 - Prevents deactivation of warehouses with stock > 0
@@ -105,7 +44,7 @@ src/app/features/warehouses/
 
 ### List Page
 
-**Route**: `/warehouses`
+**Route**: `/inventory/warehouses`
 
 **Component**: `WarehousesListPageComponent`
 
@@ -122,7 +61,7 @@ src/app/features/warehouses/
 
 ### Form Page
 
-**Route**: `/warehouses/new` (Create) | `/warehouses/:id/edit` (Edit)
+**Route**: `/inventory/warehouses/new` (Create) | `/inventory/warehouses/:id/edit` (Edit)
 
 **Component**: `WarehousesFormPageComponent`
 
@@ -138,7 +77,7 @@ src/app/features/warehouses/
 
 ### Details Page
 
-**Route**: `/warehouses/:id`
+**Route**: `/inventory/warehouses/:id`
 
 **Component**: `WarehousesDetailsPageComponent`
 
@@ -153,7 +92,7 @@ src/app/features/warehouses/
 
 ### Warehouse Stock Page
 
-**Route**: `/warehouses/:id/stock`
+**Route**: `/inventory/warehouses/stock` (optional `?warehouseId=:id`)
 
 **Component**: `WarehouseStockPageComponent`
 
@@ -163,7 +102,7 @@ not provide a warehouse-specific unit.
 
 ### Warehouse Movements Page
 
-**Route**: `/warehouses/:id/movements`
+**Route**: `/inventory/warehouses/movements` (optional `?warehouseId=:id`)
 
 **Component**: `WarehouseMovementsPageComponent`
 
@@ -181,51 +120,16 @@ Composite products are labeled in the selector. Before an entry is submitted, th
 the components and calculated quantities that the backend will consume to assemble the requested
 stock.
 
-### Stock Entry Page
+### Stock and Movement Redirects
 
-**Route**: `/warehouses/:id/stock/entry`
+**Routes**:
 
-**Component**: `StockEntryPageComponent`
+- `/inventory/warehouses/:id/stock` redirects to `/inventory/warehouses/stock?warehouseId=:id`
+- `/inventory/warehouses/:id/movements` redirects to `/inventory/warehouses/movements?warehouseId=:id`
 
-**Purpose**: Add stock to warehouse (ENTRY movements).
+This keeps the dedicated stock and movement pages as the single implementation while preserving per-warehouse deep links.
 
-**Features**:
-
-- Product selection with autocomplete
-- Quantity input per product
-- Multiple products in single operation
-- Validation of product existence
-
-### Stock Exit Page
-
-**Route**: `/warehouses/:id/stock/exit`
-
-**Component**: `StockExitPageComponent`
-
-**Purpose**: Remove stock from warehouse (EXIT movements).
-
-**Features**:
-
-- Product selection with current stock display
-- Quantity input with max validation
-- Multiple products in single operation
-- Insufficient stock validation
-
-### Stock Transfer Page
-
-**Route**: `/warehouses/transfer`
-
-**Component**: `StockTransferPageComponent`
-
-**Purpose**: Transfer stock between warehouses.
-
-**Features**:
-
-- Source warehouse selection
-- Destination warehouse selection
-- Product selection with source stock display
-- Quantity input with validation
-- Atomic operation (all or nothing)
+Stock entry and exit are performed through `WarehouseStockOperationDialogComponent`; there are no separate entry, exit, or transfer routes.
 
 ---
 
@@ -345,40 +249,6 @@ export interface StockExit {
 
 ---
 
-#### StockTransfer
-
-**Usage**: Stock transfer operation (POST /api/warehouses/transfer)
-
-```typescript
-export interface StockTransfer {
-  fromWarehouseId: number; // Source warehouse ID
-  toWarehouseId: number; // Destination warehouse ID
-  products: ProductQuantity[]; // At least 1 product required
-}
-
-export interface StockTransferResponse {
-  transferBatchId: string; // Batch ID grouping movements
-  fromWarehouseId: number;
-  fromWarehouseCode: string;
-  toWarehouseId: number;
-  toWarehouseCode: string;
-  movements: StockMovement[];
-}
-
-export interface StockMovement {
-  id: number;
-  warehouseId: number;
-  warehouseCode: string;
-  productId: number;
-  movementType: MovementType;
-  quantity: number;
-  previousStock: number;
-  newStock: number;
-  transferBatchId: string | null;
-  createdAt: string;
-}
-```
-
 ---
 
 ### Enums
@@ -424,16 +294,15 @@ All endpoints use: `/api/warehouses`
 
 ### Interface Mapping Summary
 
-| HTTP Method | Endpoint                        | Request Interface | Response Interface      | Frontend Usage    |
-| ----------- | ------------------------------- | ----------------- | ----------------------- | ----------------- |
-| GET         | /api/warehouses                 | -                 | `WarehouseList[]`       | List page         |
-| GET         | /api/warehouses/:id             | -                 | `WarehouseDetails`      | Details/Edit page |
-| POST        | /api/warehouses                 | `WarehouseCreate` | `WarehouseDetails`      | Create form       |
-| PUT         | /api/warehouses/:id             | `WarehouseEdit`   | `WarehouseDetails`      | Edit form         |
-| DELETE      | /api/warehouses/:id             | -                 | void (204)              | Delete action     |
-| POST        | /api/warehouses/:id/stock/entry | `StockEntry`      | void (204)              | Stock entry       |
-| POST        | /api/warehouses/:id/stock/exit  | `StockExit`       | void (204)              | Stock exit        |
-| POST        | /api/warehouses/transfer        | `StockTransfer`   | `StockTransferResponse` | Stock transfer    |
+| HTTP Method | Endpoint                        | Request Interface | Response Interface | Frontend Usage    |
+| ----------- | ------------------------------- | ----------------- | ------------------ | ----------------- |
+| GET         | /api/warehouses                 | -                 | `WarehouseList[]`  | List page         |
+| GET         | /api/warehouses/:id             | -                 | `WarehouseDetails` | Details/Edit page |
+| POST        | /api/warehouses                 | `WarehouseCreate` | `WarehouseDetails` | Create form       |
+| PUT         | /api/warehouses/:id             | `WarehouseEdit`   | `WarehouseDetails` | Edit form         |
+| DELETE      | /api/warehouses/:id             | -                 | void (204)         | Delete action     |
+| POST        | /api/warehouses/:id/stock/entry | `StockEntry`      | void (204)         | Stock entry       |
+| POST        | /api/warehouses/:id/stock/exit  | `StockExit`       | void (204)         | Stock exit        |
 
 ---
 
@@ -587,69 +456,6 @@ All endpoints use: `/api/warehouses`
 
 ---
 
-### POST /api/warehouses/transfer
-
-**Purpose**: Transfer stock between warehouses
-
-**Frontend Interface**: `StockTransfer` (request), `StockTransferResponse` (response)
-
-**Example Request**:
-
-```json
-{
-  "fromWarehouseId": 1,
-  "toWarehouseId": 2,
-  "products": [
-    { "productId": 10, "quantity": 50 },
-    { "productId": 11, "quantity": 30 }
-  ]
-}
-```
-
-**Example Response**:
-
-```json
-{
-  "transferBatchId": "TRF-20251217-143022",
-  "fromWarehouseId": 1,
-  "fromWarehouseCode": "WH-001",
-  "toWarehouseId": 2,
-  "toWarehouseCode": "WH-002",
-  "movements": [
-    {
-      "id": 101,
-      "warehouseId": 1,
-      "warehouseCode": "WH-001",
-      "productId": 10,
-      "movementType": "EXIT",
-      "quantity": 50,
-      "previousStock": 200,
-      "newStock": 150,
-      "transferBatchId": "TRF-20251217-143022",
-      "createdAt": "2025-12-17T14:30:22"
-    },
-    {
-      "id": 102,
-      "warehouseId": 2,
-      "warehouseCode": "WH-002",
-      "productId": 10,
-      "movementType": "ENTRY",
-      "quantity": 50,
-      "previousStock": 80,
-      "newStock": 130,
-      "transferBatchId": "TRF-20251217-143022",
-      "createdAt": "2025-12-17T14:30:22"
-    }
-  ]
-}
-```
-
-**Note**: Creates 2 movements per product (EXIT source + ENTRY destination). Atomic operation.
-
----
-
-## Validation Rules
-
 ### Field Validations
 
 | Field       | Type   | Required     | Rules                  | Error Message                         |
@@ -745,16 +551,6 @@ interface ProductQuantityFormModel {
 }
 ```
 
-#### Transfer Form Model
-
-```typescript
-interface TransferFormModel {
-  fromWarehouseId: number;
-  toWarehouseId: number;
-  products: ProductQuantityFormModel[];
-}
-```
-
 ---
 
 ## Service Architecture
@@ -797,10 +593,6 @@ export class WarehouseApiService {
 
   removeStock(id: number, data: StockExit): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${id}/stock/exit`, data);
-  }
-
-  transferStock(data: StockTransfer): Observable<StockTransferResponse> {
-    return this.http.post<StockTransferResponse>(`${this.baseUrl}/transfer`, data);
   }
 }
 ```
@@ -863,11 +655,6 @@ export class WarehouseApplicationService {
   removeStock(warehouseId: number, data: StockExit): Observable<void> {
     this.loading.set(true);
     return this.api.removeStock(warehouseId, data).pipe(finalize(() => this.loading.set(false)));
-  }
-
-  transferStock(data: StockTransfer): Observable<StockTransferResponse> {
-    this.loading.set(true);
-    return this.api.transferStock(data).pipe(finalize(() => this.loading.set(false)));
   }
 }
 ```
@@ -937,81 +724,88 @@ export class WarehouseMapper {
 1. StockMovement records are immutable (cannot be modified after creation)
 2. Every stock change creates a `StockMovement` record
 3. Consistency validation: `previousStock ± quantity = newStock`
-4. Transfer movements share the same `transferBatchId`
-
-### Transfer Rules
-
-1. Transfer is atomic (all succeed or all fail)
-2. Creates EXIT at source + ENTRY at destination per product
-3. All movements share `transferBatchId` for traceability
-4. Validates sufficient stock at source before executing
 
 ---
 
 ## Routes Configuration
 
 ```typescript
-// router/warehouse.routes.ts
-import { Routes } from '@angular/router';
-import { pendingChangesGuard } from '@core/pending-tabs';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export const WAREHOUSE_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('../pages/warehouses-list-page/warehouses-list-page.component').then(
-        (m) => m.WarehousesListPageComponent,
-      ),
-    title: 'Almacenes',
-  },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('../pages/warehouses-form-page/warehouses-form-page.component').then(
-        (m) => m.WarehousesFormPageComponent,
-      ),
-    title: 'Nuevo Almacén',
-  },
-  {
-    path: 'transfer',
-    loadComponent: () =>
-      import('../pages/stock-transfer-page/stock-transfer-page.component').then(
-        (m) => m.StockTransferPageComponent,
-      ),
-    title: 'Transferir Stock',
-  },
-  {
-    path: ':id',
-    loadComponent: () =>
-      import('../pages/warehouses-details-page/warehouses-details-page.component').then(
-        (m) => m.WarehousesDetailsPageComponent,
-      ),
-    title: 'Detalles del Almacén',
-  },
-  {
-    path: ':id/edit',
-    loadComponent: () =>
-      import('../pages/warehouses-form-page/warehouses-form-page.component').then(
-        (m) => m.WarehousesFormPageComponent,
-      ),
-    title: 'Editar Almacén',
-    canDeactivate: [pendingChangesGuard],
-  },
-  {
-    path: ':id/stock/entry',
-    loadComponent: () =>
-      import('../pages/stock-entry-page/stock-entry-page.component').then(
-        (m) => m.StockEntryPageComponent,
-      ),
-    title: 'Entrada de Stock',
-  },
-  {
-    path: ':id/stock/exit',
-    loadComponent: () =>
-      import('../pages/stock-exit-page/stock-exit-page.component').then(
-        (m) => m.StockExitPageComponent,
-      ),
-    title: 'Salida de Stock',
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.INVENTORY_WAREHOUSES },
+    canActivateChild: [modulePermissionGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouses-list-page/warehouses-list-page.component'
+          ).then((m) => m.WarehousesListPageComponent),
+        title: 'Almacenes',
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouses-form-page/warehouses-form-page.component'
+          ).then((m) => m.WarehousesFormPageComponent),
+        title: 'Nuevo Almacén',
+      },
+      {
+        path: 'stock',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouse-stock-page/warehouse-stock-page.component'
+          ).then((m) => m.WarehouseStockPageComponent),
+        title: 'Ver stock',
+      },
+      {
+        path: ':id/stock',
+        redirectTo: ({ params, queryParams }) =>
+          inject(Router).createUrlTree(['/inventory/warehouses/stock'], {
+            queryParams: { ...queryParams, warehouseId: params['id'] },
+          }),
+      },
+      {
+        path: 'movements',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouse-movements-page/warehouse-movements-page.component'
+          ).then((m) => m.WarehouseMovementsPageComponent),
+        title: 'Movimientos de Almacén',
+      },
+      {
+        path: ':id/movements',
+        redirectTo: ({ params, queryParams }) =>
+          inject(Router).createUrlTree(['/inventory/warehouses/movements'], {
+            queryParams: { ...queryParams, warehouseId: params['id'] },
+          }),
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouses-details-page/warehouses-details-page.component'
+          ).then((m) => m.WarehousesDetailsPageComponent),
+        title: 'Detalles de Almacén',
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () =>
+          import(
+            '@features/inventory/warehouses/pages/warehouses-form-page/warehouses-form-page.component'
+          ).then((m) => m.WarehousesFormPageComponent),
+        title: 'Editar Almacén',
+      },
+    ],
   },
 ];
 ```
@@ -1036,14 +830,12 @@ export const WAREHOUSE_ROUTES: Routes = [
 - [ ] Details page displays data correctly
 - [ ] Stock entry form works correctly
 - [ ] Stock exit form validates stock availability
-- [ ] Transfer form validates both warehouses
 
 ### Integration Tests
 
 - [ ] Full warehouse CRUD workflow tested
 - [ ] Stock entry creates movements
 - [ ] Stock exit validates and creates movements
-- [ ] Transfer creates paired movements
 - [ ] Error handling tested
 - [ ] Loading states tested
 
@@ -1065,8 +857,7 @@ export const WAREHOUSE_ROUTES: Routes = [
 2. **Soft Delete**: Warehouses are not physically deleted, just marked inactive.
 3. **Stock Constraints**: Cannot deactivate warehouse with stock > 0.
 4. **Movement Audit**: All stock changes create immutable movement records.
-5. **Transfer Atomicity**: Transfers are all-or-nothing operations.
-6. **Error Handling**: Stock operations may fail due to insufficient stock or inactive warehouse.
+5. **Error Handling**: Stock operations may fail due to insufficient stock or inactive warehouse.
 
 ### Common Patterns
 
@@ -1074,10 +865,10 @@ export const WAREHOUSE_ROUTES: Routes = [
 - Use mapper service for data transformation
 - Separate API (infrastructure) from application logic
 - Use PrimeNG components for UI consistency
-- Show transfer batch ID in movement history for traceability
+- Keep stock and movement pages independent from the details page
 
 ---
 
-**Last Updated**: 2025-12-18
+**Last Updated**: 2026-11-03
 
-**Module Status**: [x] Planned | [ ] In Development | [ ] Implemented
+**Module Status**: [ ] Planned | [ ] In Development | [x] Implemented

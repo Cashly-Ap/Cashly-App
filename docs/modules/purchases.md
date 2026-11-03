@@ -4,7 +4,7 @@ Supplier purchase workflow with draft, confirmation, cancellation, and stock eff
 
 ## Routes
 
-`/purchases`, `/purchases/new`, `/purchases/:id`, and `/purchases/:id/edit`.
+`/procurement/purchases`, `/procurement/purchases/new`, `/procurement/purchases/:id`, and `/procurement/purchases/:id/edit`.
 
 ## Rules
 

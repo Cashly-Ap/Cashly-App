@@ -6,17 +6,17 @@ Expose the existing ERP business areas in both application navigation and browse
 
 ## Canonical destinations
 
-| Menu area | Browser routes |
-| --- | --- |
-| Ventas | `/sales/quotes`, `/sales/orders` |
-| Compras | `/procurement/purchases` |
-| Catálogo | `/catalog/products`, `/catalog/categories`, `/catalog/price-types` |
-| Inventario | `/inventory/warehouses` |
-| Finanzas / Facturación | `/finance/billing/invoices`, `/finance/billing/returns`, `/finance/billing/credit-notes`, `/finance/billing/debit-notes` |
-| Finanzas / Tesorería | `/finance/treasury/cash-register`, `/finance/treasury/receivables`, `/finance/treasury/payment-methods` |
-| Contactos | `/partners/customers`, `/partners/suppliers` |
-| Análisis | `/analytics/dashboard`, `/analytics/reports/inventory` |
-| Plataforma | `/platform/users`, `/platform/auth/login`, `/platform/auth/configuration`, `/platform/auth/change-password`, `/platform/auth/change-username` |
+| Menu area              | Browser routes                                                                                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ventas                 | `/sales/quotes`, `/sales/orders`                                                                                                              |
+| Compras                | `/procurement/purchases`                                                                                                                      |
+| Catálogo               | `/catalog/products`, `/catalog/categories`, `/catalog/price-types`                                                                            |
+| Inventario             | `/inventory/warehouses`                                                                                                                       |
+| Finanzas / Facturación | `/finance/billing/invoices`, `/finance/billing/returns`, `/finance/billing/credit-notes`, `/finance/billing/debit-notes`                      |
+| Finanzas / Tesorería   | `/finance/treasury/cash-register`, `/finance/treasury/receivables`, `/finance/treasury/payment-methods`                                       |
+| Contactos              | `/partners/customers`, `/partners/suppliers`                                                                                                  |
+| Análisis               | `/analytics/dashboard`, `/analytics/reports/inventory`                                                                                        |
+| Plataforma             | `/platform/users`, `/platform/auth/login`, `/platform/auth/configuration`, `/platform/auth/change-password`, `/platform/auth/change-username` |
 
 Reports that open dialogs stay with their owning area. The inventory analysis page remains composed by analytics. Returns stay under invoice billing.
 

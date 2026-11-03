@@ -11,65 +11,18 @@ The Receivables module provides a **customer-centric view** of outstanding debts
 ## Module Structure
 
 ```
-src/app/features/receivables/
-├── components/
-│   ├── customer-debt-dialog/
-│   │   ├── customer-debt-dialog.component.ts
-│   │   └── customer-debt-dialog.component.html
-│   ├── payment-form-dialog/
-│   │   ├── payment-form-dialog.component.ts
-│   │   └── payment-form-dialog.component.html
-│   ├── approve-reject-dialog/
-│   │   ├── approve-reject-dialog.component.ts
-│   │   └── approve-reject-dialog.component.html
-│   ├── payment-history-dialog/
-│   │   ├── payment-history-dialog.component.ts
-│   │   └── payment-history-dialog.component.html
-│   ├── payment-detail-dialog/
-│   │   ├── payment-detail-dialog.component.ts
-│   │   └── payment-detail-dialog.component.html
-│   └── index.ts
-├── models/
-│   ├── interfaces/
-│   │   ├── global-debt-summary.interface.ts
-│   │   ├── customer-debt-list.interface.ts
-│   │   ├── customer-debt-summary.interface.ts
-│   │   ├── customer-invoice-debt.interface.ts
-│   │   ├── invoice-detail.interface.ts
-│   │   ├── pending-payment.interface.ts
-│   │   ├── payment-request.interface.ts
-│   │   ├── payment-result.interface.ts
-│   │   └── index.ts
-│   ├── enums/
-│   │   ├── payment-validation-status.enum.ts
-│   │   └── index.ts
-│   └── index.ts
-├── pages/
-│   └── receivables-page/
-│       ├── receivables-page.component.ts
-│       ├── receivables-page.component.html
-│       └── receivables-page.component.spec.ts
-├── services/
-│   ├── api/
-│   │   ├── receivables-api.service.ts
-│   │   ├── receivables-api.service.spec.ts
-│   │   └── index.ts
-│   ├── application/
-│   │   ├── receivables-application.service.ts
-│   │   ├── receivables-application.service.spec.ts
-│   │   └── index.ts
-│   └── index.ts
-├── validators/
-│   ├── payment.validators.ts
-│   ├── payment.validators.spec.ts
-│   └── index.ts
-├── messages/
-│   ├── receivables.messages.ts
-│   └── index.ts
-├── router/
-│   ├── receivables.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/finance/treasury/receivables/
+├── actions/                        # Row and toolbar actions
+├── components/                     # Debt dialogs and action hosts
+├── i18n/                           # Translations
+├── messages/                       # Toast and error messages
+├── models/                         # Interfaces
+├── navigation/                     # Menu and navigation contributions
+├── pages/                          # Receivables page
+├── permissions/                    # Permission constants
+├── reporting/                      # Accounts receivable PDF report
+├── routing/                        # Lazy-loaded routes
+└── services/                       # API and application services
 ```
 
 ---
@@ -119,7 +72,7 @@ src/app/features/receivables/
 
 ### Receivables Page (Single Page with Tabs)
 
-**Route**: `/receivables`
+**Route**: `/finance/treasury/receivables`
 
 **Component**: `ReceivablesPageComponent`
 
@@ -673,7 +626,7 @@ export interface PaymentSubmitEvent {
 ## Routes Configuration
 
 ```typescript
-// router/receivables.routes.ts
+// routing/receivables.routes.ts
 export const RECEIVABLES_ROUTES: Routes = [
   {
     path: '',
@@ -691,9 +644,9 @@ export const RECEIVABLES_ROUTES: Routes = [
 ];
 ```
 
-**Note**: All receivables functionality lives in a single route (`/receivables`). There are no sub-routes — the tabs and dialogs handle all navigation. The former `/payments`, `/payments/:id`, and `/payments/:id/edit` frontend routes were removed; payment management is consolidated here.
+**Note**: All receivables functionality lives in a single route (`/finance/treasury/receivables`). There are no sub-routes — the tabs and dialogs handle all navigation. The former `/payments`, `/payments/:id`, and `/payments/:id/edit` frontend routes were removed; payment management is consolidated here.
 
-Payment notifications use `/receivables?tab=pending&focus={paymentId}`. This activates **Pagos en Validación**, opens the matching approval dialog, and then removes `focus` from the URL to prevent reopening it on refresh.
+Payment notifications use `/finance/treasury/receivables?tab=pending&focus={paymentId}`. This activates **Pagos en Validación**, opens the matching approval dialog, and then removes `focus` from the URL to prevent reopening it on refresh.
 
 ---
 
@@ -862,11 +815,10 @@ When a payment operation returns HTTP 409:
 
 ## Related Modules
 
-- [Invoices](./invoices.md) - Source of debt data, payment records
-- [Collections](./collections.md) - Generated when payment approved
-- [Payables](./payables.md) - Commission payable created for merchant
-- [Merchants](./merchants.md) - Role validation, commission percentage
+- [Invoices](./invoices.md) - Source of debt data and payment records
 - [Customers](./customers.md) - Customer data and grouping
+- [Reporting](./reports.md) - Accounts receivable PDF report
+- [Payments](./payments.md) - Payment reporting
 
 ---
 
@@ -902,6 +854,6 @@ When a payment operation returns HTTP 409:
 
 ---
 
-**Last Updated**: 2026-03-14
+**Last Updated**: 2026-11-03
 
 **Module Status**: [ ] Planned | [ ] In Development | [x] Implemented

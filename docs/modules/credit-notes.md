@@ -4,7 +4,7 @@ CRUD-style pages for creating, reviewing, and removing customer credit notes.
 
 ## Routes
 
-`/credit-notes`, `/credit-notes/new`, `/credit-notes/:id`.
+`/finance/billing/credit-notes`, `/finance/billing/credit-notes/new`, `/finance/billing/credit-notes/:id`.
 
 ## Architecture
 

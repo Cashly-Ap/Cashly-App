@@ -11,13 +11,16 @@ Brief description of what this module does and its purpose in the frontend appli
 ## Module Structure
 
 ```
-src/app/features/[module-name]/
+src/app/features/[area]/[module-name]/
+├── actions/                  # Row/toolbar action definitions
 ├── components/               # Reusable UI components (if tabs/sections needed)
 │   ├── [entity]-[section]-section/
 │   │   ├── [entity]-[section]-section.component.ts
 │   │   ├── [entity]-[section]-section.component.html
 │   │   └── [entity]-[section]-section.component.spec.ts
 │   └── index.ts
+├── i18n/                     # en.json and es.json
+├── messages/                 # Toast and error message contracts
 ├── models/                   # Interfaces, types, and enums
 │   ├── interfaces/
 │   │   ├── [entity]-list.interface.ts
@@ -29,6 +32,7 @@ src/app/features/[module-name]/
 │   │   ├── [entity]-type.enum.ts
 │   │   └── index.ts
 │   └── index.ts
+├── navigation/               # Menu and navigation contributions
 ├── pages/                    # Route components (smart components)
 │   ├── [module]-list-page/
 │   │   ├── [module]-list-page.component.ts
@@ -42,6 +46,11 @@ src/app/features/[module-name]/
 │   │   ├── [module]-details-page.component.ts
 │   │   ├── [module]-details-page.component.html
 │   │   └── [module]-details-page.component.spec.ts
+│   └── index.ts
+├── permissions/              # Permission constants
+├── reporting/                # PDF report components and services (if applicable)
+├── routing/                  # Module routes
+│   ├── [entity].routes.ts
 │   └── index.ts
 ├── services/
 │   ├── api/                  # HTTP services (infrastructure layer)
@@ -61,9 +70,6 @@ src/app/features/[module-name]/
 │   ├── [entity].validators.ts
 │   ├── [entity].validators.spec.ts
 │   └── index.ts
-├── router/                   # Module routes
-│   ├── [entity].routes.ts
-│   └── index.ts
 └── index.ts                  # Public API exports
 ```
 
@@ -81,7 +87,7 @@ src/app/features/[module-name]/
 
 ### List Page
 
-**Route**: `/[module-name]`
+**Route**: `/[area]/[module-name]`
 
 **Component**: `[Module]ListPageComponent`
 
@@ -97,7 +103,7 @@ src/app/features/[module-name]/
 
 ### Form Page
 
-**Route**: `/[module-name]/new` (Create) | `/[module-name]/:id/edit` (Edit)
+**Route**: `/[area]/[module-name]/new` (Create) | `/[area]/[module-name]/:id/edit` (Edit)
 
 **Component**: `[Module]FormPageComponent`
 
@@ -112,7 +118,7 @@ src/app/features/[module-name]/
 
 ### Details Page
 
-**Route**: `/[module-name]/:id`
+**Route**: `/[area]/[module-name]/:id`
 
 **Component**: `[Module]DetailsPageComponent`
 
@@ -679,7 +685,7 @@ export class [Entity]ListPageComponent implements OnInit {
 ## Routes Configuration
 
 ```typescript
-// router/[entity].routes.ts
+// routing/[entity].routes.ts
 import { Routes } from '@angular/router';
 
 export const [ENTITY]_ROUTES: Routes = [

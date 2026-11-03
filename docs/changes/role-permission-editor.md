@@ -23,7 +23,6 @@ Preset and custom changes only update the form draft. Saving remains an explicit
 
 Focused preset/security-boundary tests, production Angular build and browser checks of actual role creation/editing are required. Browser checks must not save grants or alter real roles. Verification results are recorded below. This request does not include a new commit or push.
 
-
 ## Executed verification — 2026-10-19
 
 - Docker focused role/editor tests: 23 passed. Production Angular build passed; existing STOMP CommonJS optimization warning only.

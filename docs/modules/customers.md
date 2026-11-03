@@ -11,69 +11,19 @@ The Customers module manages customer information including legal data, contact 
 ## Module Structure
 
 ```
-src/app/features/customers/
-├── components/               # Reusable UI components for tabs
-│   ├── customer-general-section/
-│   │   ├── customer-general-section.component.ts
-│   │   ├── customer-general-section.component.html
-│   │   └── customer-general-section.component.spec.ts
-│   ├── customer-contact-section/
-│   │   ├── customer-contact-section.component.ts
-│   │   ├── customer-contact-section.component.html
-│   │   └── customer-contact-section.component.spec.ts
-│   ├── customer-addresses-section/
-│   │   ├── customer-addresses-section.component.ts
-│   │   ├── customer-addresses-section.component.html
-│   │   └── customer-addresses-section.component.spec.ts
-│   └── index.ts
-├── models/
-│   ├── interfaces/
-│   │   ├── customer-list.interface.ts
-│   │   ├── customer-details.interface.ts
-│   │   ├── customer-edit.interface.ts
-│   │   ├── customer-create.interface.ts
-│   │   └── index.ts
-│   ├── enums/
-│   │   ├── customer-type.enum.ts
-│   │   └── index.ts
-│   └── index.ts
-├── pages/
-│   ├── customers-list-page/
-│   │   ├── customers-list-page.component.ts
-│   │   ├── customers-list-page.component.html
-│   │   └── customers-list-page.component.spec.ts
-│   ├── customers-form-page/
-│   │   ├── customers-form-page.component.ts
-│   │   ├── customers-form-page.component.html
-│   │   ├── customers-form-page.component.spec.ts
-│   │   └── customers-form-page.config.ts
-│   ├── customers-details-page/
-│   │   ├── customers-details-page.component.ts
-│   │   ├── customers-details-page.component.html
-│   │   └── customers-details-page.component.spec.ts
-│   └── index.ts
-├── services/
-│   ├── api/
-│   │   ├── customer-api.service.ts
-│   │   ├── customer-api.service.spec.ts
-│   │   └── index.ts
-│   ├── application/
-│   │   ├── customer-application.service.ts
-│   │   ├── customer-application.service.spec.ts
-│   │   └── index.ts
-│   ├── mappers/
-│   │   ├── customer.mapper.ts
-│   │   ├── customer.mapper.spec.ts
-│   │   └── index.ts
-│   └── index.ts
-├── validators/
-│   ├── customer.validators.ts
-│   ├── customer.validators.spec.ts
-│   └── index.ts
-├── router/
-│   ├── customer.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/partners/customers/
+├── actions/                        # Row and toolbar actions
+├── components/                     # Form sections and balance components
+├── data/                           # Static data and option sources
+├── i18n/                           # Translations
+├── messages/                       # Toast and error messages
+├── models/                         # Interfaces and enums
+├── navigation/                     # Menu and navigation contributions
+├── pages/                          # List, form, details, and balance pages
+├── permissions/                    # Permission constants
+├── routing/                        # Lazy-loaded routes
+├── services/                       # API, application, and mapper services
+└── validators/                     # Custom form validators
 ```
 
 ---
@@ -95,7 +45,7 @@ src/app/features/customers/
 
 ### List Page
 
-**Route**: `/customers`
+**Route**: `/partners/customers`
 
 **Component**: `CustomersListPageComponent`
 
@@ -111,7 +61,7 @@ src/app/features/customers/
 
 ### Form Page
 
-**Route**: `/customers/new` (Create) | `/customers/:id/edit` (Edit)
+**Route**: `/partners/customers/new` (Create) | `/partners/customers/:id/edit` (Edit)
 
 **Component**: `CustomersFormPageComponent`
 
@@ -127,11 +77,26 @@ src/app/features/customers/
 
 ### Details Page
 
-**Route**: `/customers/:id`
+**Route**: `/partners/customers/:id`
 
 **Component**: `CustomersDetailsPageComponent`
 
 **Purpose**: Display complete customer information in read-only mode.
+
+### Balance Page
+
+**Route**: `/partners/customers/:id/balance`
+
+**Component**: `CustomerBalancePageComponent`
+
+**Purpose**: Show the customer balance summary and transaction history, and register balance advances or refunds.
+
+**Features**:
+
+- Balance summary card
+- Paginated balance transactions table
+- Register advance and refund operations
+- Permission-driven actions
 
 **Features**:
 
@@ -894,7 +859,7 @@ When updating a customer:
 ## Routes Configuration
 
 ```typescript
-// router/customer.routes.ts
+// routing/customer.routes.ts
 import { Routes } from '@angular/router';
 import { pendingChangesGuard } from '@core/pending-tabs';
 
@@ -902,7 +867,7 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('../pages/customers-list-page/customers-list-page.component').then(
+      import('../pages/partners/customers-list-page/partners/customers-list-page.component').then(
         (m) => m.CustomersListPageComponent,
       ),
     title: 'Clientes',
@@ -910,7 +875,7 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: 'new',
     loadComponent: () =>
-      import('../pages/customers-form-page/customers-form-page.component').then(
+      import('../pages/partners/customers-form-page/partners/customers-form-page.component').then(
         (m) => m.CustomersFormPageComponent,
       ),
     title: 'Nuevo Cliente',
@@ -918,15 +883,15 @@ export const CUSTOMER_ROUTES: Routes = [
   {
     path: ':id',
     loadComponent: () =>
-      import('../pages/customers-details-page/customers-details-page.component').then(
-        (m) => m.CustomersDetailsPageComponent,
-      ),
+      import(
+        '../pages/partners/customers-details-page/partners/customers-details-page.component'
+      ).then((m) => m.CustomersDetailsPageComponent),
     title: 'Detalles del Cliente',
   },
   {
     path: ':id/edit',
     loadComponent: () =>
-      import('../pages/customers-form-page/customers-form-page.component').then(
+      import('../pages/partners/customers-form-page/partners/customers-form-page.component').then(
         (m) => m.CustomersFormPageComponent,
       ),
     title: 'Editar Cliente',
@@ -991,6 +956,6 @@ export const CUSTOMER_ROUTES: Routes = [
 
 ---
 
-**Last Updated**: 2025-12-18
+**Last Updated**: 2026-11-03
 
 **Module Status**: [ ] Planned | [ ] In Development | [x] Implemented

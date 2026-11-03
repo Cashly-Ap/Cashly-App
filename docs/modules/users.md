@@ -20,11 +20,9 @@ Validation coverage includes every module's deny/read/selected-action behavior, 
 
 Stock-rich order, invoice, quote and purchase detail routes require INVENTORY READ, while their independent list routes retain only owner READ. Order and invoice creation/edit/delete/transitions and duplication require INVENTORY EXECUTE. Quote creation/edit require INVENTORY READ; conversion additionally requires INVENTORY EXECUTE plus the destination CREATE grant. Purchases require INVENTORY READ for create/edit/detail and INVENTORY EXECUTE for confirmation/cancellation. Returns require INVENTORY EXECUTE for creation/deletion. These dependencies are explicit in route data, button directives and row action declarations and are explained next to the role matrix.
 
-
 ## Verification (2026-10-19)
 
 The complete frontend suite passed 264 files / 2,583 tests and the production build passed. User/role/department lists, details and forms use the customer presentation components; two-field details use two columns and trailing single fields fill the row. Browser evidence is recorded in the API change release-verification document. No deployment is implied.
-
 
 ## Faster role permission configuration
 

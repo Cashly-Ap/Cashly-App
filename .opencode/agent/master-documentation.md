@@ -126,7 +126,7 @@ docs/
 - Module docs: `docs/modules/<module-name>.md`
 - Architecture: `docs/ARCHITECTURE.md`
 - Guides: `docs/<GUIDE-NAME>.md` (uppercase)
-- Agent specs: `docs/agents/<agent-name>.md`
+- Agent specs: `.opencode/agent/<agent-name>.md`
 
 ## Workflows
 

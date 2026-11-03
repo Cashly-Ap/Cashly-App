@@ -4,8 +4,8 @@ Session-based cash control for opening balances, movements, expected closing bal
 
 ## Routes
 
-- `/cash-register`: current session, details, movements, open/close actions.
-- `/cash-register/history`: paginated simple or detailed session history.
+- `/finance/treasury/cash-register`: current session, details, movements, open/close actions.
+- `/finance/treasury/cash-register/history`: paginated simple or detailed session history.
 
 ## API
 

@@ -1,10 +1,10 @@
 # Architecture
 
-This document describes the architecture, project structure, and design patterns used in the Lexand application.
+This document describes the architecture, project structure, and design patterns used in the Cashly application.
 
 ## 🏗️ Application Overview
 
-Lexand is a comprehensive business management system built with Angular 21, following modern best practices and clean architecture principles.
+Cashly is a B2B business management system built with Angular 21, following modern best practices and clean architecture principles.
 
 ### Technology Stack
 
@@ -21,81 +21,116 @@ Lexand is a comprehensive business management system built with Angular 21, foll
 ## 📁 Project Structure
 
 ```
-lexand-app/
+cashly-app/
 ├── public/                          # Static assets
 ├── src/
 │   ├── app/
-│   │   ├── core/                    # Core module (forms, layouts, theme, errors)
-│   │   │   ├── forms/              # Reusable form components and helpers
-│   │   │   ├── layouts/            # Layout components (main-layout)
-│   │   │   ├── theme/              # Theme management and toggle
-│   │   │   ├── errors/             # HTTP error handlers
-│   │   │   └── pending-tabs/       # Pending changes management
+│   │   ├── core/                    # Cross-cutting infrastructure
+│   │   │   ├── exceptions/          # Global HTTP error handler
+│   │   │   ├── forms/               # Reusable form components and base form
+│   │   │   ├── layouts/             # Main layout, menu configuration
+│   │   │   ├── pdf-viewer/          # Shared PDF viewer dialog
+│   │   │   └── pending-tabs/        # Unsaved-changes tab tracking
 │   │   │
-│   │   ├── shared/                 # Shared components
+│   │   ├── shared/                  # Reusable presentation and utilities
 │   │   │   ├── components/
-│   │   │   │   ├── details/        # Detail page components
-│   │   │   │   ├── list/           # List page components
-│   │   │   │   └── ui/             # UI components (empty-state, loading-spinner)
+│   │   │   │   ├── details/         # Detail page building blocks
+│   │   │   │   ├── list/            # List page building blocks
+│   │   │   │   └── ui/              # Generic UI components and dialogs
+│   │   │   ├── directives/
+│   │   │   ├── models/
+│   │   │   ├── pipes/
+│   │   │   └── utils/
 │   │   │
-│   │   ├── features/               # Feature modules (lazy-loaded)
-│   │   │   │
-│   │   │   ├── customers/          # Customer management module
-│   │   │   │   ├── components/     # Feature-specific components (form tabs)
-│   │   │   │   ├── pages/          # Routable page components
-│   │   │   │   │   ├── customers-list-page/
-│   │   │   │   │   ├── customers-form-page/
-│   │   │   │   │   └── customers-details-page/
-│   │   │   │   ├── models/         # Customer-specific models and interfaces
-│   │   │   │   │   ├── interfaces/ # Customer, CustomerList, CustomerEdit, CustomerCreate, CustomerDetail
-│   │   │   │   │   └── enums/      # Customer enums (status, type)
-│   │   │   │   ├── validators/     # Form validators
-│   │   │   │   ├── services/       # Customer services
-│   │   │   │   │   ├── api/        # API service layer
-│   │   │   │   │   ├── application/# Business logic layer
-│   │   │   │   │   └── mappers/    # DTO mappers
-│   │   │   │   ├── router/         # Customer routes
-│   │   │   │   └── index.ts        # Public API
-│   │   │   │
-│   │   │   ├── auth/               # Authentication module
-│   │   │   │   └── [same structure]
-│   │   │   │
-│   │   │   ├── dashboard/          # Dashboard module
-│   │   │   │   └── [same structure]
-│   │   │   │
-│   │   │   ├── products/           # Product management module
-│   │   │   │   └── [same structure]
-│   │   │   │
-│   │   │   └── warehouses/         # Warehouse management module
-│   │   │       └── [same structure]
+│   │   ├── features/                # Feature code grouped by business area
+│   │   │   ├── analytics/
+│   │   │   │   ├── dashboard/       # Dashboard page and API
+│   │   │   │   └── reporting/       # Report route composition
+│   │   │   ├── catalog/
+│   │   │   │   ├── categories/
+│   │   │   │   ├── price-types/
+│   │   │   │   └── products/        # Includes product reporting
+│   │   │   ├── finance/
+│   │   │   │   ├── billing/
+│   │   │   │   │   ├── credit-notes/
+│   │   │   │   │   ├── debit-notes/
+│   │   │   │   │   ├── invoices/    # Includes invoice reporting
+│   │   │   │   │   └── returns/
+│   │   │   │   └── treasury/
+│   │   │   │       ├── cash-register/
+│   │   │   │       ├── payment-methods/
+│   │   │   │       ├── payments/    # Payment reporting
+│   │   │   │       └── receivables/
+│   │   │   ├── inventory/
+│   │   │   │   └── warehouses/      # Stock, movements, and reports
+│   │   │   ├── partners/
+│   │   │   │   ├── customers/       # Customer balance lives here
+│   │   │   │   └── suppliers/
+│   │   │   ├── platform/
+│   │   │   │   ├── auth/            # Login, user, role, department, authorization
+│   │   │   │   ├── company/
+│   │   │   │   └── notifications/
+│   │   │   ├── procurement/
+│   │   │   │   └── purchases/
+│   │   │   └── sales/
+│   │   │       ├── orders/
+│   │   │       └── quotes/
 │   │   │
-│   │   ├── app.config.ts           # App configuration
-│   │   ├── app.routes.ts           # Root routes
-│   │   └── app.ts                  # Root component
+│   │   ├── app.config.ts            # App configuration
+│   │   ├── app.routes.ts            # Root routes and legacy redirects
+│   │   └── app.ts                   # Root component
 │   │
 │   ├── environments/                # Environment configurations
-│   │   ├── environment.ts
-│   │   └── environment.prod.ts
+│   │   ├── environment.ts           # Development (proxied /api)
+│   │   └── environment.prod.ts      # Production API URL
 │   │
-│   ├── index.html                   # Main HTML file
-│   ├── main.ts                      # Application entry point
-│   └── styles.css                   # Global styles entry
+│   ├── index.html
+│   ├── main.ts
+│   └── styles.css
 │
 ├── docs/                            # Documentation
+├── scripts/                         # Deployment helpers
 ├── angular.json                     # Angular CLI configuration
 ├── tsconfig.json                    # TypeScript configuration
-├── tsconfig.app.json               # App TypeScript config
-├── tsconfig.spec.json              # Test TypeScript config
-├── vitest.config.mts               # Vitest configuration
+├── tsconfig.app.json                # App TypeScript config
+├── tsconfig.spec.json               # Test TypeScript config
+├── vitest.config.mts                # Vitest configuration
+├── playwright.config.ts             # Playwright configuration
 ├── package.json                     # Dependencies and scripts
 ├── Dockerfile                       # Production Dockerfile
-├── Dockerfile.dev                  # Development Dockerfile
-├── Dockerfile.test                 # Testing Dockerfile
-├── docker-compose.yml              # Docker Compose configuration
-├── .gitignore                      # Git ignore rules
-├── README.md                        # Main documentation
-└── ROADMAP.md                       # Project roadmap
+├── Dockerfile.dev                   # Development Dockerfile
+├── Dockerfile.test                  # Testing Dockerfile
+├── docker-compose.yml               # Docker Compose profiles
+├── .gitlab-ci.yml                   # GitLab CI pipeline
+├── railway.json                     # Railway deployment settings
+├── proxy.conf.js                    # Dev server proxy (/api and /ws)
+└── README.md
 ```
+
+### Feature Organization
+
+Features are grouped by business area and each feature is self-contained:
+
+```
+src/app/features/<area>/<feature>/
+├── actions/          # Row and toolbar action definitions
+├── components/       # Feature presentation, dialogs, and form sections
+├── i18n/             # Feature translations (en.json, es.json)
+├── messages/         # Toast and error message contracts
+├── models/           # Interfaces and enums
+├── navigation/       # Menu and navigation contributions
+├── pages/            # Routable list, form, and details pages
+├── permissions/      # Permission constants for the feature
+├── reporting/        # PDF report components and services (where applicable)
+├── routing/          # Lazy-loaded feature routes
+├── services/
+│   ├── api/          # HTTP services
+│   ├── application/  # Business logic and state
+│   └── mappers/      # DTO mappers (where applicable)
+└── validators/       # Custom form validators (where applicable)
+```
+
+The full area-to-feature map, routes, and documentation links live in [modules/README.md](modules/README.md).
 
 ## 🏛️ Architecture Patterns
 
@@ -112,7 +147,7 @@ Each feature module is self-contained with its own:
 
 **Page Structure**:
 
-Lexand uses **three standardized pages** per module:
+Cashly uses **three standardized pages** per module:
 
 1. **List Page** (`pages/<module>-list-page/`) - Orchestrates list data, filters, navigation, and feature components using `shared/components/list`
 2. **Form Page** (`pages/<module>-form-page/`) - Handles both create and edit using `core/forms`
@@ -153,11 +188,16 @@ All feature modules are lazy-loaded to improve initial load time:
 // app.routes.ts
 export const routes: Routes = [
   {
-    path: 'customers',
-    loadChildren: () =>
-      import('./features/customers/routes/customer.routes').then((m) => m.CUSTOMER_ROUTES),
+    path: 'partners',
+    children: [
+      {
+        path: 'customers',
+        loadChildren: () =>
+          import('@features/partners/customers/routing').then((m) => m.CUSTOMER_ROUTES),
+      },
+    ],
   },
-  // ... other routes
+  // ... other business areas
 ];
 ```
 
@@ -414,7 +454,7 @@ export class CustomerService {
 
 **Smart Components (Pages)**:
 
-- Located in `features/<module>/pages/` folder
+- Located in `features/<area>/<feature>/pages/` folder
 - Three standard pages: list, form, details
 - Connected to services
 - Handle business logic and routing
@@ -423,7 +463,7 @@ export class CustomerService {
 **Presentational Components**:
 
 - Located in `shared/components/` for reusable components
-- Located in `features/<module>/components/` for module-specific tab sections
+- Located in `features/<area>/<feature>/components/` for module-specific tab sections
 - Receive data via `input()`
 - Emit events via `output()`
 - Pure UI components with Tailwind CSS
@@ -440,7 +480,7 @@ export class CustomersListPageComponent {
   protected service = inject(CustomerApplicationService);
 
   onView(customer: CustomerList): void {
-    this.router.navigate(['/customers', customer.id]);
+    this.router.navigate(['/partners/customers', customer.id]);
   }
 }
 
@@ -470,7 +510,7 @@ Each module starts with **three standard page roles** and can add focused routed
 Create `components/` for reusable feature presentation, including form sections and dialogs. Routable pages coordinate these components and must not define dialog markup or validation flows inline.
 
 ```
-features/customers/
+features/partners/customers/
 ├── components/
 │   ├── customer-general-section/  # Tab 1: General info
 │   ├── customer-contact-section/  # Tab 2: Contact details
@@ -499,20 +539,20 @@ Keep business messages in the feature `messages/` folder so pages and components
 
 ### Role-Based Access Control (RBAC)
 
-```typescript
-export enum UserRole {
-  ADMIN = 'admin',
-  WORKER = 'worker',
-  SALES_REP = 'sales_rep'
-}
+Access is permission-driven. Roles carry a flat set of `MODULE_ACTION` codes, and each route declares the module it belongs to:
 
-// Usage in routes
+```typescript
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
 {
-  path: 'admin',
-  canActivate: [authGuard, roleGuard(UserRole.ADMIN)],
-  loadChildren: () => import('./admin/routes')
+  path: 'customers',
+  loadChildren: () => import('@features/partners/customers/routing').then((m) => m.CUSTOMER_ROUTES),
+  canActivate: [authGuard, modulePermissionGuard],
+  data: { module: BusinessModule.CONTACTS_CUSTOMERS },
 }
 ```
+
+Buttons and row actions reuse the same permission codes through directives and `requiredAction` constants. Unknown actions fail closed.
 
 ## 📱 Responsive Design
 

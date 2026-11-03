@@ -1,614 +1,177 @@
 # Testing Guide
 
-This guide covers testing strategies and practices for the Lexand application using Vitest as the primary testing framework.
+This guide covers the test strategy for the Cashly frontend.
 
-## 🧪 Overview
+## Stack
 
-The Lexand application uses **Vitest** as the testing framework. Vitest is a blazing fast unit test framework powered by Vite, providing instant feedback, native ESM support, and compatibility with Jest's API.
+| Layer       | Tool                                       |
+| ----------- | ------------------------------------------ |
+| Unit tests  | Vitest 3 + `@analogjs/vite-plugin-angular` |
+| Environment | jsdom                                      |
+| E2E tests   | Playwright (`@playwright/test`)            |
+| Coverage    | `@vitest/coverage-v8`                      |
 
-## 📦 Testing Setup
+## Configuration
 
-### Test Configuration
+### Vitest — `vitest.config.mts`
 
-Vitest is configured in `vitest.config.ts`:
+- `globals: true`, `environment: 'jsdom'`.
+- Setup file: `src/test-setup.ts`.
+- Includes `src/**/*.{test,spec}.{ts,tsx,js,jsx}`.
+- Runs in forks (`maxForks: 2`, `minForks: 1`).
+- Aliases match the application: `@app`, `@shared`, `@core`, `@env`, `@features`.
+
+### Playwright — `playwright.config.ts`
+
+- Test directory: `e2e/`.
+- Base URL: `http://127.0.0.1:4300`.
+- Starts `bun start -- --host 127.0.0.1 --port 4300`.
+- Chromium only.
+- HTML report in `output/playwright/report`.
+- In CI: line reporter, 2 retries, 1 worker.
+
+## Running tests
+
+### Unit tests
+
+```bash
+bun run test:run       # once
+bun run test:watch     # watch mode
+bun run test:coverage  # coverage report
+bun run e2e            # Playwright
+bun run e2e:ui         # Playwright UI
+bun run e2e:headed     # headed browser
+```
+
+Run a single file or filter:
+
+```bash
+bun run vitest --run src/app/features/sales/orders/models/enums/order-status.enum.spec.ts
+bun run vitest --run --grep "OrderStatus"
+```
+
+### Docker
+
+```bash
+docker compose --profile test run --rm cashly-app-test
+```
+
+## Test placement
+
+Tests live beside the code they exercise:
+
+```
+src/app/features/<area>/<feature>/
+├── models/**/*.spec.ts
+├── services/api/*.spec.ts
+├── services/application/*.spec.ts
+├── validators/*.spec.ts
+├── pages/**/*.spec.ts
+└── routing/*.spec.ts
+```
+
+Architecture-level tests live beside the router (`app.routes.spec.ts`) and in `src/app/features/platform/auth/tests/`.
+
+## Writing a unit test
 
 ```typescript
-import { defineConfig } from 'vitest/config';
-import angular from '@analogjs/vite-plugin-angular';
+import { describe, it, expect } from 'vitest';
+import {
+  OrderStatus,
+  getOrderStatusLabel,
+} from '@features/sales/orders/models/enums/order-status.enum';
 
-export default defineConfig({
-  plugins: [angular()],
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['src/test-setup.ts'],
-    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html', 'lcov'],
-      exclude: [
-        'node_modules/',
-        'src/test-setup.ts',
-        '**/*.spec.ts',
-        '**/*.test.ts',
-        '**/index.ts',
-      ],
-    },
-  },
-  resolve: {
-    alias: {
-      '@app': '/src/app',
-      '@env': '/src/environments',
-    },
-  },
-});
-```
-
-### Dependencies
-
-The following testing dependencies are included:
-
-```json
-{
-  "devDependencies": {
-    "vitest": "^2.1.8",
-    "@vitest/ui": "^2.1.8",
-    "@vitest/coverage-v8": "^2.1.8",
-    "@analogjs/vite-plugin-angular": "^2.1.2",
-    "jsdom": "^25.0.1"
-  }
-}
-```
-
-## 🚀 Running Tests
-
-### Local Testing
-
-```bash
-# Run all tests once
-bun test
-
-# Run tests in watch mode (re-runs on file changes)
-bun test:watch
-
-# Run tests with coverage report
-bun test:coverage
-
-# Run tests with UI
-bun test --ui
-
-# Run specific test file
-bun test customers.component.spec.ts
-
-# Run tests matching a pattern
-bun test --grep "should create"
-```
-
-### Docker Testing
-
-```bash
-# Run tests in Docker container
-docker-compose --profile test up
-
-# Run tests and exit
-docker-compose --profile test run --rm lexand-app-test
-
-# Run specific test file in Docker
-docker-compose --profile test run --rm lexand-app-test bun test customers.spec.ts
-```
-
-### CI/CD Testing
-
-```bash
-# Run tests in CI mode (optimized for CI environments)
-bun test --run --coverage
-```
-
-## 📝 Writing Tests
-
-### Component Testing
-
-Example of a component test:
-
-```typescript
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { CustomersComponent } from './customers.component';
-import { CustomerService } from './customer.service';
-import { of } from 'rxjs';
-
-describe('CustomersComponent', () => {
-  let component: CustomersComponent;
-  let fixture: ComponentFixture<CustomersComponent>;
-  let customerService: CustomerService;
-
-  beforeEach(async () => {
-    const customerServiceMock = {
-      getCustomers: vi.fn(),
-      createCustomer: vi.fn(),
-      updateCustomer: vi.fn(),
-      deleteCustomer: vi.fn(),
-    };
-
-    await TestBed.configureTestingModule({
-      imports: [CustomersComponent],
-      providers: [{ provide: CustomerService, useValue: customerServiceMock }],
-    }).compileComponents();
-
-    fixture = TestBed.createComponent(CustomersComponent);
-    component = fixture.componentInstance;
-    customerService = TestBed.inject(CustomerService);
+describe('getOrderStatusLabel', () => {
+  it('returns the Spanish label for a known status', () => {
+    expect(getOrderStatusLabel(OrderStatus.CONFIRMED)).toBe('Confirmado');
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should load customers on init', () => {
-    const mockCustomers = [
-      { id: 1, name: 'Customer 1' },
-      { id: 2, name: 'Customer 2' },
-    ];
-    customerService.getCustomers.mockReturnValue(of(mockCustomers));
-
-    component.ngOnInit();
-
-    expect(customerService.getCustomers).toHaveBeenCalled();
-    expect(component.customers).toEqual(mockCustomers);
-  });
-
-  it('should create customer', async () => {
-    const newCustomer = { name: 'New Customer' };
-    const createdCustomer = { id: 3, ...newCustomer };
-    customerService.createCustomer.mockReturnValue(of(createdCustomer));
-
-    await component.createCustomer(newCustomer);
-
-    expect(customerService.createCustomer).toHaveBeenCalledWith(newCustomer);
-    expect(component.customers).toContain(createdCustomer);
+  it('returns the raw value for an unknown status', () => {
+    expect(getOrderStatusLabel('UNKNOWN' as OrderStatus)).toBe('UNKNOWN');
   });
 });
 ```
 
-### Service Testing
+## Testing services
 
-Example of a service test:
+- Mock `HttpClient` with `provideHttpClientTesting()` / `HttpTestingController`.
+- Assert the request URL, method, params, and payload.
+- Use `flush` for success paths and `error` for failure paths.
+- Application services hold Signals; assert both the emitted state and the rendered effect.
 
 ```typescript
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CustomerService } from './customer.service';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
 
-describe('CustomerService', () => {
-  let service: CustomerService;
-  let httpMock: HttpTestingController;
+describe('InvoiceApiService', () => {
+  let service: InvoiceApiService;
+  let http: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CustomerService],
+      providers: [provideHttpClient(), provideHttpClientTesting()],
     });
-
-    service = TestBed.inject(CustomerService);
-    httpMock = TestBed.inject(HttpTestingController);
+    service = TestBed.inject(InvoiceApiService);
+    http = TestBed.inject(HttpTestingController);
   });
 
-  afterEach(() => {
-    httpMock.verify();
-  });
+  afterEach(() => http.verify());
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  it('loads the invoice list', () => {
+    service.getAll({ search: 'INV' }).subscribe((items) => expect(items).toEqual([]));
 
-  it('should fetch customers', () => {
-    const mockCustomers = [
-      { id: 1, name: 'Customer 1' },
-      { id: 2, name: 'Customer 2' },
-    ];
-
-    service.getCustomers().subscribe((customers) => {
-      expect(customers).toEqual(mockCustomers);
-      expect(customers.length).toBe(2);
-    });
-
-    const req = httpMock.expectOne('/api/customers');
+    const req = http.expectOne((r) => r.url === '/api/invoices');
     expect(req.request.method).toBe('GET');
-    req.flush(mockCustomers);
-  });
-
-  it('should create customer', () => {
-    const newCustomer = { name: 'New Customer' };
-    const createdCustomer = { id: 3, ...newCustomer };
-
-    service.createCustomer(newCustomer).subscribe((customer) => {
-      expect(customer).toEqual(createdCustomer);
-    });
-
-    const req = httpMock.expectOne('/api/customers');
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(newCustomer);
-    req.flush(createdCustomer);
-  });
-
-  it('should handle errors', () => {
-    service.getCustomers().subscribe({
-      next: () => fail('should have failed'),
-      error: (error) => {
-        expect(error.status).toBe(500);
-      },
-    });
-
-    const req = httpMock.expectOne('/api/customers');
-    req.flush('Server error', { status: 500, statusText: 'Internal Server Error' });
+    expect(req.request.params.get('search')).toBe('INV');
+    req.flush([]);
   });
 });
 ```
 
-### Guard Testing
+## Testing components
 
-Example of a route guard test:
+Components are standalone. Provide dependencies explicitly and prefer testing through the DOM:
 
 ```typescript
-import { TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { AuthGuard } from './auth.guard';
-import { AuthService } from './auth.service';
-
-describe('AuthGuard', () => {
-  let guard: AuthGuard;
-  let authService: jest.Mocked<AuthService>;
-  let router: jest.Mocked<Router>;
-
-  beforeEach(() => {
-    const authServiceMock = {
-      isAuthenticated: jest.fn(),
-      getUser: jest.fn(),
-    };
-
-    const routerMock = {
-      navigate: jest.fn(),
-    };
-
-    TestBed.configureTestingModule({
-      providers: [
-        AuthGuard,
-        { provide: AuthService, useValue: authServiceMock },
-        { provide: Router, useValue: routerMock },
-      ],
-    });
-
-    guard = TestBed.inject(AuthGuard);
-    authService = TestBed.inject(AuthService) as jest.Mocked<AuthService>;
-    router = TestBed.inject(Router) as jest.Mocked<Router>;
-  });
-
-  it('should be created', () => {
-    expect(guard).toBeTruthy();
-  });
-
-  it('should allow access when authenticated', () => {
-    authService.isAuthenticated.mockReturnValue(true);
-
-    const result = guard.canActivate();
-
-    expect(result).toBe(true);
-    expect(router.navigate).not.toHaveBeenCalled();
-  });
-
-  it('should deny access and redirect when not authenticated', () => {
-    authService.isAuthenticated.mockReturnValue(false);
-
-    const result = guard.canActivate();
-
-    expect(result).toBe(false);
-    expect(router.navigate).toHaveBeenCalledWith(['/login']);
-  });
-});
+const fixture = TestBed.createComponent(OrderListPageComponent);
+await fixture.whenStable();
+expect(fixture.nativeElement.textContent).toContain('Pedidos');
 ```
 
-### Pipe Testing
+## E2E suites
 
-Example of a custom pipe test:
+`e2e/` contains Playwright suites for:
 
-```typescript
-import { CurrencyFormatPipe } from './currency-format.pipe';
+- Authentication and unauthenticated redirects
+- Navigation and module access
+- Customers
+- Company configuration
+- Preferences
+- MFA
+- Design consistency
 
-describe('CurrencyFormatPipe', () => {
-  let pipe: CurrencyFormatPipe;
+The smoke suites run without backend credentials by asserting redirects and page shells.
 
-  beforeEach(() => {
-    pipe = new CurrencyFormatPipe();
-  });
+## Coverage guidance
 
-  it('should create', () => {
-    expect(pipe).toBeTruthy();
-  });
+- Domain models, enums, mappers, and validators: high coverage expected.
+- API services: every HTTP method and error branch.
+- Application services: state transitions and error handling.
+- Routing: lazy imports and guards (architecture tests).
+- E2E: critical flows only; keep them deterministic.
 
-  it('should format currency correctly', () => {
-    expect(pipe.transform(1234.56)).toBe('$1,234.56');
-    expect(pipe.transform(0)).toBe('$0.00');
-    expect(pipe.transform(999999.99)).toBe('$999,999.99');
-  });
+## CI
 
-  it('should handle null values', () => {
-    expect(pipe.transform(null)).toBe('$0.00');
-    expect(pipe.transform(undefined)).toBe('$0.00');
-  });
-
-  it('should support different currencies', () => {
-    expect(pipe.transform(1234.56, 'EUR')).toBe('€1,234.56');
-    expect(pipe.transform(1234.56, 'GBP')).toBe('£1,234.56');
-  });
-});
-```
-
-## 📊 Code Coverage
-
-### Generating Coverage Reports
+The GitLab pipeline runs the Angular production build and the Vitest suite. Playwright is available locally and should be run before merging route or layout changes:
 
 ```bash
-# Generate coverage report
-bun test:coverage
-
-# View coverage in browser
-open coverage/index.html
-```
-
-### Coverage Thresholds
-
-Configure minimum coverage thresholds in `vitest.config.ts`:
-
-```typescript
-export default defineConfig({
-  test: {
-    coverage: {
-      thresholds: {
-        branches: 80,
-        functions: 80,
-        lines: 80,
-        statements: 80,
-      },
-    },
-  },
-});
-```
-
-### Coverage Reports
-
-Vitest generates several coverage report formats:
-
-- **HTML Report**: `coverage/index.html` (viewable in browser)
-- **LCOV**: `coverage/lcov.info` (for CI tools)
-- **JSON**: `coverage/coverage-final.json`
-- **Text**: Displayed in terminal
-
-## 🎯 Testing Best Practices
-
-### 1. Test Structure
-
-Follow the AAA pattern (Arrange, Act, Assert):
-
-```typescript
-it('should do something', () => {
-  // Arrange: Set up test data and mocks
-  const input = 'test';
-  const expected = 'TEST';
-
-  // Act: Execute the code under test
-  const result = component.toUpperCase(input);
-
-  // Assert: Verify the results
-  expect(result).toBe(expected);
-});
-```
-
-### 2. Descriptive Test Names
-
-Use clear, descriptive test names:
-
-```typescript
-// ❌ Bad
-it('test 1', () => { ... });
-
-// ✅ Good
-it('should return uppercase string when given lowercase input', () => { ... });
-```
-
-### 3. One Assertion Per Test
-
-Keep tests focused with one logical assertion:
-
-```typescript
-// ❌ Bad - Testing multiple things
-it('should work', () => {
-  expect(component.name).toBe('John');
-  expect(component.age).toBe(30);
-  expect(component.email).toBe('john@example.com');
-});
-
-// ✅ Good - Separate tests
-it('should set name correctly', () => {
-  expect(component.name).toBe('John');
-});
-
-it('should set age correctly', () => {
-  expect(component.age).toBe(30);
-});
-```
-
-### 4. Use Mocks and Spies
-
-Mock external dependencies to isolate tests:
-
-```typescript
-// Mock service
-const mockService = {
-  getData: jest.fn().mockReturnValue(of({ data: 'test' })),
-};
-
-// Spy on methods
-jest.spyOn(service, 'getData').mockReturnValue(of({ data: 'test' }));
-```
-
-### 5. Test Edge Cases
-
-Always test edge cases and error conditions:
-
-```typescript
-it('should handle empty array', () => { ... });
-it('should handle null values', () => { ... });
-it('should handle network errors', () => { ... });
-```
-
-### 6. Clean Up After Tests
-
-Use `afterEach` to clean up:
-
-```typescript
-afterEach(() => {
-  jest.clearAllMocks();
-  httpMock.verify();
-});
-```
-
-## 🔧 Vitest Matchers
-
-Common Vitest matchers (compatible with Jest):
-
-```typescript
-// Equality
-expect(value).toBe(expected);
-expect(value).toEqual(expected);
-expect(value).not.toBe(unexpected);
-
-// Truthiness
-expect(value).toBeTruthy();
-expect(value).toBeFalsy();
-expect(value).toBeNull();
-expect(value).toBeUndefined();
-expect(value).toBeDefined();
-
-// Numbers
-expect(value).toBeGreaterThan(3);
-expect(value).toBeGreaterThanOrEqual(3.5);
-expect(value).toBeLessThan(5);
-expect(value).toBeCloseTo(0.3);
-
-// Strings
-expect(value).toMatch(/pattern/);
-expect(value).toContain('substring');
-
-// Arrays and Iterables
-expect(array).toContain(item);
-expect(array).toHaveLength(3);
-
-// Objects
-expect(object).toHaveProperty('key');
-expect(object).toMatchObject({ key: 'value' });
-
-// Exceptions
-expect(() => {
-  throw new Error('error');
-}).toThrow();
-expect(() => {
-  throw new Error('error');
-}).toThrow('error');
-
-// Async
-await expect(promise).resolves.toBe(value);
-await expect(promise).rejects.toThrow();
-```
-
-## 🐛 Debugging Tests
-
-### Running Specific Tests
-
-```bash
-# Run single test file
-bun test customers.spec.ts
-
-# Run tests matching description
-bun test --grep "should create customer"
-
-# Run tests in specific directory
-bun test src/app/features/customers
-```
-
-### Debug Mode
-
-```bash
-# Run with debugging enabled
-bun --inspect-brk test
-
-# In VS Code, add launch configuration
-{
-  "type": "node",
-  "request": "launch",
-  "name": "Vitest Debug",
-  "program": "${workspaceFolder}/node_modules/vitest/vitest.mjs",
-  "args": ["--run"],
-  "console": "integratedTerminal"
-}
-```
-
-### Verbose Output
-
-```bash
-# Run with verbose output
-bun test --reporter=verbose
-
-# Show individual test results
-bun test --reporter=verbose --coverage=false
-```
-
-## 🔄 Continuous Integration
-
-### GitLab CI Configuration
-
-Example `.gitlab-ci.yml` for testing:
-
-```yaml
-test:
-  stage: test
-  image: oven/bun:1.3-alpine
-  cache:
-    paths:
-      - node_modules/
-  before_script:
-    - bun install
-  script:
-    - bun test --run --coverage
-  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage/cobertura-coverage.xml
-    paths:
-      - coverage/
-    expire_in: 1 week
-```
-
-## 📚 Additional Resources
-
-## End-to-end testing with Playwright
-
-Playwright runs browser tests against a local Angular development server. The smoke suite verifies the login entry point and redirects unauthenticated users away from protected routes without requiring backend credentials.
-
-```bash
+bun run test:run
+bun run build
 bun run e2e
-bun run e2e:headed
-bun run e2e:ui
-bun run e2e:report
 ```
-
-Tests are located in `e2e/`, and the browser configuration is in `playwright.config.ts`. Playwright starts the application on port `4300` when no existing server is available. Install the browser binaries once with `bunx playwright install chromium`.
-
-- [Vitest Documentation](https://vitest.dev/)
-- [Testing Angular](https://angular.io/guide/testing)
-- [Analog Vite Plugin Angular](https://analogjs.org/docs/packages/vite-plugin-angular/overview)
-- [Testing Best Practices](https://kentcdodds.com/blog/common-mistakes-with-react-testing-library)
 
 ---
 
-[← Back to Docker Guide](DOCKER.md) | [Next: Environment Variables →](ENVIRONMENT.md)
+[← Modules](modules/README.md) | [Back to Architecture](ARCHITECTURE.md)

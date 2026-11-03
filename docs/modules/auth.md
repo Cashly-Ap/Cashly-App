@@ -11,42 +11,22 @@ The Auth module handles user authentication, JWT token management, and user prof
 ## Module Structure
 
 ```
-src/app/features/auth/
-├── guards/                   # Route guards
-│   ├── auth.guard.ts
-│   ├── auth.guard.spec.ts
-│   └── index.ts
-├── interceptors/             # HTTP interceptors
-│   ├── auth.interceptor.ts
-│   ├── auth.interceptor.spec.ts
-│   └── index.ts
-├── models/                   # Interfaces and types
-│   ├── user.model.ts
-│   └── index.ts
-├── pages/                    # Route components
-│   ├── login-page/
-│   │   └── login-page.component.ts
-│   ├── change-password-page/
-│   │   └── change-password-page.component.ts
-│   ├── change-username-page/
-│   │   └── change-username-page.component.ts
-│   ├── configuration-page/
-│   │   └── configuration-page.component.ts
-│   └── index.ts
-├── services/
-│   ├── auth-api.service.ts
-│   ├── auth-api.service.spec.ts
-│   ├── auth.service.ts
-│   ├── auth.service.spec.ts
-│   └── index.ts
-├── validators/
-│   ├── auth-validators.ts
-│   ├── auth-validators.spec.ts
-│   └── index.ts
-├── router/
-│   ├── auth.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/platform/auth/
+├── authorization/                  # Permission directives and access models
+├── department/                     # Department administration
+├── guards/                         # Route and module permission guards
+├── i18n/                           # Translations
+├── interceptors/                   # HTTP interceptors
+├── messages/                       # Message contracts
+├── models/                         # Session and access models
+├── pages/                          # Login, preferences, security, configuration, credential changes
+├── permissions/                    # Permission constants
+├── role/                           # Role administration and permission editor
+├── routing/                        # Auth routes
+├── services/                       # API and application services
+├── tests/                          # Auth test support
+├── user/                           # User administration
+└── validators/                     # Auth validators
 ```
 
 ---
@@ -69,7 +49,7 @@ src/app/features/auth/
 
 ### Login Page
 
-**Route**: `/auth/login`
+**Route**: `/platform/auth/login`
 
 **Component**: `LoginPageComponent`
 
@@ -85,7 +65,7 @@ src/app/features/auth/
 
 ### Change Password Page
 
-**Route**: `/auth/change-password`
+**Route**: `/platform/auth/change-password`
 
 **Component**: `ChangePasswordPageComponent`
 
@@ -100,7 +80,7 @@ src/app/features/auth/
 
 ### Change Username Page
 
-**Route**: `/auth/change-username`
+**Route**: `/platform/auth/change-username`
 
 **Component**: `ChangeUsernamePageComponent`
 
@@ -115,7 +95,7 @@ src/app/features/auth/
 
 ### Configuration Page
 
-**Route**: `/auth/configuration`
+**Route**: `/platform/auth/configuration`
 
 **Component**: `ConfigurationPageComponent`
 
@@ -124,9 +104,26 @@ src/app/features/auth/
 **Features**:
 
 - Profile information display
+- Links to preferences and security
 - Links to change password
 - Links to change username
 - Account settings
+
+### Preferences Page
+
+**Route**: `/platform/auth/preferences`
+
+**Purpose**: User preferences (language and interface options).
+
+**Component**: `PreferencesPageComponent`
+
+### Security Page
+
+**Route**: `/platform/auth/security`
+
+**Purpose**: Security settings such as MFA and password changes.
+
+**Component**: `SecurityPageComponent`
 
 ---
 
@@ -651,7 +648,7 @@ export class AuthService {
     this.refreshToken = null;
     this.currentUser.set(null);
     this.clearStorage();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/platform/auth/login']);
   }
 
   private loadFromStorage(): void {
@@ -700,7 +697,7 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  router.navigate(['/auth/login'], {
+  router.navigate(['/platform/auth/login'], {
     queryParams: { returnUrl: state.url },
   });
 
@@ -750,7 +747,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             return next(clonedReq);
           }),
           catchError(() => {
-            router.navigate(['/auth/login']);
+            router.navigate(['/platform/auth/login']);
             return throwError(() => error);
           }),
         );
@@ -801,42 +798,51 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 ## Routes Configuration
 
 ```typescript
-// router/auth.routes.ts
+// src/app/features/platform/auth/routing/auth.routes.ts
 import { Routes } from '@angular/router';
-import { authGuard } from '../guards';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
 
 export const AUTH_ROUTES: Routes = [
   {
     path: 'login',
-    loadComponent: () =>
-      import('../pages/login-page/login-page.component').then((m) => m.LoginPageComponent),
-    title: 'Iniciar Sesión',
+    loadComponent: () => import('@features/platform/auth/pages').then((m) => m.LoginPageComponent),
   },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+];
+
+export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
-    path: 'change-password',
+    path: 'preferences',
     loadComponent: () =>
-      import('../pages/change-password-page/change-password-page.component').then(
-        (m) => m.ChangePasswordPageComponent,
+      import('@features/platform/auth/pages/preferences/preferences-page.component').then(
+        (m) => m.PreferencesPageComponent,
       ),
-    title: 'Cambiar Contraseña',
     canActivate: [authGuard],
   },
   {
-    path: 'change-username',
+    path: 'security',
     loadComponent: () =>
-      import('../pages/change-username-page/change-username-page.component').then(
-        (m) => m.ChangeUsernamePageComponent,
+      import('@features/platform/auth/pages/security/security-page.component').then(
+        (m) => m.SecurityPageComponent,
       ),
-    title: 'Cambiar Usuario',
     canActivate: [authGuard],
   },
   {
     path: 'configuration',
     loadComponent: () =>
-      import('../pages/configuration-page/configuration-page.component').then(
-        (m) => m.ConfigurationPageComponent,
-      ),
-    title: 'Configuración',
+      import('@features/platform/auth/pages').then((m) => m.ConfigurationPageComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'change-password',
+    loadComponent: () =>
+      import('@features/platform/auth/pages').then((m) => m.ChangePasswordPageComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'change-username',
+    loadComponent: () =>
+      import('@features/platform/auth/pages').then((m) => m.ChangeUsernamePageComponent),
     canActivate: [authGuard],
   },
 ];
@@ -908,7 +914,7 @@ export const AUTH_ROUTES: Routes = [
 
 ---
 
-**Last Updated**: 2025-12-18
+**Last Updated**: 2026-11-03
 
 **Module Status**: [ ] Planned | [ ] In Development | [x] Implemented
 

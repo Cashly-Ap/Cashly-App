@@ -1,36 +1,58 @@
-# Lexand Frontend Modules
+# Cashly Frontend Modules
 
-This directory contains documentation for all frontend modules in the Lexand application.
+This directory documents the frontend features of the Cashly application. Features are grouped by business area under `src/app/features/<area>/<feature>/`.
 
 ---
 
 ## Module Index
 
-| Module                              | Type         | Status      | Description                                                                |
-| ----------------------------------- | ------------ | ----------- | -------------------------------------------------------------------------- |
-| [Auth](./auth.md)                   | Auth         | Implemented | Authentication, JWT tokens, and user profile management                    |
-| [Dashboard](./dashboard.md)         | Display-only | Implemented | Business metrics, charts, and analytics overview                           |
-| [Customers](./customers.md)         | CRUD         | Implemented | Customer management with contacts and addresses                            |
-| [Products](./products.md)           | CRUD         | Implemented | Product catalog with simple/composite types and compositions               |
-| [Differentials](./differentials.md) | CRUD         | Implemented | Price percentage adjustments (surcharges/discounts)                        |
-| [Warehouses](./warehouses.md)       | CRUD         | Implemented | Warehouse management with stock operations                                 |
-| [Merchants](./merchants.md)         | CRUD         | Implemented | Merchant management with commission tracking                               |
-| [Orders](./orders.md)               | CRUD         | Implemented | Order management with line items and status workflow                       |
-| [Invoices](./invoices.md)           | CRUD         | Implemented | Invoice management with payments and due dates                             |
-| [Collections](./collections.md)     | Display-only | Implemented | Commission records (auto-generated from invoice payments)                  |
-| [Receivables](./receivables.md)     | Special      | Implemented | Customer debt management and payment registration with validation workflow |
-| [Payables](./payables.md)           | Special      | Implemented | Merchant commission payments tracking and settlement                       |
-| [Notifications](./notifications.md) | Display-only | Implemented | In-app notifications system with role-based routing                        |
-| [Cash Register](./cash-register.md) | Special | Implemented | Session-based opening, movements, closing, and history |
-| [Credit Notes](./credit-notes.md) | CRUD | Implemented | Customer credit adjustments |
-| [Debit Notes](./debit-notes.md) | CRUD | Implemented | Customer debit adjustments |
-| [Payment Methods](./payment-methods.md) | CRUD | Implemented | Available payment instruments |
-| [Payments](./payments.md) | Special | Implemented | Payment administration and detail views |
-| [Price Types](./price-types.md) | CRUD | Implemented | Product price classifications |
-| [Purchases](./purchases.md) | Special | Implemented | Supplier purchases and stock confirmation |
-| [Quotes](./quotes.md) | Special | Implemented | Quote allocation and conversion |
-| [Returns](./returns.md) | Special | Implemented | Customer returns and stock effects |
-| [Suppliers](./suppliers.md) | CRUD | Implemented | Supplier management |
+| Area        | Module          | Routes                                | Source                                         | Documentation                              |
+| ----------- | --------------- | ------------------------------------- | ---------------------------------------------- | ------------------------------------------ |
+| Platform    | Auth            | `/platform/auth/*`                    | `features/platform/auth`                       | [auth.md](./auth.md)                       |
+| Platform    | Users           | `/platform/users/*`                   | `features/platform/auth/user`                  | [users.md](./users.md)                     |
+| Platform    | Roles           | `/platform/roles/*`                   | `features/platform/auth/role`                  | [users.md](./users.md)                     |
+| Platform    | Departments     | `/platform/departments/*`             | `features/platform/auth/department`            | [users.md](./users.md)                     |
+| Platform    | Company         | `/platform/company`                   | `features/platform/company`                    | —                                          |
+| Platform    | Notifications   | Shell (notification bell)             | `features/platform/notifications`              | [notifications.md](./notifications.md)     |
+| Analytics   | Dashboard       | `/analytics/dashboard`                | `features/analytics/dashboard`                 | [dashboard.md](./dashboard.md)             |
+| Analytics   | Reports         | Dialogs from the main menu            | `features/*/*/reporting`                       | [reports.md](./reports.md)                 |
+| Partners    | Customers       | `/partners/customers/*`               | `features/partners/customers`                  | [customers.md](./customers.md)             |
+| Partners    | Suppliers       | `/partners/suppliers/*`               | `features/partners/suppliers`                  | [suppliers.md](./suppliers.md)             |
+| Catalog     | Products        | `/catalog/products/*`                 | `features/catalog/products`                    | [products.md](./products.md)               |
+| Catalog     | Categories      | `/catalog/categories/*`               | `features/catalog/categories`                  | [categories.md](./categories.md)           |
+| Catalog     | Price Types     | `/catalog/price-types/*`              | `features/catalog/price-types`                 | [price-types.md](./price-types.md)         |
+| Inventory   | Warehouses      | `/inventory/warehouses/*`             | `features/inventory/warehouses`                | [warehouses.md](./warehouses.md)           |
+| Sales       | Quotes          | `/sales/quotes/*`                     | `features/sales/quotes`                        | [quotes.md](./quotes.md)                   |
+| Sales       | Orders          | `/sales/orders/*`                     | `features/sales/orders`                        | [orders.md](./orders.md)                   |
+| Procurement | Purchases       | `/procurement/purchases/*`            | `features/procurement/purchases`               | [purchases.md](./purchases.md)             |
+| Finance     | Invoices        | `/finance/billing/invoices/*`         | `features/finance/billing/invoices`            | [invoices.md](./invoices.md)               |
+| Finance     | Returns         | `/finance/billing/returns/*`          | `features/finance/billing/returns`             | [returns.md](./returns.md)                 |
+| Finance     | Credit Notes    | `/finance/billing/credit-notes/*`     | `features/finance/billing/credit-notes`        | [credit-notes.md](./credit-notes.md)       |
+| Finance     | Debit Notes     | `/finance/billing/debit-notes/*`      | `features/finance/billing/debit-notes`         | [debit-notes.md](./debit-notes.md)         |
+| Finance     | Cash Register   | `/finance/treasury/cash-register/*`   | `features/finance/treasury/cash-register`      | [cash-register.md](./cash-register.md)     |
+| Finance     | Receivables     | `/finance/treasury/receivables`       | `features/finance/treasury/receivables`        | [receivables.md](./receivables.md)         |
+| Finance     | Payment Methods | `/finance/treasury/payment-methods/*` | `features/finance/treasury/payment-methods`    | [payment-methods.md](./payment-methods.md) |
+| Finance     | Payment Reports | Dialogs from the main menu            | `features/finance/treasury/payments/reporting` | [payments.md](./payments.md)               |
+
+All entries are implemented. The old `/customers`, `/products`, `/orders`, `/invoices`, `/warehouses`, `/dashboard`, and related URLs redirect to their area-prefixed equivalents through `legacyRoute` entries in `src/app/app.routes.ts`.
+
+---
+
+## Business Areas
+
+| Area               | Features                                                                    |
+| ------------------ | --------------------------------------------------------------------------- |
+| `analytics`        | dashboard, reporting composition                                            |
+| `catalog`          | products, categories, price-types                                           |
+| `finance/billing`  | invoices, returns, credit-notes, debit-notes                                |
+| `finance/treasury` | cash-register, payment-methods, receivables, payment reporting              |
+| `inventory`        | warehouses                                                                  |
+| `partners`         | customers, suppliers                                                        |
+| `platform`         | auth (login, user, role, department, authorization), company, notifications |
+| `procurement`      | purchases                                                                   |
+| `sales`            | quotes, orders                                                              |
+
+HTTP API URLs, permission identifiers, and lazy-loading contracts are independent of the folder layout. See [ERP business areas](../architecture/ERP-BUSINESS-AREAS.md) for the regrouping record.
 
 ---
 
@@ -43,53 +65,53 @@ Standard modules with Create, Read, Update, Delete operations. They follow the f
 - **List Page**: Table view with filtering, sorting, and pagination
 - **Form Page**: Create/Edit forms with validation
 - **Details Page**: Read-only view with complete entity data
-- **Services**: API (infrastructure) + Application (business logic) + Mappers
+- **Services**: API (infrastructure) + Application (business logic) + Mappers where needed
 - **Validators**: Custom form validators
 
-**Examples**: Customers, Products, Warehouse
+**Examples**: Customers, Suppliers, Products, Warehouses
 
 ### Display-only Modules
 
-Modules that only display data without modification capabilities. Typically used for dashboards, reports, and auto-generated records.
+Modules that only display data without modification capabilities. Typically used for dashboards, reporting, and notifications.
 
-**Examples**: Dashboard, Collections, Notifications
+**Examples**: Dashboard, Notifications, Payment Reports
 
 ### Special Modules
 
-Modules with specialized workflows that don't fit standard CRUD patterns. They may have unique operations like payment registration, validation workflows, or settlement operations.
+Modules with specialized workflows that do not fit the standard CRUD pattern. They may have unique operations such as payment registration, stock confirmation, or document conversion.
 
-**Examples**: Receivables (debt management + payment validation), Payables (commission settlement)
+**Examples**: Receivables (debt management + payment registration), Purchases (draft → confirmation), Quotes (allocation → conversion)
 
-### Auth Modules
+### Platform Modules
 
-Special modules handling authentication and authorization.
+Authentication, authorization, and administration features.
 
-**Examples**: Auth
+**Examples**: Auth, Users, Roles, Departments, Company
 
 ---
 
-## Module Structure
+## Standard Feature Structure
 
-All CRUD modules follow this standard structure:
+Each feature keeps its own presentation, contracts, and services:
 
 ```
-src/app/features/[module-name]/
-├── components/               # Reusable UI components (tabs/sections)
-│   └── [entity]-[section]-section/
+src/app/features/<area>/<feature>/
+├── actions/                  # Row/toolbar action definitions
+├── components/               # Feature presentation, dialogs, form sections
+├── i18n/                     # Feature translations (en.json, es.json)
+├── messages/                 # Toast and error message contracts
 ├── models/                   # Interfaces, types, and enums
-│   ├── interfaces/
-│   └── enums/
-├── pages/                    # Route components (smart components)
-│   ├── [module]-list-page/
-│   ├── [module]-form-page/
-│   └── [module]-details-page/
+├── navigation/               # Menu and navigation contributions
+├── pages/                    # Route components (list, form, details, extra pages)
+├── permissions/              # Permission constants
+├── reporting/                # PDF report components and services (where applicable)
+├── routing/                  # Lazy-loaded route definitions
 ├── services/
 │   ├── api/                  # HTTP services (infrastructure layer)
-│   ├── application/          # Business logic services
+│   ├── application/          # Business logic services (application layer)
 │   └── mappers/              # Data transformation
 ├── validators/               # Custom form validators
-├── router/                   # Module routes
-└── index.ts                  # Public API exports
+└── index.ts                  # Public API exports where present
 ```
 
 ---
@@ -115,258 +137,28 @@ Each module documentation includes:
 
 ---
 
-## Implemented Modules
-
-### Auth Module
-
-**Status**: Implemented
-
-**Features**:
-
-- User login with email and password
-- JWT access token management
-- Refresh token automatic renewal
-- Change username/password functionality
-- Route guards for protected routes
-- HTTP interceptor for automatic token injection
-
-**Key Files**:
-
-- `src/app/features/auth/services/auth.service.ts`
-- `src/app/features/auth/guards/auth.guard.ts`
-- `src/app/features/auth/interceptors/auth.interceptor.ts`
-
-[View Full Documentation](./auth.md)
-
----
-
-### Dashboard Module
-
-**Status**: Implemented (with mock data)
-
-**Features**:
-
-- Sales metrics cards
-- Monthly sales trend chart
-- Category distribution chart
-- Revenue analytics
-- Recent orders table
-- Top products table
-
-**Key Files**:
-
-- `src/app/features/dashboard/pages/dashboard-page.component.ts`
-
-[View Full Documentation](./dashboard.md)
-
----
-
-### Customers Module
-
-**Status**: Implemented
-
-**Features**:
-
-- Customer CRUD operations
-- Multiple emails, phones, and addresses
-- Credit management (days and limit)
-- Customer type classification
-- RIF validation (Venezuelan tax ID)
-- Billing address designation
-
-**Key Files**:
-
-- `src/app/features/customers/services/api/customer-api.service.ts`
-- `src/app/features/customers/services/application/customer-application.service.ts`
-- `src/app/features/customers/validators/customer.validators.ts`
-
-[View Full Documentation](./customers.md)
-
----
-
-## Planned Modules
-
-### Products Module
-
-**Status**: Planned | [Full Documentation](./products.md)
-
-**Description**: Product catalog management with simple and composite product types, unit of measure support, and composition tracking.
-
-**Key Features**:
-
-- Product CRUD operations (Simple and Composite types)
-- Unit of measure management
-- Composite product compositions
-- SKU and barcode support
-- Base price management
-
-**Key Interfaces**: `ProductList`, `ProductDetail`, `ProductEdit`, `ProductCreate`, `ProductComposition`
-
----
-
-### Differentials Module
-
-**Status**: Planned | [Full Documentation](./differentials.md)
-
-**Description**: Price percentage adjustments for surcharges or discounts that can be applied to orders.
-
-**Key Features**:
-
-- Differential CRUD operations
-- Percentage-based pricing
-- Active/Inactive status
-- Surcharge and discount support
-
-**Key Interfaces**: `DifferentialList`, `DifferentialDetail`, `DifferentialEdit`, `DifferentialCreate`
-
----
-
-### Warehouses Module
-
-**Status**: Planned | [Full Documentation](./warehouses.md)
-
-**Description**: Warehouse management with stock operations including entry, exit, and transfer.
-
-**Key Features**:
-
-- Warehouse CRUD operations
-- Stock entry/exit operations
-- Inter-warehouse transfers
-- Stock level tracking
-- Transaction history
-
-**Key Interfaces**: `WarehouseList`, `WarehouseDetail`, `WarehouseEdit`, `StockEntry`, `StockExit`, `StockTransfer`
-
----
-
-### Collections Module
-
-**Status**: Planned | [Full Documentation](./collections.md)
-
-**Description**: Display commission records (cobranzas) automatically generated when payments are registered on invoices with merchants.
-
-**Key Features**:
-
-- View collection list with filtering and pagination
-- View collection details
-- Merchant collection summaries with aggregated data
-- Role-based access (MERCHANT sees only their own)
-- No create/edit/delete (read-only module)
-
-**Key Interfaces**: `CollectionList`, `CollectionDetails`, `CollectionSummary`, `DailyCollectionSummary`
-
----
-
-### Receivables Module
-
-**Status**: Implemented | [Full Documentation](./receivables.md)
-
-**Description**: Customer-centric view of outstanding debts with payment registration, proof-of-payment upload, and validation workflow. MERCHANT payments require USER/ADMIN approval. Single-page architecture with tabs and dialogs.
-
-**Key Features**:
-
-- Global debt summary across all customers (USER/ADMIN)
-- Customer-specific debt details with invoice breakdown (via dialog)
-- Register payments for single invoices, all debt, or partial amount
-- Proof-of-payment file upload required for MERCHANT payments
-- Payment validation workflow (PENDING_APPROVAL → APPROVED/REJECTED)
-- Approve or reject pending payments (USER/ADMIN only)
-- Merchant self-view: see own registered payments and their status
-- Rejected payments tab with rejection reason display
-
-**Key Interfaces**: `GlobalDebtSummary`, `CustomerDebtList`, `CustomerDebtSummary`, `CustomerInvoiceDebt`, `PendingPayment`, `PaymentResult`, `BulkPaymentResult`, `InvoiceDetail`
-
----
-
-### Payables Module
-
-**Status**: Planned | [Full Documentation](./payables.md)
-
-**Description**: Merchant commission payments tracking. Auto-generated when payments are approved. Provides settlement operations for paying merchants their commissions.
-
-**Key Features**:
-
-- Global payables summary across all merchants
-- Merchant-specific payable details
-- Settlement operations: single, multiple, or all pending
-- Settlement method tracking (TRANSFER, CASH, CHECK)
-- Merchant self-service view (MERCHANT sees only their own)
-- Role-based access (USER/ADMIN can settle, MERCHANT view-only)
-
-**Key Interfaces**: `GlobalPayablesSummary`, `MerchantPayablesList`, `MerchantPayablesSummary`, `PayableList`, `PayableDetail`, `SettlementResult`
-
----
-
-### Notifications Module
-
-**Status**: Planned | [Full Documentation](./notifications.md)
-
-**Description**: In-app notifications system with role-based routing. Notifications are auto-generated by domain events.
-
-**Key Features**:
-
-- View all notifications for authenticated user
-- Unread notifications count badge
-- Mark single or all notifications as read
-- Delete notifications
-- Filter by read/unread status and notification type
-- Navigate to related entity from notification
-- Automatic polling for new notifications
-
-**Key Interfaces**: `NotificationList`, `NotificationDetail`, `UnreadCount`
-
----
-
 ## Creating New Modules
 
-When creating a new module, use the [TEMPLATE.md](./TEMPLATE.md) as a starting point:
+When creating a new module:
 
-1. Copy `TEMPLATE.md` to `[module-name].md`
-2. Replace all placeholders:
-   - `[MODULE_NAME]` with the module name (PascalCase)
-   - `[module-name]` with the route name (kebab-case)
-   - `[Entity]` with the main entity name
-   - `[entities]` with the plural API path
-3. Fill in all sections based on actual implementation
-4. Verify against backend API documentation
-5. Update this README to include the new module
-
----
-
-## Backend API Documentation
-
-For backend API details, refer to the backend documentation at:
-`/Users/gabrielvargas/work/Clients/Lexand/Lexand-Api/docs/modules/`
+1. Place it under the owning business area: `src/app/features/<area>/<feature>/`
+2. Follow the standard feature structure above.
+3. Register the lazy route in `src/app/app.routes.ts` under the area path.
+4. Add the permission constants and, when applicable, declare the `BusinessModule`.
+5. Copy [TEMPLATE.md](./TEMPLATE.md) to `[module-name].md` and fill in the sections from the real implementation.
+6. Add the module to the index table in this file.
 
 ---
 
 ## Related Documentation
 
 - [Architecture](../ARCHITECTURE.md) - Overall application architecture
+- [ERP business areas](../architecture/ERP-BUSINESS-AREAS.md) - Area-to-feature map
+- [ERP area navigation](../architecture/erp-area-navigation.md) - Navigation regrouping
 - [Getting Started](../GETTING_STARTED.md) - Development setup guide
 - [Testing](../TESTING.md) - Testing guidelines
 - [Environment](../ENVIRONMENT.md) - Environment configuration
 
 ---
 
-**Last Updated**: 2026-03-12
-
----
-
-## Documentation Coverage
-
-| Backend Module   | Frontend Doc                           | Status                      |
-| ---------------- | -------------------------------------- | --------------------------- |
-| AUTH.md          | [auth.md](./auth.md)                   | ✅ Complete                 |
-| CUSTOMERS.md     | [customers.md](./customers.md)         | ✅ Complete                 |
-| PRODUCTS.md      | [products.md](./products.md)           | ✅ Complete                 |
-| DIFFERENTIAL.md  | [differentials.md](./differentials.md) | ✅ Complete                 |
-| WAREHOUSE.md     | [warehouses.md](./warehouses.md)       | ✅ Complete                 |
-| MERCHANTS.md     | [merchants.md](./merchants.md)         | ✅ Complete                 |
-| ORDERS.md        | [orders.md](./orders.md)               | ✅ Complete                 |
-| INVOICES.md      | [invoices.md](./invoices.md)           | ✅ Complete                 |
-| COLLECTIONS.md   | [collections.md](./collections.md)     | ✅ Complete                 |
-| RECEIVABLES.md   | [receivables.md](./receivables.md)     | ✅ Complete                 |
-| PAYABLES.md      | [payables.md](./payables.md)           | ✅ Complete                 |
-| NOTIFICATIONS.md | [notifications.md](./notifications.md) | ✅ Complete                 |
-| -                | [dashboard.md](./dashboard.md)         | ✅ Complete (Frontend-only) |
+**Last Updated**: 2026-11-03

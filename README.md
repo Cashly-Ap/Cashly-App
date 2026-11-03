@@ -4,25 +4,24 @@ Cashly App is the private Angular single-page application for internal business 
 
 ## Scope and modules
 
-| Area | Responsibility |
-| --- | --- |
-| Authentication and users | Login, session handling, user administration, roles, and permissions. |
-| Dashboard | Operational summaries, indicators, and low-stock visibility. |
-| Customers and merchants | Customer records, contacts, merchants, and commercial history. |
-| Catalog | Categories, products, price types, and differential pricing. |
-| Inventory | Warehouses, stock movements, transfers, and availability. |
-| Sales | Quotes, orders, invoices, returns, credit notes, and debit notes. |
-| Payments and collections | Payment methods, receivables, payables, collections, and payment validation. |
-| Purchasing | Suppliers and purchase workflows. |
-| Cash register | Cash-register sessions, movements, opening, closing, and history. |
-| Reports and notifications | Operational reports and user notifications. |
+| Area               | Responsibility                                                                                        |
+| ------------------ | ----------------------------------------------------------------------------------------------------- |
+| Platform           | Login and session handling, user administration, roles, departments, company data, and notifications. |
+| Analytics          | Operational dashboard and report route composition.                                                   |
+| Partners           | Customer and supplier records with contacts, addresses, and customer balances.                        |
+| Catalog            | Categories, products, and price types.                                                                |
+| Inventory          | Warehouses, stock, movements, and inventory reports.                                                  |
+| Sales              | Quotes and orders, including conversion to invoices.                                                  |
+| Procurement        | Purchases and purchase confirmation.                                                                  |
+| Finance / Billing  | Invoices, returns, credit notes, and debit notes.                                                     |
+| Finance / Treasury | Cash register, receivables, payment methods, and payment reporting.                                   |
 
-The module index and implementation references are in [docs/modules/README.md](docs/modules/README.md).
+Routes, source paths, and per-module references are in [docs/modules/README.md](docs/modules/README.md). Feature code is grouped under `src/app/features/<area>/`.
 
 ## Frontend architecture
 
 - Angular standalone components with lazy-loaded feature routes.
-- Feature boundaries under `src/app/features`.
+- Feature boundaries grouped by business area under `src/app/features/<area>/<feature>`.
 - Shared presentation components, utilities, and design primitives under `src/app/shared`.
 - Cross-cutting services, guards, interceptors, and configuration under `src/app/core`.
 - Signals for local and derived UI state, with RxJS for asynchronous API flows.
@@ -31,16 +30,16 @@ The module index and implementation references are in [docs/modules/README.md](d
 
 ## Runtime stack
 
-| Concern | Technology |
-| --- | --- |
-| Framework | Angular 21 with standalone components |
-| Language | TypeScript 5.9 in strict mode |
-| UI | PrimeNG 21, PrimeIcons, Tailwind CSS 4 |
-| State and async flows | Angular Signals and RxJS |
-| Charts | Chart.js and ng2-charts |
-| Package manager | Bun 1.3.3 |
-| Testing | Vitest with jsdom |
-| Runtime | Docker Compose or Angular CLI |
+| Concern               | Technology                             |
+| --------------------- | -------------------------------------- |
+| Framework             | Angular 21 with standalone components  |
+| Language              | TypeScript 5.9 in strict mode          |
+| UI                    | PrimeNG 21, PrimeIcons, Tailwind CSS 4 |
+| State and async flows | Angular Signals and RxJS               |
+| Charts                | Chart.js and ng2-charts                |
+| Package manager       | Bun 1.3.3                              |
+| Testing               | Vitest with jsdom                      |
+| Runtime               | Docker Compose or Angular CLI          |
 
 ## Local runtime
 

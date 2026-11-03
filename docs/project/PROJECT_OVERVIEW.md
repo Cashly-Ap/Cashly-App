@@ -183,18 +183,20 @@ graph TD
 
 ## Module Documentation Index
 
-| Module                 | Documentation                              |
-| ---------------------- | ------------------------------------------ |
-| Authentication & Users | [AUTH.md](modules/AUTH.md)                 |
-| Products & Inventory   | [PRODUCTS.md](modules/PRODUCTS.md)         |
-| Warehouse & Stock      | [WAREHOUSE.md](modules/WAREHOUSE.md)       |
-| Customers              | [CUSTOMERS.md](modules/CUSTOMERS.md)       |
-| Differential Pricing   | [DIFFERENTIAL.md](modules/DIFFERENTIAL.md) |
-| API Endpoints          | [API.md](API.md)                           |
-| Architecture           | [ARCHITECTURE.md](ARCHITECTURE.md)         |
-| Business Rules         | [BUSINESS_RULES.md](BUSINESS_RULES.md)     |
-| Workflows              | [WORKFLOWS.md](WORKFLOWS.md)               |
-| Roadmap                | [ROADMAP.md](ROADMAP.md)                   |
-| Setup Guide            | [SETUP.md](SETUP.md)                       |
-| Testing Strategy       | [TESTING.md](TESTING.md)                   |
-| Deployment             | [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md)     |
+| Module                 | Documentation                                                                                 |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| Module index           | [modules/README.md](../modules/README.md)                                                     |
+| Authentication & Users | [auth.md](../modules/auth.md) / [users.md](../modules/users.md)                               |
+| Products               | [products.md](../modules/products.md)                                                         |
+| Categories & Prices    | [categories.md](../modules/categories.md) / [price-types.md](../modules/price-types.md)       |
+| Inventory & Stock      | [warehouses.md](../modules/warehouses.md)                                                     |
+| Customers              | [customers.md](../modules/customers.md)                                                       |
+| Sales                  | [quotes.md](../modules/quotes.md) / [orders.md](../modules/orders.md)                         |
+| Purchases              | [purchases.md](../modules/purchases.md)                                                       |
+| Billing                | [invoices.md](../modules/invoices.md) / [returns.md](../modules/returns.md)                   |
+| Treasury               | [receivables.md](../modules/receivables.md) / [cash-register.md](../modules/cash-register.md) |
+| Reporting              | [reports.md](../modules/reports.md)                                                           |
+| Architecture           | [ARCHITECTURE.md](../ARCHITECTURE.md)                                                         |
+| Setup Guide            | [GETTING_STARTED.md](../GETTING_STARTED.md)                                                   |
+| Testing Strategy       | [TESTING.md](../TESTING.md)                                                                   |
+| Deployment             | [DEPLOYMENT.md](../DEPLOYMENT.md)                                                             |
