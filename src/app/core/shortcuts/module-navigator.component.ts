@@ -13,7 +13,6 @@ import {
 import { Router } from '@angular/router';
 import { MenuItem } from '@core/layouts/models';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
 
 interface ModuleDestination {
   label: string;
@@ -22,10 +21,11 @@ interface ModuleDestination {
   route: string;
 }
 
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 @Component({
   selector: 'app-module-navigator',
   standalone: true,
-  imports: [TranslatePipe, DialogModule, InputTextModule],
+  imports: [TranslatePipe, DialogModule, SearchFieldComponent],
   templateUrl: './module-navigator.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -71,8 +71,8 @@ export class ModuleNavigatorComponent {
     this.visible.set(false);
     void this.router.navigateByUrl(destination.route);
   }
-  onInput(event: Event): void {
-    this.query.set((event.target as HTMLInputElement).value);
+  onQueryChange(value: string): void {
+    this.query.set(value);
     this.selectedIndex.set(-1);
   }
   focusResults(): void {

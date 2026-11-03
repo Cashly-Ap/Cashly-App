@@ -25,15 +25,15 @@
       </p>
     }
     <div class="flex flex-col xl:flex-row gap-3 xl:items-center xl:justify-between">
-      <input
-        pInputText
-        type="search"
-        [attr.aria-label]="'platform.auth.role.searchModules' | translate"
-        [placeholder]="'platform.auth.role.searchModules2' | translate"
+      <app-search-field
         class="w-full xl:max-w-sm"
-        [ngModel]="search()"
-        (ngModelChange)="search.set($event)"
-        [ngModelOptions]="{ standalone: true }"
+        [value]="search()"
+        [placeholder]="'platform.auth.role.searchModules2' | translate"
+        [ariaLabel]="'platform.auth.role.searchModules' | translate"
+        [inputType]="'search'"
+        [live]="true"
+        [showButton]="false"
+        (search)="search.set($event)"
       />
       <div class="flex flex-wrap gap-2 items-center">
         <app-list-filter

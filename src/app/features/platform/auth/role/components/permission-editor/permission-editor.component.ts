@@ -12,7 +12,6 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { InputTextModule } from 'primeng/inputtext';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { AppPermission } from '@features/platform/auth/permissions/app-permission';
@@ -26,16 +25,17 @@ import { AuthorizationService } from '@features/platform/auth/authorization/serv
 export type PermissionPreset = 'none' | 'read' | 'custom' | 'all';
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 @Component({
   selector: 'app-permission-editor',
   standalone: true,
   imports: [
+    SearchFieldComponent,
     ListFilterComponent,
     TranslatePipe,
     FormsModule,
     ButtonModule,
     CheckboxModule,
-    InputTextModule,
     PopoverModule,
     SelectModule,
   ],

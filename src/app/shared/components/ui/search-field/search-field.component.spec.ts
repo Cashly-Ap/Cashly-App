@@ -98,6 +98,43 @@ describe('SearchFieldComponent', () => {
     expect(button.className).toContain('dark:!text-white');
   });
 
+  it('emits on every keystroke when live mode is enabled', () => {
+    const searchSpy = vi.fn();
+    component.search.subscribe(searchSpy);
+    fixture.componentRef.setInput('live', true);
+    fixture.detectChanges();
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+
+    input.value = 'mod';
+    input.dispatchEvent(new Event('input'));
+    input.value = 'modules';
+    input.dispatchEvent(new Event('input'));
+
+    expect(searchSpy).toHaveBeenCalledTimes(2);
+    expect(searchSpy).toHaveBeenLastCalledWith('modules');
+  });
+
+  it('hides the search button when showButton is disabled', () => {
+    fixture.componentRef.setInput('showButton', false);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('button[aria-label="Buscar"]')).toBeNull();
+  });
+
+  it('does not submit on Enter when submitOnEnter is disabled', () => {
+    const searchSpy = vi.fn();
+    component.search.subscribe(searchSpy);
+    fixture.componentRef.setInput('submitOnEnter', false);
+    fixture.detectChanges();
+    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
+
+    input.value = 'combobox';
+    input.dispatchEvent(new Event('input'));
+    input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', cancelable: true }));
+
+    expect(searchSpy).not.toHaveBeenCalled();
+  });
+
   it('shows Buscar as the search button tooltip', () => {
     const tooltip = fixture.debugElement
       .queryAll(By.directive(Tooltip))

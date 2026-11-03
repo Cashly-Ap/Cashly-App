@@ -8,19 +8,21 @@
 >
   <div class="flex flex-col gap-4" data-keyboard-scope (keydown)="onKeydown($event)">
     <div class="flex flex-col sm:flex-row gap-2">
-      <input
-        pInputText
-        type="search"
-        role="combobox"
-        [attr.aria-label]="'platform.auth.role.searchModules' | translate"
-        aria-autocomplete="list"
-        aria-controls="module-results"
-        [attr.aria-expanded]="visible()"
-        [attr.aria-activedescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
-        [placeholder]="'platform.auth.role.searchModules2' | translate"
-        [value]="query()"
-        (input)="onInput($event)"
+      <app-search-field
         class="w-full min-w-0"
+        [value]="query()"
+        [placeholder]="'platform.auth.role.searchModules2' | translate"
+        [ariaLabel]="'platform.auth.role.searchModules' | translate"
+        [inputType]="'search'"
+        [role]="'combobox'"
+        [ariaAutocomplete]="'list'"
+        [ariaControls]="'module-results'"
+        [ariaExpanded]="visible()"
+        [ariaActiveDescendant]="activeIndex() >= 0 ? 'module-result-' + activeIndex() : null"
+        [live]="true"
+        [showButton]="false"
+        [submitOnEnter]="false"
+        (search)="onQueryChange($event)"
       />
       <button
         type="button"
@@ -60,7 +62,9 @@
           ><span>{{ destination.group | translate }} / {{ destination.label | translate }}</span>
         </button>
       } @empty {
-        <p class="p-4 text-sm text-surface-500">{{ 'core.shortcuts.noModulesAvailable' | translate }}</p>
+        <p class="p-4 text-sm text-surface-500">
+          {{ 'core.shortcuts.noModulesAvailable' | translate }}
+        </p>
       }
     </div>
   </div>
