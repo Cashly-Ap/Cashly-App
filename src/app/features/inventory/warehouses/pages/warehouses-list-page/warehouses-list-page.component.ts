@@ -45,6 +45,7 @@ import { WarehouseFilters } from '@features/inventory/warehouses/services/api/wa
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { WAREHOUSE_ERROR_MESSAGES } from '@features/inventory/warehouses/messages/error-messages';
 import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messages/success-messages';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-warehouses-list-page',
@@ -78,6 +79,7 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WarehousesListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly service = inject(WarehouseApplicationService);
   private readonly router = inject(Router);
   private readonly confirmationService = inject(ConfirmationService);
@@ -110,6 +112,9 @@ export class WarehousesListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => `${record.state} · ${record.municipality}`,
+    refresh: () => this.loadWithFilters(),
+    acceptsAction: (label) =>
+      !['Registrar entrada', 'Registrar salida', 'Historial de movimientos'].includes(label),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -268,32 +273,7 @@ export class WarehousesListPageComponent implements OnInit {
   }
 
   onDelete(warehouse: WarehouseList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el almacén "${warehouse.name}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(warehouse.id).subscribe({
-          next: () =>
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: WAREHOUSE_SUCCESS_MESSAGES.delete,
-              life: 3000,
-            }),
-          error: () =>
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: WAREHOUSE_ERROR_MESSAGES.delete,
-              life: 5000,
-            }),
-        });
-      },
-    });
+    this.deletion.open('warehouses', warehouse.id, warehouse.name, () => this.loadWithFilters());
   }
 
   private openOperation(warehouse: WarehouseList, operation: WarehouseStockOperation): void {

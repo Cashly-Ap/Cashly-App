@@ -40,6 +40,7 @@ import {
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { ReturnFilters } from '@features/finance/billing/returns/services/api/return-api.service';
 import { ReturnList } from '@features/finance/billing/returns/models/interfaces/return.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-return-list-page',
@@ -74,6 +75,7 @@ import { ReturnList } from '@features/finance/billing/returns/models/interfaces/
   providers: [provideTranslatedConfirmation()],
 })
 export class ReturnListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   readonly locale = inject(LanguageService).locale;
 
   private service = inject(ReturnApplicationService);
@@ -135,6 +137,7 @@ export class ReturnListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.returnNumber,
     description: (record) => record.customerName,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -188,34 +191,7 @@ export class ReturnListPageComponent implements OnInit {
   }
 
   onDelete(ret: ReturnList): void {
-    this.confirmationService.confirm({
-      header: 'Eliminar Devolución',
-      message: `¿Estás seguro de que deseas eliminar la devolución "${ret.returnNumber}"? Esta acción no se puede deshacer.`,
-      acceptIcon: 'pi pi-trash',
-      acceptLabel: 'Eliminar',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectLabel: 'Cancelar',
-      accept: () => {
-        this.service.deleteReturn(ret.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Devolución eliminada exitosamente',
-              life: 3000,
-            });
-          },
-          error: (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err?.error?.message || 'No se pudo eliminar la devolución.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('returns', ret.id, ret.returnNumber, () => this.loadWithFilters());
   }
 
   getReturnTypeLabel(type: string): string {

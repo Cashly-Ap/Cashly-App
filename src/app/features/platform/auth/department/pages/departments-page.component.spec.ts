@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { DepartmentsPageComponent } from './departments-page.component';
 import { AccessManagementService } from '../../authorization/services/access-management.service';
 import { AuthorizationService } from '../../authorization/services/authorization.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 const department = {
   id: 'd',
@@ -105,15 +106,15 @@ describe('Department management navigation and form', () => {
     expect(confirm).not.toHaveBeenCalled();
   });
 
-  it('rechecks DELETE when accepting an already open confirmation', () => {
+  it('opens the global delete dialog with the selected record', () => {
     createComponent();
-    const confirm = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    const deletion = TestBed.inject(DeleteDialogService);
     component.remove({ id: 'blocked', name: 'Blocked', active: true });
-    vi.spyOn(TestBed.inject(AuthorizationService), 'can').mockReturnValue(false);
-    const accept = confirm.mock.calls[0][0].accept;
-    expect(accept).toBeDefined();
-    accept?.();
-    expect(service.delete).not.toHaveBeenCalled();
+    expect(deletion.request()).toEqual({
+      resource: 'departments',
+      id: 'blocked',
+      label: 'Blocked',
+    });
   });
   it.each([false, true])(
     'opens the saved detail after create or update (editing=%s)',

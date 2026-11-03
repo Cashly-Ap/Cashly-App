@@ -4,6 +4,7 @@ import { authGuard } from '@features/platform/auth/guards/auth.guard';
 import { homeRedirectGuard } from '@features/platform/auth/guards/home-redirect.guard';
 import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { CompanyPermission } from '@features/platform/company/permissions';
 
 function legacyRoute(source: string, destination: string): Routes[number] {
   return {
@@ -82,7 +83,7 @@ export const routes: Routes = [
           {
             path: 'company/edit',
             canActivate: [authGuard, modulePermissionGuard],
-            data: { module: BusinessModule.USERS, action: 'UPDATE' },
+            data: { permission: CompanyPermission.EDIT },
             loadComponent: () =>
               import('@features/platform/company/company-page.component').then(
                 (m) => m.CompanyPageComponent,
@@ -91,7 +92,7 @@ export const routes: Routes = [
           {
             path: 'company',
             canActivate: [authGuard, modulePermissionGuard],
-            data: { module: BusinessModule.USERS, action: 'UPDATE' },
+            data: { permission: CompanyPermission.VIEW },
             loadComponent: () =>
               import('@features/platform/company/company-details.component').then(
                 (m) => m.CompanyDetailsComponent,

@@ -47,5 +47,14 @@
   "sales.quotes.theQuoteDataIsInvalidCheckTheInformation": "The quote data is invalid. Check the information.",
   "sales.quotes.theQuoteCannotBeEditedInItsCurrentState": "The quote cannot be edited in its current state.",
   "sales.quotes.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later.",
-  "sales.quotes.insufficientStockTooltip": "Insufficient stock: {available} available, reserving {allocated}"
+  "sales.quotes.insufficientStockTooltip": "Insufficient stock: {available} available, reserving {allocated}",
+  "sales.quotes.permissions.viewList": "View quotes",
+  "sales.quotes.permissions.viewDetail": "View details of quote",
+  "sales.quotes.permissions.edit": "Edit quote",
+  "sales.quotes.permissions.delete": "Delete quote",
+  "sales.quotes.permissions.create": "Create quote",
+  "sales.quotes.permissions.reportPdf": "Quotes Report PDF",
+  "sales.quotes.permissions.downloadPdf": "Download quote PDF",
+  "sales.quotes.permissions.convertToOrder": "Convert to order",
+  "sales.quotes.permissions.convertToInvoice": "Convert to invoice"
 }

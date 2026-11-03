@@ -47,5 +47,14 @@
   "sales.quotes.theQuoteDataIsInvalidCheckTheInformation": "Los datos del presupuesto son incorrectos. Verifica la información.",
   "sales.quotes.theQuoteCannotBeEditedInItsCurrentState": "El presupuesto no puede ser modificado en su estado actual.",
   "sales.quotes.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde.",
-  "sales.quotes.insufficientStockTooltip": "Stock insuficiente: disponible {available}, reservando {allocated}"
+  "sales.quotes.insufficientStockTooltip": "Stock insuficiente: disponible {available}, reservando {allocated}",
+  "sales.quotes.permissions.viewList": "Ver presupuestos",
+  "sales.quotes.permissions.viewDetail": "Ver detalle de presupuesto",
+  "sales.quotes.permissions.edit": "Editar presupuesto",
+  "sales.quotes.permissions.delete": "Eliminar presupuesto",
+  "sales.quotes.permissions.create": "Crear presupuesto",
+  "sales.quotes.permissions.reportPdf": "Reporte de Presupuestos PDF",
+  "sales.quotes.permissions.downloadPdf": "Descargar PDF de presupuesto",
+  "sales.quotes.permissions.convertToOrder": "Convertir a pedido",
+  "sales.quotes.permissions.convertToInvoice": "Convertir a factura"
 }

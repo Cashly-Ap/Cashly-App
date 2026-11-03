@@ -16,11 +16,9 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/application/auth-application.service';
 import { SelfProfileService } from '../../services/api/self-profile.service';
 import { UserDetails } from '../../user/models/interfaces/user-details.interface';
-import {
-  BUSINESS_MODULE_LABELS,
-  BusinessModule,
-} from '../../user/models/enums/business-module.enum';
-import { PermissionAction } from '../../authorization/models/access.model';
+import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
+import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
+import { CatalogArea } from '@features/platform/auth/permissions/permission-catalog.types';
 import {
   DetailsCardComponent,
   DetailsCardHeaderComponent,
@@ -30,43 +28,6 @@ import {
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
-
-const ACTION_LABELS: Record<PermissionAction, string> = {
-  READ: 'platform.auth.permissionActionRead',
-  CREATE: 'platform.auth.permissionActionCreate',
-  UPDATE: 'platform.auth.permissionActionUpdate',
-  DELETE: 'platform.auth.permissionActionDelete',
-  EXPORT: 'platform.auth.permissionActionExport',
-  IMPORT: 'platform.auth.permissionActionImport',
-  EXECUTE: 'platform.auth.permissionActionExecute',
-  CONFIRM: 'platform.auth.permissionActionConfirm',
-  CANCEL: 'platform.auth.permissionActionCancel',
-  DUPLICATE: 'platform.auth.permissionActionDuplicate',
-  DETAILS: 'platform.auth.permissionActionDetails', BALANCE: 'platform.auth.permissionActionBalance', HISTORY: 'platform.auth.permissionActionHistory', OPEN: 'platform.auth.permissionActionOpen', CLOSE: 'platform.auth.permissionActionClose', REPORT: 'platform.auth.permissionActionReport', PARTIAL_PAYMENT: 'platform.auth.permissionActionPartialPayment', REFUND: 'platform.auth.permissionActionRefund', ADVANCE: 'platform.auth.permissionActionAdvance',
-  CUSTOMER_BALANCE: 'platform.auth.permissionActionCustomerBalance',
-  REPORT_QUOTES: 'platform.auth.permissionActionReportQuotes',
-  REPORT_ORDERS: 'platform.auth.permissionActionReportOrders',
-  REPORT_PURCHASES: 'platform.auth.permissionActionReportPurchases',
-  REPORT_PRODUCTS: 'platform.auth.permissionActionReportProducts',
-  REPORT_COMMERCIAL_CATALOG: 'platform.auth.permissionActionReportCommercialCatalog',
-  REPORT_STOCK: 'platform.auth.permissionActionReportStock',
-  REPORT_MOVEMENTS: 'platform.auth.permissionActionReportMovements',
-  REPORT_INVOICES: 'platform.auth.permissionActionReportInvoices',
-  REPORT_CASH_REGISTER: 'platform.auth.permissionActionReportCashRegister',
-  REPORT_RECEIVABLES: 'platform.auth.permissionActionReportReceivables',
-  CASH_HISTORY: 'platform.auth.permissionActionCashHistory',
-  INVOICE_DUPLICATE: 'platform.auth.permissionActionInvoiceDuplicate',
-  PAY_WITH_VALIDATION: 'platform.auth.permissionActionPayWithValidation',
-  PAY_DIRECT: 'platform.auth.permissionActionPayDirect',
-  PAY_ALL: 'platform.auth.permissionActionPayAll',
-  PAY_PARTIAL: 'platform.auth.permissionActionPayPartial',
-  APPROVE_PAYMENT: 'platform.auth.permissionActionApprovePayment',
-  REJECT_PAYMENT: 'platform.auth.permissionActionRejectPayment',
-  STOCK: 'platform.auth.permissionActionStock',
-  MOVEMENT_HISTORY: 'platform.auth.permissionActionMovementHistory',
-  RECORD_ENTRY: 'platform.auth.permissionActionRecordEntry',
-  RECORD_EXIT: 'platform.auth.permissionActionRecordExit',
-};
 
 @Component({
   selector: 'app-configuration-page',
@@ -115,15 +76,21 @@ export class ConfigurationPageComponent {
       .join('')
       .toUpperCase(),
   );
-  readonly modules = computed(() =>
-    Object.entries(this.access()?.permissions ?? {})
-      .filter(([, actions]) => actions?.includes('READ'))
-      .map(([module, actions]) => ({
-        id: module,
-        label: this.translations.t(BUSINESS_MODULE_LABELS[module as BusinessModule] ?? module),
-        actions: (actions ?? []).map((action) => this.translations.t(ACTION_LABELS[action])),
-      })),
-  );
+  readonly modules = computed(() => {
+    const selected = new Set(normalizePermissions(this.access()?.permissions));
+    const areas = PERMISSION_CATALOG as readonly CatalogArea[];
+    return areas.flatMap((area) =>
+      area.sections.flatMap((section) => section.modules),
+    )
+      .map((module) => ({
+        id: module.moduleKey,
+        label: module.moduleKey,
+        actions: module.permissions
+          .filter((permission) => selected.has(permission.code))
+          .map((permission) => permission.labelKey),
+      }))
+      .filter((module) => module.actions.length > 0);
+  });
 
   constructor() {
     this.loadProfile();

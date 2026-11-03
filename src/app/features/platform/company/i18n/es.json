@@ -36,5 +36,7 @@
   "platform.company.checkTheFormatAndLengthOfThisField": "Revisa el formato y la longitud de este campo",
   "platform.company.taxIdNifCif": "NIF / CIF",
   "platform.company.useAValidPngOrJpgImageChangesHaveNotBeenSaved": "Usa una imagen PNG o JPG válida. Los cambios no se han guardado.",
-  "platform.company.checkTheImagesAndTryAgainChangesHaveNotBeenSaved": "Revisa las imágenes y vuelve a intentarlo. Los cambios no se han guardado."
+  "platform.company.checkTheImagesAndTryAgainChangesHaveNotBeenSaved": "Revisa las imágenes y vuelve a intentarlo. Los cambios no se han guardado.",
+  "platform.company.permissions.view": "Ver compañía",
+  "platform.company.permissions.edit": "Editar compañía"
 }

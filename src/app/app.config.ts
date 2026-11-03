@@ -10,6 +10,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { routes } from '@app/app.routes';
 import { authInterceptor } from '@features/platform/auth/interceptors/auth.interceptor';
 import { CashlyPreset } from '@core/theme/presets';
+import { DELETE_HANDLER_PROVIDERS } from '@features/delete-handlers.providers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,6 +32,7 @@ export const appConfig: ApplicationConfig = {
     provideCharts(withDefaultRegisterables()),
     provideTranslatedMessages(),
     provideTranslatedConfirmation(),
+    ...DELETE_HANDLER_PROVIDERS,
     DialogService,
   ],
 };

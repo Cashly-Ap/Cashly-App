@@ -22,5 +22,10 @@
   "catalog.pricetypes.priceTypeCreatedSuccessfully": "Price type created successfully",
   "catalog.pricetypes.priceTypeInformation": "Price type information",
   "catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes": "Showing {first} to {last} of {totalRecords} price types",
-  "catalog.pricetypes.messages.couldNotCreateThePriceType": "Could not create the price type."
+  "catalog.pricetypes.messages.couldNotCreateThePriceType": "Could not create the price type.",
+  "catalog.priceTypes.permissions.viewList": "View price types",
+  "catalog.priceTypes.permissions.viewDetail": "View details of price type",
+  "catalog.priceTypes.permissions.edit": "Edit price type",
+  "catalog.priceTypes.permissions.delete": "Delete price type",
+  "catalog.priceTypes.permissions.create": "Create price type"
 }

@@ -141,7 +141,7 @@ describe('CustomersListPageComponent', () => {
 
     expect(
       component.actionsFor({ ...mockCustomer, deletable: false }).map((action) => action.label),
-    ).toEqual(['Ver detalle', 'Editar']);
+    ).toEqual(['Ver detalle', 'Editar', 'Eliminar']);
   });
 
   it('should return correct type label', () => {

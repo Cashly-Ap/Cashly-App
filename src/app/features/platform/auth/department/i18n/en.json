@@ -21,5 +21,10 @@
   "platform.auth.department.manageSystemDepartments": "Manage system departments",
   "platform.auth.department.activeDepartment": "Active department",
   "platform.auth.department.indicatesWhetherTheDepartmentIsActiveInTheSystem": "Indicates whether the department is active in the system",
-  "platform.auth.department.descriptionCannotExceed500Characters": "Description cannot exceed 500 characters"
+  "platform.auth.department.descriptionCannotExceed500Characters": "Description cannot exceed 500 characters",
+  "platform.auth.departments.permissions.viewList": "View departments",
+  "platform.auth.departments.permissions.viewDetail": "View details of department",
+  "platform.auth.departments.permissions.edit": "Edit department",
+  "platform.auth.departments.permissions.delete": "Delete department",
+  "platform.auth.departments.permissions.create": "Create department"
 }

@@ -33,6 +33,7 @@ import {
 } from './cash-register-action-dialog.service';
 import { PendingPaymentActionDialogService } from './pending-payment-action-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer/services';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
@@ -103,7 +104,9 @@ export class NavigationLookupService {
   private readonly warehouseActions = inject(WarehouseActionDialogService);
   private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
   private readonly pendingPaymentActions = inject(PendingPaymentActionDialogService);
+  private readonly deletion = inject(DeleteDialogService);
   private readonly pdfViewer = inject(PdfViewerService);
+
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
     const definition = LIST_NAVIGATION_DEFINITIONS.find((item) => item.route === route);
@@ -195,6 +198,11 @@ export class NavigationLookupService {
         action: () => ({
           ...definitionAction,
           command: () => {
+            if (label === 'Eliminar') {
+              const resource = route.split('/').filter(Boolean).at(-1) ?? '';
+              this.deletion.open(resource, item.id, item.label);
+              return;
+            }
             if (this.navigation.executeRecordAction(route, label, item.id)) return;
             if (modalAction) {
               this.documentActions.open({

@@ -82,5 +82,15 @@
   "sales.orders.theOrderDataIsInvalidCheckTheInformation": "Los datos del pedido son incorrectos. Verifica la información.",
   "sales.orders.theOrderCannotBeEditedInItsCurrentState": "El pedido no puede ser modificado en su estado actual.",
   "sales.orders.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde.",
-  "sales.orders.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "Error al convertir el pedido a factura. Por favor, intente nuevamente."
+  "sales.orders.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "Error al convertir el pedido a factura. Por favor, intente nuevamente.",
+  "sales.orders.permissions.viewList": "Ver pedidos",
+  "sales.orders.permissions.viewDetail": "Ver detalle de pedido",
+  "sales.orders.permissions.edit": "Editar pedido",
+  "sales.orders.permissions.delete": "Eliminar pedido",
+  "sales.orders.permissions.create": "Crear pedido",
+  "sales.orders.permissions.reportPdf": "Reporte de Pedidos PDF",
+  "sales.orders.permissions.downloadPdf": "Descargar PDF de pedido",
+  "sales.orders.permissions.confirm": "Confirmar pedido",
+  "sales.orders.permissions.convertToInvoice": "Convertir a factura",
+  "sales.orders.permissions.cancel": "Cancelar pedido"
 }

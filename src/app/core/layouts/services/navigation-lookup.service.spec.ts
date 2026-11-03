@@ -10,6 +10,7 @@ import { PurchaseApiService } from '@features/procurement/purchases/services/api
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { NavigationLookupService } from './navigation-lookup.service';
 import { DocumentActionDialogService } from './document-action-dialog.service';
 import {
@@ -41,6 +42,7 @@ describe('Navbar lookup without navigation', () => {
   let warehouseActions: WarehouseActionDialogService;
   let cashRegisterActions: CashRegisterActionDialogService;
   let pendingPaymentActions: PendingPaymentActionDialogService;
+  let deletion: DeleteDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -77,6 +79,7 @@ describe('Navbar lookup without navigation', () => {
     warehouseActions = TestBed.inject(WarehouseActionDialogService);
     cashRegisterActions = TestBed.inject(CashRegisterActionDialogService);
     pendingPaymentActions = TestBed.inject(PendingPaymentActionDialogService);
+    deletion = TestBed.inject(DeleteDialogService);
   });
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
     lookup.open('/catalog/categories', 'Editar');
@@ -181,6 +184,7 @@ describe('Navbar lookup without navigation', () => {
       owner: activeListOwner,
       module: BusinessModule.CATALOG_CATEGORIES,
       records: () => [{ id: 'category-1', name: 'Hardware' }],
+      label: (record) => record.name,
       actions: (record) => [
         {
           label: 'Eliminar',
@@ -195,9 +199,11 @@ describe('Navbar lookup without navigation', () => {
     await navigation.select(navigation.session()!.records()[0]);
 
     expect(navigate).not.toHaveBeenCalled();
-    expect(confirmation.confirm).toHaveBeenCalledWith(
-      expect.objectContaining({ record: { id: 'category-1', name: 'Hardware' } }),
-    );
+    expect(deletion.request()).toEqual({
+      resource: 'categories',
+      id: 'category-1',
+      label: 'Hardware',
+    });
   });
 
   it.each([

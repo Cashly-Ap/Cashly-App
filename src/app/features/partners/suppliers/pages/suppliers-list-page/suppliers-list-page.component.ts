@@ -45,6 +45,7 @@ import {
   getSupplierTypeLabel,
   SUPPLIER_TYPES,
 } from '@features/partners/suppliers/models/enums/supplier-type.enum';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,
@@ -83,6 +84,7 @@ import {
   providers: [provideTranslatedConfirmation()],
 })
 export class SuppliersListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private service = inject(SupplierApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
@@ -159,6 +161,7 @@ export class SuppliersListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.legalName,
     description: (record) => `${record.alias} · ${record.rif}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -286,34 +289,7 @@ export class SuppliersListPageComponent implements OnInit {
   }
 
   onDelete(supplier: SupplierList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el proveedor "${supplier.legalName}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(supplier.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Proveedor eliminado exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el proveedor. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('suppliers', supplier.id, supplier.legalName, () => this.loadWithFilters());
   }
 
   getTypeLabel(type: string): string {

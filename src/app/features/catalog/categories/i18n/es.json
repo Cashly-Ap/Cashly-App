@@ -28,5 +28,10 @@
   "catalog.categories.activeCategory": "Categoría Activa",
   "catalog.categories.makesThisCategoryAvailableInTheSystem": "Permite que esta categoría esté disponible en el sistema",
   "catalog.categories.labels.showingFirstToLastOfTotalrecordsCategories": "Mostrando {first} a {last} de {totalRecords} categorías",
-  "catalog.categories.messages.couldNotCreateTheCategory": "Error al crear la categoría."
+  "catalog.categories.messages.couldNotCreateTheCategory": "Error al crear la categoría.",
+  "catalog.categories.permissions.viewList": "Ver categorías",
+  "catalog.categories.permissions.viewDetail": "Ver detalle de categoría",
+  "catalog.categories.permissions.edit": "Editar categoría",
+  "catalog.categories.permissions.delete": "Eliminar categoría",
+  "catalog.categories.permissions.create": "Crear categoría"
 }

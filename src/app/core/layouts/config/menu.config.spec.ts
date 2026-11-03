@@ -141,6 +141,8 @@ describe('ERP navigation', () => {
         '/platform/users',
         '/platform/roles',
         '/platform/departments',
+        '/platform/company',
+        '/platform/company/edit',
       ].sort(),
     );
     expect(new Set(routes).size).toBe(routes.length);

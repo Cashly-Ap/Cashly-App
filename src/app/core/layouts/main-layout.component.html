@@ -151,16 +151,6 @@
             <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
             <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
           </button>
-          @if (canViewCompany()) {
-            <button
-              (click)="goToCompany()"
-              pRipple
-              class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
-            >
-              <i class="pi pi-building"></i
-              ><span class="font-medium">{{ 'platform.company.company' | translate }}</span>
-            </button>
-          }
           <button
             (click)="goToPreferences()"
             pRipple
@@ -200,16 +190,6 @@
         <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
         <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
       </button>
-      @if (canViewCompany()) {
-        <button
-          (click)="goToCompany()"
-          pRipple
-          class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
-        >
-          <i class="pi pi-building"></i
-          ><span class="font-medium">{{ 'platform.company.company' | translate }}</span>
-        </button>
-      }
       <button
         (click)="goToPreferences()"
         pRipple
@@ -341,3 +321,4 @@
 <app-warehouse-action-dialog-host />
 <app-cash-register-action-dialog-host />
 <app-pending-payment-action-dialog-host />
+<app-delete-dialog />

@@ -66,5 +66,12 @@
   "partners.customers.labels.theCreditLimitCannotBeNegative": "The credit limit cannot be negative",
   "partners.customers.labels.emailExampleCom": "email@example.com",
   "partners.customers.messages.creditDays": "Credit days",
-  "partners.customers.messages.creditLimit": "Credit limit"
+  "partners.customers.messages.creditLimit": "Credit limit",
+  "partners.customers.permissions.viewList": "View customers",
+  "partners.customers.permissions.viewDetail": "View details of customer",
+  "partners.customers.permissions.edit": "Edit customer",
+  "partners.customers.permissions.delete": "Delete customer",
+  "partners.customers.permissions.create": "Create customer",
+  "partners.customers.permissions.viewBalance": "View customer balance",
+  "partners.customers.permissions.balance": "Customer balances"
 }

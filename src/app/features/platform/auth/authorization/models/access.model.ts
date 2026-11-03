@@ -1,6 +1,7 @@
 import { HttpContextToken } from '@angular/common/http';
 export const ACCESS_REFRESH_REQUEST = new HttpContextToken<boolean>(() => false);
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 export type PermissionAction =
   | 'READ'
   | 'CREATE'
@@ -23,7 +24,7 @@ export interface CurrentAccess {
   roleName: string;
   departmentId: string;
   systemAdministrator: boolean;
-  permissions: PermissionMatrix;
+  permissions: AppPermission[];
 }
 export interface PermissionRegistry {
   module: BusinessModule;
@@ -42,7 +43,7 @@ export interface Department {
 }
 export interface Role extends Department {
   systemKey: string | null;
-  permissions: PermissionMatrix;
+  permissions: AppPermission[];
 }
 export interface UserProfile {
   firstName: string;

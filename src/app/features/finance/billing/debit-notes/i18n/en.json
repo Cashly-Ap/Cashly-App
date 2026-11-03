@@ -27,5 +27,9 @@
   "finance.billing.debitnotes.couldNotLoadTheDebitNoteItMayNotExist": "Could not load the debit note. It may not exist.",
   "finance.billing.debitnotes.areYouSureYouWantToDeleteDebitNoteThisActionCannotBeUndone2": "Are you sure you want to delete debit note \"${dn.noteNumber}\"? This action cannot be undone.",
   "finance.billing.debitnotes.debitNotesPage": "Showing {first} to {last} of {totalRecords} debit notes",
-  "finance.billing.debitnotes.unableToDeleteTheDebitNote": "Unable to delete the debit note."
+  "finance.billing.debitnotes.unableToDeleteTheDebitNote": "Unable to delete the debit note.",
+  "finance.billing.debitNotes.permissions.viewList": "View debit notes",
+  "finance.billing.debitNotes.permissions.viewDetail": "View details of debit note",
+  "finance.billing.debitNotes.permissions.delete": "Delete debit note",
+  "finance.billing.debitNotes.permissions.create": "Create debit note"
 }

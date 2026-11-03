@@ -183,5 +183,15 @@
   "finance.billing.invoices.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later.",
   "finance.billing.invoices.theCustomerHasOverdueInvoices": "The customer has overdue invoices.",
   "finance.billing.invoices.theTotalExceedsTheAvailableCreditBy": "The total exceeds the available credit by ${deficit.toLocaleString()}.",
-  "finance.billing.invoices.theCustomerCannotCreateCreditInvoices": "The customer cannot create credit invoices."
+  "finance.billing.invoices.theCustomerCannotCreateCreditInvoices": "The customer cannot create credit invoices.",
+  "finance.billing.invoices.permissions.viewList": "View invoices",
+  "finance.billing.invoices.permissions.viewDetail": "View details of invoice",
+  "finance.billing.invoices.permissions.edit": "Edit invoice",
+  "finance.billing.invoices.permissions.delete": "Delete invoice",
+  "finance.billing.invoices.permissions.create": "Create invoice",
+  "finance.billing.invoices.permissions.reportPdf": "Invoices Report PDF",
+  "finance.billing.invoices.permissions.downloadPdf": "Download invoice PDF",
+  "finance.billing.invoices.permissions.confirm": "Confirm invoice",
+  "finance.billing.invoices.permissions.cancel": "Cancel invoice",
+  "finance.billing.invoices.permissions.duplicate": "Duplicate invoice"
 }

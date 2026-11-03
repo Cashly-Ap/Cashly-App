@@ -16,6 +16,7 @@ import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting
 import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('ProductsListPageComponent', () => {
   let component: ProductsListPageComponent;
@@ -316,14 +317,13 @@ describe('ProductsListPageComponent', () => {
     });
   });
 
-  it('should call confirmationService.confirm on onDelete', () => {
-    const confirmSpy = vi.spyOn(component['confirmationService'], 'confirm');
+  it('should open the global delete dialog on onDelete', () => {
+    const deletion = TestBed.inject(DeleteDialogService);
     component.onDelete(mockProduct);
-    expect(confirmSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: expect.stringContaining('Test Product'),
-        header: 'Confirmar Eliminación',
-      }),
-    );
+    expect(deletion.request()).toEqual({
+      resource: 'products',
+      id: 'prod-001',
+      label: 'Test Product',
+    });
   });
 });

@@ -59,5 +59,9 @@
   "finance.billing.returns.destinationWarehouseLabel": "Almacén de destino *",
   "finance.billing.returns.selectingAWarehouseWillLoadAllInvoiceLinesWithTheirMaximumQuantity": "Al seleccionar el almacén se cargarán todas las líneas con la cantidad máxima de la factura.",
   "finance.billing.returns.createReturnLabel": "Crear Devolución — #",
-  "finance.billing.returns.unableToDeleteTheReturn": "No se pudo eliminar la devolución."
+  "finance.billing.returns.unableToDeleteTheReturn": "No se pudo eliminar la devolución.",
+  "finance.billing.returns.permissions.viewList": "Ver devoluciones",
+  "finance.billing.returns.permissions.viewDetail": "Ver detalle de devolución",
+  "finance.billing.returns.permissions.delete": "Eliminar devolución",
+  "finance.billing.returns.permissions.create": "Crear devolución"
 }

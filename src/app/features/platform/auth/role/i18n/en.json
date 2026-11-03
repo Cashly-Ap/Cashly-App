@@ -39,5 +39,10 @@
   "platform.auth.role.customAccess": "Custom access",
   "platform.auth.role.readOnly2": "Read-only",
   "platform.auth.role.customize": "Customize",
-  "platform.auth.role.allAvailable": "All available"
+  "platform.auth.role.allAvailable": "All available",
+  "platform.auth.roles.permissions.viewList": "View roles",
+  "platform.auth.roles.permissions.viewDetail": "View details of role",
+  "platform.auth.roles.permissions.edit": "Edit role",
+  "platform.auth.roles.permissions.delete": "Delete role",
+  "platform.auth.roles.permissions.create": "Create role"
 }

@@ -53,5 +53,9 @@
   "finance.billing.creditnotes.creditNotesPage": "Showing {first} to {last} of {totalRecords} credit notes",
   "finance.billing.creditnotes.unableToDeleteTheCreditNote": "Unable to delete the credit note.",
   "finance.billing.creditnotes.unableToCreateTheCreditNote": "Unable to create the credit note.",
-  "finance.billing.creditnotes.reviewTheRequiredFieldsBeforeContinuing": "Review the required fields before continuing."
+  "finance.billing.creditnotes.reviewTheRequiredFieldsBeforeContinuing": "Review the required fields before continuing.",
+  "finance.billing.creditNotes.permissions.viewList": "View credit notes",
+  "finance.billing.creditNotes.permissions.viewDetail": "View details of credit note",
+  "finance.billing.creditNotes.permissions.delete": "Delete credit note",
+  "finance.billing.creditNotes.permissions.create": "Create credit note"
 }

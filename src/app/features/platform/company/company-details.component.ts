@@ -17,8 +17,8 @@ import {
   DetailsInfoGridComponent,
 } from '@shared/components/details';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
-import { AuthService } from '../auth/services/application/auth-application.service';
-import { BusinessModule } from '../auth/user/models/enums/business-module.enum';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { CompanyPermission } from '@features/platform/company/permissions';
 import { Company, CompanyService } from './company.service';
 
 @Component({
@@ -44,7 +44,7 @@ export class CompanyDetailsComponent {
   readonly company = signal<Company | null>(null);
   readonly loading = signal(true);
   readonly error = signal(false);
-  readonly canEdit = computed(() => this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'));
+  readonly canEdit = computed(() => this.auth.hasPermissionCode(CompanyPermission.EDIT));
 
   constructor() {
     this.load();

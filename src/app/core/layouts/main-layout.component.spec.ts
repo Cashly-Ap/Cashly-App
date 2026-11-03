@@ -53,6 +53,7 @@ describe('MainLayoutComponent', () => {
     clearAuthState: ReturnType<typeof vi.fn>;
     getUserType: ReturnType<typeof vi.fn>;
     hasPermission: ReturnType<typeof vi.fn>;
+    hasPermissionCode: ReturnType<typeof vi.fn>;
     isAuthenticated: ReturnType<typeof vi.fn>;
     ensureAccess: ReturnType<typeof vi.fn>;
     hasModulePermission: ReturnType<typeof vi.fn>;
@@ -88,6 +89,7 @@ describe('MainLayoutComponent', () => {
         .mockImplementation((module: BusinessModule) =>
           authServiceMock.hasModulePermission(module),
         ),
+      hasPermissionCode: vi.fn().mockReturnValue(false),
       isAuthenticated: vi.fn().mockReturnValue(true),
       ensureAccess: vi.fn().mockReturnValue(of({})),
       hasModulePermission: vi.fn().mockReturnValue(true),
@@ -300,6 +302,7 @@ describe('MainLayoutComponent', () => {
       expect(routes(items).sort()).toEqual(
         [
           '/inventory/warehouses',
+          '/inventory/warehouses/movements',
           '/inventory/warehouses/new',
           '/inventory/warehouses/stock',
         ].sort(),
@@ -336,11 +339,11 @@ describe('MainLayoutComponent', () => {
       ).toEqual(['Presupuestos', 'Pedidos']);
     });
 
-    it('shows a report action only when its own module grants EXPORT', () => {
+    it('shows a report action only when its own module grants the report permission', () => {
       authServiceMock.hasPermission.mockImplementation(
         (module, action = 'READ') =>
           module === BusinessModule.SALES_QUOTES ||
-          (module === BusinessModule.SALES_ORDERS && action !== 'EXPORT'),
+          (module === BusinessModule.SALES_ORDERS && action !== 'REPORT_ORDERS'),
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       const quotes = items

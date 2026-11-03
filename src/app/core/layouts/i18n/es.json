@@ -278,5 +278,13 @@
   "navigation.labels.viewDepartments": "Ver departamentos",
   "core.layouts.labels.cashlyLogo": "Logo Cashly",
   "navigation.labels.goToDashboard": "Ir al dashboard",
-  "core.layouts.messages.openANewCashRegisterSession": "Abrir una nueva sesión de caja"
+  "core.layouts.messages.openANewCashRegisterSession": "Abrir una nueva sesión de caja",
+  "common.delete.title": "Confirmar eliminación",
+  "common.delete.message": "¿Está seguro de que desea eliminar {{label}}?",
+  "common.delete.confirm": "Sí, eliminar",
+  "common.delete.cancel": "Cancelar",
+  "common.delete.success": "{{label}} eliminado correctamente.",
+  "common.delete.error": "No se pudo eliminar el registro.",
+  "common.delete.missingHandler": "No se pudo eliminar el registro.",
+  "navigation.labels.company": "Compañía"
 }

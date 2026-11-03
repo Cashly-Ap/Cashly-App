@@ -45,6 +45,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
 import { UserFilters } from '@features/platform/auth/user/services/api/user-api.service';
 import { UserList } from '@features/platform/auth/user/models/interfaces/user-list.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import {
   getUserTypeLabel,
   UserType,
@@ -87,6 +88,7 @@ import {
   providers: [provideTranslatedConfirmation()],
 })
 export class UsersListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   readonly authorization = inject(AuthorizationService);
   readonly canFilterRoles = computed(
     () =>
@@ -155,6 +157,7 @@ export class UsersListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.userName,
     description: (record) => record.email,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -270,34 +273,7 @@ export class UsersListPageComponent implements OnInit {
   }
 
   onDelete(user: UserList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el usuario "${user.userName}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.deleteUser(user.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Usuario eliminado exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el usuario. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('users', user.id, user.userName, () => this.loadWithFilters());
   }
 
   getTypeLabel(type: UserType): string {

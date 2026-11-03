@@ -46,6 +46,7 @@ import { AccessManagementService } from '../../authorization/services/access-man
 import { AuthorizationService } from '../../authorization/services/authorization.service';
 import { Department } from '../../authorization/models/access.model';
 import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 @Component({
   selector: 'app-departments-page',
   standalone: true,
@@ -90,6 +91,7 @@ import { BusinessModule } from '../../user/models/enums/business-module.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DepartmentsPageComponent {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -229,6 +231,7 @@ export class DepartmentsPageComponent {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => record.description,
+    refresh: () => this.load(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -295,21 +298,7 @@ export class DepartmentsPageComponent {
     });
   }
   remove(item: Department): void {
-    if (!this.authorization.can(this.module, 'DELETE')) return;
-    this.confirmation.confirm({
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      header: 'Confirmar eliminación',
-      message: `¿Eliminar ${item.name}?`,
-      accept: () => {
-        if (!this.authorization.can(this.module, 'DELETE')) return;
-        this.service
-          .delete('departments', item.id)
-          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) });
-      },
-    });
+    this.deletion.open('departments', item.id, item.name, () => this.load());
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {
     this.messages.add({

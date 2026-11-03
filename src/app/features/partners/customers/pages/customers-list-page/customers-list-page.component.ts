@@ -53,6 +53,7 @@ import {
 } from '@features/partners/customers/data/venezuela-geo.data';
 import { CUSTOMER_ERROR_MESSAGES } from '@features/partners/customers/messages/error-messages';
 import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages/success-messages';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-customers-list-page',
@@ -87,6 +88,7 @@ import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages
   providers: [provideTranslatedConfirmation()],
 })
 export class CustomersListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private service = inject(CustomerApplicationService);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -164,6 +166,7 @@ export class CustomersListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.legalName,
     description: (record) => `${record.alias} · ${record.rif}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -306,24 +309,7 @@ export class CustomersListPageComponent implements OnInit {
   }
 
   onDelete(customer: CustomerList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el cliente "${customer.legalName}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(customer.id).subscribe({
-          next: () => {
-            this.messageService.add(CUSTOMER_SUCCESS_MESSAGES.deleted);
-          },
-          error: () => {
-            this.messageService.add(CUSTOMER_ERROR_MESSAGES.delete);
-          },
-        });
-      },
-    });
+    this.deletion.open('customers', customer.id, customer.legalName, () => this.loadWithFilters());
   }
 
   getTypeLabel(type: string): string {

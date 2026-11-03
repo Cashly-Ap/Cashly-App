@@ -183,5 +183,15 @@
   "finance.billing.invoices.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde.",
   "finance.billing.invoices.theCustomerHasOverdueInvoices": "El cliente tiene facturas vencidas.",
   "finance.billing.invoices.theTotalExceedsTheAvailableCreditBy": "El total excede el crédito disponible por ${deficit.toLocaleString()}.",
-  "finance.billing.invoices.theCustomerCannotCreateCreditInvoices": "El cliente no puede crear facturas a crédito."
+  "finance.billing.invoices.theCustomerCannotCreateCreditInvoices": "El cliente no puede crear facturas a crédito.",
+  "finance.billing.invoices.permissions.viewList": "Ver facturas",
+  "finance.billing.invoices.permissions.viewDetail": "Ver detalle de factura",
+  "finance.billing.invoices.permissions.edit": "Editar factura",
+  "finance.billing.invoices.permissions.delete": "Eliminar factura",
+  "finance.billing.invoices.permissions.create": "Crear factura",
+  "finance.billing.invoices.permissions.reportPdf": "Reporte de Facturas PDF",
+  "finance.billing.invoices.permissions.downloadPdf": "Descargar PDF de factura",
+  "finance.billing.invoices.permissions.confirm": "Confirmar factura",
+  "finance.billing.invoices.permissions.cancel": "Cancelar factura",
+  "finance.billing.invoices.permissions.duplicate": "Duplicar factura"
 }

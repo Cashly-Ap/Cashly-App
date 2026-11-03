@@ -59,5 +59,9 @@
   "finance.billing.returns.destinationWarehouseLabel": "Destination warehouse *",
   "finance.billing.returns.selectingAWarehouseWillLoadAllInvoiceLinesWithTheirMaximumQuantity": "Selecting a warehouse will load all invoice lines with their maximum quantity.",
   "finance.billing.returns.createReturnLabel": "Create return — #",
-  "finance.billing.returns.unableToDeleteTheReturn": "Unable to delete the return."
+  "finance.billing.returns.unableToDeleteTheReturn": "Unable to delete the return.",
+  "finance.billing.returns.permissions.viewList": "View returns",
+  "finance.billing.returns.permissions.viewDetail": "View details of return",
+  "finance.billing.returns.permissions.delete": "Delete return",
+  "finance.billing.returns.permissions.create": "Create return"
 }

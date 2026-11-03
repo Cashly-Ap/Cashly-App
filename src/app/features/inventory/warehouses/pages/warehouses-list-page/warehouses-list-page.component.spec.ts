@@ -10,6 +10,7 @@ import { WarehouseApplicationService } from '@features/inventory/warehouses/serv
 import { WarehouseList } from '@features/inventory/warehouses/models/interfaces/warehouse.interfaces';
 import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('WarehousesListPageComponent', () => {
   let fixture: ComponentFixture<WarehousesListPageComponent>;
@@ -101,12 +102,16 @@ describe('WarehousesListPageComponent', () => {
   });
 
   it('executes the registered delete action on the active warehouse list', () => {
-    const confirmSpy = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
+    const deletion = TestBed.inject(DeleteDialogService);
 
     expect(navigation.executeRegistered('/inventory/warehouses', 'Eliminar', warehouse.id)).toBe(
       true,
     );
-    expect(confirmSpy).toHaveBeenCalledOnce();
+    expect(deletion.request()).toEqual({
+      resource: 'warehouses',
+      id: warehouse.id,
+      label: warehouse.name,
+    });
     expect(navigate).not.toHaveBeenCalled();
   });
 

@@ -305,27 +305,21 @@
               <app-details-card-header [title]="'platform.auth.role.permissions' | translate" />
               <div class="p-4 sm:p-6">
                 <app-details-info-grid [columns]="2" [fillLastRow]="true">
-                  @for (entry of registry(); track entry.module) {
-                    <app-details-info-field
-                      [label]="moduleLabel(entry.module) | translate"
-                      type="badge"
-                    >
+                  @for (group of grantedGroups(); track group.moduleKey) {
+                    <app-details-info-field [label]="group.moduleKey | translate" type="badge">
                       <div class="flex flex-wrap gap-2">
-                        @for (action of entry.actions; track action) {
-                          @if (selected(entry.module, action)) {
-                            <span
-                              class="text-xs rounded-lg px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300"
-                              >{{ actionLabels[action] | translate }}</span
-                            >
-                          }
-                        }
-                        @if (!selected(entry.module, 'READ')) {
-                          <span class="text-sm text-surface-400">{{
-                            'platform.auth.role.noAccess' | translate
-                          }}</span>
+                        @for (permission of group.permissions; track permission.code) {
+                          <span
+                            class="text-xs rounded-lg px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300"
+                            >{{ permission.labelKey | translate }}</span
+                          >
                         }
                       </div>
                     </app-details-info-field>
+                  } @empty {
+                    <p class="text-sm text-surface-400">
+                      {{ 'platform.auth.role.noAccess' | translate }}
+                    </p>
                   }
                 </app-details-info-grid>
               </div>
@@ -417,9 +411,7 @@
                 </p-tabpanel>
                 <p-tabpanel value="permissions">
                   <app-permission-editor
-                    [registry]="registry()"
-                    [catalog]="catalog()"
-                    [permissions]="value.permissions || {}"
+                    [permissions]="value.permissions || []"
                     [protected]="isSystemAdministrator(value)"
                     [disabled]="
                       busy() ||
@@ -446,4 +438,3 @@
     </app-form-container>
   }
 }
-<p-confirmDialog styleClass="max-w-md" [style]="{ 'border-radius': '1rem' }" />

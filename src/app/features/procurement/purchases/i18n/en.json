@@ -85,5 +85,14 @@
   "procurement.purchases.unableToConnectToTheServerCheckYourInternetConnection": "Unable to connect to the server. Check your internet connection.",
   "procurement.purchases.thePurchaseDataIsInvalidCheckTheInformation": "The purchase data is invalid. Check the information.",
   "procurement.purchases.thePurchaseCannotBeEditedInItsCurrentState": "The purchase cannot be edited in its current state.",
-  "procurement.purchases.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later."
+  "procurement.purchases.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later.",
+  "procurement.purchases.permissions.viewList": "View purchases",
+  "procurement.purchases.permissions.viewDetail": "View details of purchase",
+  "procurement.purchases.permissions.edit": "Edit purchase",
+  "procurement.purchases.permissions.delete": "Delete purchase",
+  "procurement.purchases.permissions.create": "Create purchase",
+  "procurement.purchases.permissions.reportPdf": "Purchases Report PDF",
+  "procurement.purchases.permissions.downloadPdf": "Download purchase PDF",
+  "procurement.purchases.permissions.confirm": "Confirm purchase",
+  "procurement.purchases.permissions.cancel": "Cancel purchase"
 }

@@ -74,5 +74,11 @@
   "finance.treasury.cashregister.showingFirstToLastOfTotalrecordsRecords": "Mostrando {first} a {last} de {totalRecords} registros",
   "finance.treasury.cashregister.creditNote": "Nota de crédito",
   "finance.treasury.cashregister.debitNote": "Nota de débito",
-  "finance.treasury.cashregister.unableToLoadHistory": "Error al cargar el historial"
+  "finance.treasury.cashregister.unableToLoadHistory": "Error al cargar el historial",
+  "finance.treasury.cashRegister.permissions.viewList": "Ver caja",
+  "finance.treasury.cashRegister.permissions.viewDetail": "Ver detalles",
+  "finance.treasury.cashRegister.permissions.cashHistory": "Historial de caja",
+  "finance.treasury.cashRegister.permissions.reportCashRegister": "Reportes de Caja",
+  "finance.treasury.cashRegister.permissions.open": "Abrir caja",
+  "finance.treasury.cashRegister.permissions.close": "Cerrar caja"
 }

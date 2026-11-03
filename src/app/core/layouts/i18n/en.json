@@ -278,5 +278,13 @@
   "navigation.labels.viewDepartments": "View departments",
   "core.layouts.labels.cashlyLogo": "Cashly logo",
   "navigation.labels.goToDashboard": "Go to dashboard",
-  "core.layouts.messages.openANewCashRegisterSession": "Open a new cash register session"
+  "core.layouts.messages.openANewCashRegisterSession": "Open a new cash register session",
+  "common.delete.title": "Confirm deletion",
+  "common.delete.message": "Are you sure you want to delete {{label}}?",
+  "common.delete.confirm": "Yes, delete",
+  "common.delete.cancel": "Cancel",
+  "common.delete.success": "{{label}} deleted successfully.",
+  "common.delete.error": "The record could not be deleted.",
+  "common.delete.missingHandler": "The record could not be deleted.",
+  "navigation.labels.company": "Company"
 }

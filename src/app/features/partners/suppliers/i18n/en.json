@@ -74,5 +74,10 @@
   "partners.suppliers.labels.theTaxIdFormatIsInvalid": "The tax ID format is invalid",
   "partners.suppliers.labels.anAliasIsRequiredMaximum200Characters": "An alias is required (maximum 200 characters)",
   "partners.suppliers.labels.aSupplierTypeIsRequired": "A supplier type is required",
-  "partners.suppliers.messages.emailAddresses": "Email addresses"
+  "partners.suppliers.messages.emailAddresses": "Email addresses",
+  "partners.suppliers.permissions.viewList": "View suppliers",
+  "partners.suppliers.permissions.viewDetail": "View details of supplier",
+  "partners.suppliers.permissions.edit": "Edit supplier",
+  "partners.suppliers.permissions.delete": "Delete supplier",
+  "partners.suppliers.permissions.create": "Create supplier"
 }

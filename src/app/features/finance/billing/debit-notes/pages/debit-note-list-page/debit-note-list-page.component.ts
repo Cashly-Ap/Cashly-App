@@ -39,6 +39,7 @@ import {
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
 import { DebitNoteFilters } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
 import { DebitNoteList } from '@features/finance/billing/debit-notes/models/interfaces/debit-note.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-debit-note-list-page',
@@ -72,6 +73,7 @@ import { DebitNoteList } from '@features/finance/billing/debit-notes/models/inte
   providers: [provideTranslatedConfirmation()],
 })
 export class DebitNoteListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   readonly locale = inject(LanguageService).locale;
 
   private service = inject(DebitNoteApplicationService);
@@ -133,6 +135,7 @@ export class DebitNoteListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.noteNumber,
     description: (record) => record.customerName,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -186,34 +189,7 @@ export class DebitNoteListPageComponent implements OnInit {
   }
 
   onDelete(debitNote: DebitNoteList): void {
-    this.confirmationService.confirm({
-      header: 'Eliminar Nota de Débito',
-      message: `¿Estás seguro de que deseas eliminar la nota de débito "${debitNote.noteNumber}"? Esta acción no se puede deshacer.`,
-      acceptIcon: 'pi pi-trash',
-      acceptLabel: 'Eliminar',
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectLabel: 'Cancelar',
-      accept: () => {
-        this.service.deleteDebitNote(debitNote.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Nota de débito eliminada exitosamente',
-              life: 3000,
-            });
-          },
-          error: (err) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err?.error?.message || 'No se pudo eliminar la nota de débito.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('debit-notes', debitNote.id, debitNote.noteNumber, () => this.loadWithFilters());
   }
 
   protected loadWithFilters(): void {

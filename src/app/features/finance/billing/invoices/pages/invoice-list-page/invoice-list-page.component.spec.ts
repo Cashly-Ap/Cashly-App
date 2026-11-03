@@ -12,6 +12,7 @@ import { PaymentType } from '@features/finance/billing/invoices/models/enums/pay
 import { PdfViewerService } from '@core/pdf-viewer';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('InvoiceListPageComponent', () => {
   let component: InvoiceListPageComponent;
@@ -121,16 +122,20 @@ describe('InvoiceListPageComponent', () => {
   });
 
   it('exposes one internal delete action without routing', () => {
+    const deletion = TestBed.inject(DeleteDialogService);
     const deleteActions = component
       .actionsFor(mockInvoices[0])
       .filter((action) => action.label === 'Eliminar');
-    const confirmSpy = vi.spyOn(TestBed.inject(ConfirmationService), 'confirm');
     const navigateSpy = vi.spyOn(router, 'navigate');
 
     expect(deleteActions).toHaveLength(1);
     deleteActions[0].command();
 
-    expect(confirmSpy).toHaveBeenCalledOnce();
+    expect(deletion.request()).toEqual({
+      resource: 'invoices',
+      id: mockInvoices[0].id,
+      label: mockInvoices[0].invoiceNumber,
+    });
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
@@ -177,12 +182,15 @@ describe('InvoiceListPageComponent', () => {
   });
 
   it('keeps the accepted list state when a modal action parameter is cleared', async () => {
-    const calls = (mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length;
+    component.selectedStatus.set('DRAFT');
     queryParams.next(convertToParamMap({ navAction: 'Duplicar' }));
     await Promise.resolve();
     queryParams.next(convertToParamMap({}));
     await Promise.resolve();
-    expect((mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length).toBe(calls);
+    expect(component.selectedStatus()).toBe('DRAFT');
+    expect(mockService.loadAll).not.toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'DUPLICATE' }),
+    );
   });
 
   describe('navigation', () => {

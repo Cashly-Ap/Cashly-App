@@ -39,5 +39,10 @@
   "finance.treasury.paymentmethods.paymentMethodsPage": "Showing {first} to {last} of {totalRecords} payment methods",
   "finance.treasury.paymentmethods.unableToDeleteThePaymentMethodCheckThatItHasNoAssociatedPayments": "Unable to delete the payment method. Check that it has no associated payments.",
   "finance.treasury.paymentmethods.unableToCreateThePaymentMethod": "Unable to create the payment method.",
-  "finance.treasury.paymentmethods.unableToDeleteThePaymentMethod": "Unable to delete the payment method."
+  "finance.treasury.paymentmethods.unableToDeleteThePaymentMethod": "Unable to delete the payment method.",
+  "finance.treasury.paymentMethods.permissions.viewList": "View payment methods",
+  "finance.treasury.paymentMethods.permissions.viewDetail": "View details of payment method",
+  "finance.treasury.paymentMethods.permissions.edit": "Edit payment method",
+  "finance.treasury.paymentMethods.permissions.delete": "Delete payment method",
+  "finance.treasury.paymentMethods.permissions.create": "Create payment method"
 }

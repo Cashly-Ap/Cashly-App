@@ -91,17 +91,18 @@ describe('List navigation actions', () => {
       owner: {},
       module: BusinessModule.CATALOG_PRODUCTS,
       records: () => [{ id: 'first-record' }],
+      label: () => 'First record',
       actions: () => [
         {
-          label: 'Eliminar',
-          requiredAction: 'DELETE',
-          icon: 'pi pi-trash',
+          label: 'Editar',
+          requiredAction: 'UPDATE',
+          icon: 'pi pi-pencil',
           command: registeredCommand,
         },
       ],
     });
 
-    expect(navigation.executeRegistered('/catalog/products', 'Eliminar', 'first-record')).toBe(true);
+    expect(navigation.executeRegistered('/catalog/products', 'Editar', 'first-record')).toBe(true);
     expect(registeredCommand).toHaveBeenCalledOnce();
   });
 

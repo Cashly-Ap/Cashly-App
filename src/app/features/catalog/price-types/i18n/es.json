@@ -22,5 +22,10 @@
   "catalog.pricetypes.priceTypeCreatedSuccessfully": "Tipo de precio creado exitosamente",
   "catalog.pricetypes.priceTypeInformation": "Información del tipo de precio",
   "catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes": "Mostrando {first} a {last} de {totalRecords} tipos de precio",
-  "catalog.pricetypes.messages.couldNotCreateThePriceType": "Error al crear el tipo de precio."
+  "catalog.pricetypes.messages.couldNotCreateThePriceType": "Error al crear el tipo de precio.",
+  "catalog.priceTypes.permissions.viewList": "Ver tipos de precios",
+  "catalog.priceTypes.permissions.viewDetail": "Ver detalle de tipo de precio",
+  "catalog.priceTypes.permissions.edit": "Editar tipo de precio",
+  "catalog.priceTypes.permissions.delete": "Eliminar tipo de precio",
+  "catalog.priceTypes.permissions.create": "Crear tipo de precio"
 }

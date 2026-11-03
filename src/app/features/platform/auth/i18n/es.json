@@ -206,8 +206,8 @@
   "platform.auth.finance": "Finanzas",
   "platform.auth.purchases": "Compras",
   "platform.auth.reports": "Reportes",
-  "platform.auth.dashboard": "Panel",
-  "platform.auth.userManagement": "Gestión de usuarios",
+  "platform.auth.dashboard": "Dashboard",
+  "platform.auth.userManagement": "Usuarios",
   "platform.auth.salesManagement": "Gestión Comercial",
   "platform.auth.catalogProducts": "Productos",
   "platform.auth.catalogCategories": "Categorías",
@@ -478,5 +478,7 @@
   "platform.auth.domains.dashboard": "Panel",
   "platform.auth.domains.users": "Usuarios",
   "platform.auth.domains.roles": "Roles",
-  "platform.auth.domains.departments": "Departamentos"
+  "platform.auth.domains.departments": "Departamentos",
+  "platform.auth.role.accessByPermission": "Acceso por permiso",
+  "platform.auth.role.permissionAccessSummary": "Elige los permisos del rol. {{selected}} de {{total}} permisos seleccionados."
 }

@@ -63,6 +63,7 @@ import {
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-invoice-list-page',
@@ -103,6 +104,7 @@ import { connectListNavigation } from '@shared/components/list/list-navigation.s
   providers: [provideTranslatedConfirmation()],
 })
 export class InvoiceListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   readonly locale = inject(LanguageService).locale;
 
   private readonly invoiceService = inject(InvoiceApplicationService);
@@ -215,6 +217,7 @@ export class InvoiceListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.invoiceNumber,
     description: (record) => `${record.customerName} · ${record.status}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -367,35 +370,7 @@ export class InvoiceListPageComponent implements OnInit {
   }
 
   onDelete(invoice: InvoiceList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar la factura #${invoice.invoiceNumber}? Esta acción no se puede deshacer.`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.invoiceService.delete(invoice.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Factura eliminada exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar la factura. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('invoices', invoice.id, invoice.invoiceNumber, () => this.loadWithFilters());
   }
 
   onConfirmInvoice(invoice: InvoiceList): void {

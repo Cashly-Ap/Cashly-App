@@ -27,5 +27,9 @@
   "finance.billing.debitnotes.couldNotLoadTheDebitNoteItMayNotExist": "Error al cargar la nota de débito. Es posible que no exista.",
   "finance.billing.debitnotes.areYouSureYouWantToDeleteDebitNoteThisActionCannotBeUndone2": "¿Estás seguro de que deseas eliminar la nota de débito \"${dn.noteNumber}\"? Esta acción no se puede deshacer.",
   "finance.billing.debitnotes.debitNotesPage": "Mostrando {first} a {last} de {totalRecords} notas de débito",
-  "finance.billing.debitnotes.unableToDeleteTheDebitNote": "No se pudo eliminar la nota de débito."
+  "finance.billing.debitnotes.unableToDeleteTheDebitNote": "No se pudo eliminar la nota de débito.",
+  "finance.billing.debitNotes.permissions.viewList": "Ver notas de débito",
+  "finance.billing.debitNotes.permissions.viewDetail": "Ver detalle de nota de débito",
+  "finance.billing.debitNotes.permissions.delete": "Eliminar nota de débito",
+  "finance.billing.debitNotes.permissions.create": "Crear nota de débito"
 }

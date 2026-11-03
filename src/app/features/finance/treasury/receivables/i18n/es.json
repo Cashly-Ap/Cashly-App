@@ -167,5 +167,14 @@
   "finance.treasury.receivables.unableToLoadPaymentHistory": "Error al cargar el historial de pagos",
   "finance.treasury.receivables.unableToLoadTheCustomerSPaymentHistory": "Error al cargar el historial de pagos del cliente",
   "finance.treasury.receivables.unableToLoadTheInvoicePaymentHistory": "Error al cargar el historial de pagos de la factura",
-  "finance.treasury.receivables.unableToLoadThePaymentReceipt": "Error al cargar el comprobante de pago"
+  "finance.treasury.receivables.unableToLoadThePaymentReceipt": "Error al cargar el comprobante de pago",
+  "finance.treasury.receivables.permissions.viewList": "Ver cuentas por cobrar",
+  "finance.treasury.receivables.permissions.viewDebt": "Ver deuda",
+  "finance.treasury.receivables.permissions.reportPdf": "Cuentas por Cobrar PDF",
+  "finance.treasury.receivables.permissions.payAll": "Pagar todo",
+  "finance.treasury.receivables.permissions.partialPayment": "Pago parcial",
+  "finance.treasury.receivables.permissions.refund": "Reintegro",
+  "finance.treasury.receivables.permissions.advance": "Generar anticipo",
+  "finance.treasury.receivables.permissions.approvePayment": "Aprobar pago",
+  "finance.treasury.receivables.permissions.rejectPayment": "Rechazar pago"
 }

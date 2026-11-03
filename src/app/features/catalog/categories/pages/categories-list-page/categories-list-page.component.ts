@@ -39,6 +39,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
 import { CategoryFilters } from '@features/catalog/categories/services/api/category-api.service';
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-categories-list-page',
@@ -71,6 +72,7 @@ import { CategoryList } from '@features/catalog/categories/models/interfaces/cat
   providers: [provideTranslatedConfirmation()],
 })
 export class CategoriesListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private service = inject(CategoryApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
@@ -122,6 +124,7 @@ export class CategoriesListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => record.description ?? '',
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -222,34 +225,7 @@ export class CategoriesListPageComponent implements OnInit {
   }
 
   onDelete(category: CategoryList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar la categoría "${category.name}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(category.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Categoría eliminada exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar la categoría. Puede tener productos asociados.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('categories', category.id, category.name, () => this.loadWithFilters());
   }
 
   private loadWithFilters(): void {

@@ -21,5 +21,10 @@
   "platform.auth.department.manageSystemDepartments": "Gestiona los departamentos del sistema",
   "platform.auth.department.activeDepartment": "Departamento Activo",
   "platform.auth.department.indicatesWhetherTheDepartmentIsActiveInTheSystem": "Indica si el departamento está activo en el sistema",
-  "platform.auth.department.descriptionCannotExceed500Characters": "La descripción no puede superar 500 caracteres"
+  "platform.auth.department.descriptionCannotExceed500Characters": "La descripción no puede superar 500 caracteres",
+  "platform.auth.departments.permissions.viewList": "Ver departamentos",
+  "platform.auth.departments.permissions.viewDetail": "Ver detalle de departamento",
+  "platform.auth.departments.permissions.edit": "Editar departamento",
+  "platform.auth.departments.permissions.delete": "Eliminar departamento",
+  "platform.auth.departments.permissions.create": "Crear departamento"
 }

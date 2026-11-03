@@ -53,6 +53,7 @@ import {
 import { PurchaseList } from '@features/procurement/purchases/models/interfaces/purchase-list.interface';
 import { PdfViewerService } from '@core/pdf-viewer';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-purchase-list-page',
@@ -91,6 +92,7 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
   providers: [provideTranslatedConfirmation()],
 })
 export class PurchaseListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly purchaseService = inject(PurchaseApplicationService);
   private readonly pdfViewerService = inject(PdfViewerService);
   private readonly router = inject(Router);
@@ -172,6 +174,7 @@ export class PurchaseListPageComponent implements OnInit {
           ],
     label: (record) => record.purchaseNumber,
     description: (record) => `${record.supplierName} · ${record.status}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -277,30 +280,7 @@ export class PurchaseListPageComponent implements OnInit {
   }
 
   onDelete(purchase: PurchaseList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar la compra #${purchase.purchaseNumber}?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.purchaseService.delete(purchase.id).subscribe({
-          next: () => {
-            this.messageService.add(PURCHASE_SUCCESS_MESSAGES.deleted);
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar la compra. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('purchases', purchase.id, purchase.purchaseNumber, () => this.loadWithFilters());
   }
 
   onConfirm(purchase: PurchaseList): void {

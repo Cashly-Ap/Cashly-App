@@ -36,6 +36,7 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { PriceTypeFilters } from '@features/catalog/price-types/services/api/price-type-api.service';
 import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/price-type-list.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-price-types-list-page',
@@ -66,6 +67,7 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
   providers: [provideTranslatedConfirmation()],
 })
 export class PriceTypesListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private service = inject(PriceTypeApplicationService);
   private router = inject(Router);
   private confirmationService = inject(ConfirmationService);
@@ -99,6 +101,7 @@ export class PriceTypesListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => record.active ? 'Activo' : 'Inactivo',
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -166,34 +169,7 @@ export class PriceTypesListPageComponent implements OnInit {
   }
 
   onDelete(priceType: PriceTypeList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el tipo de precio "${priceType.name}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.remove(priceType.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Tipo de precio eliminado exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el tipo de precio.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('price-types', priceType.id, priceType.name, () => this.loadWithFilters());
   }
 
   private loadWithFilters(): void {

@@ -1,6 +1,7 @@
 import { addListNavigationActions } from './list-navigation.config';
 import { MenuItem } from '@core/layouts/models';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { CompanyPermission } from '@features/platform/company/permissions';
 
 export interface MenuCallbacks {
   openListAction: (route: string, action: string, queryParams?: Record<string, string>) => void;
@@ -198,11 +199,6 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       ]),
       group('Contactos', 'pi pi-address-book', [
         page('Clientes', 'pi pi-id-card', '/partners/customers', BusinessModule.CONTACTS_CUSTOMERS),
-        {
-          label: 'Saldo de clientes', icon: 'pi pi-wallet', command: callbacks.openCustomerBalancePicker,
-          allowedRoles: businessRoles, requiredModule: BusinessModule.CONTACTS_CUSTOMERS,
-          requiredAction: 'CUSTOMER_BALANCE',
-        },
         page('Proveedores', 'pi pi-truck', '/partners/suppliers', BusinessModule.CONTACTS_SUPPLIERS),
       ]),
       group('Análisis', 'pi pi-chart-line', [
@@ -212,6 +208,22 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         page('Usuarios', 'pi pi-user', '/platform/users', BusinessModule.USERS),
         page('Roles', 'pi pi-shield', '/platform/roles', BusinessModule.ROLES),
         page('Departamentos', 'pi pi-sitemap', '/platform/departments', BusinessModule.DEPARTMENTS),
+        group('Compañía', 'pi pi-building', [
+          {
+            label: 'Ver compañía',
+            icon: 'pi pi-eye',
+            routerLink: '/platform/company',
+            allowedRoles: businessRoles,
+            requiredPermission: CompanyPermission.VIEW,
+          },
+          {
+            label: 'Editar compañía',
+            icon: 'pi pi-pencil',
+            routerLink: '/platform/company/edit',
+            allowedRoles: businessRoles,
+            requiredPermission: CompanyPermission.EDIT,
+          },
+        ]),
       ]),
     ],
     callbacks,

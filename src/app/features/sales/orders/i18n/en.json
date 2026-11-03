@@ -82,5 +82,15 @@
   "sales.orders.theOrderDataIsInvalidCheckTheInformation": "The order data is invalid. Check the information.",
   "sales.orders.theOrderCannotBeEditedInItsCurrentState": "The order cannot be edited in its current state.",
   "sales.orders.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later.",
-  "sales.orders.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "Unable to convert the order to an invoice. Please try again."
+  "sales.orders.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "Unable to convert the order to an invoice. Please try again.",
+  "sales.orders.permissions.viewList": "View orders",
+  "sales.orders.permissions.viewDetail": "View details of order",
+  "sales.orders.permissions.edit": "Edit order",
+  "sales.orders.permissions.delete": "Delete order",
+  "sales.orders.permissions.create": "Create order",
+  "sales.orders.permissions.reportPdf": "Orders Report PDF",
+  "sales.orders.permissions.downloadPdf": "Download order PDF",
+  "sales.orders.permissions.confirm": "Confirm order",
+  "sales.orders.permissions.convertToInvoice": "Convert to invoice",
+  "sales.orders.permissions.cancel": "Cancel order"
 }

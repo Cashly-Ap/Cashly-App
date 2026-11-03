@@ -1,4 +1,5 @@
 import { MenuItem } from '@core/layouts/models';
+import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { buildMenuItems, MenuCallbacks } from './menu.config';
 
@@ -6,6 +7,13 @@ export interface MenuAreaOrder {
   area: string;
   modules: readonly BusinessModule[];
 }
+
+export interface MenuUseCase {
+  label: string;
+  module: BusinessModule;
+  action: PermissionAction;
+}
+
 
 const noop = (): void => undefined;
 
@@ -49,3 +57,5 @@ export const MENU_AREA_ORDER: readonly MenuAreaOrder[] = navbar.map((area) => {
   );
   return { area: area.label, modules: [...new Set(modules)] };
 });
+
+

@@ -94,6 +94,7 @@ import { WarehouseActionDialogHostComponent } from '@core/layouts/components/war
 import { CashRegisterActionDialogHostComponent } from '@core/layouts/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
 import { PendingPaymentActionDialogHostComponent } from '@core/layouts/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -149,6 +150,7 @@ export type ContentMaxWidth =
     CashRegisterActionDialogHostComponent,
     PendingPaymentActionDialogHostComponent,
     ConfirmDialogModule,
+    DeleteDialogComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
@@ -198,9 +200,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       this.companyService.company()?.legalName ||
       'Cashly',
   );
-  readonly canViewCompany = computed(() =>
-    this.authService.hasPermission(BusinessModule.USERS, 'UPDATE'),
-  );
   private readonly brandingUserId = computed(() => this.currentUser()?.id);
   constructor() {
     const unregisterNavigation = this.keyboardShortcuts.registerNavigation(() =>
@@ -220,12 +219,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       });
     });
   }
-  goToCompany(): void {
-    this.userMenu?.hide();
-    this.closeMobileMenu();
-    void this.router.navigate(['/platform/company']);
-  }
-
   readonly activeModal = signal<
     | 'catalog'
     | 'commercialCatalog'
@@ -330,6 +323,11 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
     return items
       .filter((item) => {
+        if (
+          item.requiredPermission &&
+          !this.authService.hasPermissionCode(item.requiredPermission)
+        )
+          return false;
         if (
           item.requiredModule &&
           !this.authService.hasPermission(item.requiredModule, item.requiredAction ?? 'READ')

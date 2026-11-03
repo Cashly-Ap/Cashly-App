@@ -35,17 +35,27 @@ describe('Current role authorization', () => {
     for (const module of Object.values(BusinessModule))
       expect(authorization.can(module)).toBe(false);
   });
-  it('supports independent read only and selected actions in every module', () => {
-    for (const module of Object.values(BusinessModule)) {
-      auth.currentAccess.set({ ...access, permissions: { [module]: ['READ'] } });
-      expect(authorization.can(module)).toBe(true);
-      expect(authorization.can(module, 'CREATE')).toBe(false);
-      auth.currentAccess.set({ ...access, permissions: { [module]: ['READ', 'CREATE'] } });
-      expect(authorization.can(module, 'CREATE')).toBe(true);
-      expect(authorization.can(module, 'DELETE')).toBe(false);
-    }
+  it('supports independent permissions per module', () => {
+    auth.currentAccess.set({
+      ...access,
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] },
+    });
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS)).toBe(true);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(false);
+    auth.currentAccess.set({
+      ...access,
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['CREATE'] },
+    });
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(true);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS)).toBe(false);
+    auth.currentAccess.set({
+      ...access,
+      permissions: { [BusinessModule.DASHBOARD]: ['READ'] },
+    });
+    expect(authorization.can(BusinessModule.DASHBOARD)).toBe(true);
+    expect(authorization.can(BusinessModule.DASHBOARD, 'CREATE')).toBe(false);
   });
-  it('requires READ and never trusts a custom role name or cached legacy grants', () => {
+  it('maps legacy grants to unique codes and never trusts a custom role name', () => {
     auth.currentUser.set({
       role: 'SUPER_ADMIN',
       modulePermissions: Object.values(BusinessModule),
@@ -56,7 +66,8 @@ describe('Current role authorization', () => {
       permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['UPDATE'] },
     });
     expect(auth.isSuperAdmin()).toBe(false);
-    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'UPDATE')).toBe(false);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'UPDATE')).toBe(true);
+    expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'READ')).toBe(false);
   });
   it('replaces existing grants on a server refresh and fails closed', () => {
     auth.currentAccess.set({

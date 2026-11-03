@@ -227,14 +227,7 @@
                   </h3>
                   <div class="flex flex-wrap gap-2">
                     @for (action of module.actions; track action) {
-                      <app-text-badge
-                        [label]="
-                          'platform.auth.permissionAction' +
-                            action.charAt(0) +
-                            action.slice(1).toLowerCase() | translate
-                        "
-                        variant="label"
-                      />
+                      <app-text-badge [label]="action | translate" variant="label" />
                     }
                   </div>
                 </div>

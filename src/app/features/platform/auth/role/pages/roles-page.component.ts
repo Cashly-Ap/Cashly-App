@@ -25,8 +25,6 @@ import {
   TextInputComponent,
 } from '@core/forms/components';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
-import { PermissionCatalogService } from '../../permissions/services/permission-catalog.service';
-import { PermissionCatalogModule } from '../../permissions/models/permission-catalog.model';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
@@ -45,19 +43,18 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService, SortEvent } from 'primeng/api';
-import { AccessManagementService } from '../../authorization/services/access-management.service';
-import { AuthorizationService } from '../../authorization/services/authorization.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import {
   Department,
   Role,
-  PermissionRegistry,
-  PermissionAction,
-  PermissionMatrix,
-} from '../../authorization/models/access.model';
-import {
-  BusinessModule,
-  BUSINESS_MODULE_LABELS,
-} from '../../user/models/enums/business-module.enum';
+} from '@features/platform/auth/authorization/models/access.model';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
+import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
+import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
+import { CatalogArea } from '@features/platform/auth/permissions/permission-catalog.types';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 @Component({
   selector: 'app-roles-page',
   standalone: true,
@@ -103,6 +100,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RolesPageComponent {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
@@ -215,18 +213,34 @@ export class RolesPageComponent {
     if (mode === 'form' && this.isSystemAdministrator(item)) this.onView(item);
   }
   private readonly service = inject(AccessManagementService);
-  private readonly catalogService = inject(PermissionCatalogService);
   private readonly messages = inject(MessageService);
   private readonly confirmation = inject(ConfirmationService);
   readonly authorization = inject(AuthorizationService);
   readonly module = BusinessModule.ROLES;
-  readonly labels = BUSINESS_MODULE_LABELS;
+  readonly catalogAreas = PERMISSION_CATALOG as readonly CatalogArea[];
   readonly items = signal<Role[]>([]);
-  readonly registry = signal<PermissionRegistry[]>([]);
-  readonly catalog = signal<PermissionCatalogModule[]>([]);
   readonly editing = signal<Partial<Role> | null>(null);
   readonly busy = signal(false);
   readonly search = signal('');
+  readonly allPermissionCodes = this.catalogAreas.flatMap((area) =>
+    area.sections.flatMap((section) =>
+      section.modules.flatMap((module) =>
+        module.permissions.map((permission) => permission.code),
+      ),
+    ),
+  );
+  readonly grantedGroups = computed(() => {
+    const selected = new Set(this.currentPermissions());
+    return this.catalogAreas
+      .flatMap((area) => area.sections.flatMap((section) => section.modules))
+      .map((module) => ({
+        moduleKey: module.moduleKey,
+        permissions: module.permissions.filter((permission) =>
+          selected.has(permission.code),
+        ),
+      }))
+      .filter((group) => group.permissions.length > 0);
+  });
   readonly filteredItems = computed(() => {
     const term = this.search().trim().toLocaleLowerCase();
     return this.items()
@@ -241,53 +255,6 @@ export class RolesPageComponent {
           this.orderDir(),
       );
   });
-  readonly actionLabels: Record<PermissionAction, string> = {
-    READ: 'platform.auth.permissionActionRead',
-    CREATE: 'platform.auth.permissionActionCreate',
-    UPDATE: 'platform.auth.permissionActionUpdate',
-    DELETE: 'platform.auth.permissionActionDelete',
-    EXPORT: 'platform.auth.permissionActionExport',
-    IMPORT: 'platform.auth.permissionActionImport',
-    EXECUTE: 'platform.auth.permissionActionExecute',
-    CONFIRM: 'platform.auth.permissionActionConfirm',
-    CANCEL: 'platform.auth.permissionActionCancel',
-    DUPLICATE: 'platform.auth.permissionActionDuplicate',
-    DETAILS: 'platform.auth.permissionActionDetails', BALANCE: 'platform.auth.permissionActionBalance', HISTORY: 'platform.auth.permissionActionHistory', OPEN: 'platform.auth.permissionActionOpen', CLOSE: 'platform.auth.permissionActionClose', REPORT: 'platform.auth.permissionActionReport', PARTIAL_PAYMENT: 'platform.auth.permissionActionPartialPayment', REFUND: 'platform.auth.permissionActionRefund', ADVANCE: 'platform.auth.permissionActionAdvance',
-    CUSTOMER_BALANCE: 'platform.auth.permissionActionCustomerBalance',
-    REPORT_QUOTES: 'platform.auth.permissionActionReportQuotes',
-    REPORT_ORDERS: 'platform.auth.permissionActionReportOrders',
-    REPORT_PURCHASES: 'platform.auth.permissionActionReportPurchases',
-    REPORT_PRODUCTS: 'platform.auth.permissionActionReportProducts',
-    REPORT_COMMERCIAL_CATALOG: 'platform.auth.permissionActionReportCommercialCatalog',
-    REPORT_STOCK: 'platform.auth.permissionActionReportStock',
-    REPORT_MOVEMENTS: 'platform.auth.permissionActionReportMovements',
-    REPORT_INVOICES: 'platform.auth.permissionActionReportInvoices',
-    REPORT_CASH_REGISTER: 'platform.auth.permissionActionReportCashRegister',
-    REPORT_RECEIVABLES: 'platform.auth.permissionActionReportReceivables',
-    CASH_HISTORY: 'platform.auth.permissionActionCashHistory',
-    INVOICE_DUPLICATE: 'platform.auth.permissionActionInvoiceDuplicate',
-    PAY_WITH_VALIDATION: 'platform.auth.permissionActionPayWithValidation',
-    PAY_DIRECT: 'platform.auth.permissionActionPayDirect',
-    PAY_ALL: 'platform.auth.permissionActionPayAll',
-    PAY_PARTIAL: 'platform.auth.permissionActionPayPartial',
-    APPROVE_PAYMENT: 'platform.auth.permissionActionApprovePayment',
-    REJECT_PAYMENT: 'platform.auth.permissionActionRejectPayment',
-    STOCK: 'platform.auth.permissionActionStock',
-    MOVEMENT_HISTORY: 'platform.auth.permissionActionMovementHistory',
-    RECORD_ENTRY: 'platform.auth.permissionActionRecordEntry',
-    RECORD_EXIT: 'platform.auth.permissionActionRecordExit',
-  };
-  readonly actions: PermissionAction[] = [
-    'READ',
-    'CREATE',
-    'UPDATE',
-    'DELETE',
-    'EXPORT',
-    'IMPORT',
-    'EXECUTE',
-    'CONFIRM',
-    'CANCEL',
-  ];
   private readonly navigationAction = signal<'EDIT' | undefined>(undefined);
   private readonly listNavigation = connectListNavigation({
     records: () => this.pageItems(),
@@ -307,20 +274,13 @@ export class RolesPageComponent {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => record.description,
+    refresh: () => this.load(),
     actions: (record) => this.actionsFor(record),
   });
 
   constructor() {
     this.view.set(this.route.snapshot.data['view'] ?? 'list');
     this.load();
-    this.service.registry().subscribe({
-      next: (registry) => this.registry.set(registry),
-      error: (error) => this.fail(error),
-    });
-    this.catalogService.loadCatalog().subscribe({
-      next: (catalog) => this.catalog.set(catalog),
-      error: () => this.catalog.set([]),
-    });
   }
   load(): void {
     this.loading.set(true);
@@ -340,59 +300,31 @@ export class RolesPageComponent {
   }
   create(): void {
     this.form.reset({ name: '', description: '', active: true });
-    this.editing.set({ name: '', description: '', active: true, permissions: {} });
+    this.editing.set({ name: '', description: '', active: true, permissions: [] });
   }
   edit(item: Role): void {
     this.form.reset({ name: item.name, description: item.description ?? '', active: item.active });
-    this.editing.set({ ...item, permissions: structuredClone(item.permissions) });
+    this.editing.set({ ...item, permissions: normalizePermissions(item.permissions) });
   }
-  moduleLabel(module: BusinessModule): string {
-    return this.labels[module];
+  selected(code: AppPermission): boolean {
+    return this.currentPermissions().includes(code);
   }
-  selected(module: BusinessModule, action: PermissionAction): boolean {
-    if (this.isSystemAdministrator(this.editing()))
-      return (
-        this.registry()
-          .find((entry) => entry.module === module)
-          ?.actions.includes(action) ?? false
-      );
-    return this.editing()?.permissions?.[module]?.includes(action) ?? false;
-  }
-  toggle(module: BusinessModule, action: PermissionAction): void {
+  toggle(code: AppPermission): void {
     const value = this.editing();
-    const entry = this.registry().find((entry) => entry.module === module);
     if (
       !value ||
       this.isSystemAdministrator(value) ||
       this.busy() ||
-      !entry?.actions.includes(action) ||
-       !this.authorization.can(module, action) ||
+      !this.authorization.can(code) ||
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    const permissions: PermissionMatrix = { ...value.permissions };
-    let grants = [...(permissions[module] ?? [])];
-    if (
-      action === 'READ' &&
-      grants.includes('READ') &&
-      grants.some((grant) => !this.authorization.can(module, grant))
-    )
-      return;
-    if (grants.includes(action))
-      grants = action === 'READ' ? [] : grants.filter((a) => a !== action);
-    else {
-      if (
-        action !== 'READ' &&
-        (!entry.actions.includes('READ') || !this.authorization.can(module, 'READ'))
-      )
-        return;
-      grants.push(action);
-       if (entry.actions.includes('READ') && !grants.includes('READ')) grants.unshift('READ');
-    }
-    permissions[module] = grants;
-    this.editing.set({ ...value, permissions });
+    const permissions = new Set(this.currentPermissions());
+    if (permissions.has(code)) permissions.delete(code);
+    else permissions.add(code);
+    this.editing.set({ ...value, permissions: [...permissions] });
   }
-  updatePermissions(permissions: PermissionMatrix): void {
+  updatePermissions(permissions: AppPermission[]): void {
     const value = this.editing();
     if (
       !value ||
@@ -401,7 +333,17 @@ export class RolesPageComponent {
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    this.editing.set({ ...value, permissions });
+    const known = new Set(this.allPermissionCodes);
+    this.editing.set({
+      ...value,
+      permissions: permissions.filter((code) => known.has(code)),
+    });
+  }
+  private currentPermissions(): AppPermission[] {
+    const value = this.editing();
+    if (!value) return [];
+    if (this.isSystemAdministrator(value)) return this.allPermissionCodes;
+    return normalizePermissions(value.permissions);
   }
   submit(): void {
     if (this.form.invalid) {
@@ -420,17 +362,8 @@ export class RolesPageComponent {
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    const permissions = Object.fromEntries(
-      Object.entries(value.permissions ?? {}).flatMap(([module, actions]) => {
-        const entry = this.registry().find((candidate) => candidate.module === module);
-        if (!entry) return [];
-        let validActions = actions.filter((action) => entry.actions.includes(action));
-        if (validActions.includes('PAY_WITH_VALIDATION')) {
-          validActions = validActions.filter((action) => action !== 'PAY_DIRECT');
-        }
-        return validActions.length ? [[module, validActions]] : [];
-      }),
-    ) as PermissionMatrix;
+    const known = new Set(this.allPermissionCodes);
+    const permissions = (value.permissions ?? []).filter((code) => known.has(code));
     this.busy.set(true);
     this.service.saveRole({ ...value, name: value.name.trim(), permissions }).subscribe({
       next: (saved) => {
@@ -450,21 +383,7 @@ export class RolesPageComponent {
     });
   }
   remove(item: Department): void {
-    if (!this.authorization.can(this.module, 'DELETE')) return;
-    this.confirmation.confirm({
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      header: 'Confirmar eliminación',
-      message: `¿Eliminar ${item.name}?`,
-      accept: () => {
-        if (!this.authorization.can(this.module, 'DELETE')) return;
-        this.service
-          .delete('roles', item.id)
-          .subscribe({ next: () => this.load(), error: (error) => this.fail(error) });
-      },
-    });
+    this.deletion.open('roles', item.id, item.name, () => this.load());
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {
     this.messages.add({

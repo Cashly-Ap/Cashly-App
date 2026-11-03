@@ -167,5 +167,14 @@
   "finance.treasury.receivables.unableToLoadPaymentHistory": "Unable to load payment history",
   "finance.treasury.receivables.unableToLoadTheCustomerSPaymentHistory": "Unable to load the customer's payment history",
   "finance.treasury.receivables.unableToLoadTheInvoicePaymentHistory": "Unable to load the invoice payment history",
-  "finance.treasury.receivables.unableToLoadThePaymentReceipt": "Unable to load the payment receipt"
+  "finance.treasury.receivables.unableToLoadThePaymentReceipt": "Unable to load the payment receipt",
+  "finance.treasury.receivables.permissions.viewList": "View accounts receivable",
+  "finance.treasury.receivables.permissions.viewDebt": "View debt",
+  "finance.treasury.receivables.permissions.reportPdf": "Accounts Receivable PDF",
+  "finance.treasury.receivables.permissions.payAll": "Pay in full",
+  "finance.treasury.receivables.permissions.partialPayment": "Partial payment",
+  "finance.treasury.receivables.permissions.refund": "Refund",
+  "finance.treasury.receivables.permissions.advance": "Create advance",
+  "finance.treasury.receivables.permissions.approvePayment": "Approve payment",
+  "finance.treasury.receivables.permissions.rejectPayment": "Reject payment"
 }

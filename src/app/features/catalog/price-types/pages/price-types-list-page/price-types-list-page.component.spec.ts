@@ -14,6 +14,7 @@ import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting
 import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
 import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('PriceTypesListPageComponent', () => {
   let component: PriceTypesListPageComponent;
@@ -174,19 +175,20 @@ describe('PriceTypesListPageComponent', () => {
     expect(loadAllSpy).not.toHaveBeenCalled();
   });
 
-  it('should call service.remove when confirm accept is called', () => {
+  it('should open the global delete dialog on onDelete', () => {
     fixture.detectChanges();
+    const deletion = TestBed.inject(DeleteDialogService);
     component.onDelete(mockPriceType);
-    const confirmCall = (confirmationService.confirm as any).mock?.calls?.[0]?.[0];
-    if (confirmCall) {
-      confirmCall.accept();
-      expect(mockService.remove).toHaveBeenCalledWith('pt-001');
-    }
+    expect(deletion.request()).toEqual({
+      resource: 'price-types',
+      id: 'pt-001',
+      label: 'Retail',
+    });
   });
 
-  it('should only offer delete action when price type is deletable', () => {
+  it('should always offer the delete action and leave eligibility to the backend', () => {
     const nonDeletable: PriceTypeList = { ...mockPriceType, deletable: false };
     const actions = component.actionsFor(nonDeletable);
-    expect(actions.some((a) => a.label === 'Eliminar')).toBe(false);
+    expect(actions.some((a) => a.label === 'Eliminar')).toBe(true);
   });
 });

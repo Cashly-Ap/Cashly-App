@@ -44,6 +44,7 @@ import { CategoryApplicationService } from '@features/catalog/categories/service
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 import { ProductFilters } from '@features/catalog/products/services/api/product-api.service';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-products-list-page',
@@ -78,6 +79,7 @@ import { ProductList } from '@features/catalog/products/models/interfaces/produc
   providers: [provideTranslatedConfirmation()],
 })
 export class ProductsListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private service = inject(ProductApplicationService);
   private categoryService = inject(CategoryApplicationService);
   private priceTypeService = inject(PriceTypeApplicationService);
@@ -166,6 +168,7 @@ export class ProductsListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
     description: (record) => `${record.code} · ${record.categoryName}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -297,35 +300,7 @@ export class ProductsListPageComponent implements OnInit {
   }
 
   onDelete(product: ProductList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el producto "${product.name}"?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.service.delete(product.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Producto eliminado exitosamente',
-              life: 3000,
-            });
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail:
-                'No se puede eliminar el producto porque tiene movimientos o documentos asociados.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('products', product.id, product.name, () => this.loadWithFilters());
   }
 
   private loadWithFilters(): void {

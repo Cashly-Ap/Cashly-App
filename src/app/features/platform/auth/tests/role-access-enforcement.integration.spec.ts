@@ -73,9 +73,9 @@ describe('authoritative role permissions', () => {
     },
   );
 
-  it('denies UPDATE if the prerequisite READ grant is missing', () => {
+  it('grants UPDATE independently of READ', () => {
     auth.currentAccess.set(access(['UPDATE']));
-    expect(auth.hasPermission(BusinessModule.USERS, 'UPDATE')).toBe(false);
+    expect(auth.hasPermission(BusinessModule.USERS, 'UPDATE')).toBe(true);
   });
 
   it('honors assigned grants regardless of the legacy user role label', () => {

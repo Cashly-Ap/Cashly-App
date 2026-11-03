@@ -31,6 +31,7 @@ export interface ListNavigationOptions<T> {
   acceptsAction?: (label: string) => boolean;
   onActionChange?: (label: string | null) => void;
   globalActions?: () => readonly ListAction[];
+  refresh?: () => void;
 }
 
 export interface NavigationRecord {
@@ -61,8 +62,10 @@ export interface ListNavigationRegistration<T> {
   owner: object;
   module: BusinessModule | null;
   records: () => readonly T[];
+  label?: (record: T) => string;
   actions: (record: T) => readonly ListAction[];
   extras?: (record: T) => readonly ListAction[];
+  refresh?: () => void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -253,8 +256,10 @@ export function connectListNavigation<T>(options: ListNavigationOptions<T>): voi
     owner,
     module: moduleForUrl(router.url),
     records: options.records,
+    label: options.label,
     actions: options.actions,
     extras: options.extras,
+    refresh: options.refresh,
   });
   route.queryParamMap.pipe(takeUntilDestroyed(destroyRef)).subscribe((params) => {
     const action = params.get('navAction');

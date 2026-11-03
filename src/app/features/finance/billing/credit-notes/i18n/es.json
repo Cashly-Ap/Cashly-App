@@ -53,5 +53,9 @@
   "finance.billing.creditnotes.creditNotesPage": "Mostrando {first} a {last} de {totalRecords} notas de crédito",
   "finance.billing.creditnotes.unableToDeleteTheCreditNote": "No se pudo eliminar la nota de crédito.",
   "finance.billing.creditnotes.unableToCreateTheCreditNote": "Error al crear la nota de crédito.",
-  "finance.billing.creditnotes.reviewTheRequiredFieldsBeforeContinuing": "Revise los campos requeridos antes de continuar."
+  "finance.billing.creditnotes.reviewTheRequiredFieldsBeforeContinuing": "Revise los campos requeridos antes de continuar.",
+  "finance.billing.creditNotes.permissions.viewList": "Ver notas de crédito",
+  "finance.billing.creditNotes.permissions.viewDetail": "Ver detalle de nota de crédito",
+  "finance.billing.creditNotes.permissions.delete": "Eliminar nota de crédito",
+  "finance.billing.creditNotes.permissions.create": "Crear nota de crédito"
 }

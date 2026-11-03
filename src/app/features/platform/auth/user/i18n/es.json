@@ -171,5 +171,10 @@
   "platform.auth.permissionActionEdit": "Editar",
   "platform.auth.permissionActionDelete": "Eliminar",
   "platform.auth.permissionActionExport": "Exportar",
-  "platform.auth.permissionActionExecute": "Ejecutar"
+  "platform.auth.permissionActionExecute": "Ejecutar",
+  "platform.auth.users.permissions.viewList": "Ver usuarios",
+  "platform.auth.users.permissions.viewDetail": "Ver detalle de usuario",
+  "platform.auth.users.permissions.edit": "Editar usuario",
+  "platform.auth.users.permissions.delete": "Eliminar usuario",
+  "platform.auth.users.permissions.create": "Crear usuario"
 }

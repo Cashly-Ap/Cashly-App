@@ -21,5 +21,6 @@
   "analytics.dashboard.noCustomerData": "No customer data",
   "analytics.dashboard.recentActivity": "Recent activity",
   "analytics.dashboard.number": "Number",
-  "analytics.dashboard.noRecentActivity": "No recent activity"
+  "analytics.dashboard.noRecentActivity": "No recent activity",
+  "analytics.dashboard.permissions.view": "Dashboard"
 }

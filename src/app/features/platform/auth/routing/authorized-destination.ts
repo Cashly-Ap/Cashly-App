@@ -33,9 +33,16 @@ export function authorizedDestination(
       destination.modules.every((module) => auth.hasModulePermission(module)) &&
       (!destination.superAdmin || auth.isSuperAdmin()),
   );
-  return (
-    permitted.find((destination) => area && destination.path.startsWith('/' + area + '/'))?.path ??
-    (area === 'platform' ? undefined : permitted[0]?.path) ??
-    '/platform/auth/configuration'
+  const areaDestination = permitted.find(
+    (destination) => area && destination.path.startsWith('/' + area + '/'),
   );
+  if (areaDestination) return areaDestination.path;
+  if (area === 'analytics') {
+    return (
+      permitted.find((destination) => destination.path === '/inventory/warehouses')?.path ??
+      '/platform/auth/configuration'
+    );
+  }
+  if (area) return '/platform/auth/configuration';
+  return permitted[0]?.path ?? '/platform/auth/configuration';
 }

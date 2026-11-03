@@ -75,5 +75,12 @@
   "catalog.products.labels.aNameIsRequired": "A name is required",
   "catalog.products.labels.aCategoryIsRequired": "A category is required",
   "catalog.products.labels.searchProducts": "Search products...",
-  "catalog.products.messages.couldNotCreateTheProduct": "Could not create the product."
+  "catalog.products.messages.couldNotCreateTheProduct": "Could not create the product.",
+  "catalog.products.permissions.viewList": "View products",
+  "catalog.products.permissions.viewDetail": "View details of product",
+  "catalog.products.permissions.edit": "Edit product",
+  "catalog.products.permissions.delete": "Delete product",
+  "catalog.products.permissions.create": "Create product",
+  "catalog.products.permissions.reportPdf": "Products Report PDF",
+  "catalog.products.permissions.commercialCatalogPdf": "Commercial Catalog PDF"
 }

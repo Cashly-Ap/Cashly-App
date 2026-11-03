@@ -58,6 +58,7 @@ import {
 } from '@features/sales/orders/models/enums/order-status.enum';
 import { OrderList } from '@features/sales/orders/models/interfaces/order-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-order-list-page',
@@ -97,6 +98,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   providers: [provideTranslatedConfirmation()],
 })
 export class OrderListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly orderService = inject(OrderApplicationService);
   private readonly orderPdfApi = inject(OrderPdfApiService);
   private readonly router = inject(Router);
@@ -171,6 +173,7 @@ export class OrderListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.orderNumber,
     description: (record) => `${record.customerAlias} · ${record.status}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -285,35 +288,7 @@ export class OrderListPageComponent implements OnInit {
   }
 
   onDelete(order: OrderList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el pedido #${order.orderNumber}?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.orderService.delete(order.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Pedido eliminado exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el pedido. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('orders', order.id, order.orderNumber, () => this.loadWithFilters());
   }
 
   onConfirm(order: OrderList): void {

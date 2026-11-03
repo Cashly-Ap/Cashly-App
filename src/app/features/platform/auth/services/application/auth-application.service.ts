@@ -6,7 +6,12 @@ import {
   CurrentAccess,
   PermissionAction,
   ACCESS_REFRESH_REQUEST,
-} from '../../authorization/models/access.model';
+} from '@features/platform/auth/authorization/models/access.model';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
+import {
+  legacyPermission,
+  normalizePermissions,
+} from '@features/platform/auth/authorization/models/legacy-permission';
 import { tap, finalize, shareReplay } from 'rxjs/operators';
 import { AuthApiService } from '@features/platform/auth/services/api/auth-api.service';
 import {
@@ -208,9 +213,17 @@ export class AuthService {
   }
 
   hasPermission(module: BusinessModule, action: PermissionAction = 'READ'): boolean {
+    const code = legacyPermission(module, action);
+    return code ? this.hasPermissionCode(code) : false;
+  }
+
+  hasPermissionCode(code: AppPermission | string): boolean {
     if (this.isSuperAdmin()) return true;
-    const grants = this.currentAccess()?.permissions[module] ?? [];
-    return grants.includes('READ') && grants.includes(action);
+    const permissions = this.currentAccess()?.permissions;
+    const codes = Array.isArray(permissions)
+      ? permissions
+      : normalizePermissions(permissions);
+    return codes.includes(code as AppPermission);
   }
 
   hasModulePermission(module: BusinessModule): boolean {
@@ -224,6 +237,10 @@ export class AuthService {
         context: new HttpContext().set(ACCESS_REFRESH_REQUEST, true),
       })
       .pipe(
+        map((access) => ({
+          ...access,
+          permissions: normalizePermissions(access.permissions),
+        })),
         tap({
           next: (access) => this.currentAccess.set(access),
           error: () => this.currentAccess.set(null),

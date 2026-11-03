@@ -85,5 +85,14 @@
   "procurement.purchases.unableToConnectToTheServerCheckYourInternetConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet.",
   "procurement.purchases.thePurchaseDataIsInvalidCheckTheInformation": "Los datos de la compra son incorrectos. Verifica la información.",
   "procurement.purchases.thePurchaseCannotBeEditedInItsCurrentState": "La compra no puede ser modificada en su estado actual.",
-  "procurement.purchases.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde."
+  "procurement.purchases.internalServerErrorPleaseTryAgainLater": "Error interno del servidor. Por favor, intenta más tarde.",
+  "procurement.purchases.permissions.viewList": "Ver compras",
+  "procurement.purchases.permissions.viewDetail": "Ver detalle de compra",
+  "procurement.purchases.permissions.edit": "Editar compra",
+  "procurement.purchases.permissions.delete": "Eliminar compra",
+  "procurement.purchases.permissions.create": "Crear compra",
+  "procurement.purchases.permissions.reportPdf": "Reporte de Compras PDF",
+  "procurement.purchases.permissions.downloadPdf": "Descargar PDF de compra",
+  "procurement.purchases.permissions.confirm": "Confirmar compra",
+  "procurement.purchases.permissions.cancel": "Cancelar compra"
 }

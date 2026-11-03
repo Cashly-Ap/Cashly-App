@@ -88,8 +88,8 @@ describe('ConfigurationPageComponent', () => {
     const { text } = render();
     for (const value of [
       'Presupuestos',
-      'Consultar',
-      'Crear',
+      'Ver presupuestos',
+      'Crear presupuesto',
       'Editar perfil',
       'Cambiar contraseña',
     ])

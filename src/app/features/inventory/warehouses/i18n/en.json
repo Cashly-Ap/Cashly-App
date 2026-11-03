@@ -142,5 +142,16 @@
   "inventory.warehouses.countMovementTypes": "{count} movement types",
   "inventory.warehouses.paginationMovements": "{first} - {last} of {totalRecords} movements",
   "inventory.warehouses.paginationMovementTypes": "{first} - {last} of {totalRecords} movement types",
-  "inventory.warehouses.searchByProductCodeOrReference": "Search by product, code, reference or warehouse..."
+  "inventory.warehouses.searchByProductCodeOrReference": "Search by product, code, reference or warehouse...",
+  "inventory.warehouses.permissions.viewList": "View warehouses",
+  "inventory.warehouses.permissions.viewDetail": "View details of warehouse",
+  "inventory.warehouses.permissions.edit": "Edit warehouse",
+  "inventory.warehouses.permissions.delete": "Delete warehouse",
+  "inventory.warehouses.permissions.create": "Create warehouse",
+  "inventory.warehouses.permissions.viewStock": "View stock",
+  "inventory.warehouses.permissions.movementHistory": "Movement history",
+  "inventory.warehouses.permissions.recordEntry": "Record entry",
+  "inventory.warehouses.permissions.recordExit": "Record exit",
+  "inventory.warehouses.permissions.reportStock": "Stock",
+  "inventory.warehouses.permissions.reportMovements": "Movements"
 }

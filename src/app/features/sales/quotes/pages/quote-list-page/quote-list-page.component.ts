@@ -56,6 +56,7 @@ import {
 } from '@features/sales/quotes/models/enums/quote-status.enum';
 import { QuoteList } from '@features/sales/quotes/models/interfaces/quote-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 @Component({
   selector: 'app-quote-list-page',
@@ -94,6 +95,7 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
   providers: [provideTranslatedConfirmation()],
 })
 export class QuoteListPageComponent implements OnInit {
+  private readonly deletion = inject(DeleteDialogService);
   private readonly quoteService = inject(QuoteApplicationService);
   private readonly pdfViewerService = inject(PdfViewerService);
   private readonly router = inject(Router);
@@ -164,6 +166,7 @@ export class QuoteListPageComponent implements OnInit {
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.quoteNumber,
     description: (record) => `${record.customerName} · ${record.status}`,
+    refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
 
@@ -268,35 +271,7 @@ export class QuoteListPageComponent implements OnInit {
   }
 
   onDelete(quote: QuoteList): void {
-    this.confirmationService.confirm({
-      message: `¿Está seguro de que desea eliminar el presupuesto #${quote.quoteNumber}?`,
-      header: 'Confirmar Eliminación',
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Sí, eliminar',
-      rejectLabel: 'Cancelar',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.quoteService.delete(quote.id).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Éxito',
-              detail: 'Presupuesto eliminado exitosamente',
-              life: 3000,
-            });
-            this.loadWithFilters();
-          },
-          error: () => {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al eliminar el presupuesto. Por favor, intente nuevamente.',
-              life: 5000,
-            });
-          },
-        });
-      },
-    });
+    this.deletion.open('quotes', quote.id, quote.quoteNumber, () => this.loadWithFilters());
   }
 
   onConvertToOrder(quote: QuoteList): void {
