@@ -247,12 +247,6 @@
     }
   </div>
 </div>
-<app-cancel-purchase-dialog
-  [visible]="cancelDialogVisible()"
-  [purchaseNumber]="purchaseToCancel()?.purchaseNumber ?? null"
-  (confirmed)="onCancelDialogConfirmed($event)"
-  (cancelled)="onCancelDialogDismissed()"
-/>
 <app-confirm-purchase-dialog
   [visible]="confirmDialogVisible()"
   [purchaseId]="purchaseToConfirm()?.id ?? null"

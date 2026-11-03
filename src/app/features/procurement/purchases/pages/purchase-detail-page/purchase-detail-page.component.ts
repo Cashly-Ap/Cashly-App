@@ -29,14 +29,13 @@ import {
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
-import { CancelPurchaseDialogComponent } from '@features/procurement/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 @Component({
   selector: 'app-purchase-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CodeBadgeComponent,
-    CancelPurchaseDialogComponent,
     BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
@@ -62,12 +61,12 @@ export class PurchaseDetailPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly purchaseService = inject(PurchaseApplicationService);
   private readonly messageService = inject(MessageService);
+  private readonly cancellation = inject(CancelDialogService);
 
   readonly purchase = this.purchaseService.currentPurchase;
   readonly loading = this.purchaseService.loading;
 
   readonly PurchaseStatus = PurchaseStatus;
-  readonly cancelDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -96,36 +95,11 @@ export class PurchaseDetailPageComponent implements OnInit {
   }
 
   onCancelPurchase(): void {
-    this.cancelDialogVisible.set(true);
-  }
-
-  onCancelDialogConfirmed(request: { reason: string; notes: string }): void {
     const purchase = this.purchase();
     if (!purchase) return;
-    this.cancelDialogVisible.set(false);
-    this.purchaseService.cancel(purchase.id, request).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Compra cancelada exitosamente',
-          life: 3000,
-        });
-        this.purchaseService.loadById(purchase.id).subscribe();
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cancelar la compra. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onCancelDialogDismissed(): void {
-    this.cancelDialogVisible.set(false);
+    this.cancellation.open('purchases', purchase.id, purchase.purchaseNumber, () =>
+      this.purchaseService.loadById(purchase.id).subscribe(),
+    );
   }
 
   getStatusLabel(status: PurchaseStatus): string {

@@ -48,7 +48,6 @@ import {
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
-import { CancelPurchaseDialogComponent } from '@features/procurement/purchases/components/cancel-purchase-dialog/cancel-purchase-dialog.component';
 import { ConfirmPurchaseDialogComponent } from '@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApplicationService } from '@features/procurement/purchases/services/application/purchase-application.service';
 import { PurchaseFilters } from '@features/procurement/purchases/services/api/purchase-api.service';
@@ -61,6 +60,7 @@ import { PurchaseList } from '@features/procurement/purchases/models/interfaces/
 import { PdfViewerService } from '@core/pdf-viewer';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
@@ -100,7 +100,6 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     ListContainerComponent,
     ListActionButtonsComponent,
     TextBadgeComponent,
-    CancelPurchaseDialogComponent,
     ConfirmPurchaseDialogComponent,
   ],
   templateUrl: './purchase-list-page.component.html',
@@ -108,6 +107,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
 })
 export class PurchaseListPageComponent implements OnInit {
   private readonly deletion = inject(DeleteDialogService);
+  private readonly cancellation = inject(CancelDialogService);
   private readonly purchaseService = inject(PurchaseApplicationService);
   private readonly pdfViewerService = inject(PdfViewerService);
   private readonly router = inject(Router);
@@ -125,9 +125,6 @@ export class PurchaseListPageComponent implements OnInit {
 
   readonly confirmDialogVisible = signal(false);
   readonly purchaseToConfirm = signal<PurchaseList | null>(null);
-
-  readonly cancelDialogVisible = signal(false);
-  readonly purchaseToCancel = signal<PurchaseList | null>(null);
 
   readonly orderBy = signal('createdAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
@@ -306,35 +303,9 @@ export class PurchaseListPageComponent implements OnInit {
   }
 
   onCancelPurchase(purchase: PurchaseList): void {
-    this.purchaseToCancel.set(purchase);
-    this.cancelDialogVisible.set(true);
-  }
-
-  onCancelDialogConfirmed(request: { reason: string; notes: string }): void {
-    const purchase = this.purchaseToCancel();
-    if (!purchase) return;
-    this.cancelDialogVisible.set(false);
-    this.purchaseService.cancel(purchase.id, request).subscribe({
-      next: () => {
-        this.purchaseToCancel.set(null);
-        this.messageService.add(PURCHASE_SUCCESS_MESSAGES.cancelled);
-        this.loadWithFilters();
-      },
-      error: () => {
-        this.purchaseToCancel.set(null);
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al cancelar la compra. Por favor, intente nuevamente.',
-          life: 5000,
-        });
-      },
-    });
-  }
-
-  onCancelDialogDismissed(): void {
-    this.cancelDialogVisible.set(false);
-    this.purchaseToCancel.set(null);
+    this.cancellation.open('purchases', purchase.id, purchase.purchaseNumber, () =>
+      this.loadWithFilters(),
+    );
   }
 
   onDownloadPdf(purchase: PurchaseList): void {
