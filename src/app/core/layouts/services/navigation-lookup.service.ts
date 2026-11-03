@@ -21,17 +21,11 @@ import { AccessManagementService } from '@features/platform/auth/authorization/s
 import { TranslationService } from '@core/i18n/translation.service';
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
-import {
-  ReceivablesActionDialogService,
-  ReceivablesActionKind,
-} from './receivables-action-dialog.service';
-import { InvoiceActionDialogService, InvoiceActionKind } from './invoice-action-dialog.service';
-import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
+import { NavigationActionService } from '@shared/services/navigation-action.service';
 import {
   CashRegisterActionDialogService,
   CashRegisterActionKind,
 } from './cash-register-action-dialog.service';
-import { PendingPaymentActionDialogService } from './pending-payment-action-dialog.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 import { PdfActionService } from '@shared/services/pdf-action.service';
@@ -40,44 +34,6 @@ const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
 };
-
-const RECEIVABLES_ACTIONS: readonly string[] = [
-  'Ver deuda',
-  'Pagar todo',
-  'Pago parcial',
-  'Reintegro',
-  'Generar anticipo',
-];
-
-function receivablesActionKind(label: string): ReceivablesActionKind {
-  switch (label) {
-    case 'Ver deuda':
-      return 'view';
-    case 'Pagar todo':
-      return 'pay_all';
-    case 'Pago parcial':
-      return 'pay_partial';
-    case 'Reintegro':
-      return 'refund';
-    case 'Generar anticipo':
-      return 'advance';
-    default:
-      return 'view';
-  }
-}
-
-function invoiceActionKind(label: string): InvoiceActionKind {
-  switch (label) {
-    case 'Confirmar':
-      return 'confirm';
-    case 'Cancelar':
-      return 'cancel';
-    case 'Duplicar':
-      return 'duplicate';
-    default:
-      return 'confirm';
-  }
-}
 
 function cashRegisterActionKind(label: string): CashRegisterActionKind {
   switch (label) {
@@ -100,11 +56,8 @@ export class NavigationLookupService {
   private readonly translations = inject(TranslationService);
   private readonly messages = inject(MessageService);
   private readonly actionDialogs = inject(ActionDialogService);
-  private readonly receivablesActions = inject(ReceivablesActionDialogService);
-  private readonly invoiceActions = inject(InvoiceActionDialogService);
-  private readonly warehouseActions = inject(WarehouseActionDialogService);
+  private readonly navigationActions = inject(NavigationActionService);
   private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
-  private readonly pendingPaymentActions = inject(PendingPaymentActionDialogService);
   private readonly deletion = inject(DeleteDialogService);
   private readonly cancellation = inject(CancelDialogService);
   private readonly pdfActions = inject(PdfActionService);
@@ -172,17 +125,6 @@ export class NavigationLookupService {
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
-    const receivablesAction =
-      route === '/finance/treasury/receivables' && RECEIVABLES_ACTIONS.includes(label);
-    const invoiceAction =
-      route === '/finance/billing/invoices' &&
-      ['Confirmar', 'Cancelar', 'Duplicar'].includes(label);
-    const warehouseAction =
-      route === '/inventory/warehouses' &&
-      ['Registrar entrada', 'Registrar salida'].includes(label);
-    const pendingPaymentAction =
-      route === '/finance/treasury/receivables' &&
-      ['Aprobar pago', 'Rechazar pago'].includes(label);
     const records = computed<NavigationRecord[]>(() =>
       items().map((item) => ({
         id: item.id,
@@ -215,44 +157,12 @@ export class NavigationLookupService {
               void this.router.navigate([route, item.id, ...recordPath], { queryParams });
               return;
             }
-            if (receivablesAction) {
-              this.receivablesActions.open({
-                customerId: item.id,
-                customerName: item.label,
-                action: receivablesActionKind(label),
-              });
-              return;
-            }
-            if (invoiceAction) {
-              this.invoiceActions.open({
-                invoiceId: item.id,
-                invoiceNumber: item.label,
-                action: invoiceActionKind(label),
-              });
-              return;
-            }
-            if (warehouseAction) {
-              this.warehouseActions.open({
-                warehouseId: item.id,
-                warehouseName: item.label,
-                operation: label === 'Registrar entrada' ? 'entry' : 'exit',
-              });
-              return;
-            }
-            if (pendingPaymentAction) {
-              this.pendingPaymentActions.open({
-                paymentId: item.id,
-                action: label === 'Aprobar pago' ? 'approve' : 'reject',
-              });
-              return;
-            }
-            void this.router.navigate([route], {
-              queryParams: {
-                ...queryParams,
-                navAction: label,
-                navRecord: item.id,
-                navSearch: item.label,
-              },
+            if (this.navigationActions.execute(resource, label, item)) return;
+            this.messages.add({
+              severity: 'warn',
+              summary: label,
+              detail: 'Esta acción todavía no está disponible.',
+              life: 4000,
             });
           },
         }),

@@ -15,6 +15,7 @@ import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 import { NavigationLookupService } from './navigation-lookup.service';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { ACTION_DIALOG_HANDLERS } from '@shared/services/action-dialog-handlers.token';
+import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/navigation-action-handlers.providers';
 import { ConfirmOrderDialogWrapperComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.wrapper';
 import {
   ReceivablesActionDialogService,
@@ -82,6 +83,7 @@ describe('Navbar lookup without navigation', () => {
             component: ConfirmOrderDialogWrapperComponent,
           },
         },
+        ...NAVIGATION_ACTION_HANDLER_PROVIDERS,
       ],
     });
     lookup = TestBed.inject(NavigationLookupService);
