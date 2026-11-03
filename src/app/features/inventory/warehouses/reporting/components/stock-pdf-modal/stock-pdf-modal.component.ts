@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -20,15 +19,18 @@ import { CategoryApplicationService } from '@features/catalog/categories/service
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { StockPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/stock-pdf-filters.interface';
 
+import { ReportPdfModalComponent } from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';
 @Component({
   selector: 'app-stock-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ReportPdfModalComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,
-    DialogModule,
     ButtonModule,
     SelectModule,
     ProgressSpinnerModule,

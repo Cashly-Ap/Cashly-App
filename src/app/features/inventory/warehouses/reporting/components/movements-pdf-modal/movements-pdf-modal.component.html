@@ -1,12 +1,9 @@
-<p-dialog
+<app-report-pdf-modal
+  titleKey="inventory.warehouses.movementHistory2"
+  width="500px"
   [visible]="visible()"
   (visibleChange)="visibleChange.emit($event)"
-  (onShow)="loadFilters()"
-  [modal]="true"
-  [style]="{ width: '500px' }"
-  [header]="'inventory.warehouses.movementHistory2' | translate"
-  [draggable]="false"
-  [resizable]="false"
+  (show)="loadFilters()"
 >
   @if (loading()) {
     <div class="flex justify-center py-10">
@@ -15,7 +12,9 @@
   } @else {
     <div class="flex flex-col gap-4 pt-2">
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'inventory.warehouses.warehouse' | translate }}</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+          'inventory.warehouses.warehouse' | translate
+        }}</label>
         <p-select
           [options]="warehouseOptions() | translateOptions: true"
           [(ngModel)]="warehouseId"
@@ -28,9 +27,9 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300"
-          >{{ 'inventory.warehouses.movementType' | translate }}</label
-        >
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+          'inventory.warehouses.movementType' | translate
+        }}</label>
         <p-select
           [options]="movementTypeOptions | translateOptions"
           [(ngModel)]="movementType"
@@ -43,7 +42,9 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'finance.billing.invoices.from' | translate }}</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+          'finance.billing.invoices.from' | translate
+        }}</label>
         <p-datepicker
           [(ngModel)]="from"
           dateFormat="dd/mm/yy"
@@ -54,7 +55,9 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{ 'finance.billing.invoices.to' | translate }}</label>
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-300">{{
+          'finance.billing.invoices.to' | translate
+        }}</label>
         <p-datepicker
           [(ngModel)]="to"
           dateFormat="dd/mm/yy"
@@ -66,7 +69,7 @@
     </div>
   }
 
-  <ng-template pTemplate="footer">
+  <ng-container reportFooter>
     <div class="flex gap-2 justify-end">
       <p-button
         [appPermissionModule]="'INVENTORY_WAREHOUSES'"
@@ -86,5 +89,5 @@
         severity="primary"
       />
     </div>
-  </ng-template>
-</p-dialog>
+  </ng-container>
+</app-report-pdf-modal>

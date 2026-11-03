@@ -130,7 +130,7 @@
                   </p-table>
                 </div>
                 <div class="px-4 sm:px-6 py-3">
-                  <p-paginator
+                  <app-paginator
                     [first]="first()"
                     [rows]="rows()"
                     [totalRecords]="filteredItems().length"
@@ -139,7 +139,7 @@
                     [currentPageReportTemplate]="
                       'platform.auth.showingFirstToLastOfTotalrecordsDepartments' | translate
                     "
-                    (onPageChange)="onPageChange($event)"
+                    (pageChange)="onPageChange($event)"
                   />
                 </div>
               }
@@ -187,7 +187,7 @@
                 }
               </div>
               <div class="px-4 py-3 mt-2">
-                <p-paginator
+                <app-paginator
                   [first]="first()"
                   [rows]="rows()"
                   [totalRecords]="filteredItems().length"
@@ -196,7 +196,7 @@
                   [currentPageReportTemplate]="
                     'platform.auth.showingFirstToLastOfTotalrecordsDepartments' | translate
                   "
-                  (onPageChange)="onPageChange($event)"
+                  (pageChange)="onPageChange($event)"
                 />
               </div>
             }

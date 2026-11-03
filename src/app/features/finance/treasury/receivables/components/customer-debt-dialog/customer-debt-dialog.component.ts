@@ -79,10 +79,12 @@ interface BalanceFilterOption {
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { listAction } from '@shared/components/list/list-action-builders';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-customer-debt-dialog',
   standalone: true,
   imports: [
+    PaginatorComponent,
     CancelButtonComponent,
     PanelCardComponent,
     TranslateOptionsPipe,

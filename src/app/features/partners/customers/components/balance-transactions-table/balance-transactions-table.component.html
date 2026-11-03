@@ -53,7 +53,7 @@
     </div>
 
     @if (totalRecords() > 0) {
-      <p-paginator
+      <app-paginator
         styleClass="mt-4"
         [first]="first()"
         [rows]="rows()"
@@ -66,7 +66,7 @@
           'partners.customers.labels.firstLastOfTotalrecords' | translate
         "
         dropdownAppendTo="body"
-        (onPageChange)="onPage($event)"
+        (pageChange)="onPage($event)"
       />
     }
   }

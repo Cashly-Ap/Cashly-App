@@ -538,16 +538,14 @@
 
         @if (totalElements() > 0) {
           <div class="border-t border-surface-100 px-2 py-3 dark:border-surface-800 sm:px-4">
-            <p-paginator
+            <app-paginator
               [first]="page() * rows()"
               [rows]="rows()"
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
               [currentPageReportTemplate]="paginationLabel()"
-              (onPageChange)="
-                onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? rows() })
-              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? rows() })"
             />
           </div>
         }

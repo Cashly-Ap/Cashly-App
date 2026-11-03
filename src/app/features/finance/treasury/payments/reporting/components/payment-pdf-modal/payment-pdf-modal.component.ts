@@ -2,23 +2,23 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PaymentPdfApiService } from '@features/finance/treasury/payments/reporting/services/api/payment-pdf-api.service';
 import { MessageService } from 'primeng/api';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { ReportPdfModalComponent } from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';
 @Component({
   selector: 'app-payment-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReportPdfModalComponent,
     CancelButtonComponent,
     TranslatePipe,
     PermissionDirective,
     CommonModule,
-    DialogModule,
     ButtonModule,
   ],
   templateUrl: './payment-pdf-modal.component.html',

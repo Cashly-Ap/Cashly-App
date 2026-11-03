@@ -332,7 +332,7 @@
       <div
         class="hidden md:flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
       >
-        <p-paginator
+        <app-paginator
           [first]="invoiceFirst()"
           [rows]="invoiceRows()"
           [totalRecords]="invoiceTotalRecords()"
@@ -341,7 +341,7 @@
           [currentPageReportTemplate]="
             'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
           "
-          (onPageChange)="onInvoicePageChange($event)"
+          (pageChange)="onInvoicePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
         />
@@ -349,7 +349,7 @@
       <div
         class="md:hidden flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
       >
-        <p-paginator
+        <app-paginator
           [first]="invoiceFirst()"
           [rows]="invoiceRows()"
           [totalRecords]="invoiceTotalRecords()"
@@ -360,7 +360,7 @@
           [currentPageReportTemplate]="
             'finance.treasury.receivables.firstLastOfTotalrecords' | translate
           "
-          (onPageChange)="onInvoicePageChange($event)"
+          (pageChange)="onInvoicePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
         />
@@ -673,7 +673,7 @@
       <div
         class="hidden md:flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
       >
-        <p-paginator
+        <app-paginator
           [first]="balanceFirst()"
           [rows]="balanceRows()"
           [totalRecords]="balanceTotalRecords()"
@@ -682,7 +682,7 @@
           [currentPageReportTemplate]="
             'finance.treasury.receivables.showingFirstToLastOfTotalrecordsMovements' | translate
           "
-          (onPageChange)="onBalancePageChange($event)"
+          (pageChange)="onBalancePageChange($event)"
           styleClass="text-sm"
           [dropdownAppendTo]="'body'"
         />
@@ -690,7 +690,7 @@
       <div
         class="md:hidden flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
       >
-        <p-paginator
+        <app-paginator
           [first]="balanceFirst()"
           [rows]="balanceRows()"
           [totalRecords]="balanceTotalRecords()"
@@ -701,7 +701,7 @@
           [currentPageReportTemplate]="
             'finance.treasury.receivables.firstLastOfTotalrecords' | translate
           "
-          (onPageChange)="onBalancePageChange($event)"
+          (pageChange)="onBalancePageChange($event)"
           styleClass="text-xs"
           [dropdownAppendTo]="'body'"
         />

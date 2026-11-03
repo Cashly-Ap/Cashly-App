@@ -1,0 +1,15 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  (onShow)="show.emit()"
+  [modal]="true"
+  [style]="{ width: width() }"
+  [header]="titleKey() | translate"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <ng-content />
+  <ng-template pTemplate="footer">
+    <ng-content select="[reportFooter]" />
+  </ng-template>
+</p-dialog>

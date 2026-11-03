@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -22,15 +21,18 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
 import { CommercialCatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/commercial-catalog-pdf-filters.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
+import { ReportPdfModalComponent } from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';
 @Component({
   selector: 'app-commercial-catalog-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ReportPdfModalComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,
-    DialogModule,
     ButtonModule,
     InputTextModule,
     SelectModule,

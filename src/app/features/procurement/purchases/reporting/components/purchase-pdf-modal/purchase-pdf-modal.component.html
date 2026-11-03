@@ -1,12 +1,9 @@
-<p-dialog
-  [header]="'procurement.purchases.purchasesReportPdf' | translate"
-  [modal]="true"
+<app-report-pdf-modal
+  titleKey="procurement.purchases.purchasesReportPdf"
+  width="500px"
   [visible]="visible()"
   (visibleChange)="onHide()"
-  (onShow)="loadFilters()"
-  [style]="{ width: '500px' }"
-  [draggable]="false"
-  [resizable]="false"
+  (show)="loadFilters()"
 >
   @if (loading()) {
     <div class="flex justify-center py-10">
@@ -131,7 +128,7 @@
     </div>
   }
 
-  <ng-template pTemplate="footer">
+  <ng-container reportFooter>
     <div class="flex justify-end gap-2">
       <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
       <p-button
@@ -142,5 +139,5 @@
         (onClick)="generatePdf()"
       />
     </div>
-  </ng-template>
-</p-dialog>
+  </ng-container>
+</app-report-pdf-modal>

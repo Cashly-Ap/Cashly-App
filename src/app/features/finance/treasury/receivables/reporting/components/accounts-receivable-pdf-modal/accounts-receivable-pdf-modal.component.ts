@@ -4,7 +4,6 @@ import { PermissionDirective } from '@features/platform/auth/authorization/direc
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -17,18 +16,19 @@ interface SelectOption {
 }
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { ReportPdfModalComponent } from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';
 @Component({
   selector: 'app-accounts-receivable-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ReportPdfModalComponent,
     CancelButtonComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,
-    DialogModule,
     ButtonModule,
     SelectModule,
     CheckboxModule,

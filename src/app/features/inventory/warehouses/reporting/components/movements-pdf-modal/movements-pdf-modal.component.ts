@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -20,15 +19,18 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { MovementsPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/movements-pdf-filters.interface';
 
+import { ReportPdfModalComponent } from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';
 @Component({
   selector: 'app-movements-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ReportPdfModalComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     PermissionDirective,
     CommonModule,
     FormsModule,
-    DialogModule,
     ButtonModule,
     SelectModule,
     DatePickerModule,

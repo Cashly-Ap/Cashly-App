@@ -106,7 +106,7 @@
               </p-table>
             </div>
             <div class="px-4 sm:px-6 py-3">
-              <p-paginator
+              <app-paginator
                 [first]="first()"
                 [rows]="rows()"
                 [totalRecords]="totalElements()"
@@ -115,7 +115,7 @@
                 [currentPageReportTemplate]="
                   'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate
                 "
-                (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
           }
@@ -167,7 +167,7 @@
             }
           </div>
           <div class="px-4 py-3 mt-2">
-            <p-paginator
+            <app-paginator
               [first]="first()"
               [rows]="rows()"
               [totalRecords]="totalElements()"
@@ -176,7 +176,7 @@
               [currentPageReportTemplate]="
                 'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate
               "
-              (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>
         }

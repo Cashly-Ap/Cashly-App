@@ -32,9 +32,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         @for (_ of [1, 2, 3]; track _) {
           <app-panel-card padding="p-6">
-            <p-skeleton width="3rem" height="3rem" borderRadius="0.75rem" styleClass="mb-4" />
-            <p-skeleton width="50%" height="1rem" styleClass="mb-3" />
-            <p-skeleton width="70%" height="2rem" />
+            <app-metric-skeleton />
           </app-panel-card>
         }
       </div>
@@ -66,14 +64,7 @@
               @if (showInitialLoading()) {
                 <div class="space-y-4">
                   @for (_ of [1, 2, 3, 4, 5]; track _) {
-                    <div class="flex items-center gap-4">
-                      <p-skeleton width="2.5rem" height="2.5rem" borderRadius="0.5rem" />
-                      <div class="flex-1">
-                        <p-skeleton width="60%" height="1rem" styleClass="mb-2" />
-                        <p-skeleton width="40%" height="0.75rem" />
-                      </div>
-                      <p-skeleton width="5rem" height="1rem" />
-                    </div>
+                    <app-list-row-skeleton />
                   }
                 </div>
               } @else if (isEmpty()) {
@@ -392,7 +383,7 @@
           </app-panel-card>
 
           <app-panel-card padding="px-6 py-3" extraClass="mt-4">
-            <p-paginator
+            <app-paginator
               [first]="first()"
               [rows]="rows()"
               [totalRecords]="service.totalCustomers()"
@@ -401,7 +392,7 @@
               [currentPageReportTemplate]="
                 'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate
               "
-              (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </app-panel-card>
         </p-tabpanel>

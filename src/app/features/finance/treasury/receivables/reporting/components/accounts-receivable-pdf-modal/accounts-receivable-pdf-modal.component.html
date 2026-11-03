@@ -1,12 +1,9 @@
-<p-dialog
-  [header]="'finance.treasury.receivables.accountsReceivablePdf' | translate"
-  [modal]="true"
+<app-report-pdf-modal
+  titleKey="finance.treasury.receivables.accountsReceivablePdf"
+  width="450px"
   [visible]="visible()"
   (visibleChange)="onHide()"
-  (onShow)="loadCustomers()"
-  [style]="{ width: '450px' }"
-  [draggable]="false"
-  [resizable]="false"
+  (show)="loadCustomers()"
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-col gap-2">
@@ -38,7 +35,7 @@
     </div>
   </div>
 
-  <ng-template pTemplate="footer">
+  <ng-container reportFooter>
     <div class="flex justify-end gap-2">
       <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
       <p-button
@@ -49,5 +46,5 @@
         (onClick)="generatePdf()"
       />
     </div>
-  </ng-template>
-</p-dialog>
+  </ng-container>
+</app-report-pdf-modal>

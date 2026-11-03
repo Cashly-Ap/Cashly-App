@@ -39,11 +39,13 @@ import { BackButtonComponent } from '@shared/components/ui/back-button/back-butt
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PaginatorComponent,
     FilterFieldComponent,
     PageHeaderComponent,
     TextBadgeComponent,

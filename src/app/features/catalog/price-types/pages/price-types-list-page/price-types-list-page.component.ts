@@ -42,11 +42,13 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-price-types-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PaginatorComponent,
     PageHeaderComponent,
     SubmitButtonComponent,
     PanelCardComponent,

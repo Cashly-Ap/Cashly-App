@@ -56,13 +56,7 @@
         <tbody>
           @if (loading()) {
             @for (i of [1, 2, 3, 4, 5]; track i) {
-              <tr class="border-b border-surface-100 dark:border-surface-800">
-                <td class="px-4 py-3" colspan="3">
-                  <div
-                    class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-full"
-                  ></div>
-                </td>
-              </tr>
+              <tr app-table-row-skeleton [columns]="3"></tr>
             }
           } @else if (filteredInvoices().length === 0) {
             <tr>
@@ -103,14 +97,7 @@
     <div class="flex flex-col gap-2 sm:hidden max-h-80 overflow-y-auto">
       @if (loading()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div
-            class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 border border-surface-200 dark:border-surface-700"
-          >
-            <div
-              class="h-4 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-3/4 mb-2"
-            ></div>
-            <div class="h-3 bg-surface-200 dark:bg-surface-700 rounded animate-pulse w-1/2"></div>
-          </div>
+          <app-card-skeleton />
         }
       } @else if (filteredInvoices().length === 0) {
         <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">

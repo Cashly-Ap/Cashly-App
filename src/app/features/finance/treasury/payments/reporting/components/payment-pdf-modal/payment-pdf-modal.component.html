@@ -1,11 +1,8 @@
-<p-dialog
-  [header]="'finance.treasury.payments.paymentReceiptPdf' | translate"
-  [modal]="true"
+<app-report-pdf-modal
+  titleKey="finance.treasury.payments.paymentReceiptPdf"
+  width="700px"
   [visible]="visible()"
   (visibleChange)="onHide()"
-  [style]="{ width: '700px' }"
-  [draggable]="false"
-  [resizable]="false"
 >
   <div class="flex flex-col gap-4">
     @if (loading()) {
@@ -24,7 +21,7 @@
     }
   </div>
 
-  <ng-template pTemplate="footer">
+  <ng-container reportFooter>
     <div class="flex justify-end gap-2">
       <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
       @if (pdfUrl()) {
@@ -47,5 +44,5 @@
         [disabled]="loading()"
       />
     </div>
-  </ng-template>
-</p-dialog>
+  </ng-container>
+</app-report-pdf-modal>

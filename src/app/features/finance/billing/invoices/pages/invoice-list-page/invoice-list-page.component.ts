@@ -80,11 +80,13 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PaginatorComponent,
     FilterFieldComponent,
     PageHeaderComponent,
     SubmitButtonComponent,

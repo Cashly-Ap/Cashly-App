@@ -52,10 +52,12 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-departments-page',
   standalone: true,
   imports: [
+    PaginatorComponent,
     SubmitButtonComponent,
     BackButtonComponent,
     PanelCardComponent,

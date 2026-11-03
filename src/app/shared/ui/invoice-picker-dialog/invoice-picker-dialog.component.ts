@@ -21,11 +21,15 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
 import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialog-header.component';
+import { TableRowSkeletonComponent } from '@shared/components/ui/skeletons/table-row-skeleton.component';
+import { CardSkeletonComponent } from '@shared/components/ui/skeletons/card-skeleton.component';
 @Component({
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TableRowSkeletonComponent,
+    CardSkeletonComponent,
     DialogHeaderComponent,
     TableCardComponent,
     CancelButtonComponent,

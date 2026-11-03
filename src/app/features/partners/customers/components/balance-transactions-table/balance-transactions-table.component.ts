@@ -17,11 +17,13 @@ const TYPE_TRANSLATIONS: Record<string, string> = {
 };
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 @Component({
   selector: 'app-balance-transactions-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PaginatorComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

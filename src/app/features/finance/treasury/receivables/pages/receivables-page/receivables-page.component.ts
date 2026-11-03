@@ -44,11 +44,17 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { listAction } from '@shared/components/list/list-action-builders';
 import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+import { MetricSkeletonComponent } from '@shared/components/ui/skeletons/metric-skeleton.component';
+import { ListRowSkeletonComponent } from '@shared/components/ui/skeletons/list-row-skeleton.component';
 @Component({
   selector: 'app-receivables-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    MetricSkeletonComponent,
+    ListRowSkeletonComponent,
+    PaginatorComponent,
     PageHeaderComponent,
     MetricCardComponent,
     PanelCardComponent,
