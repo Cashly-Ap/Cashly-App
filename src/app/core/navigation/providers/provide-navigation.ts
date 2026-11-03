@@ -6,6 +6,7 @@ import { ACTION_DIALOG_HANDLER_PROVIDERS } from '@features/action-dialog-handler
 import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/navigation-action-handlers.providers';
 import { DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/direct-navigation-action-handlers.providers';
 import { LOOKUP_DEFINITION_PROVIDERS } from '@features/lookup-definitions.providers';
+import { REPORT_ACTION_HANDLER_PROVIDERS } from '@features/report-action-handlers.providers';
 
 export function provideNavigation(): Provider[] {
   return [
@@ -16,5 +17,6 @@ export function provideNavigation(): Provider[] {
     ...NAVIGATION_ACTION_HANDLER_PROVIDERS,
     ...DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS,
     ...LOOKUP_DEFINITION_PROVIDERS,
+    ...REPORT_ACTION_HANDLER_PROVIDERS,
   ];
 }

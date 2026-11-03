@@ -1,0 +1,3 @@
+@if (reports.request(); as request) {
+  <ng-container *ngComponentOutlet="request.component; inputs: request.inputs"></ng-container>
+}

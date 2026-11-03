@@ -29,6 +29,7 @@ import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config'
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
+import { ReportActionService } from '@shared/services/report-action.service';
 
 function createPdfApiMock() {
   return {
@@ -70,6 +71,11 @@ describe('MainLayoutComponent', () => {
     open: ReturnType<typeof vi.fn>;
   };
   let sanitizerMock: { bypassSecurityTrustResourceUrl: ReturnType<typeof vi.fn> };
+  const reportActionsMock = {
+    open: vi.fn().mockReturnValue(true),
+    close: vi.fn(),
+    request: signal(null),
+  };
 
   beforeEach(async () => {
     authServiceMock = {
@@ -134,6 +140,7 @@ describe('MainLayoutComponent', () => {
         { provide: ThemeService, useValue: themeServiceMock },
         { provide: Router, useValue: routerMock },
         { provide: PdfViewerService, useValue: pdfViewerServiceMock },
+        { provide: ReportActionService, useValue: reportActionsMock },
         { provide: DomSanitizer, useValue: sanitizerMock },
         { provide: CatalogPdfApiService, useValue: pdfApiMock },
         { provide: CommercialCatalogPdfApiService, useValue: pdfApiMock },
@@ -231,9 +238,9 @@ describe('MainLayoutComponent', () => {
       );
       expect(reports).toHaveLength(10);
       for (const report of reports) {
-        component.activeModal.set(null);
+        reportActionsMock.open.mockClear();
         report.command?.({});
-        expect(component.activeModal()).not.toBeNull();
+        expect(reportActionsMock.open).toHaveBeenCalled();
         expect(routerMock.navigate).not.toHaveBeenCalled();
         expect(routerMock.url).toBe('/');
       }

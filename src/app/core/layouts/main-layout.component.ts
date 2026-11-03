@@ -27,7 +27,6 @@ import {
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterOutlet, NavigationStart } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MenuItem as PrimeMenuItem } from 'primeng/api';
@@ -37,56 +36,17 @@ import { AvatarModule } from 'primeng/avatar';
 import { Popover } from 'primeng/popover';
 import { DrawerModule, Drawer } from 'primeng/drawer';
 import { PanelMenuModule } from 'primeng/panelmenu';
-import { finalize } from 'rxjs';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { ReportActionService } from '@shared/services/report-action.service';
+import { ReportActionHostComponent } from '@core/layouts/components/report-action-host/report-action-host.component';
+import { PdfBlobViewerHostComponent } from '@core/layouts/components/pdf-blob-viewer-host/pdf-blob-viewer-host.component';
 import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
-import { CatalogPdfModalComponent } from '@features/catalog/products/reporting/components/catalog-pdf-modal/catalog-pdf-modal.component';
-import { CommercialCatalogPdfModalComponent } from '@features/catalog/products/reporting/components/commercial-catalog-pdf-modal/commercial-catalog-pdf-modal.component';
-import { StockPdfModalComponent } from '@features/inventory/warehouses/reporting/components/stock-pdf-modal/stock-pdf-modal.component';
-import { MovementsPdfModalComponent } from '@features/inventory/warehouses/reporting/components/movements-pdf-modal/movements-pdf-modal.component';
-import { PdfViewerModalComponent } from '@shared/components/pdf-viewer-modal/pdf-viewer-modal.component';
-import { CatalogPdfApiService } from '@features/catalog/products/reporting/services/api/catalog-pdf-api.service';
-import { CommercialCatalogPdfApiService } from '@features/catalog/products/reporting/services/api/commercial-catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/inventory/warehouses/reporting/services/api/stock-pdf-api.service';
-import { StockExcelApiService } from '@features/inventory/warehouses/reporting/services/api/stock-excel-api.service';
-import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
-import { MovementsExcelApiService } from '@features/inventory/warehouses/reporting/services/api/movements-excel-api.service';
-import { CatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/catalog-pdf-filters.interface';
-import { CommercialCatalogPdfFilters } from '@features/catalog/products/reporting/models/interfaces/commercial-catalog-pdf-filters.interface';
-import { StockPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/stock-pdf-filters.interface';
-import { MovementsPdfFilters } from '@features/inventory/warehouses/reporting/models/interfaces/movements-pdf-filters.interface';
-import { OrderPdfModalComponent } from '@features/sales/orders/reporting/components/order-pdf-modal/order-pdf-modal.component';
-import {
-  OrderPdfApiService,
-  OrdersPdfFilters,
-} from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
-import { InvoicePdfModalComponent } from '@features/finance/billing/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component';
-import {
-  InvoicePdfApiService,
-  InvoicesPdfFilters,
-} from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
-import { QuotePdfModalComponent } from '@features/sales/quotes/reporting/components/quote-pdf-modal/quote-pdf-modal.component';
-import {
-  QuotePdfApiService,
-  QuotesPdfFilters,
-} from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
-import { PurchasePdfModalComponent } from '@features/procurement/purchases/reporting/components/purchase-pdf-modal/purchase-pdf-modal.component';
-import {
-  PurchasePdfApiService,
-  PurchasesPdfFilters,
-} from '@features/procurement/purchases/reporting/services/api/purchase-pdf-api.service';
-import { CashRegisterReportModalComponent } from '@features/finance/treasury/cash-register/reporting/components/cash-register-report-modal/cash-register-report-modal.component';
-import { AccountsReceivablePdfModalComponent } from '@features/finance/treasury/receivables/reporting/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
-import { CashRegisterReportFilters } from '@features/finance/treasury/cash-register/reporting/models/interfaces';
-import { AccountsReceivableFilters } from '@features/finance/treasury/receivables/reporting/models/interfaces';
-import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
-import { FileDownloadHelper } from '@shared/utils/file-download.helper';
 import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
 import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
@@ -133,18 +93,9 @@ export type ContentMaxWidth =
     NotificationBellComponent,
     DrawerModule,
     PanelMenuModule,
-    CatalogPdfModalComponent,
-    CommercialCatalogPdfModalComponent,
-    StockPdfModalComponent,
-    MovementsPdfModalComponent,
-    PdfViewerModalComponent,
-    OrderPdfModalComponent,
-    InvoicePdfModalComponent,
-    QuotePdfModalComponent,
-    PurchasePdfModalComponent,
-    CashRegisterReportModalComponent,
-    AccountsReceivablePdfModalComponent,
     ActionDialogHostComponent,
+    ReportActionHostComponent,
+    PdfBlobViewerHostComponent,
     ReceivablesActionDialogHostComponent,
     InvoiceActionDialogHostComponent,
     WarehouseActionDialogHostComponent,
@@ -172,23 +123,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private router = inject(Router);
   private readonly navigationLookup = inject(NavigationLookupService);
+  private readonly reportActions = inject(ReportActionService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
-  private sanitizer = inject(DomSanitizer);
-  private catalogPdfApi = inject(CatalogPdfApiService);
-  private commercialCatalogPdfApi = inject(CommercialCatalogPdfApiService);
-  private stockPdfApi = inject(StockPdfApiService);
-  private stockExcelApi = inject(StockExcelApiService);
-  private movementsPdfApi = inject(MovementsPdfApiService);
-  private movementsExcelApi = inject(MovementsExcelApiService);
-  private orderPdfApi = inject(OrderPdfApiService);
-  private invoicePdfApi = inject(InvoicePdfApiService);
-  private quotePdfApi = inject(QuotePdfApiService);
-  private purchasePdfApi = inject(PurchasePdfApiService);
-  private financePdfApi = inject(ReceivablesPdfApiService);
-  private cashRegisterApi = inject(CashRegisterApiService);
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
-  private currentObjectUrl: string | null = null;
 
   maxWidth = input<ContentMaxWidth>('7xl');
 
@@ -221,19 +159,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       });
     });
   }
-  readonly activeModal = signal<
-    | 'catalog'
-    | 'commercialCatalog'
-    | 'stock'
-    | 'movements'
-    | 'orders'
-    | 'invoices'
-    | 'quotes'
-    | 'purchases'
-    | 'accountsReceivable'
-    | 'cashRegister'
-    | null
-  >(null);
   readonly customerPickerAction = signal<'edit' | 'balance' | null>(null);
 
   onMenuCustomerSelected(customer: CustomerList): void {
@@ -242,11 +167,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.customerPickerAction.set(null);
     void this.router.navigate(['/partners/customers', customer.id, action]);
   }
-
-  readonly pdfViewerVisible = signal(false);
-  readonly pdfUrl = signal<SafeResourceUrl | null>(null);
-  readonly pdfTitle = signal('');
-  readonly loadingPdf = signal(false);
 
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
@@ -296,7 +216,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.scrollSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
-    this.revokeCurrentUrl();
   }
 
   private buildMenuItems(userType: UserType): MenuItem[] {
@@ -308,16 +227,16 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       },
       openCustomerEditPicker: () => this.customerPickerAction.set('edit'),
       openCustomerBalancePicker: () => this.customerPickerAction.set('balance'),
-      openCatalogModal: () => this.activeModal.set('catalog'),
-      openCommercialCatalogModal: () => this.activeModal.set('commercialCatalog'),
-      openStockModal: () => this.activeModal.set('stock'),
-      openMovementsModal: () => this.activeModal.set('movements'),
-      openOrdersPdfModal: () => this.activeModal.set('orders'),
-      openInvoicesPdfModal: () => this.activeModal.set('invoices'),
-      openQuotesPdfModal: () => this.activeModal.set('quotes'),
-      openPurchasesPdfModal: () => this.activeModal.set('purchases'),
-      openAccountsReceivablePdfModal: () => this.activeModal.set('accountsReceivable'),
-      openCashRegisterModal: () => this.activeModal.set('cashRegister'),
+      openCatalogModal: () => this.reportActions.open('catalog'),
+      openCommercialCatalogModal: () => this.reportActions.open('commercialCatalog'),
+      openStockModal: () => this.reportActions.open('stock'),
+      openMovementsModal: () => this.reportActions.open('movements'),
+      openOrdersPdfModal: () => this.reportActions.open('orders'),
+      openInvoicesPdfModal: () => this.reportActions.open('invoices'),
+      openQuotesPdfModal: () => this.reportActions.open('quotes'),
+      openPurchasesPdfModal: () => this.reportActions.open('purchases'),
+      openAccountsReceivablePdfModal: () => this.reportActions.open('accountsReceivable'),
+      openCashRegisterModal: () => this.reportActions.open('cashRegister'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
@@ -387,224 +306,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     return primeItem;
-  }
-
-  onCatalogPdf(filters: CatalogPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Productos');
-    this.pdfViewerVisible.set(true);
-    this.catalogPdfApi
-      .downloadPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onCommercialCatalogPdf(filters: CommercialCatalogPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Catálogo Comercial');
-    this.pdfViewerVisible.set(true);
-    this.commercialCatalogPdfApi
-      .downloadPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onStockPdf(filters: StockPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Stock de Almacenes');
-    this.pdfViewerVisible.set(true);
-    this.stockPdfApi
-      .getPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onMovementsPdf(filters: MovementsPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Historial de Movimientos');
-    this.pdfViewerVisible.set(true);
-    this.movementsPdfApi
-      .getPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onStockExcel(filters: StockPdfFilters): void {
-    this.activeModal.set(null);
-    this.stockExcelApi.getExcel(filters).subscribe({
-      next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx');
-      },
-    });
-  }
-
-  onMovementsExcel(filters: MovementsPdfFilters): void {
-    this.activeModal.set(null);
-    this.movementsExcelApi.getExcel(filters).subscribe({
-      next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx');
-      },
-    });
-  }
-
-  onOrdersPdf(filters: OrdersPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Pedidos');
-    this.pdfViewerVisible.set(true);
-    this.orderPdfApi
-      .downloadOrdersReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onInvoicesPdf(filters: InvoicesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Facturas');
-    this.pdfViewerVisible.set(true);
-    this.invoicePdfApi
-      .downloadInvoicesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onQuotesPdf(filters: QuotesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Presupuestos');
-    this.pdfViewerVisible.set(true);
-    this.quotePdfApi
-      .downloadQuotesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onPurchasesPdf(filters: PurchasesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Compras');
-    this.pdfViewerVisible.set(true);
-    this.purchasePdfApi
-      .downloadPurchasesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onAccountsReceivablePdf(filters: AccountsReceivableFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Cuentas por Cobrar');
-    this.pdfViewerVisible.set(true);
-    this.financePdfApi
-      .getAccountsReceivablePdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onCashRegisterReport(filters: CashRegisterReportFilters): void {
-    this.activeModal.set(null);
-    const baseName = `caja-${filters.dateFrom}-${filters.dateTo}-${filters.type.toLowerCase()}`;
-    if (filters.format === 'PDF') {
-      this.loadingPdf.set(true);
-      this.pdfTitle.set('Reporte de Caja');
-      this.pdfViewerVisible.set(true);
-    }
-    this.cashRegisterApi
-      .exportReport(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          if (filters.format === 'EXCEL') {
-            FileDownloadHelper.downloadFromBlob(blob, `${baseName}.xlsx`);
-            return;
-          }
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  closePdfViewer(): void {
-    this.pdfViewerVisible.set(false);
-    this.revokeCurrentUrl();
-    this.pdfUrl.set(null);
-  }
-
-  private revokeCurrentUrl(): void {
-    if (this.currentObjectUrl) {
-      URL.revokeObjectURL(this.currentObjectUrl);
-      this.currentObjectUrl = null;
-    }
   }
 
   toggleUserMenu(event: Event): void {

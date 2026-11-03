@@ -217,77 +217,8 @@
     </div>
   </p-popover>
 
-  @defer (when activeModal() !== null || pdfViewerVisible()) {
-    <app-catalog-pdf-modal
-      [visible]="activeModal() === 'catalog'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onCatalogPdf($event)"
-    />
-
-    <app-commercial-catalog-pdf-modal
-      [visible]="activeModal() === 'commercialCatalog'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onCommercialCatalogPdf($event)"
-    />
-
-    <app-stock-pdf-modal
-      [visible]="activeModal() === 'stock'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onStockPdf($event)"
-      (onGenerateExcel)="onStockExcel($event)"
-    />
-
-    <app-movements-pdf-modal
-      [visible]="activeModal() === 'movements'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onMovementsPdf($event)"
-      (onGenerateExcel)="onMovementsExcel($event)"
-    />
-
-    <app-order-pdf-modal
-      [visible]="activeModal() === 'orders'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onOrdersPdf($event)"
-    />
-
-    <app-invoice-pdf-modal
-      [visible]="activeModal() === 'invoices'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onInvoicesPdf($event)"
-    />
-
-    <app-quote-pdf-modal
-      [visible]="activeModal() === 'quotes'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onQuotesPdf($event)"
-    />
-
-    <app-purchase-pdf-modal
-      [visible]="activeModal() === 'purchases'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onPurchasesPdf($event)"
-    />
-
-    <app-accounts-receivable-pdf-modal
-      [visible]="activeModal() === 'accountsReceivable'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onAccountsReceivablePdf($event)"
-    />
-
-    <app-cash-register-report-modal
-      [visible]="activeModal() === 'cashRegister'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGenerateReport)="onCashRegisterReport($event)"
-    />
-
-    <app-pdf-viewer-modal
-      [visible]="pdfViewerVisible()"
-      [pdfUrl]="pdfUrl()"
-      [title]="pdfTitle()"
-      [loading]="loadingPdf()"
-      (visibleChange)="$event === false && closePdfViewer()"
-    />
-  }
+  <app-report-action-host />
+  <app-pdf-blob-viewer-host />
 
   <main
     [attr.data-module]="activeModule()"
