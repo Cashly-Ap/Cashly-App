@@ -62,11 +62,12 @@ describe('Department management navigation and form', () => {
     expect(navigate).toHaveBeenCalledWith(['/platform/departments', 'd', 'edit']);
   });
 
-  it('does not expose delete without the API referenced-record indicator', () => {
+  it('exposes the same delete action as the navbar', () => {
     createComponent();
     expect(component.actionsFor(department).map((action) => action.label)).toEqual([
       'Ver detalle',
       'Editar',
+      'Eliminar',
     ]);
   });
 

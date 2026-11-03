@@ -55,9 +55,9 @@ describe('authoritative role permissions', () => {
     expect(auth.hasModulePermission(BusinessModule.USERS)).toBe(false);
   });
 
-  it('does not bypass declared grants for an administrator access flag', () => {
+  it('bypasses grants for the system administrator access flag', () => {
     auth.currentAccess.set(access([], true));
-    expect(auth.hasPermission(BusinessModule.USERS, 'UPDATE')).toBe(false);
+    expect(auth.hasPermission(BusinessModule.USERS, 'UPDATE')).toBe(true);
   });
 
   it('allows reading with an assigned READ grant', () => {

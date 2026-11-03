@@ -1,6 +1,6 @@
 import { MenuItem } from '@core/layouts/models';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
-import { LIST_NAVIGATION_DEFINITIONS } from '@features/navigation/list-navigation.registry';
+import { LIST_NAVIGATION_DEFINITIONS } from '@core/navigation/list-navigation.registry';
 
 export interface ListNavigationCallbacks {
   openListAction: (route: string, action: string, queryParams?: Record<string, string>) => void;

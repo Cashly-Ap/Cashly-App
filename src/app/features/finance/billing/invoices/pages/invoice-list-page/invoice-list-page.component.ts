@@ -354,7 +354,7 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.canCancel(invoice.status)) {
       actions.push({
         requiredAction: 'CANCEL',
-                label: 'Cancelar',
+                label: 'Cancelar factura',
         icon: 'pi pi-times',
         danger: true,
         command: () => this.onCancelInvoice(invoice),

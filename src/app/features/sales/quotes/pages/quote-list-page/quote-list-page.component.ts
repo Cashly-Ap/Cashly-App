@@ -57,6 +57,7 @@ import {
 import { QuoteList } from '@features/sales/quotes/models/interfaces/quote-list.interface';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 
 @Component({
   selector: 'app-quote-list-page',
@@ -96,6 +97,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 })
 export class QuoteListPageComponent implements OnInit {
   private readonly deletion = inject(DeleteDialogService);
+  private readonly cancellation = inject(CancelDialogService);
   private readonly quoteService = inject(QuoteApplicationService);
   private readonly pdfViewerService = inject(PdfViewerService);
   private readonly router = inject(Router);
@@ -257,6 +259,16 @@ export class QuoteListPageComponent implements OnInit {
                     label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(quote),
+        },
+        {
+          requiredAction: 'CANCEL',
+          label: 'Cancelar presupuesto',
+          icon: 'pi pi-times',
+          danger: true,
+          command: () =>
+            this.cancellation.open('quotes', quote.id, quote.quoteNumber, () =>
+              this.loadWithFilters(),
+            ),
         },
         {
           requiredAction: 'DELETE',

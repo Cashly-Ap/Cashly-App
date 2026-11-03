@@ -277,7 +277,7 @@ export class OrderListPageComponent implements OnInit {
         },
         {
           requiredAction: 'CANCEL',
-                    label: 'Cancelar',
+                    label: 'Cancelar pedido',
           icon: 'pi pi-times',
           danger: true,
           command: () => this.onCancelOrder(order),

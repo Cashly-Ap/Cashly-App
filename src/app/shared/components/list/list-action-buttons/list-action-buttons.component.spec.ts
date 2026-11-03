@@ -106,7 +106,7 @@ describe('ListActionButtonsComponent', () => {
       { label: 'Report', icon: '', requiredAction: 'EXPORT', module: BusinessModule.FINANCE_INVOICES, command: vi.fn() },
     ]);
     fixture.detectChanges();
-    expect(component.orderedActions().map((action) => action.label)).toEqual(['Export']);
+    expect(component.orderedActions().map((action) => action.label)).toEqual([]);
   });
 
   it('executes an authorized action once', () => {

@@ -37,8 +37,8 @@ describe('moduleForUrl', () => {
     expect(moduleForUrl(url)).toBeNull();
   });
 
-  it('never returns a legacy module for list routes', () => {
-    const legacy: string[] = ['SALES', 'INVENTORY', 'CATALOG', 'FINANCE', 'PURCHASES'];
+  it('returns a business module for every list route', () => {
+    const modules = Object.values(BusinessModule);
     const listRoutes = [
       '/sales/quotes',
       '/sales/orders',
@@ -58,7 +58,7 @@ describe('moduleForUrl', () => {
       '/finance/treasury/payment-methods',
     ];
     for (const route of listRoutes) {
-      expect(legacy).not.toContain(moduleForUrl(route));
+      expect(modules).toContain(moduleForUrl(route));
     }
   });
 });

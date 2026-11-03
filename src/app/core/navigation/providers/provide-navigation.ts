@@ -1,13 +1,13 @@
 import { Provider } from '@angular/core';
-import { DELETE_HANDLER_PROVIDERS } from '@features/delete-handlers.providers';
-import { CANCEL_HANDLER_PROVIDERS } from '@features/cancel-handlers.providers';
-import { PDF_HANDLER_PROVIDERS } from '@features/pdf-handlers.providers';
-import { ACTION_DIALOG_HANDLER_PROVIDERS } from '@features/action-dialog-handlers.providers';
-import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/navigation-action-handlers.providers';
-import { DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/direct-navigation-action-handlers.providers';
-import { LOOKUP_DEFINITION_PROVIDERS } from '@features/lookup-definitions.providers';
-import { REPORT_ACTION_HANDLER_PROVIDERS } from '@features/report-action-handlers.providers';
-import { GLOBAL_DIALOG_HOST_PROVIDERS } from '@features/global-dialog-hosts.providers';
+import { DELETE_HANDLER_PROVIDERS } from '@core/navigation/providers/delete-handlers.providers';
+import { CANCEL_HANDLER_PROVIDERS } from '@core/navigation/providers/cancel-handlers.providers';
+import { PDF_HANDLER_PROVIDERS } from '@core/navigation/providers/pdf-handlers.providers';
+import { ACTION_DIALOG_HANDLER_PROVIDERS } from '@core/navigation/providers/action-dialog-handlers.providers';
+import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@core/navigation/providers/navigation-action-handlers.providers';
+import { DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@core/navigation/providers/direct-navigation-action-handlers.providers';
+import { LOOKUP_DEFINITION_PROVIDERS } from '@core/navigation/providers/lookup-definitions.providers';
+import { REPORT_ACTION_HANDLER_PROVIDERS } from '@core/navigation/providers/report-action-handlers.providers';
+import { GLOBAL_DIALOG_HOST_PROVIDERS } from '@core/navigation/providers/global-dialog-hosts.providers';
 
 export function provideNavigation(): Provider[] {
   return [
