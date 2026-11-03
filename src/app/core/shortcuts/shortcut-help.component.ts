@@ -9,7 +9,7 @@ import {
   inject,
 } from '@angular/core';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { KeyboardShortcutService } from './keyboard-shortcut.service';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 
 @Component({

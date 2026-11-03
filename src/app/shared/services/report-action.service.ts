@@ -2,7 +2,7 @@ import { Injectable, Type, inject, signal } from '@angular/core';
 import {
   REPORT_ACTION_HANDLERS,
   ReportActionHandlerRegistration,
-} from './report-action-handlers.token';
+} from '@shared/services/report-action-handlers.token';
 
 export interface ReportActionRequest {
   component: Type<unknown>;

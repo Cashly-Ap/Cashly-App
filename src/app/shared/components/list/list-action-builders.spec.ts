@@ -11,7 +11,7 @@ import {
   listAction,
   pdfAction,
   viewAction,
-} from './list-action-builders';
+} from '@shared/components/list/list-action-builders';
 
 describe('list action builders', () => {
   it('builds the common record actions with the shared labels and icons', () => {

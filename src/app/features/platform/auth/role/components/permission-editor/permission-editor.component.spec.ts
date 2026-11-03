@@ -1,7 +1,7 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { PermissionEditorComponent } from './permission-editor.component';
+import { PermissionEditorComponent } from '@features/platform/auth/role/components/permission-editor/permission-editor.component';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 

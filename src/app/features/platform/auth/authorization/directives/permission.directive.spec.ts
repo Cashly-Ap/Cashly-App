@@ -3,9 +3,9 @@ import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { PermissionDirective } from './permission.directive';
-import { AuthorizationService } from '../services/authorization.service';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 @Component({
   standalone: true,

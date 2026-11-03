@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { NavigationHistoryService } from './navigation-history.service';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 
 describe('NavigationHistoryService', () => {
   let events: Subject<NavigationStart | NavigationEnd>;

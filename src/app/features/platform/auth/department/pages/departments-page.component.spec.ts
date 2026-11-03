@@ -3,9 +3,9 @@ import { ActivatedRoute, provideRouter, Router, convertToParamMap } from '@angul
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { DepartmentsPageComponent } from './departments-page.component';
-import { AccessManagementService } from '../../authorization/services/access-management.service';
-import { AuthorizationService } from '../../authorization/services/authorization.service';
+import { DepartmentsPageComponent } from '@features/platform/auth/department/pages/departments-page.component';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 const department = {

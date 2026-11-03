@@ -1,5 +1,5 @@
-import { PermissionAction } from '../../authorization/models/access.model';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export interface PermissionEntry {
   action: PermissionAction;

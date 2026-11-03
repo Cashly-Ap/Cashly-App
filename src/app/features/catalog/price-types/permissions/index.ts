@@ -1,1 +1,1 @@
-export * from './price-type.permissions';
+export * from '@features/catalog/price-types/permissions/price-type.permissions';

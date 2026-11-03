@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Company, CompanyService } from './company.service';
+import { Company, CompanyService } from '@features/platform/company/company.service';
 
 describe('CompanyService branding lifecycle', () => {
   const company: Company = {

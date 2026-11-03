@@ -2,8 +2,8 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, signal } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { SelectInputComponent } from '../select-input/select-input.component';
-import { countryOptionsFor } from './country-options';
+import { SelectInputComponent } from '@core/forms/components/inputs/select-input/select-input.component';
+import { countryOptionsFor } from '@core/forms/components/inputs/country-input/country-options';
 
 @Component({
   selector: 'app-country-input',

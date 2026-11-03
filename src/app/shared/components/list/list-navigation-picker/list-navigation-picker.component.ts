@@ -19,7 +19,7 @@ import {
   ListNavigationService,
   ListNavigationSession,
   NavigationRecord,
-} from '../list-navigation.service';
+} from '@shared/components/list/list-navigation.service';
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';

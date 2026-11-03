@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import {
   NAVIGATION_ACTION_HANDLERS,
   NavigationActionRecord,
-} from './navigation-action-handlers.token';
+} from '@shared/services/navigation-action-handlers.token';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationActionService {

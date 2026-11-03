@@ -3,12 +3,12 @@ import { provideRouter, Router } from '@angular/router';
 import { signal } from '@angular/core';
 import { of, Subject, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConfigurationPageComponent } from './configuration-page.component';
-import { AuthService } from '../../services/application/auth-application.service';
-import { SelfProfileService } from '../../services/api/self-profile.service';
-import { UserDetails } from '../../user/models/interfaces/user-details.interface';
-import { CurrentAccess } from '../../authorization/models/access.model';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { ConfigurationPageComponent } from '@features/platform/auth/pages/configuration/configuration-page.component';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
+import { CurrentAccess } from '@features/platform/auth/authorization/models/access.model';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 const profile: UserDetails = {
   id: 'private-account-id',
   firstName: 'Ana',

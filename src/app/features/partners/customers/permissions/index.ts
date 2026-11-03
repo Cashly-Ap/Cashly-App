@@ -1,1 +1,1 @@
-export * from './customer.permissions';
+export * from '@features/partners/customers/permissions/customer.permissions';

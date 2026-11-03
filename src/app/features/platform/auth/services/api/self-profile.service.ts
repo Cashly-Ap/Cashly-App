@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '@env/environment';
-import { UserDetails } from '../../user/models/interfaces/user-details.interface';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 
 export interface SelfProfileUpdate {
   language?: Language;

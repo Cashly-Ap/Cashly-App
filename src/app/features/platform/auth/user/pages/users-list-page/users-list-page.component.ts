@@ -3,8 +3,8 @@ import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.se
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
-import { BusinessModule } from '../../models/enums/business-module.enum';
-import { AuthorizationService } from '../../../authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import {
   Component,
   inject,
@@ -13,7 +13,7 @@ import {
   computed,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { AccessManagementService } from '../../../authorization/services/access-management.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';

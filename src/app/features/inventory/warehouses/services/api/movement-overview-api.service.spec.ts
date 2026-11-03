@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { MovementOverviewApiService } from './movement-overview-api.service';
+import { MovementOverviewApiService } from '@features/inventory/warehouses/services/api/movement-overview-api.service';
 
 describe('MovementOverviewApiService', () => {
   let service: MovementOverviewApiService;

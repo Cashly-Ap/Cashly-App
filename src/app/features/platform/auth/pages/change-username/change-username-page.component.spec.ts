@@ -1,15 +1,15 @@
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
-import { UserPhotoService } from '../../services/api/user-photo.service';
+import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { of, Subject, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ChangeUsernamePageComponent } from './change-username-page.component';
-import { AuthService } from '../../services/application/auth-application.service';
-import { SelfProfileService } from '../../services/api/self-profile.service';
-import { UserDetails } from '../../user/models/interfaces/user-details.interface';
+import { ChangeUsernamePageComponent } from '@features/platform/auth/pages/change-username/change-username-page.component';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 
 const profile: UserDetails = {
   id: 'own-id',

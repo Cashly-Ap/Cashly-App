@@ -1,7 +1,7 @@
 import { DOCUMENT } from '@angular/common';
 import { DestroyRef, Injectable, inject, signal, effect } from '@angular/core';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { KEYBOARD_ACTION_SHORTCUTS, ShortcutAction, ShortcutBinding } from './shortcut-reference';
+import { KEYBOARD_ACTION_SHORTCUTS, ShortcutAction, ShortcutBinding } from '@core/shortcuts/shortcut-reference';
 
 interface ShortcutRegistration {
   element: HTMLElement;

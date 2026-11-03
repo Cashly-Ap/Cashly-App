@@ -1,1 +1,1 @@
-export * from './receivable.permissions';
+export * from '@features/finance/treasury/receivables/permissions/receivable.permissions';

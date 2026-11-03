@@ -2,7 +2,7 @@ import { Injectable, Type, inject, signal } from '@angular/core';
 import {
   ACTION_DIALOG_HANDLERS,
   ActionDialogHandlerRegistration,
-} from './action-dialog-handlers.token';
+} from '@shared/services/action-dialog-handlers.token';
 
 export interface ActionDialogRequest {
   component: Type<unknown>;

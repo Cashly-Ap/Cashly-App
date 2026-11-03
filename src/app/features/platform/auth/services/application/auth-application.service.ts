@@ -1,4 +1,4 @@
-import { mfaErrorMessage } from '../../messages/mfa-error-message';
+import { mfaErrorMessage } from '@features/platform/auth/messages/mfa-error-message';
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, of, switchMap, map } from 'rxjs';
 import { HttpClient, HttpContext } from '@angular/common/http';

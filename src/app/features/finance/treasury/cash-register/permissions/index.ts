@@ -1,1 +1,1 @@
-export * from './cash-register.permissions';
+export * from '@features/finance/treasury/cash-register/permissions/cash-register.permissions';

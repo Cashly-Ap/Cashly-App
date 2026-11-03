@@ -1,4 +1,4 @@
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const ROUTE_MODULES: ReadonlyArray<readonly [string, BusinessModule]> = [
   ['/platform/users', BusinessModule.USERS],

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CancelDialogComponent } from './cancel-dialog.component';
+import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
 
 describe('CancelDialogComponent', () => {
   let component: CancelDialogComponent;

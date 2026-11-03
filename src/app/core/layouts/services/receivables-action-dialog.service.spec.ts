@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   ReceivablesActionDialogService,
   ReceivablesActionDialogRequest,
-} from './receivables-action-dialog.service';
+} from '@core/layouts/services/receivables-action-dialog.service';
 
 describe('ReceivablesActionDialogService', () => {
   let service: ReceivablesActionDialogService;

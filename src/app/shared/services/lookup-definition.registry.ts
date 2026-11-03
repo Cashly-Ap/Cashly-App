@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
-import { LOOKUP_DEFINITIONS } from './lookup-definition.token';
+import { LOOKUP_DEFINITIONS } from '@shared/services/lookup-definition.token';
 
 @Injectable({ providedIn: 'root' })
 export class LookupDefinitionRegistry {

@@ -4,7 +4,7 @@ import { Language } from '@core/i18n/language';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { switchMap, of, finalize, tap } from 'rxjs';
-import { UserPhotoService } from '../../services/api/user-photo.service';
+import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -22,9 +22,9 @@ import {
   TextInputComponent,
   TabContentComponent,
 } from '@core/forms/components';
-import { AuthService } from '../../services/application/auth-application.service';
-import { SelfProfileService } from '../../services/api/self-profile.service';
-import { createUserNameForm } from './change-username-page.config';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { createUserNameForm } from '@features/platform/auth/pages/change-username/change-username-page.config';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({

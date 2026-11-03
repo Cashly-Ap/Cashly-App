@@ -1,1 +1,1 @@
-export * from './supplier.permissions';
+export * from '@features/partners/suppliers/permissions/supplier.permissions';

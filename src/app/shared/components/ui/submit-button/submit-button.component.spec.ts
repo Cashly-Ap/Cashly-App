@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { SubmitButtonComponent } from './submit-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 
 describe('SubmitButtonComponent', () => {
   let component: SubmitButtonComponent;

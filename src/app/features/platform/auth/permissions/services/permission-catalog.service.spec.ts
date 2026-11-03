@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { PermissionCatalogService } from './permission-catalog.service';
-import { PermissionCatalogModule } from '../models/permission-catalog.model';
-import { Role } from '../../authorization/models/access.model';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { PermissionCatalogService } from '@features/platform/auth/permissions/services/permission-catalog.service';
+import { PermissionCatalogModule } from '@features/platform/auth/permissions/models/permission-catalog.model';
+import { Role } from '@features/platform/auth/authorization/models/access.model';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const catalog: PermissionCatalogModule[] = [
   {

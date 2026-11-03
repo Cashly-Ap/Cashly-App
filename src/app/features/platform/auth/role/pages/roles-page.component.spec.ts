@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { RolesPageComponent } from './roles-page.component';
+import { RolesPageComponent } from '@features/platform/auth/role/pages/roles-page.component';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { LanguageService } from './language.service';
-import { english, spanish } from './dictionaries';
+import { LanguageService } from '@core/i18n/language.service';
+import { english, spanish } from '@core/i18n/dictionaries';
 
 export type TranslationParameters = Readonly<Record<string, string | number | null | undefined>>;
 

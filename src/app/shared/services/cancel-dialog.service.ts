@@ -1,7 +1,7 @@
 import { Injectable, Injector, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
-import { CANCEL_HANDLERS, CancelHandlerRegistration } from './cancel-handlers.token';
+import { CANCEL_HANDLERS, CancelHandlerRegistration } from '@shared/services/cancel-handlers.token';
 
 export interface CancelRequest {
   resource: string;

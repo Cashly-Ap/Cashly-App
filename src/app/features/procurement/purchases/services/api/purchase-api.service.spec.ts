@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { PurchaseApiService } from './purchase-api.service';
+import { PurchaseApiService } from '@features/procurement/purchases/services/api/purchase-api.service';
 
 describe('PurchaseApiService action eligibility', () => {
   let service: PurchaseApiService;

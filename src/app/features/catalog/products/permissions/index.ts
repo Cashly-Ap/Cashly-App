@@ -1,1 +1,1 @@
-export * from './product.permissions';
+export * from '@features/catalog/products/permissions/product.permissions';

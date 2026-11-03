@@ -3,7 +3,7 @@ import { signal } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
-import { UserPreferencesService } from './user-preferences.service';
+import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 
 const defaults = {
   language: 'es',

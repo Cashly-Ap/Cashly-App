@@ -1,6 +1,6 @@
 import { Injectable, Provider, inject } from '@angular/core';
 import { Confirmation, ConfirmationService, MessageService, ToastMessageOptions } from 'primeng/api';
-import { TranslationService } from './translation.service';
+import { TranslationService } from '@core/i18n/translation.service';
 
 @Injectable()
 export class TranslatedMessageService extends MessageService {

@@ -6,12 +6,12 @@ import { provideRouter, ActivatedRoute, convertToParamMap, Router } from '@angul
 import { provideHttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
-import { UserPhotoService } from '../../../services/api/user-photo.service';
-import { UserDetails } from '../../models/interfaces/user-details.interface';
+import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { signal } from '@angular/core';
-import { UsersFormPageComponent } from './users-form-page.component';
-import { UserApplicationService } from '../../services/application/user-application.service';
-import { AccessManagementService } from '../../../authorization/services/access-management.service';
+import { UsersFormPageComponent } from '@features/platform/auth/user/pages/users-form-page/users-form-page.component';
+import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 describe('User profile form', () => {
   const userService = {
     loading: signal(false),

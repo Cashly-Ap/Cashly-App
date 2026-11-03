@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { DIRECT_NAVIGATION_ACTION_HANDLERS } from './direct-navigation-action-handlers.token';
+import { DIRECT_NAVIGATION_ACTION_HANDLERS } from '@shared/services/direct-navigation-action-handlers.token';
 
 @Injectable({ providedIn: 'root' })
 export class DirectNavigationActionService {

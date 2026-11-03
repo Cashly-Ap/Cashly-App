@@ -1,1 +1,1 @@
-export * from './invoice.permissions';
+export * from '@features/finance/billing/invoices/permissions/invoice.permissions';

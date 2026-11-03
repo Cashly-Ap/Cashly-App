@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../guards/auth.guard';
-import { modulePermissionGuard } from '../../guards/module-permission.guard';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const page = () =>
-  import('../pages/departments-page.component').then((m) => m.DepartmentsPageComponent);
+  import('@features/platform/auth/department/pages/departments-page.component').then((m) => m.DepartmentsPageComponent);
 
 export const DEPARTMENTS_ROUTES: Routes = [
   {

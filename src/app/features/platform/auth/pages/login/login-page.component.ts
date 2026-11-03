@@ -12,7 +12,7 @@ import { AuthService } from '@features/platform/auth/services/application/auth-a
 import { AuthValidators } from '@features/platform/auth/validators/auth-validators';
 import { AUTH_SESSION_MESSAGES } from '@features/platform/auth/messages/error-messages';
 import { authorizedDestination } from '@features/platform/auth/routing/authorized-destination';
-import { requiresMfa } from '../../models/interfaces/auth-response.interface';
+import { requiresMfa } from '@features/platform/auth/models/interfaces/auth-response.interface';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 @Component({

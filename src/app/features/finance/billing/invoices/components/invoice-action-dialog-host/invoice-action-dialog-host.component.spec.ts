@@ -19,7 +19,7 @@ import {
 } from '@features/finance/billing/invoices/components/confirm-invoice-dialog/confirm-invoice-dialog.component';
 import { DuplicateInvoiceDialogComponent } from '@features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
 import { InvoiceActionDialogService } from '@core/layouts/services/invoice-action-dialog.service';
-import { InvoiceActionDialogHostComponent } from './invoice-action-dialog-host.component';
+import { InvoiceActionDialogHostComponent } from '@features/finance/billing/invoices/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
 
 const invoiceDetails: InvoiceDetails = {
   id: 'invoice-1',

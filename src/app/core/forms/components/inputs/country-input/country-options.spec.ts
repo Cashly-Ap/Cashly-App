@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { COUNTRY_OPTIONS, countryOptionsFor } from './country-options';
+import { COUNTRY_OPTIONS, countryOptionsFor } from '@core/forms/components/inputs/country-input/country-options';
 
 describe('World country selection', () => {
   it('includes all 249 ISO countries/territories plus Kosovo with unique codes and flags', () => {

@@ -3,13 +3,13 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { HttpClient } from '@angular/common/http';
 import { describe, it, beforeEach, expect } from 'vitest';
-import { TranslationService } from './translation.service';
-import { LanguageService } from './language.service';
-import { english, spanish } from './dictionaries';
-import { languageInterceptor } from './language.interceptor';
-import { TranslatedConfirmationService, TranslatedMessageService } from './translated-feedback.service';
-import { TranslateOptionsPipe } from './translate-options.pipe';
-import { LocalizedNumberPipe, LocalizedCurrencyPipe, LocalizedDatePipe } from './localized-format.pipe';
+import { TranslationService } from '@core/i18n/translation.service';
+import { LanguageService } from '@core/i18n/language.service';
+import { english, spanish } from '@core/i18n/dictionaries';
+import { languageInterceptor } from '@core/i18n/language.interceptor';
+import { TranslatedConfirmationService, TranslatedMessageService } from '@core/i18n/translated-feedback.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { LocalizedNumberPipe, LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 
 describe('runtime language', () => {
   beforeEach(() => TestBed.configureTestingModule({ providers: [

@@ -9,10 +9,10 @@ import {
   Renderer2,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AuthorizationService } from '../services/authorization.service';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
-import { PermissionAction } from '../models/access.model';
-import { moduleForUrl } from '../models/permission-context';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
+import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 

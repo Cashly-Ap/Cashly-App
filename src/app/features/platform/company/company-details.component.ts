@@ -18,7 +18,7 @@ import {
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { CompanyPermission } from '@features/platform/company/permissions';
-import { Company, CompanyService } from './company.service';
+import { Company, CompanyService } from '@features/platform/company/company.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({

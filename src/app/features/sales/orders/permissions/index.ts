@@ -1,1 +1,1 @@
-export * from './order.permissions';
+export * from '@features/sales/orders/permissions/order.permissions';

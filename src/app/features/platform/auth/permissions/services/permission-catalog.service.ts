@@ -1,9 +1,9 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, forkJoin, map, Observable, tap, throwError } from 'rxjs';
-import { Role } from '../../authorization/models/access.model';
-import { PermissionAction } from '../../authorization/models/access.model';
-import { PermissionCatalogArea, PermissionCatalogModule } from '../models/permission-catalog.model';
+import { Role } from '@features/platform/auth/authorization/models/access.model';
+import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
+import { PermissionCatalogArea, PermissionCatalogModule } from '@features/platform/auth/permissions/models/permission-catalog.model';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionCatalogService {

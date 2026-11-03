@@ -3,13 +3,13 @@ import { signal } from '@angular/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
-import { CustomerInvoiceDebt } from '../models/interfaces/customer-invoice-debt.interface';
+import { CustomerInvoiceDebt } from '@features/finance/treasury/receivables/models/interfaces/customer-invoice-debt.interface';
 import {
   invoiceStatusSeverity,
   invoiceStatusTranslationKey,
   isInvoiceOverdue,
   receivableAmountClass,
-} from './receivables-presentation';
+} from '@features/finance/treasury/receivables/components/receivables-presentation';
 
 describe('receivables presentation', () => {
   const language = signal<'en' | 'es'>('en');

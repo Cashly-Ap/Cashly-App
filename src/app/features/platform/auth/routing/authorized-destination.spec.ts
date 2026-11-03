@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { authorizedDestination } from './authorized-destination';
-import { BusinessModule } from '../user/models/enums/business-module.enum';
+import { authorizedDestination } from '@features/platform/auth/routing/authorized-destination';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 function auth(modules: BusinessModule[], superAdmin = false) {
   return {

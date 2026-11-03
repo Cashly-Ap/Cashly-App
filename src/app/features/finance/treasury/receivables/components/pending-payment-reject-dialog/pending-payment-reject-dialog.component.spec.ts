@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
-import { PendingPaymentRejectDialogComponent } from './pending-payment-reject-dialog.component';
+import { PendingPaymentRejectDialogComponent } from '@features/finance/treasury/receivables/components/pending-payment-reject-dialog/pending-payment-reject-dialog.component';
 
 const payment: PendingPayment = {
   id: 'payment-1',

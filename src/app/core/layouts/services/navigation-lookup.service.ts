@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
-import { LIST_NAVIGATION_DEFINITIONS } from '../config/list-navigation.config';
+import { LIST_NAVIGATION_DEFINITIONS } from '@core/layouts/config/list-navigation.config';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
-import { LookupSessionService } from './lookup-session.service';
-import { ActionDispatcherService } from './action-dispatcher.service';
+import { LookupSessionService } from '@core/layouts/services/lookup-session.service';
+import { ActionDispatcherService } from '@core/layouts/services/action-dispatcher.service';
 
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
-import { UserAvatarComponent } from './user-avatar.component';
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
 
 describe('UserAvatarComponent', () => {

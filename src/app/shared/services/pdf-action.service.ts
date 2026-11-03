@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { PdfViewerService } from '@core/pdf-viewer/services';
-import { PDF_HANDLERS } from './pdf-handlers.token';
+import { PDF_HANDLERS } from '@shared/services/pdf-handlers.token';
 
 @Injectable({ providedIn: 'root' })
 export class PdfActionService {

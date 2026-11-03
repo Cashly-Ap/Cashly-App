@@ -17,7 +17,7 @@ export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
     path: 'preferences',
     loadComponent: () =>
-      import('../pages/preferences/preferences-page.component').then(
+      import('@features/platform/auth/pages/preferences/preferences-page.component').then(
         (m) => m.PreferencesPageComponent,
       ),
     canActivate: [authGuard],
@@ -25,7 +25,7 @@ export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
     path: 'security',
     loadComponent: () =>
-      import('../pages/security/security-page.component').then((m) => m.SecurityPageComponent),
+      import('@features/platform/auth/pages/security/security-page.component').then((m) => m.SecurityPageComponent),
     canActivate: [authGuard],
   },
   {

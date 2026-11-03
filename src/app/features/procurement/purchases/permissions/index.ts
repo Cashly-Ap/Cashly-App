@@ -1,1 +1,1 @@
-export * from './purchase.permissions';
+export * from '@features/procurement/purchases/permissions/purchase.permissions';

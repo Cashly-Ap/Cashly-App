@@ -18,10 +18,10 @@ import { LOOKUP_DEFINITIONS } from '@shared/services/lookup-definition.token';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
 import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@core/navigation/providers/navigation-action-handlers.providers';
 import { DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@core/navigation/providers/direct-navigation-action-handlers.providers';
-import { ReceivablesActionDialogService } from './receivables-action-dialog.service';
-import { WarehouseActionDialogService } from './warehouse-action-dialog.service';
-import { CashRegisterActionDialogService } from './cash-register-action-dialog.service';
-import { NavigationLookupService } from './navigation-lookup.service';
+import { ReceivablesActionDialogService } from '@core/layouts/services/receivables-action-dialog.service';
+import { WarehouseActionDialogService } from '@core/layouts/services/warehouse-action-dialog.service';
+import { CashRegisterActionDialogService } from '@core/layouts/services/cash-register-action-dialog.service';
+import { NavigationLookupService } from '@core/layouts/services/navigation-lookup.service';
 
 @Component({ selector: 'app-test-report', standalone: true, template: '' })
 class TestActionComponent {}

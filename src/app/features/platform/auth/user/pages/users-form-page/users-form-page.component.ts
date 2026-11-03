@@ -2,15 +2,15 @@ import { TranslationService } from '@core/i18n/translation.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Language } from '@core/i18n/language';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { AuthService } from '../../../services/application/auth-application.service';
-import { BusinessModule } from '../../models/enums/business-module.enum';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { computed } from '@angular/core';
-import { UserPhotoService } from '../../../services/api/user-photo.service';
+import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
 import { switchMap, of, catchError, finalize, map } from 'rxjs';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TabsModule } from 'primeng/tabs';
-import { UserValidators } from '../../validators/user.validators';
+import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -26,9 +26,9 @@ import {
   CountryInputComponent,
 } from '@core/forms/components';
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
-import { UserApplicationService } from '../../services/application/user-application.service';
-import { AccessManagementService } from '../../../authorization/services/access-management.service';
-import { UserProfile, SelectionOption } from '../../../authorization/models/access.model';
+import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
+import { UserProfile, SelectionOption } from '@features/platform/auth/authorization/models/access.model';
 interface UserFormData extends UserProfile {
   language: Language;
   email: string;

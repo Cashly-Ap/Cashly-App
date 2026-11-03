@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, provideRouter } from '@angular/router';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { of, throwError, firstValueFrom, isObservable } from 'rxjs';
-import { modulePermissionGuard } from './module-permission.guard';
-import { AuthService } from '../services/application/auth-application.service';
-import { BusinessModule } from '../user/models/enums/business-module.enum';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 describe('modulePermissionGuard', () => {
   const auth = { isAuthenticated: vi.fn(), ensureAccess: vi.fn(), hasPermission: vi.fn() };
   beforeEach(() => {

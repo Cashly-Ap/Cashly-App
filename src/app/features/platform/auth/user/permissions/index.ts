@@ -1,1 +1,1 @@
-export * from './user.permissions';
+export * from '@features/platform/auth/user/permissions/user.permissions';

@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SecurityPageComponent } from './security-page.component';
-import { MfaApiService } from '../../services/api/mfa-api.service';
-import { AuthService } from '../../services/application/auth-application.service';
+import { SecurityPageComponent } from '@features/platform/auth/pages/security/security-page.component';
+import { MfaApiService } from '@features/platform/auth/services/api/mfa-api.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
 vi.mock('qrcode', () => ({ toDataURL: vi.fn().mockResolvedValue('data:image/png;base64,qr') }));
 

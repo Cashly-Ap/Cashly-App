@@ -1,4 +1,4 @@
-import { ACCESS_REFRESH_REQUEST } from '../authorization/models/access.model';
+import { ACCESS_REFRESH_REQUEST } from '@features/platform/auth/authorization/models/access.model';
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';

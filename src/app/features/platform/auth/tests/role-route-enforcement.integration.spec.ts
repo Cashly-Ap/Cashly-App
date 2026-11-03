@@ -1,13 +1,13 @@
-import { routes as applicationRoutes } from '../../../../app.routes';
+import { routes as applicationRoutes } from '@app/app.routes';
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, Routes } from '@angular/router';
 import { RouterTestingHarness } from '@angular/router/testing';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthService } from '../services/application/auth-application.service';
-import { BusinessModule } from '../user/models/enums/business-module.enum';
-import { PermissionAction } from '../authorization/models/access.model';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { CATEGORY_ROUTES } from '@features/catalog/categories/routing/category.routes';
 import { PRICE_TYPE_ROUTES } from '@features/catalog/price-types/routing/price-type.routes';
 import { PRODUCT_ROUTES } from '@features/catalog/products/routing/product.routes';

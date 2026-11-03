@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { BackButtonComponent } from './back-button.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 
 describe('BackButtonComponent', () => {
   let component: BackButtonComponent;

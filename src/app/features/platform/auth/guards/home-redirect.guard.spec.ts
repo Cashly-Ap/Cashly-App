@@ -2,9 +2,9 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { of, firstValueFrom, isObservable } from 'rxjs';
-import { homeRedirectGuard } from './home-redirect.guard';
-import { AuthService } from '../services/application/auth-application.service';
-import { BusinessModule } from '../user/models/enums/business-module.enum';
+import { homeRedirectGuard } from '@features/platform/auth/guards/home-redirect.guard';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 describe('homeRedirectGuard', () => {
   const auth = {
     isAuthenticated: vi.fn(),

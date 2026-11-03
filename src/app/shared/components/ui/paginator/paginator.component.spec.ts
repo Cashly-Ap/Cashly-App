@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { PaginatorComponent } from './paginator.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 
 describe('PaginatorComponent', () => {
   let component: PaginatorComponent;

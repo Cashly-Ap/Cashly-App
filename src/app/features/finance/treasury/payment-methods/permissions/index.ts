@@ -1,1 +1,1 @@
-export * from './payment-method.permissions';
+export * from '@features/finance/treasury/payment-methods/permissions/payment-method.permissions';

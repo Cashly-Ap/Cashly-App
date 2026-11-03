@@ -20,7 +20,7 @@ import {
   FileInputComponent,
   CountryInputComponent,
 } from '@core/forms/components';
-import { CompanyService } from './company.service';
+import { CompanyService } from '@features/platform/company/company.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-company-page',

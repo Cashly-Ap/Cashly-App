@@ -1,1 +1,1 @@
-export * from './quote.permissions';
+export * from '@features/sales/quotes/permissions/quote.permissions';

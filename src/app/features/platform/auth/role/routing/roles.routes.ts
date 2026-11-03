@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { authGuard } from '../../guards/auth.guard';
-import { modulePermissionGuard } from '../../guards/module-permission.guard';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
-const page = () => import('../pages/roles-page.component').then((m) => m.RolesPageComponent);
+const page = () => import('@features/platform/auth/role/pages/roles-page.component').then((m) => m.RolesPageComponent);
 
 export const ROLES_ROUTES: Routes = [
   {

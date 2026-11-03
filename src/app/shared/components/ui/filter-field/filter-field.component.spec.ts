@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { FilterFieldComponent } from './filter-field.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 
 @Component({
   standalone: true,

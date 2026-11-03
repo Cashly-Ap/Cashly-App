@@ -1,1 +1,1 @@
-export * from './role.permissions';
+export * from '@features/platform/auth/role/permissions/role.permissions';

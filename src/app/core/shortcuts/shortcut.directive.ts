@@ -1,6 +1,6 @@
 import { DestroyRef, Directive, ElementRef, effect, inject, input } from '@angular/core';
-import { KeyboardShortcutService } from './keyboard-shortcut.service';
-import { KEYBOARD_ACTION_SHORTCUTS, ShortcutAction } from './shortcut-reference';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
+import { KEYBOARD_ACTION_SHORTCUTS, ShortcutAction } from '@core/shortcuts/shortcut-reference';
 
 @Directive({ selector: '[appShortcut]', standalone: true })
 export class ShortcutDirective {

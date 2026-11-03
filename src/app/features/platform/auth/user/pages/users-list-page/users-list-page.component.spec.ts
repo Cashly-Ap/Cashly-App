@@ -1,4 +1,4 @@
-import { AccessManagementService } from '../../../authorization/services/access-management.service';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';

@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
-import { DELETE_HANDLERS } from './delete-handlers.token';
-import { DeleteDialogService } from './delete-dialog.service';
+import { DELETE_HANDLERS } from '@shared/services/delete-handlers.token';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('DeleteDialogService', () => {
   const messages = { add: vi.fn() };

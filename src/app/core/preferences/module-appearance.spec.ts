@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chartPalette, moduleGroupFromUrl, MODULE_APPEARANCE } from './module-appearance';
+import { chartPalette, moduleGroupFromUrl, MODULE_APPEARANCE } from '@core/preferences/module-appearance';
 
 describe('Module appearance', () => {
   it('keeps nested routes in their module group and ignores query strings', () => {

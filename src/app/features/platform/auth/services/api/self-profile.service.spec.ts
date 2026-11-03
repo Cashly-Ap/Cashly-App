@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { environment } from '@env/environment';
-import { SelfProfileService } from './self-profile.service';
+import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
 describe('SelfProfileService', () => {
   let http: HttpTestingController;
   beforeEach(() => {

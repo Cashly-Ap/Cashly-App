@@ -5,8 +5,8 @@ import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { connectListNavigation, ListNavigationService } from './list-navigation.service';
-import { ListAction } from './list-action-buttons/list-action-buttons.component';
+import { connectListNavigation, ListNavigationService } from '@shared/components/list/list-navigation.service';
+import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 
 describe('List navigation actions', () => {
   const params = new BehaviorSubject(convertToParamMap({}));

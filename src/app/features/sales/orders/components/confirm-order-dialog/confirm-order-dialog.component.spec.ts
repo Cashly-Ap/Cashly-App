@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConfirmOrderDialogComponent } from './confirm-order-dialog.component';
+import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
 import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';

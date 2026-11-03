@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ConfirmPurchaseDialogComponent } from './confirm-purchase-dialog.component';
+import { ConfirmPurchaseDialogComponent } from '@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 import { PurchaseApiService } from '@features/procurement/purchases/services/api/purchase-api.service';
 import { PurchaseDetails } from '@features/procurement/purchases/models/interfaces/purchase-details.interface';
 import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';

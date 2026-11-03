@@ -1,4 +1,4 @@
-import { CustomerInvoiceDebt } from '../models/interfaces/customer-invoice-debt.interface';
+import { CustomerInvoiceDebt } from '@features/finance/treasury/receivables/models/interfaces/customer-invoice-debt.interface';
 
 export type ReceivableTone = 'success' | 'danger' | 'info';
 

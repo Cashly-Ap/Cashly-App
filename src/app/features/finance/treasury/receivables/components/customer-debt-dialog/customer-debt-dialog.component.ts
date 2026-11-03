@@ -8,7 +8,7 @@ import {
   receivableAmountClass,
   invoiceStatusTranslationKey,
   isInvoiceOverdue,
-} from '../receivables-presentation';
+} from '@features/finance/treasury/receivables/components/receivables-presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';

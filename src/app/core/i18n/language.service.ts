@@ -4,7 +4,7 @@ import englishComponents from '@shared/i18n/primeng/en.json';
 import { DOCUMENT, registerLocaleData } from '@angular/common';
 import spanish from '@angular/common/locales/es';
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
-import { Language } from './language';
+import { Language } from '@core/i18n/language';
 
 registerLocaleData(spanish, 'es');
 

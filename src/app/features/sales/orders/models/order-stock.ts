@@ -1,4 +1,4 @@
-import { OrderDetails } from './interfaces/order-details.interface';
+import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
 import { DocumentStockLine } from '@shared/utils/document-stock';
 
 export function orderStockLines(order: OrderDetails | null): DocumentStockLine[] {

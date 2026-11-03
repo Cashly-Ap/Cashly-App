@@ -1,5 +1,5 @@
 import { FormBuilder, Validators } from '@angular/forms';
-import { UserValidators } from '../../user/validators/user.validators';
+import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
 const fb = new FormBuilder();
 export function createUserNameForm() {
   const name = [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)];

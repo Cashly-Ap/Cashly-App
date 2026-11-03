@@ -35,7 +35,7 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TabsModule } from 'primeng/tabs';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
-import { PermissionEditorComponent } from '../components/permission-editor/permission-editor.component';
+import { PermissionEditorComponent } from '@features/platform/auth/role/components/permission-editor/permission-editor.component';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components';

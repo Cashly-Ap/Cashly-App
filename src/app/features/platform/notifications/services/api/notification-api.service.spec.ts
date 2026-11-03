@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { NotificationApiService } from './notification-api.service';
+import { NotificationApiService } from '@features/platform/notifications/services/api/notification-api.service';
 
 describe('NotificationApiService', () => {
   let service: NotificationApiService;

@@ -1,4 +1,4 @@
-import { LIST_NAVIGATION_DEFINITIONS } from './list-navigation.config';
+import { LIST_NAVIGATION_DEFINITIONS } from '@core/layouts/config/list-navigation.config';
 import { describe, expect, it, vi } from 'vitest';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { MenuItem } from '@core/layouts/models';

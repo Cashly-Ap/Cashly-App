@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { PreferencesPageComponent } from './preferences-page.component';
+import { PreferencesPageComponent } from '@features/platform/auth/pages/preferences/preferences-page.component';
 
 describe('personal settings controls', () => {
   const preferences = {

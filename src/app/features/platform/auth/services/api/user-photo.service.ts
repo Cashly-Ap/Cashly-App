@@ -2,8 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '@env/environment';
 import { Observable, tap } from 'rxjs';
-import { UserDetails } from '../../user/models/interfaces/user-details.interface';
-import { AuthService } from '../application/auth-application.service';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 @Injectable({ providedIn: 'root' })
 export class UserPhotoService {
   private readonly http = inject(HttpClient);

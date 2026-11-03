@@ -2,8 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { KeyboardShortcutService } from './keyboard-shortcut.service';
-import { ShortcutHelpComponent } from './shortcut-help.component';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
+import { ShortcutHelpComponent } from '@core/shortcuts/shortcut-help.component';
 
 describe('contextual shortcut help', () => {
   const preferences = {

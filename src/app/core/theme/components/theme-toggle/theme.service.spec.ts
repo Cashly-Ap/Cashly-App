@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { PLATFORM_ID, signal } from '@angular/core';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { UserPreferencesService, ThemeMode } from '@core/preferences/user-preferences.service';
-import { ThemeService } from './theme.service';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 describe('ThemeService', () => {
   const themeMode = signal<ThemeMode>('system');

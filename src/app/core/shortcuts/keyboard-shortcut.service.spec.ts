@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { KeyboardShortcutService } from './keyboard-shortcut.service';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
 
 describe('KeyboardShortcutService', () => {
   let service: KeyboardShortcutService;

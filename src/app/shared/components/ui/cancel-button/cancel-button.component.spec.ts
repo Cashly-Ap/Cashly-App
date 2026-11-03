@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { CancelButtonComponent } from './cancel-button.component';
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 
 describe('CancelButtonComponent', () => {
   let component: CancelButtonComponent;

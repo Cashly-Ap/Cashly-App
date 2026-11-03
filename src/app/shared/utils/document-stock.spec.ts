@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { reviewDocumentStock } from './document-stock';
+import { reviewDocumentStock } from '@shared/utils/document-stock';
 
 describe('document stock review', () => {
   const line = {

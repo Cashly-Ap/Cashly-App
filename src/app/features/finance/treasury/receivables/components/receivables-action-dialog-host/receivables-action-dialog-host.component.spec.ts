@@ -23,7 +23,7 @@ import { CustomerDebtSummary } from '@features/finance/treasury/receivables/mode
 import { CustomerInvoiceDebt } from '@features/finance/treasury/receivables/models/interfaces/customer-invoice-debt.interface';
 import { PayInvoiceRequest } from '@features/finance/treasury/receivables/models/interfaces/payment-request.interface';
 import { ReceivablesActionDialogService } from '@core/layouts/services/receivables-action-dialog.service';
-import { ReceivablesActionDialogHostComponent } from './receivables-action-dialog-host.component';
+import { ReceivablesActionDialogHostComponent } from '@features/finance/treasury/receivables/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 
 const customerDebt: CustomerDebtSummary = {
   customerId: 'customer-1',

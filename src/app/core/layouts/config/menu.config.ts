@@ -1,4 +1,4 @@
-import { addListNavigationActions } from './list-navigation.config';
+import { addListNavigationActions } from '@core/layouts/config/list-navigation.config';
 import { MenuItem } from '@core/layouts/models';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { CompanyPermission } from '@features/platform/company/permissions';

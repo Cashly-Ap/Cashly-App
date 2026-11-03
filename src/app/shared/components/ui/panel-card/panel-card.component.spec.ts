@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { PanelCardComponent } from './panel-card.component';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 
 @Component({
   standalone: true,

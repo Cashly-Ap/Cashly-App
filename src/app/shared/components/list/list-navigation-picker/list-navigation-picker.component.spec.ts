@@ -3,12 +3,12 @@ import { signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { ListNavigationPickerComponent } from './list-navigation-picker.component';
+import { ListNavigationPickerComponent } from '@shared/components/list/list-navigation-picker/list-navigation-picker.component';
 import {
   ListNavigationService,
   ListNavigationSession,
   NavigationRecord,
-} from '../list-navigation.service';
+} from '@shared/components/list/list-navigation.service';
 
 describe('ListNavigationPickerComponent acceptance', () => {
   const record: NavigationRecord = {

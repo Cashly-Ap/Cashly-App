@@ -7,7 +7,7 @@ import { EMPTY } from 'rxjs';
 import { ColorMode, UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { DocumentConfirmationDialogComponent } from './document-confirmation-dialog.component';
+import { DocumentConfirmationDialogComponent } from '@shared/components/document-confirmation-dialog/document-confirmation-dialog.component';
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 
 describe('DocumentConfirmationDialogComponent', () => {

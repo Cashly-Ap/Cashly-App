@@ -1,7 +1,7 @@
 import { MenuItem } from '@core/layouts/models';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { buildMenuItems, MenuCallbacks } from './menu.config';
+import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
 
 export interface MenuAreaOrder {
   area: string;

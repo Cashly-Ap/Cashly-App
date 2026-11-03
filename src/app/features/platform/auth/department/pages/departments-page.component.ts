@@ -44,10 +44,10 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService, SortEvent } from 'primeng/api';
-import { AccessManagementService } from '../../authorization/services/access-management.service';
-import { AuthorizationService } from '../../authorization/services/authorization.service';
-import { Department } from '../../authorization/models/access.model';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
+import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { Department } from '@features/platform/auth/authorization/models/access.model';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';

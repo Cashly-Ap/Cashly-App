@@ -6,7 +6,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { MessageService } from 'primeng/api';
-import { ListAction } from './list-action-buttons/list-action-buttons.component';
+import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 
 export interface ListNavigationFilter {
   label: string;

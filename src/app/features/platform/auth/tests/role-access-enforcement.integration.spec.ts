@@ -2,11 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AuthApiService } from '../services/api/auth-api.service';
-import { AuthService } from '../services/application/auth-application.service';
-import { CurrentAccess, PermissionAction } from '../authorization/models/access.model';
-import { UserResponse } from '../models/interfaces/user.interface';
-import { BusinessModule } from '../user/models/enums/business-module.enum';
+import { AuthApiService } from '@features/platform/auth/services/api/auth-api.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { CurrentAccess, PermissionAction } from '@features/platform/auth/authorization/models/access.model';
+import { UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const actions: PermissionAction[] = [
   'READ',

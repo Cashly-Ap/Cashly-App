@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { PickerTriggerComponent } from './picker-trigger.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 
 describe('PickerTriggerComponent', () => {
   beforeEach(() => {

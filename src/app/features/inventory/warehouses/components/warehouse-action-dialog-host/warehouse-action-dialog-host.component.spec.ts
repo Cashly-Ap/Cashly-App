@@ -8,7 +8,7 @@ import { ProductApplicationService } from '@features/catalog/products/services/a
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
 import { WarehouseStockOperationDialogComponent } from '@features/inventory/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component';
 import { WarehouseActionDialogService } from '@core/layouts/services/warehouse-action-dialog.service';
-import { WarehouseActionDialogHostComponent } from './warehouse-action-dialog-host.component';
+import { WarehouseActionDialogHostComponent } from '@features/inventory/warehouses/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
 
 describe('WarehouseActionDialogHostComponent', () => {
   let fixture: ComponentFixture<WarehouseActionDialogHostComponent>;

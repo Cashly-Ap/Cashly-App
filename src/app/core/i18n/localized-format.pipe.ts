@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { Pipe, PipeTransform, inject } from '@angular/core';
-import { LanguageService } from './language.service';
+import { LanguageService } from '@core/i18n/language.service';
 
 @Pipe({ name: 'localizedDate', standalone: true, pure: false })
 export class LocalizedDatePipe implements PipeTransform {

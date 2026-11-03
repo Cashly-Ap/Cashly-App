@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ModuleNavigatorComponent } from './module-navigator.component';
+import { ModuleNavigatorComponent } from '@core/shortcuts/module-navigator.component';
 
 describe('ModuleNavigatorComponent', () => {
   beforeEach(() =>

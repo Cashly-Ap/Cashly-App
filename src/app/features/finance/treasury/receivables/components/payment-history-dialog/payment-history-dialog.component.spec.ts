@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { PaymentHistoryDialogComponent } from './payment-history-dialog.component';
+import { PaymentHistoryDialogComponent } from '@features/finance/treasury/receivables/components/payment-history-dialog/payment-history-dialog.component';
 
 describe('invoice payment history', () => {
   let fixture: ComponentFixture<PaymentHistoryDialogComponent>;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { BusinessModule } from '../../user/models/enums/business-module.enum';
-import { moduleForUrl } from './permission-context';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 
 describe('moduleForUrl', () => {
   it.each<[string, BusinessModule]>([

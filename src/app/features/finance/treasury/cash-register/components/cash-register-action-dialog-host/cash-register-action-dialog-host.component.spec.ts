@@ -9,7 +9,7 @@ import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
 import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 import { CashRegisterActionDialogService } from '@core/layouts/services/cash-register-action-dialog.service';
-import { CashRegisterActionDialogHostComponent } from './cash-register-action-dialog-host.component';
+import { CashRegisterActionDialogHostComponent } from '@features/finance/treasury/cash-register/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
 
 describe('CashRegisterActionDialogHostComponent', () => {
   let fixture: ComponentFixture<CashRegisterActionDialogHostComponent>;

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerActionService } from '@features/sales/orders/services/customer-picker-action.service';
-import { CustomerPickerDialogComponent } from './customer-picker-dialog.component';
+import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 
 @Component({
   selector: 'app-customer-picker-action-host',

@@ -1,7 +1,7 @@
 import { Injectable, Injector, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
-import { DeleteHandlerRegistration, DELETE_HANDLERS } from './delete-handlers.token';
+import { DeleteHandlerRegistration, DELETE_HANDLERS } from '@shared/services/delete-handlers.token';
 
 export interface DeleteRequest {
   resource: string;

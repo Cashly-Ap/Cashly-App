@@ -7,7 +7,7 @@ import { PermissionDirective } from '@features/platform/auth/authorization/direc
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { DetailActionsMenuComponent } from './detail-actions-menu.component';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
 
 @Component({
   standalone: true,

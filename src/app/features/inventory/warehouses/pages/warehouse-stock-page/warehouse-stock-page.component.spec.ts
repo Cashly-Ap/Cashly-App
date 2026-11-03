@@ -3,13 +3,13 @@ import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { BehaviorSubject, Subject, of, throwError } from 'rxjs';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
-import { WarehouseStockPageComponent } from './warehouse-stock-page.component';
+import { WarehouseStockPageComponent } from '@features/inventory/warehouses/pages/warehouse-stock-page/warehouse-stock-page.component';
 import {
   StockGroupBy,
   StockOverviewApiService,
   StockOverviewItem,
   StockOverviewResponse,
-} from '../../services/api/stock-overview-api.service';
+} from '@features/inventory/warehouses/services/api/stock-overview-api.service';
 
 const stockItem: StockOverviewItem = {
   id: 's1',
