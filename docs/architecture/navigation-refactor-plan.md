@@ -165,7 +165,7 @@ Acceptance criteria:
 - Core only aggregates definitions.
 - Adding a module does not require editing `list-navigation.config.ts`.
 
-## Phase E - Clean app.config
+## Phase E - Clean app.config ✅
 
 Create:
 
