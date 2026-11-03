@@ -5,9 +5,12 @@
     }
     @if (customer(); as currentCustomer) {
       <div class="flex flex-col gap-6">
-        <app-page-header [title]="'partners.customers.customerDetails' | translate" [subtitle]="'partners.customers.completeCustomerInformation' | translate" />
+        <app-page-header
+          [title]="'partners.customers.customerDetails' | translate"
+          [subtitle]="'partners.customers.completeCustomerInformation' | translate"
+        />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="currentCustomer.legalName"
             [subtitle]="currentCustomer.alias"
@@ -43,14 +46,28 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field [label]="'finance.treasury.paymentmethods.code' | translate" [value]="'#' + currentCustomer.code" />
-              <app-details-info-field [label]="'partners.suppliers.legalName' | translate" [value]="currentCustomer.legalName" />
-              <app-details-info-field [label]="'partners.suppliers.alias' | translate" [value]="currentCustomer.alias" />
-              <app-details-info-field [label]="'partners.customers.labels.taxId' | translate" [value]="currentCustomer.rif" />
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.code' | translate"
+                [value]="'#' + currentCustomer.code"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.legalName' | translate"
+                [value]="currentCustomer.legalName"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.alias' | translate"
+                [value]="currentCustomer.alias"
+              />
+              <app-details-info-field
+                [label]="'partners.customers.labels.taxId' | translate"
+                [value]="currentCustomer.rif"
+              />
               <app-details-info-field [label]="'shared.type' | translate" type="badge"
                 ><app-text-badge [label]="getTypeLabel(currentCustomer.type)" variant="label"
               /></app-details-info-field>
-              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge"
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
                 ><app-status-badge [active]="currentCustomer.active"
               /></app-details-info-field>
               <app-details-info-field
@@ -81,9 +98,9 @@
               </div>
             }
           </div>
-        </app-details-card>
+        </app-panel-card>
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header [title]="'partners.suppliers.contact' | translate" />
           <div class="p-4 sm:p-6 flex flex-col gap-6">
             <!-- Emails -->
@@ -183,7 +200,11 @@
                             'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active,
                           }"
                         >
-                          {{ address.active ? ('partners.suppliers.active' | translate) : ('partners.suppliers.inactive' | translate) }}
+                          {{
+                            address.active
+                              ? ('partners.suppliers.active' | translate)
+                              : ('partners.suppliers.inactive' | translate)
+                          }}
                         </span>
                       </div>
                     </div>
@@ -192,10 +213,12 @@
               }
             </section>
           </div>
-        </app-details-card>
+        </app-panel-card>
 
-        <app-details-card>
-          <app-details-card-header [title]="'partners.customers.accessibleWarehouses' | translate" />
+        <app-panel-card>
+          <app-details-card-header
+            [title]="'partners.customers.accessibleWarehouses' | translate"
+          />
           <div class="p-4 sm:p-6">
             @if (warehouseAccessLoading()) {
               <app-loading-spinner />
@@ -216,7 +239,7 @@
               </div>
             }
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

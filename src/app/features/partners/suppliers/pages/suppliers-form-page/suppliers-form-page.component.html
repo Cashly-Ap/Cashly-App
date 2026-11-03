@@ -1,7 +1,7 @@
 <app-form-container>
   <app-form-header [title]="title()" [subtitle]="subtitle()" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-form-card>
+    <app-panel-card>
       <p-tabs value="0">
         <p-tablist>
           <p-tab value="0">
@@ -33,6 +33,6 @@
         [tooltipMessage]="submitTooltip()"
         (cancel)="onCancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>

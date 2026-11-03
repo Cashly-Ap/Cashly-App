@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -13,16 +13,17 @@ import { MfaApiService, MfaStatus, MfaSetup } from '../../services/api/mfa-api.s
 import { mfaErrorMessage } from '../../messages/mfa-error-message';
 import { AuthService } from '../../services/application/auth-application.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-security-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
     PageHeaderComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
   ],
   templateUrl: './security-page.component.html',

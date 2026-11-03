@@ -1,7 +1,7 @@
 <app-form-container>
   <app-form-header [title]="title() | translate" [subtitle]="subtitle() | translate" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-form-card>
+    <app-panel-card>
       <p-tabs [value]="activeTab()" (valueChange)="activeTab.set(($event ?? 'general').toString())">
         <p-tablist>
           <p-tab value="general"
@@ -158,6 +158,6 @@
         tooltipMessage="Complete los campos requeridos"
         (cancel)="onCancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>

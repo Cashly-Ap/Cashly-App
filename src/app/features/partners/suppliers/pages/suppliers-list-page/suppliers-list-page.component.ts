@@ -27,7 +27,7 @@ import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
@@ -52,11 +52,13 @@ import {
   getMunicipalitiesForState,
 } from '@features/partners/customers/data/venezuela-geo.data';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-suppliers-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -75,7 +77,6 @@ import {
     ConfirmDialogModule,
     PopoverModule,
     SelectModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,

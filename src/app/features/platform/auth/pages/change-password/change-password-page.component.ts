@@ -4,7 +4,7 @@ import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { FormContainerComponent, FormCardComponent } from '@core/forms/components/cards';
+import { FormContainerComponent } from '@core/forms/components/cards';
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
 import { TextInputComponent } from '@core/forms/components/inputs';
 import { AuthValidators } from '@features/platform/auth/validators/auth-validators';
@@ -13,14 +13,15 @@ import { AUTH_SUCCESS_MESSAGES } from '@features/platform/auth/messages/success-
 import { AUTH_ERROR_MESSAGES } from '@features/platform/auth/messages/error-messages';
 import { createPasswordForm } from '@features/platform/auth/pages/change-password/change-password-page.config';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-change-password-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
-    FormCardComponent,
     FormHeaderComponent,
     FormActionsComponent,
     TextInputComponent,

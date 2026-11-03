@@ -10,7 +10,7 @@
           [subtitle]="'catalog.pricetypes.priceTypeInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header [title]="currentPriceType.name">
             <div actions class="flex gap-3">
               <p-button
@@ -33,8 +33,14 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field [label]="'finance.treasury.paymentmethods.name' | translate" [value]="currentPriceType.name" />
-              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge">
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentPriceType.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
                 <app-status-badge
                   [active]="currentPriceType.active"
                   activeLabel="Activo"
@@ -43,7 +49,7 @@
               </app-details-info-field>
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

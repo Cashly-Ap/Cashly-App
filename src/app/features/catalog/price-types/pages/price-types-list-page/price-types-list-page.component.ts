@@ -23,7 +23,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
@@ -38,11 +38,14 @@ import { PriceTypeFilters } from '@features/catalog/price-types/services/api/pri
 import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/price-type-list.interface';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-price-types-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -55,7 +58,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     InputIconModule,
     ConfirmDialogModule,
     TooltipModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,
@@ -100,7 +102,7 @@ export class PriceTypesListPageComponent implements OnInit {
     search: (term) => this.onSearch(term),
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.name,
-    description: (record) => record.active ? 'Activo' : 'Inactivo',
+    description: (record) => (record.active ? 'Activo' : 'Inactivo'),
     refresh: () => this.loadWithFilters(),
     actions: (record) => this.actionsFor(record),
   });
@@ -159,12 +161,12 @@ export class PriceTypesListPageComponent implements OnInit {
       },
     ];
     actions.push({
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(priceType),
-      });
+      requiredAction: 'DELETE',
+      label: 'Eliminar',
+      icon: 'pi pi-trash',
+      danger: true,
+      command: () => this.onDelete(priceType),
+    });
     return actions;
   }
 

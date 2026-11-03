@@ -298,8 +298,6 @@ body {
 }
 
 .cashly-panel,
-app-details-card > div,
-app-details-section-card > div,
 app-loading-spinner > div {
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
@@ -310,9 +308,6 @@ app-loading-spinner > div {
 
 .cashly-form-container {
   background: var(--cashly-canvas);
-}
-app-list-container > app-content-card > .cashly-panel {
-  overflow: hidden;
 }
 .cashly-page-header {
   text-align: left;
@@ -491,12 +486,6 @@ a:focus-visible {
   color: var(--cashly-ink);
   border: 1px solid var(--cashly-line);
 }
-app-section-card > div {
-  @apply shadow-xl;
-  background: var(--cashly-panel);
-  border: 1px solid var(--cashly-line);
-  border-radius: 20px;
-}
 .cashly-login .login-panel {
   border-radius: 0;
   border: 0;
@@ -589,10 +578,10 @@ app-section-card > div {
 .cashly-informative .cashly-page-header::before {
   color: var(--cashly-accent);
 }
-.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) {
+.cashly-informative .cashly-workspace .cashly-panel {
   border-color: var(--cashly-accent-line);
 }
-.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div, app-form-card-header > div, app-section-card > div > div:first-child) {
+.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div, app-form-card-header > div) {
   background: var(--cashly-accent-soft);
 }
 .cashly-informative .cashly-workspace .p-datatable {
@@ -639,9 +628,8 @@ app-section-card > div {
   color: var(--cashly-accent);
 }
 
-.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) > :is(app-details-card-header, app-form-header, app-form-card-header):first-child,
-.cashly-informative .cashly-workspace :is(.cashly-panel, app-details-card > div, app-details-section-card > div, app-section-card > div) > :is(app-details-card-header, app-form-header, app-form-card-header):first-child > div,
-.cashly-informative .cashly-workspace app-section-card > div > div:first-child {
+.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header, app-form-card-header):first-child,
+.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header, app-form-card-header):first-child > div {
   border-start-start-radius: inherit;
   border-start-end-radius: inherit;
 }

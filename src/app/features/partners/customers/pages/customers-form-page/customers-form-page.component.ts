@@ -12,7 +12,6 @@ import { SelectModule } from 'primeng/select';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { CustomerApplicationService } from '@features/partners/customers/services/application/customer-application.service';
@@ -57,10 +56,14 @@ interface CustomerFormData {
   priceTypeId: string | null;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-customers-form-page',
   standalone: true,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -70,7 +73,6 @@ interface CustomerFormData {
     SelectModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     CustomerGeneralSectionComponent,
     CustomerContactSectionComponent,

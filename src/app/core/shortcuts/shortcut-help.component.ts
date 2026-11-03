@@ -10,9 +10,10 @@ import {
 } from '@angular/core';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { KeyboardShortcutService } from './keyboard-shortcut.service';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 
 @Component({
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, PanelCardComponent],
   selector: 'app-shortcut-help',
   standalone: true,
   templateUrl: './shortcut-help.component.html',

@@ -18,7 +18,7 @@ import { forkJoin, of, catchError } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -31,16 +31,20 @@ import { ProductPhotoService } from '@features/catalog/products/services/api/pro
 import { ProductDetails } from '@features/catalog/products/models/interfaces/product-details.interface';
 import { ProductStockByWarehouse } from '@features/catalog/products/models/interfaces/product-stock-by-warehouse.interface';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-products-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedDatePipe, LocalizedCurrencyPipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,
@@ -54,7 +58,9 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
 export class ProductsDetailsPageComponent implements OnInit {
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly authorization = inject(AuthorizationService);
-  readonly canViewStock = computed(() => this.authorization.can(BusinessModule.INVENTORY_WAREHOUSES, 'READ'));
+  readonly canViewStock = computed(() =>
+    this.authorization.can(BusinessModule.INVENTORY_WAREHOUSES, 'READ'),
+  );
   private service = inject(ProductApplicationService);
   private photoService = inject(ProductPhotoService);
   private route = inject(ActivatedRoute);

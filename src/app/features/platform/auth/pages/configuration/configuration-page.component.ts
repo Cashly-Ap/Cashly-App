@@ -20,7 +20,6 @@ import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permissi
 import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
 import { CatalogArea } from '@features/platform/auth/permissions/permission-catalog.types';
 import {
-  DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
   DetailsInfoGridComponent,
@@ -29,16 +28,17 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-configuration-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     UserAvatarComponent,
     CommonModule,
     ButtonModule,
     PageHeaderComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,
@@ -79,9 +79,8 @@ export class ConfigurationPageComponent {
   readonly modules = computed(() => {
     const selected = new Set(normalizePermissions(this.access()?.permissions));
     const areas = PERMISSION_CATALOG as readonly CatalogArea[];
-    return areas.flatMap((area) =>
-      area.sections.flatMap((section) => section.modules),
-    )
+    return areas
+      .flatMap((area) => area.sections.flatMap((section) => section.modules))
       .map((module) => ({
         id: module.moduleKey,
         label: module.moduleKey,

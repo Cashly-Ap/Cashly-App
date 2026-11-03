@@ -10,7 +10,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
@@ -31,11 +30,13 @@ interface CreditNoteFormData {
   reason: string;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-credit-note-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
@@ -44,7 +45,6 @@ interface CreditNoteFormData {
     TextareaModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     CustomerPickerDialogComponent,
     InvoicePickerDialogComponent,

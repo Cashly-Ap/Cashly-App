@@ -4,13 +4,13 @@
     [subtitle]="'platform.company.yourCompanyTaxDetailsContactInformationAndIdentity' | translate"
   />
   @if (loading()) {
-    <app-form-card
+    <app-panel-card
       ><div class="p-6" role="status">
         {{ 'platform.company.loadingCompany' | translate }}
-      </div></app-form-card
+      </div></app-panel-card
     >
   } @else if (error()) {
-    <app-form-card
+    <app-panel-card
       ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
         <p>{{ 'platform.company.weCouldNotLoadTheCompany' | translate }}</p>
         <p-button
@@ -19,10 +19,10 @@
           [outlined]="true"
           (onClick)="load()"
         /></div
-    ></app-form-card>
+    ></app-panel-card>
   } @else {
     <form [formGroup]="form" (ngSubmit)="save()">
-      <app-form-card>
+      <app-panel-card>
         <p-tabs value="general"
           ><p-tablist
             ><p-tab value="general"
@@ -86,7 +86,9 @@
                   <app-text-input
                     [label]="field.label | translate"
                     [control]="control(field.key)"
-                    [errorMessage]="'platform.company.checkTheFormatAndLengthOfThisField' | translate"
+                    [errorMessage]="
+                      'platform.company.checkTheFormatAndLengthOfThisField' | translate
+                    "
                   />
                 }</app-tab-content></p-tabpanel
             ><p-tabpanel value="address"
@@ -113,7 +115,7 @@
           [disabled]="form.invalid || saving() || logoOptimizing() || pdfLogoOptimizing()"
           (cancel)="cancel()"
         />
-      </app-form-card>
+      </app-panel-card>
     </form>
   }
 </app-form-container>

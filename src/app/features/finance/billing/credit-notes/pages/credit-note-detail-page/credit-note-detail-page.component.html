@@ -10,7 +10,7 @@
           [subtitle]="'finance.billing.creditnotes.completeCreditNoteInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="cn.noteNumber"
             [subtitle]="
@@ -51,7 +51,11 @@
                 [label]="'shared.customer' | translate"
                 [value]="cn.customerName || '—'"
               />
-              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="cn.customerRif || '—'" type="code" />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="cn.customerRif || '—'"
+                type="code"
+              />
               <app-details-info-field
                 [label]="'shared.invoice' | translate"
                 [value]="cn.invoiceNumber || '—'"
@@ -75,10 +79,10 @@
               />
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
 
         @if (cn.reason) {
-          <app-details-card>
+          <app-panel-card>
             <app-details-card-header [title]="'shared.reason' | translate" />
             <div class="p-4 sm:p-6">
               <p
@@ -87,7 +91,7 @@
                 {{ cn.reason }}
               </p>
             </div>
-          </app-details-card>
+          </app-panel-card>
         }
       </div>
     }

@@ -8,7 +8,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
@@ -19,18 +18,20 @@ interface PriceTypeFormData {
   active: boolean;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-price-types-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
     ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
   ],
   templateUrl: './price-types-form-page.component.html',

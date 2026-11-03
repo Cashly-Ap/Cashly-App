@@ -10,7 +10,7 @@
           [subtitle]="'partners.suppliers.completeSupplierInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="currentSupplier.legalName"
             [subtitle]="currentSupplier.alias"
@@ -37,14 +37,28 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field [label]="'finance.treasury.paymentmethods.code' | translate" [value]="'#' + currentSupplier.code" />
-              <app-details-info-field [label]="'partners.suppliers.legalName' | translate" [value]="currentSupplier.legalName" />
-              <app-details-info-field [label]="'partners.suppliers.alias' | translate" [value]="currentSupplier.alias" />
-              <app-details-info-field [label]="'partners.suppliers.labels.taxId' | translate" [value]="currentSupplier.rif" />
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.code' | translate"
+                [value]="'#' + currentSupplier.code"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.legalName' | translate"
+                [value]="currentSupplier.legalName"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.alias' | translate"
+                [value]="currentSupplier.alias"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.labels.taxId' | translate"
+                [value]="currentSupplier.rif"
+              />
               <app-details-info-field [label]="'shared.type' | translate" type="badge"
                 ><app-text-badge [label]="getTypeLabel(currentSupplier.type)" variant="label"
               /></app-details-info-field>
-              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge"
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
                 ><app-status-badge [active]="currentSupplier.active"
               /></app-details-info-field>
               <app-details-info-field
@@ -63,9 +77,9 @@
               </div>
             }
           </div>
-        </app-details-card>
+        </app-panel-card>
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header [title]="'partners.suppliers.contact' | translate" />
           <div class="p-4 sm:p-6 flex flex-col gap-6">
             <!-- Emails -->
@@ -165,7 +179,11 @@
                             'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active,
                           }"
                         >
-                          {{ address.active ? ('partners.suppliers.active' | translate) : ('partners.suppliers.inactive' | translate) }}
+                          {{
+                            address.active
+                              ? ('partners.suppliers.active' | translate)
+                              : ('partners.suppliers.inactive' | translate)
+                          }}
                         </span>
                       </div>
                     </div>
@@ -174,7 +192,7 @@
               }
             </section>
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

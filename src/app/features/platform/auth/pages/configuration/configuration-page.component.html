@@ -7,11 +7,11 @@
       "
     />
     @if (loading()) {
-      <div class="cashly-panel rounded-3xl p-8 animate-pulse" role="status" aria-live="polite">
+      <app-panel-card padding="p-8" extraClass="animate-pulse">
         {{ 'auth.profile.loading.your.profile' | translate }}
-      </div>
+      </app-panel-card>
     } @else if (error()) {
-      <app-details-card>
+      <app-panel-card>
         <div class="p-6 flex flex-col items-start gap-4" role="alert">
           <p>{{ 'auth.profile.we.could.not.load.your.profile.please.try.again' | translate }}</p>
           <p-button
@@ -21,9 +21,9 @@
             (onClick)="loadProfile()"
           />
         </div>
-      </app-details-card>
+      </app-panel-card>
     } @else if (profile(); as user) {
-      <app-details-card>
+      <app-panel-card>
         <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
           <app-user-avatar [photoPath]="user.photoPath" [name]="fullName()" size="xlarge" />
           <div class="min-w-0 flex-1">
@@ -53,9 +53,9 @@
             (onClick)="onEditName()"
           />
         </div>
-      </app-details-card>
+      </app-panel-card>
 
-      <app-details-card>
+      <app-panel-card>
         <app-details-card-header
           [title]="'auth.profile.personal.and.contact.information' | translate"
           [subtitle]="'auth.profile.details.associated.with.your.account' | translate"
@@ -88,9 +88,9 @@
             />
           </app-details-info-grid>
         </div>
-      </app-details-card>
+      </app-panel-card>
 
-      <app-details-card>
+      <app-panel-card>
         <app-details-card-header
           [title]="'auth.profile.address' | translate"
           [subtitle]="'auth.profile.registered.address' | translate"
@@ -119,9 +119,9 @@
             />
           </app-details-info-grid>
         </div>
-      </app-details-card>
+      </app-panel-card>
 
-      <app-details-card>
+      <app-panel-card>
         <app-details-card-header
           [title]="'auth.profile.organization' | translate"
           [subtitle]="'auth.profile.your.assigned.role.and.department' | translate"
@@ -138,9 +138,9 @@
             />
           </app-details-info-grid>
         </div>
-      </app-details-card>
+      </app-panel-card>
 
-      <app-details-card>
+      <app-panel-card>
         <app-details-card-header
           [title]="'auth.profile.security.and.account' | translate"
           [subtitle]="'auth.profile.your.account.status.and.history' | translate"
@@ -181,9 +181,9 @@
             />
           </app-details-info-grid>
         </div>
-      </app-details-card>
+      </app-panel-card>
 
-      <app-details-card>
+      <app-panel-card>
         <app-details-card-header
           [title]="'auth.profile.my.permissions' | translate"
           [subtitle]="
@@ -242,7 +242,7 @@
             </app-details-info-grid>
           }
         </div>
-      </app-details-card>
+      </app-panel-card>
     }
   </div>
 </div>

@@ -77,13 +77,11 @@
     } @else if (service.loading()) {
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         @for (_ of [1, 2, 3]; track _) {
-          <div
-            class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl p-6 border border-surface-200 dark:border-surface-800"
-          >
+          <app-panel-card padding="p-6">
             <p-skeleton width="3rem" height="3rem" borderRadius="0.75rem" styleClass="mb-4" />
             <p-skeleton width="50%" height="1rem" styleClass="mb-3" />
             <p-skeleton width="70%" height="2rem" />
-          </div>
+          </app-panel-card>
         }
       </div>
     }
@@ -99,9 +97,7 @@
       </p-tablist>
       <p-tabpanels>
         <p-tabpanel value="customers">
-          <div
-            class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl border border-surface-200 dark:border-surface-800 overflow-hidden"
-          >
+          <app-panel-card [overflowHidden]="true">
             <div class="p-6">
               <div class="mb-6">
                 <div class="relative">
@@ -332,9 +328,7 @@
                     </div>
                   } @else {
                     @for (customer of service.customers(); track customer.customerId) {
-                      <div
-                        class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl p-5 border border-surface-200 dark:border-surface-800"
-                      >
+                      <app-panel-card padding="p-5">
                         <div class="flex items-start gap-3 mb-3">
                           <div
                             class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold text-lg flex-shrink-0"
@@ -435,27 +429,27 @@
                             'finance.treasury.receivables.openCustomerActions' | translate
                           "
                         />
-                      </div>
+                      </app-panel-card>
                     }
                   }
                 </div>
               }
             </div>
-          </div>
+          </app-panel-card>
 
-          <div
-            class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl border border-surface-200 dark:border-surface-800 mt-4 px-6 py-3"
-          >
+          <app-panel-card padding="px-6 py-3" extraClass="mt-4">
             <p-paginator
               [first]="first()"
               [rows]="rows()"
               [totalRecords]="service.totalCustomers()"
               [rowsPerPageOptions]="[10, 20, 50]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate"
+              [currentPageReportTemplate]="
+                'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
-          </div>
+          </app-panel-card>
         </p-tabpanel>
         <p-tabpanel value="pending">
           <app-pending-payments-tab

@@ -19,7 +19,6 @@ import {
   TabContentComponent,
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
   FileInputComponent,
   TextInputComponent,
@@ -42,10 +41,12 @@ interface UserFormData extends UserProfile {
   country: string;
   postalCode: string;
 }
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-users-form-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     TabsModule,
     ReactiveFormsModule,
@@ -53,7 +54,6 @@ interface UserFormData extends UserProfile {
     TabContentComponent,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     FileInputComponent,
     TextInputComponent,

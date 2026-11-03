@@ -74,10 +74,12 @@ interface BalanceFilterOption {
   value: BalanceFilter;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-customer-debt-dialog',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -257,8 +259,8 @@ export class CustomerDebtDialogComponent {
       actions.push(
         {
           requiredAction: 'CREATE',
-                    module: BusinessModule.FINANCE_RETURNS,
-                    label: 'Devolución',
+          module: BusinessModule.FINANCE_RETURNS,
+          label: 'Devolución',
           icon: 'pi pi-undo',
           disabled: this.loadingReturnInvoice(),
           command: () => this.onViewInvoiceReturns(invoice),

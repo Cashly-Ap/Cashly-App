@@ -58,16 +58,16 @@
         </app-list-container>
         <div class="h-4"></div>
         @if (loading()) {
-          <app-content-card
+          <app-panel-card
             ><app-loading-spinner [message]="'platform.auth.role.loadingRoles' | translate"
-          /></app-content-card>
+          /></app-panel-card>
         } @else if (items().length === 0) {
-          <app-content-card
+          <app-panel-card
             ><app-empty-state
               icon="pi-shield"
               [title]="'platform.auth.role.noRolesRegistered' | translate"
               [message]="'platform.auth.role.startManagingRolesByAddingTheFirstOne' | translate"
-          /></app-content-card>
+          /></app-panel-card>
         } @else {
           <app-list-container class="mt-4 hidden md:block">
             <div class="relative">
@@ -154,7 +154,7 @@
           </app-list-container>
           <div class="md:hidden mt-6 relative">
             @if (filteredItems().length === 0) {
-              <app-content-card
+              <app-panel-card
                 ><app-empty-state
                   icon="pi-search"
                   [title]="'finance.billing.creditnotes.noResultsFound' | translate"
@@ -162,13 +162,11 @@
                     'platform.auth.role.noRolesMatchYourSearchTryDifferentTermsOrCreateANewRole'
                       | translate
                   "
-              /></app-content-card>
+              /></app-panel-card>
             } @else {
               <div class="flex flex-col gap-4">
                 @for (item of pageItems(); track item.id) {
-                  <div
-                    class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl p-5 border border-surface-200 dark:border-surface-800"
-                  >
+                  <app-panel-card padding="p-5">
                     <div class="flex justify-between items-start mb-3">
                       <div class="flex-1">
                         <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
@@ -192,7 +190,7 @@
                         [ariaLabel]="'platform.auth.role.openRoleActions' | translate"
                       />
                     </div>
-                  </div>
+                  </app-panel-card>
                 }
               </div>
               <div class="px-4 py-3 mt-2">
@@ -226,7 +224,7 @@
               [title]="'platform.auth.role.roleDetails' | translate"
               [subtitle]="'platform.auth.role.completeRoleInformation' | translate"
             />
-            <app-details-card>
+            <app-panel-card>
               <app-details-card-header
                 [title]="value.name || ''"
                 [subtitle]="value.description || ''"
@@ -276,8 +274,8 @@
                   </div>
                 }
               </div>
-            </app-details-card>
-            <app-details-card>
+            </app-panel-card>
+            <app-panel-card>
               <app-details-card-header [title]="'platform.auth.role.permissions' | translate" />
               <div class="p-4 sm:p-6">
                 <app-details-info-grid [columns]="2" [fillLastRow]="true">
@@ -299,7 +297,7 @@
                   }
                 </app-details-info-grid>
               </div>
-            </app-details-card>
+            </app-panel-card>
           </div>
         }
       </div>
@@ -319,7 +317,7 @@
         <app-loading-spinner />
       } @else if (editing(); as value) {
         <form [formGroup]="form" (ngSubmit)="submit()">
-          <app-form-card>
+          <app-panel-card>
             <p-tabs value="general">
               <p-tablist>
                 <p-tab value="general"
@@ -408,7 +406,7 @@
               tooltipMessage="Complete los campos requeridos"
               (cancel)="onBack()"
             />
-          </app-form-card>
+          </app-panel-card>
         </form>
       }
     </app-form-container>

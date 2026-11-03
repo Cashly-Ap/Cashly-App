@@ -9,11 +9,11 @@ import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
-import { DetailsSectionCardComponent } from '@shared/components/details/details-section-card/details-section-card.component';
+
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
@@ -24,11 +24,13 @@ import {
   getOrderStatusLabel,
 } from '@features/sales/orders/models/enums/order-status.enum';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-order-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
@@ -36,11 +38,9 @@ import {
     ButtonModule,
     TableModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,
-    DetailsSectionCardComponent,
     EmptyStateComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,

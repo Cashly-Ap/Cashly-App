@@ -1,13 +1,14 @@
 <app-form-container>
   <app-form-header [title]="title()" [subtitle]="subtitle()" />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-form-card>
+    <app-panel-card>
       <div class="p-4 md:p-6 flex flex-col gap-4">
         <div
           class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 flex flex-col gap-2"
         >
           <label class="text-sm font-semibold text-surface-700 dark:text-surface-300">
-            {{ 'finance.treasury.paymentmethods.name' | translate }} <span class="text-red-500">*</span>
+            {{ 'finance.treasury.paymentmethods.name' | translate }}
+            <span class="text-red-500">*</span>
           </label>
           <input
             pInputText
@@ -18,12 +19,14 @@
             [class.ng-dirty]="form.get('name')?.touched"
           />
           @if (form.get('name')?.errors?.['required'] && form.get('name')?.touched) {
-            <small class="text-red-500 text-xs">{{ 'finance.treasury.paymentmethods.aNameIsRequired' | translate }}</small>
+            <small class="text-red-500 text-xs">{{
+              'finance.treasury.paymentmethods.aNameIsRequired' | translate
+            }}</small>
           }
           @if (form.get('name')?.errors?.['maxlength'] && form.get('name')?.touched) {
-            <small class="text-red-500 text-xs"
-              >{{ 'finance.treasury.paymentmethods.theNameCannotExceed100Characters' | translate }}</small
-            >
+            <small class="text-red-500 text-xs">{{
+              'finance.treasury.paymentmethods.theNameCannotExceed100Characters' | translate
+            }}</small>
           }
         </div>
 
@@ -52,6 +55,6 @@
         [tooltipMessage]="submitTooltip()"
         (cancel)="onCancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>

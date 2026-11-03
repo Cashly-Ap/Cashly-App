@@ -27,10 +27,12 @@ import { PendingPaymentRejectDialogComponent } from '@features/finance/treasury/
 
 const IMAGE_EXTENSION_PATTERN = /\.(png|jpe?g|gif|webp|svg|bmp)(\?.*)?$/i;
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-pending-payments-tab',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,

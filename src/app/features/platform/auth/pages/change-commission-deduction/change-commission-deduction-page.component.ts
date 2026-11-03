@@ -4,7 +4,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { FormContainerComponent, FormCardComponent } from '@core/forms/components/cards';
+import { FormContainerComponent } from '@core/forms/components/cards';
 import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components/headers';
 import { NumberInputComponent } from '@core/forms/components/inputs';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
@@ -12,14 +12,15 @@ import { AUTH_SUCCESS_MESSAGES } from '@features/platform/auth/messages/success-
 import { AUTH_ERROR_MESSAGES } from '@features/platform/auth/messages/error-messages';
 import { createCommissionDeductionForm } from '@features/platform/auth/pages/change-commission-deduction/change-commission-deduction-page.config';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-change-commission-deduction-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
-    FormCardComponent,
     FormHeaderComponent,
     FormActionsComponent,
     NumberInputComponent,

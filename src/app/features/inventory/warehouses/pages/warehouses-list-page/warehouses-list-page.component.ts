@@ -32,7 +32,7 @@ import {
   ListContainerComponent,
 } from '@shared/components/list';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -48,10 +48,12 @@ import { WAREHOUSE_ERROR_MESSAGES } from '@features/inventory/warehouses/message
 import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messages/success-messages';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -71,7 +73,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     TooltipModule,
     ListActionButtonsComponent,
     ListContainerComponent,
-    ContentCardComponent,
     EmptyStateComponent,
     LoadingSpinnerComponent,
     SearchFieldComponent,

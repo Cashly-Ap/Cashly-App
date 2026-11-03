@@ -1,6 +1,4 @@
-<div
-  class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl border border-surface-200 dark:border-surface-800 overflow-hidden"
->
+<app-panel-card [overflowHidden]="true">
   <div class="p-6 sm:p-8">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div class="flex items-center gap-4">
@@ -35,10 +33,12 @@
             {{ 'finance.treasury.receivables.creditBalance' | translate }}
           </p>
           <p class="text-2xl sm:text-3xl font-extrabold tracking-tight text-green-600">
-            {{ customerBalance()?.totalBalance ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            {{
+              customerBalance()?.totalBalance ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+            }}
           </p>
         </div>
       </div>
     </div>
   </div>
-</div>
+</app-panel-card>

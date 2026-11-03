@@ -6,7 +6,9 @@
       >
         {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">{{ 'catalog.pricetypes.priceTypes2' | translate }}</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'catalog.pricetypes.priceTypes2' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
         {{ 'catalog.pricetypes.managePriceTypes' | translate }}
       </p>
@@ -37,11 +39,11 @@
     </app-list-container>
 
     @if (showInitialLoading()) {
-      <app-content-card class="mt-4">
+      <app-panel-card class="mt-4">
         <app-loading-spinner [message]="'catalog.pricetypes.loadingPriceTypes' | translate" />
-      </app-content-card>
+      </app-panel-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card class="mt-4">
+      <app-panel-card class="mt-4">
         <app-empty-state
           icon="pi-tag"
           [title]="'catalog.pricetypes.noPriceTypesRegistered' | translate"
@@ -49,7 +51,7 @@
           [buttonLabel]="'catalog.pricetypes.newPriceType' | translate"
           (buttonClick)="onCreate()"
         />
-      </app-content-card>
+      </app-panel-card>
     } @else {
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
@@ -79,13 +81,20 @@
                 <ng-template pTemplate="header">
                   <tr>
                     <th pSortableColumn="name" class="w-auto">
-                      <div class="font-semibold">{{ 'finance.treasury.paymentmethods.name' | translate }} <p-sortIcon field="name" /></div>
+                      <div class="font-semibold">
+                        {{ 'finance.treasury.paymentmethods.name' | translate }}
+                        <p-sortIcon field="name" />
+                      </div>
                     </th>
                     <th class="w-24">
-                      <div class="font-semibold">{{ 'finance.billing.invoices.status' | translate }}</div>
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
                     </th>
                     <th class="w-36">
-                      <div class="font-semibold text-center">{{ 'shared.actions' | translate }}</div>
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
                     </th>
                   </tr>
                 </ng-template>
@@ -115,7 +124,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate"
+                [currentPageReportTemplate]="
+                  'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -132,7 +143,7 @@
           </div>
         }
         @if (hasFilteredResults()) {
-          <app-content-card>
+          <app-panel-card>
             <app-empty-state
               icon="pi-search"
               [title]="'finance.billing.creditnotes.noResultsFound' | translate"
@@ -140,13 +151,11 @@
               [buttonLabel]="'catalog.pricetypes.newPriceType' | translate"
               (buttonClick)="onCreate()"
             />
-          </app-content-card>
+          </app-panel-card>
         } @else {
           <div class="flex flex-col gap-4">
             @for (priceType of priceTypes(); track priceType.id) {
-              <div
-                class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl p-5 border border-surface-200 dark:border-surface-800"
-              >
+              <app-panel-card padding="p-5">
                 <div class="flex justify-between items-start mb-3">
                   <div class="flex-1">
                     <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-2">
@@ -166,7 +175,7 @@
                 >
                   <app-list-action-buttons [actions]="actionsFor(priceType)" />
                 </div>
-              </div>
+              </app-panel-card>
             }
           </div>
           <div class="px-4 py-3 mt-2">
@@ -176,7 +185,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate"
+              [currentPageReportTemplate]="
+                'catalog.pricetypes.labels.showingFirstToLastOfTotalrecordsPriceTypes' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

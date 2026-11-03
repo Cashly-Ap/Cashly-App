@@ -14,7 +14,6 @@ import { switchMap, of, finalize, Subscription } from 'rxjs';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
   TextInputComponent,
   TabContentComponent,
@@ -22,17 +21,18 @@ import {
   CountryInputComponent,
 } from '@core/forms/components';
 import { CompanyService } from './company.service';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-company-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
     TabsModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     TextInputComponent,
     TabContentComponent,

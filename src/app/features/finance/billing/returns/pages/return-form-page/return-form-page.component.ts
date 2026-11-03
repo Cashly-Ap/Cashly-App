@@ -20,7 +20,7 @@ import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
-import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
+
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/invoice-picker-dialog.component';
@@ -50,10 +50,12 @@ interface ReturnLineFormData {
   warehouseAllocations: { warehouseId: string; allocated: number }[];
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-return-form-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -66,7 +68,6 @@ interface ReturnLineFormData {
     TableModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     CustomerPickerDialogComponent,
     InvoicePickerDialogComponent,

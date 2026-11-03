@@ -11,7 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import {
-  DetailsCardComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
   DetailsInfoGridComponent,
@@ -21,14 +20,15 @@ import { AuthService } from '@features/platform/auth/services/application/auth-a
 import { CompanyPermission } from '@features/platform/company/permissions';
 import { Company, CompanyService } from './company.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-company-details',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ButtonModule,
     PageHeaderComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

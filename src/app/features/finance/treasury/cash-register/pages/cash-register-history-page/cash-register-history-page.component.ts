@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -33,11 +33,13 @@ import { CashRegisterHistoryView } from '@features/finance/treasury/cash-registe
 import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-register/models/enums/cash-movement-type.enum';
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslatePipe,
     LocalizedDatePipe,
@@ -45,7 +47,6 @@ import { ListFilterComponent } from '@shared/components/list/list-filter/list-fi
     CommonModule,
     FormsModule,
     RouterModule,
-    ContentCardComponent,
     ListContainerComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,

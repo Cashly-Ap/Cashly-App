@@ -16,11 +16,20 @@ const TYPE_TRANSLATIONS: Record<string, string> = {
   DEBIT_NOTE: 'Nota de Débito',
 };
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-balance-transactions-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedDatePipe, LocalizedCurrencyPipe, CommonModule, TableModule, PaginatorModule],
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    CommonModule,
+    TableModule,
+    PaginatorModule,
+  ],
   templateUrl: './balance-transactions-table.component.html',
 })
 export class BalanceTransactionsTableComponent {

@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -18,11 +18,13 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-credit-note-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
@@ -30,7 +32,6 @@ import { CreditNoteApplicationService } from '@features/finance/billing/credit-n
     ButtonModule,
     ConfirmDialogModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

@@ -19,17 +19,19 @@ import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/i
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
-import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
+
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
 import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-debit-note-form-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     FormsModule,
@@ -39,7 +41,6 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
     CommonModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     CustomerPickerDialogComponent,
     InvoicePickerDialogComponent,

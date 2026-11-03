@@ -14,7 +14,6 @@ import { ButtonModule } from 'primeng/button';
 import { TabsModule } from 'primeng/tabs';
 import {
   FormContainerComponent,
-  FormCardComponent,
   FormHeaderComponent,
   FormActionsComponent,
   FileInputComponent,
@@ -27,14 +26,15 @@ import { AuthService } from '../../services/application/auth-application.service
 import { SelfProfileService } from '../../services/api/self-profile.service';
 import { createUserNameForm } from './change-username-page.config';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-change-username-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     FormContainerComponent,
-    FormCardComponent,
     FormHeaderComponent,
     FormActionsComponent,
     FileInputComponent,

@@ -5,11 +5,11 @@
   />
   @if (error()) {
     <p role="alert" class="rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-300">
-      {{ (error()) | translate }}
+      {{ error() | translate }}
     </p>
   }
   @if (recoveryCodes().length) {
-    <app-details-card>
+    <app-panel-card>
       <app-details-card-header
         [title]="'platform.auth.mfaEnabledSaveYourRecoveryCodes' | translate"
       />
@@ -52,9 +52,9 @@
         </p>
         <p-button [label]="'platform.auth.iHaveSavedThemSignIn' | translate" (onClick)="finish()" />
       </div>
-    </app-details-card>
+    </app-panel-card>
   } @else if (status(); as state) {
-    <app-details-card>
+    <app-panel-card>
       <app-details-card-header
         [title]="'platform.auth.authenticatorApp' | translate"
         [subtitle]="
@@ -194,13 +194,9 @@
           </form>
         }
       </div>
-    </app-details-card>
+    </app-panel-card>
   } @else {
-    <div
-      class="cashly-panel flex flex-col items-start gap-4 p-4 sm:p-6"
-      role="status"
-      aria-live="polite"
-    >
+    <app-panel-card padding="p-4 sm:p-6" extraClass="flex flex-col items-start gap-4">
       <p>{{ 'platform.auth.loadingSecurity' | translate }}</p>
       <p-button
         [label]="'inventory.warehouses.retry' | translate"
@@ -208,6 +204,6 @@
         [outlined]="true"
         (onClick)="loadStatus()"
       />
-    </div>
+    </app-panel-card>
   }
 </section>

@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -18,16 +18,19 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
 import { CategoryDetails } from '@features/catalog/categories/models/interfaces/category-details.interface';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-categories-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedDatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-list-container',
   standalone: true,
-  imports: [ContentCardComponent],
+  imports: [PanelCardComponent],
   templateUrl: './list-container.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block' },

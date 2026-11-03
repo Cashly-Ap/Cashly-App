@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { ButtonModule } from 'primeng/button';
@@ -23,16 +23,17 @@ import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
 import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-cash-register-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
     PermissionDirective,
-    ContentCardComponent,
     ListContainerComponent,
     LoadingSpinnerComponent,
     ButtonModule,

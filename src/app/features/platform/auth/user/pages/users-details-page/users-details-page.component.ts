@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -31,17 +31,18 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ChangePasswordDialogComponent } from '@features/platform/auth/user/components/change-password-dialog/change-password-dialog.component';
 import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-users-details-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     UserAvatarComponent,
     PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

@@ -9,7 +9,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { CategoryApplicationService } from '@features/catalog/categories/services/application/category-application.service';
@@ -21,11 +20,14 @@ interface CategoryFormData {
   active: boolean;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-categories-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
@@ -33,7 +35,6 @@ interface CategoryFormData {
     ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
   ],
   templateUrl: './categories-form-page.component.html',

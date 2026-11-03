@@ -10,7 +10,7 @@
           [subtitle]="'finance.billing.returns.completeReturnInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="ret.returnNumber"
             [subtitle]="
@@ -51,7 +51,11 @@
                 [label]="'shared.customer' | translate"
                 [value]="ret.customerName || '—'"
               />
-              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="ret.customerRif || '—'" type="code" />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="ret.customerRif || '—'"
+                type="code"
+              />
               <app-details-info-field
                 [label]="'shared.invoice' | translate"
                 [value]="ret.invoiceNumber || '—'"
@@ -81,10 +85,10 @@
               />
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
 
         @if (ret.reason) {
-          <app-details-card>
+          <app-panel-card>
             <app-details-card-header
               [title]="'finance.billing.returns.reasonForReturn' | translate"
               [subtitle]="'finance.billing.returns.reasonRecordedForThisReturn' | translate"
@@ -98,11 +102,11 @@
                 </p>
               </div>
             </div>
-          </app-details-card>
+          </app-panel-card>
         }
 
         @if (ret.lines && ret.lines.length > 0) {
-          <app-details-card>
+          <app-panel-card>
             <app-details-card-header
               [title]="'finance.billing.returns.returnLines' | translate"
               [subtitle]="
@@ -231,7 +235,7 @@
                 </p-table>
               </div>
             </div>
-          </app-details-card>
+          </app-panel-card>
         }
       </div>
     }

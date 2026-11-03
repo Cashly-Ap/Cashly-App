@@ -26,7 +26,7 @@ import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
@@ -42,11 +42,13 @@ import { CategoryFilters } from '@features/catalog/categories/services/api/categ
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-categories-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -64,7 +66,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     PopoverModule,
     SelectModule,
     TooltipModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,

@@ -16,7 +16,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
@@ -43,18 +42,20 @@ interface ProductFormData {
   productPrices: { priceTypeId: string; price: number; profitMargin: number | null }[];
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-products-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     ButtonModule,
     TabsModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     ProductGeneralSectionComponent,
     ProductCompositionSectionComponent,
@@ -362,7 +363,9 @@ export class ProductsFormPageComponent
         .pipe(
           switchMap((product) => {
             if (value.photo && product?.id) {
-              return this.photoService.uploadPhoto(product.id, value.photo).pipe(map(() => product));
+              return this.photoService
+                .uploadPhoto(product.id, value.photo)
+                .pipe(map(() => product));
             }
             return of(product);
           }),

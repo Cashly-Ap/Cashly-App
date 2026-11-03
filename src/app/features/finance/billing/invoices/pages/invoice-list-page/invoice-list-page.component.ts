@@ -32,7 +32,7 @@ import { PopoverModule } from 'primeng/popover';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DatePickerModule } from 'primeng/datepicker';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
@@ -66,11 +66,13 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -91,7 +93,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     PopoverModule,
     ConfirmDialogModule,
     DatePickerModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,

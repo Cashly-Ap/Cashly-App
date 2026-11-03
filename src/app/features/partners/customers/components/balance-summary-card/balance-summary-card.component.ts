@@ -4,11 +4,12 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CustomerBalanceResponse } from '@features/partners/customers/models/interfaces/customer-balance.interface';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-balance-summary-card',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedCurrencyPipe, CommonModule],
+  imports: [PanelCardComponent, TranslatePipe, LocalizedCurrencyPipe, CommonModule],
   templateUrl: './balance-summary-card.component.html',
 })
 export class BalanceSummaryCardComponent {

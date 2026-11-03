@@ -11,7 +11,6 @@ import { SelectModule } from 'primeng/select';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { SupplierApplicationService } from '@features/partners/suppliers/services/application/supplier-application.service';
@@ -47,10 +46,13 @@ interface SupplierFormData {
   notes: string;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-suppliers-form-page',
   standalone: true,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
@@ -61,7 +63,6 @@ interface SupplierFormData {
     SelectModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     SupplierGeneralSectionComponent,
     SupplierContactSectionComponent,

@@ -33,6 +33,6 @@ describe('ListContainerComponent', () => {
     hostFixture.detectChanges();
 
     const compiled = hostFixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('app-content-card p')?.textContent).toBe('Customer list');
+    expect(compiled.querySelector('app-panel-card p')?.textContent).toBe('Customer list');
   });
 });

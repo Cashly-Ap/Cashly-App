@@ -18,13 +18,13 @@
     </div>
 
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-panel-card>
         <app-loading-spinner
           [message]="'finance.treasury.cashregister.loadingCashRegister' | translate"
         />
-      </app-content-card>
+      </app-panel-card>
     } @else if (showEmptyState()) {
-      <app-content-card>
+      <app-panel-card>
         <div class="flex flex-col items-center px-6 py-12 text-center">
           <div
             class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
@@ -61,7 +61,7 @@
             />
           </div>
         </div>
-      </app-content-card>
+      </app-panel-card>
     } @else if (closure(); as c) {
       <app-list-container>
         <div class="px-4 sm:px-6 py-4">
@@ -127,9 +127,7 @@
       </app-list-container>
 
       <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <div
-          class="cashly-panel rounded-3xl border border-surface-200 bg-surface-0 p-6 dark:border-surface-800 dark:bg-surface-900"
-        >
+        <app-panel-card padding="p-6">
           <div class="flex items-center gap-3 mb-3">
             <div
               class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
@@ -144,10 +142,8 @@
           <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
             {{ c.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
-        </div>
-        <div
-          class="cashly-panel rounded-3xl border border-surface-200 bg-surface-0 p-6 dark:border-surface-800 dark:bg-surface-900"
-        >
+        </app-panel-card>
+        <app-panel-card padding="p-6">
           <div class="flex items-center gap-3 mb-3">
             <div
               class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
@@ -162,10 +158,8 @@
           <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
             {{ c.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
-        </div>
-        <div
-          class="cashly-panel rounded-3xl border border-surface-200 bg-surface-0 p-6 dark:border-surface-800 dark:bg-surface-900"
-        >
+        </app-panel-card>
+        <app-panel-card padding="p-6">
           <div class="flex items-center gap-3 mb-3">
             <div
               class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
@@ -180,10 +174,8 @@
           <p class="text-2xl font-bold text-green-600 dark:text-green-400">
             {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
-        </div>
-        <div
-          class="cashly-panel rounded-3xl border border-surface-200 bg-surface-0 p-6 dark:border-surface-800 dark:bg-surface-900"
-        >
+        </app-panel-card>
+        <app-panel-card padding="p-6">
           <div class="flex items-center gap-3 mb-3">
             <div
               class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
@@ -198,10 +190,8 @@
           <p class="text-2xl font-bold text-red-600 dark:text-red-400">
             {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
-        </div>
-        <div
-          class="cashly-panel rounded-3xl border border-surface-200 bg-surface-0 p-6 dark:border-surface-800 dark:bg-surface-900"
-        >
+        </app-panel-card>
+        <app-panel-card padding="p-6">
           <div class="flex items-center gap-3 mb-3">
             <div
               class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
@@ -220,7 +210,7 @@
           >
             {{ c.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </p>
-        </div>
+        </app-panel-card>
       </div>
     }
   </div>

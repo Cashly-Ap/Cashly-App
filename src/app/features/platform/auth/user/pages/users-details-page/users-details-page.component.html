@@ -9,7 +9,7 @@
           [title]="'users.profile.user.details' | translate"
           [subtitle]="'users.profile.complete.user.information' | translate"
         />
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
             <app-user-avatar
               avatar
@@ -93,8 +93,8 @@
               />
             </app-details-info-grid>
           </div>
-        </app-details-card>
-        <app-details-card>
+        </app-panel-card>
+        <app-panel-card>
           <app-details-card-header [title]="'users.profile.contact' | translate" />
           <div class="p-4 sm:p-6 flex flex-col gap-6">
             <section>
@@ -169,8 +169,8 @@
               }
             </section>
           </div>
-        </app-details-card>
-        <app-details-card>
+        </app-panel-card>
+        <app-panel-card>
           <app-details-card-header [title]="'users.profile.access' | translate" />
           <div class="p-4 sm:p-6">
             <app-details-info-grid [columns]="2" [fillLastRow]="true">
@@ -185,7 +185,7 @@
               />
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

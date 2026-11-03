@@ -10,7 +10,7 @@
           [subtitle]="'finance.billing.invoices.completeInvoiceInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="
               ('finance.billing.creditnotes.invoice' | translate) + currentInvoice.invoiceNumber
@@ -76,7 +76,10 @@
                 [label]="'shared.customer' | translate"
                 [value]="currentInvoice.customerName"
               />
-              <app-details-info-field [label]="'finance.treasury.receivables.customerTaxId' | translate" [value]="currentInvoice.customerRif" />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="currentInvoice.customerRif"
+              />
               <app-details-info-field
                 [label]="'finance.billing.invoices.paymentType' | translate"
                 [value]="getPaymentTypeLabel(currentInvoice.paymentType) | translate"
@@ -140,22 +143,19 @@
               }
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
 
         @if (currentInvoice.notes) {
-          <app-details-section-card
+          <app-panel-card
             [title]="'finance.billing.invoices.notes' | translate"
             icon="pi-align-left"
           >
             <p class="text-sm whitespace-pre-wrap">{{ currentInvoice.notes }}</p>
-          </app-details-section-card>
+          </app-panel-card>
         }
 
         @if (currentInvoice.returns.length > 0) {
-          <app-details-section-card
-            [title]="'finance.billing.returns.returns' | translate"
-            icon="pi-undo"
-          >
+          <app-panel-card [title]="'finance.billing.returns.returns' | translate" icon="pi-undo">
             <div class="flex flex-col gap-6">
               @for (ret of currentInvoice.returns; track ret.id) {
                 <div class="border border-surface-200 dark:border-surface-700 rounded-xl p-4">
@@ -315,13 +315,10 @@
                 </div>
               }
             </div>
-          </app-details-section-card>
+          </app-panel-card>
         }
 
-        <app-details-section-card
-          [title]="'finance.billing.returns.invoiceLines' | translate"
-          icon="pi-list"
-        >
+        <app-panel-card [title]="'finance.billing.returns.invoiceLines' | translate" icon="pi-list">
           @if (currentInvoice.lines && currentInvoice.lines.length > 0) {
             <div class="flex flex-col gap-3 md:hidden">
               @for (line of currentInvoice.lines; track $index; let i = $index) {
@@ -498,10 +495,10 @@
               [message]="'finance.billing.invoices.thisInvoiceHasNoLines' | translate"
             />
           }
-        </app-details-section-card>
+        </app-panel-card>
 
         @if (creditNotes().length > 0) {
-          <app-details-section-card
+          <app-panel-card
             [title]="'finance.billing.creditnotes.creditNotes' | translate"
             icon="pi-arrow-down"
           >
@@ -550,11 +547,11 @@
                 </ng-template>
               </p-table>
             </div>
-          </app-details-section-card>
+          </app-panel-card>
         }
 
         @if (debitNotes().length > 0) {
-          <app-details-section-card
+          <app-panel-card
             [title]="'finance.billing.debitnotes.debitNotes' | translate"
             icon="pi-arrow-up"
           >
@@ -603,7 +600,7 @@
                 </ng-template>
               </p-table>
             </div>
-          </app-details-section-card>
+          </app-panel-card>
         }
       </div>
     }

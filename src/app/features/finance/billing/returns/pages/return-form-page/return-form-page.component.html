@@ -4,7 +4,7 @@
     [subtitle]="'finance.billing.returns.completeTheReturnInformation' | translate"
   />
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <app-form-card>
+    <app-panel-card>
       <div class="p-4 md:p-6">
         <h3
           class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
@@ -251,7 +251,7 @@
         [disabled]="form.invalid || hasInvalidLines()"
         (cancel)="cancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>
 

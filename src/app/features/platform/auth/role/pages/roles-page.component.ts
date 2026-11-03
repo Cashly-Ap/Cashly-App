@@ -14,11 +14,11 @@ import {
   ListActionButtonsComponent,
   ListAction,
 } from '@shared/components/list';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
@@ -36,11 +36,7 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { PermissionEditorComponent } from '../components/permission-editor/permission-editor.component';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import {
-  FormCardComponent,
-  FormHeaderComponent,
-  FormActionsComponent,
-} from '@core/forms/components';
+import { FormHeaderComponent, FormActionsComponent } from '@core/forms/components';
 import { ListContainerComponent } from '@shared/components/list';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
@@ -56,10 +52,12 @@ import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permissi
 import { CatalogArea } from '@features/platform/auth/permissions/permission-catalog.types';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-roles-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -70,11 +68,9 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
     SelectModule,
     TooltipModule,
     ListActionButtonsComponent,
-    ContentCardComponent,
     EmptyStateComponent,
     LoadingSpinnerComponent,
     PageHeaderComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoGridComponent,
     DetailsInfoFieldComponent,
@@ -90,7 +86,6 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
     PermissionEditorComponent,
     TableModule,
     ConfirmDialogModule,
-    FormCardComponent,
     FormHeaderComponent,
     FormActionsComponent,
     ListContainerComponent,

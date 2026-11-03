@@ -17,7 +17,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { TextInputComponent, SelectInputComponent } from '@core/forms/components/inputs';
@@ -37,11 +36,14 @@ interface WarehouseFormData {
   active: boolean;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-warehouses-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
@@ -50,7 +52,6 @@ interface WarehouseFormData {
     ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     TextInputComponent,
     SelectInputComponent,

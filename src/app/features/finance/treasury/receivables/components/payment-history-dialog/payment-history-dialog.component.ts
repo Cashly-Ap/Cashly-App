@@ -21,10 +21,12 @@ import { PaginatorModule } from 'primeng/paginator';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-payment-history-dialog',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,

@@ -5,9 +5,12 @@
     }
     @if (warehouse(); as currentWarehouse) {
       <div class="flex flex-col gap-6">
-        <app-page-header [title]="'inventory.warehouses.warehouseDetails2' | translate" [subtitle]="'inventory.warehouses.generalWarehouseInformation' | translate" />
+        <app-page-header
+          [title]="'inventory.warehouses.warehouseDetails2' | translate"
+          [subtitle]="'inventory.warehouses.generalWarehouseInformation' | translate"
+        />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header
             [title]="currentWarehouse.name"
             [subtitle]="currentWarehouse.state + ' · ' + currentWarehouse.municipality"
@@ -75,11 +78,26 @@
 
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field [label]="'finance.treasury.paymentmethods.name' | translate" [value]="currentWarehouse.name" />
-              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" [value]="currentWarehouse.state" />
-              <app-details-info-field [label]="'inventory.warehouses.municipality' | translate" [value]="currentWarehouse.municipality" />
-              <app-details-info-field [label]="'inventory.warehouses.address' | translate" [value]="currentWarehouse.address || '—'" />
-              <app-details-info-field [label]="'inventory.warehouses.status' | translate" type="badge">
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentWarehouse.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                [value]="currentWarehouse.state"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.municipality' | translate"
+                [value]="currentWarehouse.municipality"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.address' | translate"
+                [value]="currentWarehouse.address || '—'"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.status' | translate"
+                type="badge"
+              >
                 <app-status-badge [active]="currentWarehouse.active" />
               </app-details-info-field>
               <app-details-info-field
@@ -99,7 +117,7 @@
               }
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

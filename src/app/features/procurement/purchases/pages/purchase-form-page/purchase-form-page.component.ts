@@ -17,7 +17,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
-import { FormCardComponent } from '@core/forms/components/cards/form-card/form-card.component';
+
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
@@ -31,10 +31,12 @@ import { SupplierList } from '@features/partners/suppliers/models/interfaces/sup
 import { SupplierPickerDialogComponent } from '@features/procurement/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-purchase-form-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,
     ButtonModule,
@@ -42,7 +44,6 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
     DatePickerModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
     PurchaseItemsTableComponent,
     SupplierPickerDialogComponent,

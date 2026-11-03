@@ -2,7 +2,7 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Language } from '@core/i18n/language';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { DetailsCardComponent, DetailsCardHeaderComponent } from '@shared/components/details';
+import { DetailsCardHeaderComponent } from '@shared/components/details';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import {
   ColorMode,
@@ -11,13 +11,14 @@ import {
 } from '@core/preferences/user-preferences.service';
 import { KEYBOARD_ACTION_SHORTCUTS } from '@core/shortcuts/shortcut-reference';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-preferences-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     ButtonModule,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     PageHeaderComponent,
   ],

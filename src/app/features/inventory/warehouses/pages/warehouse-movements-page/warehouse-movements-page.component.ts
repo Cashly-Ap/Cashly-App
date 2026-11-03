@@ -31,7 +31,7 @@ import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { ListFilterComponent, ListContainerComponent } from '@shared/components/list';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -85,10 +85,12 @@ const MOVEMENT_TYPE_VARIANTS: Record<MovementType, TextBadgeVariant> = {
   SALE_EXIT: 'danger',
 };
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-warehouse-movements-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -101,7 +103,6 @@ const MOVEMENT_TYPE_VARIANTS: Record<MovementType, TextBadgeVariant> = {
     SelectModule,
     TooltipModule,
     ListContainerComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     EmptyStateComponent,
     LoadingSpinnerComponent,

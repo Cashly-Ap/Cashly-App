@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -25,15 +25,19 @@ import { CustomerWarehouseAccessItem } from '@features/partners/customers/models
 import { getCustomerTypeLabel } from '@features/partners/customers/models/enums/customer-type.enum';
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-customers-details-page',
   standalone: true,
-  imports: [TranslatePipe, LocalizedDatePipe, LocalizedNumberPipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedNumberPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

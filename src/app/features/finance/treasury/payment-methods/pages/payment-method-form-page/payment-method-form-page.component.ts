@@ -9,7 +9,6 @@ import { MessageService } from 'primeng/api';
 import {
   FormContainerComponent,
   FormHeaderComponent,
-  FormCardComponent,
   FormActionsComponent,
 } from '@core/forms/components';
 import { PaymentMethodApplicationService } from '@features/finance/treasury/payment-methods/services/application/payment-method-application.service';
@@ -22,11 +21,13 @@ interface PaymentMethodFormData {
   isActive: boolean;
 }
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-payment-method-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
@@ -35,7 +36,6 @@ interface PaymentMethodFormData {
     ToggleSwitchModule,
     FormContainerComponent,
     FormHeaderComponent,
-    FormCardComponent,
     FormActionsComponent,
   ],
   templateUrl: './payment-method-form-page.component.html',

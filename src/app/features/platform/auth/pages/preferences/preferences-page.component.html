@@ -18,9 +18,9 @@
     }
   </div>
   @if (preferences.error(); as error) {
-    <app-details-card>
+    <app-panel-card>
       <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">
-        <p>{{ (error) | translate }}</p>
+        <p>{{ error | translate }}</p>
         <p-button
           [label]="'auth.profile.retry' | translate"
           [ariaLabel]="'auth.profile.retry.settings' | translate"
@@ -29,9 +29,9 @@
           (onClick)="preferences.retry()"
         />
       </div>
-    </app-details-card>
+    </app-panel-card>
   }
-  <app-details-card>
+  <app-panel-card>
     <app-details-card-header
       [title]="'auth.profile.language' | translate"
       [subtitle]="'auth.profile.language.for.the.application.messages.and.reports' | translate"
@@ -59,8 +59,8 @@
         }
       </div>
     </fieldset>
-  </app-details-card>
-  <app-details-card>
+  </app-panel-card>
+  <app-panel-card>
     <app-details-card-header
       [title]="'auth.profile.appearance' | translate"
       [subtitle]="'auth.profile.choose.the.default.display.mode' | translate"
@@ -95,8 +95,8 @@
         }
       </div>
     </fieldset>
-  </app-details-card>
-  <app-details-card>
+  </app-panel-card>
+  <app-panel-card>
     <app-details-card-header
       [title]="'auth.profile.color.mode' | translate"
       [subtitle]="'auth.profile.organize.information.visually.as.you.prefer' | translate"
@@ -145,8 +145,8 @@
         }
       </div>
     </fieldset>
-  </app-details-card>
-  <app-details-card>
+  </app-panel-card>
+  <app-panel-card>
     <app-details-card-header
       [title]="'auth.profile.keyboard.shortcuts' | translate"
       [subtitle]="'auth.profile.access.modules.and.common.actions.using.the.keyboard' | translate"
@@ -213,5 +213,5 @@
         }}
       </p>
     </div>
-  </app-details-card>
+  </app-panel-card>
 </section>

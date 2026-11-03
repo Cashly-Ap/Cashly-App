@@ -27,7 +27,7 @@ import { PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { DatePickerModule } from 'primeng/datepicker';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -42,11 +42,13 @@ import { DebitNoteFilters } from '@features/finance/billing/debit-notes/services
 import { DebitNoteList } from '@features/finance/billing/debit-notes/models/interfaces/debit-note.interface';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-debit-note-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -64,7 +66,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     PopoverModule,
     TooltipModule,
     DatePickerModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,

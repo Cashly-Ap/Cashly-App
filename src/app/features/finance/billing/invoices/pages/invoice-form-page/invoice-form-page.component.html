@@ -13,7 +13,7 @@
     "
   />
   <form [formGroup]="form" (ngSubmit)="submit()">
-    <app-form-card>
+    <app-panel-card>
       <div class="p-4 md:p-6">
         <h3
           class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
@@ -75,7 +75,7 @@
                                 <p
                                   class="text-xs text-amber-700 dark:text-amber-400 leading-relaxed mt-1"
                                 >
-                                  {{ (warning.message) | translate }}
+                                  {{ warning.message | translate }}
                                 </p>
                                 <div
                                   class="flex flex-wrap gap-x-3 gap-y-1 mt-1 text-[11px] text-amber-600 dark:text-amber-400"
@@ -331,7 +331,7 @@
                     'finance.billing.invoices.creditWarning2' | translate
                   }}</span>
                   <p class="text-sm text-amber-700 dark:text-amber-400 leading-relaxed mt-1">
-                    {{ (warning.message) | translate }}
+                    {{ warning.message | translate }}
                   </p>
                   <div class="flex flex-wrap gap-4 mt-1 text-xs text-amber-600 dark:text-amber-400">
                     <span
@@ -381,7 +381,7 @@
         [tooltipMessage]="submitTooltip()"
         (cancel)="cancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>
 

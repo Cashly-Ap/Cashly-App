@@ -6,13 +6,13 @@
     "
   />
   @if (loading()) {
-    <app-form-card
+    <app-panel-card
       ><div class="p-6" role="status">
         {{ 'auth.profile.loading.your.profile' | translate }}
-      </div></app-form-card
+      </div></app-panel-card
     >
   } @else if (error()) {
-    <app-form-card
+    <app-panel-card
       ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
         <p>{{ 'auth.profile.we.could.not.load.your.profile' | translate }}</p>
         <p-button
@@ -21,10 +21,10 @@
           [outlined]="true"
           (onClick)="loadProfile()"
         /></div
-    ></app-form-card>
+    ></app-panel-card>
   } @else {
     <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <app-form-card>
+      <app-panel-card>
         <p-tabs
           [value]="activeTab()"
           (valueChange)="activeTab.set(($event ?? 'general').toString())"
@@ -132,7 +132,7 @@
           [disabled]="form.invalid || saving()"
           (cancel)="onCancel()"
         />
-      </app-form-card>
+      </app-panel-card>
     </form>
   }
 </app-form-container>

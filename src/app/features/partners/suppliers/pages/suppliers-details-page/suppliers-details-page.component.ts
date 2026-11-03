@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
 import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
@@ -20,15 +20,18 @@ import { SupplierApplicationService } from '@features/partners/suppliers/service
 import { SupplierDetails } from '@features/partners/suppliers/models/interfaces/supplier-details.interface';
 import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/supplier-type.enum';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-suppliers-details-page',
   standalone: true,
-  imports: [TranslatePipe, LocalizedDatePipe,
+  imports: [
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,
     DetailActionsMenuComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

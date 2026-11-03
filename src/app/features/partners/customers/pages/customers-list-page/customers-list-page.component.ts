@@ -29,7 +29,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
+
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
@@ -56,11 +56,13 @@ import { CUSTOMER_ERROR_MESSAGES } from '@features/partners/customers/messages/e
 import { CUSTOMER_SUCCESS_MESSAGES } from '@features/partners/customers/messages/success-messages';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-customers-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -79,7 +81,6 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
     ConfirmDialogModule,
     PopoverModule,
     SelectModule,
-    ContentCardComponent,
     LoadingSpinnerComponent,
     EmptyStateComponent,
     SearchFieldComponent,

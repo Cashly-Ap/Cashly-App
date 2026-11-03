@@ -76,17 +76,17 @@
     <div class="h-4"></div>
 
     @if (showInitialLoading()) {
-      <app-content-card>
+      <app-panel-card>
         <app-loading-spinner [message]="'finance.billing.returns.loadingReturns' | translate" />
-      </app-content-card>
+      </app-panel-card>
     } @else if (isEmptyDatabase()) {
-      <app-content-card>
+      <app-panel-card>
         <app-empty-state
           icon="pi-undo"
           [title]="'finance.billing.returns.noReturnsRegistered' | translate"
           [message]="'finance.billing.returns.startByRecordingTheFirstReturn' | translate"
         />
-      </app-content-card>
+      </app-panel-card>
     } @else {
       <app-list-container class="mt-4 hidden md:block">
         <div class="relative">
@@ -187,19 +187,17 @@
           </div>
         }
         @if (hasFilteredResults()) {
-          <app-content-card>
+          <app-panel-card>
             <app-empty-state
               icon="pi-search"
               [title]="'finance.billing.creditnotes.noResultsFound' | translate"
               [message]="'finance.billing.returns.noReturnsMatchYourSearch' | translate"
             />
-          </app-content-card>
+          </app-panel-card>
         } @else {
           <div class="flex flex-col gap-4">
             @for (ret of returns(); track ret.id) {
-              <div
-                class="cashly-panel bg-surface-0 dark:bg-surface-900 rounded-3xl p-5 border border-surface-200 dark:border-surface-800"
-              >
+              <app-panel-card padding="p-5">
                 <div class="flex justify-between items-start mb-3">
                   <div class="flex-1">
                     <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
@@ -225,7 +223,7 @@
                 >
                   <app-list-action-buttons [actions]="actionsFor(ret)" />
                 </div>
-              </div>
+              </app-panel-card>
             }
           </div>
           <div class="px-4 py-3 mt-2">

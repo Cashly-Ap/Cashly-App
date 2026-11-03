@@ -10,7 +10,7 @@
           [subtitle]="'catalog.categories.completeCategoryInformation' | translate"
         />
 
-        <app-details-card>
+        <app-panel-card>
           <app-details-card-header [title]="currentCategory.name">
             <div actions class="flex gap-3">
               <p-button
@@ -33,12 +33,17 @@
           </app-details-card-header>
           <div class="p-4 sm:p-6">
             <app-details-info-grid>
-              <app-details-info-field [label]="'finance.treasury.paymentmethods.name' | translate" [value]="currentCategory.name" />
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentCategory.name"
+              />
               <app-details-info-field
                 [label]="'inventory.warehouses.products' | translate"
                 [value]="currentCategory.productCount.toString()"
               />
-              <app-details-info-field [label]="'finance.billing.invoices.status' | translate" type="badge"
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
                 ><app-status-badge
                   [active]="currentCategory.active"
                   activeLabel="Activa"
@@ -59,7 +64,7 @@
               />
             </app-details-info-grid>
           </div>
-        </app-details-card>
+        </app-panel-card>
       </div>
     }
   </div>

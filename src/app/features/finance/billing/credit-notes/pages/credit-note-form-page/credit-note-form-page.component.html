@@ -4,7 +4,7 @@
     [subtitle]="'finance.billing.creditnotes.completeTheCreditNoteInformation' | translate"
   />
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <app-form-card>
+    <app-panel-card>
       <div class="p-4 md:p-6">
         <h3
           class="mb-4 flex items-center gap-2 text-base font-medium text-surface-800 dark:text-surface-200"
@@ -170,7 +170,7 @@
         [tooltipMessage]="submitTooltip()"
         (cancel)="onCancel()"
       />
-    </app-form-card>
+    </app-panel-card>
   </form>
 </app-form-container>
 

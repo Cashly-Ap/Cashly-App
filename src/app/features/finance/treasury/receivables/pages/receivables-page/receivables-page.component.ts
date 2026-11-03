@@ -41,11 +41,13 @@ import { PayPartialDebtRequest } from '@features/finance/treasury/receivables/mo
 import { ActivatedRoute, Router } from '@angular/router';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-receivables-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PanelCardComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,
     ListActionButtonsComponent,

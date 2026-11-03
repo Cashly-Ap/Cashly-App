@@ -32,7 +32,7 @@ import { PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { ListFilterComponent, ListContainerComponent } from '@shared/components/list';
 import { PaginatorModule } from 'primeng/paginator';
-import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
+
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -50,10 +50,12 @@ import { WAREHOUSE_ERROR_MESSAGES } from '@features/inventory/warehouses/message
 
 const PAGE_SIZE = 10;
 
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-warehouse-stock-page',
   standalone: true,
   imports: [
+    PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -65,7 +67,6 @@ const PAGE_SIZE = 10;
     PopoverModule,
     TooltipModule,
     ListContainerComponent,
-    DetailsCardComponent,
     DetailsCardHeaderComponent,
     EmptyStateComponent,
     LoadingSpinnerComponent,
