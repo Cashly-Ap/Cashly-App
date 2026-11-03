@@ -1,6 +1,5 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, signal, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -17,14 +16,15 @@ interface SelectOption {
   label: string;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-accounts-receivable-pdf-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     PermissionDirective,
     CommonModule,
     FormsModule,

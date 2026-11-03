@@ -250,13 +250,7 @@
     <div
       class="flex items-center justify-end gap-2 px-5 py-4 bg-surface-50 dark:bg-surface-900/50 border-t border-surface-200 dark:border-surface-700"
     >
-      <p-button
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="onCancel()"
-        severity="secondary"
-        [text]="true"
-      />
+      <app-cancel-button [text]="true" [outlined]="false" (cancelled)="onCancel()" />
       <p-button
         [appPermissionModule]="'FINANCE_INVOICES'"
         [appPermission]="'CONFIRM'"

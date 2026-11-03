@@ -1,6 +1,5 @@
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
@@ -49,10 +48,11 @@ interface SourceStockStatus {
   available: number;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-invoice-source-picker-dialog',
   standalone: true,
-  imports: [TranslatePipe, LocalizedNumberPipe, ShortcutDirective, DialogModule, ButtonModule],
+  imports: [CancelButtonComponent, TranslatePipe, LocalizedNumberPipe, DialogModule, ButtonModule],
   templateUrl: './invoice-source-picker-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

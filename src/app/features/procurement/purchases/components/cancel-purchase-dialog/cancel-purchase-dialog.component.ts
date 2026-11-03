@@ -7,10 +7,12 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-cancel-purchase-dialog',
   standalone: true,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     PermissionDirective,
     DialogModule,

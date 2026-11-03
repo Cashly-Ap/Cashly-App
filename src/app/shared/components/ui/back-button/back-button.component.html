@@ -1,0 +1,8 @@
+<p-button
+  [label]="labelKey() | translate"
+  icon="pi pi-arrow-left"
+  [severity]="severity()"
+  [outlined]="outlined()"
+  [styleClass]="styleClass()"
+  (onClick)="back.emit()"
+/>

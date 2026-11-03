@@ -19,11 +19,13 @@ import { CategoryApplicationService } from '@features/catalog/categories/service
 import { CategoryDetails } from '@features/catalog/categories/models/interfaces/category-details.interface';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-categories-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

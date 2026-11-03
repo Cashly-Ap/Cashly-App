@@ -58,11 +58,10 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end pt-1">
-      <p-button
-        [label]="'finance.billing.creditnotes.back' | translate"
-        [outlined]="true"
-        severity="secondary"
-        (onClick)="onCancel()"
+      <app-cancel-button
+        labelKey="finance.billing.creditnotes.back"
+        icon=""
+        (cancelled)="onCancel()"
       />
       <p-button
         [appPermissionModule]="'SALES_ORDERS'"

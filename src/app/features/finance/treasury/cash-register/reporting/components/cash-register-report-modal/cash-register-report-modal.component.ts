@@ -1,7 +1,6 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,14 +32,15 @@ interface SelectOption {
   label: string;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-cash-register-report-modal',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     CommonModule,
     FormsModule,
     DialogModule,

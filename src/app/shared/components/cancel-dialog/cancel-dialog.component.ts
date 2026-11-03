@@ -6,10 +6,18 @@ import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-cancel-dialog',
   standalone: true,
-  imports: [TranslatePipe, DialogModule, ButtonModule, ReactiveFormsModule, TextareaModule],
+  imports: [
+    CancelButtonComponent,
+    TranslatePipe,
+    DialogModule,
+    ButtonModule,
+    ReactiveFormsModule,
+    TextareaModule,
+  ],
   templateUrl: './cancel-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

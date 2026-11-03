@@ -8,11 +8,13 @@ import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { OrderList } from '@features/sales/orders/models/interfaces/order-list.interface';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-cancel-order-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     PermissionDirective,
     DialogModule,

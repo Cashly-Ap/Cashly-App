@@ -34,13 +34,15 @@
             <span class="text-xs font-mono text-surface-400">{{ paymentMethod.code }}</span>
           </button>
         } @empty {
-          <div class="text-center py-4 text-surface-500">{{ 'shared.noPaymentMethodsFound' | translate }}</div>
+          <div class="text-center py-4 text-surface-500">
+            {{ 'shared.noPaymentMethodsFound' | translate }}
+          </div>
         }
       </div>
     }
   </div>
 
   <ng-template pTemplate="footer">
-    <p-button [label]="'shared.cancel' | translate" [text]="true" severity="secondary" (onClick)="close()" />
+    <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="close()" />
   </ng-template>
 </p-dialog>

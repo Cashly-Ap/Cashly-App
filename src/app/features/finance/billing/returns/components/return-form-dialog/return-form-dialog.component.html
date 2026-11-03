@@ -1,143 +1,152 @@
 <p-toast position="top-right" />
 
-    <p-dialog
-      [header]="('finance.billing.returns.createReturnLabel' | translate) + invoice().invoiceNumber"
-      [modal]="true"
-      [visible]="visible()"
-      [style]="{ width: 'min(90vw, 960px)' }"
-      [draggable]="false"
-      [resizable]="false"
-      (onShow)="onVisibleChange(true)"
-      (onHide)="onVisibleChange(false)"
+<p-dialog
+  [header]="('finance.billing.returns.createReturnLabel' | translate) + invoice().invoiceNumber"
+  [modal]="true"
+  [visible]="visible()"
+  [style]="{ width: 'min(90vw, 960px)' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onShow)="onVisibleChange(true)"
+  (onHide)="onVisibleChange(false)"
+>
+  <div class="flex flex-col gap-4 py-2">
+    <!-- Customer -->
+    <div
+      class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
     >
-      <div class="flex flex-col gap-4 py-2">
-        <!-- Customer -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <p class="text-sm text-surface-600 dark:text-surface-400">
-            <span class="font-semibold text-surface-800 dark:text-surface-200"> {{ 'shared.customer2' | translate }} </span>
-            {{ invoice().customerName }} — {{ invoice().customerRif }}
-          </p>
-        </div>
+      <p class="text-sm text-surface-600 dark:text-surface-400">
+        <span class="font-semibold text-surface-800 dark:text-surface-200">
+          {{ 'shared.customer2' | translate }}
+        </span>
+        {{ invoice().customerName }} — {{ invoice().customerRif }}
+      </p>
+    </div>
 
-        <!-- Type -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-            > {{ 'finance.billing.returns.returnTypeLabel' | translate }} </label
-          >
-          <p-select
-            [options]="returnTypeOptions | translateOptions"
-            [ngModel]="selectedReturnType()"
-            (ngModelChange)="selectedReturnType.set($event)"
-            optionLabel="label"
-            optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          />
-        </div>
+    <!-- Type -->
+    <div
+      class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+    >
+      <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+        {{ 'finance.billing.returns.returnTypeLabel' | translate }}
+      </label>
+      <p-select
+        [options]="returnTypeOptions | translateOptions"
+        [ngModel]="selectedReturnType()"
+        (ngModelChange)="selectedReturnType.set($event)"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
 
-        <!-- Reason -->
-        <div
-          class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-        >
-          <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-            > {{ 'finance.billing.debitnotes.reason' | translate }} </label
-          >
-          <textarea
-            pTextarea
-            [ngModel]="reason()"
-            (ngModelChange)="reason.set($event)"
-            rows="3"
-            class="w-full"
-            [placeholder]="'finance.billing.returns.reasonForReturn2' | translate"
-          ></textarea>
-        </div>
+    <!-- Reason -->
+    <div
+      class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+    >
+      <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+        {{ 'finance.billing.debitnotes.reason' | translate }}
+      </label>
+      <textarea
+        pTextarea
+        [ngModel]="reason()"
+        (ngModelChange)="reason.set($event)"
+        rows="3"
+        class="w-full"
+        [placeholder]="'finance.billing.returns.reasonForReturn2' | translate"
+      ></textarea>
+    </div>
 
-        <!-- Líneas -->
-        @if (selectedReturnType() === ReturnType.MANUAL) {
-          <app-return-lines-table
-            [invoiceLines]="invoice().lines"
-            [returnLines]="returnLines()"
-            (returnLinesChange)="onLinesChange($event)"
-          />
-        } @else {
-          <div
-            class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
-          >
-            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
-              > {{ 'finance.billing.returns.destinationWarehouseLabel' | translate }} </label
-            >
-            <p-select
-              [options]="warehouseOptions()"
-              [ngModel]="autoWarehouseId()"
-              (ngModelChange)="onAutoWarehouseSelected($event)"
-              optionLabel="label"
-              optionValue="value"
-              [placeholder]="'finance.billing.returns.selectWarehouse' | translate"
-              styleClass="w-full"
-              appendTo="body"
-            />
-            <p class="text-xs text-surface-400 dark:text-surface-500 mt-1.5"> {{ 'finance.billing.returns.selectingAWarehouseWillLoadAllInvoiceLinesWithTheirMaximumQuantity' | translate }} </p>
+    <!-- Líneas -->
+    @if (selectedReturnType() === ReturnType.MANUAL) {
+      <app-return-lines-table
+        [invoiceLines]="invoice().lines"
+        [returnLines]="returnLines()"
+        (returnLinesChange)="onLinesChange($event)"
+      />
+    } @else {
+      <div
+        class="rounded-xl p-3 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+      >
+        <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+          {{ 'finance.billing.returns.destinationWarehouseLabel' | translate }}
+        </label>
+        <p-select
+          [options]="warehouseOptions()"
+          [ngModel]="autoWarehouseId()"
+          (ngModelChange)="onAutoWarehouseSelected($event)"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.billing.returns.selectWarehouse' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+        <p class="text-xs text-surface-400 dark:text-surface-500 mt-1.5">
+          {{
+            'finance.billing.returns.selectingAWarehouseWillLoadAllInvoiceLinesWithTheirMaximumQuantity'
+              | translate
+          }}
+        </p>
 
-            @if (returnLines().length > 0) {
-              <div class="overflow-x-auto mt-4">
-                <table class="w-full text-sm">
-                  <thead>
-                    <tr class="border-b border-surface-200 dark:border-surface-700">
-                      <th class="text-left py-2 font-semibold"> {{ 'finance.billing.returns.product' | translate }} </th>
-                      <th class="text-right py-2 font-semibold"> {{ 'finance.billing.returns.quantity' | translate }} </th>
-                      <th class="text-right py-2 font-semibold"> {{ 'finance.billing.returns.unitPrice' | translate }} </th>
-                      <th class="text-right py-2 font-semibold"> {{ 'shared.total' | translate }} </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @for (line of returnLines(); track line.invoiceLineId) {
-                      <tr class="border-b border-surface-100 dark:border-surface-800">
-                        <td class="py-2">{{ line.productName }}</td>
-                        <td class="text-right py-2">{{ line.quantity }}</td>
-                        <td class="text-right py-2">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
-                        <td class="text-right py-2 font-medium">
-                          {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                  <tfoot>
-                    <tr class="border-t border-surface-200 dark:border-surface-700">
-                      <td colspan="3" class="text-right py-3 font-semibold"> {{ 'finance.billing.returns.total' | translate }} </td>
-                      <td class="text-right py-3 font-bold">
-                        {{ totalAmount() | localizedNumber: '1.2-2' }}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            }
+        @if (returnLines().length > 0) {
+          <div class="overflow-x-auto mt-4">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-surface-200 dark:border-surface-700">
+                  <th class="text-left py-2 font-semibold">
+                    {{ 'finance.billing.returns.product' | translate }}
+                  </th>
+                  <th class="text-right py-2 font-semibold">
+                    {{ 'finance.billing.returns.quantity' | translate }}
+                  </th>
+                  <th class="text-right py-2 font-semibold">
+                    {{ 'finance.billing.returns.unitPrice' | translate }}
+                  </th>
+                  <th class="text-right py-2 font-semibold">{{ 'shared.total' | translate }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (line of returnLines(); track line.invoiceLineId) {
+                  <tr class="border-b border-surface-100 dark:border-surface-800">
+                    <td class="py-2">{{ line.productName }}</td>
+                    <td class="text-right py-2">{{ line.quantity }}</td>
+                    <td class="text-right py-2">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
+                    <td class="text-right py-2 font-medium">
+                      {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr class="border-t border-surface-200 dark:border-surface-700">
+                  <td colspan="3" class="text-right py-3 font-semibold">
+                    {{ 'finance.billing.returns.total' | translate }}
+                  </td>
+                  <td class="text-right py-3 font-bold">
+                    {{ totalAmount() | localizedNumber: '1.2-2' }}
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         }
       </div>
+    }
+  </div>
 
-      <ng-template pTemplate="footer">
-        <div class="flex gap-2 justify-end">
-          <p-button
-            appShortcut="cancel"
-            [label]="'shared.cancel' | translate"
-            [outlined]="true"
-            severity="secondary"
-            (onClick)="onCancel()"
-          />
-          <p-button
-            appShortcut="submit"
-            [label]="'finance.billing.returns.saveReturn' | translate"
-            icon="pi pi-check"
-            severity="contrast"
-            [loading]="isSubmitting()"
-            [disabled]="!canSubmit()"
-            (onClick)="submit()"
-          />
-        </div>
-      </ng-template>
-    </p-dialog>
+  <ng-template pTemplate="footer">
+    <div class="flex gap-2 justify-end">
+      <app-cancel-button icon="" (cancelled)="onCancel()" />
+      <p-button
+        appShortcut="submit"
+        [label]="'finance.billing.returns.saveReturn' | translate"
+        icon="pi pi-check"
+        severity="contrast"
+        [loading]="isSubmitting()"
+        [disabled]="!canSubmit()"
+        (onClick)="submit()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

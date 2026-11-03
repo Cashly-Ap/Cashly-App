@@ -37,11 +37,13 @@ import {
 } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-invoice-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

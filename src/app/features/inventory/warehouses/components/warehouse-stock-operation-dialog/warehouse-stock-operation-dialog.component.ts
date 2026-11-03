@@ -1,7 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,14 +31,15 @@ import { WarehouseApplicationService } from '@features/inventory/warehouses/serv
 
 export type WarehouseStockOperation = 'entry' | 'exit';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-warehouse-stock-operation-dialog',
   standalone: true,
   imports: [
+    CancelButtonComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedCurrencyPipe,
-    ShortcutDirective,
     ReactiveFormsModule,
     ButtonModule,
     DialogModule,

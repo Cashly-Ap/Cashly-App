@@ -38,6 +38,7 @@ interface PaymentLine {
   amount: number;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-confirm-invoice-dialog',
   standalone: true,
@@ -55,6 +56,7 @@ interface PaymentLine {
     `,
   ],
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     LocalizedNumberPipe,
     PermissionDirective,

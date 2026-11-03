@@ -60,12 +60,11 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2 pt-1">
-      <p-button
-        [label]="'finance.billing.creditnotes.back' | translate"
-        [outlined]="true"
-        severity="secondary"
+      <app-cancel-button
+        labelKey="finance.billing.creditnotes.back"
+        icon=""
         [disabled]="cancellation.loading()"
-        (onClick)="close()"
+        (cancelled)="close()"
       />
       <p-button
         [label]="'common.cancel.confirm' | translate"

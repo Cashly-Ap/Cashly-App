@@ -8,12 +8,12 @@
           [subtitle]="'partners.customers.balanceAndMovementsOverview' | translate"
         />
         <div class="flex flex-col gap-2 sm:flex-row">
-          <p-button
-            [label]="'finance.billing.creditnotes.back' | translate"
-            icon="pi pi-arrow-left"
+          <app-back-button
+            labelKey="finance.billing.creditnotes.back"
             severity="contrast"
+            [outlined]="false"
             styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
-            (onClick)="onBack()"
+            (back)="onBack()"
           />
           <p-button
             [label]="'partners.customers.searchCustomers' | translate"

@@ -61,10 +61,12 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-customer-balance-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,

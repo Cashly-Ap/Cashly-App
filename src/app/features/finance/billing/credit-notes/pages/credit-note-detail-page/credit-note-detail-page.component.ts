@@ -19,11 +19,13 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-credit-note-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

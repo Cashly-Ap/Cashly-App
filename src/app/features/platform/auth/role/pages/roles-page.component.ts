@@ -56,10 +56,12 @@ import { CatalogArea } from '@features/platform/auth/permissions/permission-cata
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-roles-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,

@@ -52,11 +52,13 @@ export interface ProductSelection {
 }
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,

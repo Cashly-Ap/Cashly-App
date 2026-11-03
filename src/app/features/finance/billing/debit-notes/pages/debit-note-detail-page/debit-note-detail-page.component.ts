@@ -19,11 +19,13 @@ import { PageHeaderComponent } from '@shared/components/ui/page-header/page-head
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-debit-note-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

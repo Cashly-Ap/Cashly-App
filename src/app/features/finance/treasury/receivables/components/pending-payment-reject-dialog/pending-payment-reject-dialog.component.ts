@@ -20,11 +20,13 @@ import { finalize } from 'rxjs';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-pending-payment-reject-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     LocalizedDatePipe,
     PermissionDirective,

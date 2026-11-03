@@ -27,10 +27,12 @@ import { WAREHOUSE_ERROR_MESSAGES } from '@features/inventory/warehouses/message
 import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messages/success-messages';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-warehouses-details-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

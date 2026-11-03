@@ -32,11 +32,13 @@ import { ProductDetails } from '@features/catalog/products/models/interfaces/pro
 import { ProductStockByWarehouse } from '@features/catalog/products/models/interfaces/product-stock-by-warehouse.interface';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-products-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

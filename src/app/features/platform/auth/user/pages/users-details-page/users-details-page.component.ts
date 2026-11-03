@@ -32,10 +32,12 @@ import { ChangePasswordDialogComponent } from '@features/platform/auth/user/comp
 import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-users-details-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     UserAvatarComponent,

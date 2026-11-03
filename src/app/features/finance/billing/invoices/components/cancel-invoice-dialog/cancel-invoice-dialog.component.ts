@@ -8,11 +8,13 @@ import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-cancel-invoice-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     PermissionDirective,
     DialogModule,

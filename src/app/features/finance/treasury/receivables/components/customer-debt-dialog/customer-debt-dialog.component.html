@@ -811,13 +811,11 @@
   </form>
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
-      <p-button
-        severity="secondary"
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="onCancelRefund()"
+      <app-cancel-button
+        [outlined]="false"
         [disabled]="creatingRefund()"
         styleClass="font-medium w-full sm:w-auto"
+        (cancelled)="onCancelRefund()"
       />
       <p-button
         severity="contrast"
@@ -929,13 +927,11 @@
 
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
-      <p-button
-        severity="secondary"
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="onCancelAdvance()"
+      <app-cancel-button
+        [outlined]="false"
         [disabled]="creatingAdvance()"
         styleClass="font-medium w-full sm:w-auto"
+        (cancelled)="onCancelAdvance()"
       />
       <p-button
         [appPermissionModule]="'FINANCE_RECEIVABLES'"

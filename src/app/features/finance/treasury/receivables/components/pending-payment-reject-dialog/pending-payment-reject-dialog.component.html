@@ -83,11 +83,11 @@
     </div>
   </div>
   <ng-template pTemplate="footer">
-    <p-button
-      severity="secondary"
-      [label]="'shared.cancel' | translate"
-      (click)="visible.set(false)"
+    <app-cancel-button
+      icon=""
+      [outlined]="false"
       [disabled]="submitting()"
+      (cancelled)="visible.set(false)"
     />
     <p-button
       [appPermissionModule]="'FINANCE_RECEIVABLES'"

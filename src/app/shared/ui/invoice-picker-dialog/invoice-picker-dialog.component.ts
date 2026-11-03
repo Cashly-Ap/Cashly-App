@@ -1,6 +1,5 @@
 import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,14 +18,15 @@ import { InvoiceApiService } from '@features/finance/billing/invoices/services/a
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,
-    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

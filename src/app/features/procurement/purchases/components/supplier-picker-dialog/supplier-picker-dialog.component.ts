@@ -1,6 +1,5 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -29,15 +28,16 @@ import {
 const PAGE_SIZE = 10;
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-supplier-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

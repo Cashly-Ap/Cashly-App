@@ -34,11 +34,13 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslatePipe,

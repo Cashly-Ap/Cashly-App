@@ -26,10 +26,12 @@ import { getCustomerTypeLabel } from '@features/partners/customers/models/enums/
 import { PriceTypeApplicationService } from '@features/catalog/price-types/services/application/price-type-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-customers-details-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

@@ -15,7 +15,17 @@ describe('DocumentConfirmationDialogComponent', () => {
   beforeEach(() => {
     colorMode.set('minimal');
     TestBed.configureTestingModule({
-      providers: [{ provide: UserPreferencesService, useValue: { colorMode } }],
+      providers: [
+        {
+          provide: UserPreferencesService,
+          useValue: {
+            colorMode,
+            ready: () => true,
+            shortcutsEnabled: () => true,
+            showShortcutHints: () => false,
+          },
+        },
+      ],
     });
   });
   const model: DocumentConfirmationModel = {

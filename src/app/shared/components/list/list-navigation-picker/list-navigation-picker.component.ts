@@ -14,7 +14,6 @@ import { SelectModule } from 'primeng/select';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   ListNavigationService,
@@ -23,11 +22,13 @@ import {
 } from '../list-navigation.service';
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-list-navigation-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
@@ -36,7 +37,6 @@ import { ListFilterComponent } from '@shared/components/list/list-filter/list-fi
     DialogModule,
     ButtonModule,
     PopoverModule,
-    ShortcutDirective,
     SearchFieldComponent,
   ],
   templateUrl: './list-navigation-picker.component.html',

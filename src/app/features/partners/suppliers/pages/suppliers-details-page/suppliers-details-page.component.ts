@@ -21,10 +21,12 @@ import { SupplierDetails } from '@features/partners/suppliers/models/interfaces/
 import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/supplier-type.enum';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-suppliers-details-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

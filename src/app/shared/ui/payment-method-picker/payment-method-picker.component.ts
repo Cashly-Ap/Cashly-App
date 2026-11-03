@@ -12,11 +12,14 @@ import { PaymentMethodApiService } from '@features/finance/treasury/payment-meth
 import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-payment-method-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    CancelButtonComponent,
+    TranslatePipe,
     CommonModule,
     FormsModule,
     DialogModule,

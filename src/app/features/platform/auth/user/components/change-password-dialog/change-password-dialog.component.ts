@@ -16,10 +16,12 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
 import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
 import { MessageService } from 'primeng/api';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-change-password-dialog',
   standalone: true,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     ShortcutDirective,
     ReactiveFormsModule,

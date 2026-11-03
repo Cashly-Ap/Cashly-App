@@ -25,13 +25,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-3">
-      <p-button
-        appShortcut="cancel"
-        [label]="'shared.cancel' | translate"
-        [outlined]="true"
-        (onClick)="onCancel()"
-        [disabled]="loading()"
-      />
+      <app-cancel-button icon="" [disabled]="loading()" (cancelled)="onCancel()" />
       <p-button
         appShortcut="submit"
         [label]="'finance.billing.creditnotes.save' | translate"

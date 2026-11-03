@@ -142,13 +142,10 @@
     <div
       class="flex w-full items-center justify-end gap-2 border-t border-surface-200 pt-4 dark:border-surface-700"
     >
-      <p-button
-        [label]="model().cancelLabel ?? 'shared.cancel' | translate"
-        icon="pi pi-times"
-        severity="secondary"
-        [outlined]="true"
+      <app-cancel-button
+        [label]="model().cancelLabel"
         [disabled]="submitting()"
-        (onClick)="cancelled.emit()"
+        (cancelled)="cancelled.emit()"
       />
       @if (model().permissionAction; as action) {
         <p-button

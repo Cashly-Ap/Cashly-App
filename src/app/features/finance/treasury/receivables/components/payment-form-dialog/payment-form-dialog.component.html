@@ -283,14 +283,11 @@
 
   <ng-template pTemplate="footer">
     <div class="flex flex-col sm:flex-row gap-2 justify-end">
-      <p-button
-        appShortcut="cancel"
-        severity="secondary"
-        [label]="'shared.cancel' | translate"
-        icon="pi pi-times"
-        (onClick)="onCancel()"
+      <app-cancel-button
+        [outlined]="false"
         [disabled]="loading()"
         styleClass="font-medium w-full sm:w-auto"
+        (cancelled)="onCancel()"
       />
       <p-button
         appShortcut="submit"

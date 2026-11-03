@@ -25,11 +25,15 @@ import { InvoiceDetails } from '@features/finance/billing/invoices/models/interf
 
 type NoteType = 'CREDIT' | 'DEBIT';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-note-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    CancelButtonComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     FormsModule,
     ButtonModule,

@@ -21,10 +21,12 @@ function emailsMatch(group: AbstractControl): ValidationErrors | null {
   return email && confirm && email !== confirm ? { emailsMismatch: true } : null;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-change-email-dialog',
   standalone: true,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     ShortcutDirective,
     ReactiveFormsModule,

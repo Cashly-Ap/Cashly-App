@@ -18,11 +18,13 @@ import { PriceTypeApplicationService } from '@features/catalog/price-types/servi
 import { PriceTypeDetails } from '@features/catalog/price-types/models/interfaces/price-type-details.interface';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-price-types-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     PermissionDirective,

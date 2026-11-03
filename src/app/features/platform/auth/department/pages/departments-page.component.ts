@@ -51,10 +51,12 @@ import { Department } from '../../authorization/models/access.model';
 import { BusinessModule } from '../../user/models/enums/business-module.enum';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-departments-page',
   standalone: true,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,

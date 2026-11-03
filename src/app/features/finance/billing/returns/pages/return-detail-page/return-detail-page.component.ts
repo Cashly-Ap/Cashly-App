@@ -21,11 +21,13 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 @Component({
   selector: 'app-return-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,

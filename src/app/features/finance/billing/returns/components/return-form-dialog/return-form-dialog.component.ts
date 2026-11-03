@@ -40,11 +40,13 @@ interface InvoiceLineFormData {
   warehouseAllocations: { warehouseId: string; allocated: number }[];
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-return-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CancelButtonComponent,
     LocalizedNumberPipe,
     TranslateOptionsPipe,
     TranslatePipe,

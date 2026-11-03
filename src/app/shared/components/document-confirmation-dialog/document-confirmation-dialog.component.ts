@@ -7,10 +7,18 @@ import { PermissionDirective } from '@features/platform/auth/authorization/direc
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-document-confirmation-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, TranslatePipe, LocalizedNumberPipe, PermissionDirective],
+  imports: [
+    CancelButtonComponent,
+    DialogModule,
+    ButtonModule,
+    TranslatePipe,
+    LocalizedNumberPipe,
+    PermissionDirective,
+  ],
   templateUrl: './document-confirmation-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

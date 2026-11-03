@@ -41,10 +41,12 @@ export interface PaymentMethodOption {
   value: string;
 }
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 @Component({
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
+    CancelButtonComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,
     ShortcutDirective,

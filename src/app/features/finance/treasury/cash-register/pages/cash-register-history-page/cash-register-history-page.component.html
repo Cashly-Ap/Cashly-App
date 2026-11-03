@@ -70,13 +70,10 @@
                 (onClick)="onViewModeChange('DETAILED')"
               />
             </div>
-            <p-button
-              icon="pi pi-arrow-left"
-              [label]="'finance.billing.creditnotes.back' | translate"
-              severity="secondary"
-              [outlined]="true"
+            <app-back-button
+              labelKey="finance.billing.creditnotes.back"
               styleClass="w-full sm:w-auto"
-              (onClick)="onBack()"
+              (back)="onBack()"
             />
           </div>
         </div>

@@ -126,13 +126,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <p-button
-        appShortcut="cancel"
-        [label]="'shared.cancel' | translate"
-        [text]="true"
-        severity="secondary"
-        (onClick)="onHide()"
-      />
+      <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
       <p-button
         [label]="
           format() === 'PDF'

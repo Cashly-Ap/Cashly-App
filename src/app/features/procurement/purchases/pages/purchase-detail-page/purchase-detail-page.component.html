@@ -18,12 +18,10 @@
             [subtitle]="currentPurchase.supplierName"
           >
             <div actions class="flex gap-3 flex-wrap">
-              <p-button
-                [label]="'finance.billing.creditnotes.back' | translate"
-                icon="pi pi-arrow-left"
-                [outlined]="true"
-                (onClick)="onBack()"
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
                 styleClass="w-full sm:w-auto"
+                (back)="onBack()"
               />
               @if (currentPurchase.status === PurchaseStatus.DRAFT) {
                 <app-detail-actions-menu #actionsMenu>

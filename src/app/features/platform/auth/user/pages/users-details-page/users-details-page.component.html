@@ -19,12 +19,10 @@
               size="large"
             />
             <div actions class="flex gap-3">
-              <p-button
-                [label]="'users.profile.back' | translate"
-                icon="pi pi-arrow-left"
-                [outlined]="true"
-                (onClick)="onBack()"
+              <app-back-button
+                labelKey="users.profile.back"
                 styleClass="w-full sm:w-auto"
+                (back)="onBack()"
               />
               <app-detail-actions-menu #actionsMenu>
                 <p-button
