@@ -47,10 +47,15 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService, SortEvent } from 'primeng/api';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { Department, Role } from '@features/platform/auth/authorization/models/access.model';
 import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
 import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
+import {
+  normalizePermissionSelection,
+  togglePermission,
+} from '@features/platform/auth/permissions/permission-dependencies';
 import { CatalogArea } from '@features/platform/auth/permissions/permission-catalog.types';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -199,19 +204,21 @@ export class RolesPageComponent {
     if (mode === 'form' && this.isSystemAdministrator(item)) this.onView(item);
   }
   private readonly service = inject(AccessManagementService);
+  private readonly auth = inject(AuthService);
   private readonly messages = inject(MessageService);
   private readonly confirmation = inject(ConfirmationService);
   readonly authorization = inject(AuthorizationService);
   readonly module = BusinessModule.ROLES;
   readonly catalogAreas = PERMISSION_CATALOG as readonly CatalogArea[];
+  readonly catalogModules = this.catalogAreas.flatMap((area) =>
+    area.sections.flatMap((section) => section.modules),
+  );
   readonly items = signal<Role[]>([]);
   readonly editing = signal<Partial<Role> | null>(null);
   readonly busy = signal(false);
   readonly search = signal('');
-  readonly allPermissionCodes = this.catalogAreas.flatMap((area) =>
-    area.sections.flatMap((section) =>
-      section.modules.flatMap((module) => module.permissions.map((permission) => permission.code)),
-    ),
+  readonly allPermissionCodes = this.catalogModules.flatMap((module) =>
+    module.permissions.map((permission) => permission.code),
   );
   readonly grantedGroups = computed(() => {
     const selected = new Set(this.currentPermissions());
@@ -286,7 +293,10 @@ export class RolesPageComponent {
   }
   edit(item: Role): void {
     this.form.reset({ name: item.name, description: item.description ?? '', active: item.active });
-    this.editing.set({ ...item, permissions: normalizePermissions(item.permissions) });
+    this.editing.set({
+      ...item,
+      permissions: this.normalizedPermissions(normalizePermissions(item.permissions)),
+    });
   }
   selected(code: AppPermission): boolean {
     return this.currentPermissions().includes(code);
@@ -301,10 +311,15 @@ export class RolesPageComponent {
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    const permissions = new Set(this.currentPermissions());
-    if (permissions.has(code)) permissions.delete(code);
-    else permissions.add(code);
-    this.editing.set({ ...value, permissions: [...permissions] });
+    const current = this.currentPermissions();
+    const permissions = togglePermission(
+      this.catalogModules,
+      current,
+      code,
+      !current.includes(code),
+      (permission) => this.authorization.can(permission),
+    );
+    this.editing.set({ ...value, permissions });
   }
   updatePermissions(permissions: AppPermission[]): void {
     const value = this.editing();
@@ -315,10 +330,9 @@ export class RolesPageComponent {
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    const known = new Set(this.allPermissionCodes);
     this.editing.set({
       ...value,
-      permissions: permissions.filter((code) => known.has(code)),
+      permissions: this.normalizedPermissions(permissions),
     });
   }
   private currentPermissions(): AppPermission[] {
@@ -326,6 +340,14 @@ export class RolesPageComponent {
     if (!value) return [];
     if (this.isSystemAdministrator(value)) return this.allPermissionCodes;
     return normalizePermissions(value.permissions);
+  }
+  private normalizedPermissions(permissions: AppPermission[]): AppPermission[] {
+    const known = new Set(this.allPermissionCodes);
+    return normalizePermissionSelection(
+      this.catalogModules,
+      permissions.filter((code) => known.has(code)),
+      (code) => this.authorization.can(code),
+    );
   }
   submit(): void {
     if (this.form.invalid) {
@@ -344,8 +366,7 @@ export class RolesPageComponent {
       !this.authorization.can(this.module, value.id ? 'UPDATE' : 'CREATE')
     )
       return;
-    const known = new Set(this.allPermissionCodes);
-    const permissions = (value.permissions ?? []).filter((code) => known.has(code));
+    const permissions = this.normalizedPermissions(value.permissions ?? []);
     this.busy.set(true);
     this.service.saveRole({ ...value, name: value.name.trim(), permissions }).subscribe({
       next: (saved) => {
@@ -356,6 +377,7 @@ export class RolesPageComponent {
           summary: 'Guardado',
           detail: 'Registro guardado correctamente.',
         });
+        this.auth.refreshAccess().subscribe({ error: () => undefined });
         void this.router.navigate(['/platform/roles', saved.id]);
       },
       error: (error) => {

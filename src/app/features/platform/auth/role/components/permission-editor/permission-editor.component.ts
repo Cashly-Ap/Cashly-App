@@ -20,6 +20,13 @@ import {
   CatalogArea,
   CatalogModule,
 } from '@features/platform/auth/permissions/permission-catalog.types';
+import {
+  findPermissionModule,
+  isRootPermission,
+  replaceModulePermissions,
+  rootPermission,
+  togglePermission,
+} from '@features/platform/auth/permissions/permission-dependencies';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 
 export type PermissionPreset = 'none' | 'read' | 'custom' | 'all';
@@ -59,6 +66,9 @@ export class PermissionEditorComponent {
   ];
 
   readonly areas = PERMISSION_CATALOG as readonly CatalogArea[];
+  readonly modules = this.areas.flatMap((area) =>
+    area.sections.flatMap((section) => section.modules),
+  );
   readonly search = signal('');
   readonly parentFilter = signal('');
   readonly childFilter = signal('');
@@ -137,7 +147,10 @@ export class PermissionEditorComponent {
   }
 
   canToggle(code: AppPermission): boolean {
-    return !this.disabled() && !this.protected() && this.authorization.can(code);
+    if (this.disabled() || this.protected() || !this.authorization.can(code)) return false;
+    const module = findPermissionModule(this.modules, code);
+    const root = module ? rootPermission(module) : undefined;
+    return !root || root === code || this.authorization.can(root);
   }
 
   allowed(code: AppPermission): boolean {
@@ -145,9 +158,11 @@ export class PermissionEditorComponent {
   }
 
   editable(module: CatalogModule): boolean {
+    const root = rootPermission(module);
     return (
       !this.disabled() &&
       !this.protected() &&
+      (!root || this.authorization.can(root)) &&
       module.permissions.some((permission) => this.authorization.can(permission.code))
     );
   }
@@ -171,56 +186,55 @@ export class PermissionEditorComponent {
       return;
     }
     this.expanded.update((value) => ({ ...value, [module.moduleKey]: false }));
-    const next = new Set(this.permissions());
-    for (const permission of module.permissions) next.delete(permission.code);
-    if (preset === 'all') {
-      for (const permission of module.permissions) {
-        if (this.authorization.can(permission.code)) next.add(permission.code);
-      }
-    }
-    if (preset === 'read') {
-      const view = this.viewCode(module);
-      if (view && this.authorization.can(view)) next.add(view);
-    }
-    this.permissionsChange.emit([...next]);
+    const root = rootPermission(module);
+    const canGrantRoot = !root || this.authorization.can(root);
+    const selected = module.permissions
+      .map((permission) => permission.code)
+      .filter((code) => {
+        if (preset === 'none' || !canGrantRoot) return false;
+        if (preset === 'read') return isRootPermission(code);
+        return this.authorization.can(code);
+      });
+    const next = replaceModulePermissions(this.permissions(), module, selected);
+    this.permissionsChange.emit(next);
   }
 
   applyAll(preset: 'none' | 'read' | 'all'): void {
     if (this.disabled() || this.protected()) return;
-    const next = new Set(this.permissions());
-    for (const code of this.allPermissions()) next.delete(code);
-    if (preset === 'all') {
-      for (const code of this.allPermissions()) {
-        if (this.authorization.can(code)) next.add(code);
-      }
+    if (preset === 'none') {
+      this.permissionsChange.emit([]);
+      return;
     }
-    if (preset === 'read') {
-      for (const area of this.areas) {
-        for (const section of area.sections) {
-          for (const module of section.modules) {
-            const view = this.viewCode(module);
-            if (view && this.authorization.can(view)) next.add(view);
-          }
-        }
-      }
-    }
-    this.permissionsChange.emit([...next]);
+    const selected = this.modules.flatMap((module) => {
+      const root = rootPermission(module);
+      if (root && !this.authorization.can(root)) return [];
+      return module.permissions
+        .map((permission) => permission.code)
+        .filter((code) => {
+          if (preset === 'read') return isRootPermission(code);
+          return this.authorization.can(code);
+        });
+    });
+    this.permissionsChange.emit(selected);
   }
 
   toggle(code: AppPermission): void {
     if (!this.canToggle(code)) return;
-    const next = new Set(this.permissions());
-    if (next.has(code)) next.delete(code);
-    else next.add(code);
-    this.permissionsChange.emit([...next]);
-  }
-
-  private viewCode(module: CatalogModule): AppPermission | undefined {
-    return module.permissions.find((permission) => this.isViewCode(permission.code))?.code;
+    const current = this.permissions();
+    const next = togglePermission(
+      this.modules,
+      current,
+      code,
+      !current.includes(code),
+      (permission) => this.authorization.can(permission),
+    );
+    if (next.length === current.length && next.every((permission) => current.includes(permission)))
+      return;
+    this.permissionsChange.emit(next);
   }
 
   private isViewCode(code: AppPermission): boolean {
-    return code.endsWith('_VIEW_LIST') || code === 'DASHBOARD_VIEW' || code === 'COMPANY_VIEW';
+    return isRootPermission(code);
   }
 
   private normalize(value: string): string {

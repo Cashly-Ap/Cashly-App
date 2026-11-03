@@ -84,29 +84,55 @@ describe('Permission editor', () => {
     ).toEqual(['navigation.labels.cashRegister']);
   });
 
-  it('selects and removes individual permissions', () => {
+  it('adds the module root when selecting an action', () => {
     component.toggle('SALES_ORDERS_CONFIRM');
-    expect(emitted.at(-1)).toEqual(['SALES_ORDERS_CONFIRM']);
+    expect(emitted.at(-1)).toEqual(['SALES_ORDERS_VIEW_LIST', 'SALES_ORDERS_CONFIRM']);
     component.toggle('SALES_ORDERS_CONFIRM');
+    expect(emitted.at(-1)).toEqual(['SALES_ORDERS_VIEW_LIST']);
+  });
+
+  it('clears the module when the root permission is removed', () => {
+    fixture.componentRef.setInput('permissions', [
+      'SALES_ORDERS_VIEW_LIST',
+      'SALES_ORDERS_VIEW_DETAIL',
+      'SALES_ORDERS_EDIT',
+    ]);
+    component.toggle('SALES_ORDERS_VIEW_LIST');
     expect(emitted.at(-1)).toEqual([]);
+  });
+
+  it('keeps detail optional when another module permission exists', () => {
+    fixture.componentRef.setInput('permissions', [
+      'SALES_ORDERS_VIEW_LIST',
+      'SALES_ORDERS_VIEW_DETAIL',
+      'SALES_ORDERS_EDIT',
+    ]);
+    component.toggle('SALES_ORDERS_VIEW_DETAIL');
+    expect(emitted.at(-1)).toEqual(['SALES_ORDERS_VIEW_LIST', 'SALES_ORDERS_EDIT']);
   });
 
   it('applies module presets', () => {
     component.setPreset(
-      { moduleKey: 'navigation.labels.orders', permissions: [
-        { code: 'SALES_ORDERS_VIEW_LIST', labelKey: 'sales.orders.permissions.viewList' },
-        { code: 'SALES_ORDERS_EDIT', labelKey: 'sales.orders.permissions.edit' },
-        { code: 'SALES_ORDERS_CREATE', labelKey: 'sales.orders.permissions.create' },
-      ] },
+      {
+        moduleKey: 'navigation.labels.orders',
+        permissions: [
+          { code: 'SALES_ORDERS_VIEW_LIST', labelKey: 'sales.orders.permissions.viewList' },
+          { code: 'SALES_ORDERS_EDIT', labelKey: 'sales.orders.permissions.edit' },
+          { code: 'SALES_ORDERS_CREATE', labelKey: 'sales.orders.permissions.create' },
+        ],
+      },
       'read',
     );
     expect(emitted.at(-1)).toEqual(['SALES_ORDERS_VIEW_LIST']);
     component.setPreset(
-      { moduleKey: 'navigation.labels.orders', permissions: [
-        { code: 'SALES_ORDERS_VIEW_LIST', labelKey: 'sales.orders.permissions.viewList' },
-        { code: 'SALES_ORDERS_EDIT', labelKey: 'sales.orders.permissions.edit' },
-        { code: 'SALES_ORDERS_CREATE', labelKey: 'sales.orders.permissions.create' },
-      ] },
+      {
+        moduleKey: 'navigation.labels.orders',
+        permissions: [
+          { code: 'SALES_ORDERS_VIEW_LIST', labelKey: 'sales.orders.permissions.viewList' },
+          { code: 'SALES_ORDERS_EDIT', labelKey: 'sales.orders.permissions.edit' },
+          { code: 'SALES_ORDERS_CREATE', labelKey: 'sales.orders.permissions.create' },
+        ],
+      },
       'all',
     );
     expect(emitted.at(-1)).toEqual([
@@ -139,10 +165,29 @@ describe('Permission editor', () => {
   });
 
   it('respects the actor delegation ceiling', () => {
-    authorization.can.mockImplementation((code: AppPermission) => code === 'SALES_ORDERS_VIEW_LIST');
+    authorization.can.mockImplementation(
+      (code: AppPermission) => code === 'SALES_ORDERS_VIEW_LIST',
+    );
     component.toggle('SALES_ORDERS_EDIT');
     expect(emitted).toHaveLength(0);
     component.toggle('SALES_ORDERS_VIEW_LIST');
     expect(emitted.at(-1)).toEqual(['SALES_ORDERS_VIEW_LIST']);
+  });
+
+  it('does not grant child permissions when the actor cannot grant the root', () => {
+    authorization.can.mockImplementation((code: AppPermission) => code === 'SALES_ORDERS_EDIT');
+    component.toggle('SALES_ORDERS_EDIT');
+    expect(emitted).toHaveLength(0);
+    component.setPreset(
+      {
+        moduleKey: 'navigation.labels.orders',
+        permissions: [
+          { code: 'SALES_ORDERS_VIEW_LIST', labelKey: 'viewList' },
+          { code: 'SALES_ORDERS_EDIT', labelKey: 'edit' },
+        ],
+      },
+      'all',
+    );
+    expect(emitted).toHaveLength(0);
   });
 });

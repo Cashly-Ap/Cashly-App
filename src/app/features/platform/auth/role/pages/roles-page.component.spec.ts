@@ -6,11 +6,13 @@ import { of, throwError } from 'rxjs';
 import { RolesPageComponent } from '@features/platform/auth/role/pages/roles-page.component';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 describe('Role permissions', () => {
   const service = { roles: vi.fn(), saveRole: vi.fn(), delete: vi.fn() };
   const authorization = { can: vi.fn() };
+  const auth = { refreshAccess: vi.fn(() => of({})) };
   const messages = { add: vi.fn() };
   let component: RolesPageComponent;
 
@@ -29,6 +31,7 @@ describe('Role permissions', () => {
     authorization.can.mockReturnValue(true);
     service.saveRole.mockReset();
     service.delete.mockReset();
+    auth.refreshAccess.mockClear();
     messages.add.mockReset();
     TestBed.configureTestingModule({
       imports: [RolesPageComponent],
@@ -36,6 +39,7 @@ describe('Role permissions', () => {
         provideRouter([]),
         { provide: AccessManagementService, useValue: service },
         { provide: AuthorizationService, useValue: authorization },
+        { provide: AuthService, useValue: auth },
         { provide: MessageService, useValue: messages },
         { provide: DeleteDialogService, useValue: { open: vi.fn() } },
         ConfirmationService,
@@ -44,7 +48,7 @@ describe('Role permissions', () => {
     component = TestBed.createComponent(RolesPageComponent).componentInstance;
   });
 
-  it('toggles independent permissions', () => {
+  it('clears the module when its root permission is removed', () => {
     component.create();
     component.toggle('SALES_ORDERS_VIEW_LIST');
     component.toggle('SALES_ORDERS_VIEW_DETAIL');
@@ -52,7 +56,14 @@ describe('Role permissions', () => {
     expect(component.selected('SALES_ORDERS_VIEW_DETAIL')).toBe(true);
     component.toggle('SALES_ORDERS_VIEW_LIST');
     expect(component.selected('SALES_ORDERS_VIEW_LIST')).toBe(false);
-    expect(component.selected('SALES_ORDERS_VIEW_DETAIL')).toBe(true);
+    expect(component.selected('SALES_ORDERS_VIEW_DETAIL')).toBe(false);
+  });
+
+  it('adds the module root when a child permission is selected', () => {
+    component.create();
+    component.toggle('SALES_ORDERS_EDIT');
+    expect(component.selected('SALES_ORDERS_VIEW_LIST')).toBe(true);
+    expect(component.selected('SALES_ORDERS_EDIT')).toBe(true);
   });
 
   it('gives the immutable administrator every catalog permission', () => {
@@ -106,9 +117,10 @@ describe('Role permissions', () => {
       expect.objectContaining({
         id: 'r',
         version: 4,
-        permissions: ['SALES_ORDERS_VIEW_LIST', 'COMPANY_EDIT'],
+        permissions: ['SALES_ORDERS_VIEW_LIST', 'COMPANY_VIEW', 'COMPANY_EDIT'],
       }),
     );
+    expect(auth.refreshAccess).toHaveBeenCalled();
   });
 
   it('preserves the editor and reports a conflict', () => {
@@ -129,9 +141,9 @@ describe('Role permissions', () => {
   });
 
   it('exposes Company permissions in the catalog', () => {
-    expect(component.catalogAreas.some((area) => area.areaKey === 'navigation.labels.platform')).toBe(
-      true,
-    );
+    expect(
+      component.catalogAreas.some((area) => area.areaKey === 'navigation.labels.platform'),
+    ).toBe(true);
     expect(component.allPermissionCodes).toContain('COMPANY_VIEW');
     expect(component.allPermissionCodes).toContain('COMPANY_EDIT');
   });
