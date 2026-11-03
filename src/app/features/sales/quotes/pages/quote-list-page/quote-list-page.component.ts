@@ -40,6 +40,13 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  pdfAction,
+  deleteAction,
+  cancelAction,
+  convertToOrderAction,
+  convertToInvoiceAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -228,58 +235,20 @@ export class QuoteListPageComponent implements OnInit {
 
   actionsFor(quote: QuoteList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(quote),
-      },
-      {
-        requiredAction: 'EXPORT',
-        label: 'Descargar PDF',
-        icon: 'pi pi-file-pdf',
-        command: () => this.onDownloadPdf(quote),
-      },
+      viewAction(() => this.onView(quote)),
+      pdfAction(() => this.onDownloadPdf(quote)),
     ];
     if (quote.status === 'DRAFT') {
       actions.push(
-        {
-          requiredAction: 'UPDATE',
-          label: 'Editar',
-          icon: 'pi pi-pencil',
-          command: () => this.onEdit(quote),
-        },
-        {
-          requiredAction: 'CREATE',
-          module: BusinessModule.SALES_ORDERS,
-          label: 'Convertir a pedido',
-          icon: 'pi pi-shopping-cart',
-          command: () => this.onConvertToOrder(quote),
-        },
-        {
-          requiredAction: 'CREATE',
-          module: BusinessModule.FINANCE_INVOICES,
-          label: 'Convertir a factura',
-          icon: 'pi pi-file',
-          command: () => this.onConvertToInvoice(quote),
-        },
-        {
-          requiredAction: 'CANCEL',
-          label: 'Cancelar presupuesto',
-          icon: 'pi pi-times',
-          danger: true,
-          command: () =>
-            this.cancellation.open('quotes', quote.id, quote.quoteNumber, () =>
-              this.loadWithFilters(),
-            ),
-        },
-        {
-          requiredAction: 'DELETE',
-          label: 'Eliminar',
-          icon: 'pi pi-trash',
-          danger: true,
-          command: () => this.onDelete(quote),
-        },
+        editAction(() => this.onEdit(quote)),
+        convertToOrderAction(() => this.onConvertToOrder(quote)),
+        convertToInvoiceAction(() => this.onConvertToInvoice(quote)),
+        cancelAction('Cancelar presupuesto', () =>
+          this.cancellation.open('quotes', quote.id, quote.quoteNumber, () =>
+            this.loadWithFilters(),
+          ),
+        ),
+        deleteAction(() => this.onDelete(quote)),
       );
     }
     return actions;

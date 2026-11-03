@@ -36,6 +36,9 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -261,26 +264,10 @@ export class ProductsListPageComponent implements OnInit {
 
   actionsFor(product: ProductList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(product),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(product),
-      },
+      viewAction(() => this.onView(product)),
+      editAction(() => this.onEdit(product)),
     ];
-    actions.push({
-      requiredAction: 'DELETE',
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.onDelete(product),
-    });
+    actions.push(deleteAction(() => this.onDelete(product)));
     return actions;
   }
 

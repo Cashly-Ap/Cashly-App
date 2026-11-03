@@ -34,6 +34,9 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -185,26 +188,10 @@ export class CategoriesListPageComponent implements OnInit {
 
   actionsFor(category: CategoryList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(category),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(category),
-      },
+      viewAction(() => this.onView(category)),
+      editAction(() => this.onEdit(category)),
     ];
-    actions.push({
-      requiredAction: 'DELETE',
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.onDelete(category),
-    });
+    actions.push(deleteAction(() => this.onDelete(category)));
     return actions;
   }
 

@@ -37,6 +37,10 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
+  listAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -278,37 +282,19 @@ export class CustomersListPageComponent implements OnInit {
 
   actionsFor(customer: CustomerList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(customer),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(customer),
-      },
+      viewAction(() => this.onView(customer)),
+      editAction(() => this.onEdit(customer)),
     ];
 
     if (this.authService.hasModulePermission(BusinessModule.CONTACTS_CUSTOMERS)) {
-      actions.push({
-        requiredAction: 'READ',
-        module: BusinessModule.CONTACTS_CUSTOMERS,
-        label: 'Ver saldo',
-        icon: 'pi pi-wallet',
-        command: () => this.onViewBalance(customer),
-      });
+      actions.push(
+        listAction('Ver saldo', 'READ', 'wallet', () => this.onViewBalance(customer), {
+          module: BusinessModule.CONTACTS_CUSTOMERS,
+        }),
+      );
     }
 
-    actions.push({
-      requiredAction: 'DELETE',
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.onDelete(customer),
-    });
+    actions.push(deleteAction(() => this.onDelete(customer)));
 
     return actions;
   }

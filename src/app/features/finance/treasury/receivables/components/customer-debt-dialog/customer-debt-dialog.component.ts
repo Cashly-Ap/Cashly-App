@@ -75,6 +75,7 @@ interface BalanceFilterOption {
 }
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { listAction } from '@shared/components/list/list-action-builders';
 @Component({
   selector: 'app-customer-debt-dialog',
   standalone: true,
@@ -242,45 +243,26 @@ export class CustomerDebtDialogComponent {
 
   protected invoiceActions(invoice: CustomerInvoiceDebt): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver factura',
-        icon: 'pi pi-file-pdf',
-        command: () => this.onViewInvoicePdf(invoice),
-      },
-      {
-        requiredAction: 'READ',
-        label: 'Ver historial de pagos',
-        icon: 'pi pi-history',
-        command: () => this.onViewInvoicePaymentHistory(invoice),
-      },
+      listAction('Ver factura', 'READ', 'file-pdf', () => this.onViewInvoicePdf(invoice)),
+      listAction('Ver historial de pagos', 'READ', 'history', () =>
+        this.onViewInvoicePaymentHistory(invoice),
+      ),
     ];
     if (this.canReturnInvoice(invoice)) {
       actions.push(
-        {
-          requiredAction: 'CREATE',
+        listAction('Devolución', 'CREATE', 'undo', () => this.onViewInvoiceReturns(invoice), {
           module: BusinessModule.FINANCE_RETURNS,
-          label: 'Devolución',
-          icon: 'pi pi-undo',
           disabled: this.loadingReturnInvoice(),
-          command: () => this.onViewInvoiceReturns(invoice),
-        },
-        {
-          requiredAction: 'CREATE',
-          label: 'Nota',
-          icon: 'pi pi-file-edit',
+        }),
+        listAction('Nota', 'CREATE', 'file-edit', () => this.onViewInvoiceNotes(invoice), {
           disabled: this.loadingNoteInvoice(),
-          command: () => this.onViewInvoiceNotes(invoice),
-        },
+        }),
       );
     }
     if (invoice.balance > 0 && !this.isInvoiceFullyBlocked(invoice)) {
-      actions.push({
-        requiredAction: 'EXECUTE',
-        label: 'Registrar pago',
-        icon: 'pi pi-dollar',
-        command: () => this.onPayInvoice(invoice),
-      });
+      actions.push(
+        listAction('Registrar pago', 'EXECUTE', 'dollar', () => this.onPayInvoice(invoice)),
+      );
     }
     return actions;
   }

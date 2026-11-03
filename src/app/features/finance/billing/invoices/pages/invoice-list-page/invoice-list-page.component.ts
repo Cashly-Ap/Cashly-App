@@ -40,6 +40,13 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  pdfAction,
+  deleteAction,
+  cancelAction,
+  confirmAction,
+  duplicateInvoiceAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -318,57 +325,20 @@ export class InvoiceListPageComponent implements OnInit {
 
   actionsFor(invoice: InvoiceList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(invoice),
-      },
-      {
-        requiredAction: 'EXPORT',
-        label: 'Descargar PDF',
-        icon: 'pi pi-file-pdf',
-        command: () => this.onDownloadPdf(invoice),
-      },
+      viewAction(() => this.onView(invoice)),
+      pdfAction(() => this.onDownloadPdf(invoice)),
     ];
     if (invoice.status === 'DRAFT') {
       actions.push(
-        {
-          requiredAction: 'CONFIRM',
-          label: 'Confirmar',
-          icon: 'pi pi-check',
-          command: () => this.onConfirmInvoice(invoice),
-        },
-        {
-          requiredAction: 'UPDATE',
-          label: 'Editar',
-          icon: 'pi pi-pencil',
-          command: () => this.onEdit(invoice),
-        },
-        {
-          requiredAction: 'DELETE',
-          label: 'Eliminar',
-          icon: 'pi pi-trash',
-          danger: true,
-          command: () => this.onDelete(invoice),
-        },
+        confirmAction('Confirmar', () => this.onConfirmInvoice(invoice)),
+        editAction(() => this.onEdit(invoice)),
+        deleteAction(() => this.onDelete(invoice)),
       );
     }
     if (this.canCancel(invoice.status)) {
-      actions.push({
-        requiredAction: 'CANCEL',
-        label: 'Cancelar factura',
-        icon: 'pi pi-times',
-        danger: true,
-        command: () => this.onCancelInvoice(invoice),
-      });
+      actions.push(cancelAction('Cancelar factura', () => this.onCancelInvoice(invoice)));
     }
-    actions.push({
-      requiredAction: 'CREATE',
-      label: 'Duplicar factura',
-      icon: 'pi pi-copy',
-      command: () => this.onDuplicate(invoice),
-    });
+    actions.push(duplicateInvoiceAction(() => this.onDuplicate(invoice)));
     return actions;
   }
 

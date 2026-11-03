@@ -35,6 +35,9 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -268,27 +271,11 @@ export class SuppliersListPageComponent implements OnInit {
 
   actionsFor(supplier: SupplierList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(supplier),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(supplier),
-      },
+      viewAction(() => this.onView(supplier)),
+      editAction(() => this.onEdit(supplier)),
     ];
     if (!supplier.hasPurchases) {
-      actions.push({
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(supplier),
-      });
+      actions.push(deleteAction(() => this.onDelete(supplier)));
     }
     return actions;
   }

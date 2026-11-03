@@ -36,6 +36,8 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  deleteAction,
 } from '@shared/components/list';
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
 import { CreditNoteFilters } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
@@ -175,19 +177,8 @@ export class CreditNoteListPageComponent implements OnInit {
 
   actionsFor(creditNote: CreditNoteList): ListAction[] {
     return [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onDetail(creditNote),
-      },
-      {
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(creditNote),
-      },
+      viewAction(() => this.onDetail(creditNote)),
+      deleteAction(() => this.onDelete(creditNote)),
     ];
   }
 

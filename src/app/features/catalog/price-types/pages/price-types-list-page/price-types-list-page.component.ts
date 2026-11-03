@@ -30,6 +30,9 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -147,26 +150,10 @@ export class PriceTypesListPageComponent implements OnInit {
 
   actionsFor(priceType: PriceTypeList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(priceType),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(priceType),
-      },
+      viewAction(() => this.onView(priceType)),
+      editAction(() => this.onEdit(priceType)),
     ];
-    actions.push({
-      requiredAction: 'DELETE',
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.onDelete(priceType),
-    });
+    actions.push(deleteAction(() => this.onDelete(priceType)));
     return actions;
   }
 

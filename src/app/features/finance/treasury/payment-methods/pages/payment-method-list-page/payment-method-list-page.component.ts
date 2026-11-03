@@ -34,6 +34,9 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -184,27 +187,11 @@ export class PaymentMethodListPageComponent implements OnInit {
 
   actionsFor(paymentMethod: PaymentMethodList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onDetail(paymentMethod),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(paymentMethod),
-      },
+      viewAction(() => this.onDetail(paymentMethod)),
+      editAction(() => this.onEdit(paymentMethod)),
     ];
     if (!paymentMethod.hasAssociatedRecords) {
-      actions.push({
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(paymentMethod),
-      });
+      actions.push(deleteAction(() => this.onDelete(paymentMethod)));
     }
     return actions;
   }

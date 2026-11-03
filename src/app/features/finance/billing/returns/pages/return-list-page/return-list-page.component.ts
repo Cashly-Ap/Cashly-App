@@ -37,6 +37,8 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  deleteAction,
 } from '@shared/components/list';
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { ReturnFilters } from '@features/finance/billing/returns/services/api/return-api.service';
@@ -176,21 +178,7 @@ export class ReturnListPageComponent implements OnInit {
   }
 
   actionsFor(ret: ReturnList): ListAction[] {
-    return [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onDetail(ret),
-      },
-      {
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(ret),
-      },
-    ];
+    return [viewAction(() => this.onDetail(ret)), deleteAction(() => this.onDelete(ret))];
   }
 
   onDelete(ret: ReturnList): void {

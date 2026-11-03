@@ -41,6 +41,13 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  pdfAction,
+  deleteAction,
+  cancelAction,
+  confirmAction,
+  convertToInvoiceAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -233,58 +240,20 @@ export class OrderListPageComponent implements OnInit {
 
   actionsFor(order: OrderList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(order),
-      },
-      {
-        requiredAction: 'EXPORT',
-        label: 'Descargar PDF',
-        icon: 'pi pi-file-pdf',
-        command: () => this.onDownloadPdf(order),
-      },
+      viewAction(() => this.onView(order)),
+      pdfAction(() => this.onDownloadPdf(order)),
     ];
     if (order.status === 'DRAFT') {
       actions.push(
-        {
-          requiredAction: 'UPDATE',
-          label: 'Editar',
-          icon: 'pi pi-pencil',
-          command: () => this.onEdit(order),
-        },
-        {
-          requiredAction: 'CONFIRM',
-          label: 'Confirmar',
-          icon: 'pi pi-check',
-          command: () => this.onConfirm(order),
-        },
-        {
-          requiredAction: 'DELETE',
-          label: 'Eliminar',
-          icon: 'pi pi-trash',
-          danger: true,
-          command: () => this.onDelete(order),
-        },
+        editAction(() => this.onEdit(order)),
+        confirmAction('Confirmar', () => this.onConfirm(order)),
+        deleteAction(() => this.onDelete(order)),
       );
     }
     if (order.status === 'CONFIRMED') {
       actions.push(
-        {
-          requiredAction: 'CREATE',
-          module: BusinessModule.FINANCE_INVOICES,
-          label: 'Convertir a factura',
-          icon: 'pi pi-file',
-          command: () => this.onConvertToInvoice(order),
-        },
-        {
-          requiredAction: 'CANCEL',
-          label: 'Cancelar pedido',
-          icon: 'pi pi-times',
-          danger: true,
-          command: () => this.onCancelOrder(order),
-        },
+        convertToInvoiceAction(() => this.onConvertToInvoice(order)),
+        cancelAction('Cancelar pedido', () => this.onCancelOrder(order)),
       );
     }
     return actions;

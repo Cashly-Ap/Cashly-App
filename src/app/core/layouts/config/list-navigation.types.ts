@@ -1,6 +1,7 @@
 import { MenuItem } from '@core/layouts/models';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { LIST_ACTION_PRESETS } from '@shared/models/list-action-presets';
 
 export interface NavigationActionDefinition {
   label: string;
@@ -30,10 +31,30 @@ export const listAction = (
   ...(module ? { module } : {}),
 });
 
-export const view = () => listAction('Ver detalle', 'READ', 'eye');
-export const edit = () => listAction('Editar', 'UPDATE', 'pencil');
-export const pdf = () => listAction('Descargar PDF', 'EXPORT', 'file-pdf');
-export const remove = () => listAction('Eliminar', 'DELETE', 'trash');
+export const view = () =>
+  listAction(
+    LIST_ACTION_PRESETS.view.label,
+    LIST_ACTION_PRESETS.view.requiredAction,
+    LIST_ACTION_PRESETS.view.icon,
+  );
+export const edit = () =>
+  listAction(
+    LIST_ACTION_PRESETS.edit.label,
+    LIST_ACTION_PRESETS.edit.requiredAction,
+    LIST_ACTION_PRESETS.edit.icon,
+  );
+export const pdf = () =>
+  listAction(
+    LIST_ACTION_PRESETS.pdf.label,
+    LIST_ACTION_PRESETS.pdf.requiredAction,
+    LIST_ACTION_PRESETS.pdf.icon,
+  );
+export const remove = () =>
+  listAction(
+    LIST_ACTION_PRESETS.remove.label,
+    LIST_ACTION_PRESETS.remove.requiredAction,
+    LIST_ACTION_PRESETS.remove.icon,
+  );
 export const recordActions = () => [view(), edit(), remove()];
 
 export const destination = (

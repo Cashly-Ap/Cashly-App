@@ -42,6 +42,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { listAction } from '@shared/components/list/list-action-builders';
 @Component({
   selector: 'app-receivables-page',
   standalone: true,
@@ -188,39 +189,31 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
 
   customerActions(customer: CustomerDebtList): ListAction[] {
     return [
-      {
-        requiredAction: 'READ',
-        label: 'Ver deuda',
-        icon: 'pi pi-eye',
-        command: () => this.onViewCustomerDebt(customer),
-      },
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Pagar todo',
-        icon: 'pi pi-check-circle',
-        disabled: customer.totalDebt <= 0,
-        command: () => this.openCustomerPayment(customer, 'all'),
-      },
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Pago parcial',
-        icon: 'pi pi-percentage',
-        disabled: customer.totalDebt <= 0,
-        command: () => this.openCustomerPayment(customer, 'partial'),
-      },
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Reintegro',
-        icon: 'pi pi-undo',
+      listAction('Ver deuda', 'READ', 'eye', () => this.onViewCustomerDebt(customer)),
+      listAction(
+        'Pagar todo',
+        'EXECUTE',
+        'check-circle',
+        () => this.openCustomerPayment(customer, 'all'),
+        {
+          disabled: customer.totalDebt <= 0,
+        },
+      ),
+      listAction(
+        'Pago parcial',
+        'EXECUTE',
+        'percentage',
+        () => this.openCustomerPayment(customer, 'partial'),
+        {
+          disabled: customer.totalDebt <= 0,
+        },
+      ),
+      listAction('Reintegro', 'EXECUTE', 'undo', () => this.openBalanceAction(customer, 'refund'), {
         disabled: customer.customerBalance <= 0,
-        command: () => this.openBalanceAction(customer, 'refund'),
-      },
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Generar anticipo',
-        icon: 'pi pi-plus-circle',
-        command: () => this.openBalanceAction(customer, 'advance'),
-      },
+      }),
+      listAction('Generar anticipo', 'EXECUTE', 'plus-circle', () =>
+        this.openBalanceAction(customer, 'advance'),
+      ),
     ];
   }
 

@@ -39,6 +39,12 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  pdfAction,
+  deleteAction,
+  cancelAction,
+  confirmAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -234,50 +240,18 @@ export class PurchaseListPageComponent implements OnInit {
 
   actionsFor(purchase: PurchaseList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(purchase),
-      },
-      {
-        requiredAction: 'EXPORT',
-        label: 'Descargar PDF',
-        icon: 'pi pi-file-pdf',
-        command: () => this.onDownloadPdf(purchase),
-      },
+      viewAction(() => this.onView(purchase)),
+      pdfAction(() => this.onDownloadPdf(purchase)),
     ];
     if (purchase.status === 'DRAFT') {
       actions.push(
-        {
-          requiredAction: 'UPDATE',
-          label: 'Editar',
-          icon: 'pi pi-pencil',
-          command: () => this.onEdit(purchase),
-        },
-        {
-          requiredAction: 'CONFIRM',
-          label: 'Confirmar compra',
-          icon: 'pi pi-check',
-          command: () => this.onConfirm(purchase),
-        },
-        {
-          requiredAction: 'DELETE',
-          label: 'Eliminar',
-          icon: 'pi pi-trash',
-          danger: true,
-          command: () => this.onDelete(purchase),
-        },
+        editAction(() => this.onEdit(purchase)),
+        confirmAction('Confirmar compra', () => this.onConfirm(purchase)),
+        deleteAction(() => this.onDelete(purchase)),
       );
     }
     if (purchase.status === 'CONFIRMED') {
-      actions.push({
-        requiredAction: 'CANCEL',
-        label: 'Cancelar compra',
-        icon: 'pi pi-ban',
-        danger: true,
-        command: () => this.onCancelPurchase(purchase),
-      });
+      actions.push(cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase)));
     }
     return actions;
   }

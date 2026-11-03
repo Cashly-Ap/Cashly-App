@@ -13,6 +13,9 @@ import {
   ListFilterComponent,
   ListActionButtonsComponent,
   ListAction,
+  viewAction,
+  editAction,
+  deleteAction,
 } from '@shared/components/list';
 
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -157,28 +160,10 @@ export class DepartmentsPageComponent {
     this.filteredItems().slice(this.first(), this.first() + this.rows()),
   );
   actionsFor(item: Department): ListAction[] {
-    const actions: ListAction[] = [
-      {
-        label: 'Ver detalle',
-        requiredAction: 'READ',
-        icon: 'pi pi-eye',
-        command: () => this.onView(item),
-      },
-    ];
+    const actions: ListAction[] = [viewAction(() => this.onView(item))];
 
-    actions.push({
-      label: 'Editar',
-      requiredAction: 'UPDATE',
-      icon: 'pi pi-pencil',
-      command: () => this.onEdit(item),
-    });
-    actions.push({
-      label: 'Eliminar',
-      requiredAction: 'DELETE',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.remove(item),
-    });
+    actions.push(editAction(() => this.onEdit(item)));
+    actions.push(deleteAction(() => this.remove(item)));
     return actions;
   }
   private selectRoute(): void {

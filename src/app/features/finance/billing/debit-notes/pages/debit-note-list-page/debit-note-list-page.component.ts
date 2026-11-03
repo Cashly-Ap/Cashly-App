@@ -36,6 +36,8 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  deleteAction,
 } from '@shared/components/list';
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
 import { DebitNoteFilters } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
@@ -175,19 +177,8 @@ export class DebitNoteListPageComponent implements OnInit {
 
   actionsFor(debitNote: DebitNoteList): ListAction[] {
     return [
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onDetail(debitNote),
-      },
-      {
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(debitNote),
-      },
+      viewAction(() => this.onDetail(debitNote)),
+      deleteAction(() => this.onDelete(debitNote)),
     ];
   }
 

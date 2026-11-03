@@ -30,6 +30,10 @@ import {
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
+  listAction,
 } from '@shared/components/list';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 
@@ -211,50 +215,20 @@ export class WarehousesListPageComponent implements OnInit {
 
   actionsFor(warehouse: WarehouseList): ListAction[] {
     const actions: ListAction[] = [
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Registrar entrada',
-        icon: 'pi pi-arrow-circle-down',
-        command: () => this.onOpenEntry(warehouse),
-      },
-      {
-        requiredAction: 'EXECUTE',
-        label: 'Registrar salida',
-        icon: 'pi pi-arrow-circle-up',
-        command: () => this.onOpenExit(warehouse),
-      },
-      {
-        requiredAction: 'READ',
-        label: 'Ver stock',
-        icon: 'pi pi-box',
-        command: () => this.onViewStock(warehouse),
-      },
-      {
-        requiredAction: 'READ',
-        label: 'Historial de movimientos',
-        icon: 'pi pi-history',
-        command: () => this.onViewMovements(warehouse),
-      },
-      {
-        requiredAction: 'READ',
-        label: 'Ver detalle',
-        icon: 'pi pi-eye',
-        command: () => this.onView(warehouse),
-      },
-      {
-        requiredAction: 'UPDATE',
-        label: 'Editar',
-        icon: 'pi pi-pencil',
-        command: () => this.onEdit(warehouse),
-      },
+      listAction('Registrar entrada', 'EXECUTE', 'arrow-circle-down', () =>
+        this.onOpenEntry(warehouse),
+      ),
+      listAction('Registrar salida', 'EXECUTE', 'arrow-circle-up', () =>
+        this.onOpenExit(warehouse),
+      ),
+      listAction('Ver stock', 'READ', 'box', () => this.onViewStock(warehouse)),
+      listAction('Historial de movimientos', 'READ', 'history', () =>
+        this.onViewMovements(warehouse),
+      ),
+      viewAction(() => this.onView(warehouse)),
+      editAction(() => this.onEdit(warehouse)),
     ];
-    actions.push({
-      requiredAction: 'DELETE',
-      label: 'Eliminar',
-      icon: 'pi pi-trash',
-      danger: true,
-      command: () => this.onDelete(warehouse),
-    });
+    actions.push(deleteAction(() => this.onDelete(warehouse)));
     return actions;
   }
 
