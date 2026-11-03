@@ -48,11 +48,7 @@ import { NotificationBellComponent } from '@features/platform/notifications/comp
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
-import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
-import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
-import { WarehouseActionDialogHostComponent } from '@core/layouts/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
-import { CashRegisterActionDialogHostComponent } from '@core/layouts/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
-import { PendingPaymentActionDialogHostComponent } from '@core/layouts/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
+import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialog-host/global-dialog-host.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
 import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
@@ -94,13 +90,9 @@ export type ContentMaxWidth =
     DrawerModule,
     PanelMenuModule,
     ActionDialogHostComponent,
+    GlobalDialogHostComponent,
     ReportActionHostComponent,
     PdfBlobViewerHostComponent,
-    ReceivablesActionDialogHostComponent,
-    InvoiceActionDialogHostComponent,
-    WarehouseActionDialogHostComponent,
-    CashRegisterActionDialogHostComponent,
-    PendingPaymentActionDialogHostComponent,
     ConfirmDialogModule,
     DeleteDialogComponent,
     CancelDialogComponent,

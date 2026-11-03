@@ -28,7 +28,7 @@ import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
-import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
+import { ReceivablesActionDialogHostComponent } from '@features/finance/treasury/receivables/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 import { ReportActionService } from '@shared/services/report-action.service';
 
 function createPdfApiMock() {

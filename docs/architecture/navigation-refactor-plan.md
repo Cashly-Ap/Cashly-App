@@ -191,7 +191,7 @@ Acceptance criteria:
 - `app.config.ts` does not list feature providers.
 - `provideNavigation()` is the single registration point.
 
-## Phase F - Clean main layout (report services done)
+## Phase F - Clean main layout ✅
 
 Move report PDF services and dialog hosts out of `main-layout`.
 
@@ -203,12 +203,9 @@ Keep only:
 - `<app-delete-dialog />`
 - `<app-cancel-dialog />`
 
-Report services are now delegated through `ReportActionService` and module-owned report wrappers.
+Report services are delegated through `ReportActionService` and module-owned report wrappers.
 
-Remaining for this phase:
-
-- move the receivables, invoice, warehouse, cash-register and pending-payment dialog hosts out of core
-- render them through a generic global dialog host
+Module dialog hosts are registered through `GLOBAL_DIALOG_HOSTS` and rendered by `GlobalDialogHostComponent`.
 
 Acceptance criteria:
 
