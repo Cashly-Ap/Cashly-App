@@ -21,7 +21,6 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { DatePickerModule } from 'primeng/datepicker';
 import { PaginatorModule } from 'primeng/paginator';
 import { PopoverModule } from 'primeng/popover';
@@ -35,11 +34,13 @@ import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-regist
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TextBadgeComponent,
     BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
@@ -54,7 +55,6 @@ import { BackButtonComponent } from '@shared/components/ui/back-button/back-butt
     EmptyStateComponent,
     TableModule,
     ButtonModule,
-    TagModule,
     DatePickerModule,
     PaginatorModule,
     PopoverModule,

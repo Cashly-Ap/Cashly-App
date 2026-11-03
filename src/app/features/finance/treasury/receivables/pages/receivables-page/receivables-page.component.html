@@ -16,63 +16,25 @@
 
     @if (service.globalSummary(); as summary) {
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div
-          class="dashboard-metric-primary dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
+        <app-metric-card
+          labelKey="finance.treasury.receivables.totalDebt"
+          icon="pi pi-dollar"
+          [primary]="true"
         >
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">{{
-              'finance.treasury.receivables.totalDebt' | translate
-            }}</span>
-            <div
-              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-dollar text-surface-700 dark:text-surface-200 text-base"></i>
-            </div>
-          </div>
-          <p
-            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
-          >
-            {{ summary.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </div>
-        <div
-          class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
+          {{ summary.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+        </app-metric-card>
+        <app-metric-card
+          labelKey="finance.treasury.receivables.outstandingInvoices"
+          icon="pi pi-file"
         >
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">{{
-              'finance.treasury.receivables.outstandingInvoices' | translate
-            }}</span>
-            <div
-              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-file text-surface-700 dark:text-surface-200 text-base"></i>
-            </div>
-          </div>
-          <p
-            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
-          >
-            {{ summary.totalInvoicesWithDebt }}
-          </p>
-        </div>
-        <div
-          class="dashboard-metric dashboard-widget rounded-[1.75rem] border border-surface-200 dark:border-surface-800 bg-surface-0 dark:bg-surface-900 p-5 sm:p-6"
+          {{ summary.totalInvoicesWithDebt }}
+        </app-metric-card>
+        <app-metric-card
+          labelKey="finance.treasury.receivables.customersWithDebt"
+          icon="pi pi-users"
         >
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-sm text-surface-500 dark:text-surface-400">{{
-              'finance.treasury.receivables.customersWithDebt' | translate
-            }}</span>
-            <div
-              class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-users text-surface-700 dark:text-surface-200 text-base"></i>
-            </div>
-          </div>
-          <p
-            class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
-          >
-            {{ summary.totalCustomersWithDebt }}
-          </p>
-        </div>
+          {{ summary.totalCustomersWithDebt }}
+        </app-metric-card>
       </div>
     } @else if (service.loading()) {
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">

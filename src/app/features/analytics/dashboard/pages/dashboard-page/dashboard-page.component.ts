@@ -37,11 +37,18 @@ const DASHBOARD_CHART_COLORS = {
   darkGrid: '#404040',
 } as const;
 
+import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe, LocalizedNumberPipe, CommonModule, BaseChartDirective],
+  imports: [
+    MetricCardComponent,
+    TranslatePipe,
+    LocalizedNumberPipe,
+    CommonModule,
+    BaseChartDirective,
+  ],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {

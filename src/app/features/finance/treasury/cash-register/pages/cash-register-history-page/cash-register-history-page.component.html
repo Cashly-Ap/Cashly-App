@@ -132,10 +132,9 @@
                         }
                       </p>
                     </div>
-                    <p-tag
-                      [value]="getStatusLabel(register.status) | translate"
+                    <app-text-badge
+                      [label]="getStatusLabel(register.status)"
                       [severity]="getStatusSeverity(register.status)"
-                      styleClass="shrink-0 text-xs font-medium px-2 py-0.5"
                     />
                   </div>
 
@@ -352,10 +351,9 @@
                       </span>
                     </td>
                     <td>
-                      <p-tag
-                        [value]="getStatusLabel(register.status) | translate"
+                      <app-text-badge
+                        [label]="getStatusLabel(register.status)"
                         [severity]="getStatusSeverity(register.status)"
-                        styleClass="text-xs font-medium px-2 py-0.5"
                       />
                     </td>
                     <td class="text-right">

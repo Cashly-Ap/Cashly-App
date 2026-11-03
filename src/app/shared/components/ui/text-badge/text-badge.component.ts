@@ -1,5 +1,5 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { Component, input, ChangeDetectionStrategy, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 export type TextBadgeVariant =
   | 'default'
@@ -9,6 +9,25 @@ export type TextBadgeVariant =
   | 'danger'
   | 'secondary'
   | 'label';
+
+export type TextBadgeSeverity =
+  | 'success'
+  | 'info'
+  | 'warn'
+  | 'danger'
+  | 'secondary'
+  | 'contrast'
+  | null
+  | undefined;
+
+const SEVERITY_VARIANTS: Record<Exclude<TextBadgeSeverity, null | undefined>, TextBadgeVariant> = {
+  success: 'success',
+  info: 'info',
+  warn: 'warning',
+  danger: 'danger',
+  secondary: 'secondary',
+  contrast: 'default',
+};
 
 @Component({
   selector: 'app-text-badge',
@@ -20,6 +39,12 @@ export type TextBadgeVariant =
 export class TextBadgeComponent {
   label = input.required<string>();
   variant = input<TextBadgeVariant>('default');
+  severity = input<TextBadgeSeverity>(null);
+
+  readonly resolvedVariant = computed(() => {
+    const severity = this.severity();
+    return severity ? SEVERITY_VARIANTS[severity] : this.variant();
+  });
 
   badgeClass = computed(() => {
     const baseClasses = 'text-xs font-medium px-3 py-1.5 rounded-lg w-fit whitespace-nowrap';
@@ -34,6 +59,6 @@ export class TextBadgeComponent {
       label: 'bg-surface-100 dark:bg-surface-800 text-surface-500 dark:text-surface-400',
     };
 
-    return `${baseClasses} ${variantClasses[this.variant()]}`;
+    return `${baseClasses} ${variantClasses[this.resolvedVariant()]}`;
   });
 }

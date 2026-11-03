@@ -67,10 +67,9 @@
         <div class="px-4 sm:px-6 py-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
-              <p-tag
-                [value]="getStatusLabel(c.status) | translate"
+              <app-text-badge
+                [label]="getStatusLabel(c.status)"
                 [severity]="getStatusSeverity(c.status)"
-                styleClass="text-sm font-medium px-3 py-1"
               />
               <div>
                 <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">

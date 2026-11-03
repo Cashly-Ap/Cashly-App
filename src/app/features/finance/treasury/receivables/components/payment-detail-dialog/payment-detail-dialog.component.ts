@@ -3,7 +3,6 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 
@@ -31,16 +30,17 @@ function getPaymentStatusSeverity(
   }
 }
 
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-payment-detail-dialog',
   standalone: true,
   imports: [
+    TextBadgeComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
     DialogModule,
     ButtonModule,
-    TagModule,
   ],
   templateUrl: './payment-detail-dialog.component.html',
 })

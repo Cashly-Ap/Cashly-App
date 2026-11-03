@@ -15,7 +15,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { Subject, takeUntil } from 'rxjs';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
@@ -39,7 +38,6 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     CommonModule,
     TableModule,
     ButtonModule,
-    TagModule,
     TooltipModule,
     ImageViewerDialogComponent,
     PendingPaymentApproveDialogComponent,

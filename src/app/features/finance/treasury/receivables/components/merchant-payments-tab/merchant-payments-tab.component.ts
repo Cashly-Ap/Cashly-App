@@ -6,7 +6,6 @@ import { Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
@@ -35,10 +34,12 @@ function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'inf
   }
 }
 
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-merchant-payments-tab',
   standalone: true,
   imports: [
+    TextBadgeComponent,
     TooltipModule,
     TranslatePipe,
     LocalizedDatePipe,
@@ -46,7 +47,6 @@ function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'inf
     PermissionDirective,
     TableModule,
     ButtonModule,
-    TagModule,
     PaymentDetailDialogComponent,
   ],
   templateUrl: './merchant-payments-tab.component.html',

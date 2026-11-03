@@ -1,7 +1,6 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TagModule } from 'primeng/tag';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import {
   TextBadgeComponent,
@@ -14,7 +13,7 @@ type TagSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contr
 @Component({
   selector: 'app-details-info-field',
   standalone: true,
-  imports: [TranslatePipe, CommonModule, StatusBadgeComponent, TextBadgeComponent, TagModule],
+  imports: [TranslatePipe, CommonModule, StatusBadgeComponent, TextBadgeComponent],
   templateUrl: './details-info-field.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

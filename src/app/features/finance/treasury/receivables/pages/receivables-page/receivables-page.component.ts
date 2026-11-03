@@ -19,7 +19,6 @@ import { FormsModule } from '@angular/forms';
 import { Subject, takeUntil, finalize } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -43,11 +42,13 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { listAction } from '@shared/components/list/list-action-builders';
+import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
 @Component({
   selector: 'app-receivables-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    MetricCardComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,
@@ -56,7 +57,6 @@ import { listAction } from '@shared/components/list/list-action-builders';
     FormsModule,
     TableModule,
     ButtonModule,
-    TagModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

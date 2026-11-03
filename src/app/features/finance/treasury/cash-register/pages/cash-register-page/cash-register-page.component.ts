@@ -16,7 +16,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
 import { Popover } from 'primeng/popover';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
 import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
@@ -24,11 +23,13 @@ import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cas
 import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-cash-register-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TextBadgeComponent,
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
@@ -37,7 +38,6 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     ListContainerComponent,
     LoadingSpinnerComponent,
     ButtonModule,
-    TagModule,
     Popover,
     CashRegisterOpenDialogComponent,
     CashRegisterCloseDialogComponent,

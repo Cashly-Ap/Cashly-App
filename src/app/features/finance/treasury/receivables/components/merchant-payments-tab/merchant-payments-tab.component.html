@@ -104,10 +104,9 @@
             {{ payment.paymentDate | localizedDate: 'dd/MM/yyyy' }}
           </td>
           <td>
-            <p-tag
-              [value]="getStatusLabel(payment.status) | translate"
+            <app-text-badge
+              [label]="getStatusLabel(payment.status)"
               [severity]="getStatusSeverity(payment.status)"
-              [rounded]="true"
             />
           </td>
           <td>

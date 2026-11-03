@@ -25,8 +25,8 @@
             </p>
           </div>
         </div>
-        <p-tag
-          [value]="getPaymentStatusLabel(payment()!.status) | translate"
+        <app-text-badge
+          [label]="getPaymentStatusLabel(payment()!.status)"
           [severity]="getPaymentStatusSeverity(payment()!.status)"
         />
       </div>
