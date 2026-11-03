@@ -96,5 +96,7 @@
   "procurement.purchases.permissions.confirm": "Confirmar compra",
   "procurement.purchases.permissions.cancel": "Cancelar compra",
   "procurement.purchases.messages.purchaseNotFound": "Compra no encontrada.",
-  "procurement.purchases.purchasesReport": "Reporte de Compras"
+  "procurement.purchases.purchasesReport": "Reporte de Compras",
+  "procurement.purchases.createPurchaseAction": "Crear Compra",
+  "procurement.purchases.savePurchase": "Guardar Compra"
 }

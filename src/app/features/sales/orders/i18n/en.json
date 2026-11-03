@@ -94,5 +94,7 @@
   "sales.orders.permissions.convertToInvoice": "Convert to invoice",
   "sales.orders.permissions.cancel": "Cancel order",
   "sales.orders.messages.orderNotFound": "Order not found.",
-  "sales.orders.ordersReport": "Orders report"
+  "sales.orders.ordersReport": "Orders report",
+  "sales.orders.createOrderAction": "Create order",
+  "sales.orders.saveOrder": "Save order"
 }

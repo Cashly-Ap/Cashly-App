@@ -60,5 +60,7 @@
   "sales.quotes.permissions.cancel": "Cancel quote",
   "sales.quotes.messages.quoteNotFound": "Quote not found.",
   "sales.quotes.messages.unableToLoadQuoteData": "Unable to load the quote data",
-  "sales.quotes.quotesReport": "Quotes report"
+  "sales.quotes.quotesReport": "Quotes report",
+  "sales.quotes.createQuoteAction": "Create quote",
+  "sales.quotes.saveQuote": "Save quote"
 }

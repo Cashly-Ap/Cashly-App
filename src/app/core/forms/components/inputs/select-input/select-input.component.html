@@ -34,7 +34,7 @@
             class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
           />
         }
-        <span>{{ option?.[optionLabel()] ?? option }}</span>
+        <span>{{ (option?.[optionLabel()] ?? option) | translate }}</span>
       </div>
     </ng-template>
     <ng-template #selectedItem let-option>
@@ -49,7 +49,7 @@
             class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
           />
         }
-        <span>{{ option?.[optionLabel()] ?? option }}</span>
+        <span>{{ (option?.[optionLabel()] ?? option) | translate }}</span>
       </div>
     </ng-template>
   </p-select>

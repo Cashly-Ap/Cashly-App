@@ -12,7 +12,7 @@
   "core.forms.newEntity": "Nuevo {entity}",
   "core.forms.editEntity": "Editar {entity}",
   "core.forms.createEntity": "Crear {entity}",
-  "core.forms.updateEntity": "Actualizar {entity}",
+  "core.forms.updateEntity": "Guardar {entity}",
   "core.forms.createEntityInformation": "Complete la información {article} {entity}",
   "core.forms.updateEntityInformation": "Actualice la información {article} {entity}",
   "core.forms.entity0": "Cliente",

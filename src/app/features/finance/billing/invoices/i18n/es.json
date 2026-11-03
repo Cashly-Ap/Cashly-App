@@ -200,5 +200,7 @@
   "finance.billing.invoices.messages.unableToDuplicateTheInvoice": "Error al duplicar la factura.",
   "finance.billing.invoices.messages.unableToLoadTheInvoiceData": "No se pudieron cargar los datos de la factura.",
   "finance.billing.invoices.invoicesReport": "Reporte de Facturas",
-  "finance.billing.invoices.messages.invoicesCreated": "Se crearon ${count} facturas."
+  "finance.billing.invoices.messages.invoicesCreated": "Se crearon ${count} facturas.",
+  "finance.billing.invoices.createInvoiceAction": "Crear Factura",
+  "finance.billing.invoices.saveInvoice": "Guardar Factura"
 }

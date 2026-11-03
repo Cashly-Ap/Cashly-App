@@ -48,5 +48,6 @@
   "platform.auth.role.parentModule": "Módulo padre",
   "platform.auth.role.childModule": "Módulo hijo",
   "platform.auth.role.saveChanges": "Guardar Cambios",
-  "platform.auth.role.createRole": "Crear Rol"
+  "platform.auth.role.createRole": "Crear Rol",
+  "platform.auth.role.saveRole": "Guardar Rol"
 }

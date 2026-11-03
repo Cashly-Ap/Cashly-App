@@ -48,5 +48,6 @@
   "platform.auth.role.parentModule": "Parent module",
   "platform.auth.role.childModule": "Child module",
   "platform.auth.role.saveChanges": "Save changes",
-  "platform.auth.role.createRole": "Create role"
+  "platform.auth.role.createRole": "Create role",
+  "platform.auth.role.saveRole": "Save role"
 }

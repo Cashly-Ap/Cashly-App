@@ -60,5 +60,7 @@
   "sales.quotes.permissions.cancel": "Cancelar presupuesto",
   "sales.quotes.messages.quoteNotFound": "Presupuesto no encontrado.",
   "sales.quotes.messages.unableToLoadQuoteData": "Error al cargar datos del presupuesto",
-  "sales.quotes.quotesReport": "Reporte de Presupuestos"
+  "sales.quotes.quotesReport": "Reporte de Presupuestos",
+  "sales.quotes.createQuoteAction": "Crear Presupuesto",
+  "sales.quotes.saveQuote": "Guardar Presupuesto"
 }

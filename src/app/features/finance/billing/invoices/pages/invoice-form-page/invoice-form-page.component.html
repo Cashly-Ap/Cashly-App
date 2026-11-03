@@ -370,7 +370,7 @@
         />
       </div>
       <app-form-actions
-        [submitLabel]="'finance.billing.creditnotes.save' | translate"
+        [submitLabel]="(isEditMode() ? 'finance.billing.invoices.saveInvoice' : 'finance.billing.invoices.createInvoiceAction') | translate"
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"

@@ -200,5 +200,7 @@
   "finance.billing.invoices.messages.unableToDuplicateTheInvoice": "Unable to duplicate the invoice.",
   "finance.billing.invoices.messages.unableToLoadTheInvoiceData": "Unable to load the invoice data.",
   "finance.billing.invoices.invoicesReport": "Invoices report",
-  "finance.billing.invoices.messages.invoicesCreated": "${count} invoices were created."
+  "finance.billing.invoices.messages.invoicesCreated": "${count} invoices were created.",
+  "finance.billing.invoices.createInvoiceAction": "Create invoice",
+  "finance.billing.invoices.saveInvoice": "Save invoice"
 }

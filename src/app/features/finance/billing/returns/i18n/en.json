@@ -64,5 +64,6 @@
   "finance.billing.returns.permissions.viewDetail": "View details of return",
   "finance.billing.returns.permissions.delete": "Delete return",
   "finance.billing.returns.permissions.create": "Create return",
-  "finance.billing.returns.deleteConfirmation": "Are you sure you want to delete return \"${returnNumber}\"? This action cannot be undone."
+  "finance.billing.returns.deleteConfirmation": "Are you sure you want to delete return \"${returnNumber}\"? This action cannot be undone.",
+  "finance.billing.returns.createReturnAction": "Create return"
 }

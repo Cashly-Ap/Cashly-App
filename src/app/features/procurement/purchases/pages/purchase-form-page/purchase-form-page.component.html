@@ -96,7 +96,7 @@
       </div>
 
       <app-form-actions
-        [submitLabel]="'finance.billing.creditnotes.save' | translate"
+        [submitLabel]="(isEditMode() ? 'procurement.purchases.savePurchase' : 'procurement.purchases.createPurchaseAction') | translate"
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"

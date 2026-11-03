@@ -94,5 +94,7 @@
   "sales.orders.permissions.convertToInvoice": "Convertir a factura",
   "sales.orders.permissions.cancel": "Cancelar pedido",
   "sales.orders.messages.orderNotFound": "Pedido no encontrado.",
-  "sales.orders.ordersReport": "Reporte de Pedidos"
+  "sales.orders.ordersReport": "Reporte de Pedidos",
+  "sales.orders.createOrderAction": "Crear Pedido",
+  "sales.orders.saveOrder": "Guardar Pedido"
 }
