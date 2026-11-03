@@ -30,6 +30,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';
 import { ReceivablesActionDialogHostComponent } from '@features/finance/treasury/receivables/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 import { ReportActionService } from '@shared/services/report-action.service';
+import { CustomerPickerActionService } from '@features/sales/orders/services/customer-picker-action.service';
 
 function createPdfApiMock() {
   return {
@@ -71,6 +72,7 @@ describe('MainLayoutComponent', () => {
     open: ReturnType<typeof vi.fn>;
   };
   let sanitizerMock: { bypassSecurityTrustResourceUrl: ReturnType<typeof vi.fn> };
+  let customerPicker: CustomerPickerActionService;
   const reportActionsMock = {
     open: vi.fn().mockReturnValue(true),
     close: vi.fn(),
@@ -182,6 +184,7 @@ describe('MainLayoutComponent', () => {
 
     fixture = TestBed.createComponent(MainLayoutComponent);
     component = fixture.componentInstance;
+    customerPicker = TestBed.inject(CustomerPickerActionService);
     fixture.detectChanges();
   });
 
@@ -199,20 +202,10 @@ describe('MainLayoutComponent', () => {
         (item) => item.label === (action === 'edit' ? 'Editar cliente' : 'Ver saldo de cliente'),
       )
       ?.command?.({});
-    expect(component.customerPickerAction()).toBe(action);
+    expect(customerPicker.action()).toBe(action);
     expect(routerMock.navigate).not.toHaveBeenCalled();
-    component.onMenuCustomerSelected({
-      id: 'customer-1',
-      code: 1,
-      alias: 'Customer',
-      legalName: 'Customer',
-      rif: '',
-      type: Object.values(CustomerType)[0],
-      active: true,
-      deletable: true,
-    });
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/partners/customers', 'customer-1', action]);
-    expect(component.customerPickerAction()).toBeNull();
+    customerPicker.close();
+    expect(customerPicker.action()).toBeNull();
   });
 
   it('opens every report modal from desktop and mobile without changing the current route', () => {

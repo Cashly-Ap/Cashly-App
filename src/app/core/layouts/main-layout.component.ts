@@ -2,8 +2,6 @@ import { TranslationService } from '@core/i18n/translation.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationLookupService } from '@core/layouts/services/navigation-lookup.service';
 import { ListNavigationPickerComponent } from '@shared/components/list/list-navigation-picker/list-navigation-picker.component';
-import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
-import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
 import { ShortcutHelpComponent } from '@core/shortcuts/shortcut-help.component';
 import { ModuleNavigatorComponent } from '@core/shortcuts/module-navigator.component';
 import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
@@ -40,12 +38,12 @@ import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { ReportActionService } from '@shared/services/report-action.service';
+import { CustomerPickerActionService } from '@features/sales/orders/services/customer-picker-action.service';
 import { ReportActionHostComponent } from '@core/layouts/components/report-action-host/report-action-host.component';
 import { PdfBlobViewerHostComponent } from '@core/layouts/components/pdf-blob-viewer-host/pdf-blob-viewer-host.component';
 import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
-import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
 import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialog-host/global-dialog-host.component';
@@ -72,7 +70,6 @@ export type ContentMaxWidth =
   imports: [
     TranslatePipe,
     ListNavigationPickerComponent,
-    CustomerPickerDialogComponent,
     ShortcutHelpComponent,
     CommonModule,
     ModuleNavigatorComponent,
@@ -116,6 +113,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private router = inject(Router);
   private readonly navigationLookup = inject(NavigationLookupService);
   private readonly reportActions = inject(ReportActionService);
+  private readonly customerPicker = inject(CustomerPickerActionService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
@@ -151,15 +149,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       });
     });
   }
-  readonly customerPickerAction = signal<'edit' | 'balance' | null>(null);
-
-  onMenuCustomerSelected(customer: CustomerList): void {
-    const action = this.customerPickerAction();
-    if (!action) return;
-    this.customerPickerAction.set(null);
-    void this.router.navigate(['/partners/customers', customer.id, action]);
-  }
-
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
     return this.buildMenuItems(userType).map((item) =>
@@ -217,8 +206,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openListAction: (route: string, action: string, queryParams?: Record<string, string>) => {
         this.navigationLookup.open(route, action, queryParams);
       },
-      openCustomerEditPicker: () => this.customerPickerAction.set('edit'),
-      openCustomerBalancePicker: () => this.customerPickerAction.set('balance'),
+      openCustomerEditPicker: () => this.customerPicker.open('edit'),
+      openCustomerBalancePicker: () => this.customerPicker.open('balance'),
       openCatalogModal: () => this.reportActions.open('catalog'),
       openCommercialCatalogModal: () => this.reportActions.open('commercialCatalog'),
       openStockModal: () => this.reportActions.open('stock'),

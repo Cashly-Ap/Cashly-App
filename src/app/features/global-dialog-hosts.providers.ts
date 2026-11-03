@@ -5,6 +5,7 @@ import { PendingPaymentActionDialogHostComponent } from '@features/finance/treas
 import { InvoiceActionDialogHostComponent } from '@features/finance/billing/invoices/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
 import { WarehouseActionDialogHostComponent } from '@features/inventory/warehouses/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
 import { CashRegisterActionDialogHostComponent } from '@features/finance/treasury/cash-register/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
+import { CustomerPickerActionHostComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-action-host.component';
 
 export const GLOBAL_DIALOG_HOST_PROVIDERS: Provider[] = [
   {
@@ -31,5 +32,10 @@ export const GLOBAL_DIALOG_HOST_PROVIDERS: Provider[] = [
     provide: GLOBAL_DIALOG_HOSTS,
     multi: true,
     useValue: { key: 'cash-register', component: CashRegisterActionDialogHostComponent },
+  },
+  {
+    provide: GLOBAL_DIALOG_HOSTS,
+    multi: true,
+    useValue: { key: 'customer-picker', component: CustomerPickerActionHostComponent },
   },
 ];
