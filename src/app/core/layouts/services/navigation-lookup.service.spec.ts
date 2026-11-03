@@ -16,6 +16,7 @@ import { NavigationLookupService } from './navigation-lookup.service';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { ACTION_DIALOG_HANDLERS } from '@shared/services/action-dialog-handlers.token';
 import { NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/navigation-action-handlers.providers';
+import { DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS } from '@features/direct-navigation-action-handlers.providers';
 import { ConfirmOrderDialogWrapperComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.wrapper';
 import {
   ReceivablesActionDialogService,
@@ -84,6 +85,7 @@ describe('Navbar lookup without navigation', () => {
           },
         },
         ...NAVIGATION_ACTION_HANDLER_PROVIDERS,
+        ...DIRECT_NAVIGATION_ACTION_HANDLER_PROVIDERS,
       ],
     });
     lookup = TestBed.inject(NavigationLookupService);

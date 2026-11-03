@@ -22,10 +22,7 @@ import { TranslationService } from '@core/i18n/translation.service';
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { NavigationActionService } from '@shared/services/navigation-action.service';
-import {
-  CashRegisterActionDialogService,
-  CashRegisterActionKind,
-} from './cash-register-action-dialog.service';
+import { DirectNavigationActionService } from '@shared/services/direct-navigation-action.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 import { PdfActionService } from '@shared/services/pdf-action.service';
@@ -34,19 +31,6 @@ const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
 };
-
-function cashRegisterActionKind(label: string): CashRegisterActionKind {
-  switch (label) {
-    case 'Abrir caja':
-      return 'open';
-    case 'Cerrar caja':
-      return 'close';
-    case 'Ver detalles':
-      return 'detail';
-    default:
-      return 'detail';
-  }
-}
 
 @Injectable({ providedIn: 'root' })
 export class NavigationLookupService {
@@ -57,7 +41,7 @@ export class NavigationLookupService {
   private readonly messages = inject(MessageService);
   private readonly actionDialogs = inject(ActionDialogService);
   private readonly navigationActions = inject(NavigationActionService);
-  private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
+  private readonly directActions = inject(DirectNavigationActionService);
   private readonly deletion = inject(DeleteDialogService);
   private readonly cancellation = inject(CancelDialogService);
   private readonly pdfActions = inject(PdfActionService);
@@ -90,10 +74,8 @@ export class NavigationLookupService {
     const permission = { ...definitionAction, command: () => undefined };
     if (!this.navigation.allowed(permission, module)) return;
     this.navigation.dismiss();
-    if (route === '/finance/treasury/cash-register') {
-      this.cashRegisterActions.open({ action: cashRegisterActionKind(label) });
-      return;
-    }
+    const resource = route.split('/').filter(Boolean).at(-1) ?? '';
+    if (this.directActions.execute(resource, label)) return;
     const items = signal<NavigationLookupItem[]>([]);
     const loading = signal(false);
     const total = signal(0);
