@@ -749,8 +749,8 @@ export const [ENTITY]_ROUTES: Routes = [
 
 ## Related Modules
 
-- [Module 1](./module1.md) - Relationship description
-- [Module 2](./module2.md) - Relationship description
+- `[module-one.md]` - Relationship description
+- `[module-two.md]` - Relationship description
 
 ---
 

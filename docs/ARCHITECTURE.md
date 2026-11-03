@@ -26,21 +26,27 @@ cashly-app/
 ├── src/
 │   ├── app/
 │   │   ├── core/                    # Cross-cutting infrastructure
-│   │   │   ├── exceptions/          # Global HTTP error handler
 │   │   │   ├── forms/               # Reusable form components and base form
-│   │   │   ├── layouts/             # Main layout, menu configuration
+│   │   │   ├── i18n/                # Translations, language, formatting, titles
+│   │   │   ├── layouts/             # Main layout, menu, dialog hosts
+│   │   │   ├── navigation/          # History, lookup registry, action providers
 │   │   │   ├── pdf-viewer/          # Shared PDF viewer dialog
-│   │   │   └── pending-tabs/        # Unsaved-changes tab tracking
+│   │   │   ├── pending-tabs/        # Unsaved-changes tab tracking
+│   │   │   ├── preferences/         # User preferences and module appearance
+│   │   │   ├── shortcuts/           # Keyboard shortcuts and module navigator
+│   │   │   └── theme/               # Theme service and PrimeNG preset
 │   │   │
 │   │   ├── shared/                  # Reusable presentation and utilities
 │   │   │   ├── components/
 │   │   │   │   ├── details/         # Detail page building blocks
 │   │   │   │   ├── list/            # List page building blocks
 │   │   │   │   └── ui/              # Generic UI components and dialogs
-│   │   │   ├── directives/
-│   │   │   ├── models/
-│   │   │   ├── pipes/
-│   │   │   └── utils/
+│   │   │   ├── i18n/                # Shared and PrimeNG translations
+│   │   │   ├── models/              # Shared models and list-action presets
+│   │   │   ├── pipes/               # Shared pipes
+│   │   │   ├── services/            # Cross-feature dialog and action services
+│   │   │   ├── ui/                  # Feature-level shared dialogs
+│   │   │   └── utils/               # Dates, files, stock, navigation, UUIDs
 │   │   │
 │   │   ├── features/                # Feature code grouped by business area
 │   │   │   ├── analytics/

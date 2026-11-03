@@ -4,14 +4,19 @@ Index of the frontend documentation. Start with the architecture and module inde
 
 ## Core guides
 
-| Document                                 | What it covers                                            |
-| ---------------------------------------- | --------------------------------------------------------- |
-| [ARCHITECTURE.md](ARCHITECTURE.md)       | Project structure, feature organization, patterns, guards |
-| [GETTING_STARTED.md](GETTING_STARTED.md) | Local and Docker setup, scripts, project layout           |
-| [ENVIRONMENT.md](ENVIRONMENT.md)         | Environment files, proxy, Docker/runtime variables        |
-| [DOCKER.md](DOCKER.md)                   | Dockerfiles, Compose profiles, backend connectivity       |
-| [DEPLOYMENT.md](DEPLOYMENT.md)           | GitLab CI, Railway, rollback and runtime configuration    |
-| [TESTING.md](TESTING.md)                 | Vitest, Playwright, test placement and CI checks          |
+| Document                                                 | What it covers                                            |
+| -------------------------------------------------------- | --------------------------------------------------------- |
+| [ARCHITECTURE.md](ARCHITECTURE.md)                       | Project structure, feature organization, patterns, guards |
+| [FRONTEND_INFRASTRUCTURE.md](FRONTEND_INFRASTRUCTURE.md) | Core and shared modules, components, services, tokens     |
+| [API.md](API.md)                                         | Consolidated HTTP endpoint reference                      |
+| [I18N.md](I18N.md)                                       | Languages, translation files, pipes, and coverage         |
+| [GETTING_STARTED.md](GETTING_STARTED.md)                 | Local and Docker setup, scripts, project layout           |
+| [ENVIRONMENT.md](ENVIRONMENT.md)                         | Environment files, proxy, Docker/runtime variables        |
+| [DOCKER.md](DOCKER.md)                                   | Dockerfiles, Compose profiles, backend connectivity       |
+| [DEPLOYMENT.md](DEPLOYMENT.md)                           | GitLab CI, Railway, rollback and runtime configuration    |
+| [TESTING.md](TESTING.md)                                 | Vitest, Playwright, test placement and CI checks          |
+| [CONTRIBUTING.md](CONTRIBUTING.md)                       | Conventions, workflow, commits, and merge requests        |
+| [CHANGELOG.md](CHANGELOG.md)                             | Notable changes                                           |
 
 ## Modules
 

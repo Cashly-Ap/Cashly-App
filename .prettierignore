@@ -4,7 +4,9 @@ node_modules
 .codex
 coverage
 package-lock.json
-src/app/features/invoices/pages/invoice-list-page/invoice-list-page.component.html
-src/app/features/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.html
-src/app/features/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.html
-src/app/features/receivables/components/payment-form-dialog/payment-form-dialog.component.html
+src/app/features/finance/billing/invoices/pages/invoice-list-page/invoice-list-page.component.html
+src/app/features/sales/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.html
+src/app/features/sales/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.wrapper.html
+src/app/features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component.html
+src/app/features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.wrapper.html
+src/app/features/finance/treasury/receivables/components/payment-form-dialog/payment-form-dialog.component.html
