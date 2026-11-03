@@ -59,7 +59,7 @@ core/navigation/
 4. Open the lookup session.
 5. Delegate record selection to the action dispatcher.
 
-## Phase A - Extract lookup session state
+## Phase A - Extract lookup session state ✅
 
 Create `LookupSessionService`.
 
@@ -84,7 +84,7 @@ Acceptance criteria:
 - `NavigationLookupService` no longer builds filters or pagination.
 - Behavior and tests remain unchanged.
 
-## Phase B - Extract action dispatcher
+## Phase B - Extract action dispatcher ✅
 
 Create `ActionDispatcherService`.
 
