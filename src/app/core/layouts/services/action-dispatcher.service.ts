@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { MenuItem } from '@core/layouts/models';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
-import { NavigationLookupItem } from '@shared/components/list/list-navigation-data-source';
+import { LookupItem } from '@core/layouts/models/lookup-definition.model';
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { NavigationActionService } from '@shared/services/navigation-action.service';
@@ -15,11 +15,12 @@ const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
 };
+import { LookupDefinitionRegistry } from '@shared/services/lookup-definition.registry';
 
 export interface ActionDispatchContext {
   route: string;
   label: string;
-  record: NavigationLookupItem;
+  record: LookupItem;
   queryParams?: Record<string, string>;
 }
 
@@ -34,6 +35,7 @@ export class ActionDispatcherService {
   private readonly deletion = inject(DeleteDialogService);
   private readonly cancellation = inject(CancelDialogService);
   private readonly pdfActions = inject(PdfActionService);
+  private readonly lookups = inject(LookupDefinitionRegistry);
 
   dispatchDestination(destination: MenuItem, queryParams?: Record<string, string>): void {
     if (!destination.routerLink) return;
@@ -59,6 +61,18 @@ export class ActionDispatcherService {
     if (this.actionDialogs.open(resource, label, record.id)) return true;
     if (label === 'Descargar PDF') {
       this.pdfActions.open(resource, record.id, record.label);
+      return true;
+    }
+    const definition = this.lookups.find(route);
+    const recordRoute = definition
+      ? label === 'Ver detalle'
+        ? definition.recordRoutes.detail(record.id)
+        : label === 'Editar'
+          ? definition.recordRoutes.edit(record.id)
+          : undefined
+      : undefined;
+    if (recordRoute) {
+      void this.router.navigate([...recordRoute], { queryParams });
       return true;
     }
     const recordPath = RECORD_PATH_SEGMENTS[label];

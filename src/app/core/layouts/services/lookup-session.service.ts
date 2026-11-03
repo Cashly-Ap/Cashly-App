@@ -4,16 +4,18 @@ import {
   ListNavigationService,
   NavigationRecord,
 } from '@shared/components/list/list-navigation.service';
-import {
-  loadNavigationLookup,
-  NavigationLookupItem,
-} from '@shared/components/list/list-navigation-data-source';
 import { NavigationActionDefinition } from '@core/layouts/config/list-navigation.config';
+import { loadNavigationLookup } from '@shared/components/list/list-navigation-data-source';
 import {
   lookupFilterDefaults,
   lookupFilterDefinitions,
-  LookupFilterOption,
 } from '@core/layouts/config/list-navigation-filters';
+import {
+  LookupDefinition,
+  LookupFilterOption,
+  LookupItem,
+} from '@core/layouts/models/lookup-definition.model';
+import { LookupDefinitionRegistry } from '@shared/services/lookup-definition.registry';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -25,7 +27,7 @@ export interface LookupSessionConfig {
   module: BusinessModule;
   definitionAction: NavigationActionDefinition;
   queryParams?: Record<string, string>;
-  onSelect: (item: NavigationLookupItem) => void;
+  onSelect: (item: LookupItem) => void;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -33,37 +35,40 @@ export class LookupSessionService {
   private readonly injector = inject(Injector);
   private readonly navigation = inject(ListNavigationService);
   private readonly messages = inject(MessageService);
+  private readonly registry = inject(LookupDefinitionRegistry);
 
   open(config: LookupSessionConfig): void {
     const { route, label, module, definitionAction, onSelect } = config;
-    const items = signal<NavigationLookupItem[]>([]);
+    const definition = this.registry.find(route);
+    const items = signal<LookupItem[]>([]);
     const loading = signal(false);
     const total = signal(0);
     const first = signal(0);
     const rows = signal(10);
-    const filterValues = signal(lookupFilterDefaults(route));
+    const filterValues = signal(definition ? this.defaultsFor(definition) : lookupFilterDefaults(route));
     const filterSources: {
       values: Record<string, string>;
       categories: LookupFilterOption[];
       roles: LookupFilterOption[];
     } = {
       values: filterValues(),
-      categories: [] as LookupFilterOption[],
-      roles: [] as LookupFilterOption[],
+      categories: [],
+      roles: [],
     };
     const filters = () =>
-      lookupFilterDefinitions(route, { ...filterSources, values: filterValues() }).map(
-        (filter) => ({
-          label: filter.label,
-          value: filterValues()[filter.key] ?? filter.defaultValue,
-          options: [...filter.options],
-          change: (value: string) => {
-            filterValues.update((values) => ({ ...values, [filter.key]: value }));
-            first.set(0);
-            load();
-          },
-        }),
-      );
+      (definition
+        ? definition.filters({ ...filterSources, values: filterValues() })
+        : lookupFilterDefinitions(route, { ...filterSources, values: filterValues() })
+      ).map((filter) => ({
+        label: filter.label,
+        value: filterValues()[filter.key] ?? filter.defaultValue,
+        options: [...filter.options],
+        change: (value: string) => {
+          filterValues.update((values) => ({ ...values, [filter.key]: value }));
+          first.set(0);
+          load();
+        },
+      }));
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
@@ -82,34 +87,44 @@ export class LookupSessionService {
     const load = () => {
       request?.unsubscribe();
       loading.set(true);
-      const source = loadNavigationLookup(
-        this.injector,
-        route,
-        label,
-        search,
-        Math.floor(first() / rows()),
-        rows(),
-        filterValues(),
-      );
-      request = source.subscribe({
-        next: (result) => {
-          items.set(result.items);
-          total.set(result.total);
-          loading.set(false);
-        },
-        error: () => {
-          items.set([]);
-          total.set(0);
-          loading.set(false);
-          this.messages.add({
-            severity: 'error',
-            summary: label,
-            detail: 'No se pudieron cargar los registros. Intente buscar de nuevo.',
-          });
-        },
-      });
+      request = (definition
+        ? definition.load(this.injector, {
+            label,
+            search,
+            page: Math.floor(first() / rows()),
+            size: rows(),
+            filters: filterValues(),
+          })
+        : loadNavigationLookup(
+            this.injector,
+            route,
+            label,
+            search,
+            Math.floor(first() / rows()),
+            rows(),
+            filterValues(),
+          )
+      ).subscribe({
+          next: (result) => {
+            items.set(result.items);
+            total.set(result.total);
+            loading.set(false);
+          },
+          error: () => {
+            items.set([]);
+            total.set(0);
+            loading.set(false);
+            this.messages.add({
+              severity: 'error',
+              summary: label,
+              detail: 'No se pudieron cargar los registros. Intente buscar de nuevo.',
+            });
+          },
+        });
     };
-    if (route === '/catalog/products') {
+    if (definition?.loadFilterSources) {
+      definition.loadFilterSources(this.injector, filterSources);
+    } else if (route === '/catalog/products') {
       this.injector
         .get(CategoryApiService)
         .getAll({ active: true, page: 0, size: 1000 })
@@ -122,8 +137,7 @@ export class LookupSessionService {
           },
           error: () => undefined,
         });
-    }
-    if (route === '/platform/users') {
+    } else if (route === '/platform/users') {
       this.injector
         .get(AccessManagementService)
         .roleOptions()
@@ -157,5 +171,13 @@ export class LookupSessionService {
       onClose: () => request?.unsubscribe(),
     });
     load();
+  }
+
+  private defaultsFor(definition: LookupDefinition): Record<string, string> {
+    const defaults: Record<string, string> = {};
+    for (const filter of definition.filters({ values: {}, categories: [], roles: [] })) {
+      defaults[filter.key] = filter.defaultValue;
+    }
+    return defaults;
   }
 }
