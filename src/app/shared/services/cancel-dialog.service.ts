@@ -28,7 +28,7 @@ export class CancelDialogService {
 
   confirm(reason: string): void {
     const request = this.request();
-    if (!request || this.loading()) return;
+    if (!request || this.loading() || !reason.trim()) return;
 
     const handler: CancelHandlerRegistration | undefined = this.handlers.find(
       (item) => item.resource === request.resource,

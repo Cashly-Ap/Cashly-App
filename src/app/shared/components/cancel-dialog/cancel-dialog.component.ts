@@ -50,4 +50,9 @@ export class CancelDialogComponent {
   get reasonTooLong(): boolean {
     return !!this.form.get('reason')?.hasError('maxlength');
   }
+
+  get canConfirm(): boolean {
+    const reason = this.form.get('reason')?.value ?? '';
+    return !this.cancellation.loading() && reason.trim().length > 0 && this.form.valid;
+  }
 }

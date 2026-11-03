@@ -72,7 +72,7 @@
         icon="pi pi-times"
         severity="danger"
         [loading]="cancellation.loading()"
-        [disabled]="cancellation.loading()"
+        [disabled]="!canConfirm"
         (onClick)="confirm()"
       />
     </div>
