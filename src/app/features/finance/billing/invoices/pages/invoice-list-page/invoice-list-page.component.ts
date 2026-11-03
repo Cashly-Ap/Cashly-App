@@ -362,7 +362,7 @@ export class InvoiceListPageComponent implements OnInit {
     }
     actions.push({
       requiredAction: 'CREATE',
-            label: 'Duplicar',
+            label: 'Duplicar factura',
       icon: 'pi pi-copy',
       command: () => this.onDuplicate(invoice),
     });
