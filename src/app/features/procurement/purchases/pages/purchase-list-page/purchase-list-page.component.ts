@@ -35,6 +35,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -60,6 +61,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -254,7 +256,7 @@ export class PurchaseListPageComponent implements OnInit {
         },
         {
           requiredAction: 'CONFIRM',
-                    label: 'Confirmar compra',
+          label: 'Confirmar compra',
           icon: 'pi pi-check',
           command: () => this.onConfirm(purchase),
         },
@@ -270,7 +272,7 @@ export class PurchaseListPageComponent implements OnInit {
     if (purchase.status === 'CONFIRMED') {
       actions.push({
         requiredAction: 'CANCEL',
-                label: 'Cancelar compra',
+        label: 'Cancelar compra',
         icon: 'pi pi-ban',
         danger: true,
         command: () => this.onCancelPurchase(purchase),
@@ -280,7 +282,9 @@ export class PurchaseListPageComponent implements OnInit {
   }
 
   onDelete(purchase: PurchaseList): void {
-    this.deletion.open('purchases', purchase.id, purchase.purchaseNumber, () => this.loadWithFilters());
+    this.deletion.open('purchases', purchase.id, purchase.purchaseNumber, () =>
+      this.loadWithFilters(),
+    );
   }
 
   onConfirm(purchase: PurchaseList): void {

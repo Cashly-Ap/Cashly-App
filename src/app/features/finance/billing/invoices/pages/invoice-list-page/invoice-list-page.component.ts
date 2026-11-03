@@ -36,6 +36,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -70,6 +71,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -332,19 +334,19 @@ export class InvoiceListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'CONFIRM',
-                    label: 'Confirmar',
+          label: 'Confirmar',
           icon: 'pi pi-check',
           command: () => this.onConfirmInvoice(invoice),
         },
         {
           requiredAction: 'UPDATE',
-                    label: 'Editar',
+          label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(invoice),
         },
         {
           requiredAction: 'DELETE',
-                    label: 'Eliminar',
+          label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
           command: () => this.onDelete(invoice),
@@ -354,7 +356,7 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.canCancel(invoice.status)) {
       actions.push({
         requiredAction: 'CANCEL',
-                label: 'Cancelar factura',
+        label: 'Cancelar factura',
         icon: 'pi pi-times',
         danger: true,
         command: () => this.onCancelInvoice(invoice),
@@ -362,7 +364,7 @@ export class InvoiceListPageComponent implements OnInit {
     }
     actions.push({
       requiredAction: 'CREATE',
-            label: 'Duplicar factura',
+      label: 'Duplicar factura',
       icon: 'pi pi-copy',
       command: () => this.onDuplicate(invoice),
     });

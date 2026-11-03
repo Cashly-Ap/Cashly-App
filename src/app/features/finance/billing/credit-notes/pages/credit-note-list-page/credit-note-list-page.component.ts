@@ -32,6 +32,7 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -46,6 +47,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslatePipe,
     LocalizedNumberPipe,
     ShortcutDirective,
@@ -189,7 +191,9 @@ export class CreditNoteListPageComponent implements OnInit {
   }
 
   onDelete(creditNote: CreditNoteList): void {
-    this.deletion.open('credit-notes', creditNote.id, creditNote.noteNumber, () => this.loadWithFilters());
+    this.deletion.open('credit-notes', creditNote.id, creditNote.noteNumber, () =>
+      this.loadWithFilters(),
+    );
   }
 
   private loadWithFilters(): void {

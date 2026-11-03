@@ -48,11 +48,13 @@ interface ProductSelection {
   allocations: WarehouseAllocation[];
 }
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-purchase-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -94,7 +96,6 @@ export class PurchaseProductPickerDialogComponent {
   readonly popoverProductId = signal<string | null>(null);
   readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
-  readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
   readonly categories = signal<CategoryList[]>([]);
 
@@ -267,10 +268,6 @@ export class PurchaseProductPickerDialogComponent {
     return (product.stockItems ?? []).reduce((sum, s) => sum + s.available, 0);
   }
 
-  toggleFilterPanel(event: MouseEvent): void {
-    this.filterVisible.set(!this.filterVisible());
-  }
-
   clearFilters(): void {
     this.filterCategoryId.set(null);
     this.load(0);
@@ -362,6 +359,5 @@ export class PurchaseProductPickerDialogComponent {
     this.selections.set(new Map());
     this.popoverProductId.set(null);
     this.popoverAllocations.set([]);
-    this.filterVisible.set(false);
   }
 }

@@ -33,6 +33,7 @@ import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-sta
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -47,6 +48,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslatePipe,
     LocalizedNumberPipe,
     ShortcutDirective,
@@ -182,7 +184,7 @@ export class ReturnListPageComponent implements OnInit {
       },
       {
         requiredAction: 'DELETE',
-                label: 'Eliminar',
+        label: 'Eliminar',
         icon: 'pi pi-trash',
         danger: true,
         command: () => this.onDelete(ret),

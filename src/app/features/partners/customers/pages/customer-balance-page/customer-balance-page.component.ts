@@ -1,7 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -60,12 +59,15 @@ const EMPTY_FILTERS: BalanceTransactionFilters = {
   amount: null,
 };
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-customer-balance-page',
   standalone: true,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     CustomerPickerDialogComponent,
-    ShortcutDirective,
     CommonModule,
     FormsModule,
     PageHeaderComponent,

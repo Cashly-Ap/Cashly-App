@@ -27,11 +27,13 @@ import {
 
 const PAGE_SIZE = 10;
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-customer-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     ShortcutDirective,
@@ -45,8 +47,6 @@ const PAGE_SIZE = 10;
   templateUrl: './customer-picker-dialog.component.html',
 })
 export class CustomerPickerDialogComponent {
-  @ViewChild('filterPopover') private readonly filterPopover!: Popover;
-
   private readonly customerApi = inject(CustomerApiService);
 
   readonly visible = input<boolean>(false);
@@ -153,10 +153,6 @@ export class CustomerPickerDialogComponent {
 
   onCancel(): void {
     this.cancelled.emit();
-  }
-
-  toggleFilterPanel(event: MouseEvent): void {
-    this.filterPopover.toggle(event);
   }
 
   selectType(type: CustomerType | null): void {

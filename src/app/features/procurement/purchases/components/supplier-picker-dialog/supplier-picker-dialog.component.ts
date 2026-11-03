@@ -28,11 +28,13 @@ import {
 
 const PAGE_SIZE = 10;
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-supplier-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     ShortcutDirective,
@@ -47,8 +49,6 @@ const PAGE_SIZE = 10;
   templateUrl: './supplier-picker-dialog.component.html',
 })
 export class SupplierPickerDialogComponent {
-  @ViewChild('filterPopover') private readonly filterPopover!: Popover;
-
   private readonly supplierApi = inject(SupplierApiService);
 
   readonly visible = input<boolean>(false);
@@ -111,10 +111,6 @@ export class SupplierPickerDialogComponent {
 
   onCancel(): void {
     this.cancelled.emit();
-  }
-
-  toggleFilterPanel(event: MouseEvent): void {
-    this.filterPopover.toggle(event);
   }
 
   selectType(type: SupplierType | null): void {

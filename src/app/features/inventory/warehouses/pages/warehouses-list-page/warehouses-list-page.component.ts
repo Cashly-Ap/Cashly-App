@@ -26,6 +26,7 @@ import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -50,7 +51,10 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -244,12 +248,12 @@ export class WarehousesListPageComponent implements OnInit {
       },
     ];
     actions.push({
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(warehouse),
-      });
+      requiredAction: 'DELETE',
+      label: 'Eliminar',
+      icon: 'pi pi-trash',
+      danger: true,
+      command: () => this.onDelete(warehouse),
+    });
     return actions;
   }
 

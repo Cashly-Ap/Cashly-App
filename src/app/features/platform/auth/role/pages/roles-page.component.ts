@@ -9,7 +9,11 @@ import { PaginatorModule } from 'primeng/paginator';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
-import { ListActionButtonsComponent, ListAction } from '@shared/components/list';
+import {
+  ListFilterComponent,
+  ListActionButtonsComponent,
+  ListAction,
+} from '@shared/components/list';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -45,10 +49,7 @@ import { ButtonModule } from 'primeng/button';
 import { MessageService, ConfirmationService, SortEvent } from 'primeng/api';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
-import {
-  Department,
-  Role,
-} from '@features/platform/auth/authorization/models/access.model';
+import { Department, Role } from '@features/platform/auth/authorization/models/access.model';
 import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
 import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
@@ -59,6 +60,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
   selector: 'app-roles-page',
   standalone: true,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     ShortcutDirective,
@@ -224,9 +226,7 @@ export class RolesPageComponent {
   readonly search = signal('');
   readonly allPermissionCodes = this.catalogAreas.flatMap((area) =>
     area.sections.flatMap((section) =>
-      section.modules.flatMap((module) =>
-        module.permissions.map((permission) => permission.code),
-      ),
+      section.modules.flatMap((module) => module.permissions.map((permission) => permission.code)),
     ),
   );
   readonly grantedGroups = computed(() => {
@@ -235,9 +235,7 @@ export class RolesPageComponent {
       .flatMap((area) => area.sections.flatMap((section) => section.modules))
       .map((module) => ({
         moduleKey: module.moduleKey,
-        permissions: module.permissions.filter((permission) =>
-          selected.has(permission.code),
-        ),
+        permissions: module.permissions.filter((permission) => selected.has(permission.code)),
       }))
       .filter((group) => group.permissions.length > 0);
   });

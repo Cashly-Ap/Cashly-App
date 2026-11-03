@@ -34,59 +34,32 @@
           [placeholder]="'shared.searchRecords' | translate"
           (search)="onSearch($event)"
         />
-        <button
-          type="button"
-          [attr.aria-label]="'shared.filters' | translate"
-          [title]="'shared.filters' | translate"
-          class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-500 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors shrink-0"
-          (click)="filterPopover.toggle($event)"
-        >
-          <i class="pi pi-filter text-sm"></i>
-        </button>
-        <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
-          {{ session.total() }}
-          {{
-            session.total() === 1 ? ('shared.record2' | translate) : ('shared.records' | translate)
-          }}
-        </span>
+        <app-list-filter [activeCount]="0" variant="compact">
+          <app-search-field
+            class="block sm:hidden"
+            [value]="search()"
+            [placeholder]="'shared.searchRecords' | translate"
+            (search)="onSearch($event)"
+          />
+          @for (filter of session.filters?.() ?? []; track filter.label) {
+            <div class="flex flex-col gap-1.5">
+              <span
+                class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+                >{{ filter.label | translate }}</span
+              >
+              <p-select
+                [options]="filter.options | translateOptions"
+                [ngModel]="filter.value"
+                optionLabel="label"
+                optionValue="value"
+                [ariaLabel]="filter.label | translate"
+                styleClass="w-full"
+                (onChange)="changeFilter(filter.change, $event.value)"
+              />
+            </div>
+          }
+        </app-list-filter>
       </div>
-
-      <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
-        <div class="w-64">
-          <div
-            class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
-          >
-            <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
-              'shared.filters' | translate
-            }}</span>
-          </div>
-          <div class="px-4 py-3 flex flex-col gap-3">
-            <app-search-field
-              class="block sm:hidden"
-              [value]="search()"
-              [placeholder]="'shared.searchRecords' | translate"
-              (search)="onSearch($event)"
-            />
-            @for (filter of session.filters?.() ?? []; track filter.label) {
-              <div class="flex flex-col gap-1.5">
-                <span
-                  class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-                  >{{ filter.label | translate }}</span
-                >
-                <p-select
-                  [options]="filter.options | translateOptions"
-                  [ngModel]="filter.value"
-                  optionLabel="label"
-                  optionValue="value"
-                   [ariaLabel]="filter.label | translate"
-                  styleClass="w-full"
-                  (onChange)="changeFilter(filter.change, $event.value)"
-                />
-              </div>
-            }
-          </div>
-        </div>
-      </p-popover>
 
       <div
         class="hidden sm:block rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden"
@@ -151,7 +124,7 @@
                     </button>
                   </td>
                   <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
-                     {{ displayDescription(record.description) }}
+                    {{ displayDescription(record.description) }}
                   </td>
                 </tr>
               } @empty {
@@ -204,7 +177,7 @@
               }
               <span
                 class="block border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 font-mono text-xs text-surface-500 dark:text-surface-400"
-               >{{ displayDescription(record.description) }}</span
+                >{{ displayDescription(record.description) }}</span
               >
             </button>
           } @empty {

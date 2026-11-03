@@ -22,11 +22,15 @@ import {
   NavigationRecord,
 } from '../list-navigation.service';
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-list-navigation-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     FormsModule,
     SelectModule,
     DialogModule,
@@ -92,7 +96,9 @@ export class ListNavigationPickerComponent {
     };
     return description
       .split(' · ')
-      .map((part) => statusKeys[part] ? this.translations.t(statusKeys[part]) : this.translations.t(part))
+      .map((part) =>
+        statusKeys[part] ? this.translations.t(statusKeys[part]) : this.translations.t(part),
+      )
       .join(' · ');
   }
 

@@ -30,6 +30,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -46,6 +47,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     ShortcutDirective,
@@ -207,7 +209,9 @@ export class PaymentMethodListPageComponent implements OnInit {
   }
 
   onDelete(paymentMethod: PaymentMethodList): void {
-    this.deletion.open('payment-methods', paymentMethod.id, paymentMethod.name, () => this.loadWithFilters());
+    this.deletion.open('payment-methods', paymentMethod.id, paymentMethod.name, () =>
+      this.loadWithFilters(),
+    );
   }
 
   private loadWithFilters(): void {

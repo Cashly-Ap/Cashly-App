@@ -36,48 +36,30 @@
         [ngModelOptions]="{ standalone: true }"
       />
       <div class="flex flex-wrap gap-2 items-center">
-        <p-button
-          icon="pi pi-filter"
-          [outlined]="true"
-          severity="secondary"
-          (onClick)="filterPopover.toggle($event)"
-          [badge]="filterActive() ? '1' : ''"
-          badgeSeverity="contrast"
-        />
-        <p-popover #filterPopover [focusOnShow]="false">
-          <div class="flex flex-col gap-4 p-1 min-w-[260px]">
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
-              @if (filterActive()) {
-                <p-button
-                  label="Limpiar"
-                  [text]="true"
-                  size="small"
-                  severity="secondary"
-                  (onClick)="clearFilters()"
-                />
-              }
-            </div>
-            <p-select
-              [options]="parentOptions()"
-              [ngModel]="parentFilter()"
-              (onChange)="parentFilter.set($event.value); childFilter.set('')"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Módulo padre"
-              styleClass="w-full"
-            />
-            <p-select
-              [options]="childOptions()"
-              [ngModel]="childFilter()"
-              (onChange)="childFilter.set($event.value)"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Módulo hijo"
-              styleClass="w-full"
-            />
-          </div>
-        </p-popover>
+        <app-list-filter
+          [activeCount]="filterActive() ? 1 : 0"
+          [shortcut]="null"
+          (cleared)="clearFilters()"
+        >
+          <p-select
+            [options]="parentOptions()"
+            [ngModel]="parentFilter()"
+            (onChange)="parentFilter.set($event.value); childFilter.set('')"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Módulo padre"
+            styleClass="w-full"
+          />
+          <p-select
+            [options]="childOptions()"
+            [ngModel]="childFilter()"
+            (onChange)="childFilter.set($event.value)"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Módulo hijo"
+            styleClass="w-full"
+          />
+        </app-list-filter>
         <p-button
           [label]="'platform.auth.role.readOnlyForAll' | translate"
           severity="secondary"

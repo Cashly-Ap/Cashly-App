@@ -41,142 +41,119 @@
             <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100">
               {{ 'inventory.warehouses.movementHistory2' | translate }}
             </h2>
-            <p-button
-              appShortcut="filter"
-              class="ml-auto block shrink-0"
-              icon="pi pi-filter"
-              [outlined]="true"
-              severity="secondary"
-              [pTooltip]="'shared.filters' | translate"
-              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-              badgeSeverity="contrast"
-              [ariaLabel]="'shared.filters' | translate"
-              styleClass="shrink-0"
-              (onClick)="filterPopover.toggle($event)"
-            />
-            <p-popover #filterPopover appendTo="body" [focusOnShow]="false">
-              <div class="flex w-[calc(100vw-2rem)] max-w-[380px] flex-col gap-4 p-1">
-                <div class="flex items-center justify-between gap-3">
-                  <span class="text-sm font-semibold">{{ 'partners.customers.movementFilters' | translate }}</span>
-                  @if (activeFilterCount() > 0) {
-                    <p-button
-                      [label]="'finance.billing.creditnotes.clear' | translate"
-                      [text]="true"
-                      size="small"
-                      severity="secondary"
-                      (onClick)="clearFilters()"
-                    />
-                  }
-                </div>
-
-                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div class="flex flex-col gap-1">
-                    <label for="balance-filter-from" class="text-xs font-medium text-surface-500"
-                      >{{ 'finance.billing.invoices.from' | translate }}</label
-                    >
-                    <p-datepicker
-                      inputId="balance-filter-from"
-                      [ngModel]="filterDateFrom()"
-                      (ngModelChange)="filterDateFrom.set($event)"
-                      [showIcon]="true"
-                      dateFormat="dd/mm/yy"
-                      [placeholder]="'finance.billing.invoices.startDate' | translate"
-                      styleClass="w-full"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label for="balance-filter-to" class="text-xs font-medium text-surface-500"
-                      >{{ 'finance.billing.invoices.to' | translate }}</label
-                    >
-                    <p-datepicker
-                      inputId="balance-filter-to"
-                      [ngModel]="filterDateTo()"
-                      (ngModelChange)="filterDateTo.set($event)"
-                      [showIcon]="true"
-                      dateFormat="dd/mm/yy"
-                      [placeholder]="'finance.billing.invoices.endDate' | translate"
-                      styleClass="w-full"
-                    />
-                  </div>
-                </div>
-
+            <app-list-filter
+              #balanceFilter
+              [activeCount]="activeFilterCount()"
+              buttonClass="ml-auto block shrink-0"
+              (cleared)="clearFilters()"
+            >
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div class="flex flex-col gap-1">
-                  <label for="balance-filter-type" class="text-xs font-medium text-surface-500"
-                    >{{ 'shared.type' | translate }}</label
-                  >
-                  <p-select
-                    inputId="balance-filter-type"
-                    [options]="transactionTypeOptions | translateOptions"
-                    [ngModel]="filterType()"
-                    (ngModelChange)="filterType.set($event)"
-                    optionLabel="label"
-                    optionValue="value"
-                    [placeholder]="'finance.billing.invoices.allTypes' | translate"
-                    [showClear]="true"
+                  <label for="balance-filter-from" class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.from' | translate
+                  }}</label>
+                  <p-datepicker
+                    inputId="balance-filter-from"
+                    [ngModel]="filterDateFrom()"
+                    (ngModelChange)="filterDateFrom.set($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [placeholder]="'finance.billing.invoices.startDate' | translate"
                     styleClass="w-full"
                   />
                 </div>
-
-                <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  <div class="flex flex-col gap-1">
-                    <label for="balance-filter-number" class="text-xs font-medium text-surface-500"
-                      >{{ 'analytics.dashboard.number' | translate }}</label
-                    >
-                    <input
-                      id="balance-filter-number"
-                      pInputText
-                      type="text"
-                      [ngModel]="filterNumber()"
-                      (ngModelChange)="filterNumber.set($event)"
-                      [placeholder]="'partners.customers.eGInv001' | translate"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label
-                      for="balance-filter-reference"
-                      class="text-xs font-medium text-surface-500"
-                      >{{ 'finance.treasury.receivables.reference' | translate }}</label
-                    >
-                    <input
-                      id="balance-filter-reference"
-                      pInputText
-                      type="text"
-                      [ngModel]="filterReference()"
-                      (ngModelChange)="filterReference.set($event)"
-                      [placeholder]="'partners.customers.searchReference' | translate"
-                    />
-                  </div>
-                </div>
-
                 <div class="flex flex-col gap-1">
-                  <label for="balance-filter-amount" class="text-xs font-medium text-surface-500"
-                    >{{ 'shared.amount' | translate }}</label
-                  >
-                  <p-inputnumber
-                    inputId="balance-filter-amount"
-                    [ngModel]="filterAmount()"
-                    (ngModelChange)="filterAmount.set($event)"
-                    mode="currency"
-                    currency="USD"
-                    locale="en-US"
-                    placeholder="$0.00"
+                  <label for="balance-filter-to" class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.to' | translate
+                  }}</label>
+                  <p-datepicker
+                    inputId="balance-filter-to"
+                    [ngModel]="filterDateTo()"
+                    (ngModelChange)="filterDateTo.set($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [placeholder]="'finance.billing.invoices.endDate' | translate"
                     styleClass="w-full"
-                    inputStyleClass="w-full"
-                  />
-                </div>
-
-                <div
-                  class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
-                >
-                  <p-button
-                    [label]="'partners.customers.applyFilters' | translate"
-                    icon="pi pi-check"
-                    severity="contrast"
-                    (onClick)="applyFilters(); filterPopover.hide()"
                   />
                 </div>
               </div>
-            </p-popover>
+
+              <div class="flex flex-col gap-1">
+                <label for="balance-filter-type" class="text-xs font-medium text-surface-500">{{
+                  'shared.type' | translate
+                }}</label>
+                <p-select
+                  inputId="balance-filter-type"
+                  [options]="transactionTypeOptions | translateOptions"
+                  [ngModel]="filterType()"
+                  (ngModelChange)="filterType.set($event)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allTypes' | translate"
+                  [showClear]="true"
+                  styleClass="w-full"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-number" class="text-xs font-medium text-surface-500">{{
+                    'analytics.dashboard.number' | translate
+                  }}</label>
+                  <input
+                    id="balance-filter-number"
+                    pInputText
+                    type="text"
+                    [ngModel]="filterNumber()"
+                    (ngModelChange)="filterNumber.set($event)"
+                    [placeholder]="'partners.customers.eGInv001' | translate"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label
+                    for="balance-filter-reference"
+                    class="text-xs font-medium text-surface-500"
+                    >{{ 'finance.treasury.receivables.reference' | translate }}</label
+                  >
+                  <input
+                    id="balance-filter-reference"
+                    pInputText
+                    type="text"
+                    [ngModel]="filterReference()"
+                    (ngModelChange)="filterReference.set($event)"
+                    [placeholder]="'partners.customers.searchReference' | translate"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="balance-filter-amount" class="text-xs font-medium text-surface-500">{{
+                  'shared.amount' | translate
+                }}</label>
+                <p-inputnumber
+                  inputId="balance-filter-amount"
+                  [ngModel]="filterAmount()"
+                  (ngModelChange)="filterAmount.set($event)"
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                  placeholder="$0.00"
+                  styleClass="w-full"
+                  inputStyleClass="w-full"
+                />
+              </div>
+
+              <div
+                class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
+              >
+                <p-button
+                  [label]="'partners.customers.applyFilters' | translate"
+                  icon="pi pi-check"
+                  severity="contrast"
+                  (onClick)="applyFilters(); balanceFilter.close()"
+                />
+              </div>
+            </app-list-filter>
           </div>
           <app-balance-transactions-table
             [transactions]="transactions()"

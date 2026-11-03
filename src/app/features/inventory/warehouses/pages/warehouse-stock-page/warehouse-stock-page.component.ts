@@ -30,8 +30,7 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { ListContainerComponent } from '@shared/components/list';
+import { ListFilterComponent, ListContainerComponent } from '@shared/components/list';
 import { PaginatorModule } from 'primeng/paginator';
 import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
@@ -55,6 +54,7 @@ const PAGE_SIZE = 10;
   selector: 'app-warehouse-stock-page',
   standalone: true,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -64,7 +64,6 @@ const PAGE_SIZE = 10;
     PaginatorModule,
     PopoverModule,
     TooltipModule,
-    ShortcutDirective,
     ListContainerComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,

@@ -26,33 +26,68 @@
 
   <div class="flex flex-col gap-4 pt-1">
     <div class="flex items-center gap-2">
-      <div class="shrink-0">
-        <button
-          type="button"
-          class="relative inline-flex items-center justify-center w-9 h-9 rounded-lg border transition-colors"
-          [class.border-surface-900]="activeFilterCount() > 0"
-          [class.bg-surface-900]="activeFilterCount() > 0"
-          [class.text-white]="activeFilterCount() > 0"
-          [class.dark:border-surface-0]="activeFilterCount() > 0"
-          [class.dark:bg-surface-0]="activeFilterCount() > 0"
-          [class.dark:text-surface-900]="activeFilterCount() > 0"
-          [class.border-surface-200]="activeFilterCount() === 0"
-          [class.dark:border-surface-700]="activeFilterCount() === 0"
-          [class.text-surface-500]="activeFilterCount() === 0"
-          [class.hover:bg-surface-100]="activeFilterCount() === 0"
-          [class.dark:hover:bg-surface-800]="activeFilterCount() === 0"
-          (click)="toggleFilterPanel($event)"
-        >
-          <i class="pi pi-filter text-sm"></i>
-          @if (activeFilterCount() > 0) {
-            <span
-              class="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-surface-0 dark:bg-surface-900 text-surface-900 dark:text-surface-0 text-[10px] font-bold flex items-center justify-center border border-surface-900 dark:border-surface-0"
-            >
-              {{ activeFilterCount() }}
-            </span>
-          }
-        </button>
-      </div>
+      <app-list-filter
+        [activeCount]="activeFilterCount()"
+        variant="compact"
+        (cleared)="clearFilters()"
+      >
+        <div class="flex flex-col gap-1.5">
+          <span
+            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+            >{{ 'procurement.purchases.search' | translate }}</span
+          >
+          <app-search-field
+            [value]="search()"
+            [placeholder]="'procurement.purchases.codeOrName' | translate"
+            (search)="onSearchChange($event)"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <span
+            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+            >{{ 'finance.billing.invoices.category' | translate }}</span
+          >
+          <p-select
+            [options]="categoryOptions() | translateOptions: true"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="filterCategoryId()"
+            (ngModelChange)="onCategoryChange($event)"
+            styleClass="w-full text-sm"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <span
+            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+            >{{ 'shared.type' | translate }}</span
+          >
+          <p-select
+            [options]="compositeOptions | translateOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="filterComposite()"
+            (ngModelChange)="onCompositeChange($event)"
+            styleClass="w-full text-sm"
+          />
+        </div>
+
+        <div class="flex flex-col gap-1.5">
+          <span
+            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+            >{{ 'finance.billing.returns.stock' | translate }}</span
+          >
+          <p-select
+            [options]="withStockOptions | translateOptions"
+            optionLabel="label"
+            optionValue="value"
+            [ngModel]="filterWithStock()"
+            (ngModelChange)="onWithStockChange($event)"
+            styleClass="w-full text-sm"
+          />
+        </div>
+      </app-list-filter>
 
       <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
         {{ totalElements() }}
@@ -335,7 +370,9 @@
 
     @if (totalPages() > 1) {
       <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{ (pageLabel()) | translate }}</span>
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{
+          pageLabel() | translate
+        }}</span>
         <div class="flex gap-1">
           <button
             type="button"
@@ -390,86 +427,6 @@
     </div>
   </ng-template>
 </p-dialog>
-
-<p-popover #filterPopover appendTo="body" [focusOnShow]="false" (onHide)="filterVisible.set(false)">
-  <div class="w-72">
-    <div
-      class="flex items-center justify-between px-4 py-3 border-b border-surface-100 dark:border-surface-800"
-    >
-      <span class="text-sm font-semibold text-surface-900 dark:text-surface-0">{{
-        'shared.filters' | translate
-      }}</span>
-      @if (activeFilterCount() > 0) {
-        <button
-          type="button"
-          class="text-xs text-surface-400 hover:text-surface-700 dark:hover:text-surface-200 transition-colors"
-          (click)="clearFilters()"
-        >
-          {{ 'finance.billing.creditnotes.clear' | translate }}
-        </button>
-      }
-    </div>
-
-    <div class="px-4 py-3 flex flex-col gap-4">
-      <div class="flex flex-col gap-1.5">
-        <span
-          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >{{ 'procurement.purchases.search' | translate }}</span
-        >
-        <app-search-field
-          [value]="search()"
-          [placeholder]="'procurement.purchases.codeOrName' | translate"
-          (search)="onSearchChange($event)"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1.5">
-        <span
-          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >{{ 'finance.billing.invoices.category' | translate }}</span
-        >
-        <p-select
-          [options]="categoryOptions() | translateOptions: true"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="filterCategoryId()"
-          (ngModelChange)="onCategoryChange($event)"
-          styleClass="w-full text-sm"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1.5">
-        <span
-          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >{{ 'shared.type' | translate }}</span
-        >
-        <p-select
-          [options]="compositeOptions | translateOptions"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="filterComposite()"
-          (ngModelChange)="onCompositeChange($event)"
-          styleClass="w-full text-sm"
-        />
-      </div>
-
-      <div class="flex flex-col gap-1.5">
-        <span
-          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-          >{{ 'finance.billing.returns.stock' | translate }}</span
-        >
-        <p-select
-          [options]="withStockOptions | translateOptions"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="filterWithStock()"
-          (ngModelChange)="onWithStockChange($event)"
-          styleClass="w-full text-sm"
-        />
-      </div>
-    </div>
-  </div>
-</p-popover>
 
 <p-popover #stockPopover appendTo="body" (onHide)="popoverProductId.set(null)">
   <app-warehouse-stock-popover

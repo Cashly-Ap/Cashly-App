@@ -6,7 +6,9 @@
       >
         {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
       </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">{{ 'inventory.warehouses.products' | translate }}</h1>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
+        {{ 'inventory.warehouses.products' | translate }}
+      </h1>
       <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
         {{ 'catalog.products.manageTheProductCatalog' | translate }}
       </p>
@@ -24,69 +26,50 @@
               [placeholder]="'catalog.products.searchProducts' | translate"
               (search)="onSearch($event)"
             />
-            <p-button
-              appShortcut="filter"
-              #filterBtn
-              icon="pi pi-filter"
-              [outlined]="true"
-              severity="secondary"
-              (onClick)="filterPopover.toggle($event)"
-              [pTooltip]="'shared.filters' | translate"
-              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-              badgeSeverity="contrast"
-            />
-            <p-popover #filterPopover [focusOnShow]="false">
-              <div class="flex flex-col gap-4 p-1 min-w-[240px]">
-                <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
-                  @if (activeFilterCount() > 0) {
-                    <p-button
-                      [label]="'finance.billing.creditnotes.clear' | translate"
-                      [text]="true"
-                      size="small"
-                      severity="secondary"
-                      (onClick)="clearFilters()"
-                    />
-                  }
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{ 'finance.billing.invoices.category' | translate }}</label>
-                  <p-select
-                    [options]="categoryOptions() | translateOptions: true"
-                    [ngModel]="filterCategoryId()"
-                    (onChange)="onCategoryFilterChange($event.value)"
-                    optionLabel="label"
-                    optionValue="value"
-                    [placeholder]="'finance.billing.invoices.allCategories' | translate"
-                    styleClass="w-full"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{ 'shared.type' | translate }}</label>
-                  <p-select
-                    [options]="compositeFilterOptions | translateOptions"
-                    [ngModel]="filterComposite()"
-                    (onChange)="onCompositeFilterChange($event.value)"
-                    optionLabel="label"
-                    optionValue="value"
-                    [placeholder]="'finance.treasury.paymentmethods.all' | translate"
-                    styleClass="w-full"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{ 'finance.billing.invoices.status' | translate }}</label>
-                  <p-select
-                    [options]="activeFilterOptions | translateOptions"
-                    [ngModel]="filterActive()"
-                    (onChange)="onActiveFilterChange($event.value)"
-                    optionLabel="label"
-                    optionValue="value"
-                    [placeholder]="'finance.treasury.paymentmethods.all' | translate"
-                    styleClass="w-full"
-                  />
-                </div>
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">{{
+                  'finance.billing.invoices.category' | translate
+                }}</label>
+                <p-select
+                  [options]="categoryOptions() | translateOptions: true"
+                  [ngModel]="filterCategoryId()"
+                  (onChange)="onCategoryFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allCategories' | translate"
+                  styleClass="w-full"
+                />
               </div>
-            </p-popover>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">{{
+                  'shared.type' | translate
+                }}</label>
+                <p-select
+                  [options]="compositeFilterOptions | translateOptions"
+                  [ngModel]="filterComposite()"
+                  (onChange)="onCompositeFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                  styleClass="w-full"
+                />
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">{{
+                  'finance.billing.invoices.status' | translate
+                }}</label>
+                <p-select
+                  [options]="activeFilterOptions | translateOptions"
+                  [ngModel]="filterActive()"
+                  (onChange)="onActiveFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                  styleClass="w-full"
+                />
+              </div>
+            </app-list-filter>
           </div>
           <p-button
             appShortcut="new"
@@ -179,8 +162,16 @@
                         </div>
                       </div>
                     </th>
-                    <th class="w-24"><div class="font-semibold">{{ 'finance.billing.invoices.status' | translate }}</div></th>
-                    <th class="w-36"><div class="font-semibold text-center">{{ 'shared.actions' | translate }}</div></th>
+                    <th class="w-24">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-36">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product>
@@ -198,13 +189,20 @@
                     </td>
                     <td class="hidden md:table-cell">
                       <app-text-badge
-                        [label]="product.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate)"
+                        [label]="
+                          product.composite
+                            ? ('inventory.warehouses.composite' | translate)
+                            : ('finance.billing.invoices.simple' | translate)
+                        "
                         variant="label"
                       />
                     </td>
                     <td class="text-right">
                       <div class="font-medium">
-                        {{ getPriceForProduct(product) | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                        {{
+                          getPriceForProduct(product)
+                            | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </div>
                     </td>
                     <td>
@@ -224,7 +222,9 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'catalog.products.labels.showingFirstToLastOfTotalrecordsProducts' | translate"
+                [currentPageReportTemplate]="
+                  'catalog.products.labels.showingFirstToLastOfTotalrecordsProducts' | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
@@ -250,7 +250,9 @@
           </app-content-card>
         } @else {
           <div class="flex items-center justify-between mb-3 px-1">
-            <span class="text-sm font-medium text-surface-500">{{ 'catalog.products.showPriceBy' | translate }}</span>
+            <span class="text-sm font-medium text-surface-500">{{
+              'catalog.products.showPriceBy' | translate
+            }}</span>
             <div class="w-40">
               <p-select
                 [options]="priceTypeOptions() | translateOptions: true"
@@ -280,7 +282,11 @@
                     </p>
                     <div class="flex flex-wrap gap-2 items-center">
                       <app-text-badge
-                        [label]="product.composite ? ('inventory.warehouses.composite' | translate) : ('finance.billing.invoices.simple' | translate)"
+                        [label]="
+                          product.composite
+                            ? ('inventory.warehouses.composite' | translate)
+                            : ('finance.billing.invoices.simple' | translate)
+                        "
                         variant="label"
                       />
                       <app-status-badge [active]="product.active" />
@@ -288,7 +294,9 @@
                   </div>
                   <div class="text-right ml-3 shrink-0">
                     <div class="font-bold text-lg">
-                      {{ getPriceForProduct(product) | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      {{
+                        getPriceForProduct(product) | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}
                     </div>
                   </div>
                 </div>
@@ -307,7 +315,9 @@
               [totalRecords]="totalElements()"
               [rowsPerPageOptions]="[10, 25, 50]"
               [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="'catalog.products.labels.showingFirstToLastOfTotalrecordsProducts' | translate"
+              [currentPageReportTemplate]="
+                'catalog.products.labels.showingFirstToLastOfTotalrecordsProducts' | translate
+              "
               (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
             />
           </div>

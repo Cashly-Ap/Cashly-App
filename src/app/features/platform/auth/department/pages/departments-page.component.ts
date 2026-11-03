@@ -9,7 +9,11 @@ import { PaginatorModule } from 'primeng/paginator';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
-import { ListActionButtonsComponent, ListAction } from '@shared/components/list';
+import {
+  ListFilterComponent,
+  ListActionButtonsComponent,
+  ListAction,
+} from '@shared/components/list';
 import { ContentCardComponent } from '@shared/components/ui/content-card/content-card.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -51,6 +55,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   selector: 'app-departments-page',
   standalone: true,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     ShortcutDirective,

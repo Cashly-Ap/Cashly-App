@@ -2,7 +2,6 @@ import { LanguageService } from '@core/i18n/language.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -33,15 +32,16 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
 import { CashRegisterHistoryView } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-register/models/enums/cash-movement-type.enum';
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
-    ShortcutDirective,
     CommonModule,
     FormsModule,
     RouterModule,

@@ -26,59 +26,34 @@
               [placeholder]="'finance.billing.creditnotes.searchCreditNote' | translate"
               (search)="onSearch($event)"
             />
-            <p-button
-              appShortcut="filter"
-              #filterBtn
-              icon="pi pi-filter"
-              [outlined]="true"
-              severity="secondary"
-              (onClick)="filterPopover.toggle($event)"
-              [pTooltip]="'shared.filters' | translate"
-              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-              badgeSeverity="contrast"
-            />
-            <p-popover #filterPopover [focusOnShow]="false">
-              <div class="flex flex-col gap-4 p-1 min-w-[280px]">
-                <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
-                  @if (activeFilterCount() > 0) {
-                    <p-button
-                      [label]="'finance.billing.creditnotes.clear' | translate"
-                      [text]="true"
-                      size="small"
-                      severity="secondary"
-                      (onClick)="clearFilters()"
-                    />
-                  }
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.creditnotes.startDate' | translate
+                  }}</label>
+                  <p-datePicker
+                    [(ngModel)]="dateFrom"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                    (onSelect)="clearFilters(); clearFilters()"
+                    (onSelect)="dateFrom() ? null : null"
+                  />
                 </div>
-                <div class="flex flex-col gap-3">
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">{{
-                      'finance.billing.creditnotes.startDate' | translate
-                    }}</label>
-                    <p-datePicker
-                      [(ngModel)]="dateFrom"
-                      [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
-                      [showIcon]="true"
-                      styleClass="w-full"
-                      (onSelect)="clearFilters(); clearFilters()"
-                      (onSelect)="dateFrom() ? null : null"
-                    />
-                  </div>
-                  <div class="flex flex-col gap-1">
-                    <label class="text-xs font-medium text-surface-500">{{
-                      'finance.billing.creditnotes.endDate' | translate
-                    }}</label>
-                    <p-datePicker
-                      [(ngModel)]="dateTo"
-                      [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
-                      [showIcon]="true"
-                      styleClass="w-full"
-                    />
-                  </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.creditnotes.endDate' | translate
+                  }}</label>
+                  <p-datePicker
+                    [(ngModel)]="dateTo"
+                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                    [showIcon]="true"
+                    styleClass="w-full"
+                  />
                 </div>
               </div>
-            </p-popover>
+            </app-list-filter>
           </div>
           <p-button
             appShortcut="new"

@@ -31,6 +31,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -55,7 +56,10 @@ import {
   selector: 'app-suppliers-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe,
+  imports: [
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,

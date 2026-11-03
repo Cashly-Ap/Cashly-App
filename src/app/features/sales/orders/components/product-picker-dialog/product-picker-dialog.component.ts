@@ -51,11 +51,13 @@ export interface ProductSelection {
   allocations: WarehouseAllocation[];
 }
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
@@ -77,7 +79,6 @@ export class ProductPickerDialogComponent {
   private readonly orderApi = inject(OrderApiService);
   private readonly categoryApi = inject(CategoryApiService);
 
-  @ViewChild('filterPopover') private readonly filterPopover!: Popover;
   @ViewChild('stockPopover') private readonly stockPopover!: Popover;
 
   readonly visible = input<boolean>(false);
@@ -100,7 +101,6 @@ export class ProductPickerDialogComponent {
   readonly popoverProductId = signal<string | null>(null);
   readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
-  readonly filterVisible = signal<boolean>(false);
   readonly filterCategoryId = signal<string | null>(null);
   readonly filterComposite = signal<boolean | null>(null);
   readonly filterWithStock = signal<boolean>(true);
@@ -313,15 +313,6 @@ export class ProductPickerDialogComponent {
     return product.stock.reduce((sum, s) => sum + s.available, 0);
   }
 
-  toggleFilterPanel(event: MouseEvent): void {
-    if (this.filterVisible()) {
-      this.filterPopover.hide();
-    } else {
-      this.filterVisible.set(true);
-      this.filterPopover.show(event);
-    }
-  }
-
   clearFilters(): void {
     this.filterCategoryId.set(null);
     this.filterComposite.set(null);
@@ -407,6 +398,5 @@ export class ProductPickerDialogComponent {
     this.selections.set(new Map());
     this.popoverProductId.set(null);
     this.popoverAllocations.set([]);
-    this.filterVisible.set(false);
   }
 }

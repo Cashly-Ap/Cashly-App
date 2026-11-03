@@ -30,8 +30,7 @@ import { PaginatorModule } from 'primeng/paginator';
 import { PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { ListContainerComponent } from '@shared/components/list';
+import { ListFilterComponent, ListContainerComponent } from '@shared/components/list';
 import { DetailsCardComponent } from '@shared/components/details/details-card/details-card.component';
 import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -43,7 +42,10 @@ import {
   TextBadgeVariant,
 } from '@shared/components/ui/text-badge/text-badge.component';
 import { MovementType } from '@features/inventory/warehouses/models/enums/movement-type.enum';
-import { ReferenceType, REFERENCE_TYPE_LABELS } from '@features/inventory/warehouses/models/enums/reference-type.enum';
+import {
+  ReferenceType,
+  REFERENCE_TYPE_LABELS,
+} from '@features/inventory/warehouses/models/enums/reference-type.enum';
 import {
   MovementGroupBy,
   MovementOption,
@@ -87,6 +89,7 @@ const MOVEMENT_TYPE_VARIANTS: Record<MovementType, TextBadgeVariant> = {
   selector: 'app-warehouse-movements-page',
   standalone: true,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -97,7 +100,6 @@ const MOVEMENT_TYPE_VARIANTS: Record<MovementType, TextBadgeVariant> = {
     PopoverModule,
     SelectModule,
     TooltipModule,
-    ShortcutDirective,
     ListContainerComponent,
     DetailsCardComponent,
     DetailsCardHeaderComponent,
@@ -187,7 +189,9 @@ export class WarehouseMovementsPageComponent implements OnInit {
       );
     if (groupBy === 'WAREHOUSE')
       return this.translations.t(
-        count === 1 ? 'inventory.warehouses.countWarehouse' : 'inventory.warehouses.countWarehouses',
+        count === 1
+          ? 'inventory.warehouses.countWarehouse'
+          : 'inventory.warehouses.countWarehouses',
         { count },
       );
     if (groupBy === 'MOVEMENT_TYPE')

@@ -20,58 +20,34 @@
           class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
-            <p-button
-              appShortcut="filter"
-              icon="pi pi-filter"
-              [outlined]="true"
-              severity="secondary"
-              (onClick)="filterPopover.toggle($event)"
-              [pTooltip]="'shared.filters' | translate"
-              [badge]="activeFilterCount() > 0 ? activeFilterCount().toString() : ''"
-              badgeSeverity="contrast"
-            />
-            <p-popover #filterPopover [focusOnShow]="false">
-              <div class="flex flex-col gap-4 p-1 min-w-[280px]">
-                <div class="flex items-center justify-between">
-                  <span class="font-semibold text-sm">{{ 'shared.filters' | translate }}</span>
-                  @if (activeFilterCount() > 0) {
-                    <p-button
-                      [label]="'finance.billing.creditnotes.clear' | translate"
-                      [text]="true"
-                      size="small"
-                      severity="secondary"
-                      (onClick)="clearFilters()"
-                    />
-                  }
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{
-                    'finance.billing.invoices.startDate2' | translate
-                  }}</label>
-                  <p-datepicker
-                    [ngModel]="filterDateFrom()"
-                    (onSelect)="onDateFromChange($event)"
-                    [showIcon]="true"
-                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
-                    [placeholder]="'finance.billing.invoices.from' | translate"
-                    styleClass="w-full"
-                  />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{
-                    'finance.billing.invoices.endDate2' | translate
-                  }}</label>
-                  <p-datepicker
-                    [ngModel]="filterDateTo()"
-                    (onSelect)="onDateToChange($event)"
-                    [showIcon]="true"
-                    [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
-                    [placeholder]="'finance.billing.invoices.to' | translate"
-                    styleClass="w-full"
-                  />
-                </div>
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">{{
+                  'finance.billing.invoices.startDate2' | translate
+                }}</label>
+                <p-datepicker
+                  [ngModel]="filterDateFrom()"
+                  (onSelect)="onDateFromChange($event)"
+                  [showIcon]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'finance.billing.invoices.from' | translate"
+                  styleClass="w-full"
+                />
               </div>
-            </p-popover>
+              <div class="flex flex-col gap-1">
+                <label class="text-xs font-medium text-surface-500">{{
+                  'finance.billing.invoices.endDate2' | translate
+                }}</label>
+                <p-datepicker
+                  [ngModel]="filterDateTo()"
+                  (onSelect)="onDateToChange($event)"
+                  [showIcon]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'finance.billing.invoices.to' | translate"
+                  styleClass="w-full"
+                />
+              </div>
+            </app-list-filter>
           </div>
           <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
             <div
@@ -515,7 +491,10 @@
                 [totalRecords]="totalElements()"
                 [rowsPerPageOptions]="[10, 25, 50, 100]"
                 [showCurrentPageReport]="true"
-                [currentPageReportTemplate]="'finance.treasury.cashregister.showingFirstToLastOfTotalrecordsRecords' | translate"
+                [currentPageReportTemplate]="
+                  'finance.treasury.cashregister.showingFirstToLastOfTotalrecordsRecords'
+                    | translate
+                "
                 (onPageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>

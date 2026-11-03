@@ -25,10 +25,12 @@ import { AuthorizationService } from '@features/platform/auth/authorization/serv
 
 export type PermissionPreset = 'none' | 'read' | 'custom' | 'all';
 
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 @Component({
   selector: 'app-permission-editor',
   standalone: true,
   imports: [
+    ListFilterComponent,
     TranslatePipe,
     FormsModule,
     ButtonModule,
@@ -65,7 +67,9 @@ export class PermissionEditorComponent {
   readonly allPermissions = computed(() =>
     this.areas.flatMap((area) =>
       area.sections.flatMap((section) =>
-        section.modules.flatMap((module) => module.permissions.map((permission) => permission.code)),
+        section.modules.flatMap((module) =>
+          module.permissions.map((permission) => permission.code),
+        ),
       ),
     ),
   );
@@ -216,9 +220,7 @@ export class PermissionEditorComponent {
   }
 
   private isViewCode(code: AppPermission): boolean {
-    return (
-      code.endsWith('_VIEW_LIST') || code === 'DASHBOARD_VIEW' || code === 'COMPANY_VIEW'
-    );
+    return code.endsWith('_VIEW_LIST') || code === 'DASHBOARD_VIEW' || code === 'COMPANY_VIEW';
   }
 
   private normalize(value: string): string {

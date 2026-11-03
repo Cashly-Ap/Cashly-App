@@ -37,6 +37,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -65,6 +66,7 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -247,19 +249,19 @@ export class OrderListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'UPDATE',
-                    label: 'Editar',
+          label: 'Editar',
           icon: 'pi pi-pencil',
           command: () => this.onEdit(order),
         },
         {
           requiredAction: 'CONFIRM',
-                    label: 'Confirmar',
+          label: 'Confirmar',
           icon: 'pi pi-check',
           command: () => this.onConfirm(order),
         },
         {
           requiredAction: 'DELETE',
-                    label: 'Eliminar',
+          label: 'Eliminar',
           icon: 'pi pi-trash',
           danger: true,
           command: () => this.onDelete(order),
@@ -270,14 +272,14 @@ export class OrderListPageComponent implements OnInit {
       actions.push(
         {
           requiredAction: 'CREATE',
-                    module: BusinessModule.FINANCE_INVOICES,
-                    label: 'Convertir a factura',
+          module: BusinessModule.FINANCE_INVOICES,
+          label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(order),
         },
         {
           requiredAction: 'CANCEL',
-                    label: 'Cancelar pedido',
+          label: 'Cancelar pedido',
           icon: 'pi pi-times',
           danger: true,
           command: () => this.onCancelOrder(order),

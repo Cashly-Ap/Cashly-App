@@ -32,6 +32,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -50,7 +51,11 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
   selector: 'app-products-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslateOptionsPipe, TranslatePipe, LocalizedCurrencyPipe,
+  imports: [
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     ShortcutDirective,
     PermissionDirective,
     CommonModule,
@@ -269,12 +274,12 @@ export class ProductsListPageComponent implements OnInit {
       },
     ];
     actions.push({
-        requiredAction: 'DELETE',
-        label: 'Eliminar',
-        icon: 'pi pi-trash',
-        danger: true,
-        command: () => this.onDelete(product),
-      });
+      requiredAction: 'DELETE',
+      label: 'Eliminar',
+      icon: 'pi pi-trash',
+      danger: true,
+      command: () => this.onDelete(product),
+    });
     return actions;
   }
 

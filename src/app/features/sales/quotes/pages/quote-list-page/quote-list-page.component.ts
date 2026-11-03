@@ -36,6 +36,7 @@ import { ContentCardComponent } from '@shared/components/ui/content-card/content
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import {
+  ListFilterComponent,
   ListAction,
   ListActionButtonsComponent,
   ListContainerComponent,
@@ -64,6 +65,7 @@ import { CancelDialogService } from '@shared/services/cancel-dialog.service';
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
@@ -248,15 +250,15 @@ export class QuoteListPageComponent implements OnInit {
         },
         {
           requiredAction: 'CREATE',
-                    module: BusinessModule.SALES_ORDERS,
-                    label: 'Convertir a pedido',
+          module: BusinessModule.SALES_ORDERS,
+          label: 'Convertir a pedido',
           icon: 'pi pi-shopping-cart',
           command: () => this.onConvertToOrder(quote),
         },
         {
           requiredAction: 'CREATE',
-                    module: BusinessModule.FINANCE_INVOICES,
-                    label: 'Convertir a factura',
+          module: BusinessModule.FINANCE_INVOICES,
+          label: 'Convertir a factura',
           icon: 'pi pi-file',
           command: () => this.onConvertToInvoice(quote),
         },
