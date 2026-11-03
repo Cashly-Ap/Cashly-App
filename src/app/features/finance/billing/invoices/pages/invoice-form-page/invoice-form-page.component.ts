@@ -51,10 +51,12 @@ import {
 import { InvoiceCreate } from '@features/finance/billing/invoices/models/interfaces/invoice-create.interface';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-invoice-form-page',
   standalone: true,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,

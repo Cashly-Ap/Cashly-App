@@ -1,3 +1,5 @@
+import { StatusSeverity } from '@shared/models/status-variant';
+import { cashRegisterStatusSeverity } from '@features/finance/treasury/cash-register/models/cash-register-status.presentation';
 import { LanguageService } from '@core/i18n/language.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -35,11 +37,15 @@ import { ListFilterComponent } from '@shared/components/list/list-filter/list-fi
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-cash-register-history-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    FilterFieldComponent,
+    PageHeaderComponent,
     TextBadgeComponent,
     BackButtonComponent,
     PanelCardComponent,
@@ -170,15 +176,8 @@ export class CashRegisterHistoryPageComponent implements OnInit {
     }
   }
 
-  getStatusSeverity(status: string): 'info' | 'warn' | 'success' | 'contrast' {
-    switch (status) {
-      case 'OPEN':
-        return 'info';
-      case 'CLOSED':
-        return 'warn';
-      default:
-        return 'contrast';
-    }
+  getStatusSeverity(status: string): StatusSeverity {
+    return cashRegisterStatusSeverity(status);
   }
 
   getMovementTypeLabel(type: string): string {

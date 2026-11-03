@@ -1,14 +1,12 @@
-import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, input, output } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-form-actions',
   standalone: true,
-  imports: [TranslatePipe, ShortcutDirective, ButtonModule, TooltipModule, CancelButtonComponent],
+  imports: [SubmitButtonComponent, TooltipModule, CancelButtonComponent],
   templateUrl: './form-actions.component.html',
 })
 export class FormActionsComponent {

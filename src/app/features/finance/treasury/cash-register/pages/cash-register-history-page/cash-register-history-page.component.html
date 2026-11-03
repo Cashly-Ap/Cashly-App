@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'finance.treasury.cashregister.cashRegisterHistory' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'finance.treasury.cashregister.viewCashRegisterOpeningAndClosingHistory' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.cashregister.cashRegisterHistory"
+      subtitle="finance.treasury.cashregister.viewCashRegisterOpeningAndClosingHistory"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -21,10 +13,7 @@
         >
           <div class="flex gap-2 items-center w-full sm:w-auto">
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.startDate2' | translate
-                }}</label>
+              <app-filter-field labelKey="finance.billing.invoices.startDate2">
                 <p-datepicker
                   [ngModel]="filterDateFrom()"
                   (onSelect)="onDateFromChange($event)"
@@ -33,11 +22,8 @@
                   [placeholder]="'finance.billing.invoices.from' | translate"
                   styleClass="w-full"
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.endDate2' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.endDate2">
                 <p-datepicker
                   [ngModel]="filterDateTo()"
                   (onSelect)="onDateToChange($event)"
@@ -46,7 +32,7 @@
                   [placeholder]="'finance.billing.invoices.to' | translate"
                   styleClass="w-full"
                 />
-              </div>
+              </app-filter-field>
             </app-list-filter>
           </div>
           <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">

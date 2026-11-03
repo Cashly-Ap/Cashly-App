@@ -1,3 +1,4 @@
+import { paymentStatusSeverity } from '@features/finance/treasury/receivables/models/payment-status.presentation';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output } from '@angular/core';
@@ -14,19 +15,6 @@ function getPaymentStatusLabel(status: string): string {
       return 'Cancelado';
     default:
       return status;
-  }
-}
-
-function getPaymentStatusSeverity(
-  status: string,
-): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
-  switch (status) {
-    case 'APPLIED':
-      return 'success';
-    case 'CANCELLED':
-      return 'danger';
-    default:
-      return 'info';
   }
 }
 
@@ -51,7 +39,7 @@ export class PaymentDetailDialogComponent {
   readonly close = output<void>();
 
   protected readonly getPaymentStatusLabel = getPaymentStatusLabel;
-  protected readonly getPaymentStatusSeverity = getPaymentStatusSeverity;
+  protected readonly getPaymentStatusSeverity = paymentStatusSeverity;
 
   protected onClose(): void {
     this.close.emit();

@@ -26,12 +26,9 @@
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-3">
       <app-cancel-button icon="" [disabled]="loading()" (cancelled)="onCancel()" />
-      <p-button
-        appShortcut="submit"
-        [label]="'finance.billing.creditnotes.save' | translate"
-        icon="pi pi-check"
-        severity="contrast"
-        (onClick)="onSubmit()"
+      <app-submit-button
+        labelKey="finance.billing.creditnotes.save"
+        (action)="onSubmit()"
         [loading]="loading()"
         [disabled]="form.invalid"
       />

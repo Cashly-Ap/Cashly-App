@@ -52,10 +52,12 @@ const PAGE_SIZE = 10;
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { StatCardComponent } from '@shared/components/ui/stat-card/stat-card.component';
 @Component({
   selector: 'app-warehouse-stock-page',
   standalone: true,
   imports: [
+    StatCardComponent,
     BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,

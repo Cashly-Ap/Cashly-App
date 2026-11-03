@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'finance.treasury.paymentmethods.paymentMethods' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'finance.treasury.paymentmethods.manageAvailablePaymentMethods' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.paymentmethods.paymentMethods"
+      subtitle="finance.treasury.paymentmethods.manageAvailablePaymentMethods"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -27,10 +19,7 @@
               (search)="onSearch($event)"
             />
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.status' | translate
-                }}</label>
+              <app-filter-field labelKey="finance.billing.invoices.status">
                 <p-select
                   [options]="activeFilterOptions | translateOptions"
                   [ngModel]="filterActive()"
@@ -40,12 +29,13 @@
                   [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                   styleClass="w-full"
                 />
-              </div>
+              </app-filter-field>
             </app-list-filter>
           </div>
-          <app-create-button
+          <app-submit-button
             labelKey="finance.treasury.paymentmethods.newPaymentMethod"
-            (create)="onCreate()"
+            shortcut="new"
+            (action)="onCreate()"
           />
         </div>
       </div>

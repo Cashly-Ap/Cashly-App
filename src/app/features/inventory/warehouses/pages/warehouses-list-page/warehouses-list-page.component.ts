@@ -51,12 +51,16 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,

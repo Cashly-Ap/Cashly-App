@@ -40,13 +40,15 @@ import { PriceTypeList } from '@features/catalog/price-types/models/interfaces/p
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 @Component({
   selector: 'app-price-types-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     TranslatePipe,
     CommonModule,

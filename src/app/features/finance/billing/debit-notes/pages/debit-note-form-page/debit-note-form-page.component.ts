@@ -27,10 +27,12 @@ import { CustomerPickerDialogComponent } from '@features/sales/orders/components
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-debit-note-form-page',
   standalone: true,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,

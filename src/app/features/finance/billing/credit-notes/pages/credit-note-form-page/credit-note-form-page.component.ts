@@ -31,11 +31,13 @@ interface CreditNoteFormData {
 }
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-credit-note-form-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslatePipe,
     CommonModule,

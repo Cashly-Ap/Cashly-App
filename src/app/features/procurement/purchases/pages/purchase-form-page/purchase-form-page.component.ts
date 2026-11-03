@@ -32,10 +32,12 @@ import { SupplierPickerDialogComponent } from '@features/procurement/purchases/c
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-purchase-form-page',
   standalone: true,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,

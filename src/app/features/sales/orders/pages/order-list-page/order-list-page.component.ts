@@ -1,4 +1,6 @@
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { StatusVariant } from '@shared/models/status-variant';
+import { orderStatusVariant } from '@features/sales/orders/models/order-status.presentation';
 import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
@@ -67,13 +69,17 @@ import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-order-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
@@ -371,14 +377,8 @@ export class OrderListPageComponent implements OnInit {
     return getOrderStatusLabel(status);
   }
 
-  getStatusVariant(status: OrderStatus): 'success' | 'warning' | 'danger' | 'info' | 'label' {
-    const variants: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'info' | 'label'> = {
-      [OrderStatus.DRAFT]: 'label',
-      [OrderStatus.CONFIRMED]: 'info',
-      [OrderStatus.CANCELLED]: 'danger',
-      [OrderStatus.INVOICED]: 'success',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: OrderStatus): StatusVariant {
+    return orderStatusVariant(status);
   }
 
   private loadWithFilters(): void {

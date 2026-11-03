@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'catalog.pricetypes.priceTypes2' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'catalog.pricetypes.managePriceTypes' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="catalog.pricetypes.priceTypes2"
+      subtitle="catalog.pricetypes.managePriceTypes"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -25,7 +17,11 @@
             [placeholder]="'catalog.pricetypes.searchPriceTypes' | translate"
             (search)="onSearch($event)"
           />
-          <app-create-button labelKey="catalog.pricetypes.newPriceType" (create)="onCreate()" />
+          <app-submit-button
+            labelKey="catalog.pricetypes.newPriceType"
+            shortcut="new"
+            (action)="onCreate()"
+          />
         </div>
       </div>
     </app-list-container>

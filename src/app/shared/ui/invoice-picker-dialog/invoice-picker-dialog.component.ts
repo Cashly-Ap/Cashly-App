@@ -19,11 +19,15 @@ import { InvoiceList } from '@features/finance/billing/invoices/models/interface
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
+import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialog-header.component';
 @Component({
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DialogHeaderComponent,
+    TableCardComponent,
     CancelButtonComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,

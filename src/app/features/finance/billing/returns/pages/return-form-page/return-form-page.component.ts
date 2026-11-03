@@ -51,10 +51,12 @@ interface ReturnLineFormData {
 }
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-return-form-page',
   standalone: true,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,

@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'finance.treasury.receivables.accountsReceivable' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'finance.treasury.receivables.manageCustomerDebtAndPendingCollections' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.receivables.accountsReceivable"
+      subtitle="finance.treasury.receivables.manageCustomerDebtAndPendingCollections"
+    />
 
     @if (service.globalSummary(); as summary) {
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'platform.auth.user.users' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'platform.auth.user.manageSystemUsers' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="platform.auth.user.users"
+      subtitle="platform.auth.user.manageSystemUsers"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -28,10 +20,7 @@
             />
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
               @if (canFilterRoles()) {
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{
-                    'platform.auth.user.role' | translate
-                  }}</label>
+                <app-filter-field labelKey="platform.auth.user.role">
                   <p-select
                     [options]="roleOptions() | translateOptions: true"
                     [ngModel]="filterRole()"
@@ -41,12 +30,9 @@
                     [placeholder]="'platform.auth.user.allRoles' | translate"
                     styleClass="w-full"
                   />
-                </div>
+                </app-filter-field>
               }
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.status' | translate
-                }}</label>
+              <app-filter-field labelKey="finance.billing.invoices.status">
                 <p-select
                   [options]="activeOptions | translateOptions"
                   [ngModel]="filterActive()"
@@ -56,10 +42,14 @@
                   [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                   styleClass="w-full"
                 />
-              </div>
+              </app-filter-field>
             </app-list-filter>
           </div>
-          <app-create-button labelKey="platform.auth.user.newUser" (create)="onCreate()" />
+          <app-submit-button
+            labelKey="platform.auth.user.newUser"
+            shortcut="new"
+            (action)="onCreate()"
+          />
         </div>
       </div>
     </app-list-container>

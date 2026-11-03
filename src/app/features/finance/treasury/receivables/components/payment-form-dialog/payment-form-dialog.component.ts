@@ -3,8 +3,6 @@ import { TranslationService } from '@core/i18n/translation.service';
 
 import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
 import {
   FormBuilder,
@@ -42,15 +40,15 @@ export interface PaymentMethodOption {
 }
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-payment-form-dialog',
   standalone: true,
   imports: [
+    SubmitButtonComponent,
     CancelButtonComponent,
     TranslatePipe,
     LocalizedCurrencyPipe,
-    ShortcutDirective,
-    PermissionDirective,
     DialogModule,
     ButtonModule,
     InputNumberModule,

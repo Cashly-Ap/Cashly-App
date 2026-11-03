@@ -1,4 +1,6 @@
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { StatusVariant } from '@shared/models/status-variant';
+import { quoteStatusVariant } from '@features/sales/quotes/models/quote-status.presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -66,13 +68,17 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-quote-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
@@ -347,14 +353,8 @@ export class QuoteListPageComponent implements OnInit {
     return getQuoteStatusLabel(status);
   }
 
-  getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
-    const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
-      [QuoteStatus.DRAFT]: 'label',
-      [QuoteStatus.CANCELLED]: 'danger',
-      [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
-      [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: QuoteStatus): StatusVariant {
+    return quoteStatusVariant(status);
   }
 
   private loadWithFilters(): void {

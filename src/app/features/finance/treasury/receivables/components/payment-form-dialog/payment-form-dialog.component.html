@@ -289,14 +289,11 @@
         styleClass="font-medium w-full sm:w-auto"
         (cancelled)="onCancel()"
       />
-      <p-button
-        appShortcut="submit"
-        [appPermissionModule]="'FINANCE_RECEIVABLES'"
-        [appPermission]="'EXECUTE'"
-        severity="contrast"
-        [label]="'finance.treasury.receivables.recordPayment' | translate"
-        icon="pi pi-check"
-        (onClick)="onSubmit()"
+      <app-submit-button
+        [permissionModule]="'FINANCE_RECEIVABLES'"
+        [permission]="'EXECUTE'"
+        labelKey="finance.treasury.receivables.recordPayment"
+        (action)="onSubmit()"
         [disabled]="form.invalid || loading()"
         [loading]="loading()"
         styleClass="font-medium w-full sm:w-auto"

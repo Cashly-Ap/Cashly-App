@@ -58,8 +58,8 @@ describe('FormActionsComponent', () => {
   });
 
   it('should have submit button with type submit', () => {
-    const submitButton = fixture.debugElement.queryAll(By.css('p-button'))[1];
-    expect(submitButton.nativeElement.getAttribute('type')).toBe('submit');
+    const submitButton = compiled.querySelector('app-submit-button button[type="submit"]');
+    expect(submitButton).not.toBeNull();
   });
 
   it('should disable submit button when disabled input is true', () => {

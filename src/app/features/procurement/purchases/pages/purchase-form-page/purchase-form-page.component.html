@@ -51,14 +51,10 @@
                 }
               </div>
             } @else {
-              <button
-                type="button"
-                class="w-full flex items-center gap-2 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 text-surface-400 dark:text-surface-500 text-sm transition-colors"
-                (click)="openPicker()"
-              >
-                <i class="pi pi-search text-sm"></i>
-                {{ 'procurement.purchases.searchAndSelectASupplier' | translate }}
-              </button>
+              <app-picker-trigger
+                labelKey="procurement.purchases.searchAndSelectASupplier"
+                (open)="openPicker()"
+              />
             }
             <div class="min-h-[20px] mt-1.5">
               @if (form.get('supplierId')?.invalid && form.get('supplierId')?.touched) {

@@ -1,0 +1,14 @@
+<p-button
+  [appShortcut]="shortcut()"
+  [appPermission]="resolvedPermission()"
+  [appPermissionModule]="permissionModule()"
+  [appRequiredPermissions]="requiredPermissions()"
+  [type]="type()"
+  [label]="label() || (labelKey() | translate)"
+  [icon]="resolvedIcon()"
+  [severity]="severity()"
+  [styleClass]="resolvedStyleClass()"
+  [disabled]="disabled()"
+  [loading]="loading()"
+  (onClick)="action.emit()"
+/>

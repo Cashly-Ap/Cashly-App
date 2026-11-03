@@ -1,0 +1,11 @@
+<div
+  [class]="
+    'rounded-2xl border border-surface-200 bg-surface-0 p-4 dark:border-surface-800 dark:bg-surface-900 ' +
+    extraClass()
+  "
+>
+  <p class="text-xs text-surface-500">{{ labelKey() | translate }}</p>
+  <p class="mt-2 text-2xl font-semibold" [class]="valueClass()">
+    <ng-content />
+  </p>
+</div>

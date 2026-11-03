@@ -1,4 +1,9 @@
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { StatusVariant } from '@shared/models/status-variant';
+import {
+  invoiceStatusVariant,
+  returnStatusVariant,
+} from '@features/finance/billing/invoices/models/invoice-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -145,16 +150,8 @@ export class InvoiceDetailPageComponent implements OnInit {
     return getInvoiceStatusLabel(status);
   }
 
-  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' | 'warning' {
-    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
-      [InvoiceStatus.DRAFT]: 'label',
-      [InvoiceStatus.PENDING_PAYMENT]: 'info',
-      [InvoiceStatus.PARTIALLY_PAID]: 'info',
-      [InvoiceStatus.PAID]: 'success',
-      [InvoiceStatus.CANCELLED]: 'danger',
-      [InvoiceStatus.FULLY_RETURNED]: 'info',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: InvoiceStatus): StatusVariant {
+    return invoiceStatusVariant(status);
   }
 
   getReturnStatusLabel(returnStatus: string | null): string {
@@ -165,10 +162,8 @@ export class InvoiceDetailPageComponent implements OnInit {
     return returnStatus ? (labels[returnStatus] ?? '') : '';
   }
 
-  getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
-    if (returnStatus === 'PARTIAL') return 'warning';
-    if (returnStatus === 'FULL') return 'info';
-    return undefined;
+  getReturnStatusVariant(returnStatus: string | null): StatusVariant | undefined {
+    return returnStatusVariant(returnStatus);
   }
 
   canCancel(status: InvoiceStatus): boolean {

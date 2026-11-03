@@ -1,4 +1,6 @@
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { StatusVariant } from '@shared/models/status-variant';
+import { orderStatusVariant } from '@features/sales/orders/models/order-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -26,11 +28,13 @@ import {
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
 @Component({
   selector: 'app-order-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CodeBadgeComponent,
     BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
@@ -92,13 +96,7 @@ export class OrderDetailPageComponent implements OnInit {
     return getOrderStatusLabel(status);
   }
 
-  getStatusVariant(status: OrderStatus): 'success' | 'warning' | 'danger' | 'info' | 'label' {
-    const variants: Record<OrderStatus, 'success' | 'warning' | 'danger' | 'info' | 'label'> = {
-      [OrderStatus.DRAFT]: 'label',
-      [OrderStatus.CONFIRMED]: 'info',
-      [OrderStatus.CANCELLED]: 'danger',
-      [OrderStatus.INVOICED]: 'success',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: OrderStatus): StatusVariant {
+    return orderStatusVariant(status);
   }
 }

@@ -55,13 +55,17 @@ import {
 } from '@features/platform/auth/user/models/enums/user-type.enum';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-users-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,

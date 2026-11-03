@@ -31,10 +31,12 @@ import { CustomerPickerDialogComponent } from '@features/sales/orders/components
 import { ORDER_SUCCESS_MESSAGES } from '@features/sales/orders/messages/success-messages';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
 @Component({
   selector: 'app-order-form-page',
   standalone: true,
   imports: [
+    PickerTriggerComponent,
     PanelCardComponent,
     TranslatePipe,
     ReactiveFormsModule,

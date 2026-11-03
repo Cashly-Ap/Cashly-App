@@ -43,14 +43,10 @@
                 </button>
               </div>
             } @else {
-              <button
-                type="button"
-                class="flex w-full items-center gap-2 rounded-lg border border-surface-200 bg-white px-3 py-2.5 text-sm text-surface-400 transition-colors hover:border-surface-400 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-500 dark:hover:border-surface-500"
-                (click)="openPicker()"
-              >
-                <i class="pi pi-search text-sm"></i>
-                {{ 'finance.billing.creditnotes.searchAndSelectACustomer' | translate }}
-              </button>
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchAndSelectACustomer"
+                (open)="openPicker()"
+              />
             }
             <div class="mt-1.5 min-h-5">
               @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
@@ -91,14 +87,10 @@
                 </button>
               </div>
             } @else {
-              <button
-                type="button"
-                class="flex w-full items-center gap-2 rounded-lg border border-surface-200 bg-white px-3 py-2.5 text-sm text-surface-400 transition-colors hover:border-surface-400 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-500 dark:hover:border-surface-500"
-                (click)="showInvoicePicker.set(true)"
-              >
-                <i class="pi pi-search text-sm"></i>
-                {{ 'finance.billing.creditnotes.searchInvoiceByNumberCustomerOrDate' | translate }}
-              </button>
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchInvoiceByNumberCustomerOrDate"
+                (open)="showInvoicePicker.set(true)"
+              />
             }
             <div class="mt-1.5 min-h-5">
               @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {

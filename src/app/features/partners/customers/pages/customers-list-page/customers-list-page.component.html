@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'partners.customers.customers' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'partners.customers.manageSystemCustomers' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="partners.customers.customers"
+      subtitle="partners.customers.manageSystemCustomers"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -27,10 +19,7 @@
               (search)="onSearch($event)"
             />
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'partners.customers.customerType' | translate
-                }}</label>
+              <app-filter-field labelKey="partners.customers.customerType">
                 <p-select
                   [options]="customerTypeOptions | translateOptions"
                   [ngModel]="filterType()"
@@ -40,11 +29,8 @@
                   [placeholder]="'finance.billing.invoices.allTypes' | translate"
                   styleClass="w-full"
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.status' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.status">
                 <p-select
                   [options]="activeOptions | translateOptions"
                   [ngModel]="filterActive()"
@@ -54,11 +40,8 @@
                   [placeholder]="'finance.treasury.paymentmethods.all' | translate"
                   styleClass="w-full"
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'partners.suppliers.venezuelanState' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="partners.suppliers.venezuelanState">
                 <p-select
                   [options]="stateOptions"
                   [ngModel]="filterState()"
@@ -68,11 +51,8 @@
                   [filter]="true"
                   [filterPlaceholder]="'partners.customers.labels.searchStates' | translate"
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'inventory.warehouses.municipality' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="inventory.warehouses.municipality">
                 <p-select
                   [options]="municipalityOptions()"
                   [ngModel]="filterMunicipality()"
@@ -83,10 +63,14 @@
                   [filterPlaceholder]="'partners.customers.labels.searchMunicipalities' | translate"
                   [disabled]="!filterState()"
                 />
-              </div>
+              </app-filter-field>
             </app-list-filter>
           </div>
-          <app-create-button labelKey="partners.customers.newCustomer" (create)="onCreate()" />
+          <app-submit-button
+            labelKey="partners.customers.newCustomer"
+            shortcut="new"
+            (action)="onCreate()"
+          />
         </div>
       </div>
     </app-list-container>

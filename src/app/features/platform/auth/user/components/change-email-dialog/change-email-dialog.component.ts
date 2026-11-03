@@ -1,5 +1,4 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { Component, inject, input, output, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -22,13 +21,14 @@ function emailsMatch(group: AbstractControl): ValidationErrors | null {
 }
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-change-email-dialog',
   standalone: true,
   imports: [
+    SubmitButtonComponent,
     CancelButtonComponent,
     TranslatePipe,
-    ShortcutDirective,
     ReactiveFormsModule,
     DialogModule,
     ButtonModule,

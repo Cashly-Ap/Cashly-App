@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'finance.billing.invoices.invoices' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'finance.billing.invoices.manageCustomerInvoices' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.billing.invoices.invoices"
+      subtitle="finance.billing.invoices.manageCustomerInvoices"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -27,10 +19,7 @@
               (search)="onSearch($event)"
             />
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.status' | translate
-                }}</label>
+              <app-filter-field labelKey="finance.billing.invoices.status">
                 <p-select
                   [options]="statusOptions | translateOptions"
                   [ngModel]="selectedStatus()"
@@ -40,11 +29,8 @@
                   [placeholder]="'finance.billing.invoices.activeInvoices' | translate"
                   fluid
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.paymentType' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.paymentType">
                 <p-select
                   [options]="paymentTypeOptions | translateOptions"
                   [ngModel]="filterPaymentType()"
@@ -54,11 +40,8 @@
                   [placeholder]="'finance.billing.invoices.allTypes' | translate"
                   fluid
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'analytics.dashboard.dueDate' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="analytics.dashboard.dueDate">
                 <p-select
                   [options]="dueStatusOptions | translateOptions"
                   [ngModel]="selectedDueStatus()"
@@ -68,11 +51,8 @@
                   [placeholder]="'finance.billing.invoices.allDates' | translate"
                   fluid
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.startDate2' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.startDate2">
                 <p-datepicker
                   [ngModel]="filterDateFrom()"
                   (onSelect)="onDateFromChange($event)"
@@ -81,11 +61,8 @@
                   [placeholder]="'finance.billing.invoices.from' | translate"
                   fluid
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.endDate2' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.endDate2">
                 <p-datepicker
                   [ngModel]="filterDateTo()"
                   (onSelect)="onDateToChange($event)"
@@ -94,11 +71,8 @@
                   [placeholder]="'finance.billing.invoices.to' | translate"
                   fluid
                 />
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-xs font-medium text-surface-500">{{
-                  'finance.billing.invoices.return' | translate
-                }}</label>
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.return">
                 <p-select
                   [options]="returnStatusOptions | translateOptions"
                   [ngModel]="selectedReturnStatus()"
@@ -108,10 +82,14 @@
                   [placeholder]="'finance.billing.invoices.all' | translate"
                   fluid
                 />
-              </div>
+              </app-filter-field>
             </app-list-filter>
           </div>
-          <app-create-button labelKey="finance.billing.invoices.newInvoice" (create)="onCreate()" />
+          <app-submit-button
+            labelKey="finance.billing.invoices.newInvoice"
+            shortcut="new"
+            (action)="onCreate()"
+          />
         </div>
       </div>
     </app-list-container>

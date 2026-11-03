@@ -2,19 +2,11 @@
   @case ('list') {
     <div class="min-h-screen">
       <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <div class="cashly-page-header mb-8 text-left">
-          <p
-            class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-          >
-            {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-          </p>
-          <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-            {{ 'platform.auth.department.departments' | translate }}
-          </h1>
-          <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-            {{ 'platform.auth.department.manageSystemDepartments' | translate }}
-          </p>
-        </div>
+        <app-page-header
+          kicker="finance.billing.creditnotes.cashlyManagement"
+          title="platform.auth.department.departments"
+          subtitle="platform.auth.department.manageSystemDepartments"
+        />
         <app-list-container>
           <div class="px-4 sm:px-6 py-4">
             <div
@@ -44,9 +36,10 @@
                   </div>
                 </app-list-filter>
               </div>
-              <app-create-button
+              <app-submit-button
                 labelKey="platform.auth.department.newDepartment"
-                (create)="onCreate()"
+                shortcut="new"
+                (action)="onCreate()"
               />
             </div>
           </div>

@@ -12,12 +12,9 @@
     [tooltipOptions]="{ showDelay: 200 }"
     class="inline-flex"
   >
-    <p-button
-      appShortcut="submit"
+    <app-submit-button
       type="submit"
-      [label]="submitLabel() | translate"
-      icon="pi pi-check"
-      severity="contrast"
+      [label]="submitLabel()"
       [loading]="loading()"
       [disabled]="disabled()"
     />

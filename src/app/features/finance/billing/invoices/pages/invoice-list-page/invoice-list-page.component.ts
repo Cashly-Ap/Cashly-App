@@ -1,4 +1,9 @@
 import { LanguageService } from '@core/i18n/language.service';
+import { StatusVariant } from '@shared/models/status-variant';
+import {
+  invoiceStatusVariant,
+  returnStatusVariant,
+} from '@features/finance/billing/invoices/models/invoice-status.presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -72,13 +77,17 @@ import { connectListNavigation } from '@shared/components/list/list-navigation.s
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
@@ -471,16 +480,8 @@ export class InvoiceListPageComponent implements OnInit {
     return getPaymentTypeLabel(paymentType);
   }
 
-  getStatusVariant(status: InvoiceStatus): 'success' | 'danger' | 'info' | 'label' | 'warning' {
-    const variants: Record<InvoiceStatus, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
-      [InvoiceStatus.DRAFT]: 'label',
-      [InvoiceStatus.PENDING_PAYMENT]: 'info',
-      [InvoiceStatus.PARTIALLY_PAID]: 'info',
-      [InvoiceStatus.PAID]: 'success',
-      [InvoiceStatus.CANCELLED]: 'danger',
-      [InvoiceStatus.FULLY_RETURNED]: 'info',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: InvoiceStatus): StatusVariant {
+    return invoiceStatusVariant(status);
   }
 
   getReturnStatusLabel(returnStatus: string | null): string {
@@ -495,10 +496,8 @@ export class InvoiceListPageComponent implements OnInit {
     return Math.max(0, invoice.total - invoice.paidAmount);
   }
 
-  getReturnStatusVariant(returnStatus: string | null): 'warning' | 'info' | undefined {
-    if (returnStatus === 'PARTIAL') return 'warning';
-    if (returnStatus === 'FULL') return 'info';
-    return undefined;
+  getReturnStatusVariant(returnStatus: string | null): StatusVariant | undefined {
+    return returnStatusVariant(returnStatus);
   }
 
   canCancel(status: InvoiceStatus): boolean {

@@ -2,7 +2,6 @@ import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -41,16 +40,17 @@ interface InvoiceLineFormData {
 }
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-return-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SubmitButtonComponent,
     CancelButtonComponent,
     LocalizedNumberPipe,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     CommonModule,
     FormsModule,
     ButtonModule,

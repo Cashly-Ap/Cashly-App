@@ -1,3 +1,4 @@
+import { paymentStatusSeverity } from '@features/finance/treasury/receivables/models/payment-status.presentation';
 import { TooltipModule } from 'primeng/tooltip';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -20,17 +21,6 @@ function getStatusLabel(status: string): string {
       return 'Cancelado';
     default:
       return status;
-  }
-}
-
-function getStatusSeverity(status: string): 'success' | 'warn' | 'danger' | 'info' | 'contrast' {
-  switch (status) {
-    case 'APPLIED':
-      return 'success';
-    case 'CANCELLED':
-      return 'danger';
-    default:
-      return 'info';
   }
 }
 
@@ -114,5 +104,5 @@ export class MerchantPaymentsTabComponent implements OnInit, OnDestroy {
   }
 
   protected readonly getStatusLabel = getStatusLabel;
-  protected readonly getStatusSeverity = getStatusSeverity;
+  protected readonly getStatusSeverity = paymentStatusSeverity;
 }

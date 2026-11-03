@@ -7,21 +7,11 @@
   (onShow)="onDialogShow()"
 >
   <ng-template pTemplate="header">
-    <div class="flex items-center gap-3">
-      <div
-        class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-100 dark:bg-surface-800 shrink-0"
-      >
-        <i class="pi pi-box text-surface-600 dark:text-surface-300 text-lg"></i>
-      </div>
-      <div class="flex flex-col">
-        <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
-          'procurement.purchases.selectProducts' | translate
-        }}</span>
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{
-          'sales.orders.findAndSelectProductsToAddToTheOrder' | translate
-        }}</span>
-      </div>
-    </div>
+    <app-dialog-header
+      icon="pi pi-box"
+      title="procurement.purchases.selectProducts"
+      subtitle="sales.orders.findAndSelectProductsToAddToTheOrder"
+    />
   </ng-template>
 
   <div class="flex flex-col gap-4 pt-1">
@@ -99,9 +89,7 @@
       </span>
     </div>
 
-    <div
-      class="hidden sm:block rounded-lg border border-surface-200 dark:border-surface-700 overflow-hidden"
-    >
+    <app-table-card extraClass="hidden sm:block">
       <table class="w-full text-sm">
         <thead>
           <tr
@@ -255,7 +243,7 @@
           }
         </tbody>
       </table>
-    </div>
+    </app-table-card>
 
     <div class="flex flex-col gap-2 sm:hidden">
       @if (loading()) {
@@ -409,12 +397,12 @@
       </span>
       <div class="flex flex-col sm:flex-row gap-2">
         <app-cancel-button (cancelled)="onCancel()" />
-        <p-button
-          appShortcut="submit"
-          [label]="'finance.billing.invoices.add' | translate"
+        <app-submit-button
+          labelKey="finance.billing.invoices.add"
           icon="pi pi-plus"
+          severity="primary"
           [disabled]="selectedCount() === 0"
-          (onClick)="onAdd()"
+          (action)="onAdd()"
         />
       </div>
     </div>

@@ -2,7 +2,6 @@ import { inject as i18nInject } from '@angular/core';
 import { LanguageService as I18nLanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -26,15 +25,16 @@ import { InvoiceDetails } from '@features/finance/billing/invoices/models/interf
 type NoteType = 'CREDIT' | 'DEBIT';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-note-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SubmitButtonComponent,
     CancelButtonComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     FormsModule,
     ButtonModule,
     TextareaModule,

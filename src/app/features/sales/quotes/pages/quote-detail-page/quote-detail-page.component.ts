@@ -1,4 +1,6 @@
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { StatusVariant } from '@shared/models/status-variant';
+import { quoteStatusVariant } from '@features/sales/quotes/models/quote-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -26,11 +28,13 @@ import {
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
 @Component({
   selector: 'app-quote-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CodeBadgeComponent,
     BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
@@ -92,13 +96,7 @@ export class QuoteDetailPageComponent implements OnInit {
     return getQuoteStatusLabel(status);
   }
 
-  getStatusVariant(status: QuoteStatus): 'success' | 'warning' | 'danger' | 'label' {
-    const variants: Record<QuoteStatus, 'success' | 'warning' | 'danger' | 'label'> = {
-      [QuoteStatus.DRAFT]: 'label',
-      [QuoteStatus.CANCELLED]: 'danger',
-      [QuoteStatus.CONVERTED_TO_ORDER]: 'success',
-      [QuoteStatus.CONVERTED_TO_INVOICE]: 'success',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: QuoteStatus): StatusVariant {
+    return quoteStatusVariant(status);
   }
 }

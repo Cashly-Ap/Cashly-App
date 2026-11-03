@@ -1,7 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -53,17 +52,22 @@ export interface ProductSelection {
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
+import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialog-header.component';
 @Component({
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DialogHeaderComponent,
+    TableCardComponent,
+    SubmitButtonComponent,
     CancelButtonComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,
-    ShortcutDirective,
     DialogModule,
     ButtonModule,
     FormsModule,

@@ -1,18 +1,10 @@
 <div class="min-h-screen">
   <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-    <div class="cashly-page-header mb-8 text-left">
-      <p
-        class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
-      >
-        {{ 'finance.billing.creditnotes.cashlyManagement' | translate }}
-      </p>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight mb-3">
-        {{ 'finance.billing.creditnotes.creditNotes' | translate }}
-      </h1>
-      <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
-        {{ 'finance.billing.creditnotes.manageIssuedCreditNotes' | translate }}
-      </p>
-    </div>
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.billing.creditnotes.creditNotes"
+      subtitle="finance.billing.creditnotes.manageIssuedCreditNotes"
+    />
 
     <app-list-container>
       <div class="px-4 sm:px-6 py-4">
@@ -28,10 +20,7 @@
             />
             <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
               <div class="flex flex-col gap-3">
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{
-                    'finance.billing.creditnotes.startDate' | translate
-                  }}</label>
+                <app-filter-field labelKey="finance.billing.creditnotes.startDate">
                   <p-datePicker
                     [(ngModel)]="dateFrom"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
@@ -40,24 +29,22 @@
                     (onSelect)="clearFilters(); clearFilters()"
                     (onSelect)="dateFrom() ? null : null"
                   />
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-xs font-medium text-surface-500">{{
-                    'finance.billing.creditnotes.endDate' | translate
-                  }}</label>
+                </app-filter-field>
+                <app-filter-field labelKey="finance.billing.creditnotes.endDate">
                   <p-datePicker
                     [(ngModel)]="dateTo"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                     [showIcon]="true"
                     styleClass="w-full"
                   />
-                </div>
+                </app-filter-field>
               </div>
             </app-list-filter>
           </div>
-          <app-create-button
+          <app-submit-button
             labelKey="finance.billing.creditnotes.newCreditNote"
-            (create)="onCreate()"
+            shortcut="new"
+            (action)="onCreate()"
           />
         </div>
       </div>

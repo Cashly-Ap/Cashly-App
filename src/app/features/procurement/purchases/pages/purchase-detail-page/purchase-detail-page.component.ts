@@ -1,4 +1,6 @@
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { StatusVariant } from '@shared/models/status-variant';
+import { purchaseStatusVariant } from '@features/procurement/purchases/models/purchase-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -26,11 +28,13 @@ import {
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
 @Component({
   selector: 'app-purchase-detail-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CodeBadgeComponent,
     BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,
@@ -92,12 +96,7 @@ export class PurchaseDetailPageComponent implements OnInit {
     return getPurchaseStatusLabel(status);
   }
 
-  getStatusVariant(status: PurchaseStatus): 'success' | 'danger' | 'label' {
-    const variants: Record<PurchaseStatus, 'success' | 'danger' | 'label'> = {
-      [PurchaseStatus.DRAFT]: 'label',
-      [PurchaseStatus.CONFIRMED]: 'success',
-      [PurchaseStatus.CANCELLED]: 'danger',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: PurchaseStatus): StatusVariant {
+    return purchaseStatusVariant(status);
   }
 }

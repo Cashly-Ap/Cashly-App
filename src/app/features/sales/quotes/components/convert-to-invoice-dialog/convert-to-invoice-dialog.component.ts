@@ -57,6 +57,7 @@ interface LineWithStockInfo {
   hasNegativeStock: boolean;
 }
 
+import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
 @Component({
   selector: 'app-convert-to-invoice-dialog',
   standalone: true,
@@ -73,6 +74,7 @@ interface LineWithStockInfo {
     `,
   ],
   imports: [
+    TableCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedNumberPipe,

@@ -1,4 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { StatusVariant } from '@shared/models/status-variant';
+import { purchaseStatusVariant } from '@features/procurement/purchases/models/purchase-status.presentation';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -61,13 +63,17 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
-import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
 @Component({
   selector: 'app-purchase-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CreateButtonComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
@@ -335,13 +341,8 @@ export class PurchaseListPageComponent implements OnInit {
     return getPurchaseStatusLabel(status);
   }
 
-  getStatusVariant(status: PurchaseStatus): 'success' | 'danger' | 'label' {
-    const variants: Record<PurchaseStatus, 'success' | 'danger' | 'label'> = {
-      [PurchaseStatus.DRAFT]: 'label',
-      [PurchaseStatus.CONFIRMED]: 'success',
-      [PurchaseStatus.CANCELLED]: 'danger',
-    };
-    return variants[status] ?? 'label';
+  getStatusVariant(status: PurchaseStatus): StatusVariant {
+    return purchaseStatusVariant(status);
   }
 
   private loadWithFilters(): void {

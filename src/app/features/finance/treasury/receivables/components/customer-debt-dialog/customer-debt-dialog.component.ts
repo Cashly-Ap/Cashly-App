@@ -1,3 +1,5 @@
+import { StatusVariant } from '@shared/models/status-variant';
+import { invoiceStatusVariant } from '@features/finance/billing/invoices/models/invoice-status.presentation';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { LanguageService } from '@core/i18n/language.service';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
@@ -305,16 +307,8 @@ export class CustomerDebtDialogComponent {
     return invoiceStatusTranslationKey(status);
   }
 
-  protected getStatusVariant(status: string): 'success' | 'danger' | 'info' | 'label' | 'warning' {
-    const variants: Record<string, 'success' | 'danger' | 'info' | 'label' | 'warning'> = {
-      DRAFT: 'label',
-      PENDING_PAYMENT: 'info',
-      PARTIALLY_PAID: 'info',
-      PAID: 'success',
-      CANCELLED: 'danger',
-      FULLY_RETURNED: 'info',
-    };
-    return variants[status] ?? 'label';
+  protected getStatusVariant(status: string): StatusVariant {
+    return invoiceStatusVariant(status);
   }
 
   protected amountColor(tone: ReceivableTone): string {

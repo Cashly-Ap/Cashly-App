@@ -93,15 +93,12 @@
         styleClass="w-full sm:w-auto"
         (cancelled)="onCancel()"
       />
-      <p-button
-        appShortcut="submit"
-        [label]="submitLabel() | translate"
-        icon="pi pi-check"
-        severity="contrast"
+      <app-submit-button
+        [label]="submitLabel()"
         styleClass="w-full sm:w-auto"
         [loading]="isSubmitting()"
         [disabled]="isSubmitting()"
-        (onClick)="submit()"
+        (action)="submit()"
       />
     </div>
   </ng-template>

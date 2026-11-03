@@ -1,3 +1,5 @@
+import { StatusSeverity } from '@shared/models/status-variant';
+import { cashRegisterStatusSeverity } from '@features/finance/treasury/cash-register/models/cash-register-status.presentation';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -24,11 +26,13 @@ import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/ca
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 @Component({
   selector: 'app-cash-register-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PageHeaderComponent,
     TextBadgeComponent,
     PanelCardComponent,
     TranslatePipe,
@@ -105,16 +109,7 @@ export class CashRegisterPageComponent implements OnInit {
     }
   }
 
-  getStatusSeverity(status: string | undefined): 'info' | 'warn' | 'success' | 'contrast' {
-    switch (status) {
-      case 'OPEN':
-        return 'info';
-      case 'CLOSED':
-        return 'warn';
-      case 'VERIFIED':
-        return 'success';
-      default:
-        return 'contrast';
-    }
+  getStatusSeverity(status: string | undefined): StatusSeverity {
+    return cashRegisterStatusSeverity(status);
   }
 }

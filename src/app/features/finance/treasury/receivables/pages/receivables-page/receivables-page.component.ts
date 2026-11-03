@@ -43,11 +43,13 @@ import { SearchFieldComponent } from '@shared/components/ui/search-field/search-
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { listAction } from '@shared/components/list/list-action-builders';
 import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 @Component({
   selector: 'app-receivables-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    PageHeaderComponent,
     MetricCardComponent,
     PanelCardComponent,
     TranslatePipe,

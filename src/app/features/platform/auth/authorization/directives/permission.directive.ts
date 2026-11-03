@@ -20,7 +20,7 @@ import { filter, map } from 'rxjs';
 export class PermissionDirective {
   readonly appRequiredPermissions = input<string[]>([]);
   readonly appPermissionModule = input<BusinessModule | string | null>(null);
-  readonly appPermission = input.required<PermissionAction>();
+  readonly appPermission = input<PermissionAction | null>(null);
 
   private readonly authorization = inject(AuthorizationService);
   private readonly router = inject(Router);
@@ -35,6 +35,8 @@ export class PermissionDirective {
     { initialValue: this.router.url },
   );
   readonly allowed = computed(() => {
+    const action = this.appPermission();
+    if (!action) return true;
     const module =
       (this.appPermissionModule() as BusinessModule | null) ?? moduleForUrl(this.currentUrl());
     const selfService = this.currentUrl().startsWith('/platform/auth');
@@ -42,9 +44,7 @@ export class PermissionDirective {
       const [owner, action] = grant.split(':');
       return this.authorization.can(owner as BusinessModule, action as PermissionAction);
     });
-    return module
-      ? this.authorization.can(module, this.appPermission()) && extraGrants
-      : selfService;
+    return module ? this.authorization.can(module, action) && extraGrants : selfService;
   });
 
   constructor() {

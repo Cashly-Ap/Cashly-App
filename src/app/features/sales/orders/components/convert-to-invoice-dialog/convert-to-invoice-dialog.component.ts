@@ -38,6 +38,7 @@ import { DocumentConfirmationModel } from '@shared/models/document-confirmation'
 import { TranslationService } from '@core/i18n/translation.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
+import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
 @Component({
   selector: 'app-convert-order-to-invoice-dialog',
   standalone: true,
@@ -54,6 +55,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
     `,
   ],
   imports: [
+    TableCardComponent,
     DocumentStockReviewComponent,
     TranslateOptionsPipe,
     TranslatePipe,
