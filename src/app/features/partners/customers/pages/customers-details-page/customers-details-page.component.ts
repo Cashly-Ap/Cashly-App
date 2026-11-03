@@ -1,6 +1,7 @@
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -59,6 +60,7 @@ export class CustomersDetailsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
 
   customer = signal<CustomerDetails | null>(null);
   loading = signal(false);
@@ -128,6 +130,12 @@ export class CustomersDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/partners/customers', id, 'edit']);
     }
+  }
+
+  onDelete(): void {
+    const item = this.customer();
+    if (!item) return;
+    this.deletion.open('customers', item.id, item.legalName, () => this.router.navigate(['/partners/customers']));
   }
 
   onBack(): void {

@@ -21,8 +21,16 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              @if (currentOrder.status === OrderStatus.DRAFT) {
-                <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentOrder.status === OrderStatus.DRAFT) {
                   <p-button
                     [appPermission]="'UPDATE'"
                     [label]="'finance.billing.invoices.edit' | translate"
@@ -31,8 +39,45 @@
                     (onClick)="actionsMenu.hide(); onEdit()"
                     styleClass="w-full justify-start text-left text-sm"
                   />
-                </app-detail-actions-menu>
-              }
+                  <p-button
+                    [appPermission]="'CONFIRM'"
+                    [label]="'sales.orders.confirmOrder' | translate"
+                    icon="pi pi-check"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConfirm()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (currentOrder.status === OrderStatus.CONFIRMED) {
+                  <p-button
+                    [appPermission]="'CREATE'"
+                    [appPermissionModule]="'FINANCE_INVOICES'"
+                    [label]="'sales.orders.convertToInvoice' | translate"
+                    icon="pi pi-file"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConvertToInvoice()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [label]="'sales.orders.cancelOrder' | translate"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelOrder()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
 
@@ -188,3 +233,26 @@
     }
   </div>
 </div>
+
+<app-confirm-order-dialog
+  [visible]="confirmDialogVisible()"
+  [orderId]="order()?.id ?? null"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>
+<app-cancel-order-dialog
+  [visible]="cancelDialogVisible()"
+  [order]="orderForDialog()"
+  (confirmed)="onCancelDialogConfirmed($event)"
+  (cancelled)="onCancelDialogDismissed()"
+/>
+<app-convert-order-to-invoice-dialog
+  [visible]="invoiceDialogVisible()"
+  [orderId]="order()?.id ?? null"
+  [orderNumber]="order()?.orderNumber ?? ''"
+  [customerName]="order()?.customerAlias ?? ''"
+  [totalAmount]="order()?.totalAmount ?? 0"
+  [customerId]="order()?.customerId ?? ''"
+  (confirmed)="onInvoiceDialogConfirmed($event)"
+  (cancelled)="onInvoiceDialogDismissed()"
+/>

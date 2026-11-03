@@ -1,5 +1,6 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -46,6 +47,7 @@ export class PriceTypesDetailsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
 
   priceType = signal<PriceTypeDetails | null>(null);
   loading = signal(false);
@@ -82,6 +84,12 @@ export class PriceTypesDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/catalog/price-types', id, 'edit']);
     }
+  }
+
+  onDelete(): void {
+    const item = this.priceType();
+    if (!item) return;
+    this.deletion.open('price-types', item.id, item.name, () => this.router.navigate(['/catalog/price-types']));
   }
 
   onBack(): void {

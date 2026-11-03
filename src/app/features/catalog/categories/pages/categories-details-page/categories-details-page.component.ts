@@ -1,6 +1,7 @@
 import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { Component, inject, OnInit, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -48,6 +49,7 @@ export class CategoriesDetailsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
 
   category = signal<CategoryDetails | null>(null);
   loading = signal(false);
@@ -84,6 +86,12 @@ export class CategoriesDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/catalog/categories', id, 'edit']);
     }
+  }
+
+  onDelete(): void {
+    const item = this.category();
+    if (!item) return;
+    this.deletion.open('categories', item.id, item.name, () => this.router.navigate(['/catalog/categories']));
   }
 
   onBack(): void {

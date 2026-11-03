@@ -1,6 +1,7 @@
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -68,6 +69,7 @@ export class ProductsDetailsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
 
   product = signal<ProductDetails | null>(null);
   stockByWarehouse = signal<ProductStockByWarehouse[]>([]);
@@ -134,6 +136,12 @@ export class ProductsDetailsPageComponent implements OnInit {
         });
       },
     });
+  }
+
+  onDelete(): void {
+    const item = this.product();
+    if (!item) return;
+    this.deletion.open('products', item.id, item.name, () => this.router.navigate(['/catalog/products']));
   }
 
   onBack(): void {

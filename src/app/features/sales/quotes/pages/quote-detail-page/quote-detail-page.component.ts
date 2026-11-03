@@ -29,6 +29,14 @@ import {
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
+import { ConvertToOrderDialogComponent } from '@features/sales/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
+import { PdfViewerService } from '@core/pdf-viewer';
+import { ConvertToInvoiceRequest } from '@features/sales/quotes/services/api/quote-api.service';
+import { QuoteList } from '@features/sales/quotes/models/interfaces/quote-list.interface';
+import { computed, signal } from '@angular/core';
 @Component({
   selector: 'app-quote-detail-page',
   standalone: true,
@@ -51,6 +59,8 @@ import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
+    ConvertToOrderDialogComponent,
+    ConvertToInvoiceDialogComponent,
   ],
   templateUrl: './quote-detail-page.component.html',
 })
@@ -60,11 +70,17 @@ export class QuoteDetailPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly quoteService = inject(QuoteApplicationService);
   private readonly messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
+  private readonly cancellation = inject(CancelDialogService);
+  private readonly pdfViewerService = inject(PdfViewerService);
 
   readonly quote = this.quoteService.currentQuote;
   readonly loading = this.quoteService.loading;
 
   readonly QuoteStatus = QuoteStatus;
+  readonly orderDialogVisible = signal(false);
+  readonly invoiceDialogVisible = signal(false);
+  readonly quoteForDialog = computed(() => this.quote() as unknown as QuoteList | null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -81,6 +97,98 @@ export class QuoteDetailPageComponent implements OnInit {
         },
       });
     }
+  }
+
+  onDownloadPdf(): void {
+    const quote = this.quote();
+    if (!quote) return;
+    this.pdfViewerService.open({
+      url: `/api/reports/quotes/${quote.id}/pdf`,
+      title: `Presupuesto #${quote.quoteNumber}`,
+      fileName: `presupuesto-${quote.quoteNumber}.pdf`,
+    });
+  }
+
+  onConvertToOrder(): void {
+    this.orderDialogVisible.set(true);
+  }
+
+  onOrderDialogConfirmed(): void {
+    const quote = this.quote();
+    if (!quote) return;
+    this.orderDialogVisible.set(false);
+    this.quoteService.convertToOrder(quote.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Presupuesto #${quote.quoteNumber} convertido a pedido exitosamente`,
+          life: 3000,
+        });
+        this.quoteService.loadById(quote.id).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al convertir el presupuesto a pedido. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onOrderDialogDismissed(): void {
+    this.orderDialogVisible.set(false);
+  }
+
+  onConvertToInvoice(): void {
+    this.invoiceDialogVisible.set(true);
+  }
+
+  onInvoiceDialogConfirmed(request: ConvertToInvoiceRequest): void {
+    const quote = this.quote();
+    if (!quote) return;
+    this.invoiceDialogVisible.set(false);
+    this.quoteService.convertToInvoice(quote.id, request).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Presupuesto #${quote.quoteNumber} convertido a factura exitosamente`,
+          life: 3000,
+        });
+        this.quoteService.loadById(quote.id).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al convertir el presupuesto a factura. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onInvoiceDialogDismissed(): void {
+    this.invoiceDialogVisible.set(false);
+  }
+
+  onCancelQuote(): void {
+    const quote = this.quote();
+    if (!quote) return;
+    this.cancellation.open('quotes', quote.id, quote.quoteNumber, () =>
+      this.quoteService.loadById(quote.id).subscribe(),
+    );
+  }
+
+  onDelete(): void {
+    const quote = this.quote();
+    if (!quote) return;
+    this.deletion.open('quotes', quote.id, quote.quoteNumber, () =>
+      this.router.navigate(['/sales/quotes']),
+    );
   }
 
   onBack(): void {

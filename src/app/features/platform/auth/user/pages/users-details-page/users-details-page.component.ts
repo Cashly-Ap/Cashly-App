@@ -2,6 +2,7 @@ import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.se
 import { TranslationService } from '@core/i18n/translation.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
@@ -62,6 +63,7 @@ export class UsersDetailsPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
 
   user = signal<UserDetails | null>(null);
   loading = signal(false);
@@ -101,6 +103,12 @@ export class UsersDetailsPageComponent implements OnInit {
     if (id) {
       this.router.navigate(['/platform/users', id, 'edit']);
     }
+  }
+
+  onDelete(): void {
+    const item = this.user();
+    if (!item) return;
+    this.deletion.open('users', item.id, item.userName, () => this.router.navigate(['/platform/users']));
   }
 
   onBack(): void {

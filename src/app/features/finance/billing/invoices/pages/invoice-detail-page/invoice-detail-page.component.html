@@ -24,6 +24,14 @@
                 (back)="onBack()"
               />
               <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
                 @if (currentInvoice.status === InvoiceStatus.DRAFT) {
                   <p-button
                     [appPermission]="'UPDATE'"
@@ -31,6 +39,34 @@
                     icon="pi pi-pencil"
                     [link]="true"
                     (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CONFIRM'"
+                    [label]="'finance.billing.invoices.confirmInvoice' | translate"
+                    icon="pi pi-check"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConfirmInvoice()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (canCancel(currentInvoice.status)) {
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [label]="'finance.billing.invoices.cancelInvoice' | translate"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelInvoice()"
                     styleClass="w-full justify-start text-left text-sm"
                   />
                 }
@@ -609,4 +645,17 @@
   [invoiceId]="invoice()?.id ?? null"
   (confirmed)="onDuplicateDialogConfirmed($event)"
   (cancelled)="onDuplicateDialogDismissed()"
+/>
+
+<app-confirm-invoice-dialog
+  [visible]="confirmDialogVisible()"
+  [invoice]="invoiceForDialog()"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>
+<app-cancel-invoice-dialog
+  [visible]="cancelDialogVisible()"
+  [invoice]="invoiceForDialog()"
+  (confirmed)="onCancelDialogConfirmed($event)"
+  (cancelled)="onCancelDialogDismissed()"
 />

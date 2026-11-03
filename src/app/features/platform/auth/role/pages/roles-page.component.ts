@@ -364,8 +364,9 @@ export class RolesPageComponent {
       },
     });
   }
-  remove(item: Department): void {
-    this.deletion.open('roles', item.id, item.name, () => this.load());
+  remove(item: Partial<Role>): void {
+    if (!item.id) return;
+    this.deletion.open('roles', item.id, item.name ?? '', () => this.load());
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {
     this.messages.add({

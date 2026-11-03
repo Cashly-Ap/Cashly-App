@@ -21,20 +21,62 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              @if (currentQuote.status === QuoteStatus.DRAFT) {
-                <app-detail-actions-menu #actionsMenu>
-                  @if (currentQuote.status === QuoteStatus.DRAFT) {
-                    <p-button
-                      [appPermission]="'UPDATE'"
-                      [label]="'finance.billing.invoices.edit' | translate"
-                      icon="pi pi-pencil"
-                      [link]="true"
-                      (onClick)="actionsMenu.hide(); onEdit()"
-                      styleClass="w-full justify-start text-left text-sm"
-                    />
-                  }
-                </app-detail-actions-menu>
-              }
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentQuote.status === QuoteStatus.DRAFT) {
+                  <p-button
+                    [appPermission]="'UPDATE'"
+                    [label]="'finance.billing.invoices.edit' | translate"
+                    icon="pi pi-pencil"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CREATE'"
+                    [appPermissionModule]="'SALES_ORDERS'"
+                    [label]="'sales.quotes.convertToOrder' | translate"
+                    icon="pi pi-shopping-cart"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConvertToOrder()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CREATE'"
+                    [appPermissionModule]="'FINANCE_INVOICES'"
+                    [label]="'sales.quotes.permissions.convertToInvoice' | translate"
+                    icon="pi pi-file"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConvertToInvoice()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [label]="'sales.quotes.permissions.cancel' | translate"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelQuote()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+              </app-detail-actions-menu>
               @if (currentQuote.status === QuoteStatus.CONVERTED_TO_ORDER) {
                 <span
                   class="flex items-center gap-2 text-sm text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-3 py-2 rounded-lg"
@@ -218,3 +260,16 @@
     }
   </div>
 </div>
+
+<app-convert-to-order-dialog
+  [visible]="orderDialogVisible()"
+  [quoteId]="quote()?.id ?? null"
+  (confirmed)="onOrderDialogConfirmed()"
+  (cancelled)="onOrderDialogDismissed()"
+/>
+<app-convert-to-invoice-dialog
+  [visible]="invoiceDialogVisible()"
+  [quoteId]="quote()?.id ?? null"
+  (confirmed)="onInvoiceDialogConfirmed($event)"
+  (cancelled)="onInvoiceDialogDismissed()"
+/>

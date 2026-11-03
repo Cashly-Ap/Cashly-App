@@ -293,8 +293,9 @@ export class DepartmentsPageComponent {
       },
     });
   }
-  remove(item: Department): void {
-    this.deletion.open('departments', item.id, item.name, () => this.load());
+  remove(item: Partial<Department>): void {
+    if (!item.id) return;
+    this.deletion.open('departments', item.id, item.name ?? '', () => this.load());
   }
   private fail(error: { status?: number; error?: { message?: string } }): void {
     this.messages.add({

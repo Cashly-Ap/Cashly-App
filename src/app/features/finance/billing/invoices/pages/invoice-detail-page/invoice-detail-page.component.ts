@@ -31,6 +31,11 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { DuplicateInvoiceDialogComponent } from '@features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
+import { ConfirmInvoiceDialogComponent, type ConfirmInvoiceSubmit } from '@features/finance/billing/invoices/components/confirm-invoice-dialog/confirm-invoice-dialog.component';
+import { CancelInvoiceDialogComponent } from '@features/finance/billing/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { PdfViewerService } from '@core/pdf-viewer';
+import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
 import { InvoiceApplicationService } from '@features/finance/billing/invoices/services/application/invoice-application.service';
 import {
   InvoiceStatus,
@@ -65,6 +70,8 @@ import { BackButtonComponent } from '@shared/components/ui/back-button/back-butt
     PageHeaderComponent,
     TextBadgeComponent,
     DuplicateInvoiceDialogComponent,
+    ConfirmInvoiceDialogComponent,
+    CancelInvoiceDialogComponent,
   ],
   templateUrl: './invoice-detail-page.component.html',
 })
@@ -74,6 +81,8 @@ export class InvoiceDetailPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly invoiceService = inject(InvoiceApplicationService);
   private readonly messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
+  private readonly pdfViewerService = inject(PdfViewerService);
 
   readonly invoice = this.invoiceService.currentInvoice;
   readonly loading = this.invoiceService.loading;
@@ -88,6 +97,9 @@ export class InvoiceDetailPageComponent implements OnInit {
   readonly InvoiceStatus = InvoiceStatus;
 
   readonly duplicateDialogVisible = signal(false);
+  readonly confirmDialogVisible = signal(false);
+  readonly cancelDialogVisible = signal(false);
+  readonly invoiceForDialog = computed(() => this.invoice() as unknown as InvoiceList | null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -104,6 +116,88 @@ export class InvoiceDetailPageComponent implements OnInit {
         },
       });
     }
+  }
+
+  onDownloadPdf(): void {
+    const invoice = this.invoice();
+    if (!invoice) return;
+    this.pdfViewerService.open({
+      url: `/api/reports/invoices/${invoice.id}/pdf`,
+      title: `Factura #${invoice.invoiceNumber}`,
+      fileName: `factura-${invoice.invoiceNumber}.pdf`,
+    });
+  }
+
+  onConfirmInvoice(): void {
+    this.confirmDialogVisible.set(true);
+  }
+
+  onConfirmDialogConfirmed(data: ConfirmInvoiceSubmit): void {
+    const invoice = this.invoice();
+    if (!invoice) return;
+    this.invoiceService.confirm(invoice.id, data).subscribe({
+      next: () => {
+        this.confirmDialogVisible.set(false);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Factura confirmada exitosamente',
+          life: 3000,
+        });
+        this.invoiceService.loadById(invoice.id).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al confirmar.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onConfirmDialogDismissed(): void {
+    this.confirmDialogVisible.set(false);
+  }
+
+  onCancelInvoice(): void {
+    this.cancelDialogVisible.set(true);
+  }
+
+  onCancelDialogConfirmed(event: { invoiceId: string; reason: string }): void {
+    this.cancelDialogVisible.set(false);
+    this.invoiceService.cancel(event.invoiceId, event.reason).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Factura cancelada exitosamente',
+          life: 3000,
+        });
+        this.invoiceService.loadById(event.invoiceId).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cancelar la factura. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onCancelDialogDismissed(): void {
+    this.cancelDialogVisible.set(false);
+  }
+
+  onDelete(): void {
+    const invoice = this.invoice();
+    if (!invoice) return;
+    this.deletion.open('invoices', invoice.id, invoice.invoiceNumber, () =>
+      this.router.navigate(['/finance/billing/invoices']),
+    );
   }
 
   onBack(): void {
