@@ -112,7 +112,7 @@ Acceptance criteria:
 - `NavigationLookupService` does not import action services.
 - `NavigationLookupService` does not contain action labels.
 
-## Phase C - Module-owned lookup definitions
+## Phase C - Module-owned lookup definitions ✅
 
 Create one `LookupDefinition` per module.
 
@@ -128,6 +128,18 @@ Target file:
 ```
 features/<module>/navigation/<module>.lookup.ts
 ```
+
+Migrated so far:
+
+- `/sales/quotes`
+- `/sales/orders`
+- `/procurement/purchases`
+- `/finance/billing/invoices`
+- `/finance/treasury/receivables`
+
+All navbar routes now have a module-owned lookup definition.
+
+The legacy `list-navigation-data-source.ts` and `list-navigation-filters.ts` remain only as a fallback for tests and for routes without a registered definition. Production registers every route.
 
 Acceptance criteria:
 
