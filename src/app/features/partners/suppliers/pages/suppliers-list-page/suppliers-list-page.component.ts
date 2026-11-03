@@ -2,8 +2,6 @@ import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -56,17 +54,17 @@ import {
 } from '@features/partners/customers/data/venezuela-geo.data';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-suppliers-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,

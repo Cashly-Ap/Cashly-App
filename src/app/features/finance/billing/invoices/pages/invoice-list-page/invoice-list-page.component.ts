@@ -7,8 +7,6 @@ import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -74,19 +72,19 @@ import { connectListNavigation } from '@shared/components/list/list-navigation.s
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-invoice-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,

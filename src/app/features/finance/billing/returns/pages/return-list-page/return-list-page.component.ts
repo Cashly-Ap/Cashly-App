@@ -3,8 +3,6 @@ import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.se
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -46,17 +44,17 @@ import { ReturnList } from '@features/finance/billing/returns/models/interfaces/
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-return-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslatePipe,
     LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,

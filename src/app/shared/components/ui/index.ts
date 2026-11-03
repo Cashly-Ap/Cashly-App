@@ -2,6 +2,7 @@ export * from '@shared/components/ui/panel-card/panel-card.component';
 export * from '@shared/components/ui/back-button/back-button.component';
 export * from '@shared/components/ui/cancel-button/cancel-button.component';
 export * from '@shared/components/ui/metric-card/metric-card.component';
+export * from '@shared/components/ui/create-button/create-button.component';
 export * from '@shared/components/ui/empty-state/empty-state.component';
 export * from '@shared/components/ui/image-viewer-dialog/image-viewer-dialog.component';
 export * from '@shared/components/ui/loading-spinner/loading-spinner.component';

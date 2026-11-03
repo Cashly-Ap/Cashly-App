@@ -2,11 +2,9 @@ import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '../../models/enums/business-module.enum';
 import { AuthorizationService } from '../../../authorization/services/authorization.service';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   Component,
   inject,
@@ -57,18 +55,18 @@ import {
 } from '@features/platform/auth/user/models/enums/user-type.enum';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-users-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     UserAvatarComponent,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     TableModule,

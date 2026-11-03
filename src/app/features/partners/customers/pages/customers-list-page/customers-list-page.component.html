@@ -86,15 +86,7 @@
               </div>
             </app-list-filter>
           </div>
-          <p-button
-            appShortcut="new"
-            [appPermission]="'CREATE'"
-            [label]="'partners.customers.newCustomer' | translate"
-            icon="pi pi-plus"
-            (onClick)="onCreate()"
-            severity="contrast"
-            styleClass="font-medium w-full sm:w-auto"
-          />
+          <app-create-button labelKey="partners.customers.newCustomer" (create)="onCreate()" />
         </div>
       </div>
     </app-list-container>

@@ -1,8 +1,6 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -53,16 +51,16 @@ import { WAREHOUSE_SUCCESS_MESSAGES } from '@features/inventory/warehouses/messa
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-warehouses-list-page',
   standalone: true,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,

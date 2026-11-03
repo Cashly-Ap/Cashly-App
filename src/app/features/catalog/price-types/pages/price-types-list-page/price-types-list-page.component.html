@@ -25,15 +25,7 @@
             [placeholder]="'catalog.pricetypes.searchPriceTypes' | translate"
             (search)="onSearch($event)"
           />
-          <p-button
-            appShortcut="new"
-            [appPermission]="'CREATE'"
-            [label]="'catalog.pricetypes.newPriceType' | translate"
-            icon="pi pi-plus"
-            (onClick)="onCreate()"
-            severity="contrast"
-            styleClass="font-medium w-full sm:w-auto"
-          />
+          <app-create-button labelKey="catalog.pricetypes.newPriceType" (create)="onCreate()" />
         </div>
       </div>
     </app-list-container>

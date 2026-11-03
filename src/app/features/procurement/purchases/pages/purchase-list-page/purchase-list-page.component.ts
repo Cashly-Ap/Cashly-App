@@ -7,8 +7,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subscription } from 'rxjs';
 import { DocumentListAction, documentListAction } from '@shared/models/document-list-action';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -63,19 +61,19 @@ import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messa
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-purchase-list-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    CreateButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
-    ShortcutDirective,
-    PermissionDirective,
     CommonModule,
     FormsModule,
     ButtonModule,

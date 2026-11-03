@@ -1,4 +1,5 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,7 +7,6 @@ import {
   contentChildren,
   viewChild,
 } from '@angular/core';
-import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { ButtonModule } from 'primeng/button';
 import { Popover, PopoverModule } from 'primeng/popover';
 

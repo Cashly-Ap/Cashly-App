@@ -2,7 +2,6 @@ import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
-import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { PaginatorModule } from 'primeng/paginator';
@@ -57,16 +56,17 @@ import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { CreateButtonComponent } from '@shared/components/ui/create-button/create-button.component';
 @Component({
   selector: 'app-roles-page',
   standalone: true,
   imports: [
+    CreateButtonComponent,
     BackButtonComponent,
     PanelCardComponent,
     ListFilterComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    ShortcutDirective,
     ReactiveFormsModule,
     PaginatorModule,
     PopoverModule,

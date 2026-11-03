@@ -60,14 +60,9 @@
               </div>
             </app-list-filter>
           </div>
-          <p-button
-            appShortcut="new"
-            [appPermission]="'CREATE'"
-            [label]="'finance.billing.debitnotes.newDebitNote' | translate"
-            icon="pi pi-plus"
-            (onClick)="onCreate()"
-            severity="contrast"
-            styleClass="font-medium w-full sm:w-auto"
+          <app-create-button
+            labelKey="finance.billing.debitnotes.newDebitNote"
+            (create)="onCreate()"
           />
         </div>
       </div>

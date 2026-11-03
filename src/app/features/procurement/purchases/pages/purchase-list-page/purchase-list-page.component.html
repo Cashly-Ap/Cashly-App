@@ -43,15 +43,7 @@
               </div>
             </app-list-filter>
           </div>
-          <p-button
-            appShortcut="new"
-            [appPermission]="'CREATE'"
-            [label]="'procurement.purchases.newPurchase' | translate"
-            icon="pi pi-plus"
-            (onClick)="onCreate()"
-            severity="contrast"
-            styleClass="font-medium w-full sm:w-auto"
-          />
+          <app-create-button labelKey="procurement.purchases.newPurchase" (create)="onCreate()" />
         </div>
       </div>
     </app-list-container>

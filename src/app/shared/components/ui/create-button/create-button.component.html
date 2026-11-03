@@ -1,0 +1,13 @@
+<p-button
+  appShortcut="new"
+  [appPermission]="permission()"
+  [appPermissionModule]="permissionModule()"
+  [appRequiredPermissions]="requiredPermissions()"
+  [label]="labelKey() | translate"
+  [icon]="icon()"
+  [severity]="severity()"
+  [styleClass]="styleClass()"
+  [disabled]="disabled()"
+  [loading]="loading()"
+  (onClick)="create.emit()"
+/>

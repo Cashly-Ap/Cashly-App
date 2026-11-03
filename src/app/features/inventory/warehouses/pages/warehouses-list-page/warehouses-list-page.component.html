@@ -44,15 +44,7 @@
             </app-list-filter>
           </div>
           <div class="flex flex-col gap-2 sm:flex-row">
-            <p-button
-              appShortcut="new"
-              [appPermission]="'CREATE'"
-              [label]="'inventory.warehouses.newWarehouse' | translate"
-              icon="pi pi-plus"
-              (onClick)="onCreate()"
-              severity="contrast"
-              styleClass="font-medium w-full sm:w-auto"
-            />
+            <app-create-button labelKey="inventory.warehouses.newWarehouse" (create)="onCreate()" />
           </div>
         </div>
       </div>
