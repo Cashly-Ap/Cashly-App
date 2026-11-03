@@ -9,6 +9,7 @@ This directory documents the frontend features of the Cashly application. Featur
 | Area        | Module          | Routes                                | Source                                         | Documentation                              |
 | ----------- | --------------- | ------------------------------------- | ---------------------------------------------- | ------------------------------------------ |
 | Platform    | Auth            | `/platform/auth/*`                    | `features/platform/auth`                       | [auth.md](./auth.md)                       |
+| Platform    | Authorization   | Cross-cutting (no routes)             | `features/platform/auth/authorization`         | [authorization.md](./authorization.md)     |
 | Platform    | Users           | `/platform/users/*`                   | `features/platform/auth/user`                  | [users.md](./users.md)                     |
 | Platform    | Roles           | `/platform/roles/*`                   | `features/platform/auth/role`                  | [users.md](./users.md)                     |
 | Platform    | Departments     | `/platform/departments/*`             | `features/platform/auth/department`            | [users.md](./users.md)                     |

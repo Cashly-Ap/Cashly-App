@@ -1,6 +1,6 @@
 # Users, roles and departments
 
-User administration lives at `/platform/users`, role management at `/platform/roles`, and department management at `/platform/departments`. Their source owners are `src/app/features/platform/auth/{user,role,department,authorization}`.
+User administration lives at `/platform/users`, role management at `/platform/roles`, and department management at `/platform/departments`. Their source owners are `src/app/features/platform/auth/{user,role,department,authorization}`. The permission model, directive, and guards are documented in [authorization.md](./authorization.md).
 
 Users require first names, surnames, one active assignable role and one active department. Username/email keep their separate meanings. An optional structured address contains street, city, region, country and postal code. One optional phone number supports an optional leading plus and 7–15 digits; presentation separators are normalized. The profile exposes a nullable `phone` string.
 

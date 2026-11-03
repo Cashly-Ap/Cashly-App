@@ -881,6 +881,8 @@ export const AUTHENTICATED_AUTH_ROUTES: Routes = [
 
 - All other modules depend on Auth for route protection
 - [Dashboard Module](./dashboard.md) - Default redirect after login
+- [Authorization](./authorization.md) - Permissions, directive, and route guards
+- [Users, Roles and Departments](./users.md) - Administration screens
 - [Customers Module](./customers.md) - Example of protected module
 
 ---

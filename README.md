@@ -16,7 +16,7 @@ Cashly App is the private Angular single-page application for internal business 
 | Finance / Billing  | Invoices, returns, credit notes, and debit notes.                                                     |
 | Finance / Treasury | Cash register, receivables, payment methods, and payment reporting.                                   |
 
-Routes, source paths, and per-module references are in [docs/modules/README.md](docs/modules/README.md). Feature code is grouped under `src/app/features/<area>/`.
+Routes, source paths, and per-module references are in the [documentation index](docs/README.md) and [module index](docs/modules/README.md). Feature code is grouped under `src/app/features/<area>/`.
 
 ## Frontend architecture
 
