@@ -147,7 +147,7 @@ Acceptance criteria:
 - `list-navigation-data-source.ts` is removed or reduced to a registry.
 - `CategoryApiService` and `AccessManagementService` are not imported by core.
 
-## Phase D - Module-owned navbar definitions
+## Phase D - Module-owned navbar definitions ✅
 
 Move `LIST_NAVIGATION_DEFINITIONS` entries to each module:
 
