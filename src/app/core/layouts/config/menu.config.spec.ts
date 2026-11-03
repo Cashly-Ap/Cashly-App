@@ -203,6 +203,19 @@ describe('ERP navigation', () => {
     expect(items.filter((item) => item.requiredAction === 'DELETE')).not.toHaveLength(0);
   });
 
+  it('exposes the quote cancel and receivable payment actions in the navbar', () => {
+    const items = flatten(buildMenuItems(createCallbacks()));
+    for (const label of [
+      'Cancelar presupuesto',
+      'Pagar directamente',
+      'Pagar con validación',
+      'Editar cuenta por cobrar',
+      'Eliminar cuenta por cobrar',
+    ]) {
+      expect(items.some((item) => item.label === label)).toBe(true);
+    }
+  });
+
   it('keeps exactly one internal delete action for every deletable list definition', () => {
     for (const definition of LIST_NAVIGATION_DEFINITIONS) {
       const deleteActions = definition.actions.filter(
@@ -210,7 +223,7 @@ describe('ERP navigation', () => {
       );
       if (deleteActions.length === 0) continue;
       expect(deleteActions).toHaveLength(1);
-      expect(deleteActions[0].label).toBe('Eliminar');
+      expect(deleteActions[0].label).toMatch(/^Eliminar/);
     }
   });
 

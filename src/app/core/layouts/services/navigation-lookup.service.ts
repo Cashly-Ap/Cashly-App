@@ -20,7 +20,7 @@ import { CategoryApiService } from '@features/catalog/categories/services/api/ca
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { MessageService } from 'primeng/api';
-import { DocumentActionDialogService } from './document-action-dialog.service';
+import { ActionDialogService } from '@shared/services/action-dialog.service';
 import {
   ReceivablesActionDialogService,
   ReceivablesActionKind,
@@ -32,8 +32,9 @@ import {
   CashRegisterActionKind,
 } from './cash-register-action-dialog.service';
 import { PendingPaymentActionDialogService } from './pending-payment-action-dialog.service';
-import { PdfViewerService } from '@core/pdf-viewer/services';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
+import { PdfActionService } from '@shared/services/pdf-action.service';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
@@ -98,14 +99,15 @@ export class NavigationLookupService {
   private readonly navigation = inject(ListNavigationService);
   private readonly translations = inject(TranslationService);
   private readonly messages = inject(MessageService);
-  private readonly documentActions = inject(DocumentActionDialogService);
+  private readonly actionDialogs = inject(ActionDialogService);
   private readonly receivablesActions = inject(ReceivablesActionDialogService);
   private readonly invoiceActions = inject(InvoiceActionDialogService);
   private readonly warehouseActions = inject(WarehouseActionDialogService);
   private readonly cashRegisterActions = inject(CashRegisterActionDialogService);
   private readonly pendingPaymentActions = inject(PendingPaymentActionDialogService);
   private readonly deletion = inject(DeleteDialogService);
-  private readonly pdfViewer = inject(PdfViewerService);
+  private readonly cancellation = inject(CancelDialogService);
+  private readonly pdfActions = inject(PdfActionService);
 
 
   open(route: string, label: string, queryParams?: Record<string, string>): void {
@@ -170,14 +172,6 @@ export class NavigationLookupService {
     let search = '';
     let request: Subscription | undefined;
     const owner = {};
-    const modalAction =
-      (route === '/sales/orders' &&
-        ['Confirmar', 'Convertir a factura', 'Cancelar'].includes(label)) ||
-      (route === '/sales/quotes' &&
-        ['Convertir a pedido', 'Convertir a factura'].includes(label)) ||
-      (route === '/procurement/purchases' &&
-        ['Confirmar compra', 'Cancelar compra'].includes(label));
-    const pdfAction = label === 'Descargar PDF';
     const receivablesAction =
       route === '/finance/treasury/receivables' && RECEIVABLES_ACTIONS.includes(label);
     const invoiceAction =
@@ -203,18 +197,17 @@ export class NavigationLookupService {
               this.deletion.open(resource, item.id, item.label);
               return;
             }
-            if (this.navigation.executeRecordAction(route, label, item.id)) return;
-            if (modalAction) {
-              this.documentActions.open({
-                route: route as '/sales/quotes' | '/sales/orders' | '/procurement/purchases',
-                label,
-                recordId: item.id,
-                recordLabel: item.label,
-              });
+            if (label === 'Cancelar') {
+              const resource = route.split('/').filter(Boolean).at(-1) ?? '';
+              this.cancellation.open(resource, item.id, item.label);
               return;
             }
-            if (pdfAction) {
-              this.openRecordPdf(route, item.id, item.label);
+            if (this.navigation.executeRecordAction(route, label, item.id)) return;
+            const resource = route.split('/').filter(Boolean).at(-1) ?? '';
+            if (this.actionDialogs.open(resource, label, item.id)) return;
+            if (label === 'Descargar PDF') {
+              const resource = route.split('/').filter(Boolean).at(-1) ?? '';
+              this.pdfActions.open(resource, item.id, item.label);
               return;
             }
             const recordPath = RECORD_PATH_SEGMENTS[label];
@@ -345,31 +338,4 @@ export class NavigationLookupService {
     load();
   }
 
-  private openRecordPdf(route: string, id: string, recordLabel: string): void {
-    const configuration: Record<string, { url: string; title: string; fileName: string }> = {
-      '/sales/quotes': {
-        url: `/api/reports/quotes/${id}/pdf`,
-        title: `Presupuesto ${recordLabel}`,
-        fileName: `presupuesto-${recordLabel}.pdf`,
-      },
-      '/sales/orders': {
-        url: `/api/reports/orders/${id}/pdf`,
-        title: `Pedido ${recordLabel}`,
-        fileName: `pedido-${recordLabel}.pdf`,
-      },
-      '/procurement/purchases': {
-        url: `/api/reports/purchases/${id}/pdf`,
-        title: `Compra ${recordLabel}`,
-        fileName: `compra-${recordLabel}.pdf`,
-      },
-      '/finance/billing/invoices': {
-        url: `/api/reports/invoices/${id}/pdf`,
-        title: `Factura ${recordLabel}`,
-        fileName: `factura-${recordLabel}.pdf`,
-      },
-    };
-    const selected = configuration[route];
-    if (!selected) return;
-    this.pdfViewer.open(selected);
-  }
 }

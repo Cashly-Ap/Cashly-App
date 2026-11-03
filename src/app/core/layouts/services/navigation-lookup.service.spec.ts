@@ -11,8 +11,11 @@ import { AuthorizationService } from '@features/platform/auth/authorization/serv
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ListNavigationService } from '@shared/components/list/list-navigation.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 import { NavigationLookupService } from './navigation-lookup.service';
-import { DocumentActionDialogService } from './document-action-dialog.service';
+import { ActionDialogService } from '@shared/services/action-dialog.service';
+import { ACTION_DIALOG_HANDLERS } from '@shared/services/action-dialog-handlers.token';
+import { ConfirmOrderDialogWrapperComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.wrapper';
 import {
   ReceivablesActionDialogService,
   ReceivablesActionKind,
@@ -36,13 +39,14 @@ describe('Navbar lookup without navigation', () => {
   const confirmation = { confirm: vi.fn() };
   let lookup: NavigationLookupService;
   let navigation: ListNavigationService;
-  let documentActions: DocumentActionDialogService;
+  let actionDialogs: ActionDialogService;
   let receivablesActions: ReceivablesActionDialogService;
   let invoiceActions: InvoiceActionDialogService;
   let warehouseActions: WarehouseActionDialogService;
   let cashRegisterActions: CashRegisterActionDialogService;
   let pendingPaymentActions: PendingPaymentActionDialogService;
   let deletion: DeleteDialogService;
+  let cancellation: CancelDialogService;
 
   beforeEach(() => {
     TestBed.resetTestingModule();
@@ -69,17 +73,27 @@ describe('Navbar lookup without navigation', () => {
         { provide: OrderApiService, useValue: orderApi },
         { provide: QuoteApiService, useValue: quoteApi },
         { provide: PurchaseApiService, useValue: purchaseApi },
+        {
+          provide: ACTION_DIALOG_HANDLERS,
+          multi: true,
+          useValue: {
+            resource: 'orders',
+            label: 'Confirmar',
+            component: ConfirmOrderDialogWrapperComponent,
+          },
+        },
       ],
     });
     lookup = TestBed.inject(NavigationLookupService);
     navigation = TestBed.inject(ListNavigationService);
-    documentActions = TestBed.inject(DocumentActionDialogService);
+    actionDialogs = TestBed.inject(ActionDialogService);
     receivablesActions = TestBed.inject(ReceivablesActionDialogService);
     invoiceActions = TestBed.inject(InvoiceActionDialogService);
     warehouseActions = TestBed.inject(WarehouseActionDialogService);
     cashRegisterActions = TestBed.inject(CashRegisterActionDialogService);
     pendingPaymentActions = TestBed.inject(PendingPaymentActionDialogService);
     deletion = TestBed.inject(DeleteDialogService);
+    cancellation = TestBed.inject(CancelDialogService);
   });
   it('keeps the current screen while opening, searching, paging and cancelling', () => {
     lookup.open('/catalog/categories', 'Editar');
@@ -141,7 +155,7 @@ describe('Navbar lookup without navigation', () => {
     expect(loadLookup).not.toHaveBeenCalled();
     expect(navigation.session()).toBeNull();
     expect(warehouseActions.request()).toBeNull();
-    expect(documentActions.request()).toBeNull();
+    expect(actionDialogs.request()).toBeNull();
     expect(navigate).toHaveBeenCalledExactlyOnceWith(['/inventory/warehouses/movements'], {
       queryParams: undefined,
     });
@@ -283,11 +297,9 @@ describe('Navbar lookup without navigation', () => {
     lookup.open('/sales/orders', 'Confirmar');
     await navigation.select(navigation.session()!.records()[0]);
     expect(navigate).not.toHaveBeenCalled();
-    expect(documentActions.request()).toEqual({
-      route: '/sales/orders',
-      label: 'Confirmar',
+    expect(actionDialogs.request()).toEqual({
+      component: ConfirmOrderDialogWrapperComponent,
       recordId: 'order-1',
-      recordLabel: 'ORD-001',
     });
   });
 
@@ -315,7 +327,6 @@ describe('Navbar lookup without navigation', () => {
 
   it.each([
     ['Confirmar', 'confirm'],
-    ['Cancelar', 'cancel'],
     ['Duplicar', 'duplicate'],
   ] as const)('opens the invoice %s action dialog without routing', async (label, action) => {
     vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
@@ -330,6 +341,22 @@ describe('Navbar lookup without navigation', () => {
       invoiceId: 'invoice-1',
       invoiceNumber: 'FAC-001',
       action: action satisfies InvoiceActionKind,
+    });
+  });
+
+  it('opens the generic cancel dialog without routing', async () => {
+    vi.spyOn(navigationDataSource, 'loadNavigationLookup').mockReturnValue(
+      of({ items: [{ id: 'invoice-1', label: 'FAC-001', description: '' }], total: 1 }),
+    );
+    lookup.open('/finance/billing/invoices', 'Cancelar');
+
+    await navigation.select(navigation.session()!.records()[0]);
+
+    expect(navigate).not.toHaveBeenCalled();
+    expect(cancellation.request()).toEqual({
+      resource: 'invoices',
+      id: 'invoice-1',
+      label: 'FAC-001',
     });
   });
 
