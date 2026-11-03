@@ -23,8 +23,16 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              @if (currentPurchase.status === PurchaseStatus.DRAFT) {
-                <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu #actionsMenu>
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentPurchase.status === PurchaseStatus.DRAFT) {
                   <p-button
                     [appPermission]="'UPDATE'"
                     [label]="'finance.billing.invoices.edit' | translate"
@@ -33,23 +41,42 @@
                     (onClick)="actionsMenu.hide(); onEdit()"
                     styleClass="w-full justify-start text-left text-sm"
                   />
-                </app-detail-actions-menu>
-              }
-              @if (
-                currentPurchase.status === PurchaseStatus.DRAFT ||
-                currentPurchase.status === PurchaseStatus.CONFIRMED
-              ) {
-                <p-button
-                  [appPermission]="'CANCEL'"
-                  [appRequiredPermissions]="['INVENTORY_WAREHOUSES:RECORD_EXIT']"
-                  [label]="'procurement.purchases.cancelPurchase2' | translate"
-                  icon="pi pi-ban"
-                  severity="danger"
-                  [outlined]="true"
-                  styleClass="w-full sm:w-auto"
-                  (onClick)="onCancelPurchase()"
-                />
-              }
+                  <p-button
+                    [appPermission]="'CONFIRM'"
+                    [label]="'procurement.purchases.confirmPurchase2' | translate"
+                    icon="pi pi-check"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConfirm()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (
+                  currentPurchase.status === PurchaseStatus.DRAFT ||
+                  currentPurchase.status === PurchaseStatus.CONFIRMED
+                ) {
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [appRequiredPermissions]="['INVENTORY_WAREHOUSES:RECORD_EXIT']"
+                    [label]="'procurement.purchases.cancelPurchase2' | translate"
+                    icon="pi pi-ban"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelPurchase()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (currentPurchase.status === PurchaseStatus.DRAFT) {
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+              </app-detail-actions-menu>
             </div>
           </app-details-card-header>
 
@@ -203,3 +230,10 @@
     }
   </div>
 </div>
+
+<app-confirm-purchase-dialog
+  [visible]="confirmDialogVisible()"
+  [purchaseId]="purchase()?.id ?? null"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>

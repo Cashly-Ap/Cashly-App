@@ -30,6 +30,10 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { CodeBadgeComponent } from '@shared/components/ui/code-badge/code-badge.component';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { PdfViewerService } from '@core/pdf-viewer';
+import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
+import { ConfirmPurchaseDialogComponent } from '@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 @Component({
   selector: 'app-purchase-detail-page',
   standalone: true,
@@ -52,6 +56,7 @@ import { CancelDialogService } from '@shared/services/cancel-dialog.service';
     LoadingSpinnerComponent,
     PageHeaderComponent,
     TextBadgeComponent,
+    ConfirmPurchaseDialogComponent,
   ],
   templateUrl: './purchase-detail-page.component.html',
 })
@@ -62,11 +67,14 @@ export class PurchaseDetailPageComponent implements OnInit {
   private readonly purchaseService = inject(PurchaseApplicationService);
   private readonly messageService = inject(MessageService);
   private readonly cancellation = inject(CancelDialogService);
+  private readonly deletion = inject(DeleteDialogService);
+  private readonly pdfViewerService = inject(PdfViewerService);
 
   readonly purchase = this.purchaseService.currentPurchase;
   readonly loading = this.purchaseService.loading;
 
   readonly PurchaseStatus = PurchaseStatus;
+  readonly confirmDialogVisible = signal(false);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -99,6 +107,50 @@ export class PurchaseDetailPageComponent implements OnInit {
     if (!purchase) return;
     this.cancellation.open('purchases', purchase.id, purchase.purchaseNumber, () =>
       this.purchaseService.loadById(purchase.id).subscribe(),
+    );
+  }
+
+  onDownloadPdf(): void {
+    const purchase = this.purchase();
+    if (!purchase) return;
+    this.pdfViewerService.open({
+      url: `/api/reports/purchases/${purchase.id}/pdf`,
+      title: `Compra #${purchase.purchaseNumber}`,
+      fileName: `compra-${purchase.purchaseNumber}.pdf`,
+    });
+  }
+
+  onConfirm(): void {
+    this.confirmDialogVisible.set(true);
+  }
+
+  onConfirmDialogConfirmed(purchaseId: string): void {
+    this.confirmDialogVisible.set(false);
+    this.purchaseService.confirm(purchaseId).subscribe({
+      next: () => {
+        this.messageService.add(PURCHASE_SUCCESS_MESSAGES.confirmed);
+        this.purchaseService.loadById(purchaseId).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al confirmar la compra. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onConfirmDialogDismissed(): void {
+    this.confirmDialogVisible.set(false);
+  }
+
+  onDelete(): void {
+    const purchase = this.purchase();
+    if (!purchase) return;
+    this.deletion.open('purchases', purchase.id, purchase.purchaseNumber, () =>
+      this.router.navigate(['/procurement/purchases']),
     );
   }
 
