@@ -71,6 +71,7 @@ export function addListNavigationActions(
             icon: entry.icon,
             requiredModule: entry.module ?? module,
             requiredAction: entry.requiredAction,
+            requiredPermissions: entry.requiredPermissions,
             command:
               definition.route === '/partners/customers' && entry.label === 'Editar'
                 ? callbacks.openCustomerEditPicker

@@ -35,6 +35,21 @@
                   />
                 </app-detail-actions-menu>
               }
+              @if (
+                currentPurchase.status === PurchaseStatus.DRAFT ||
+                currentPurchase.status === PurchaseStatus.CONFIRMED
+              ) {
+                <p-button
+                  [appPermission]="'CANCEL'"
+                  [appRequiredPermissions]="['INVENTORY_WAREHOUSES:RECORD_EXIT']"
+                  [label]="'procurement.purchases.cancelPurchase2' | translate"
+                  icon="pi pi-ban"
+                  severity="danger"
+                  [outlined]="true"
+                  styleClass="w-full sm:w-auto"
+                  (onClick)="onCancelPurchase()"
+                />
+              }
             </div>
           </app-details-card-header>
 
@@ -188,3 +203,10 @@
     }
   </div>
 </div>
+
+<app-cancel-purchase-dialog
+  [visible]="cancelDialogVisible()"
+  [purchaseNumber]="purchase()?.purchaseNumber ?? null"
+  (confirmed)="onCancelDialogConfirmed($event)"
+  (cancelled)="onCancelDialogDismissed()"
+/>

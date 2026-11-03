@@ -8,6 +8,7 @@ export interface NavigationActionDefinition {
   requiredAction: PermissionAction;
   icon: string;
   module?: BusinessModule;
+  requiredPermissions?: string[];
   queryParams?: Record<string, string>;
 }
 
@@ -24,11 +25,13 @@ export const listAction = (
   requiredAction: PermissionAction,
   icon: string,
   module?: BusinessModule,
+  requiredPermissions?: string[],
 ): NavigationActionDefinition => ({
   label,
   requiredAction,
   icon: `pi pi-${icon}`,
   ...(module ? { module } : {}),
+  ...(requiredPermissions ? { requiredPermissions } : {}),
 });
 
 export const view = () =>

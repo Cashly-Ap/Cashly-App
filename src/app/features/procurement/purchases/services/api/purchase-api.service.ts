@@ -153,7 +153,7 @@ export class PurchaseApiService {
 
   cancel(id: string, request: CancelPurchaseRequest): Observable<PurchaseDetails> {
     return this.http
-      .post<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, request)
+      .put<PurchaseDetailApiResponse>(`${this.baseUrl}/${id}/cancel`, request)
       .pipe(map((r) => this.toPurchaseDetails(r)));
   }
 

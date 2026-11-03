@@ -16,7 +16,7 @@ export const PURCHASE_LIST_NAVIGATION: ListNavigationDefinition = {
     pdf(),
     edit(),
     listAction('Confirmar compra', 'CONFIRM', 'check'),
-    listAction('Cancelar compra', 'CANCEL', 'ban'),
+    listAction('Cancelar compra', 'CANCEL', 'ban', undefined, ['INVENTORY_WAREHOUSES:RECORD_EXIT']),
     remove(),
   ],
 };
