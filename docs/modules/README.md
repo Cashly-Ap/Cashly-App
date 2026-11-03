@@ -12,7 +12,7 @@ This directory documents the frontend features of the Cashly application. Featur
 | Platform    | Users           | `/platform/users/*`                   | `features/platform/auth/user`                  | [users.md](./users.md)                     |
 | Platform    | Roles           | `/platform/roles/*`                   | `features/platform/auth/role`                  | [users.md](./users.md)                     |
 | Platform    | Departments     | `/platform/departments/*`             | `features/platform/auth/department`            | [users.md](./users.md)                     |
-| Platform    | Company         | `/platform/company`                   | `features/platform/company`                    | —                                          |
+| Platform    | Company         | `/platform/company`                   | `features/platform/company`                    | [company.md](./company.md)                 |
 | Platform    | Notifications   | Shell (notification bell)             | `features/platform/notifications`              | [notifications.md](./notifications.md)     |
 | Analytics   | Dashboard       | `/analytics/dashboard`                | `features/analytics/dashboard`                 | [dashboard.md](./dashboard.md)             |
 | Analytics   | Reports         | Dialogs from the main menu            | `features/*/*/reporting`                       | [reports.md](./reports.md)                 |
