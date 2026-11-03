@@ -286,5 +286,11 @@
   "common.delete.success": "{{label}} eliminado correctamente.",
   "common.delete.error": "No se pudo eliminar el registro.",
   "common.delete.missingHandler": "No se pudo eliminar el registro.",
-  "navigation.labels.company": "Compañía"
+  "navigation.labels.company": "Compañía",
+  "common.cancel.title": "Cancelar registro",
+  "common.cancel.message": "¿Está seguro de que desea cancelar {{label}}?",
+  "common.cancel.confirm": "Sí, cancelar",
+  "common.cancel.success": "{{label}} se canceló exitosamente.",
+  "common.cancel.error": "No se pudo cancelar el registro.",
+  "common.cancel.missingHandler": "No se pudo cancelar el registro."
 }

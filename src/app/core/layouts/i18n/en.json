@@ -286,5 +286,11 @@
   "common.delete.success": "{{label}} deleted successfully.",
   "common.delete.error": "The record could not be deleted.",
   "common.delete.missingHandler": "The record could not be deleted.",
-  "navigation.labels.company": "Company"
+  "navigation.labels.company": "Company",
+  "common.cancel.title": "Cancel record",
+  "common.cancel.message": "Are you sure you want to cancel {{label}}?",
+  "common.cancel.confirm": "Yes, cancel",
+  "common.cancel.success": "{{label}} cancelled successfully.",
+  "common.cancel.error": "The record could not be cancelled.",
+  "common.cancel.missingHandler": "The record could not be cancelled."
 }

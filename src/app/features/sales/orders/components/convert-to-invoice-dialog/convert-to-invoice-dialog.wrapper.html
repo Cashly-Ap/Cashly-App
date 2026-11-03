@@ -1,0 +1,12 @@
+@if (details(); as order) {
+  <app-convert-to-invoice-dialog
+    [visible]="true"
+    [orderId]="recordId()"
+    [orderNumber]="order.orderNumber"
+    [customerName]="order.customerAlias"
+    [totalAmount]="order.totalAmount"
+    [customerId]="order.customerId"
+    (confirmed)="convert($event)"
+    (cancelled)="close()"
+  />
+}

@@ -1,0 +1,6 @@
+<app-convert-to-order-dialog
+  [visible]="true"
+  [quoteId]="recordId()"
+  (confirmed)="convert()"
+  (cancelled)="close()"
+/>

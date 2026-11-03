@@ -98,6 +98,7 @@ export function loadNavigationLookup(
   const active = booleanFilter(filterValues['active']);
   const action = documentListAction(label);
   const requestedAction = action === 'DELETE' ? 'DELETE' : undefined;
+  const listAction = action === 'CANCEL' ? undefined : action;
   switch (route) {
     case '/catalog/products':
       return injector
@@ -241,7 +242,7 @@ export function loadNavigationLookup(
              ? { search: filters.search, action: requestedAction }
             : {
                 search: filters.search,
-                ...(action ? { action } : { status: filterValues['status'] || 'ALL' }),
+                ...(listAction ? { action: listAction } : { status: filterValues['status'] || 'ALL' }),
               },
         )
         .pipe(
@@ -267,7 +268,7 @@ export function loadNavigationLookup(
              ? { search: filters.search, action: requestedAction }
             : {
                 search: filters.search,
-                ...(action ? { action } : { status: filterValues['status'] || 'ALL' }),
+                ...(listAction ? { action: listAction } : { status: filterValues['status'] || 'ALL' }),
               },
         )
         .pipe(
@@ -290,8 +291,8 @@ export function loadNavigationLookup(
       const status = textFilter(filterValues['status']);
       const request = requestedAction
         ? api.getAll({ search: filters.search, action: requestedAction })
-        : action
-        ? api.getAll({ search: filters.search, action })
+        : listAction
+        ? api.getAll({ search: filters.search, action: listAction })
         : status
           ? api.getAll({ search: filters.search, status })
           : forkJoin(
@@ -331,8 +332,8 @@ export function loadNavigationLookup(
         .get(InvoiceApiService)
         .getAll({
           search: filters.search,
-          action,
-          ...(!action ? { statuses } : {}),
+          action: listAction,
+          ...(!listAction ? { statuses } : {}),
           paymentType: textFilter(filterValues['paymentType']),
           dueStatus: dueStatus as 'OVERDUE' | 'CURRENT' | undefined,
           returnStatus: returnStatus ? [returnStatus] : undefined,

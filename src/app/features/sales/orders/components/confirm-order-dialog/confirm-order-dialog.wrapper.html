@@ -1,0 +1,6 @@
+<app-confirm-order-dialog
+  [visible]="true"
+  [orderId]="recordId()"
+  (confirmed)="confirm($event)"
+  (cancelled)="close()"
+/>

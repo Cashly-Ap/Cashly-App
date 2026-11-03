@@ -87,7 +87,7 @@ import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { FileDownloadHelper } from '@shared/utils/file-download.helper';
-import { DocumentActionDialogHostComponent } from '@core/layouts/components/document-action-dialog-host/document-action-dialog-host.component';
+import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
 import { ReceivablesActionDialogHostComponent } from '@core/layouts/components/receivables-action-dialog-host/receivables-action-dialog-host.component';
 import { InvoiceActionDialogHostComponent } from '@core/layouts/components/invoice-action-dialog-host/invoice-action-dialog-host.component';
 import { WarehouseActionDialogHostComponent } from '@core/layouts/components/warehouse-action-dialog-host/warehouse-action-dialog-host.component';
@@ -95,6 +95,7 @@ import { CashRegisterActionDialogHostComponent } from '@core/layouts/components/
 import { PendingPaymentActionDialogHostComponent } from '@core/layouts/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
+import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -143,7 +144,7 @@ export type ContentMaxWidth =
     PurchasePdfModalComponent,
     CashRegisterReportModalComponent,
     AccountsReceivablePdfModalComponent,
-    DocumentActionDialogHostComponent,
+    ActionDialogHostComponent,
     ReceivablesActionDialogHostComponent,
     InvoiceActionDialogHostComponent,
     WarehouseActionDialogHostComponent,
@@ -151,6 +152,7 @@ export type ContentMaxWidth =
     PendingPaymentActionDialogHostComponent,
     ConfirmDialogModule,
     DeleteDialogComponent,
+    CancelDialogComponent,
   ],
   templateUrl: './main-layout.component.html',
 })

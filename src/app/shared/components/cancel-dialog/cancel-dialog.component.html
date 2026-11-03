@@ -1,0 +1,80 @@
+<p-dialog
+  [visible]="cancellation.request() !== null"
+  [modal]="true"
+  [closable]="!cancellation.loading()"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '28rem' }"
+  (onHide)="close()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-3">
+      <div
+        class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-950"
+      >
+        <i class="pi pi-times-circle text-lg text-red-600 dark:text-red-400"></i>
+      </div>
+      <span class="text-base font-semibold text-surface-900 dark:text-surface-0">{{
+        'common.cancel.title' | translate
+      }}</span>
+    </div>
+  </ng-template>
+
+  @if (cancellation.request(); as request) {
+    <div class="flex flex-col gap-4 pt-1">
+      <p class="m-0 text-sm leading-relaxed text-surface-600 dark:text-surface-300">
+        {{ 'common.cancel.message' | translate: { label: request.label } }}
+      </p>
+
+      <form [formGroup]="form" class="flex flex-col gap-1">
+        <label class="text-sm font-medium text-surface-700 dark:text-surface-200">
+          {{ 'finance.billing.invoices.cancellationReason' | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <textarea
+          pTextarea
+          formControlName="reason"
+          rows="4"
+          [placeholder]="'finance.billing.invoices.enterTheCancellationReason' | translate"
+          class="w-full resize-none"
+          [class.ng-invalid]="reasonInvalid"
+          [class.ng-dirty]="reasonInvalid"
+        ></textarea>
+        @if (reasonInvalid) {
+          @if (reasonTooLong) {
+            <small class="text-red-500">{{
+              'finance.billing.invoices.theReasonCannotExceed500Characters' | translate
+            }}</small>
+          } @else {
+            <small class="text-red-500">{{
+              'finance.billing.invoices.aCancellationReasonIsRequired' | translate
+            }}</small>
+          }
+        }
+        <small class="text-right text-xs text-surface-400">
+          {{ form.get('reason')?.value?.length ?? 0 }} / 500
+        </small>
+      </form>
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 pt-1">
+      <p-button
+        [label]="'finance.billing.creditnotes.back' | translate"
+        [outlined]="true"
+        severity="secondary"
+        [disabled]="cancellation.loading()"
+        (onClick)="close()"
+      />
+      <p-button
+        [label]="'common.cancel.confirm' | translate"
+        icon="pi pi-times"
+        severity="danger"
+        [loading]="cancellation.loading()"
+        [disabled]="cancellation.loading()"
+        (onClick)="confirm()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

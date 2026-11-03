@@ -10,6 +10,7 @@ import { QuoteList } from '@features/sales/quotes/models/interfaces/quote-list.i
 import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
 import { QuoteCreate } from '@features/sales/quotes/models/interfaces/quote-create.interface';
 import { QuoteEdit } from '@features/sales/quotes/models/interfaces/quote-edit.interface';
+import { QuoteStatus } from '@features/sales/quotes/models/enums/quote-status.enum';
 
 @Injectable({ providedIn: 'root' })
 export class QuoteApplicationService {
@@ -92,6 +93,30 @@ export class QuoteApplicationService {
     return this.api.delete(id).pipe(
       tap({
         next: () => this.quotes.update((current) => current.filter((o) => o.id !== id)),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  cancel(id: string, reason: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.cancel(id, { reason }).pipe(
+      tap({
+        next: () => {
+          this.quotes.update((current) =>
+            current.map((quote) =>
+              quote.id === id ? { ...quote, status: QuoteStatus.CANCELLED } : quote,
+            ),
+          );
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.update((quote) =>
+              quote ? { ...quote, status: QuoteStatus.CANCELLED } : quote,
+            );
+          }
+        },
         error: (err: Error) => this.error.set(err.message),
       }),
       finalize(() => this.loading.set(false)),

@@ -18,6 +18,10 @@ export interface ConvertToInvoiceRequest {
   paymentMethodId?: string;
 }
 
+export interface CancelQuoteRequest {
+  reason: string;
+}
+
 export interface QuoteProductFilters {
   customerId: string;
   search?: string;
@@ -166,6 +170,10 @@ export class QuoteApiService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  cancel(id: string, request: CancelQuoteRequest): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${id}/cancel`, request);
   }
 
   getProductsForQuote(filters: QuoteProductFilters): Observable<PageResponse<QuoteProduct>> {
