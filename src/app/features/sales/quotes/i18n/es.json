@@ -56,5 +56,6 @@
   "sales.quotes.permissions.reportPdf": "Reporte de Presupuestos PDF",
   "sales.quotes.permissions.downloadPdf": "Descargar PDF de presupuesto",
   "sales.quotes.permissions.convertToOrder": "Convertir a pedido",
-  "sales.quotes.permissions.convertToInvoice": "Convertir a factura"
+  "sales.quotes.permissions.convertToInvoice": "Convertir a factura",
+  "sales.quotes.permissions.cancel": "Cancelar presupuesto"
 }

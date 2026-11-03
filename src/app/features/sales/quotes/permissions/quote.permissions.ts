@@ -8,6 +8,7 @@ export enum QuotePermission {
   DOWNLOAD_PDF = 'SALES_QUOTES_DOWNLOAD_PDF',
   CONVERT_TO_ORDER = 'SALES_QUOTES_CONVERT_TO_ORDER',
   CONVERT_TO_INVOICE = 'SALES_QUOTES_CONVERT_TO_INVOICE',
+  CANCEL = 'SALES_QUOTES_CANCEL',
 }
 
 export const QUOTE_PERMISSIONS = [
@@ -20,4 +21,5 @@ export const QUOTE_PERMISSIONS = [
   { code: QuotePermission.DOWNLOAD_PDF, labelKey: 'sales.quotes.permissions.downloadPdf' },
   { code: QuotePermission.CONVERT_TO_ORDER, labelKey: 'sales.quotes.permissions.convertToOrder' },
   { code: QuotePermission.CONVERT_TO_INVOICE, labelKey: 'sales.quotes.permissions.convertToInvoice' },
+  { code: QuotePermission.CANCEL, labelKey: 'sales.quotes.permissions.cancel' },
 ] as const;

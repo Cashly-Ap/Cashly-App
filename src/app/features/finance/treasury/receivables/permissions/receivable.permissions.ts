@@ -4,10 +4,14 @@ export enum ReceivablePermission {
   REPORT_PDF = 'FINANCE_TREASURY_RECEIVABLES_REPORT_PDF',
   PAY_ALL = 'FINANCE_TREASURY_RECEIVABLES_PAY_ALL',
   PARTIAL_PAYMENT = 'FINANCE_TREASURY_RECEIVABLES_PARTIAL_PAYMENT',
+  PAY_DIRECT = 'FINANCE_TREASURY_RECEIVABLES_PAY_DIRECT',
+  PAY_WITH_VALIDATION = 'FINANCE_TREASURY_RECEIVABLES_PAY_WITH_VALIDATION',
   REFUND = 'FINANCE_TREASURY_RECEIVABLES_REFUND',
   ADVANCE = 'FINANCE_TREASURY_RECEIVABLES_ADVANCE',
   APPROVE_PAYMENT = 'FINANCE_TREASURY_RECEIVABLES_APPROVE_PAYMENT',
   REJECT_PAYMENT = 'FINANCE_TREASURY_RECEIVABLES_REJECT_PAYMENT',
+  EDIT = 'FINANCE_TREASURY_RECEIVABLES_EDIT',
+  DELETE = 'FINANCE_TREASURY_RECEIVABLES_DELETE',
 }
 
 export const RECEIVABLE_PERMISSIONS = [
@@ -16,8 +20,12 @@ export const RECEIVABLE_PERMISSIONS = [
   { code: ReceivablePermission.REPORT_PDF, labelKey: 'finance.treasury.receivables.permissions.reportPdf' },
   { code: ReceivablePermission.PAY_ALL, labelKey: 'finance.treasury.receivables.permissions.payAll' },
   { code: ReceivablePermission.PARTIAL_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.partialPayment' },
+  { code: ReceivablePermission.PAY_DIRECT, labelKey: 'finance.treasury.receivables.permissions.payDirect' },
+  { code: ReceivablePermission.PAY_WITH_VALIDATION, labelKey: 'finance.treasury.receivables.permissions.payWithValidation' },
   { code: ReceivablePermission.REFUND, labelKey: 'finance.treasury.receivables.permissions.refund' },
   { code: ReceivablePermission.ADVANCE, labelKey: 'finance.treasury.receivables.permissions.advance' },
   { code: ReceivablePermission.APPROVE_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.approvePayment' },
   { code: ReceivablePermission.REJECT_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.rejectPayment' },
+  { code: ReceivablePermission.EDIT, labelKey: 'finance.treasury.receivables.permissions.edit' },
+  { code: ReceivablePermission.DELETE, labelKey: 'finance.treasury.receivables.permissions.delete' },
 ] as const;

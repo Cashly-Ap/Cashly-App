@@ -176,5 +176,9 @@
   "finance.treasury.receivables.permissions.refund": "Reintegro",
   "finance.treasury.receivables.permissions.advance": "Generar anticipo",
   "finance.treasury.receivables.permissions.approvePayment": "Aprobar pago",
-  "finance.treasury.receivables.permissions.rejectPayment": "Rechazar pago"
+  "finance.treasury.receivables.permissions.rejectPayment": "Rechazar pago",
+  "finance.treasury.receivables.permissions.payDirect": "Pagar directamente",
+  "finance.treasury.receivables.permissions.payWithValidation": "Pagar con validación",
+  "finance.treasury.receivables.permissions.edit": "Editar cuenta por cobrar",
+  "finance.treasury.receivables.permissions.delete": "Eliminar cuenta por cobrar"
 }

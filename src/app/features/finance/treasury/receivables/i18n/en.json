@@ -176,5 +176,9 @@
   "finance.treasury.receivables.permissions.refund": "Refund",
   "finance.treasury.receivables.permissions.advance": "Create advance",
   "finance.treasury.receivables.permissions.approvePayment": "Approve payment",
-  "finance.treasury.receivables.permissions.rejectPayment": "Reject payment"
+  "finance.treasury.receivables.permissions.rejectPayment": "Reject payment",
+  "finance.treasury.receivables.permissions.payDirect": "Pay directly",
+  "finance.treasury.receivables.permissions.payWithValidation": "Pay with validation",
+  "finance.treasury.receivables.permissions.edit": "Edit receivable",
+  "finance.treasury.receivables.permissions.delete": "Delete receivable"
 }

@@ -56,5 +56,6 @@
   "sales.quotes.permissions.reportPdf": "Quotes Report PDF",
   "sales.quotes.permissions.downloadPdf": "Download quote PDF",
   "sales.quotes.permissions.convertToOrder": "Convert to order",
-  "sales.quotes.permissions.convertToInvoice": "Convert to invoice"
+  "sales.quotes.permissions.convertToInvoice": "Convert to invoice",
+  "sales.quotes.permissions.cancel": "Cancel quote"
 }
