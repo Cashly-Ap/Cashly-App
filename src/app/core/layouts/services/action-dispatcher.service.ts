@@ -79,7 +79,7 @@ export class ActionDispatcherService {
     this.messages.add({
       severity: 'warn',
       summary: label,
-      detail: 'Esta acción todavía no está disponible.',
+      detail: 'core.layouts.actionNotAvailable',
       life: 4000,
     });
     return false;

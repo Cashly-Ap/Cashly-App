@@ -44,5 +44,6 @@
   "finance.treasury.paymentMethods.permissions.viewDetail": "View details of payment method",
   "finance.treasury.paymentMethods.permissions.edit": "Edit payment method",
   "finance.treasury.paymentMethods.permissions.delete": "Delete payment method",
-  "finance.treasury.paymentMethods.permissions.create": "Create payment method"
+  "finance.treasury.paymentMethods.permissions.create": "Create payment method",
+  "finance.treasury.paymentmethods.deleteConfirmation": "Are you sure you want to delete \"${name}\"? This action cannot be undone."
 }

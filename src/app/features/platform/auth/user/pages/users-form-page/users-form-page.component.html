@@ -155,7 +155,7 @@
         cancelLabel="Cancelar"
         [loading]="loading() || savingPhoto()"
         [disabled]="form.invalid"
-        tooltipMessage="Complete los campos requeridos"
+        [tooltipMessage]="'shared.completeRequiredFields' | translate"
         (cancel)="onCancel()"
       />
     </app-panel-card>

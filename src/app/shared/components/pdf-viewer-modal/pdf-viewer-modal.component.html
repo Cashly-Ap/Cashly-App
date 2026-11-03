@@ -1,10 +1,10 @@
 <p-dialog
   [visible]="visible()"
-  closeAriaLabel="Cerrar vista previa"
+  closeAriaLabel="{{ 'shared.closePreview' | translate }}"
   (visibleChange)="visibleChange.emit($event)"
   [modal]="true"
   [style]="{ width: '90vw', 'max-width': '1200px' }"
-  [header]="title()"
+  [header]="title() | translate"
   [draggable]="false"
   [resizable]="false"
 >

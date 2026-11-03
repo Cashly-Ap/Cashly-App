@@ -11,11 +11,14 @@ import { routes } from '@app/app.routes';
 import { authInterceptor } from '@features/platform/auth/interceptors/auth.interceptor';
 import { CashlyPreset } from '@core/theme/presets';
 import { provideNavigation } from '@core/navigation/providers/provide-navigation';
+import { TranslatedTitleStrategy } from '@core/i18n/translated-title.strategy';
+import { TitleStrategy } from '@angular/router';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZonelessChangeDetection(),
     provideRouter(routes),
+    { provide: TitleStrategy, useClass: TranslatedTitleStrategy },
     provideHttpClient(withFetch(), withInterceptors([languageInterceptor, authInterceptor])),
     providePrimeNG({
       theme: {

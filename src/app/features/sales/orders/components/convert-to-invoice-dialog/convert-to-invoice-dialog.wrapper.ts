@@ -5,7 +5,7 @@ import { OrderApiService } from '@features/sales/orders/services/api/order-api.s
 import { OrderApplicationService } from '@features/sales/orders/services/application/order-application.service';
 import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
 import { ConvertToInvoiceRequest } from '@features/sales/orders/services/api/order-api.service';
-import { ConvertToInvoiceDialogComponent } from './convert-to-invoice-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/sales/orders/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 
 @Component({
   selector: 'app-order-convert-to-invoice-dialog-wrapper',
@@ -29,7 +29,7 @@ export class OrderConvertToInvoiceDialogWrapperComponent implements OnInit {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudieron cargar los datos del pedido.',
+          detail: 'sales.orders.messages.unableToLoadTheOrderData',
           life: 5000,
         });
         this.dialogs.close();
@@ -43,7 +43,7 @@ export class OrderConvertToInvoiceDialogWrapperComponent implements OnInit {
         this.messages.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Pedido convertido a factura exitosamente.',
+          detail: 'sales.orders.messages.orderConvertedToAnInvoiceSuccessfully',
           life: 3000,
         });
         this.dialogs.close();
@@ -52,7 +52,7 @@ export class OrderConvertToInvoiceDialogWrapperComponent implements OnInit {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo convertir el pedido a factura.',
+          detail: 'sales.orders.messages.unableToConvertTheOrderToAnInvoicePleaseTryAgain',
           life: 5000,
         });
       },

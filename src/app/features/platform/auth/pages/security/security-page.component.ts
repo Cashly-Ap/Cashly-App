@@ -1,4 +1,5 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { TranslationService } from '@core/i18n/translation.service';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -9,9 +10,9 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { finalize } from 'rxjs';
 import { toDataURL } from 'qrcode';
-import { MfaApiService, MfaStatus, MfaSetup } from '../../services/api/mfa-api.service';
-import { mfaErrorMessage } from '../../messages/mfa-error-message';
-import { AuthService } from '../../services/application/auth-application.service';
+import { MfaApiService, MfaStatus, MfaSetup } from '@features/platform/auth/services/api/mfa-api.service';
+import { mfaErrorMessage } from '@features/platform/auth/messages/mfa-error-message';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
@@ -34,6 +35,7 @@ export class SecurityPageComponent {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly translations = inject(TranslationService);
   readonly status = signal<MfaStatus | null>(null);
   readonly busy = signal(false);
   readonly error = signal('');
@@ -146,14 +148,14 @@ export class SecurityPageComponent {
       await navigator.clipboard.writeText(this.recoveryCodes().join('\n'));
       this.copied.set(true);
     } catch {
-      this.error.set('No se pudieron copiar. Selecciona los códigos o descárgalos.');
+      this.error.set(this.translations.t('platform.auth.couldNotCopyCodes'));
     }
   }
 
   downloadCodes(): void {
     const url = URL.createObjectURL(
       new Blob(
-        ['Cashly — Códigos de recuperación (un solo uso)\n\n' + this.recoveryCodes().join('\n')],
+        [this.translations.t('platform.auth.recoveryCodesFileHeader') + '\n\n' + this.recoveryCodes().join('\n')],
         { type: 'text/plain' },
       ),
     );

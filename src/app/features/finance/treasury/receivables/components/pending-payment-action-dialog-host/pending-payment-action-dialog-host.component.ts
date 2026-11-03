@@ -53,7 +53,7 @@ export class PendingPaymentActionDialogHostComponent {
               this.messages.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'No se pudo cargar el pago pendiente.',
+                detail: 'finance.treasury.receivables.messages.unableToLoadPendingPayment',
               });
               this.actions.close();
               return;
@@ -70,7 +70,7 @@ export class PendingPaymentActionDialogHostComponent {
             this.messages.add({
               severity: 'error',
               summary: 'Error',
-              detail: 'No se pudo cargar el pago pendiente.',
+              detail: 'finance.treasury.receivables.messages.unableToLoadPendingPayment',
             });
             this.actions.close();
           },

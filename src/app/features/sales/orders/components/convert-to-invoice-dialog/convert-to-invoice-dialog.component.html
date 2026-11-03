@@ -2,7 +2,7 @@
   [visible]="visible()"
   [model]="confirmationModel()"
   [loading]="stockLoading()"
-  [error]="stockError() ? 'Error al cargar los detalles del pedido.' : null"
+  [error]="stockError() ? ('sales.orders.messages.unableToLoadTheOrderDetails' | translate) : null"
   [submitting]="isConfirming()"
   [canAccept]="canConfirm()"
   (accepted)="onConfirm()"
@@ -14,7 +14,7 @@
     }
     @if (stockError()) {
       <p role="alert" class="text-red-600">
-        {{ 'Error al cargar los detalles del pedido.' | translate }}
+        {{ 'sales.orders.messages.unableToLoadTheOrderDetails' | translate }}
       </p>
     }
     @if (orderDetails()) {

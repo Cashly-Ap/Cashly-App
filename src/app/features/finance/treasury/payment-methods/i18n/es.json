@@ -44,5 +44,6 @@
   "finance.treasury.paymentMethods.permissions.viewDetail": "Ver detalle de método de pago",
   "finance.treasury.paymentMethods.permissions.edit": "Editar método de pago",
   "finance.treasury.paymentMethods.permissions.delete": "Eliminar método de pago",
-  "finance.treasury.paymentMethods.permissions.create": "Crear método de pago"
+  "finance.treasury.paymentMethods.permissions.create": "Crear método de pago",
+  "finance.treasury.paymentmethods.deleteConfirmation": "¿Estás seguro de que deseas eliminar \"${name}\"? Esta acción no se puede deshacer."
 }

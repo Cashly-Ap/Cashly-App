@@ -8,7 +8,7 @@ import { ReceivablesApplicationService } from '@features/finance/treasury/receiv
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
 import { PendingPaymentApproveDialogComponent } from '@features/finance/treasury/receivables/components/pending-payment-approve-dialog/pending-payment-approve-dialog.component';
 import { PendingPaymentRejectDialogComponent } from '@features/finance/treasury/receivables/components/pending-payment-reject-dialog/pending-payment-reject-dialog.component';
-import { PendingPaymentActionDialogHostComponent } from './pending-payment-action-dialog-host.component';
+import { PendingPaymentActionDialogHostComponent } from '@features/finance/treasury/receivables/components/pending-payment-action-dialog-host/pending-payment-action-dialog-host.component';
 
 const payment: PendingPayment = {
   id: 'payment-1',
@@ -103,7 +103,7 @@ describe('PendingPaymentActionDialogHostComponent', () => {
     expect(messages.add).toHaveBeenCalledWith({
       severity: 'error',
       summary: 'Error',
-      detail: 'No se pudo cargar el pago pendiente.',
+      detail: 'finance.treasury.receivables.messages.unableToLoadPendingPayment',
     });
     expect(actions.request()).toBeNull();
   });

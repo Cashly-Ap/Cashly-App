@@ -180,5 +180,13 @@
   "finance.treasury.receivables.permissions.payDirect": "Pagar directamente",
   "finance.treasury.receivables.permissions.payWithValidation": "Pagar con validación",
   "finance.treasury.receivables.permissions.edit": "Editar cuenta por cobrar",
-  "finance.treasury.receivables.permissions.delete": "Eliminar cuenta por cobrar"
+  "finance.treasury.receivables.permissions.delete": "Eliminar cuenta por cobrar",
+  "finance.treasury.receivables.messages.unableToLoadPendingPayment": "No se pudo cargar el pago pendiente.",
+  "finance.treasury.receivables.messages.unableToSearchCustomersWithDebt": "Error al buscar clientes con deuda",
+  "finance.treasury.receivables.messages.unableToLoadCustomerInvoices": "Error al cargar las facturas del cliente",
+  "finance.treasury.receivables.messages.unableToLoadPendingPayments": "Error al cargar los pagos pendientes",
+  "finance.treasury.receivables.messages.unableToLoadMerchantPayments": "Error al cargar los pagos del comercio",
+  "finance.treasury.receivables.messages.unableToLoadAllPayments": "Error al cargar todos los pagos",
+  "finance.treasury.receivables.messages.paymentApprovedSuccessfully": "Pago aprobado exitosamente",
+  "finance.treasury.receivables.messages.paymentRejectedSuccessfully": "Pago rechazado exitosamente"
 }

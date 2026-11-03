@@ -80,5 +80,6 @@
   "finance.treasury.cashRegister.permissions.cashHistory": "Historial de caja",
   "finance.treasury.cashRegister.permissions.reportCashRegister": "Reportes de Caja",
   "finance.treasury.cashRegister.permissions.open": "Abrir caja",
-  "finance.treasury.cashRegister.permissions.close": "Cerrar caja"
+  "finance.treasury.cashRegister.permissions.close": "Cerrar caja",
+  "finance.treasury.cashregister.cashRegisterReport": "Reporte de Caja"
 }

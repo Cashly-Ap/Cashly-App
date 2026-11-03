@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { OrderApplicationService } from '@features/sales/orders/services/application/order-application.service';
-import { ConfirmOrderDialogComponent } from './confirm-order-dialog.component';
+import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 
 @Component({
   selector: 'app-confirm-order-dialog-wrapper',
@@ -23,7 +23,7 @@ export class ConfirmOrderDialogWrapperComponent {
         this.messages.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Pedido confirmado exitosamente.',
+          detail: 'sales.orders.messages.orderConfirmedSuccessfully',
           life: 3000,
         });
         this.dialogs.close();
@@ -32,7 +32,7 @@ export class ConfirmOrderDialogWrapperComponent {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo confirmar el pedido.',
+          detail: 'sales.orders.messages.unableToConfirmTheOrderPleaseTryAgain',
           life: 5000,
         });
       },

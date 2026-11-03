@@ -219,7 +219,7 @@ export class WarehousesFormPageComponent
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
-              detail: err?.error?.message || 'Error al crear el almacén.',
+              detail: err?.error?.message || 'inventory.warehouses.unableToCreateTheWarehouse',
               life: 5000,
             });
           },

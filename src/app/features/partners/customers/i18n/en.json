@@ -73,5 +73,9 @@
   "partners.customers.permissions.delete": "Delete customer",
   "partners.customers.permissions.create": "Create customer",
   "partners.customers.permissions.viewBalance": "View customer balance",
-  "partners.customers.permissions.balance": "Customer balances"
+  "partners.customers.permissions.balance": "Customer balances",
+  "partners.customers.messages.customerNotFound": "Customer not found.",
+  "partners.customers.messages.customerTaxIdAlreadyExists": "A customer with that tax ID already exists.",
+  "partners.customers.messages.customerRifAlreadyRegistered": "A customer with tax ID ${rif} is already registered.",
+  "partners.customers.rifAlreadyRegistered": "Tax ID already registered"
 }

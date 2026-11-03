@@ -3,7 +3,7 @@ import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { QuoteApplicationService } from '@features/sales/quotes/services/application/quote-application.service';
 import { ConvertToInvoiceRequest } from '@features/sales/quotes/services/api/quote-api.service';
-import { ConvertToInvoiceDialogComponent } from './convert-to-invoice-dialog.component';
+import { ConvertToInvoiceDialogComponent } from '@features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 
 @Component({
   selector: 'app-quote-convert-to-invoice-dialog-wrapper',
@@ -24,7 +24,7 @@ export class QuoteConvertToInvoiceDialogWrapperComponent {
         this.messages.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Presupuesto convertido a factura exitosamente.',
+          detail: 'sales.quotes.messages.quoteConvertedToAnInvoiceSuccessfully',
           life: 3000,
         });
         this.dialogs.close();
@@ -33,7 +33,7 @@ export class QuoteConvertToInvoiceDialogWrapperComponent {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo convertir el presupuesto a factura.',
+          detail: 'sales.quotes.messages.unableToConvertTheQuoteToAnInvoicePleaseTryAgain',
           life: 5000,
         });
       },

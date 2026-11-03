@@ -51,7 +51,7 @@ describe('NoteFormDialogComponent', () => {
     expect(messageService.add).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        detail: 'Nota de crédito creada exitosamente',
+        detail: 'shared.notes.creditNoteCreatedSuccessfully',
       }),
     );
     expect(confirmed).toHaveBeenCalledOnce();

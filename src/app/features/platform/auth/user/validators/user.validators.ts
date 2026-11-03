@@ -17,16 +17,16 @@ export class UserValidators {
       const errors: string[] = [];
 
       if (password.length < 8) {
-        errors.push('at least 8 characters');
+        errors.push('al menos 8 caracteres');
       }
       if (!/[A-Z]/.test(password)) {
-        errors.push('one uppercase letter');
+        errors.push('una letra mayúscula');
       }
       if (!/[a-z]/.test(password)) {
-        errors.push('one lowercase letter');
+        errors.push('una letra minúscula');
       }
       if (!/\d/.test(password)) {
-        errors.push('one number');
+        errors.push('un número');
       }
 
       return errors.length > 0 ? { weakPassword: errors } : null;
@@ -49,6 +49,6 @@ export class UserValidators {
     if (!errors || !('weakPassword' in errors)) return '';
 
     const errorMessages = errors['weakPassword'] as string[];
-    return `Password must contain: ${errorMessages.join(', ')}`;
+    return `La contraseña debe contener: ${errorMessages.join(', ')}`;
   }
 }

@@ -31,5 +31,6 @@
   "finance.billing.debitNotes.permissions.viewList": "View debit notes",
   "finance.billing.debitNotes.permissions.viewDetail": "View details of debit note",
   "finance.billing.debitNotes.permissions.delete": "Delete debit note",
-  "finance.billing.debitNotes.permissions.create": "Create debit note"
+  "finance.billing.debitNotes.permissions.create": "Create debit note",
+  "finance.billing.debitnotes.deleteConfirmation": "Are you sure you want to delete debit note \"${noteNumber}\"? This action cannot be undone."
 }

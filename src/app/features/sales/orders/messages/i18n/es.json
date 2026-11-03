@@ -9,5 +9,9 @@
   "sales.orders.messages.orderDeletedSuccessfully": "Pedido eliminado exitosamente",
   "sales.orders.messages.orderConfirmedSuccessfully": "Pedido confirmado exitosamente",
   "sales.orders.messages.orderCancelledSuccessfully": "Pedido cancelado exitosamente",
-  "sales.orders.messages.unableToLoadTheOrderItMayNotExist": "Error al cargar el pedido. Es posible que no exista."
+  "sales.orders.messages.unableToLoadTheOrderItMayNotExist": "Error al cargar el pedido. Es posible que no exista.",
+  "sales.orders.messages.unableToLoadTheOrderData": "No se pudieron cargar los datos del pedido.",
+  "sales.orders.messages.unableToLoadTheOrderDetails": "Error al cargar los detalles del pedido.",
+  "sales.orders.messages.orderConvertedToAnInvoiceSuccessfully": "Pedido convertido a factura exitosamente.",
+  "sales.orders.messages.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "No se pudo convertir el pedido a factura."
 }

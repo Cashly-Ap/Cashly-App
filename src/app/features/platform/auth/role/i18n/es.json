@@ -44,5 +44,9 @@
   "platform.auth.roles.permissions.viewDetail": "Ver detalle de rol",
   "platform.auth.roles.permissions.edit": "Editar rol",
   "platform.auth.roles.permissions.delete": "Eliminar rol",
-  "platform.auth.roles.permissions.create": "Crear rol"
+  "platform.auth.roles.permissions.create": "Crear rol",
+  "platform.auth.role.parentModule": "Módulo padre",
+  "platform.auth.role.childModule": "Módulo hijo",
+  "platform.auth.role.saveChanges": "Guardar Cambios",
+  "platform.auth.role.createRole": "Crear Rol"
 }

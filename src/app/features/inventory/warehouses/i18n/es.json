@@ -153,5 +153,10 @@
   "inventory.warehouses.permissions.recordEntry": "Registrar entrada",
   "inventory.warehouses.permissions.recordExit": "Registrar salida",
   "inventory.warehouses.permissions.reportStock": "Stock",
-  "inventory.warehouses.permissions.reportMovements": "Movimientos"
+  "inventory.warehouses.permissions.reportMovements": "Movimientos",
+  "inventory.warehouses.unableToCreateTheWarehouse": "Error al crear el almacén.",
+  "inventory.warehouses.messages.entriesRecordedSuccessfully": "Entradas registradas exitosamente",
+  "inventory.warehouses.messages.exitsRecordedSuccessfully": "Salidas registradas exitosamente",
+  "inventory.warehouses.messages.warehouseActivatedSuccessfully": "Almacén activado exitosamente",
+  "inventory.warehouses.messages.warehouseDeactivatedSuccessfully": "Almacén desactivado exitosamente"
 }

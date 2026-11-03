@@ -31,5 +31,6 @@
   "finance.billing.debitNotes.permissions.viewList": "Ver notas de débito",
   "finance.billing.debitNotes.permissions.viewDetail": "Ver detalle de nota de débito",
   "finance.billing.debitNotes.permissions.delete": "Eliminar nota de débito",
-  "finance.billing.debitNotes.permissions.create": "Crear nota de débito"
+  "finance.billing.debitNotes.permissions.create": "Crear nota de débito",
+  "finance.billing.debitnotes.deleteConfirmation": "¿Estás seguro de que deseas eliminar la nota de débito \"${noteNumber}\"? Esta acción no se puede deshacer."
 }

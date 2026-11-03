@@ -82,5 +82,6 @@
   "catalog.products.permissions.delete": "Delete product",
   "catalog.products.permissions.create": "Create product",
   "catalog.products.permissions.reportPdf": "Products Report PDF",
-  "catalog.products.permissions.commercialCatalogPdf": "Commercial Catalog PDF"
+  "catalog.products.permissions.commercialCatalogPdf": "Commercial Catalog PDF",
+  "catalog.products.productsReport": "Products report"
 }

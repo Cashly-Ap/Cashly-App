@@ -57,5 +57,8 @@
   "sales.quotes.permissions.downloadPdf": "Descargar PDF de presupuesto",
   "sales.quotes.permissions.convertToOrder": "Convertir a pedido",
   "sales.quotes.permissions.convertToInvoice": "Convertir a factura",
-  "sales.quotes.permissions.cancel": "Cancelar presupuesto"
+  "sales.quotes.permissions.cancel": "Cancelar presupuesto",
+  "sales.quotes.messages.quoteNotFound": "Presupuesto no encontrado.",
+  "sales.quotes.messages.unableToLoadQuoteData": "Error al cargar datos del presupuesto",
+  "sales.quotes.quotesReport": "Reporte de Presupuestos"
 }

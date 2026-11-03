@@ -57,5 +57,8 @@
   "sales.quotes.permissions.downloadPdf": "Download quote PDF",
   "sales.quotes.permissions.convertToOrder": "Convert to order",
   "sales.quotes.permissions.convertToInvoice": "Convert to invoice",
-  "sales.quotes.permissions.cancel": "Cancel quote"
+  "sales.quotes.permissions.cancel": "Cancel quote",
+  "sales.quotes.messages.quoteNotFound": "Quote not found.",
+  "sales.quotes.messages.unableToLoadQuoteData": "Unable to load the quote data",
+  "sales.quotes.quotesReport": "Quotes report"
 }

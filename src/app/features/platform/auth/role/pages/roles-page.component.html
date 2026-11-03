@@ -385,11 +385,11 @@
               </p-tabpanels>
             </p-tabs>
             <app-form-actions
-              [submitLabel]="value.id ? 'Guardar Cambios' : 'Crear Rol'"
+              [submitLabel]="(value.id ? 'platform.auth.role.saveChanges' : 'platform.auth.role.createRole') | translate"
               [cancelLabel]="'shared.cancel' | translate"
               [loading]="busy()"
               [disabled]="form.invalid"
-              tooltipMessage="Complete los campos requeridos"
+              [tooltipMessage]="'shared.completeRequiredFields' | translate"
               (cancel)="onBack()"
             />
           </app-panel-card>

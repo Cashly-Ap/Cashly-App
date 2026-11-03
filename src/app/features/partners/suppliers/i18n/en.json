@@ -79,5 +79,7 @@
   "partners.suppliers.permissions.viewDetail": "View details of supplier",
   "partners.suppliers.permissions.edit": "Edit supplier",
   "partners.suppliers.permissions.delete": "Delete supplier",
-  "partners.suppliers.permissions.create": "Create supplier"
+  "partners.suppliers.permissions.create": "Create supplier",
+  "partners.suppliers.messages.supplierNotFound": "Supplier not found.",
+  "partners.suppliers.messages.supplierTaxIdAlreadyExists": "A supplier with that tax ID already exists."
 }

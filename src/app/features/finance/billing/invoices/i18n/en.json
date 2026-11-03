@@ -193,5 +193,12 @@
   "finance.billing.invoices.permissions.downloadPdf": "Download invoice PDF",
   "finance.billing.invoices.permissions.confirm": "Confirm invoice",
   "finance.billing.invoices.permissions.cancel": "Cancel invoice",
-  "finance.billing.invoices.permissions.duplicate": "Duplicate invoice"
+  "finance.billing.invoices.permissions.duplicate": "Duplicate invoice",
+  "finance.billing.invoices.messages.invoiceNotFound": "Invoice not found.",
+  "finance.billing.invoices.messages.unableToConfirmTheInvoice": "Unable to confirm.",
+  "finance.billing.invoices.messages.unableToCancelTheInvoice": "Unable to cancel the invoice.",
+  "finance.billing.invoices.messages.unableToDuplicateTheInvoice": "Unable to duplicate the invoice.",
+  "finance.billing.invoices.messages.unableToLoadTheInvoiceData": "Unable to load the invoice data.",
+  "finance.billing.invoices.invoicesReport": "Invoices report",
+  "finance.billing.invoices.messages.invoicesCreated": "${count} invoices were created."
 }

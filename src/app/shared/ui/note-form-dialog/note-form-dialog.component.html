@@ -94,7 +94,7 @@
         (cancelled)="onCancel()"
       />
       <app-submit-button
-        [label]="submitLabel()"
+        [label]="submitLabel() | translate"
         styleClass="w-full sm:w-auto"
         [loading]="isSubmitting()"
         [disabled]="isSubmitting()"

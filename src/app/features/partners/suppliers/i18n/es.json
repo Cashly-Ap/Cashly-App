@@ -79,5 +79,7 @@
   "partners.suppliers.permissions.viewDetail": "Ver detalle de proveedor",
   "partners.suppliers.permissions.edit": "Editar proveedor",
   "partners.suppliers.permissions.delete": "Eliminar proveedor",
-  "partners.suppliers.permissions.create": "Crear proveedor"
+  "partners.suppliers.permissions.create": "Crear proveedor",
+  "partners.suppliers.messages.supplierNotFound": "Proveedor no encontrado.",
+  "partners.suppliers.messages.supplierTaxIdAlreadyExists": "Ya existe un proveedor con ese RIF."
 }

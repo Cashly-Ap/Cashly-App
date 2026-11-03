@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { PurchaseApplicationService } from '@features/procurement/purchases/services/application/purchase-application.service';
-import { ConfirmPurchaseDialogComponent } from './confirm-purchase-dialog.component';
+import { ConfirmPurchaseDialogComponent } from '@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.component';
 
 @Component({
   selector: 'app-confirm-purchase-dialog-wrapper',
@@ -23,7 +23,7 @@ export class ConfirmPurchaseDialogWrapperComponent {
         this.messages.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Compra confirmada exitosamente.',
+          detail: 'procurement.purchases.messages.purchaseConfirmedSuccessfully',
           life: 3000,
         });
         this.dialogs.close();
@@ -32,7 +32,7 @@ export class ConfirmPurchaseDialogWrapperComponent {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo confirmar la compra.',
+          detail: 'procurement.purchases.messages.unableToConfirmThePurchasePleaseTryAgain',
           life: 5000,
         });
       },

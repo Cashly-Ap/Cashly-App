@@ -292,5 +292,6 @@
   "common.cancel.confirm": "Yes, cancel",
   "common.cancel.success": "{{label}} cancelled successfully.",
   "common.cancel.error": "The record could not be cancelled.",
-  "common.cancel.missingHandler": "The record could not be cancelled."
+  "common.cancel.missingHandler": "The record could not be cancelled.",
+  "core.layouts.actionNotAvailable": "This action is not available yet."
 }

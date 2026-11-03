@@ -106,25 +106,31 @@ export class NoteFormDialogComponent {
         ? this.creditNoteApi.create(request)
         : this.debitNoteApi.create(request);
 
+    const isCredit = this.noteType() === 'CREDIT';
+
     creation$.subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        const noteLabel = this.noteType() === 'CREDIT' ? 'crédito' : 'débito';
         this.messageService.add({
           severity: 'success',
-          summary: 'Nota registrada',
-          detail: `Nota de ${noteLabel} creada exitosamente`,
+          summary: 'shared.notes.noteRegistered',
+          detail: isCredit
+            ? 'shared.notes.creditNoteCreatedSuccessfully'
+            : 'shared.notes.debitNoteCreatedSuccessfully',
           life: 4000,
         });
         this.confirmed.emit();
       },
       error: (error: { error?: { message?: string } }) => {
         this.isSubmitting.set(false);
-        const noteLabel = this.noteType() === 'CREDIT' ? 'crédito' : 'débito';
         this.messageService.add({
           severity: 'error',
-          summary: 'No se pudo registrar la nota',
-          detail: error.error?.message || `Error al crear la nota de ${noteLabel}`,
+          summary: 'shared.notes.unableToRegisterTheNote',
+          detail:
+            error.error?.message ||
+            (isCredit
+              ? 'shared.notes.unableToCreateTheCreditNote'
+              : 'shared.notes.unableToCreateTheDebitNote'),
           life: 6000,
         });
       },

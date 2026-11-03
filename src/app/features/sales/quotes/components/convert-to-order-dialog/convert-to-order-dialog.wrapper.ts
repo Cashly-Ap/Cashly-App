@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { MessageService } from 'primeng/api';
 import { ActionDialogService } from '@shared/services/action-dialog.service';
 import { QuoteApplicationService } from '@features/sales/quotes/services/application/quote-application.service';
-import { ConvertToOrderDialogComponent } from './convert-to-order-dialog.component';
+import { ConvertToOrderDialogComponent } from '@features/sales/quotes/components/convert-to-order-dialog/convert-to-order-dialog.component';
 
 @Component({
   selector: 'app-convert-to-order-dialog-wrapper',
@@ -23,7 +23,7 @@ export class ConvertToOrderDialogWrapperComponent {
         this.messages.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Presupuesto convertido a pedido exitosamente.',
+          detail: 'sales.quotes.messages.quoteConvertedToAnOrderSuccessfully',
           life: 3000,
         });
         this.dialogs.close();
@@ -32,7 +32,7 @@ export class ConvertToOrderDialogWrapperComponent {
         this.messages.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo convertir el presupuesto a pedido.',
+          detail: 'sales.quotes.messages.unableToConvertTheQuoteToAnOrderPleaseTryAgain',
           life: 5000,
         });
       },

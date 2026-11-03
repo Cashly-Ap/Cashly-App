@@ -63,5 +63,6 @@
   "finance.billing.returns.permissions.viewList": "Ver devoluciones",
   "finance.billing.returns.permissions.viewDetail": "Ver detalle de devolución",
   "finance.billing.returns.permissions.delete": "Eliminar devolución",
-  "finance.billing.returns.permissions.create": "Crear devolución"
+  "finance.billing.returns.permissions.create": "Crear devolución",
+  "finance.billing.returns.deleteConfirmation": "¿Estás seguro de que deseas eliminar la devolución \"${returnNumber}\"? Esta acción no se puede deshacer."
 }

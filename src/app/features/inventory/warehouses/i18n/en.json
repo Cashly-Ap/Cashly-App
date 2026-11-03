@@ -153,5 +153,10 @@
   "inventory.warehouses.permissions.recordEntry": "Record entry",
   "inventory.warehouses.permissions.recordExit": "Record exit",
   "inventory.warehouses.permissions.reportStock": "Stock",
-  "inventory.warehouses.permissions.reportMovements": "Movements"
+  "inventory.warehouses.permissions.reportMovements": "Movements",
+  "inventory.warehouses.unableToCreateTheWarehouse": "Unable to create the warehouse.",
+  "inventory.warehouses.messages.entriesRecordedSuccessfully": "Entries recorded successfully",
+  "inventory.warehouses.messages.exitsRecordedSuccessfully": "Exits recorded successfully",
+  "inventory.warehouses.messages.warehouseActivatedSuccessfully": "Warehouse activated successfully",
+  "inventory.warehouses.messages.warehouseDeactivatedSuccessfully": "Warehouse deactivated successfully"
 }

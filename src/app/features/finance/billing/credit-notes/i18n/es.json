@@ -57,5 +57,6 @@
   "finance.billing.creditNotes.permissions.viewList": "Ver notas de crédito",
   "finance.billing.creditNotes.permissions.viewDetail": "Ver detalle de nota de crédito",
   "finance.billing.creditNotes.permissions.delete": "Eliminar nota de crédito",
-  "finance.billing.creditNotes.permissions.create": "Crear nota de crédito"
+  "finance.billing.creditNotes.permissions.create": "Crear nota de crédito",
+  "finance.billing.creditnotes.deleteConfirmation": "¿Estás seguro de que deseas eliminar la nota de crédito \"${noteNumber}\"? Esta acción no se puede deshacer."
 }

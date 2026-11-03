@@ -39,7 +39,9 @@
     @if (tabs().length === 0) {
       <div class="flex flex-col items-center justify-center p-8 text-center">
         <i class="pi pi-inbox text-6xl text-surface-300 dark:text-surface-600 mb-4"></i>
-        <p class="text-surface-600 dark:text-surface-400 m-0">{{ 'core.pendingtabs.noPendingTabs' | translate }}</p>
+        <p class="text-surface-600 dark:text-surface-400 m-0">
+          {{ 'core.pendingtabs.noPendingTabs' | translate }}
+        </p>
       </div>
     } @else {
       <div class="flex flex-col max-h-96 overflow-y-auto">
@@ -50,7 +52,7 @@
             <div
               (click)="goToTab(tab)"
               class="flex-1 min-w-0 cursor-pointer"
-              [pTooltip]="'Ir a pestaña' | translate"
+              [pTooltip]="'shared.messages.goToTab' | translate"
               tooltipPosition="left"
             >
               <div class="flex items-center gap-2 mb-1">

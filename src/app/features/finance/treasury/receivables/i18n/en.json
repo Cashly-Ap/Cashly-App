@@ -180,5 +180,13 @@
   "finance.treasury.receivables.permissions.payDirect": "Pay directly",
   "finance.treasury.receivables.permissions.payWithValidation": "Pay with validation",
   "finance.treasury.receivables.permissions.edit": "Edit receivable",
-  "finance.treasury.receivables.permissions.delete": "Delete receivable"
+  "finance.treasury.receivables.permissions.delete": "Delete receivable",
+  "finance.treasury.receivables.messages.unableToLoadPendingPayment": "Unable to load the pending payment.",
+  "finance.treasury.receivables.messages.unableToSearchCustomersWithDebt": "Unable to search customers with debt",
+  "finance.treasury.receivables.messages.unableToLoadCustomerInvoices": "Unable to load the customer invoices",
+  "finance.treasury.receivables.messages.unableToLoadPendingPayments": "Unable to load pending payments",
+  "finance.treasury.receivables.messages.unableToLoadMerchantPayments": "Unable to load merchant payments",
+  "finance.treasury.receivables.messages.unableToLoadAllPayments": "Unable to load all payments",
+  "finance.treasury.receivables.messages.paymentApprovedSuccessfully": "Payment approved successfully",
+  "finance.treasury.receivables.messages.paymentRejectedSuccessfully": "Payment rejected successfully"
 }

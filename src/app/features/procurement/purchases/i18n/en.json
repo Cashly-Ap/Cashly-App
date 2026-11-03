@@ -94,5 +94,7 @@
   "procurement.purchases.permissions.reportPdf": "Purchases Report PDF",
   "procurement.purchases.permissions.downloadPdf": "Download purchase PDF",
   "procurement.purchases.permissions.confirm": "Confirm purchase",
-  "procurement.purchases.permissions.cancel": "Cancel purchase"
+  "procurement.purchases.permissions.cancel": "Cancel purchase",
+  "procurement.purchases.messages.purchaseNotFound": "Purchase not found.",
+  "procurement.purchases.purchasesReport": "Purchases report"
 }

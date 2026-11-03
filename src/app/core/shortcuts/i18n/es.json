@@ -15,5 +15,7 @@
   "core.shortcuts.focusSearch": "Enfocar búsqueda",
   "core.shortcuts.saveOrAccept": "Guardar o aceptar",
   "core.shortcuts.cancelOrGoBack": "Cancelar o volver",
-  "core.shortcuts.messages.dialogShortcuts": "Atajos de este diálogo"
+  "core.shortcuts.messages.dialogShortcuts": "Atajos de este diálogo",
+  "core.shortcuts.thisScreenShortcuts": "Atajos de esta pantalla",
+  "core.shortcuts.thisDialogShortcuts": "Atajos de este diálogo"
 }

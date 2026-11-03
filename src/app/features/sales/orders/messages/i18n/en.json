@@ -9,5 +9,9 @@
   "sales.orders.messages.orderDeletedSuccessfully": "Order deleted successfully",
   "sales.orders.messages.orderConfirmedSuccessfully": "Order confirmed successfully",
   "sales.orders.messages.orderCancelledSuccessfully": "Order cancelled successfully",
-  "sales.orders.messages.unableToLoadTheOrderItMayNotExist": "Unable to load the order. It may not exist."
+  "sales.orders.messages.unableToLoadTheOrderItMayNotExist": "Unable to load the order. It may not exist.",
+  "sales.orders.messages.unableToLoadTheOrderData": "Unable to load the order data.",
+  "sales.orders.messages.unableToLoadTheOrderDetails": "Unable to load the order details.",
+  "sales.orders.messages.orderConvertedToAnInvoiceSuccessfully": "Order converted to an invoice successfully.",
+  "sales.orders.messages.unableToConvertTheOrderToAnInvoicePleaseTryAgain": "Unable to convert the order to an invoice. Please try again."
 }

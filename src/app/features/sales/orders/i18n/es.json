@@ -92,5 +92,7 @@
   "sales.orders.permissions.downloadPdf": "Descargar PDF de pedido",
   "sales.orders.permissions.confirm": "Confirmar pedido",
   "sales.orders.permissions.convertToInvoice": "Convertir a factura",
-  "sales.orders.permissions.cancel": "Cancelar pedido"
+  "sales.orders.permissions.cancel": "Cancelar pedido",
+  "sales.orders.messages.orderNotFound": "Pedido no encontrado.",
+  "sales.orders.ordersReport": "Reporte de Pedidos"
 }

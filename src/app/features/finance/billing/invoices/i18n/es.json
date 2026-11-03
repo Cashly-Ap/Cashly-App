@@ -193,5 +193,12 @@
   "finance.billing.invoices.permissions.downloadPdf": "Descargar PDF de factura",
   "finance.billing.invoices.permissions.confirm": "Confirmar factura",
   "finance.billing.invoices.permissions.cancel": "Cancelar factura",
-  "finance.billing.invoices.permissions.duplicate": "Duplicar factura"
+  "finance.billing.invoices.permissions.duplicate": "Duplicar factura",
+  "finance.billing.invoices.messages.invoiceNotFound": "Factura no encontrada.",
+  "finance.billing.invoices.messages.unableToConfirmTheInvoice": "Error al confirmar.",
+  "finance.billing.invoices.messages.unableToCancelTheInvoice": "Error al cancelar la factura.",
+  "finance.billing.invoices.messages.unableToDuplicateTheInvoice": "Error al duplicar la factura.",
+  "finance.billing.invoices.messages.unableToLoadTheInvoiceData": "No se pudieron cargar los datos de la factura.",
+  "finance.billing.invoices.invoicesReport": "Reporte de Facturas",
+  "finance.billing.invoices.messages.invoicesCreated": "Se crearon ${count} facturas."
 }

@@ -33,5 +33,7 @@
   "catalog.categories.permissions.viewDetail": "View details of category",
   "catalog.categories.permissions.edit": "Edit category",
   "catalog.categories.permissions.delete": "Delete category",
-  "catalog.categories.permissions.create": "Create category"
+  "catalog.categories.permissions.create": "Create category",
+  "catalog.categories.categoryActivatedSuccessfully": "Category activated successfully",
+  "catalog.categories.categoryDeactivatedSuccessfully": "Category deactivated successfully"
 }

@@ -155,9 +155,10 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
 
   protected getPendingTabTitle(_formData: T): string {
     const config = this.getConfig();
+    const entity = this.formTranslations.t(config.entityDisplayName);
     return this.isCreateMode()
-      ? `Nuevo ${config.entityDisplayName}`
-      : `Editar ${config.entityDisplayName}`;
+      ? this.formTranslations.t('core.forms.newEntity', { entity })
+      : this.formTranslations.t('core.forms.editEntity', { entity });
   }
 
   private getPendingTabRoute(): string {

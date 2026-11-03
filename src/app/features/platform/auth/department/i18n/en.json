@@ -26,5 +26,7 @@
   "platform.auth.departments.permissions.viewDetail": "View details of department",
   "platform.auth.departments.permissions.edit": "Edit department",
   "platform.auth.departments.permissions.delete": "Delete department",
-  "platform.auth.departments.permissions.create": "Create department"
+  "platform.auth.departments.permissions.create": "Create department",
+  "platform.auth.department.saveChanges": "Save changes",
+  "platform.auth.department.createDepartment": "Create department"
 }

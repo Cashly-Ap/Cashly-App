@@ -80,5 +80,6 @@
   "finance.treasury.cashRegister.permissions.cashHistory": "Cash register history",
   "finance.treasury.cashRegister.permissions.reportCashRegister": "Cash register reports",
   "finance.treasury.cashRegister.permissions.open": "Open cash register",
-  "finance.treasury.cashRegister.permissions.close": "Close cash register"
+  "finance.treasury.cashRegister.permissions.close": "Close cash register",
+  "finance.treasury.cashregister.cashRegisterReport": "Cash register report"
 }

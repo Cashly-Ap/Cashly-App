@@ -44,5 +44,9 @@
   "platform.auth.roles.permissions.viewDetail": "View details of role",
   "platform.auth.roles.permissions.edit": "Edit role",
   "platform.auth.roles.permissions.delete": "Delete role",
-  "platform.auth.roles.permissions.create": "Create role"
+  "platform.auth.roles.permissions.create": "Create role",
+  "platform.auth.role.parentModule": "Parent module",
+  "platform.auth.role.childModule": "Child module",
+  "platform.auth.role.saveChanges": "Save changes",
+  "platform.auth.role.createRole": "Create role"
 }

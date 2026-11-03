@@ -92,5 +92,7 @@
   "sales.orders.permissions.downloadPdf": "Download order PDF",
   "sales.orders.permissions.confirm": "Confirm order",
   "sales.orders.permissions.convertToInvoice": "Convert to invoice",
-  "sales.orders.permissions.cancel": "Cancel order"
+  "sales.orders.permissions.cancel": "Cancel order",
+  "sales.orders.messages.orderNotFound": "Order not found.",
+  "sales.orders.ordersReport": "Orders report"
 }

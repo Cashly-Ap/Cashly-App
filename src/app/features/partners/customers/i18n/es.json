@@ -73,5 +73,9 @@
   "partners.customers.permissions.delete": "Eliminar cliente",
   "partners.customers.permissions.create": "Crear cliente",
   "partners.customers.permissions.viewBalance": "Ver saldo de cliente",
-  "partners.customers.permissions.balance": "Saldo de clientes"
+  "partners.customers.permissions.balance": "Saldo de clientes",
+  "partners.customers.messages.customerNotFound": "Cliente no encontrado.",
+  "partners.customers.messages.customerTaxIdAlreadyExists": "Ya existe un cliente con ese RIF.",
+  "partners.customers.messages.customerRifAlreadyRegistered": "Ya existe un cliente registrado con el RIF ${rif}.",
+  "partners.customers.rifAlreadyRegistered": "RIF ya registrado"
 }
