@@ -581,7 +581,7 @@ a:focus-visible {
 .cashly-informative .cashly-workspace .cashly-panel {
   border-color: var(--cashly-accent-line);
 }
-.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div, app-form-card-header > div) {
+.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div) {
   background: var(--cashly-accent-soft);
 }
 .cashly-informative .cashly-workspace .p-datatable {
@@ -628,8 +628,8 @@ a:focus-visible {
   color: var(--cashly-accent);
 }
 
-.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header, app-form-card-header):first-child,
-.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header, app-form-card-header):first-child > div {
+.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header):first-child,
+.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header):first-child > div {
   border-start-start-radius: inherit;
   border-start-end-radius: inherit;
 }

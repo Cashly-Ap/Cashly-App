@@ -1,5 +1,3 @@
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-
 export type UserType = 'OPERATOR' | 'ADMIN' | 'SUPER_ADMIN';
 
 export interface User {
@@ -21,5 +19,4 @@ export interface UserResponse {
   role: UserType;
   active: boolean;
   createdAt: string;
-  modulePermissions: BusinessModule[];
 }

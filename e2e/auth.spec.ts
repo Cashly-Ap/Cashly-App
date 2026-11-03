@@ -19,7 +19,6 @@ test.describe('Back-office authentication entry point', () => {
     role: 'SUPER_ADMIN',
     active: true,
     createdAt: '2026-08-21T00:00:00Z',
-    modulePermissions: ['SALES', 'FINANCES', 'INVENTORY', 'PURCHASES', 'DASHBOARD'],
   };
 
   test('renders the login form for an unauthenticated visitor', async ({ page }) => {

@@ -53,15 +53,6 @@ async function authenticate(page: Page): Promise<void> {
         type: 'SUPER_ADMIN',
         role: 'SUPER_ADMIN',
         active: true,
-        modulePermissions: [
-          'USERS',
-          'INVENTORY',
-          'SALES',
-          'FINANCES',
-          'PURCHASES',
-          'DOCUMENT_ADMIN',
-          'DASHBOARD',
-        ],
       }),
     );
   });
@@ -91,11 +82,6 @@ async function fulfillApi(route: Route): Promise<void> {
     });
     return;
   }
-  if (path.endsWith('/roles/registry')) {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
-    return;
-  }
-
   if (path.endsWith('/notifications/unread-count')) {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '0' });
     return;

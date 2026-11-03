@@ -8,7 +8,6 @@ const user = {
   type: 'SUPER_ADMIN',
   role: 'SUPER_ADMIN',
   active: true,
-  modulePermissions: ['DASHBOARD'],
 };
 const session = {
   accessToken: 'verified-access',

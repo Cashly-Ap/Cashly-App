@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { AuthenticationResponse } from '@features/platform/auth/models/interfaces/auth-response.interface';
 import type { UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('AuthenticationResponse interface', () => {
   it('should have all required properties', () => {
@@ -13,7 +12,6 @@ describe('AuthenticationResponse interface', () => {
       role: 'OPERATOR',
       active: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     const response: AuthenticationResponse = {

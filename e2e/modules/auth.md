@@ -336,7 +336,7 @@ The Auth module handles: login, logout, token refresh, password change, username
 ### AUTH-015 — Verify localStorage storage
 
 - **Result**: ✅ PASS
-- **Findings**: localStorage contains: accessToken (JWT), refreshToken (UUID), currentUser (full object with id, email, userName, role, modulePermissions), tokenExpiresAt (timestamp).
+- **Findings**: localStorage contains: accessToken (JWT), refreshToken (UUID), currentUser (full object with id, email, userName, role), tokenExpiresAt (timestamp).
 
 ### AUTH-016 — Permission-based access
 

@@ -55,7 +55,6 @@ async function authenticate(page: import('@playwright/test').Page): Promise<void
         type: 'SUPER_ADMIN',
         role: 'SUPER_ADMIN',
         active: true,
-        modulePermissions: ['SALES', 'FINANCES', 'INVENTORY', 'PURCHASES', 'DASHBOARD'],
       }),
     );
   });

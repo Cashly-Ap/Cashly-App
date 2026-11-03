@@ -26,10 +26,6 @@ export interface CurrentAccess {
   systemAdministrator: boolean;
   permissions: AppPermission[];
 }
-export interface PermissionRegistry {
-  module: BusinessModule;
-  actions: PermissionAction[];
-}
 export interface SelectionOption {
   id: string;
   name: string;

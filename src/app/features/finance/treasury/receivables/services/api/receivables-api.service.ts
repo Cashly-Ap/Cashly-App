@@ -135,12 +135,12 @@ export class ReceivablesApiService {
     );
   }
 
-  approvePayment(id: string, reason: string): Observable<any> {
-    return this.http.post(`${this.paymentsBaseUrl}/${id}/approve`, { reason });
+  approvePayment(id: string, reason: string): Observable<void> {
+    return this.http.post<void>(`${this.paymentsBaseUrl}/${id}/approve`, { reason });
   }
 
-  rejectPayment(id: string, reason: string): Observable<any> {
-    return this.http.post(`${this.paymentsBaseUrl}/${id}/reject`, { reason });
+  rejectPayment(id: string, reason: string): Observable<void> {
+    return this.http.post<void>(`${this.paymentsBaseUrl}/${id}/reject`, { reason });
   }
 
   getCustomerPaymentHistory(
@@ -152,10 +152,6 @@ export class ReceivablesApiService {
       `${this.baseUrl}/customers/${customerId}/payment-history`,
       { params: httpParams },
     );
-  }
-
-  getInvoicePaymentHistory(invoiceId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/invoices/${invoiceId}/payment-history`);
   }
 
   getCreditStatus(customerId: string): Observable<CreditStatusResponse> {

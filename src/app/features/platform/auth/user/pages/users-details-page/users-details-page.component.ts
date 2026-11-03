@@ -23,10 +23,6 @@ import {
   getUserTypeLabel,
   UserType,
 } from '@features/platform/auth/user/models/enums/user-type.enum';
-import {
-  BusinessModule,
-  BUSINESS_MODULE_LABELS,
-} from '@features/platform/auth/user/models/enums/business-module.enum';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ChangePasswordDialogComponent } from '@features/platform/auth/user/components/change-password-dialog/change-password-dialog.component';
 import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
@@ -72,8 +68,6 @@ export class UsersDetailsPageComponent implements OnInit {
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
 
-  readonly allModules = Object.values(BusinessModule);
-  readonly moduleLabels = BUSINESS_MODULE_LABELS;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -121,7 +115,4 @@ export class UsersDetailsPageComponent implements OnInit {
     return getUserTypeLabel(type);
   }
 
-  isModuleAssigned(module: BusinessModule): boolean {
-    return this.user()?.modulePermissions?.includes(module) ?? false;
-  }
 }

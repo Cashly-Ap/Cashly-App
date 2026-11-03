@@ -21,7 +21,6 @@ export class UserMapper {
       active: user.active,
       emailVerified: user.emailVerified,
       createdAt: user.createdAt,
-      modulePermissions: user.modulePermissions ?? [],
       deletable: true,
     };
   }

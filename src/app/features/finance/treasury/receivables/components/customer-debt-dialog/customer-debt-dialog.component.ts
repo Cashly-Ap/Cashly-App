@@ -1,3 +1,4 @@
+import type { ReceivablesSearchParams } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { StatusVariant } from '@shared/models/status-variant';
 import { invoiceStatusVariant } from '@features/finance/billing/invoices/models/invoice-status.presentation';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -623,15 +624,15 @@ export class CustomerDebtDialogComponent {
     const first = this.invoiceFirst();
     const rows = this.invoiceRows();
 
-    const params: Record<string, unknown> = {
+    const params: ReceivablesSearchParams = {
       page: Math.floor(first / rows),
       size: rows,
     };
     if (status !== 'ALL') {
-      params['status'] = status;
+      params.status = status;
     }
 
-    this.service.loadCustomerInvoices(customerId, params as any).subscribe({
+    this.service.loadCustomerInvoices(customerId, params).subscribe({
       next: () => {
         this.invoiceTotalRecords.set(this.service.totalCustomerInvoices());
         this.loadingInvoices.set(false);

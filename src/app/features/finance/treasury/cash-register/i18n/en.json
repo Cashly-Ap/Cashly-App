@@ -76,7 +76,6 @@
   "finance.treasury.cashregister.debitNote": "Debit note",
   "finance.treasury.cashregister.unableToLoadHistory": "Unable to load history",
   "finance.treasury.cashRegister.permissions.viewList": "View cash register",
-  "finance.treasury.cashRegister.permissions.viewDetail": "View details",
   "finance.treasury.cashRegister.permissions.cashHistory": "Cash register history",
   "finance.treasury.cashRegister.permissions.reportCashRegister": "Cash register reports",
   "finance.treasury.cashRegister.permissions.open": "Open cash register",

@@ -43,15 +43,6 @@ async function prepare(
             role: 'SUPER_ADMIN',
             type: 'SUPER_ADMIN',
             active: true,
-            modulePermissions: [
-              'USERS',
-              'INVENTORY',
-              'SALES',
-              'FINANCES',
-              'PURCHASES',
-              'DOCUMENT_ADMIN',
-              'DASHBOARD',
-            ],
           }),
         );
       }

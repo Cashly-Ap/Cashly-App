@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('UserDetails interface', () => {
   it('should have all required properties', () => {
@@ -20,7 +19,6 @@ describe('UserDetails interface', () => {
       emailVerified: true,
       createdAt: '2025-01-01T00:00:00Z',
       updatedAt: '2025-01-02T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     expect(user.id).toBe('u-001');
@@ -31,7 +29,6 @@ describe('UserDetails interface', () => {
     expect(user.emailVerified).toBe(true);
     expect(user.createdAt).toBe('2025-01-01T00:00:00Z');
     expect(user.updatedAt).toBe('2025-01-02T00:00:00Z');
-    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY_WAREHOUSES]);
   });
 
   it('should accept all UserType values', () => {
@@ -53,7 +50,6 @@ describe('UserDetails interface', () => {
         emailVerified: true,
         createdAt: '2025-01-01T00:00:00Z',
         updatedAt: '2025-01-02T00:00:00Z',
-        modulePermissions: [],
       };
       expect(user.role).toBe(role);
     });

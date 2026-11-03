@@ -200,14 +200,6 @@ export class AuthService {
     return this.accessToken() !== null;
   }
 
-  isOperators(): boolean {
-    return this.currentUser()?.role === 'OPERATOR';
-  }
-
-  isAdministration(): boolean {
-    return this.currentUser()?.role === 'ADMIN';
-  }
-
   isSuperAdmin(): boolean {
     return this.currentAccess()?.systemAdministrator === true;
   }

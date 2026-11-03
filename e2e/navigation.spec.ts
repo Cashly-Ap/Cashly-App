@@ -53,7 +53,6 @@ async function authenticate(page: Page, modules = allModules, role = 'SUPER_ADMI
           role,
           type: role,
           active: true,
-          modulePermissions: modules,
         }),
       );
     },

@@ -58,7 +58,6 @@ describe('Current role authorization', () => {
   it('maps legacy grants to unique codes and never trusts a custom role name', () => {
     auth.currentUser.set({
       role: 'SUPER_ADMIN',
-      modulePermissions: Object.values(BusinessModule),
     } as never);
     auth.currentAccess.set({
       ...access,

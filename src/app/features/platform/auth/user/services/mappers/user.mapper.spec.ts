@@ -4,7 +4,6 @@ import { UserDetails } from '@features/platform/auth/user/models/interfaces/user
 import { UserList } from '@features/platform/auth/user/models/interfaces/user-list.interface';
 import { UserEdit } from '@features/platform/auth/user/models/interfaces/user-edit.interface';
 import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('UserMapper', () => {
   const mockUserDetails: UserDetails = {
@@ -22,7 +21,6 @@ describe('UserMapper', () => {
     emailVerified: true,
     createdAt: '2025-01-01T00:00:00Z',
     updatedAt: '2025-01-02T00:00:00Z',
-    modulePermissions: [BusinessModule.USERS, BusinessModule.SALES_QUOTES],
   };
 
   describe('toList', () => {
@@ -36,17 +34,8 @@ describe('UserMapper', () => {
       expect(result.active).toBe(true);
       expect(result.emailVerified).toBe(true);
       expect(result.createdAt).toBe('2025-01-01T00:00:00Z');
-      expect(result.modulePermissions).toEqual([BusinessModule.USERS, BusinessModule.SALES_QUOTES]);
     });
 
-    it('should default modulePermissions to empty array when undefined', () => {
-      const userWithoutPermissions = {
-        ...mockUserDetails,
-        modulePermissions: undefined as unknown as BusinessModule[],
-      };
-      const result = UserMapper.toList(userWithoutPermissions);
-      expect(result.modulePermissions).toEqual([]);
-    });
 
     it('should not include updatedAt in UserList', () => {
       const result = UserMapper.toList(mockUserDetails);
@@ -91,12 +80,11 @@ describe('UserMapper', () => {
       expect(result.active).toBe(true);
     });
 
-    it('should not include emailVerified, createdAt, updatedAt, or modulePermissions', () => {
+    it('should not include emailVerified, createdAt, or updatedAt', () => {
       const result = UserMapper.toEdit(mockUserDetails);
       expect(result).not.toHaveProperty('emailVerified');
       expect(result).not.toHaveProperty('createdAt');
       expect(result).not.toHaveProperty('updatedAt');
-      expect(result).not.toHaveProperty('modulePermissions');
     });
   });
 });

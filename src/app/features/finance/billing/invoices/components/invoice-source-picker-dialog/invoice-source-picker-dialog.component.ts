@@ -7,11 +7,26 @@ import { DialogModule } from 'primeng/dialog';
 
 import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
-import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
-import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
+import {
+  OrderDetails,
+  OrderItemAllocationDetail,
+  OrderItemDetail,
+} from '@features/sales/orders/models/interfaces/order-details.interface';
+import {
+  QuoteAllocationDetail,
+  QuoteDetails,
+  QuoteLineDetail,
+  QuoteWarehouseStock,
+} from '@features/sales/quotes/models/interfaces/quote-details.interface';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { getOrderStatusLabel } from '@features/sales/orders/models/enums/order-status.enum';
 import { getQuoteStatusLabel } from '@features/sales/quotes/models/enums/quote-status.enum';
+
+type SourceLine = QuoteLineDetail | OrderItemDetail;
+type SourceAllocation = QuoteAllocationDetail | OrderItemAllocationDetail;
+type SourceStock =
+  | QuoteWarehouseStock
+  | NonNullable<OrderItemDetail['warehouseStocks']>[number];
 
 export interface InvoiceSourceSelection {
   orderIds: string[];
@@ -214,16 +229,20 @@ export class InvoiceSourcePickerDialogComponent {
 
   private toItems(detail: OrderDetails | QuoteDetails): OrderItemFormData[] {
     const isQuote = 'lines' in detail;
-    const lines: any[] = isQuote ? detail.lines : detail.items;
+    const lines: SourceLine[] = isQuote ? detail.lines : detail.items;
     return lines.map((line) => {
-      const allocations: any[] =
+      const allocations: SourceAllocation[] =
         'warehouseAllocations' in line ? line.warehouseAllocations : line.allocations;
-      const stocks: any[] = line.warehouseStocks ?? [];
+      const stocks: SourceStock[] = line.warehouseStocks ?? [];
       const stockByWarehouse = new Map(stocks.map((stock) => [stock.warehouseId, stock]));
       const usableAllocations = allocations.filter((allocation) => {
         if (!isQuote || stocks.length === 0) return true;
         const stock = stockByWarehouse.get(allocation.warehouseId);
-        return stock && stock.available >= (allocation.allocated ?? allocation.allocatedQuantity);
+        return (
+          stock &&
+          stock.available >=
+            ('allocated' in allocation ? allocation.allocated : allocation.allocatedQuantity)
+        );
       });
       return {
         productId: line.productId,
@@ -233,7 +252,7 @@ export class InvoiceSourcePickerDialogComponent {
         unitPrice: line.unitPrice,
         stock: stocks.map((stock) => ({
           warehouseId: stock.warehouseId,
-          warehouseCode: 'warehouseCode' in stock ? stock.warehouseCode : '',
+          warehouseCode: 'warehouseCode' in stock ? (stock.warehouseCode ?? '') : '',
           warehouseName: stock.warehouseName,
           quantity: 'quantity' in stock ? stock.quantity : stock.available,
           reserved: 'reserved' in stock ? stock.reserved : 0,
@@ -241,7 +260,7 @@ export class InvoiceSourcePickerDialogComponent {
         })),
         warehouseAllocations: usableAllocations.map((allocation) => ({
           warehouseId: allocation.warehouseId,
-          warehouseCode: 'warehouseCode' in allocation ? allocation.warehouseCode : '',
+          warehouseCode: 'warehouseCode' in allocation ? (allocation.warehouseCode ?? '') : '',
           warehouseName: allocation.warehouseName,
           available: 'available' in allocation ? allocation.available : 0,
           allocated:
@@ -252,21 +271,21 @@ export class InvoiceSourcePickerDialogComponent {
   }
 
   private toPreviewLines(detail: OrderDetails | QuoteDetails): SourceLinePreview[] {
-    const lines: any[] = 'items' in detail ? detail.items : detail.lines;
+    const lines: SourceLine[] = 'items' in detail ? detail.items : detail.lines;
     return lines.map((line) => {
-      const stocks: any[] = line.warehouseStocks ?? [];
+      const stocks: SourceStock[] = line.warehouseStocks ?? [];
       return {
         productName: line.productName,
         productCode: line.productCode,
         quantity: line.quantity,
         unitPrice: line.unitPrice,
-        subtotal: 'subtotal' in line ? line.subtotal : (line.subtotal ?? line.lineTotal),
+        subtotal: line.subtotal,
         required: Number(line.quantity),
         available: stocks.reduce((sum, stock) => sum + Number(stock.available ?? 0), 0),
         warehouses: stocks.map((stock) => ({
           name: stock.warehouseName,
           available: Number(stock.available ?? 0),
-          reserved: Number(stock.reserved ?? 0),
+          reserved: Number('reserved' in stock ? stock.reserved : 0),
         })),
       };
     });
@@ -306,13 +325,13 @@ export class InvoiceSourcePickerDialogComponent {
           continue;
         }
         loadedDetails[result.row.key] = result.detail;
-        const lines: any[] = 'items' in result.detail ? result.detail.items : result.detail.lines;
+        const lines: SourceLine[] = 'items' in result.detail ? result.detail.items : result.detail.lines;
         const required = lines.reduce((sum, line) => sum + Number(line.quantity), 0);
         const available = lines.reduce(
           (sum, line) =>
             sum +
             (line.warehouseStocks ?? []).reduce(
-              (lineSum: number, stock: any) => lineSum + Number(stock.available ?? 0),
+              (lineSum: number, stock: SourceStock) => lineSum + Number(stock.available ?? 0),
               0,
             ),
           0,
@@ -320,7 +339,7 @@ export class InvoiceSourcePickerDialogComponent {
         const everyLineHasStock = lines.every((line) => {
           const lineRequired = Number(line.quantity);
           const lineAvailable = (line.warehouseStocks ?? []).reduce(
-            (lineSum: number, stock: any) => lineSum + Number(stock.available ?? 0),
+            (lineSum: number, stock: SourceStock) => lineSum + Number(stock.available ?? 0),
             0,
           );
           return lineAvailable >= lineRequired;

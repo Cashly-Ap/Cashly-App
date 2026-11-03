@@ -235,7 +235,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     this.paymentLines.update((lines) => lines.filter((_, i) => i !== index));
   }
 
-  updatePaymentLine(index: number, field: 'methodId' | 'amount', value: any): void {
+  updatePaymentLine(index: number, field: 'methodId' | 'amount', value: string | number): void {
     this.paymentLines.update((lines) => {
       const updated = [...lines];
       if (field === 'amount') {
@@ -243,7 +243,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
         const max = this.maxForLine(index);
         updated[index] = { ...updated[index], amount: v > max ? max : v };
       } else {
-        updated[index] = { ...updated[index], [field]: value };
+        updated[index] = { ...updated[index], methodId: String(value) };
       }
       return updated;
     });

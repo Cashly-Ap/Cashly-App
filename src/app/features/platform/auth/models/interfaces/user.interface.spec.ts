@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import type { User, UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('User interface', () => {
   it('should have all required properties', () => {
@@ -55,7 +54,6 @@ describe('UserResponse interface', () => {
       role: 'OPERATOR',
       active: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES, BusinessModule.SALES_QUOTES],
     };
 
     expect(response.id).toBe('u-001');
@@ -65,7 +63,6 @@ describe('UserResponse interface', () => {
     expect(response.role).toBe('OPERATOR');
     expect(response.active).toBe(true);
     expect(response.createdAt).toBe('2025-01-01T00:00:00Z');
-    expect(response.modulePermissions).toHaveLength(2);
   });
 
   it('should accept all UserType values', () => {
@@ -80,7 +77,6 @@ describe('UserResponse interface', () => {
         role: type,
         active: true,
         createdAt: '2025-01-01T00:00:00Z',
-        modulePermissions: [],
       };
       expect(response.type).toBe(type);
       expect(response.role).toBe(type);

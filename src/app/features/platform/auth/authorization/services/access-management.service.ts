@@ -5,7 +5,6 @@ import {
   Department,
   Role,
   SelectionOption,
-  PermissionRegistry,
 } from '@features/platform/auth/authorization/models/access.model';
 import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
 import { DocumentListAction } from '@shared/models/document-list-action';
@@ -32,9 +31,6 @@ export class AccessManagementService {
   }
   departmentOptions() {
     return this.http.get<SelectionOption[]>('/api/departments/options');
-  }
-  registry() {
-    return this.http.get<PermissionRegistry[]>('/api/roles/registry');
   }
   saveRole(value: Partial<Role>) {
     return value.id

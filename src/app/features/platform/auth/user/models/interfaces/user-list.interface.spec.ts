@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import type { UserList } from '@features/platform/auth/user/models/interfaces/user-list.interface';
 import { UserType } from '@features/platform/auth/user/models/enums/user-type.enum';
-import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 describe('UserList interface', () => {
   it('should have all required properties', () => {
@@ -20,7 +19,6 @@ describe('UserList interface', () => {
       active: true,
       emailVerified: true,
       createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [BusinessModule.INVENTORY_WAREHOUSES],
     };
 
     expect(user.id).toBe('u-001');
@@ -30,7 +28,6 @@ describe('UserList interface', () => {
     expect(user.active).toBe(true);
     expect(user.emailVerified).toBe(true);
     expect(user.createdAt).toBe('2025-01-01T00:00:00Z');
-    expect(user.modulePermissions).toEqual([BusinessModule.INVENTORY_WAREHOUSES]);
   });
 
   it('should accept all UserType values', () => {
@@ -52,38 +49,9 @@ describe('UserList interface', () => {
         active: true,
         emailVerified: true,
         createdAt: '2025-01-01T00:00:00Z',
-        modulePermissions: [],
       };
       expect(user.role).toBe(role);
     });
   });
 
-  it('should accept multiple module permissions', () => {
-    const user: UserList = {
-      deletable: true,
-      firstName: 'Test',
-      lastName: 'User',
-      address: null,
-      phone: null,
-      roleId: 'role-1',
-      departmentId: 'department-1',
-      id: 'u-001',
-      email: 'test@example.com',
-      userName: 'admin',
-      role: UserType.ADMIN,
-      active: true,
-      emailVerified: true,
-      createdAt: '2025-01-01T00:00:00Z',
-      modulePermissions: [
-        BusinessModule.USERS,
-        BusinessModule.INVENTORY_WAREHOUSES,
-        BusinessModule.SALES_QUOTES,
-        BusinessModule.FINANCE_INVOICES,
-      ],
-    };
-
-    expect(user.modulePermissions).toHaveLength(4);
-    expect(user.modulePermissions).toContain(BusinessModule.USERS);
-    expect(user.modulePermissions).toContain(BusinessModule.INVENTORY_WAREHOUSES);
-  });
 });
