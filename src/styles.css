@@ -628,8 +628,8 @@ a:focus-visible {
   color: var(--cashly-accent);
 }
 
-.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header):first-child,
-.cashly-informative .cashly-workspace .cashly-panel > :is(app-details-card-header, app-form-header):first-child > div {
+.cashly-informative .cashly-workspace .cashly-panel :is(app-details-card-header, app-form-header):first-child,
+.cashly-informative .cashly-workspace .cashly-panel :is(app-details-card-header, app-form-header):first-child > div {
   border-start-start-radius: inherit;
   border-start-end-radius: inherit;
 }
