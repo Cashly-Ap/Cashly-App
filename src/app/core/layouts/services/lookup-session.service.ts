@@ -5,19 +5,12 @@ import {
   NavigationRecord,
 } from '@shared/components/list/list-navigation.service';
 import { NavigationActionDefinition } from '@core/layouts/config/list-navigation.config';
-import { loadNavigationLookup } from '@shared/components/list/list-navigation-data-source';
-import {
-  lookupFilterDefaults,
-  lookupFilterDefinitions,
-} from '@core/layouts/config/list-navigation-filters';
 import {
   LookupDefinition,
   LookupFilterOption,
   LookupItem,
 } from '@core/layouts/models/lookup-definition.model';
 import { LookupDefinitionRegistry } from '@shared/services/lookup-definition.registry';
-import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
-import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { MessageService } from 'primeng/api';
 
@@ -40,12 +33,13 @@ export class LookupSessionService {
   open(config: LookupSessionConfig): void {
     const { route, label, module, definitionAction, onSelect } = config;
     const definition = this.registry.find(route);
+    if (!definition) return;
     const items = signal<LookupItem[]>([]);
     const loading = signal(false);
     const total = signal(0);
     const first = signal(0);
     const rows = signal(10);
-    const filterValues = signal(definition ? this.defaultsFor(definition) : lookupFilterDefaults(route));
+    const filterValues = signal(this.defaultsFor(definition));
     const filterSources: {
       values: Record<string, string>;
       categories: LookupFilterOption[];
@@ -56,10 +50,7 @@ export class LookupSessionService {
       roles: [],
     };
     const filters = () =>
-      (definition
-        ? definition.filters({ ...filterSources, values: filterValues() })
-        : lookupFilterDefinitions(route, { ...filterSources, values: filterValues() })
-      ).map((filter) => ({
+      definition.filters({ ...filterSources, values: filterValues() }).map((filter) => ({
         label: filter.label,
         value: filterValues()[filter.key] ?? filter.defaultValue,
         options: [...filter.options],
@@ -87,24 +78,15 @@ export class LookupSessionService {
     const load = () => {
       request?.unsubscribe();
       loading.set(true);
-      request = (definition
-        ? definition.load(this.injector, {
-            label,
-            search,
-            page: Math.floor(first() / rows()),
-            size: rows(),
-            filters: filterValues(),
-          })
-        : loadNavigationLookup(
-            this.injector,
-            route,
-            label,
-            search,
-            Math.floor(first() / rows()),
-            rows(),
-            filterValues(),
-          )
-      ).subscribe({
+      request = definition
+        .load(this.injector, {
+          label,
+          search,
+          page: Math.floor(first() / rows()),
+          size: rows(),
+          filters: filterValues(),
+        })
+        .subscribe({
           next: (result) => {
             items.set(result.items);
             total.set(result.total);
@@ -122,32 +104,7 @@ export class LookupSessionService {
           },
         });
     };
-    if (definition?.loadFilterSources) {
-      definition.loadFilterSources(this.injector, filterSources);
-    } else if (route === '/catalog/products') {
-      this.injector
-        .get(CategoryApiService)
-        .getAll({ active: true, page: 0, size: 1000 })
-        .subscribe({
-          next: (response) => {
-            filterSources.categories = response.content.map((category) => ({
-              label: category.name,
-              value: category.id,
-            }));
-          },
-          error: () => undefined,
-        });
-    } else if (route === '/platform/users') {
-      this.injector
-        .get(AccessManagementService)
-        .roleOptions()
-        .subscribe({
-          next: (roles) => {
-            filterSources.roles = roles.map((role) => ({ label: role.name, value: role.id }));
-          },
-          error: () => undefined,
-        });
-    }
+    definition.loadFilterSources?.(this.injector, filterSources);
     this.navigation.session.set({
       owner,
       title: label,

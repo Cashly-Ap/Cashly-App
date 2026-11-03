@@ -75,11 +75,6 @@ export class ActionDispatcherService {
       void this.router.navigate([...recordRoute], { queryParams });
       return true;
     }
-    const recordPath = RECORD_PATH_SEGMENTS[label];
-    if (recordPath) {
-      void this.router.navigate([route, record.id, ...recordPath], { queryParams });
-      return true;
-    }
     if (this.navigationActions.execute(resource, label, record)) return true;
     this.messages.add({
       severity: 'warn',
