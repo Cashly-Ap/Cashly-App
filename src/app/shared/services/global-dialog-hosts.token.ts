@@ -2,6 +2,11 @@ import { InjectionToken, Type } from '@angular/core';
 
 export interface GlobalDialogHostRegistration {
   key: string;
+  load: () => Promise<Type<unknown>>;
+}
+
+export interface LoadedGlobalDialogHost {
+  key: string;
   component: Type<unknown>;
 }
 

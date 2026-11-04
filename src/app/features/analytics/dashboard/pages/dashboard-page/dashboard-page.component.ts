@@ -22,7 +22,7 @@ import {
   RecentActivity,
   InvoiceDue,
 } from '@features/analytics/dashboard/services/api/dashboard-api.service';
-import { BaseChartDirective } from 'ng2-charts';
+import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
 
 const DASHBOARD_CHART_COLORS = {
@@ -51,6 +51,7 @@ import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.
     CommonModule,
     BaseChartDirective,
   ],
+  providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './dashboard-page.component.html',
 })
 export class DashboardPageComponent implements OnInit {

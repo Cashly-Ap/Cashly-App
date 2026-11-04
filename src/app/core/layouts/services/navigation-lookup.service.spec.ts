@@ -71,12 +71,20 @@ describe('NavigationLookupService', () => {
         {
           provide: ACTION_DIALOG_HANDLERS,
           multi: true,
-          useValue: { resource: 'quotes', label: 'Convertir a pedido', component: TestActionComponent },
+          useValue: {
+            resource: 'quotes',
+            label: 'Convertir a pedido',
+            load: async () => TestActionComponent,
+          },
         },
         {
           provide: ACTION_DIALOG_HANDLERS,
           multi: true,
-          useValue: { resource: 'quotes', label: 'Convertir a factura', component: TestActionComponent },
+          useValue: {
+            resource: 'quotes',
+            label: 'Convertir a factura',
+            load: async () => TestActionComponent,
+          },
         },
         {
           provide: CANCEL_HANDLERS,
@@ -142,7 +150,9 @@ describe('NavigationLookupService', () => {
 
     lookup.open('/sales/quotes', 'Convertir a pedido');
     await navigation.select(navigation.session()!.records()[0]);
-    expect(actionDialogs.request()?.component).toBe(TestActionComponent);
+    await vi.waitFor(() =>
+      expect(actionDialogs.request()?.component).toBe(TestActionComponent),
+    );
   });
 
   it('dispatches receivables and warehouse actions through their handlers', async () => {

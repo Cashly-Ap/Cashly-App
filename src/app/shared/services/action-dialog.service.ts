@@ -12,6 +12,7 @@ export interface ActionDialogRequest {
 @Injectable({ providedIn: 'root' })
 export class ActionDialogService {
   private readonly handlers = inject(ACTION_DIALOG_HANDLERS);
+  private version = 0;
   readonly request = signal<ActionDialogRequest | null>(null);
 
   open(resource: string, label: string, recordId: string): boolean {
@@ -19,11 +20,21 @@ export class ActionDialogService {
       (item) => item.resource === resource && item.label === label,
     );
     if (!handler) return false;
-    this.request.set({ component: handler.component, recordId });
+    const version = ++this.version;
+    void handler
+      .load()
+      .then((component) => {
+        if (version !== this.version) return;
+        this.request.set({ component, recordId });
+      })
+      .catch(() => {
+        if (version === this.version) this.request.set(null);
+      });
     return true;
   }
 
   close(): void {
+    this.version++;
     this.request.set(null);
   }
 }

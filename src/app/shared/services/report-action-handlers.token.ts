@@ -2,7 +2,7 @@ import { InjectionToken, Type } from '@angular/core';
 
 export interface ReportActionHandlerRegistration {
   key: string;
-  component: Type<unknown>;
+  load: () => Promise<Type<unknown>>;
   inputs?: Record<string, unknown>;
 }
 

@@ -12,6 +12,7 @@ export interface ReportActionRequest {
 @Injectable({ providedIn: 'root' })
 export class ReportActionService {
   private readonly handlers = inject(REPORT_ACTION_HANDLERS);
+  private version = 0;
   readonly request = signal<ReportActionRequest | null>(null);
 
   open(key: string): boolean {
@@ -19,11 +20,21 @@ export class ReportActionService {
       (item) => item.key === key,
     );
     if (!handler) return false;
-    this.request.set({ component: handler.component, inputs: handler.inputs ?? {} });
+    const version = ++this.version;
+    void handler
+      .load()
+      .then((component) => {
+        if (version !== this.version) return;
+        this.request.set({ component, inputs: handler.inputs ?? {} });
+      })
+      .catch(() => {
+        if (version === this.version) this.request.set(null);
+      });
     return true;
   }
 
   close(): void {
+    this.version++;
     this.request.set(null);
   }
 }
