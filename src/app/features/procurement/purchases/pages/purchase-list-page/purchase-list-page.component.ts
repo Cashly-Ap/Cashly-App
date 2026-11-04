@@ -250,18 +250,12 @@ export class PurchaseListPageComponent implements OnInit {
       actions.push(
         editAction(() => this.onEdit(purchase)),
         confirmAction('Confirmar compra', () => this.onConfirm(purchase)),
-        cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase), {
-          requiredPermissions: ['INVENTORY_WAREHOUSES:RECORD_EXIT'],
-        }),
+        cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase)),
         deleteAction(() => this.onDelete(purchase)),
       );
     }
     if (purchase.status === 'CONFIRMED') {
-      actions.push(
-        cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase), {
-          requiredPermissions: ['INVENTORY_WAREHOUSES:RECORD_EXIT'],
-        }),
-      );
+      actions.push(cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase)));
     }
     return actions;
   }

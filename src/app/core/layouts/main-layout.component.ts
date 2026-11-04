@@ -9,6 +9,7 @@ import { DestroyRef } from '@angular/core';
 import { ModuleGroup, moduleGroupFromUrl } from '@core/preferences/module-appearance';
 import { effect, untracked } from '@angular/core';
 import { CompanyService } from '@features/platform/company/company.service';
+import { CompanyPermission } from '@features/platform/company/permissions';
 import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import {
@@ -138,8 +139,9 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     inject(DestroyRef).onDestroy(unregisterNavigation);
     effect((onCleanup) => {
       const userId = this.brandingUserId();
+      const canViewCompany = this.authService.hasPermissionCode(CompanyPermission.VIEW);
       untracked(() => this.companyService.clear());
-      if (!userId) return;
+      if (!userId || !canViewCompany) return;
       const subscription = untracked(() =>
         this.companyService.load().subscribe({ error: () => undefined }),
       );
