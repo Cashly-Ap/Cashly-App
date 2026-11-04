@@ -206,6 +206,7 @@
   />
   <app-change-email-dialog
     [userId]="currentUser.id"
+    [currentEmail]="currentUser.email"
     [visible]="showChangeEmailDialog()"
     (visibleChange)="showChangeEmailDialog.set($event)"
     (changed)="onEmailChanged($event)"

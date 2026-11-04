@@ -16,6 +16,8 @@
   "navigation.options.paid": "Paid",
   "navigation.options.fullyReturned": "Fully returned",
   "shared.selected": "Selected",
+  "shared.language.spanish": "Spanish",
+  "shared.language.english": "English",
   "shared.previousPage": "Previous page",
   "shared.nextPage": "Next page",
   "shared.accept": "Accept",

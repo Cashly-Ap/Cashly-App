@@ -4,19 +4,26 @@ import {
   ReactiveFormsModule,
   FormBuilder,
   FormGroup,
+  FormControl,
   Validators,
   AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
-import { NgClass } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { PasswordModule } from 'primeng/password';
+import { TextInputComponent } from '@core/forms/components';
 import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
 import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
 import { MessageService } from 'primeng/api';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+
+function passwordsMatch(group: AbstractControl): ValidationErrors | null {
+  const password = group.get('password')?.value;
+  const confirmation = group.get('confirmPassword')?.value;
+  return password && confirmation && password !== confirmation ? { passwordsMismatch: true } : null;
+}
+
 @Component({
   selector: 'app-change-password-dialog',
   standalone: true,
@@ -25,17 +32,15 @@ import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submi
     CancelButtonComponent,
     TranslatePipe,
     ReactiveFormsModule,
-    NgClass,
     DialogModule,
-    ButtonModule,
-    PasswordModule,
+    TextInputComponent,
   ],
   templateUrl: './change-password-dialog.component.html',
 })
 export class ChangePasswordDialogComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  private service = inject(UserApplicationService);
-  private messageService = inject(MessageService);
+  private readonly fb = inject(FormBuilder);
+  private readonly service = inject(UserApplicationService);
+  private readonly messageService = inject(MessageService);
 
   userId = input.required<string>();
   visible = input.required<boolean>();
@@ -43,23 +48,23 @@ export class ChangePasswordDialogComponent implements OnInit {
   changed = output<void>();
 
   loading = this.service.loading;
-
   form!: FormGroup;
+
+  get passwordControl(): FormControl {
+    return this.form.get('password') as FormControl;
+  }
+  get confirmPasswordControl(): FormControl {
+    return this.form.get('confirmPassword') as FormControl;
+  }
 
   ngOnInit(): void {
     this.form = this.fb.group(
       {
         password: ['', [Validators.required, UserValidators.passwordStrength()]],
-        confirmPassword: ['', Validators.required],
+        confirmPassword: ['', [Validators.required]],
       },
-      { validators: this.passwordsMatchValidator },
+      { validators: passwordsMatch },
     );
-  }
-
-  private passwordsMatchValidator(group: AbstractControl): Record<string, boolean> | null {
-    const password = group.get('password')?.value;
-    const confirm = group.get('confirmPassword')?.value;
-    return password && confirm && password !== confirm ? { passwordsMismatch: true } : null;
   }
 
   onSubmit(): void {
@@ -72,11 +77,11 @@ export class ChangePasswordDialogComponent implements OnInit {
       next: () => {
         this.messageService.add({
           severity: 'success',
-          summary: 'Éxito',
-          detail: 'Contraseña actualizada exitosamente',
+          summary: 'OK',
+          detail: 'platform.auth.user.passwordUpdatedSuccessfully',
           life: 3000,
         });
-        this.form.reset();
+        this.resetForm();
         this.visibleChange.emit(false);
         this.changed.emit();
       },
@@ -84,7 +89,7 @@ export class ChangePasswordDialogComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Error al actualizar la contraseña. Por favor, intente nuevamente.',
+          detail: 'platform.auth.user.couldNotUpdateThePasswordPleaseTryAgain',
           life: 5000,
         });
       },
@@ -92,13 +97,30 @@ export class ChangePasswordDialogComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.form.reset();
+    this.resetForm();
     this.visibleChange.emit(false);
   }
 
-  getPasswordError(): string {
-    const errors = this.form.get('password')?.errors;
+  private resetForm(): void {
+    this.form.reset();
+  }
+
+  passwordError(): string {
+    if (!this.passwordControl.touched) return '';
+    const errors = this.passwordControl.errors;
     if (!errors) return '';
+    if (errors['required']) return 'platform.auth.passwordIsRequired';
     return UserValidators.getPasswordErrorMessage(errors);
+  }
+
+  confirmPasswordError(): string {
+    if (!this.confirmPasswordControl.touched) return '';
+    if (this.confirmPasswordControl.hasError('required')) {
+      return 'platform.auth.user.passwordConfirmationIsRequired';
+    }
+    if (this.form.hasError('passwordsMismatch')) {
+      return 'platform.auth.user.passwordsDoNotMatch';
+    }
+    return '';
   }
 }

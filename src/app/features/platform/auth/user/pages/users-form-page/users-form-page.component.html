@@ -17,10 +17,7 @@
         </p-tablist>
         <p-tabpanels>
           <p-tabpanel value="general">
-            <app-tab-content
-              [columns]="2"
-              class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
-            >
+            <app-tab-content [columns]="2" class="block">
               @if (canManagePhoto()) {
                 <app-file-input
                   class="md:col-span-full"
@@ -52,7 +49,7 @@
               />
               <app-select-input
                 [label]="'users.profile.language' | translate"
-                [options]="languages"
+                [options]="languages()"
                 [control]="control('language')"
                 [errorMessage]="'users.profile.select.spanish.or.english' | translate"
               />
@@ -64,24 +61,6 @@
                 "
                 [control]="control('userName')"
               />
-              @if (isCreateMode()) {
-                <app-text-input
-                  [label]="'users.profile.email' | translate"
-                  [placeholder]="'platform.auth.userExampleCom' | translate"
-                  [errorMessage]="'users.profile.enter.a.valid.email.address' | translate"
-                  [control]="control('email')"
-                />
-                <app-text-input
-                  class="md:col-span-2"
-                  [label]="'users.profile.password' | translate"
-                  [errorMessage]="
-                    'users.profile.use.at.least.8.characters.uppercase.letters.lowercase.letters.and.numbers'
-                      | translate
-                  "
-                  variant="password"
-                  [control]="control('password')"
-                />
-              }
             </app-tab-content>
           </p-tabpanel>
           <p-tabpanel value="contact">
@@ -128,6 +107,38 @@
                 [control]="control('departmentId')"
                 [errorMessage]="'users.profile.select.an.available.department' | translate"
               />
+              @if (isCreateMode()) {
+                <app-text-input
+                  [label]="'users.profile.email' | translate"
+                  [placeholder]="'platform.auth.userExampleCom' | translate"
+                  [errorMessage]="'users.profile.enter.a.valid.email.address' | translate"
+                  [control]="control('email')"
+                />
+                <app-text-input
+                  [label]="'users.profile.password' | translate"
+                  [errorMessage]="
+                    'users.profile.use.at.least.8.characters.uppercase.letters.lowercase.letters.and.numbers'
+                      | translate
+                  "
+                  variant="password"
+                  [control]="control('password')"
+                />
+              }
+              @if (isEditMode() && canManageCredentials()) {
+                <div
+                  class="md:col-span-2 flex flex-col gap-3 p-4 rounded-xl border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-900"
+                >
+                  <p class="font-medium text-surface-800 dark:text-surface-200">
+                    {{ 'users.profile.security' | translate }}
+                  </p>
+                  <p class="text-sm text-surface-500 dark:text-surface-400">
+                    {{ 'users.profile.manage.the.user.credentials' | translate }}
+                  </p>
+                  <p class="text-sm text-surface-600 dark:text-surface-300">
+                    <i class="pi pi-envelope mr-2"></i>{{ control('email').value }}
+                  </p>
+                </div>
+              }
               @if (isEditMode()) {
                 <div
                   class="md:col-span-2 flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
@@ -157,7 +168,40 @@
         [disabled]="form.invalid"
         [tooltipMessage]="'shared.completeRequiredFields' | translate"
         (cancel)="onCancel()"
-      />
+      >
+        @if (isEditMode() && canManageCredentials() && entityId()) {
+          <p-button
+            [label]="'users.profile.change.email' | translate"
+            icon="pi pi-envelope"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="loading() || savingPhoto()"
+            (onClick)="showChangeEmailDialog.set(true)"
+          />
+          <p-button
+            [label]="'users.profile.change.password' | translate"
+            icon="pi pi-lock"
+            severity="secondary"
+            [outlined]="true"
+            [disabled]="loading() || savingPhoto()"
+            (onClick)="showChangePasswordDialog.set(true)"
+          />
+        }
+      </app-form-actions>
     </app-panel-card>
   </form>
+  @if (isEditMode() && entityId()) {
+    <app-change-email-dialog
+      [userId]="entityId()!"
+      [currentEmail]="control('email').value ?? ''"
+      [visible]="showChangeEmailDialog()"
+      (visibleChange)="showChangeEmailDialog.set($event)"
+      (changed)="onEmailChanged($event)"
+    />
+    <app-change-password-dialog
+      [userId]="entityId()!"
+      [visible]="showChangePasswordDialog()"
+      (visibleChange)="showChangePasswordDialog.set($event)"
+    />
+  }
 </app-form-container>

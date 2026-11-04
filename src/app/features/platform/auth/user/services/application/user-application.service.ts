@@ -111,11 +111,11 @@ export class UserApplicationService {
     );
   }
 
-  changeEmail(id: string, email: string): Observable<void> {
+  changeEmail(id: string, email: string, currentEmail?: string): Observable<void> {
     this.loading.set(true);
     this.error.set(null);
 
-    return this.api.changeEmail(id, email).pipe(
+    return this.api.changeEmail(id, email, currentEmail).pipe(
       tap({
         next: () => {
           this.users.update((current) => current.map((u) => (u.id === id ? { ...u, email } : u)));

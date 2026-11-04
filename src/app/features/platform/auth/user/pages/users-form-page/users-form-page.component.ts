@@ -14,6 +14,7 @@ import { UserValidators } from '@features/platform/auth/user/validators/user.val
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { ButtonModule } from 'primeng/button';
 import { MessageService } from 'primeng/api';
 import {
   TabContentComponent,
@@ -28,7 +29,10 @@ import {
 import { BaseFormComponent, FormConfig } from '@core/forms/base/base-form.component';
 import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
 import { AccessManagementService } from '@features/platform/auth/authorization/services/access-management.service';
-import { UserProfile, SelectionOption } from '@features/platform/auth/authorization/models/access.model';
+import {
+  UserProfile,
+  SelectionOption,
+} from '@features/platform/auth/authorization/models/access.model';
 interface UserFormData extends UserProfile {
   language: Language;
   email: string;
@@ -42,6 +46,8 @@ interface UserFormData extends UserProfile {
   postalCode: string;
 }
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { ChangePasswordDialogComponent } from '@features/platform/auth/user/components/change-password-dialog/change-password-dialog.component';
+import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
 @Component({
   selector: 'app-users-form-page',
   standalone: true,
@@ -51,6 +57,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     TabsModule,
     ReactiveFormsModule,
     ToggleSwitchModule,
+    ButtonModule,
     TabContentComponent,
     FormContainerComponent,
     FormHeaderComponent,
@@ -59,6 +66,8 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     TextInputComponent,
     SelectInputComponent,
     CountryInputComponent,
+    ChangePasswordDialogComponent,
+    ChangeEmailDialogComponent,
   ],
   templateUrl: './users-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,11 +80,16 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   private readonly photos = inject(UserPhotoService);
   private readonly auth = inject(AuthService);
   private readonly preferences = inject(UserPreferencesService);
-  readonly languages = [
-    { label: 'Español', value: 'es' },
-    { label: 'English', value: 'en' },
-  ];
+  readonly languages = computed(() => [
+    { label: 'shared.language.spanish', value: 'es' },
+    { label: 'shared.language.english', value: 'en' },
+  ]);
   readonly canManagePhoto = computed(() => this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'));
+  readonly canManageCredentials = computed(() =>
+    this.auth.hasPermission(BusinessModule.USERS, 'UPDATE'),
+  );
+  readonly showChangePasswordDialog = signal(false);
+  readonly showChangeEmailDialog = signal(false);
   private readonly photoDestroy = inject(DestroyRef);
   readonly photo = new FormControl<File | null>(null);
   readonly photoUrl = signal<string | null>(null);
@@ -121,6 +135,10 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   }
   control(key: string): FormControl {
     return this.form.get(key) as FormControl;
+  }
+  onEmailChanged(email: string): void {
+    this.control('email').setValue(email);
+    this.control('email').markAsPristine();
   }
   getConfig(): FormConfig {
     return {
@@ -186,13 +204,10 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
     });
   }
   private firstInvalidTab(): string {
-    if (
-      ['firstName', 'lastName', 'userName', 'email', 'password', 'language'].some(
-        (key) => this.control(key).invalid,
-      )
-    )
+    if (['firstName', 'lastName', 'userName', 'language'].some((key) => this.control(key).invalid))
       return 'general';
-    if (['roleId', 'departmentId'].some((key) => this.control(key).invalid)) return 'access';
+    if (['roleId', 'departmentId', 'email', 'password'].some((key) => this.control(key).invalid))
+      return 'access';
     return 'contact';
   }
   override onSubmit(): void {

@@ -102,7 +102,10 @@ export class UserApiService {
     return this.http.put<void>(`${this.baseUrl}/${id}/password`, { password });
   }
 
-  changeEmail(id: string, email: string): Observable<void> {
-    return this.http.put<void>(`${this.baseUrl}/${id}/email`, { email });
+  changeEmail(id: string, email: string, currentEmail?: string): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/${id}/email`, {
+      ...(currentEmail ? { currentEmail } : {}),
+      email,
+    });
   }
 }

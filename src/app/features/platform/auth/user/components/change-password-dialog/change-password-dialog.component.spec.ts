@@ -85,8 +85,8 @@ describe('ChangePasswordDialogComponent', () => {
     expect(mockService.changePassword).toHaveBeenCalledWith('user-001', 'StrongPass1');
     expect(addSpy).toHaveBeenCalledWith({
       severity: 'success',
-      summary: 'Éxito',
-      detail: 'Contraseña actualizada exitosamente',
+      summary: 'OK',
+      detail: 'platform.auth.user.passwordUpdatedSuccessfully',
       life: 3000,
     });
     expect(hostComponent.onVisibleChange).toHaveBeenCalledWith(false);
@@ -108,7 +108,7 @@ describe('ChangePasswordDialogComponent', () => {
     expect(addSpy).toHaveBeenCalledWith({
       severity: 'error',
       summary: 'Error',
-      detail: 'Error al actualizar la contraseña. Por favor, intente nuevamente.',
+      detail: 'platform.auth.user.couldNotUpdateThePasswordPleaseTryAgain',
       life: 5000,
     });
   });
@@ -124,7 +124,7 @@ describe('ChangePasswordDialogComponent', () => {
   it('should return empty string for getPasswordError when no errors', () => {
     dialogComponent.form.get('password')!.setValue('StrongPass1');
     dialogComponent.form.get('confirmPassword')!.setValue('StrongPass1');
-    expect(dialogComponent.getPasswordError()).toBe('');
+    expect(dialogComponent.passwordError()).toBe('');
   });
 
   it('should return mismatch error when passwords do not match', () => {

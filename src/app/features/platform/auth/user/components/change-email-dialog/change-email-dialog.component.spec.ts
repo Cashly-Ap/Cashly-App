@@ -11,6 +11,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
   imports: [ChangeEmailDialogComponent],
   template: `<app-change-email-dialog
     [userId]="userId"
+    [currentEmail]="currentEmail"
     [visible]="visible"
     (visibleChange)="onVisibleChange($event)"
     (changed)="onChanged($event)"
@@ -18,6 +19,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
 })
 class HostComponent {
   userId = 'user-001';
+  currentEmail = 'old@example.com';
   visible = true;
   onVisibleChange = vi.fn();
   onChanged = vi.fn();
@@ -53,6 +55,12 @@ describe('ChangeEmailDialogComponent', () => {
     messageService = TestBed.inject(MessageService);
   }
 
+  function fillValidForm() {
+    dialogComponent.currentEmailControl.setValue('old@example.com');
+    dialogComponent.emailControl.setValue('new@example.com');
+    dialogComponent.confirmEmailControl.setValue('new@example.com');
+  }
+
   beforeEach(() => {
     (TestBed as TestBedStatic).resetTestingModule();
     configureTestBed();
@@ -63,9 +71,14 @@ describe('ChangeEmailDialogComponent', () => {
     expect(dialogComponent).toBeTruthy();
   });
 
-  it('should initialize form with email and confirmEmail controls', () => {
+  it('should initialize form with currentEmail, email and confirmEmail controls', () => {
+    expect(dialogComponent.form.contains('currentEmail')).toBe(true);
     expect(dialogComponent.form.contains('email')).toBe(true);
     expect(dialogComponent.form.contains('confirmEmail')).toBe(true);
+  });
+
+  it('should prefill the current email', () => {
+    expect(dialogComponent.currentEmailControl.value).toBe('old@example.com');
   });
 
   it('should mark form as touched and return when form is invalid', () => {
@@ -77,16 +90,18 @@ describe('ChangeEmailDialogComponent', () => {
   it('should call changeEmail and emit events on success', () => {
     const addSpy = vi.spyOn(messageService, 'add');
 
-    dialogComponent.emailControl.setValue('new@example.com');
-    dialogComponent.confirmEmailControl.setValue('new@example.com');
-
+    fillValidForm();
     dialogComponent.onSubmit();
 
-    expect(mockService.changeEmail).toHaveBeenCalledWith('user-001', 'new@example.com');
+    expect(mockService.changeEmail).toHaveBeenCalledWith(
+      'user-001',
+      'new@example.com',
+      'old@example.com',
+    );
     expect(addSpy).toHaveBeenCalledWith({
       severity: 'success',
-      summary: 'Éxito',
-      detail: 'Correo electrónico actualizado exitosamente',
+      summary: 'OK',
+      detail: 'platform.auth.user.emailUpdatedSuccessfully',
       life: 3000,
     });
     expect(hostComponent.onVisibleChange).toHaveBeenCalledWith(false);
@@ -100,15 +115,13 @@ describe('ChangeEmailDialogComponent', () => {
 
     const addSpy = vi.spyOn(messageService, 'add');
 
-    dialogComponent.emailControl.setValue('new@example.com');
-    dialogComponent.confirmEmailControl.setValue('new@example.com');
-
+    fillValidForm();
     dialogComponent.onSubmit();
 
     expect(addSpy).toHaveBeenCalledWith({
       severity: 'error',
       summary: 'Error',
-      detail: 'Error al actualizar el correo electrónico. Por favor, intente nuevamente.',
+      detail: 'platform.auth.user.couldNotUpdateTheEmailAddressPleaseTryAgain',
       life: 5000,
     });
   });
@@ -117,37 +130,52 @@ describe('ChangeEmailDialogComponent', () => {
     dialogComponent.emailControl.setValue('test@example.com');
     dialogComponent.onCancel();
 
-    expect(dialogComponent.form.value.email).toBeNull();
+    expect(dialogComponent.emailControl.value).toBe('');
     expect(hostComponent.onVisibleChange).toHaveBeenCalledWith(false);
+  });
+
+  it('should reject a current email that does not match the registered one', () => {
+    dialogComponent.currentEmailControl.setValue('other@example.com');
+    dialogComponent.currentEmailControl.markAsTouched();
+    expect(dialogComponent.currentEmailError()).toBe(
+      'platform.auth.user.theCurrentEmailDoesNotMatch',
+    );
+  });
+
+  it('should reject a new email equal to the current one', () => {
+    dialogComponent.currentEmailControl.setValue('old@example.com');
+    dialogComponent.emailControl.setValue('old@example.com');
+    dialogComponent.emailControl.markAsTouched();
+    expect(dialogComponent.emailError()).toBe('platform.auth.user.theNewEmailMustBeDifferent');
   });
 
   it('should return required error for email when empty', () => {
     dialogComponent.emailControl.setValue('');
     dialogComponent.emailControl.markAsTouched();
-    expect(dialogComponent.getEmailError()).toBe('El correo electrónico es requerido');
+    expect(dialogComponent.emailError()).toBe('platform.auth.anEmailAddressIsRequired');
   });
 
   it('should return invalid format error for email', () => {
     dialogComponent.emailControl.setValue('invalid-email');
     dialogComponent.emailControl.markAsTouched();
-    expect(dialogComponent.getEmailError()).toBe('El formato del correo electrónico es inválido');
+    expect(dialogComponent.emailError()).toBe('platform.auth.theEmailAddressFormatIsInvalid');
   });
 
   it('should return required error for confirmEmail when empty', () => {
     dialogComponent.confirmEmailControl.setValue('');
     dialogComponent.confirmEmailControl.markAsTouched();
-    expect(dialogComponent.getConfirmEmailError()).toBe('La confirmación del correo es requerida');
+    expect(dialogComponent.confirmEmailError()).toBe('platform.auth.emailConfirmationIsRequired');
   });
 
   it('should return mismatch error when emails do not match', () => {
     dialogComponent.emailControl.setValue('a@example.com');
     dialogComponent.confirmEmailControl.setValue('b@example.com');
-    expect(dialogComponent.getConfirmEmailError()).toBe('Los correos electrónicos no coinciden');
+    dialogComponent.confirmEmailControl.markAsTouched();
+    expect(dialogComponent.confirmEmailError()).toBe('platform.auth.theEmailAddressesDoNotMatch');
   });
 
   it('should return empty string when no errors', () => {
-    dialogComponent.emailControl.setValue('valid@example.com');
-    dialogComponent.confirmEmailControl.setValue('valid@example.com');
-    expect(dialogComponent.getConfirmEmailError()).toBe('');
+    fillValidForm();
+    expect(dialogComponent.confirmEmailError()).toBe('');
   });
 });
