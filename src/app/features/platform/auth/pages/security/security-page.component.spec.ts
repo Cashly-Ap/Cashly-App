@@ -6,7 +6,9 @@ import { SecurityPageComponent } from '@features/platform/auth/pages/security/se
 import { MfaApiService } from '@features/platform/auth/services/api/mfa-api.service';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
-vi.mock('qrcode', () => ({ toDataURL: vi.fn().mockResolvedValue('data:image/png;base64,qr') }));
+vi.mock('uqr', () => ({
+  renderSVG: vi.fn().mockReturnValue('<svg></svg>'),
+}));
 
 describe('SecurityPageComponent', () => {
   const api = { status: vi.fn(), setup: vi.fn(), enable: vi.fn(), disable: vi.fn() };

@@ -9,7 +9,7 @@ import { DetailsCardHeaderComponent } from '@shared/components/details/details-c
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { finalize } from 'rxjs';
-import { toDataURL } from 'qrcode';
+import { renderSVG } from 'uqr';
 import { MfaApiService, MfaStatus, MfaSetup } from '@features/platform/auth/services/api/mfa-api.service';
 import { mfaErrorMessage } from '@features/platform/auth/messages/mfa-error-message';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
@@ -75,11 +75,21 @@ export class SecurityPageComponent {
         next: (setup) => {
           this.passwordForm.reset();
           this.setup.set(setup);
-          void toDataURL(setup.otpauthUri, { width: 240, margin: 2 })
-            .then((qr) => {
-              if (this.setup() === setup) this.qrCode.set(qr);
-            })
-            .catch(() => this.error.set('No se pudo generar el QR. Usa la clave manual.'));
+          try {
+            const svg = renderSVG(setup.otpauthUri, {
+              ecc: 'M',
+              border: 2,
+              pixelSize: 6,
+              blackColor: '#171715',
+              whiteColor: '#ffffff',
+            });
+            this.qrCode.set(
+              `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+            );
+          } catch {
+            this.qrCode.set('');
+            this.error.set('No se pudo generar el QR. Usa la clave manual.');
+          }
         },
         error: (error: unknown) =>
           this.error.set(
