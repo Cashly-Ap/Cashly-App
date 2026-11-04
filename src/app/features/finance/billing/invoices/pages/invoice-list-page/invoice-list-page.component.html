@@ -167,7 +167,7 @@
                         {{ 'finance.billing.invoices.outstanding' | translate }}
                       </div>
                     </th>
-                    <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
+                    <th class="w-32">
                       <div class="font-semibold">
                         {{ 'finance.billing.invoices.due2' | translate }}
                       </div>
@@ -213,20 +213,6 @@
                             variant="warning"
                           />
                         }
-                        @if (invoice.overdue) {
-                          <app-text-badge
-                            [label]="'finance.billing.invoices.overdue' | translate"
-                            variant="danger"
-                          />
-                        } @else if (
-                          invoice.status === 'PENDING_PAYMENT' ||
-                          invoice.status === 'PARTIALLY_PAID'
-                        ) {
-                          <app-text-badge
-                            [label]="'finance.billing.invoices.upToDate' | translate"
-                            variant="success"
-                          />
-                        }
                       </div>
                     </td>
                     <td class="text-right">
@@ -239,10 +225,18 @@
                         pendingAmount(invoice) | localizedNumber: '1.2-2'
                       }}</span>
                     </td>
-                    <td class="hidden lg:table-cell">
-                      <div class="text-sm text-surface-500">
-                        {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
-                      </div>
+                    <td>
+                      @if (invoice.overdue) {
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.overdue' | translate"
+                          variant="danger"
+                          [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                        />
+                      } @else {
+                        <div class="text-sm text-surface-500">
+                          {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                        </div>
+                      }
                     </td>
                     <td>
                       <app-list-action-buttons [actions]="actionsFor(invoice)" />
@@ -321,18 +315,21 @@
                           variant="warning"
                         />
                       }
+                    </div>
+                    <div class="flex items-center gap-2 mt-2 text-xs">
+                      <span class="text-surface-400">
+                        {{ 'finance.billing.invoices.due2' | translate }}
+                      </span>
                       @if (invoice.overdue) {
                         <app-text-badge
                           [label]="'finance.billing.invoices.overdue' | translate"
                           variant="danger"
+                          [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
                         />
-                      } @else if (
-                        invoice.status === 'PENDING_PAYMENT' || invoice.status === 'PARTIALLY_PAID'
-                      ) {
-                        <app-text-badge
-                          [label]="'finance.billing.invoices.upToDate' | translate"
-                          variant="success"
-                        />
+                      } @else {
+                        <span class="text-surface-600 dark:text-surface-300">
+                          {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                        </span>
                       }
                     </div>
                   </div>

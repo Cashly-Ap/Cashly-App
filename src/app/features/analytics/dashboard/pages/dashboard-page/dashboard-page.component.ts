@@ -38,12 +38,14 @@ const DASHBOARD_CHART_COLORS = {
 } as const;
 
 import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-dashboard-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MetricCardComponent,
+    TextBadgeComponent,
     TranslatePipe,
     LocalizedNumberPipe,
     CommonModule,

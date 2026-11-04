@@ -1,5 +1,6 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { TooltipModule } from 'primeng/tooltip';
 
 export type TextBadgeVariant =
   | 'default'
@@ -32,7 +33,7 @@ const SEVERITY_VARIANTS: Record<Exclude<TextBadgeSeverity, null | undefined>, Te
 @Component({
   selector: 'app-text-badge',
   standalone: true,
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, TooltipModule],
   templateUrl: './text-badge.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -40,6 +41,7 @@ export class TextBadgeComponent {
   label = input.required<string>();
   variant = input<TextBadgeVariant>('default');
   severity = input<TextBadgeSeverity>(null);
+  tooltip = input<string | null>('');
 
   readonly resolvedVariant = computed(() => {
     const severity = this.severity();

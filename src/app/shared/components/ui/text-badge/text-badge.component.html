@@ -1,3 +1,8 @@
-<span [class]="badgeClass()">
+<span
+  [class]="badgeClass()"
+  [pTooltip]="tooltip() ?? ''"
+  [tooltipDisabled]="!tooltip()"
+  tooltipPosition="top"
+>
   {{ label() | translate }}
 </span>

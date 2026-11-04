@@ -260,23 +260,16 @@
                 </span>
               </td>
               <td>
-                <span
-                  [class]="
-                    isOverdue(invoice)
-                      ? amountColor('danger')
-                      : 'text-surface-600 dark:text-surface-400'
-                  "
-                  [class.font-semibold]="isOverdue(invoice)"
-                  class="text-sm"
-                >
-                  {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
-                </span>
                 @if (isOverdue(invoice)) {
                   <app-text-badge
                     [label]="'finance.treasury.receivables.overdue' | translate"
                     variant="danger"
-                    class="ml-2"
+                    [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
                   />
+                } @else {
+                  <span class="text-sm text-surface-600 dark:text-surface-400">
+                    {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                  </span>
                 }
               </td>
               <td>
@@ -411,6 +404,22 @@
                   <span class="text-surface-900 dark:text-surface-0">
                     {{ invoice.invoiceDate | localizedDate: 'dd/MM/yyyy' }}
                   </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'analytics.dashboard.dueDate' | translate
+                  }}</span>
+                  @if (isOverdue(invoice)) {
+                    <app-text-badge
+                      [label]="'finance.treasury.receivables.overdue' | translate"
+                      variant="danger"
+                      [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                    />
+                  } @else {
+                    <span class="text-surface-900 dark:text-surface-0">
+                      {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                    </span>
+                  }
                 </div>
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-surface-500 dark:text-surface-400">{{

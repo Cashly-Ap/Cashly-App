@@ -15,7 +15,7 @@
   "analytics.dashboard.pendingInvoices": "pending invoices",
   "analytics.dashboard.dueDate": "Due date",
   "analytics.dashboard.toCollect": "To collect",
-  "analytics.dashboard.overdue": "(overdue)",
+  "analytics.dashboard.overdue": "Overdue",
   "analytics.dashboard.thereAreNoOutstandingInvoicesToCollect": "There are no outstanding invoices to collect.",
   "analytics.dashboard.top5Customers": "Top 5 customers",
   "analytics.dashboard.noCustomerData": "No customer data",

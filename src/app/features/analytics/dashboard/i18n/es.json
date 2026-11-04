@@ -15,7 +15,7 @@
   "analytics.dashboard.pendingInvoices": "facturas pendientes",
   "analytics.dashboard.dueDate": "Vencimiento",
   "analytics.dashboard.toCollect": "A cobrar",
-  "analytics.dashboard.overdue": "(vencida)",
+  "analytics.dashboard.overdue": "Vencida",
   "analytics.dashboard.thereAreNoOutstandingInvoicesToCollect": "No hay facturas pendientes de cobro.",
   "analytics.dashboard.top5Customers": "Top 5 Clientes",
   "analytics.dashboard.noCustomerData": "Sin datos de clientes",
