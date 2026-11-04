@@ -67,7 +67,7 @@
         <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100 mb-6">
           {{ 'analytics.dashboard.salesOverTheLast6Months' | translate }}
         </h3>
-        @if (salesChartData().labels?.length) {
+        @if (salesChartData().labels.length) {
           <canvas
             baseChart
             [type]="barChartType"
