@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import type { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import type { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 
 describe('WarehouseStockEntry interface', () => {
   it('should have all required properties', () => {

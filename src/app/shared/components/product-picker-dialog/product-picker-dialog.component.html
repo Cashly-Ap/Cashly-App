@@ -2,6 +2,7 @@
   [visible]="visible()"
   [modal]="true"
   [closable]="false"
+  appendTo="body"
   [style]="{ width: '56rem', maxHeight: '90vh' }"
   [breakpoints]="{ '960px': '95vw' }"
   (onShow)="onDialogShow()"
@@ -14,7 +15,7 @@
     />
   </ng-template>
 
-  <div class="flex flex-col gap-4 pt-1">
+  <div class="flex flex-col gap-4 pt-1" (keydown)="onPickerKeydown($event)">
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
       <div class="hidden sm:flex flex-col gap-1.5 flex-1 min-w-0">
         <span
@@ -76,7 +77,9 @@
                 styleClass="w-full text-sm"
               />
             </div>
+          }
 
+          @if (!isPurchase() && !allowUnlimitedStock()) {
             <div class="flex flex-col gap-1.5">
               <span
                 class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
@@ -133,7 +136,7 @@
               {{ 'procurement.purchases.price' | translate }}
             </th>
             <th
-              class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
+              class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-44"
             >
               {{ 'finance.billing.returns.stock' | translate }}
             </th>
@@ -201,74 +204,41 @@
                   </span>
                 </td>
                 <td class="px-4 py-3">
-                  <div class="flex items-center justify-end gap-2">
-                    <div class="flex flex-col items-end">
-                      @if (isPurchase()) {
-                        @if (getAllocationQuantity(product.id) > 0) {
-                          <span class="text-xs text-surface-400 dark:text-surface-500">
-                            {{ 'procurement.purchases.stock' | translate }}
-                            {{ product.totalStock | localizedNumber: '1.0-3' }}
-                          </span>
-                          <span
-                            class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
-                          >
-                            +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
-                            {{
-                              product.totalStock + getAllocationQuantity(product.id)
-                                | localizedNumber: '1.0-3'
-                            }}
-                          </span>
+                  <div class="flex flex-col items-end gap-1.5">
+                    @if (isSelected(product.id)) {
+                      <span class="text-xs text-surface-500 dark:text-surface-400">
+                        {{ 'shared.selected' | translate }}
+                        <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                          getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
+                        }}</strong>
+                      </span>
+                    } @else {
+                      <span class="text-xs text-surface-500 dark:text-surface-400">
+                        @if (isPurchase()) {
+                          {{ 'procurement.purchases.stock' | translate }}
+                          <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                            product.totalStock | localizedNumber: '1.0-3'
+                          }}</strong>
                         } @else {
-                          <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                            {{ 'procurement.purchases.stock' | translate }}
-                            {{ product.totalStock | localizedNumber: '1.0-3' }}
-                          </span>
+                          {{ 'sales.orders.availablePrefix' | translate }}
+                          <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                            getTotalAvailable(product) | localizedNumber: '1.0-3'
+                          }}</strong>
                         }
-                      } @else {
-                        @if (getAllocationQuantity(product.id) > 0) {
-                          <span
-                            class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
-                          >
-                            {{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }}
-                          </span>
-                        } @else {
-                          <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                            {{ product.totalStock | localizedNumber: '1.0-3' }}
-                          </span>
-                        }
-                        @if (getAllocationQuantity(product.id) === 0) {
-                          <span
-                            class="text-[10px] text-surface-400 dark:text-surface-500 leading-tight"
-                          >
-                            {{ 'sales.orders.availablePrefix' | translate }}
-                            {{ getTotalAvailable(product) | localizedNumber: '1.0-3' }}
-                            @if (getTotalReserved(product) > 0) {
-                              <span class="text-amber-500 dark:text-amber-400 ml-0.5"
-                                >{{ 'sales.orders.reserved' | translate }}
-                                {{ getTotalReserved(product) | localizedNumber: '1.0-3' }}</span
-                              >
-                            }
-                          </span>
-                        }
-                      }
-                    </div>
-                    <button
-                      type="button"
-                      class="inline-flex items-center justify-center w-7 h-7 rounded-md transition-colors"
-                      [class.text-primary-500]="popoverProductId() === product.id"
-                      [class.bg-primary-50]="popoverProductId() === product.id"
-                      [class.dark:bg-primary-950]="popoverProductId() === product.id"
-                      [class.text-surface-400]="popoverProductId() !== product.id"
-                      [class.hover:text-surface-700]="popoverProductId() !== product.id"
-                      [class.dark:hover:text-surface-200]="popoverProductId() !== product.id"
-                      [class.hover:bg-surface-100]="popoverProductId() !== product.id"
-                      [class.dark:hover:bg-surface-700]="popoverProductId() !== product.id"
-                      [pTooltip]="'procurement.purchases.stockByWarehouse' | translate"
-                      tooltipPosition="left"
-                      (click)="openStockPopover($event, product)"
-                    >
-                      <i class="pi pi-warehouse text-sm"></i>
-                    </button>
+                      </span>
+                    }
+                    <app-stock-allocation-button
+                      [buildEntries]="stockEntriesFor(product)"
+                      [productLabel]="productLabelFor(product)"
+                      [showStockDetails]="!isPurchase()"
+                      [unlimited]="isPurchase() || allowUnlimitedStock()"
+                      [emptyMessageKey]="
+                        isPurchase()
+                          ? 'procurement.purchases.selectTheQuantityPerWarehouse'
+                          : 'sales.orders.noStockAllocatedInWarehouses'
+                      "
+                      (saved)="onStockSaved(product, $event)"
+                    />
                   </div>
                 </td>
               </tr>
@@ -335,73 +305,43 @@
               <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
                 ${{ product.price | localizedNumber: '1.2-2' }}
               </span>
-              <div class="flex items-center gap-2">
-                @if (isPurchase()) {
-                  @if (getAllocationQuantity(product.id) > 0) {
-                    <div class="flex flex-col items-end">
-                      <span class="text-xs text-surface-400 dark:text-surface-500">
-                        {{ 'procurement.purchases.stock' | translate }}
-                        {{ product.totalStock | localizedNumber: '1.0-3' }}
-                      </span>
-                      <span
-                        class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
-                      >
-                        +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
-                        {{
-                          product.totalStock + getAllocationQuantity(product.id)
-                            | localizedNumber: '1.0-3'
-                        }}
-                      </span>
-                    </div>
-                  } @else {
-                    <span class="text-sm text-surface-500 dark:text-surface-400">
-                      {{ 'procurement.purchases.stock' | translate }}
-                      <span class="font-mono">{{
-                        product.totalStock | localizedNumber: '1.0-3'
-                      }}</span>
-                    </span>
-                  }
-                } @else {
-                  @if (getAllocationQuantity(product.id) > 0) {
-                    <span
-                      class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
-                    >
-                      {{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }}
+              <div class="flex justify-end">
+                <div class="flex flex-col items-end gap-1.5">
+                  @if (isSelected(product.id)) {
+                    <span class="text-xs text-surface-500 dark:text-surface-400">
+                      {{ 'shared.selected' | translate }}
+                      <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                        getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
+                      }}</strong>
                     </span>
                   } @else {
-                    <div class="flex flex-col items-end">
-                      <span class="text-sm text-surface-500 dark:text-surface-400">
+                    <span class="text-xs text-surface-500 dark:text-surface-400">
+                      @if (isPurchase()) {
                         {{ 'procurement.purchases.stock' | translate }}
-                        <span class="font-mono">{{
+                        <strong class="font-mono text-surface-700 dark:text-surface-300">{{
                           product.totalStock | localizedNumber: '1.0-3'
-                        }}</span>
-                      </span>
-                      <span class="text-[10px] text-surface-400 dark:text-surface-500">
+                        }}</strong>
+                      } @else {
                         {{ 'sales.orders.availablePrefix' | translate }}
-                        {{ getTotalAvailable(product) | localizedNumber: '1.0-3' }}
-                        @if (getTotalReserved(product) > 0) {
-                          <span class="text-amber-500 dark:text-amber-400 ml-0.5"
-                            >{{ 'sales.orders.reserved' | translate }}
-                            {{ getTotalReserved(product) | localizedNumber: '1.0-3' }}</span
-                          >
-                        }
-                      </span>
-                    </div>
+                        <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                          getTotalAvailable(product) | localizedNumber: '1.0-3'
+                        }}</strong>
+                      }
+                    </span>
                   }
-                }
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-7 h-7 rounded-md transition-colors"
-                  [class.text-primary-500]="popoverProductId() === product.id"
-                  [class.bg-primary-50]="popoverProductId() === product.id"
-                  [class.dark:bg-primary-950]="popoverProductId() === product.id"
-                  [class.text-surface-400]="popoverProductId() !== product.id"
-                  [class.hover:bg-surface-100]="popoverProductId() !== product.id"
-                  [class.dark:hover:bg-surface-700]="popoverProductId() !== product.id"
-                  (click)="openStockPopover($event, product)"
-                >
-                  <i class="pi pi-warehouse text-sm"></i>
-                </button>
+                  <app-stock-allocation-button
+                    [buildEntries]="stockEntriesFor(product)"
+                    [productLabel]="productLabelFor(product)"
+                    [showStockDetails]="!isPurchase()"
+                    [unlimited]="isPurchase() || allowUnlimitedStock()"
+                    [emptyMessageKey]="
+                      isPurchase()
+                        ? 'procurement.purchases.selectTheQuantityPerWarehouse'
+                        : 'sales.orders.noStockAllocatedInWarehouses'
+                    "
+                    (saved)="onStockSaved(product, $event)"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -461,14 +401,3 @@
     </div>
   </ng-template>
 </p-dialog>
-
-<p-popover #stockPopover appendTo="body" (onHide)="popoverProductId.set(null)">
-  <app-warehouse-stock-popover
-    [entries]="popoverAllocations()"
-    [confirmLabel]="'finance.billing.creditnotes.save' | translate"
-    [emptyMessage]="emptyStockMessage() | translate"
-    [showStockDetails]="!isPurchase()"
-    (allocationChange)="updateAllocation($event.index, $event.value)"
-    (confirm)="saveAllocation()"
-  />
-</p-popover>

@@ -4,7 +4,6 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewChild,
   computed,
   effect,
   inject,
@@ -15,15 +14,11 @@ import {
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { TooltipModule } from 'primeng/tooltip';
-import { Popover, PopoverModule } from 'primeng/popover';
 import { SelectModule } from 'primeng/select';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
-import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
+import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
@@ -61,12 +56,8 @@ const PAGE_SIZE = 10;
     DialogModule,
     ButtonModule,
     FormsModule,
-    InputTextModule,
-    InputNumberModule,
-    TooltipModule,
-    PopoverModule,
     SelectModule,
-    WarehouseStockPopoverComponent,
+    StockAllocationButtonComponent,
     SearchFieldComponent,
   ],
   templateUrl: './product-picker-dialog.component.html',
@@ -74,10 +65,9 @@ const PAGE_SIZE = 10;
 export class ProductPickerDialogComponent {
   private readonly categoryApi = inject(CategoryApiService);
 
-  @ViewChild('stockPopover') private readonly stockPopover!: Popover;
-
   readonly visible = input<boolean>(false);
   readonly mode = input<ProductPickerMode>('sale');
+  readonly allowUnlimitedStock = input<boolean>(false);
   readonly excludedProductIds = input<Set<string>>(new Set());
   readonly loadProducts = input.required<ProductPickerLoader>();
   readonly productsSelected = output<ProductPickerSelection[]>();
@@ -92,9 +82,6 @@ export class ProductPickerDialogComponent {
 
   readonly selectedIds = signal<Set<string>>(new Set());
   readonly selections = signal<Map<string, ProductPickerSelection>>(new Map());
-
-  readonly popoverProductId = signal<string | null>(null);
-  readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
   readonly filterCategoryId = signal<string | null>(null);
   readonly filterComposite = signal<boolean | null>(null);
@@ -144,15 +131,10 @@ export class ProductPickerDialogComponent {
     let count = 0;
     if (this.filterCategoryId() !== null) count++;
     if (this.filterComposite() !== null) count++;
-    if (!this.isPurchase() && this.filterWithStock() !== true) count++;
+    if (!this.isPurchase() && !this.allowUnlimitedStock() && this.filterWithStock() !== true)
+      count++;
     return count;
   });
-
-  readonly emptyStockMessage = computed(() =>
-    this.isPurchase()
-      ? 'procurement.purchases.selectTheQuantityPerWarehouse'
-      : 'sales.orders.noStockAllocatedInWarehouses',
-  );
 
   private initialized = false;
 
@@ -210,7 +192,9 @@ export class ProductPickerDialogComponent {
   }
 
   canSelectProduct(product: ProductPickerItem): boolean {
-    return this.isPurchase() ? product.active : this.getTotalAvailable(product) > 0;
+    if (this.isPurchase()) return product.active;
+    if (this.allowUnlimitedStock()) return true;
+    return this.getTotalAvailable(product) > 0;
   }
 
   toggleSelection(product: ProductPickerItem): void {
@@ -238,78 +222,51 @@ export class ProductPickerDialogComponent {
     this.selections.set(map);
   }
 
-  openStockPopover(event: MouseEvent, product: ProductPickerItem): void {
-    event.stopPropagation();
-    if (this.popoverProductId() === product.id) {
-      this.stockPopover.hide();
-      this.popoverProductId.set(null);
-      return;
-    }
-    const existing = this.selections().get(product.id);
-    const existingMap = new Map(
-      (existing?.allocations ?? []).map((allocation) => [
-        allocation.warehouseId,
-        allocation.allocated,
-      ]),
-    );
-    this.popoverProductId.set(product.id);
-    this.popoverAllocations.set(this.buildAllocations(product.stockItems, existingMap));
-    this.stockPopover.show(event);
+  stockEntriesFor(product: ProductPickerItem): () => WarehouseStockEntry[] {
+    return () => {
+      const existing = this.selections().get(product.id);
+      const existingMap = new Map(
+        (existing?.allocations ?? []).map((allocation) => [
+          allocation.warehouseId,
+          allocation.allocated,
+        ]),
+      );
+      return this.buildAllocations(product.stockItems, existingMap);
+    };
   }
 
-  closePopover(): void {
-    this.stockPopover.hide();
-    this.popoverProductId.set(null);
+  productLabelFor(product: ProductPickerItem): string {
+    return `${product.code} — ${product.name}`;
   }
 
-  updateAllocation(index: number, value: number): void {
-    const updated = this.popoverAllocations().map((allocation, current) =>
-      current === index ? { ...allocation, allocated: value } : allocation,
-    );
-    this.popoverAllocations.set(updated);
-  }
-
-  saveAllocation(): void {
-    const productId = this.popoverProductId();
-    if (!productId) return;
-    const allocations = this.popoverAllocations().map((allocation) => ({
+  onStockSaved(product: ProductPickerItem, allocations: WarehouseStockEntry[]): void {
+    const normalized = allocations.map((allocation) => ({
       ...allocation,
       allocated: allocation.allocated ?? 0,
     }));
-    const quantity = allocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
+    const quantity = normalized.reduce((sum, allocation) => sum + allocation.allocated, 0);
+    const ids = new Set(this.selectedIds());
     const map = new Map(this.selections());
-    const existing = map.get(productId);
 
-    if (existing) {
-      if (quantity === 0) {
-        const ids = new Set(this.selectedIds());
-        ids.delete(productId);
-        this.selectedIds.set(ids);
-        map.delete(productId);
-      } else {
-        map.set(productId, { ...existing, quantity, allocations });
-      }
-    } else if (quantity > 0) {
-      const product = this.products().find((item) => item.id === productId);
-      if (product) {
-        map.set(productId, { product, quantity, unitPrice: product.price, allocations });
-        const ids = new Set(this.selectedIds());
-        ids.add(productId);
-        this.selectedIds.set(ids);
-      }
+    if (quantity === 0) {
+      ids.delete(product.id);
+      map.delete(product.id);
+    } else {
+      ids.add(product.id);
+      map.set(product.id, {
+        product,
+        quantity,
+        unitPrice: product.price,
+        allocations: normalized,
+      });
     }
 
+    this.selectedIds.set(ids);
     this.selections.set(map);
-    this.stockPopover.hide();
-    this.popoverProductId.set(null);
   }
 
   getAllocationQuantity(productId: string): number {
     return this.selections().get(productId)?.quantity ?? 0;
-  }
-
-  getTotalReserved(product: ProductPickerItem): number {
-    return product.stockItems.reduce((sum, stock) => sum + stock.reserved, 0);
   }
 
   getTotalAvailable(product: ProductPickerItem): number {
@@ -325,6 +282,15 @@ export class ProductPickerDialogComponent {
 
   onAdd(): void {
     this.productsSelected.emit(Array.from(this.selections().values()));
+  }
+
+  onPickerKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Enter') return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('app-search-field') || target?.closest('button')) return;
+    if (this.selectedCount() === 0) return;
+    event.preventDefault();
+    this.onAdd();
   }
 
   onCancel(): void {
@@ -356,7 +322,6 @@ export class ProductPickerDialogComponent {
 
   private load(page: number): void {
     this.loading.set(true);
-    this.popoverProductId.set(null);
     this.loadProducts()(this.buildFilters(page)).subscribe({
       next: (response) => {
         this.products.set(response.content);
@@ -374,7 +339,8 @@ export class ProductPickerDialogComponent {
       search: this.search() || undefined,
       categoryId: this.filterCategoryId() ?? undefined,
       composite: this.filterComposite() ?? undefined,
-      withStock: this.isPurchase() ? undefined : this.filterWithStock(),
+      withStock:
+        this.isPurchase() || this.allowUnlimitedStock() ? undefined : this.filterWithStock(),
       page,
       size: PAGE_SIZE,
     };
@@ -392,7 +358,5 @@ export class ProductPickerDialogComponent {
     this.currentPage.set(0);
     this.selectedIds.set(new Set());
     this.selections.set(new Map());
-    this.popoverProductId.set(null);
-    this.popoverAllocations.set([]);
   }
 }

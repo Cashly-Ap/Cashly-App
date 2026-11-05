@@ -20,7 +20,7 @@ import { ProductPickerSelection } from '@shared/components/product-picker-dialog
   imports: [OrderItemsTableComponent],
 })
 class HostComponent {
-  context: 'order' | 'invoice' = 'order';
+  context: 'order' | 'invoice' | 'quote' = 'order';
   items: OrderItemFormData[] = [];
   products: ProductList[] = [];
   customerId: string | null = null;
@@ -77,28 +77,16 @@ describe('OrderItemsTableComponent', () => {
     expect(component.pickerVisible()).toBe(false);
   });
 
-  it('should have default activeItemIdx as null', () => {
-    expect(component.activeItemIdx()).toBeNull();
-  });
-
   it('should have titleLabel for order context', () => {
-    expect(component.titleLabel()).toBe('Líneas del Pedido');
+    expect(component.titleLabel()).toBe('sales.orders.orderLines');
   });
 
   it('should have totalLabel for order context', () => {
-    expect(component.totalLabel()).toBe('Total Pedido:');
+    expect(component.totalLabel()).toBe('sales.orders.orderTotal');
   });
 
   it('should calculate total as 0 for empty items', () => {
     expect(component.total()).toBe(0);
-  });
-
-  it('should return 0 for activeItemQuantity when no active item', () => {
-    expect(component.activeItemQuantity()).toBe(0);
-  });
-
-  it('should return 0 for allocationTotal when no allocations', () => {
-    expect(component.allocationTotal()).toBe(0);
   });
 
   it('should not open picker without customerId', () => {
@@ -312,11 +300,6 @@ describe('OrderItemsTableComponent - with items', () => {
     expect(excluded.has('p3')).toBe(false);
   });
 
-  it('should return quantity for activeItemQuantity when item is active', () => {
-    component.activeItemIdx.set(0);
-    expect(component.activeItemQuantity()).toBe(2);
-  });
-
   it('should resolve product name from item data', () => {
     expect(component.resolveProductName('p1')).toBe('P1 — Product One');
   });
@@ -348,11 +331,11 @@ describe('OrderItemsTableComponent - invoice context', () => {
   });
 
   it('should have titleLabel for invoice context', () => {
-    expect(component.titleLabel()).toBe('Líneas de Factura');
+    expect(component.titleLabel()).toBe('sales.orders.invoiceLines');
   });
 
   it('should have totalLabel for invoice context', () => {
-    expect(component.totalLabel()).toBe('Total Factura:');
+    expect(component.totalLabel()).toBe('sales.orders.invoiceTotal');
   });
 });
 
@@ -537,39 +520,15 @@ describe('OrderItemsTableComponent - allocation popover', () => {
     component = fixture.debugElement.children[0].componentInstance;
   });
 
-  it('should open allocation popover and set activeItemIdx', () => {
-    const mockEvent = { stopPropagation: vi.fn() } as unknown as MouseEvent;
-    component.openAllocationPopover(mockEvent, 0);
-    expect(component.activeItemIdx()).toBe(0);
-    expect(component.popoverAllocations()).toHaveLength(2);
-  });
+  it('should build the allocation entries for the item', () => {
+    const entries = component.allocationEntriesFor(hostComponent.items[0])();
 
-  it('should close allocation popover when same item clicked again', () => {
-    const mockEvent = { stopPropagation: vi.fn() } as unknown as MouseEvent;
-    component.activeItemIdx.set(0);
-    component.openAllocationPopover(mockEvent, 0);
-    expect(component.activeItemIdx()).toBeNull();
-  });
-
-  it('should update popover allocation', () => {
-    component.popoverAllocations.set([
-      {
-        warehouseId: 'wh1',
-        warehouseCode: 'WH1',
-        warehouseName: 'WH1',
-        quantity: 30,
-        reserved: 5,
-        available: 25,
-        allocated: 5,
-      },
-    ]);
-    component.updatePopoverAllocation(0, 10);
-    expect(component.popoverAllocations()[0].allocated).toBe(10);
+    expect(entries).toHaveLength(2);
+    expect(entries[0].available).toBe(25);
   });
 
   it('should confirm allocations and emit itemsChange', () => {
-    component.activeItemIdx.set(0);
-    component.popoverAllocations.set([
+    component.onAllocationSaved(0, [
       {
         warehouseId: 'wh1',
         warehouseCode: 'WH1',
@@ -589,16 +548,14 @@ describe('OrderItemsTableComponent - allocation popover', () => {
         allocated: 5,
       },
     ]);
-    component.confirmAllocations();
     expect(hostComponent.onItemsChange).toHaveBeenCalled();
     const emitted = hostComponent.onItemsChange.mock.calls[0][0];
     expect(emitted[0].quantity).toBe(15);
     expect(emitted[0].warehouseAllocations).toHaveLength(2);
   });
 
-  it('should not confirm allocations when no active item', () => {
-    component.activeItemIdx.set(null);
-    component.confirmAllocations();
+  it('should not confirm allocations for an unknown line', () => {
+    component.onAllocationSaved(99, []);
     expect(hostComponent.onItemsChange).not.toHaveBeenCalled();
   });
 
@@ -630,7 +587,7 @@ describe('OrderItemsTableComponent - allocation popover', () => {
   });
 });
 
-describe('OrderItemsTableComponent - allocationTotal', () => {
+describe('OrderItemsTableComponent - quote context', () => {
   let hostComponent: HostComponent;
   let fixture: ComponentFixture<HostComponent>;
   let component: OrderItemsTableComponent;
@@ -643,31 +600,13 @@ describe('OrderItemsTableComponent - allocationTotal', () => {
 
     fixture = TestBed.createComponent(HostComponent);
     hostComponent = fixture.componentInstance;
+    hostComponent.context = 'quote';
     fixture.detectChanges();
     component = fixture.debugElement.children[0].componentInstance;
   });
 
-  it('should calculate allocationTotal from popoverAllocations', () => {
-    component.popoverAllocations.set([
-      {
-        warehouseId: 'wh1',
-        warehouseCode: 'WH1',
-        warehouseName: 'WH1',
-        quantity: 10,
-        reserved: 0,
-        available: 10,
-        allocated: 3,
-      },
-      {
-        warehouseId: 'wh2',
-        warehouseCode: 'WH2',
-        warehouseName: 'WH2',
-        quantity: 20,
-        reserved: 0,
-        available: 20,
-        allocated: 5,
-      },
-    ]);
-    expect(component.allocationTotal()).toBe(8);
+  it('should use the quote translations', () => {
+    expect(component.titleLabel()).toBe('sales.quotes.quoteLines');
+    expect(component.totalLabel()).toBe('sales.quotes.quoteTotal');
   });
 });

@@ -48,6 +48,7 @@
   "shared.invoice": "Factura",
   "shared.customer": "Cliente",
   "shared.total": "Total",
+  "shared.modifyStock": "Modificar stock",
   "shared.noInvoicesFound": "No se encontraron facturas",
   "shared.invoice2": "factura",
   "shared.invoices": "facturas",

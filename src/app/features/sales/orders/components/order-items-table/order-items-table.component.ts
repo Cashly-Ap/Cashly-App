@@ -3,7 +3,6 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewChild,
   computed,
   inject,
   input,
@@ -14,9 +13,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { Observable, map } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
-import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
@@ -29,9 +26,9 @@ import {
   ProductPickerPage,
   ProductPickerSelection,
 } from '@shared/components/product-picker-dialog/product-picker.models';
+import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
-import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 
 @Component({
   selector: 'app-order-items-table',
@@ -41,21 +38,18 @@ import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse
     LocalizedNumberPipe,
     FormsModule,
     ButtonModule,
-    InputNumberModule,
     TooltipModule,
-    PopoverModule,
     EmptyStateComponent,
     ProductPickerDialogComponent,
-    WarehouseStockPopoverComponent,
+    StockAllocationButtonComponent,
   ],
   templateUrl: './order-items-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderItemsTableComponent {
-  @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
   private readonly orderApi = inject(OrderApiService);
 
-  readonly context = input<'order' | 'invoice'>('order');
+  readonly context = input<'order' | 'invoice' | 'quote'>('order');
   readonly items = input<OrderItemFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly customerId = input<string | null>(null);
@@ -65,8 +59,6 @@ export class OrderItemsTableComponent {
   readonly itemsChange = output<OrderItemFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
-  readonly activeItemIdx = signal<number | null>(null);
-  readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
   readonly excludedProductIds = computed(() => new Set(this.items().map((i) => i.productId)));
 
@@ -95,22 +87,16 @@ export class OrderItemsTableComponent {
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
   );
 
-  readonly activeItemQuantity = computed<number>(() => {
-    const idx = this.activeItemIdx();
-    if (idx === null) return 0;
-    return this.items()[idx]?.quantity ?? 0;
+  readonly titleLabel = computed(() => {
+    if (this.context() === 'quote') return 'sales.quotes.quoteLines';
+    if (this.context() === 'invoice') return 'sales.orders.invoiceLines';
+    return 'sales.orders.orderLines';
   });
-
-  readonly allocationTotal = computed(() =>
-    this.popoverAllocations().reduce((sum, a) => sum + (a.allocated ?? 0), 0),
-  );
-
-  readonly titleLabel = computed(() =>
-    this.context() === 'order' ? 'Líneas del Pedido' : 'Líneas de Factura',
-  );
-  readonly totalLabel = computed(() =>
-    this.context() === 'order' ? 'Total Pedido:' : 'Total Factura:',
-  );
+  readonly totalLabel = computed(() => {
+    if (this.context() === 'quote') return 'sales.quotes.quoteTotal';
+    if (this.context() === 'invoice') return 'sales.orders.invoiceTotal';
+    return 'sales.orders.orderTotal';
+  });
 
   openPicker(): void {
     if (!this.customerId()) return;
@@ -170,73 +156,51 @@ export class OrderItemsTableComponent {
     this.itemsChange.emit(updated);
   }
 
-  openAllocationPopover(event: MouseEvent, itemIdx: number): void {
-    event.stopPropagation();
+  allocationEntriesFor(item: OrderItemFormData): () => WarehouseStockEntry[] {
+    return () => {
+      const existingMap = new Map(
+        item.warehouseAllocations.map((allocation) => [
+          allocation.warehouseId,
+          allocation.allocated,
+        ]),
+      );
 
-    if (this.activeItemIdx() === itemIdx) {
-      this.allocationPopover.hide();
-      this.activeItemIdx.set(null);
-      return;
-    }
-
-    const item = this.items()[itemIdx];
-    if (!item) return;
-
-    const existingMap = new Map(item.warehouseAllocations.map((a) => [a.warehouseId, a.allocated]));
-
-    const allocations: WarehouseStockEntry[] =
-      item.stock.length > 0
-        ? item.stock.map((s) => {
-            const existingAlloc = item.warehouseAllocations.find(
-              (a) => a.warehouseId === s.warehouseId,
-            );
-            return {
-              warehouseId: s.warehouseId,
-              warehouseCode: s.warehouseCode,
-              warehouseName: s.warehouseName,
-              quantity: s.quantity,
-              reserved: s.reserved,
-              available: s.available,
-              allocated: existingMap.get(s.warehouseId) ?? 0,
-            };
-          })
-        : item.warehouseAllocations.map((a) => ({
-            warehouseId: a.warehouseId,
-            warehouseCode: a.warehouseCode,
-            warehouseName: a.warehouseName,
-            quantity: a.available,
+      return item.stock.length > 0
+        ? item.stock.map((stock) => ({
+            warehouseId: stock.warehouseId,
+            warehouseCode: stock.warehouseCode,
+            warehouseName: stock.warehouseName,
+            quantity: stock.quantity,
+            reserved: stock.reserved,
+            available: stock.available,
+            allocated: existingMap.get(stock.warehouseId) ?? 0,
+          }))
+        : item.warehouseAllocations.map((allocation) => ({
+            warehouseId: allocation.warehouseId,
+            warehouseCode: allocation.warehouseCode,
+            warehouseName: allocation.warehouseName,
+            quantity: allocation.available,
             reserved: 0,
-            available: a.available,
-            allocated: a.allocated,
+            available: allocation.available,
+            allocated: allocation.allocated,
           }));
-
-    this.activeItemIdx.set(itemIdx);
-    this.popoverAllocations.set(allocations);
-    this.allocationPopover.show(event);
+    };
   }
 
-  updatePopoverAllocation(index: number, value: number): void {
-    const updated = this.popoverAllocations().map((a, i) =>
-      i === index ? { ...a, allocated: value } : a,
-    );
-    this.popoverAllocations.set(updated);
-  }
+  onAllocationSaved(itemIdx: number, entries: WarehouseStockEntry[]): void {
+    if (itemIdx < 0 || itemIdx >= this.items().length) return;
 
-  confirmAllocations(): void {
-    const itemIdx = this.activeItemIdx();
-    if (itemIdx === null) return;
-
-    const allocations: WarehouseAllocation[] = this.popoverAllocations()
-      .filter((a) => a.allocated > 0)
-      .map((a) => ({
-        warehouseId: a.warehouseId,
-        warehouseCode: a.warehouseCode,
-        warehouseName: a.warehouseName,
-        available: a.available,
-        allocated: a.allocated,
+    const allocations: WarehouseAllocation[] = entries
+      .filter((entry) => entry.allocated > 0)
+      .map((entry) => ({
+        warehouseId: entry.warehouseId,
+        warehouseCode: entry.warehouseCode,
+        warehouseName: entry.warehouseName,
+        available: entry.available,
+        allocated: entry.allocated,
       }));
 
-    const quantity = allocations.reduce((sum, a) => sum + a.allocated, 0);
+    const quantity = allocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
 
     const updated = this.items().map((item, i) => {
       if (i !== itemIdx) return item;
@@ -244,8 +208,6 @@ export class OrderItemsTableComponent {
     });
 
     this.itemsChange.emit(updated);
-    this.allocationPopover.hide();
-    this.activeItemIdx.set(null);
   }
 
   resolveProductName(productId: string): string {
@@ -271,6 +233,7 @@ export class OrderItemsTableComponent {
   }
 
   isItemOverAllocated(item: OrderItemFormData): boolean {
+    if (this.context() === 'quote') return false;
     const totalAvailable = this.getItemTotalAvailable(item);
     return item.quantity * this.stockMultiplier() > totalAvailable;
   }

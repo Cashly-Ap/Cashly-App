@@ -1,0 +1,18 @@
+<button
+  type="button"
+  class="inline-flex items-center gap-1.5 rounded-lg border border-surface-300 dark:border-surface-600 px-2.5 py-1.5 text-xs font-medium text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors whitespace-nowrap"
+  (click)="open($event)"
+>
+  <i class="pi pi-warehouse text-xs"></i>
+  {{ 'shared.modifyStock' | translate }}
+</button>
+
+<app-warehouse-stock-dialog
+  [(visible)]="dialogVisible"
+  [entries]="dialogEntries()"
+  [productLabel]="productLabel()"
+  [showStockDetails]="showStockDetails()"
+  [unlimited]="unlimited()"
+  [emptyMessageKey]="emptyMessageKey()"
+  (saved)="onSaved($event)"
+/>

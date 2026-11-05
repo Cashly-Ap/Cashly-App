@@ -60,6 +60,7 @@ const page: ProductPickerPage = {
   template: `<app-product-picker-dialog
     [visible]="visible"
     [mode]="mode"
+    [allowUnlimitedStock]="allowUnlimitedStock"
     [excludedProductIds]="excludedProductIds"
     [loadProducts]="loader"
     (productsSelected)="onSelected($event)"
@@ -70,6 +71,7 @@ const page: ProductPickerPage = {
 class HostComponent {
   visible = false;
   mode: ProductPickerMode = 'sale';
+  allowUnlimitedStock = false;
   excludedProductIds: Set<string> = new Set();
   loader: ProductPickerLoader = () => of(page);
   onSelected = vi.fn();
@@ -162,6 +164,23 @@ describe('ProductPickerDialogComponent', () => {
     expect(dialog.canSelectProduct({ ...product, active: true })).toBe(true);
   });
 
+  it('should allow products without stock when stock is unlimited', () => {
+    host.allowUnlimitedStock = true;
+    fixture.detectChanges();
+
+    expect(dialog.canSelectProduct({ ...product, stockItems: [] })).toBe(true);
+  });
+
+  it('should not send the stock filter when stock is unlimited', () => {
+    host.allowUnlimitedStock = true;
+    fixture.detectChanges();
+    dialog.onDialogShow();
+
+    expect(loader).toHaveBeenLastCalledWith(
+      expect.objectContaining({ withStock: undefined, page: 0 }),
+    );
+  });
+
   it('should send filters to the loader', () => {
     dialog.onDialogShow();
     dialog.onSearchChange('motor');
@@ -246,11 +265,20 @@ describe('ProductPickerDialogComponent', () => {
     expect(pagedLoader).toHaveBeenLastCalledWith(expect.objectContaining({ page: 0 }));
   });
 
-  it('should update the quantity from the stock popover', () => {
+  it('should build the stock entries for a product', () => {
     dialog.onDialogShow();
     dialog.toggleSelection(product);
-    dialog.popoverProductId.set('p1');
-    dialog.popoverAllocations.set([
+    const entries = dialog.stockEntriesFor(product)();
+
+    expect(entries).toHaveLength(2);
+    expect(entries[0].allocated).toBe(25);
+    expect(dialog.productLabelFor(product)).toContain('P001');
+  });
+
+  it('should apply the stock dialog result to the selection', () => {
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+    dialog.onStockSaved(product, [
       {
         warehouseId: 'wh1',
         warehouseCode: 'WH1',
@@ -270,8 +298,43 @@ describe('ProductPickerDialogComponent', () => {
         allocated: 5,
       },
     ]);
-    dialog.saveAllocation();
 
     expect(dialog.getAllocationQuantity('p1')).toBe(15);
+  });
+
+  it('should remove the selection when the stock dialog is saved with zero', () => {
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh1',
+        warehouseCode: 'WH1',
+        warehouseName: 'Warehouse 1',
+        quantity: 30,
+        reserved: 5,
+        available: 25,
+        allocated: 0,
+      },
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 0,
+      },
+    ]);
+
+    expect(dialog.isSelected('p1')).toBe(false);
+    expect(dialog.getAllocationQuantity('p1')).toBe(0);
+  });
+
+  it('should add the selection when Enter is pressed in the product dialog', () => {
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+    dialog.onPickerKeydown(new KeyboardEvent('keydown', { key: 'Enter' }));
+
+    expect(host.onSelected).toHaveBeenCalled();
   });
 });

@@ -6,17 +6,6 @@
     {{ 'finance.billing.returns.returnLines2' | translate }}
   </h3>
 
-  <p-popover #allocationPopover appendTo="body">
-    <app-warehouse-stock-popover
-      [entries]="popoverAllocations()"
-      [total]="allocationTotal()"
-      [confirmLabel]="'finance.billing.creditnotes.save' | translate"
-      [emptyMessage]="'finance.billing.returns.noStockAvailableInWarehouses' | translate"
-      (allocationChange)="updatePopoverAllocation($event.index, $event.value)"
-      (confirm)="confirmAllocations()"
-    />
-  </p-popover>
-
   <div class="overflow-x-auto">
     <table class="w-full text-sm">
       <thead>
@@ -36,7 +25,7 @@
           <th class="text-center py-2 font-semibold w-20">
             {{ 'finance.billing.returns.toReturn' | translate }}
           </th>
-          <th class="text-center py-2 font-semibold w-10">
+          <th class="text-center py-2 font-semibold w-44">
             {{ 'finance.billing.returns.stock' | translate }}
           </th>
           <th class="text-right py-2 font-semibold w-24">
@@ -56,14 +45,15 @@
             <td class="text-center py-2">{{ getMaxQuantity(idx) }}</td>
             <td class="text-center py-2 font-semibold">{{ line.quantity || 0 }}</td>
             <td class="text-center py-2">
-              <button
-                type="button"
-                (click)="openAllocationPopover($event, idx)"
-                class="w-9 h-9 rounded-lg bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 flex items-center justify-center transition-colors mx-auto"
-                [pTooltip]="'finance.billing.returns.distributeAcrossWarehouses' | translate"
-              >
-                <i class="pi pi-warehouse text-sm text-surface-600 dark:text-surface-300"></i>
-              </button>
+              <div class="flex justify-center">
+                <app-stock-allocation-button
+                  [buildEntries]="allocationEntriesFor(idx)"
+                  [productLabel]="line.productName"
+                  [showStockDetails]="true"
+                  [emptyMessageKey]="'finance.billing.returns.noStockAvailableInWarehouses'"
+                  (saved)="onAllocationSaved(idx, $event)"
+                />
+              </div>
             </td>
             <td class="text-right py-2">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
             <td class="text-right py-2 font-medium">

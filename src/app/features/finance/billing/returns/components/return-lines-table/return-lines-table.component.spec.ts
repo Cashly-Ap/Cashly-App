@@ -111,32 +111,52 @@ describe('ReturnLinesTableComponent', () => {
     expect(component.getMaxQuantity(99)).toBe(0);
   });
 
-  it('should open allocation popover on valid item', () => {
-    const event = new MouseEvent('click');
-    component.openAllocationPopover(event, 0);
-    expect(component.activeItemIdx()).toBe(0);
+  it('should build allocation entries for a line', () => {
+    const entries = component.allocationEntriesFor(0)();
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0].warehouseId).toBe('w1');
+    expect(entries[0].available).toBe(5);
   });
 
-  it('should toggle allocation popover on same item', () => {
-    const event = new MouseEvent('click');
-    component.openAllocationPopover(event, 0);
-    component.openAllocationPopover(event, 0);
-    expect(component.activeItemIdx()).toBeNull();
-  });
-
-  it('should confirm allocations and emit returnLinesChange', () => {
+  it('should apply allocations and emit returnLinesChange', () => {
     let emitted: ReturnLineFormData[] | undefined;
-    component.returnLinesChange.subscribe((v) => (emitted = v));
+    component.returnLinesChange.subscribe((value) => (emitted = value));
 
-    // Open popover and set allocations
-    const event = new MouseEvent('click');
-    component.openAllocationPopover(event, 0);
-    component.updatePopoverAllocation(0, 3);
-    component.confirmAllocations();
+    component.onAllocationSaved(0, [
+      {
+        warehouseId: 'w1',
+        warehouseCode: '',
+        warehouseName: 'Main',
+        quantity: 5,
+        reserved: 0,
+        available: 5,
+        allocated: 3,
+      },
+    ]);
 
     expect(emitted).toBeDefined();
     expect(emitted![0].quantity).toBe(3);
     expect(emitted![0].warehouseAllocations[0].allocated).toBe(3);
-    expect(component.activeItemIdx()).toBeNull();
+  });
+
+  it('should clamp allocations to the pending quantity', () => {
+    let emitted: ReturnLineFormData[] | undefined;
+    component.returnLinesChange.subscribe((value) => (emitted = value));
+
+    component.onAllocationSaved(0, [
+      {
+        warehouseId: 'w1',
+        warehouseCode: '',
+        warehouseName: 'Main',
+        quantity: 5,
+        reserved: 0,
+        available: 5,
+        allocated: 99,
+      },
+    ]);
+
+    expect(emitted![0].quantity).toBe(5);
+    expect(emitted![0].warehouseAllocations[0].allocated).toBe(5);
   });
 });

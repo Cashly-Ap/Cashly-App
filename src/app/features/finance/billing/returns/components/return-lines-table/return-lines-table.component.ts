@@ -3,7 +3,6 @@ import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
-  ViewChild,
   inject,
   input,
   output,
@@ -12,13 +11,12 @@ import {
   OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Popover, PopoverModule } from 'primeng/popover';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { InvoiceLineDetail } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
-import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
-import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
+import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
+import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 
 export interface WarehouseAlloc {
   warehouseId: string;
@@ -43,17 +41,14 @@ export interface ReturnLineFormData {
     TranslatePipe,
     LocalizedNumberPipe,
     CommonModule,
-    PopoverModule,
     ButtonModule,
     TooltipModule,
-    WarehouseStockPopoverComponent,
+    StockAllocationButtonComponent,
   ],
   templateUrl: './return-lines-table.component.html',
 })
 export class ReturnLinesTableComponent implements OnInit {
   private readonly warehouseApi = inject(WarehouseApiService);
-
-  @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
 
   readonly allWarehouses = signal<{ id: string; code: string; name: string }[]>([]);
 
@@ -67,72 +62,37 @@ export class ReturnLinesTableComponent implements OnInit {
   readonly returnLines = input.required<ReturnLineFormData[]>();
   readonly returnLinesChange = output<ReturnLineFormData[]>();
 
-  readonly activeItemIdx = signal<number | null>(null);
-  readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
-
   readonly totalAmount = computed(() =>
     this.returnLines().reduce((sum, l) => sum + l.quantity * l.unitPrice, 0),
   );
 
-  readonly allocationTotal = computed(() =>
-    this.popoverAllocations().reduce((sum, a) => sum + (a.allocated ?? 0), 0),
-  );
+  allocationEntriesFor(itemIdx: number): () => WarehouseStockEntry[] {
+    return () => {
+      const line = this.invoiceLines()[itemIdx];
+      if (!line) return [];
 
-  openAllocationPopover(event: MouseEvent, itemIdx: number): void {
-    event.stopPropagation();
-    if (this.activeItemIdx() === itemIdx) {
-      this.allocationPopover.hide();
-      this.activeItemIdx.set(null);
-      return;
-    }
-    const line = this.invoiceLines()[itemIdx];
-    if (!line) return;
-    const maxQty = Math.max(0, line.quantity - line.returnedQuantity);
-    const existingLine = this.returnLines()[itemIdx];
-    const existingAllocs = existingLine?.warehouseAllocations ?? [];
+      const maxQty = Math.max(0, line.quantity - line.returnedQuantity);
+      const existingLine = this.returnLines()[itemIdx];
+      const existingAllocs = existingLine?.warehouseAllocations ?? [];
+      const allocMap = new Map(existingAllocs.map((a) => [a.warehouseId, a.allocated]));
+      const totalExisting = existingAllocs.reduce(
+        (sum, allocation) => sum + allocation.allocated,
+        0,
+      );
 
-    const allocMap = new Map(existingAllocs.map((a) => [a.warehouseId, a.allocated]));
-    const totalExisting = existingAllocs.reduce((s, a) => s + a.allocated, 0);
-    const remainingExisting = Math.max(0, maxQty - totalExisting);
-
-    const allocations: WarehouseStockEntry[] = this.allWarehouses().map((w) => {
-      const allocated = allocMap.get(w.id) ?? 0;
-      return {
-        warehouseId: w.id,
-        warehouseCode: w.code,
-        warehouseName: w.name,
-        quantity: maxQty,
-        reserved: 0,
-        available: this.getAllocationRemaining(maxQty, allocated, totalExisting),
-        allocated,
-      };
-    });
-    this.activeItemIdx.set(itemIdx);
-    this.popoverAllocations.set(allocations);
-    this.allocationPopover.show(event);
-  }
-
-  private getAllocationRemaining(maxQty: number, allocated: number, totalExisting: number): number {
-    return Math.max(0, maxQty - totalExisting + allocated);
-  }
-
-  updatePopoverAllocation(index: number, value: number): void {
-    const current = this.popoverAllocations();
-    const line = this.invoiceLines()[this.activeItemIdx() ?? -1];
-    const maxQty = line ? Math.max(0, line.quantity - line.returnedQuantity) : 0;
-    const othersTotal = current.reduce((s, a, i) => s + (i !== index ? (a.allocated ?? 0) : 0), 0);
-    const maxForThis = Math.max(0, maxQty - othersTotal);
-    const clampedValue = Math.min(value, maxForThis);
-    const allocatedTotal = othersTotal + clampedValue;
-    const remaining = Math.max(0, maxQty - allocatedTotal);
-
-    const updated = current.map((a, i) => {
-      if (i === index)
-        return { ...a, allocated: clampedValue, available: clampedValue + remaining };
-      const avail = (a.allocated ?? 0) + remaining;
-      return { ...a, available: avail > 0 ? avail : 0 };
-    });
-    this.popoverAllocations.set(updated);
+      return this.allWarehouses().map((warehouse) => {
+        const allocated = allocMap.get(warehouse.id) ?? 0;
+        return {
+          warehouseId: warehouse.id,
+          warehouseCode: warehouse.code,
+          warehouseName: warehouse.name,
+          quantity: maxQty,
+          reserved: 0,
+          available: Math.max(0, maxQty - totalExisting + allocated),
+          allocated,
+        };
+      });
+    };
   }
 
   getMaxQuantity(lineIndex: number): number {
@@ -141,31 +101,29 @@ export class ReturnLinesTableComponent implements OnInit {
     return Math.max(0, line.quantity - line.returnedQuantity);
   }
 
-  confirmAllocations(): void {
-    const itemIdx = this.activeItemIdx();
-    if (itemIdx === null) return;
+  onAllocationSaved(itemIdx: number, entries: WarehouseStockEntry[]): void {
+    const maxQty = this.getMaxQuantity(itemIdx);
+    const allocations: WarehouseAlloc[] = [];
+    let remaining = maxQty;
 
-    const popoverData = this.popoverAllocations();
-    const totalAllocated = popoverData.reduce((s, a) => s + (a.allocated ?? 0), 0);
-    const line = this.invoiceLines()[itemIdx];
-    const maxQty = line ? Math.max(0, line.quantity - line.returnedQuantity) : 0;
-    const finalQty = Math.min(totalAllocated, maxQty);
-    const firstAlloc = popoverData.find((a) => (a.allocated ?? 0) > 0);
+    for (const entry of entries) {
+      if (remaining <= 0) break;
+      const allocated = Math.min(Math.max(0, entry.allocated ?? 0), remaining);
+      if (allocated <= 0) continue;
+      allocations.push({ warehouseId: entry.warehouseId, allocated });
+      remaining -= allocated;
+    }
 
-    const warehouseAllocations = popoverData
-      .filter((a) => (a.allocated ?? 0) > 0)
-      .map((a) => ({ warehouseId: a.warehouseId, allocated: a.allocated }));
-
+    const finalQty = maxQty - remaining;
+    const firstAllocation = allocations[0];
     const lines = [...this.returnLines()];
     lines[itemIdx] = {
       ...lines[itemIdx],
       quantity: finalQty,
-      warehouseId: firstAlloc?.warehouseId ?? '',
-      warehouseAllocations,
+      warehouseId: firstAllocation?.warehouseId ?? '',
+      warehouseAllocations: allocations,
     };
 
     this.returnLinesChange.emit(lines);
-    this.allocationPopover.hide();
-    this.activeItemIdx.set(null);
   }
 }
