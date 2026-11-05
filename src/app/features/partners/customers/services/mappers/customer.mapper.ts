@@ -41,6 +41,7 @@ export class CustomerMapper {
       rif: details.rif,
       type: details.type,
       active: details.active,
+      paymentType: details.paymentType,
       deletable: details.deletable,
     };
   }

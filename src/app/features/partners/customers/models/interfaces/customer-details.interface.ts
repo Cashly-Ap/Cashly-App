@@ -1,4 +1,5 @@
 import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
+import { CustomerPaymentType } from '@features/partners/customers/models/interfaces/customer-list.interface';
 
 export interface CustomerEmail {
   id: string;
@@ -32,6 +33,7 @@ export interface CustomerDetails {
   alias: string;
   creditDays: number;
   creditLimit: number;
+  paymentType?: CustomerPaymentType;
   active: boolean;
   createdAt: string;
   emails: CustomerEmail[];

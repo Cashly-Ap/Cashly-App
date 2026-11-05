@@ -182,7 +182,7 @@
   "finance.billing.invoices.theInvoiceCannotBeEditedInItsCurrentState": "The invoice cannot be edited in its current state.",
   "finance.billing.invoices.internalServerErrorPleaseTryAgainLater": "Internal server error. Please try again later.",
   "finance.billing.invoices.theCustomerHasOverdueInvoices": "The customer has overdue invoices.",
-  "finance.billing.invoices.theTotalExceedsTheAvailableCreditBy": "The total exceeds the available credit by ${deficit.toLocaleString()}.",
+  "finance.billing.invoices.theTotalExceedsTheAvailableCreditBy": "The total exceeds the available credit by {{deficit}}.",
   "finance.billing.invoices.theCustomerCannotCreateCreditInvoices": "The customer cannot create credit invoices.",
   "finance.billing.invoices.permissions.viewList": "View invoices",
   "finance.billing.invoices.permissions.viewDetail": "View details of invoice",

@@ -13,6 +13,9 @@ import { PaymentType } from '@features/finance/billing/invoices/models/enums/pay
 import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
 import { PendingTabsService } from '@core/pending-tabs';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { CustomerList } from '@features/partners/customers/models/interfaces/customer-list.interface';
+import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
+import { LanguageService } from '@core/i18n/language.service';
 
 describe('InvoiceFormPageComponent', () => {
   let component: InvoiceFormPageComponent;
@@ -253,6 +256,129 @@ describe('InvoiceFormPageComponent', () => {
       component.pickerVisible.set(true);
       component.onPickerCancelled();
       expect(component.pickerVisible()).toBe(false);
+    });
+
+    it('should apply the credit payment type from the selected customer', () => {
+      fixture.detectChanges();
+      const customer: CustomerList = {
+        id: 'c1',
+        code: 1001,
+        alias: 'Ana',
+        legalName: 'Ana Pérez',
+        rif: 'V-1001',
+        type: CustomerType.INDIVIDUAL,
+        active: true,
+        deletable: false,
+        paymentType: 'CREDIT',
+      };
+
+      component.onCustomerSelected(customer);
+      httpMock.expectOne('/api/customers/c1').flush({ creditDays: 120, paymentType: 'CREDIT' });
+
+      expect(component.form.controls.paymentType.value).toBe(PaymentType.CREDIT);
+      expect(component.isCreditPayment()).toBe(true);
+      expect(component.hasCreditEnabled()).toBe(true);
+    });
+
+    it('should render the due date for a credit customer', () => {
+      fixture.detectChanges();
+      component.form.controls.issueDate.setValue(new Date(2026, 0, 1));
+      const customer: CustomerList = {
+        id: 'c1',
+        code: 1001,
+        alias: 'Ana',
+        legalName: 'Ana Pérez',
+        rif: 'V-1001',
+        type: CustomerType.INDIVIDUAL,
+        active: true,
+        deletable: false,
+        paymentType: 'CREDIT',
+      };
+
+      component.onCustomerSelected(customer);
+      httpMock.expectOne('/api/customers/c1').flush({ creditDays: 120, paymentType: 'CREDIT' });
+      fixture.detectChanges();
+
+      expect(component.dueDate()?.getDate()).toBe(1);
+      expect(component.dueDate()?.getMonth()).toBe(4);
+      expect(fixture.nativeElement.textContent).toContain('01/05/2026');
+    });
+
+    it('should keep the cash payment type when the selected customer pays cash', () => {
+      fixture.detectChanges();
+      const customer: CustomerList = {
+        id: 'c2',
+        code: 1002,
+        alias: 'Mercado',
+        legalName: 'Mercado Central, C.A.',
+        rif: 'J-1001',
+        type: CustomerType.BUSINESS,
+        active: true,
+        deletable: false,
+        paymentType: 'CASH',
+      };
+
+      component.onCustomerSelected(customer);
+      httpMock.expectOne('/api/customers/c2').flush({ creditDays: 0, paymentType: 'CASH' });
+
+      expect(component.form.controls.paymentType.value).toBe(PaymentType.CASH);
+      expect(component.isCreditPayment()).toBe(false);
+    });
+  });
+
+  describe('credit warning', () => {
+    const status: CreditStatusResponse = {
+      customerId: 'c1',
+      customerName: 'Ana Pérez',
+      customerRif: 'V-1001',
+      creditLimit: 1000,
+      pendingBalance: 0,
+      customerBalance: 0,
+      availableCredit: 1000,
+      overdueInvoices: [],
+      hasOverdue: true,
+      canCreateCreditInvoice: false,
+    };
+
+    function setInvoice(hasItems: boolean): void {
+      component.creditStatus.set(status);
+      component.isCreditPayment.set(true);
+      component.items.set(
+        hasItems
+          ? [
+              {
+                productId: 'p1',
+                productCode: 'MOT-10',
+                productName: 'Motor 10HP',
+                quantity: 2,
+                unitPrice: 100,
+                stock: [],
+                warehouseAllocations: [],
+              },
+            ]
+          : [],
+      );
+    }
+
+    it('should not show the warning before adding items', () => {
+      fixture.detectChanges();
+      setInvoice(false);
+      expect(component.creditWarningMessage()).toBeNull();
+    });
+
+    it('should explain the overdue invoices without the redundant restriction', () => {
+      fixture.detectChanges();
+      setInvoice(true);
+      const message = component.creditWarningMessage()?.message ?? '';
+      expect(message).toContain('facturas vencidas');
+      expect(message).not.toContain('no puede crear facturas');
+    });
+
+    it('should translate the warning message', () => {
+      TestBed.inject(LanguageService).setLanguage('en');
+      fixture.detectChanges();
+      setInvoice(true);
+      expect(component.creditWarningMessage()?.message).toContain('overdue invoices');
     });
   });
 

@@ -1,4 +1,5 @@
 import { LanguageService } from '@core/i18n/language.service';
+import { TranslationService } from '@core/i18n/translation.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
@@ -92,6 +93,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly customerApi = inject(CustomerApiService);
+  private readonly translations = inject(TranslationService);
 
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   private isSubmitted = false;
@@ -136,26 +138,24 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   readonly creditWarningMessage = computed(() => {
     const status = this.creditStatus();
-    const paymentType = this.form.get('paymentType')?.value;
     const total = this.total();
-    if (!status || paymentType !== PaymentType.CREDIT) return null;
+    if (!status || !this.isCreditPayment() || total <= 0) return null;
     if (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice)
       return null;
     return this.buildCreditWarning(status, total);
   });
 
   creditWarningForCustomer(customerId: string) {
-    if (!this.isCreditPayment()) return null;
+    const total = this.total();
+    if (!this.isCreditPayment() || total <= 0) return null;
     const status = this.creditStatusByCustomer()[customerId];
     if (
       !status ||
-      (status.availableCredit >= this.total() &&
-        !status.hasOverdue &&
-        status.canCreateCreditInvoice)
+      (status.availableCredit >= total && !status.hasOverdue && status.canCreateCreditInvoice)
     ) {
       return null;
     }
-    return this.buildCreditWarning(status, this.total());
+    return this.buildCreditWarning(status, total);
   }
 
   private buildCreditWarning(status: CreditStatusResponse, total: number) {
@@ -171,12 +171,22 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   private buildCreditWarningMessage(status: CreditStatusResponse, total: number): string {
     const parts: string[] = [];
-    if (status.hasOverdue) parts.push('El cliente tiene facturas vencidas.');
+    if (status.hasOverdue) {
+      parts.push(this.translations.t('finance.billing.invoices.theCustomerHasOverdueInvoices'));
+    }
     if (total > status.availableCredit) {
       const deficit = total - status.availableCredit;
-      parts.push(`El total excede el crédito disponible por ${deficit.toLocaleString()}.`);
+      parts.push(
+        this.translations.t('finance.billing.invoices.theTotalExceedsTheAvailableCreditBy', {
+          deficit: deficit.toLocaleString(),
+        }),
+      );
     }
-    if (!status.canCreateCreditInvoice) parts.push('El cliente no puede crear facturas a crédito.');
+    if (!status.hasOverdue && !status.canCreateCreditInvoice) {
+      parts.push(
+        this.translations.t('finance.billing.invoices.theCustomerCannotCreateCreditInvoices'),
+      );
+    }
     return parts.join(' ');
   }
 
@@ -185,21 +195,17 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     paymentType: 'Tipo de Pago',
   };
 
-  readonly paymentTypeOptions = computed(() => {
-    const options = Object.values(PaymentType).map((pt) => ({
+  readonly paymentTypeOptions = computed(() =>
+    Object.values(PaymentType).map((pt) => ({
       label: PAYMENT_TYPE_LABELS[pt],
       value: pt,
-    }));
-    const status = this.creditStatus();
-    if (!status?.canCreateCreditInvoice) {
-      return options.filter((o) => o.value !== PaymentType.CREDIT);
-    }
-    return options;
-  });
+    })),
+  );
 
   readonly hasCreditEnabled = computed(() => {
     const status = this.creditStatus();
-    return (status?.creditLimit ?? 0) > 0 && (status?.canCreateCreditInvoice ?? false);
+    const customer = this.selectedCustomer();
+    return (status?.creditLimit ?? 0) > 0 || customer?.paymentType === 'CREDIT';
   });
 
   readonly items = signal<OrderItemFormData[]>([]);
@@ -422,6 +428,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           ...current,
           [customerId]: customer.creditDays ?? 0,
         }));
+        this.applyCustomerPaymentType(customer.paymentType);
         this.recalculateDueDate();
         this.setCustomerDueDate(customerId, customer.creditDays ?? 0);
       },
@@ -436,6 +443,18 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         this.removeCustomerDueDate(customerId);
       },
     });
+  }
+
+  private applyCustomerPaymentType(paymentType: string | undefined): void {
+    if (this.isEditMode()) return;
+    const value = this.resolvePaymentType(paymentType);
+    if (this.form.controls.paymentType.value !== value) {
+      this.form.patchValue({ paymentType: value });
+    }
+  }
+
+  private resolvePaymentType(paymentType: string | undefined): PaymentType {
+    return paymentType === 'CREDIT' ? PaymentType.CREDIT : PaymentType.CASH;
   }
 
   private loadCustomerDetailsForBulk(customers: CustomerList[]): void {
@@ -526,11 +545,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
 
   onCustomerSelected(customer: CustomerList): void {
     this.resetInvoiceForCustomerChange(false);
+    this.applyCustomerPaymentType(customer.paymentType);
+    this.form.patchValue({ customerId: customer.id });
     this.selectedCustomer.set(customer);
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
-    this.form.patchValue({ customerId: customer.id });
     this.pickerVisible.set(false);
-    this.form.patchValue({ paymentType: PaymentType.CASH });
     this.scheduleAutoSave();
     this.loadCreditStatus(customer.id);
     this.loadCustomerBalance(customer.id);
@@ -540,13 +559,13 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   onCustomersSelected(customers: CustomerList[]): void {
     if (customers.length === 0) return;
     this.resetInvoiceForCustomerChange(false);
-    this.selectedCustomers.set(customers);
     const primary = customers[0];
+    this.applyCustomerPaymentType(primary.paymentType);
+    this.form.patchValue({ customerId: primary.id });
+    this.selectedCustomers.set(customers);
     this.selectedCustomer.set(primary);
     this.selectedCustomerLabel.set({ alias: primary.alias, legalName: primary.legalName });
-    this.form.patchValue({ customerId: primary.id });
     this.pickerVisible.set(false);
-    this.form.patchValue({ paymentType: PaymentType.CASH });
     this.scheduleAutoSave();
     this.loadCustomerBalance(primary.id);
     this.loadCreditStatusForBulk(customers);
@@ -722,6 +741,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           this.invoiceService.create({
             ...baseData,
             customerId: customer.id,
+            paymentType: this.resolvePaymentType(customer.paymentType),
             orderIds: [],
             quoteIds: [],
           }),
