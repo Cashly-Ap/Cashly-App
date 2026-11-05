@@ -46,8 +46,7 @@ export class DocumentConfirmationDialogComponent {
       info: 'in-[.cashly-informative]:border-blue-200 in-[.cashly-informative]:bg-blue-50 in-[.cashly-informative]:text-blue-800 dark:in-[.cashly-informative]:border-blue-800 dark:in-[.cashly-informative]:bg-blue-950 dark:in-[.cashly-informative]:text-blue-200',
       warning:
         'in-[.cashly-informative]:border-blue-200 in-[.cashly-informative]:bg-blue-50 in-[.cashly-informative]:text-blue-800 dark:in-[.cashly-informative]:border-blue-800 dark:in-[.cashly-informative]:bg-blue-950 dark:in-[.cashly-informative]:text-blue-200',
-      danger:
-        'in-[.cashly-informative]:border-red-200 in-[.cashly-informative]:bg-red-50 in-[.cashly-informative]:text-red-800 dark:in-[.cashly-informative]:border-red-800 dark:in-[.cashly-informative]:bg-red-950 dark:in-[.cashly-informative]:text-red-200',
+      danger: '',
       success:
         'in-[.cashly-informative]:border-green-200 in-[.cashly-informative]:bg-green-50 in-[.cashly-informative]:text-green-800 dark:in-[.cashly-informative]:border-green-800 dark:in-[.cashly-informative]:bg-green-950 dark:in-[.cashly-informative]:text-green-200',
     };
@@ -58,7 +57,7 @@ export class DocumentConfirmationDialogComponent {
     const icons = {
       info: 'pi-info-circle',
       warning: 'pi-exclamation-triangle',
-      danger: 'pi-times-circle',
+      danger: 'pi-exclamation-triangle',
       success: 'pi-check-circle',
     };
     return icons[this.model().notice?.severity ?? 'info'];

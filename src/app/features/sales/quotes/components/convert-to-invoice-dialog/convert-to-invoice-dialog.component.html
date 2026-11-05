@@ -80,12 +80,12 @@
                   <span class="font-mono text-sm">{{ alloc.available }}</span>
                 </td>
                 <td class="text-center">
-                  <span class="font-mono text-sm" [class.font-bold]="alloc.wouldBeNegative">
+                  <span class="font-mono text-sm">
                     {{ alloc.availableAfterReserve }}
                   </span>
                   @if (alloc.wouldBeNegative) {
                     <i
-                      class="pi pi-exclamation-triangle text-surface-900 dark:text-surface-100 ml-1"
+                      class="pi pi-exclamation-triangle text-red-600 ml-1"
                       [pTooltip]="
                         'sales.quotes.insufficientStockTooltip'
                           | translate: { available: alloc.available, allocated: alloc.allocated }
@@ -95,10 +95,15 @@
                 </td>
               </tr>
             } @empty {
-              <tr class="text-red-600">
+              <tr>
                 <td>{{ line.productName }}</td>
                 <td>{{ line.quantity }}</td>
-                <td colspan="4">{{ 'procurement.purchases.unallocated' | translate }}</td>
+                <td colspan="4">
+                  <span class="inline-flex items-center gap-1 text-surface-700 dark:text-surface-300">
+                    <i class="pi pi-exclamation-triangle text-red-600"></i>
+                    {{ 'procurement.purchases.unallocated' | translate }}
+                  </span>
+                </td>
               </tr>
             }
           </ng-container>
@@ -109,15 +114,19 @@
         <div
           class="bg-surface-100 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 rounded-lg p-3 flex items-start gap-3"
         >
-          <i class="pi pi-exclamation-circle text-surface-900 dark:text-surface-100 mt-0.5"></i>
+          <i class="pi pi-exclamation-circle text-red-600 mt-0.5"></i>
           <div class="text-sm text-surface-900 dark:text-surface-100">
             <span class="font-semibold">{{ 'sales.quotes.unableToConvert' | translate }}</span>
             {{ 'shared.thereIsNotEnoughStockInOneOrMoreWarehouses' | translate }}
+            <p class="mt-1 text-surface-600 dark:text-surface-400">
+              {{ 'sales.orders.fixStockBeforeConverting' | translate }}
+            </p>
           </div>
         </div>
       }
 
-      <div class="flex flex-col gap-1.5">
+      @if (!hasAnyNegativeStock()) {
+        <div class="flex flex-col gap-1.5">
         <label
           for="paymentType"
           class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
@@ -168,7 +177,6 @@
                 <span
                   class="font-mono text-sm font-semibold"
                   [class.text-green-600]="status.availableCredit >= totalAmount()"
-                  [class.text-red-500]="status.availableCredit < totalAmount()"
                 >
                   ${{ status.availableCredit | localizedNumber: '1.2-2' }}
                 </span>
@@ -354,7 +362,6 @@
               <span
                 class="font-mono font-bold text-lg"
                 [class.text-green-600]="totalPayments() === totalAmount()"
-                [class.text-red-500]="totalPayments() !== totalAmount()"
               >
                 ${{ totalPayments() | localizedNumber: '1.2-2' }}
               </span>
@@ -371,6 +378,7 @@
           </div>
         </div>
       }
+    }
     }
   </div>
 </app-document-confirmation-dialog>

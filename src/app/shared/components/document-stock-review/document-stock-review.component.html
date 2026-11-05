@@ -10,14 +10,14 @@
     </thead>
     <tbody>
       @for (row of rows(); track $index) {
-        <tr [class.text-red-600]="!row.sufficient">
+        <tr>
           <td class="p-2">{{ row.productName }}</td>
           <td class="p-2">{{ row.warehouseName }}</td>
           <td class="p-2 text-right">{{ row.quantity | localizedNumber: '1.0-3' }}</td>
           <td class="p-2 text-right">
             {{ row.available | localizedNumber: '1.0-3' }}
             @if (!row.sufficient) {
-              <i class="pi pi-exclamation-triangle"></i>
+              <i class="pi pi-exclamation-triangle text-red-600 ml-1"></i>
             }
           </td>
         </tr>

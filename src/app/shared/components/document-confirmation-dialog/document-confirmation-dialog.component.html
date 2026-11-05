@@ -58,7 +58,11 @@
 
       @if (model().notice; as notice) {
         <div class="flex gap-3 rounded-xl border p-3" [class]="noticeClasses()">
-          <i class="pi mt-0.5 shrink-0" [class]="'pi ' + noticeIcon()"></i>
+          <i
+            class="pi mt-0.5 shrink-0"
+            [class]="'pi ' + noticeIcon()"
+            [class.text-red-600]="model().notice?.severity === 'danger'"
+          ></i>
           <div class="text-sm">
             <p class="font-semibold">{{ notice.title | translate }}</p>
             @if (notice.description) {
@@ -93,10 +97,7 @@
               </thead>
               <tbody>
                 @for (row of inventory.rows; track $index) {
-                  <tr
-                    class="border-t border-surface-100 dark:border-surface-800"
-                    [class.text-red-600]="!row.sufficient"
-                  >
+                  <tr class="border-t border-surface-100 dark:border-surface-800">
                     <td class="px-3 py-2">
                       <span class="font-medium">{{ row.productName }}</span>
                       @if (row.productCode) {
@@ -117,7 +118,10 @@
                         —
                       }
                       @if (!row.sufficient) {
-                        <i class="pi pi-exclamation-triangle ml-1" aria-hidden="true"></i>
+                        <i
+                          class="pi pi-exclamation-triangle text-red-600 ml-1"
+                          aria-hidden="true"
+                        ></i>
                       }
                     </td>
                   </tr>

@@ -13,14 +13,25 @@
       <i class="pi pi-spin pi-spinner" role="status"></i>
     }
     @if (stockError()) {
-      <p role="alert" class="text-red-600">
+      <p class="flex items-center gap-2 text-surface-700 dark:text-surface-300">
+        <i class="pi pi-exclamation-triangle text-red-600"></i>
         {{ 'sales.orders.messages.unableToLoadTheOrderDetails' | translate }}
       </p>
     }
     @if (orderDetails()) {
       <app-document-stock-review [rows]="stock().rows" />
       @if (!stock().valid) {
-        <p role="alert" class="text-red-600">{{ 'sales.quotes.unableToConvert' | translate }}</p>
+        <div class="flex items-start gap-2">
+          <i class="pi pi-exclamation-triangle text-red-600 mt-0.5"></i>
+          <div>
+            <p class="text-sm text-surface-700 dark:text-surface-300">
+              {{ 'sales.quotes.unableToConvert' | translate }}
+            </p>
+            <p class="text-sm text-surface-500 dark:text-surface-400">
+              {{ 'sales.orders.fixStockBeforeConverting' | translate }}
+            </p>
+          </div>
+        </div>
       }
     }
     <app-table-card>
@@ -62,23 +73,24 @@
       </div>
     </app-table-card>
 
-    <div class="flex flex-col gap-1.5">
-      <label
-        for="paymentType"
-        class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-        >{{ 'finance.billing.invoices.paymentType' | translate }}</label
-      >
-      <p-select
-        id="paymentType"
-        [options]="paymentTypeOptions | translateOptions"
-        [(ngModel)]="paymentType"
-        optionLabel="label"
-        optionValue="value"
-        styleClass="w-full"
-        appendTo="body"
-        (onChange)="onPaymentTypeChange($event.value)"
-      />
-    </div>
+    @if (orderDetails() && stock().valid) {
+      <div class="flex flex-col gap-1.5">
+        <label
+          for="paymentType"
+          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+          >{{ 'finance.billing.invoices.paymentType' | translate }}</label
+        >
+        <p-select
+          id="paymentType"
+          [options]="paymentTypeOptions | translateOptions"
+          [(ngModel)]="paymentType"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+          (onChange)="onPaymentTypeChange($event.value)"
+        />
+      </div>
 
     @if (isCredit()) {
       @if (creditLoading()) {
@@ -113,7 +125,6 @@
               <span
                 class="font-mono text-sm font-semibold"
                 [class.text-green-600]="status.availableCredit >= totalAmount()"
-                [class.text-red-500]="status.availableCredit < totalAmount()"
               >
                 ${{ status.availableCredit | localizedNumber: '1.2-2' }}
               </span>
@@ -299,7 +310,6 @@
             <span
               class="font-mono font-bold text-lg"
               [class.text-green-600]="totalPayments() === totalAmount()"
-              [class.text-red-500]="totalPayments() !== totalAmount()"
             >
               ${{ totalPayments() | localizedNumber: '1.2-2' }}
             </span>
@@ -315,6 +325,7 @@
           }
         </div>
       </div>
+    }
     }
   </div>
 </app-document-confirmation-dialog>
