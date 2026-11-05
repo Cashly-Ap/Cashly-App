@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 
 const entries: WarehouseStockEntry[] = [
   {
@@ -22,6 +23,7 @@ const entries: WarehouseStockEntry[] = [
     [productLabel]="productLabel"
     [showStockDetails]="showStockDetails"
     [unlimited]="unlimited"
+    [singleWarehouse]="singleWarehouse"
     (saved)="onSaved($event)"
   />`,
   imports: [StockAllocationButtonComponent],
@@ -31,6 +33,7 @@ class HostComponent {
   productLabel: string | null = 'P001 — Product One';
   showStockDetails = true;
   unlimited = false;
+  singleWarehouse: SingleWarehouseContext | null = null;
   onSaved = vi.fn();
 }
 
@@ -47,7 +50,6 @@ describe('StockAllocationButtonComponent', () => {
 
     fixture = TestBed.createComponent(HostComponent);
     host = fixture.componentInstance;
-    fixture.detectChanges();
     button = fixture.debugElement.children[0].componentInstance;
   });
 
@@ -59,6 +61,7 @@ describe('StockAllocationButtonComponent', () => {
   });
 
   it('should build the entries and open the dialog', () => {
+    fixture.detectChanges();
     button.open(new MouseEvent('click'));
 
     expect(button.dialogVisible()).toBe(true);
@@ -66,6 +69,7 @@ describe('StockAllocationButtonComponent', () => {
   });
 
   it('should clone the built entries', () => {
+    fixture.detectChanges();
     button.open(new MouseEvent('click'));
 
     expect(button.dialogEntries()[0]).not.toBe(entries[0]);
@@ -75,5 +79,36 @@ describe('StockAllocationButtonComponent', () => {
     button.onSaved(entries);
 
     expect(host.onSaved).toHaveBeenCalledWith(entries);
+  });
+
+  it('should expose the allocated quantity for a single warehouse', () => {
+    host.singleWarehouse = { id: 'wh1', code: 'WH1', name: 'Warehouse 1' };
+    fixture.detectChanges();
+
+    expect(button.singleEntry()?.warehouseId).toBe('wh1');
+    expect(button.singleAllocated()).toBe(5);
+    expect(button.singleMax()).toBe(25);
+  });
+
+  it('should emit a single allocation when the inline input changes', () => {
+    host.singleWarehouse = { id: 'wh1', code: 'WH1', name: 'Warehouse 1' };
+    fixture.detectChanges();
+
+    button.onInlineChange(12);
+
+    expect(host.onSaved).toHaveBeenCalledWith([
+      expect.objectContaining({ warehouseId: 'wh1', allocated: 12 }),
+    ]);
+  });
+
+  it('should clamp the inline allocation to the available stock', () => {
+    host.singleWarehouse = { id: 'wh1', code: 'WH1', name: 'Warehouse 1' };
+    fixture.detectChanges();
+
+    button.onInlineChange(999);
+
+    expect(host.onSaved).toHaveBeenCalledWith([
+      expect.objectContaining({ warehouseId: 'wh1', allocated: 25 }),
+    ]);
   });
 });

@@ -4,6 +4,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { of } from 'rxjs';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { ProductPickerDialogComponent } from '@shared/components/product-picker-dialog/product-picker-dialog.component';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import {
   ProductPickerFilters,
   ProductPickerItem,
@@ -62,6 +63,7 @@ const page: ProductPickerPage = {
     [mode]="mode"
     [allowUnlimitedStock]="allowUnlimitedStock"
     [excludedProductIds]="excludedProductIds"
+    [singleWarehouse]="singleWarehouse"
     [loadProducts]="loader"
     (productsSelected)="onSelected($event)"
     (cancelled)="onCancelled()"
@@ -73,6 +75,7 @@ class HostComponent {
   mode: ProductPickerMode = 'sale';
   allowUnlimitedStock = false;
   excludedProductIds: Set<string> = new Set();
+  singleWarehouse: SingleWarehouseContext | null = null;
   loader: ProductPickerLoader = () => of(page);
   onSelected = vi.fn();
   onCancelled = vi.fn();
@@ -169,6 +172,152 @@ describe('ProductPickerDialogComponent', () => {
     fixture.detectChanges();
 
     expect(dialog.canSelectProduct({ ...product, stockItems: [] })).toBe(true);
+  });
+
+  it('should restrict the available stock to the single warehouse', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+
+    expect(dialog.getTotalAvailable(product)).toBe(20);
+  });
+
+  it('should hide the product when the single warehouse has no stock', () => {
+    host.singleWarehouse = { id: 'wh9', code: 'WH9', name: 'Warehouse 9' };
+    fixture.detectChanges();
+
+    expect(dialog.getTotalAvailable(product)).toBe(0);
+    expect(dialog.canSelectProduct(product)).toBe(false);
+  });
+
+  it('should build entries only for the single warehouse', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+
+    const entries = dialog.stockEntriesFor(product)();
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toEqual(
+      expect.objectContaining({ warehouseId: 'wh2', available: 20, allocated: 0 }),
+    );
+  });
+
+  it('should start the single warehouse quantity at zero for sales', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+
+    expect(dialog.isSelected('p1')).toBe(true);
+    expect(dialog.getAllocationQuantity('p1')).toBe(0);
+  });
+
+  it('should keep the typed quantity when the product is deselected and selected again', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 7,
+      },
+    ]);
+
+    dialog.toggleSelection(product);
+    dialog.toggleSelection(product);
+
+    expect(dialog.getAllocationQuantity('p1')).toBe(7);
+  });
+
+  it('should keep the typed quantity when another product is selected', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+    dialog.onDialogShow();
+    dialog.toggleSelection(product);
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 4,
+      },
+    ]);
+    dialog.toggleSelection(inactiveProduct);
+
+    expect(dialog.getAllocationQuantity('p1')).toBe(4);
+  });
+
+  it('should select the product when the direct allocation is set', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+    dialog.onDialogShow();
+
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 20,
+      },
+    ]);
+
+    expect(dialog.isSelected('p1')).toBe(true);
+    expect(dialog.getAllocationQuantity('p1')).toBe(20);
+  });
+
+  it('should deselect the product when the direct allocation reaches zero', () => {
+    host.singleWarehouse = { id: 'wh2', code: 'WH2', name: 'Warehouse 2' };
+    fixture.detectChanges();
+    dialog.onDialogShow();
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 6,
+      },
+    ]);
+
+    dialog.onStockSaved(product, [
+      {
+        warehouseId: 'wh2',
+        warehouseCode: 'WH2',
+        warehouseName: 'Warehouse 2',
+        quantity: 20,
+        reserved: 0,
+        available: 20,
+        allocated: 0,
+      },
+    ]);
+
+    expect(dialog.isSelected('p1')).toBe(false);
+    expect(dialog.getAllocationQuantity('p1')).toBe(0);
+  });
+
+  it('should fall back to the single warehouse when the product has no stock there', () => {
+    host.singleWarehouse = { id: 'wh9', code: 'WH9', name: 'Warehouse 9' };
+    fixture.detectChanges();
+
+    const entries = dialog.stockEntriesFor(product)();
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0]).toEqual(
+      expect.objectContaining({ warehouseId: 'wh9', available: 0, allocated: 0 }),
+    );
   });
 
   it('should not send the stock filter when stock is unlimited', () => {

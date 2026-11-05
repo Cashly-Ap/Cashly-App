@@ -232,11 +232,13 @@
                       [productLabel]="productLabelFor(product)"
                       [showStockDetails]="!isPurchase()"
                       [unlimited]="isPurchase() || allowUnlimitedStock()"
+                      [singleWarehouse]="singleWarehouse()"
                       [emptyMessageKey]="
                         isPurchase()
                           ? 'procurement.purchases.selectTheQuantityPerWarehouse'
                           : 'sales.orders.noStockAllocatedInWarehouses'
                       "
+                      (click)="$event.stopPropagation()"
                       (saved)="onStockSaved(product, $event)"
                     />
                   </div>
@@ -334,11 +336,13 @@
                     [productLabel]="productLabelFor(product)"
                     [showStockDetails]="!isPurchase()"
                     [unlimited]="isPurchase() || allowUnlimitedStock()"
+                    [singleWarehouse]="singleWarehouse()"
                     [emptyMessageKey]="
                       isPurchase()
                         ? 'procurement.purchases.selectTheQuantityPerWarehouse'
                         : 'sales.orders.noStockAllocatedInWarehouses'
                     "
+                    (click)="$event.stopPropagation()"
                     (saved)="onStockSaved(product, $event)"
                   />
                 </div>

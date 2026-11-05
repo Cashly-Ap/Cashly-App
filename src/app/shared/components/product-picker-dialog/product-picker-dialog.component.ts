@@ -17,6 +17,7 @@ import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
@@ -37,6 +38,8 @@ import {
 } from '@shared/components/product-picker-dialog/product-picker.models';
 
 const PAGE_SIZE = 10;
+
+type RememberedAllocation = { warehouseId: string; allocated: number };
 
 @Component({
   selector: 'app-product-picker-dialog',
@@ -69,6 +72,7 @@ export class ProductPickerDialogComponent {
   readonly mode = input<ProductPickerMode>('sale');
   readonly allowUnlimitedStock = input<boolean>(false);
   readonly excludedProductIds = input<Set<string>>(new Set());
+  readonly singleWarehouse = input<SingleWarehouseContext | null>(null);
   readonly loadProducts = input.required<ProductPickerLoader>();
   readonly productsSelected = output<ProductPickerSelection[]>();
   readonly cancelled = output<void>();
@@ -82,6 +86,8 @@ export class ProductPickerDialogComponent {
 
   readonly selectedIds = signal<Set<string>>(new Set());
   readonly selections = signal<Map<string, ProductPickerSelection>>(new Map());
+
+  private readonly allocationMemory = new Map<string, RememberedAllocation[]>();
 
   readonly filterCategoryId = signal<string | null>(null);
   readonly filterComposite = signal<boolean | null>(null);
@@ -204,10 +210,14 @@ export class ProductPickerDialogComponent {
     const map = new Map(this.selections());
 
     if (ids.has(product.id)) {
+      this.rememberAllocations(product.id, map.get(product.id)?.allocations ?? []);
       ids.delete(product.id);
       map.delete(product.id);
     } else {
-      const allocations = this.buildAllocations(product.stockItems, new Map());
+      const allocations = this.buildAllocations(
+        product.stockItems,
+        this.rememberedAllocations(product.id),
+      );
       const quantity = allocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
       ids.add(product.id);
       map.set(product.id, {
@@ -225,11 +235,9 @@ export class ProductPickerDialogComponent {
   stockEntriesFor(product: ProductPickerItem): () => WarehouseStockEntry[] {
     return () => {
       const existing = this.selections().get(product.id);
+      const allocations = existing?.allocations ?? this.allocationMemory.get(product.id) ?? [];
       const existingMap = new Map(
-        (existing?.allocations ?? []).map((allocation) => [
-          allocation.warehouseId,
-          allocation.allocated,
-        ]),
+        allocations.map((allocation) => [allocation.warehouseId, allocation.allocated]),
       );
       return this.buildAllocations(product.stockItems, existingMap);
     };
@@ -244,6 +252,7 @@ export class ProductPickerDialogComponent {
       ...allocation,
       allocated: allocation.allocated ?? 0,
     }));
+    this.rememberAllocations(product.id, normalized);
     const quantity = normalized.reduce((sum, allocation) => sum + allocation.allocated, 0);
     const ids = new Set(this.selectedIds());
     const map = new Map(this.selections());
@@ -270,7 +279,11 @@ export class ProductPickerDialogComponent {
   }
 
   getTotalAvailable(product: ProductPickerItem): number {
-    return product.stockItems.reduce((sum, stock) => sum + stock.available, 0);
+    const warehouse = this.singleWarehouse();
+    const stockItems = warehouse
+      ? product.stockItems.filter((stock) => stock.warehouseId === warehouse.id)
+      : product.stockItems;
+    return stockItems.reduce((sum, stock) => sum + stock.available, 0);
   }
 
   clearFilters(): void {
@@ -305,19 +318,40 @@ export class ProductPickerDialogComponent {
     stockItems: ProductPickerStockItem[],
     existingMap: Map<string, number>,
   ): WarehouseStockEntry[] {
+    const warehouse = this.singleWarehouse();
     const defaultAllocated = (stock: ProductPickerStockItem) =>
-      this.isPurchase() ? 0 : stock.available;
+      this.isPurchase() || warehouse ? 0 : stock.available;
+    const available = (stock: ProductPickerStockItem) =>
+      this.isPurchase() ? 999999 : stock.available;
 
-    return stockItems.map((stock) => ({
-      warehouseId: stock.warehouseId,
-      warehouseName: stock.warehouseName,
-      warehouseCode: stock.warehouseCode,
-      quantity: stock.quantity,
-      reserved: stock.reserved,
-      available: this.isPurchase() ? 999999 : stock.available,
-      allocated:
-        existingMap.size > 0 ? (existingMap.get(stock.warehouseId) ?? 0) : defaultAllocated(stock),
-    }));
+    const entries = stockItems
+      .filter((stock) => !warehouse || stock.warehouseId === warehouse.id)
+      .map((stock) => ({
+        warehouseId: stock.warehouseId,
+        warehouseName: stock.warehouseName,
+        warehouseCode: stock.warehouseCode,
+        quantity: stock.quantity,
+        reserved: stock.reserved,
+        available: available(stock),
+        allocated:
+          existingMap.size > 0
+            ? (existingMap.get(stock.warehouseId) ?? 0)
+            : defaultAllocated(stock),
+      }));
+
+    if (warehouse && entries.length === 0) {
+      entries.push({
+        warehouseId: warehouse.id,
+        warehouseName: warehouse.name,
+        warehouseCode: warehouse.code,
+        quantity: 0,
+        reserved: 0,
+        available: this.isPurchase() ? 999999 : 0,
+        allocated: existingMap.get(warehouse.id) ?? 0,
+      });
+    }
+
+    return entries;
   }
 
   private load(page: number): void {
@@ -358,5 +392,25 @@ export class ProductPickerDialogComponent {
     this.currentPage.set(0);
     this.selectedIds.set(new Set());
     this.selections.set(new Map());
+    this.allocationMemory.clear();
+  }
+
+  private rememberAllocations(productId: string, allocations: RememberedAllocation[]): void {
+    this.allocationMemory.set(
+      productId,
+      allocations.map((allocation) => ({
+        warehouseId: allocation.warehouseId,
+        allocated: allocation.allocated,
+      })),
+    );
+  }
+
+  private rememberedAllocations(productId: string): Map<string, number> {
+    return new Map(
+      (this.allocationMemory.get(productId) ?? []).map((allocation) => [
+        allocation.warehouseId,
+        allocation.allocated,
+      ]),
+    );
   }
 }

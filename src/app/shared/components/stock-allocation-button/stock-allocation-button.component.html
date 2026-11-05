@@ -1,11 +1,42 @@
-<button
-  type="button"
-  class="inline-flex items-center gap-1.5 rounded-lg border border-surface-300 dark:border-surface-600 px-2.5 py-1.5 text-xs font-medium text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors whitespace-nowrap"
-  (click)="open($event)"
->
-  <i class="pi pi-warehouse text-xs"></i>
-  {{ 'shared.modifyStock' | translate }}
-</button>
+@if (singleWarehouse(); as warehouse) {
+  <div class="inline-flex items-center gap-1.5">
+    <i class="pi pi-warehouse text-xs text-surface-400"></i>
+    <span
+      class="max-w-28 truncate text-xs text-surface-500 dark:text-surface-400"
+      [title]="warehouse.name"
+      >{{ warehouse.name }}</span
+    >
+    <p-inputNumber
+      [locale]="locale()"
+      [ngModel]="singleAllocated()"
+      (ngModelChange)="onInlineChange($event)"
+      [min]="0"
+      [max]="singleMax()"
+      [maxFractionDigits]="3"
+      [showButtons]="true"
+      buttonLayout="horizontal"
+      incrementButtonIcon="pi pi-plus"
+      decrementButtonIcon="pi pi-minus"
+      inputStyleClass="w-20 text-right text-sm font-mono"
+    />
+    @if (!unlimited()) {
+      @if (singleEntry(); as entry) {
+        <span class="text-xs text-surface-400 dark:text-surface-500">
+          {{ entry.available | localizedNumber: '1.0-3' }}
+        </span>
+      }
+    }
+  </div>
+} @else {
+  <button
+    type="button"
+    class="inline-flex items-center gap-1.5 rounded-lg border border-surface-300 dark:border-surface-600 px-2.5 py-1.5 text-xs font-medium text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors whitespace-nowrap"
+    (click)="open($event)"
+  >
+    <i class="pi pi-warehouse text-xs"></i>
+    {{ 'shared.modifyStock' | translate }}
+  </button>
+}
 
 <app-warehouse-stock-dialog
   [(visible)]="dialogVisible"
