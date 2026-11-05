@@ -4,7 +4,7 @@
       class="text-base font-medium text-surface-800 dark:text-surface-200 flex items-center gap-2"
     >
       <i class="pi pi-list text-surface-500"></i>
-      {{ (titleLabel()) | translate }}
+      {{ titleLabel() | translate }}
     </h3>
     @if (!readonly()) {
       <p-button
@@ -20,11 +20,11 @@
 
   @if (customerId()) {
     <app-product-picker-dialog
+      mode="sale"
       [visible]="pickerVisible()"
-      [customerId]="customerId()!"
-      [customerIds]="customerIds()"
       [excludedProductIds]="excludedProductIds()"
-      (productsAdded)="onProductsAdded($event)"
+      [loadProducts]="loadProducts"
+      (productsSelected)="onProductsAdded($event)"
       (cancelled)="onPickerCancelled()"
     />
   }
@@ -222,7 +222,9 @@
         class="flex justify-end p-3 sm:p-4 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-800"
       >
         <div class="flex items-center gap-3">
-          <span class="text-sm text-surface-600 dark:text-surface-400">{{ (totalLabel()) | translate }}</span>
+          <span class="text-sm text-surface-600 dark:text-surface-400">{{
+            totalLabel() | translate
+          }}</span>
           <span class="font-mono font-semibold text-lg text-surface-900 dark:text-surface-100">
             {{ total() | localizedNumber: '1.2-2' }}
           </span>

@@ -5,12 +5,14 @@ import {
   Component,
   ViewChild,
   computed,
+  inject,
   input,
   output,
   signal,
 } from '@angular/core';
 
 import { FormsModule } from '@angular/forms';
+import { Observable, map } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TooltipModule } from 'primeng/tooltip';
@@ -18,7 +20,15 @@ import { PopoverModule, Popover } from 'primeng/popover';
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
-import { ProductPickerDialogComponent } from '@features/sales/orders/components/product-picker-dialog/product-picker-dialog.component';
+import { OrderApiService } from '@features/sales/orders/services/api/order-api.service';
+import { OrderProduct } from '@features/sales/orders/models/interfaces/order-product.interface';
+import { ProductPickerDialogComponent } from '@shared/components/product-picker-dialog/product-picker-dialog.component';
+import {
+  ProductPickerFilters,
+  ProductPickerItem,
+  ProductPickerPage,
+  ProductPickerSelection,
+} from '@shared/components/product-picker-dialog/product-picker.models';
 import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
 import { WarehouseStockPopoverComponent } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-popover.component';
 import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse-stock-popover/warehouse-stock-entry.interface';
@@ -43,6 +53,7 @@ import { WarehouseStockEntry } from '@features/sales/orders/components/warehouse
 })
 export class OrderItemsTableComponent {
   @ViewChild('allocationPopover') private readonly allocationPopover!: Popover;
+  private readonly orderApi = inject(OrderApiService);
 
   readonly context = input<'order' | 'invoice'>('order');
   readonly items = input<OrderItemFormData[]>([]);
@@ -58,6 +69,27 @@ export class OrderItemsTableComponent {
   readonly popoverAllocations = signal<WarehouseStockEntry[]>([]);
 
   readonly excludedProductIds = computed(() => new Set(this.items().map((i) => i.productId)));
+
+  readonly loadProducts = (filters: ProductPickerFilters): Observable<ProductPickerPage> =>
+    this.orderApi
+      .getProductsForOrder({
+        customerId: this.customerId() ?? '',
+        customerIds: this.customerIds(),
+        search: filters.search,
+        categoryId: filters.categoryId,
+        composite: filters.composite,
+        withStock: filters.withStock,
+        page: filters.page,
+        size: filters.size,
+      })
+      .pipe(
+        map((response) => ({
+          content: response.content.map((product) => this.toPickerItem(product)),
+          totalElements: response.totalElements,
+          totalPages: response.totalPages,
+          number: response.number,
+        })),
+      );
 
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
@@ -85,21 +117,48 @@ export class OrderItemsTableComponent {
     this.pickerVisible.set(true);
   }
 
-  onProductsAdded(newItems: OrderItemFormData[]): void {
+  onProductsAdded(selections: ProductPickerSelection[]): void {
     const current = this.items();
     const merged = [...current];
 
-    for (const incoming of newItems) {
+    for (const selection of selections) {
+      const incoming = this.toOrderItem(selection);
       const existingIndex = merged.findIndex((i) => i.productId === incoming.productId);
       if (existingIndex >= 0) {
         merged[existingIndex] = { ...merged[existingIndex] };
       } else {
-        merged.push({ ...incoming });
+        merged.push(incoming);
       }
     }
 
     this.itemsChange.emit(merged);
     this.pickerVisible.set(false);
+  }
+
+  private toOrderItem(selection: ProductPickerSelection): OrderItemFormData {
+    return {
+      productId: selection.product.id,
+      productCode: selection.product.code,
+      productName: selection.product.name,
+      quantity: selection.quantity,
+      unitPrice: selection.unitPrice,
+      stock: selection.product.stockItems,
+      warehouseAllocations: selection.allocations,
+    };
+  }
+
+  private toPickerItem(product: OrderProduct): ProductPickerItem {
+    return {
+      id: product.id,
+      code: product.code,
+      name: product.name,
+      categoryName: product.categoryName,
+      active: product.active,
+      composite: product.composite,
+      price: product.customerPrice,
+      totalStock: product.totalStock,
+      stockItems: product.stock,
+    };
   }
 
   onPickerCancelled(): void {

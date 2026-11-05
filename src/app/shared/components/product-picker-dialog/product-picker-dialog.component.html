@@ -10,51 +10,99 @@
     <app-dialog-header
       icon="pi pi-box"
       title="procurement.purchases.selectProducts"
-      subtitle="procurement.purchases.findAndSelectProductsToAddToThePurchase"
+      [subtitle]="subtitleKey()"
     />
   </ng-template>
 
   <div class="flex flex-col gap-4 pt-1">
-    <div class="flex items-center gap-2">
-      <app-list-filter
-        [activeCount]="activeFilterCount()"
-        variant="compact"
-        (cleared)="clearFilters()"
-      >
-        <div class="flex flex-col gap-1.5">
-          <span
-            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-            >{{ 'procurement.purchases.search' | translate }}</span
-          >
-          <app-search-field
-            [value]="search()"
-            [placeholder]="'procurement.purchases.codeOrName' | translate"
-            (search)="onSearchChange($event)"
-          />
-        </div>
-        <div class="flex flex-col gap-1.5">
-          <span
-            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-            >{{ 'finance.billing.invoices.category' | translate }}</span
-          >
-          <p-select
-            [options]="categoryOptions() | translateOptions: true"
-            optionLabel="label"
-            optionValue="value"
-            [ngModel]="filterCategoryId()"
-            (ngModelChange)="onCategoryChange($event)"
-            styleClass="w-full text-sm"
-          />
-        </div>
-      </app-list-filter>
-      <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
-        {{ totalElements() }}
-        {{
-          totalElements() === 1
-            ? ('inventory.warehouses.product' | translate)
-            : ('inventory.warehouses.products2' | translate)
-        }}
-      </span>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
+      <div class="hidden sm:flex flex-col gap-1.5 flex-1 min-w-0">
+        <span
+          class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+          >{{ 'procurement.purchases.search' | translate }}</span
+        >
+        <app-search-field
+          [value]="search()"
+          [placeholder]="'procurement.purchases.codeOrName' | translate"
+          (search)="onSearchChange($event)"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 sm:ml-auto">
+        <app-list-filter
+          [activeCount]="activeFilterCount()"
+          variant="compact"
+          (cleared)="clearFilters()"
+        >
+          <div class="flex sm:hidden flex-col gap-1.5">
+            <span
+              class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+              >{{ 'procurement.purchases.search' | translate }}</span
+            >
+            <app-search-field
+              [value]="search()"
+              [placeholder]="'procurement.purchases.codeOrName' | translate"
+              (search)="onSearchChange($event)"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <span
+              class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+              >{{ 'finance.billing.invoices.category' | translate }}</span
+            >
+            <p-select
+              [options]="categoryOptions() | translateOptions: true"
+              optionLabel="label"
+              optionValue="value"
+              [ngModel]="filterCategoryId()"
+              (ngModelChange)="onCategoryChange($event)"
+              styleClass="w-full text-sm"
+            />
+          </div>
+
+          @if (!isPurchase()) {
+            <div class="flex flex-col gap-1.5">
+              <span
+                class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+                >{{ 'shared.type' | translate }}</span
+              >
+              <p-select
+                [options]="compositeOptions | translateOptions"
+                optionLabel="label"
+                optionValue="value"
+                [ngModel]="filterComposite()"
+                (ngModelChange)="onCompositeChange($event)"
+                styleClass="w-full text-sm"
+              />
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <span
+                class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+                >{{ 'finance.billing.returns.stock' | translate }}</span
+              >
+              <p-select
+                [options]="withStockOptions | translateOptions"
+                optionLabel="label"
+                optionValue="value"
+                [ngModel]="filterWithStock()"
+                (ngModelChange)="onWithStockChange($event)"
+                styleClass="w-full text-sm"
+              />
+            </div>
+          }
+        </app-list-filter>
+
+        <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap shrink-0">
+          {{ totalElements() }}
+          {{
+            totalElements() === 1
+              ? ('inventory.warehouses.product' | translate)
+              : ('inventory.warehouses.products2' | translate)
+          }}
+        </span>
+      </div>
     </div>
 
     <app-table-card extraClass="hidden sm:block">
@@ -99,7 +147,7 @@
           } @else if (visibleProducts().length === 0) {
             <tr>
               <td
-                colspan="5"
+                colspan="6"
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
@@ -149,31 +197,59 @@
                 </td>
                 <td class="px-4 py-3 text-right">
                   <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                    ${{ product.purchasePrice | localizedNumber: '1.2-2' }}
+                    ${{ product.price | localizedNumber: '1.2-2' }}
                   </span>
                 </td>
                 <td class="px-4 py-3">
                   <div class="flex items-center justify-end gap-2">
                     <div class="flex flex-col items-end">
-                      @if (getAllocationQuantity(product.id) > 0) {
-                        <span class="text-xs text-surface-400 dark:text-surface-500">
-                          {{ 'procurement.purchases.stock' | translate }}
-                          {{ product.stock | localizedNumber: '1.0-3' }}
-                        </span>
-                        <span
-                          class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
-                        >
-                          +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
-                          {{
-                            product.stock + getAllocationQuantity(product.id)
-                              | localizedNumber: '1.0-3'
-                          }}
-                        </span>
+                      @if (isPurchase()) {
+                        @if (getAllocationQuantity(product.id) > 0) {
+                          <span class="text-xs text-surface-400 dark:text-surface-500">
+                            {{ 'procurement.purchases.stock' | translate }}
+                            {{ product.totalStock | localizedNumber: '1.0-3' }}
+                          </span>
+                          <span
+                            class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
+                          >
+                            +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
+                            {{
+                              product.totalStock + getAllocationQuantity(product.id)
+                                | localizedNumber: '1.0-3'
+                            }}
+                          </span>
+                        } @else {
+                          <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
+                            {{ 'procurement.purchases.stock' | translate }}
+                            {{ product.totalStock | localizedNumber: '1.0-3' }}
+                          </span>
+                        }
                       } @else {
-                        <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
-                          {{ 'procurement.purchases.stock' | translate }}
-                          {{ product.stock | localizedNumber: '1.0-3' }}
-                        </span>
+                        @if (getAllocationQuantity(product.id) > 0) {
+                          <span
+                            class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
+                          >
+                            {{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }}
+                          </span>
+                        } @else {
+                          <span class="font-mono text-sm text-surface-700 dark:text-surface-300">
+                            {{ product.totalStock | localizedNumber: '1.0-3' }}
+                          </span>
+                        }
+                        @if (getAllocationQuantity(product.id) === 0) {
+                          <span
+                            class="text-[10px] text-surface-400 dark:text-surface-500 leading-tight"
+                          >
+                            {{ 'sales.orders.availablePrefix' | translate }}
+                            {{ getTotalAvailable(product) | localizedNumber: '1.0-3' }}
+                            @if (getTotalReserved(product) > 0) {
+                              <span class="text-amber-500 dark:text-amber-400 ml-0.5"
+                                >{{ 'sales.orders.reserved' | translate }}
+                                {{ getTotalReserved(product) | localizedNumber: '1.0-3' }}</span
+                              >
+                            }
+                          </span>
+                        }
                       }
                     </div>
                     <button
@@ -257,29 +333,61 @@
               class="border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 flex items-center justify-between"
             >
               <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
-                ${{ product.purchasePrice | localizedNumber: '1.2-2' }}
+                ${{ product.price | localizedNumber: '1.2-2' }}
               </span>
               <div class="flex items-center gap-2">
-                @if (getAllocationQuantity(product.id) > 0) {
-                  <div class="flex flex-col items-end">
-                    <span class="text-xs text-surface-400 dark:text-surface-500">
+                @if (isPurchase()) {
+                  @if (getAllocationQuantity(product.id) > 0) {
+                    <div class="flex flex-col items-end">
+                      <span class="text-xs text-surface-400 dark:text-surface-500">
+                        {{ 'procurement.purchases.stock' | translate }}
+                        {{ product.totalStock | localizedNumber: '1.0-3' }}
+                      </span>
+                      <span
+                        class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
+                      >
+                        +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
+                        {{
+                          product.totalStock + getAllocationQuantity(product.id)
+                            | localizedNumber: '1.0-3'
+                        }}
+                      </span>
+                    </div>
+                  } @else {
+                    <span class="text-sm text-surface-500 dark:text-surface-400">
                       {{ 'procurement.purchases.stock' | translate }}
-                      {{ product.stock | localizedNumber: '1.0-3' }}
+                      <span class="font-mono">{{
+                        product.totalStock | localizedNumber: '1.0-3'
+                      }}</span>
                     </span>
+                  }
+                } @else {
+                  @if (getAllocationQuantity(product.id) > 0) {
                     <span
                       class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400"
                     >
-                      +{{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }} →
-                      {{
-                        product.stock + getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
-                      }}
+                      {{ getAllocationQuantity(product.id) | localizedNumber: '1.0-3' }}
                     </span>
-                  </div>
-                } @else {
-                  <span class="text-sm text-surface-500 dark:text-surface-400">
-                    {{ 'procurement.purchases.stock' | translate }}
-                    <span class="font-mono">{{ product.stock | localizedNumber: '1.0-3' }}</span>
-                  </span>
+                  } @else {
+                    <div class="flex flex-col items-end">
+                      <span class="text-sm text-surface-500 dark:text-surface-400">
+                        {{ 'procurement.purchases.stock' | translate }}
+                        <span class="font-mono">{{
+                          product.totalStock | localizedNumber: '1.0-3'
+                        }}</span>
+                      </span>
+                      <span class="text-[10px] text-surface-400 dark:text-surface-500">
+                        {{ 'sales.orders.availablePrefix' | translate }}
+                        {{ getTotalAvailable(product) | localizedNumber: '1.0-3' }}
+                        @if (getTotalReserved(product) > 0) {
+                          <span class="text-amber-500 dark:text-amber-400 ml-0.5"
+                            >{{ 'sales.orders.reserved' | translate }}
+                            {{ getTotalReserved(product) | localizedNumber: '1.0-3' }}</span
+                          >
+                        }
+                      </span>
+                    </div>
+                  }
                 }
                 <button
                   type="button"
@@ -358,8 +466,8 @@
   <app-warehouse-stock-popover
     [entries]="popoverAllocations()"
     [confirmLabel]="'finance.billing.creditnotes.save' | translate"
-    [emptyMessage]="'procurement.purchases.selectTheQuantityPerWarehouse' | translate"
-    [showStockDetails]="false"
+    [emptyMessage]="emptyStockMessage() | translate"
+    [showStockDetails]="!isPurchase()"
     (allocationChange)="updateAllocation($event.index, $event.value)"
     (confirm)="saveAllocation()"
   />

@@ -18,10 +18,12 @@
     }
   </div>
 
-  <app-purchase-product-picker-dialog
+  <app-product-picker-dialog
+    mode="purchase"
     [visible]="pickerVisible()"
     [excludedProductIds]="excludedProductIds()"
-    (productsAdded)="onProductsAdded($event)"
+    [loadProducts]="loadProducts"
+    (productsSelected)="onProductsAdded($event)"
     (cancelled)="onPickerCancelled()"
   />
 

@@ -6,6 +6,7 @@ import { NO_ERRORS_SCHEMA, Component } from '@angular/core';
 import { OrderItemsTableComponent } from '@features/sales/orders/components/order-items-table/order-items-table.component';
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
+import { ProductPickerSelection } from '@shared/components/product-picker-dialog/product-picker.models';
 
 @Component({
   template: `<app-order-items-table
@@ -106,20 +107,28 @@ describe('OrderItemsTableComponent', () => {
   });
 
   it('should close picker on products added and emit itemsChange', () => {
-    const newItems: OrderItemFormData[] = [
+    const newItems: ProductPickerSelection[] = [
       {
-        productId: 'p1',
-        productCode: 'P1',
-        productName: 'Product 1',
-        stock: [],
+        product: {
+          id: 'p1',
+          code: 'P1',
+          name: 'Product 1',
+          categoryName: 'Category',
+          active: true,
+          price: 100,
+          totalStock: 0,
+          stockItems: [],
+        },
         quantity: 1,
         unitPrice: 100,
-        warehouseAllocations: [],
+        allocations: [],
       },
     ];
     component.onProductsAdded(newItems);
     expect(component.pickerVisible()).toBe(false);
-    expect(hostComponent.onItemsChange).toHaveBeenCalledWith(newItems);
+    expect(hostComponent.onItemsChange).toHaveBeenCalledWith([
+      expect.objectContaining({ productId: 'p1', quantity: 1, unitPrice: 100 }),
+    ]);
   });
 
   it('should close picker on cancel', () => {
@@ -594,15 +603,21 @@ describe('OrderItemsTableComponent - allocation popover', () => {
   });
 
   it('should merge existing items when products added', () => {
-    const newItems: OrderItemFormData[] = [
+    const newItems: ProductPickerSelection[] = [
       {
-        productId: 'p2',
-        productCode: 'P2',
-        productName: 'Product 2',
-        stock: [],
+        product: {
+          id: 'p2',
+          code: 'P2',
+          name: 'Product 2',
+          categoryName: 'Category',
+          active: true,
+          price: 50,
+          totalStock: 0,
+          stockItems: [],
+        },
         quantity: 2,
         unitPrice: 50,
-        warehouseAllocations: [],
+        allocations: [],
       },
     ];
     component.onProductsAdded(newItems);
