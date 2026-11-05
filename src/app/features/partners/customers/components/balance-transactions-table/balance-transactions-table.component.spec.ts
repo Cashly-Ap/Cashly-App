@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { describe, expect, it, beforeEach } from 'vitest';
+import { LanguageService } from '@core/i18n/language.service';
 import { BalanceTransactionsTableComponent } from '@features/partners/customers/components/balance-transactions-table/balance-transactions-table.component';
 
 describe('BalanceTransactionsTableComponent', () => {
@@ -43,5 +44,17 @@ describe('BalanceTransactionsTableComponent', () => {
     expect(mobile.textContent).toContain('INV-001');
     expect(mobile.textContent).toContain('PED-001');
     expect(mobile.textContent?.replace(/\u00a0/g, ' ')).toContain('125,00 US$');
+  });
+
+  it('translates the movement type badge with the active language', () => {
+    const language = TestBed.inject(LanguageService);
+
+    language.setLanguage('es');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Factura');
+
+    language.setLanguage('en');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Invoice');
   });
 });

@@ -121,13 +121,13 @@ export class CustomerBalancePageComponent implements OnInit {
   readonly filterAmount = signal<number | null>(null);
   private readonly appliedFilters = signal<BalanceTransactionFilters>({ ...EMPTY_FILTERS });
   readonly transactionTypeOptions = [
-    { label: 'Anticipo', value: 'ADVANCED' },
-    { label: 'Devolución', value: 'RETURNS' },
-    { label: 'Pago', value: 'PAYMENTS' },
-    { label: 'Factura', value: 'INVOICES' },
-    { label: 'Reembolso', value: 'REFUND' },
-    { label: 'Nota de Crédito', value: 'CREDIT_NOTE' },
-    { label: 'Nota de Débito', value: 'DEBIT_NOTE' },
+    { label: 'partners.customers.advancePayment', value: 'ADVANCED' },
+    { label: 'partners.customers.return', value: 'RETURNS' },
+    { label: 'partners.customers.payment', value: 'PAYMENTS' },
+    { label: 'partners.customers.invoice', value: 'INVOICES' },
+    { label: 'partners.customers.refund', value: 'REFUND' },
+    { label: 'partners.customers.creditNote', value: 'CREDIT_NOTE' },
+    { label: 'partners.customers.debitNote', value: 'DEBIT_NOTE' },
   ];
   readonly activeFilterCount = computed(() => {
     const filters = this.appliedFilters();

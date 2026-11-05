@@ -1,19 +1,20 @@
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { PaginatorModule } from 'primeng/paginator';
 import { BalanceTransactionResponse } from '@features/partners/customers/models/interfaces/balance-transaction.interface';
 
-const TYPE_TRANSLATIONS: Record<string, string> = {
-  ADVANCED: 'Anticipo',
-  RETURNS: 'Devolución',
-  PAYMENTS: 'Pago',
-  INVOICES: 'Factura',
-  REFUND: 'Reembolso',
-  CREDIT_NOTE: 'Nota de Crédito',
-  DEBIT_NOTE: 'Nota de Débito',
+const TYPE_KEYS: Record<string, string> = {
+  ADVANCED: 'partners.customers.advancePayment',
+  RETURNS: 'partners.customers.return',
+  PAYMENTS: 'partners.customers.payment',
+  INVOICES: 'partners.customers.invoice',
+  REFUND: 'partners.customers.refund',
+  CREDIT_NOTE: 'partners.customers.creditNote',
+  DEBIT_NOTE: 'partners.customers.debitNote',
 };
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
@@ -51,7 +52,7 @@ export class BalanceTransactionsTableComponent {
   }
 
   translateType(type: string): string {
-    return TYPE_TRANSLATIONS[type] ?? type;
+    return TYPE_KEYS[type] ?? type;
   }
 
   typeBadgeClass(type: string): string {
