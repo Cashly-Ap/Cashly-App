@@ -22,6 +22,7 @@
     mode="purchase"
     [visible]="pickerVisible()"
     [excludedProductIds]="excludedProductIds()"
+    [singleWarehouse]="singleWarehouse()"
     [loadProducts]="loadProducts"
     (productsSelected)="onProductsAdded($event)"
     (cancelled)="onPickerCancelled()"
@@ -63,6 +64,7 @@
                   [productLabel]="resolveProductName(item.productId)"
                   [showStockDetails]="false"
                   [unlimited]="true"
+                  [singleWarehouse]="warehouseForItem(item)"
                   (saved)="onAllocationSaved(itemIdx, $event)"
                 />
               </div>

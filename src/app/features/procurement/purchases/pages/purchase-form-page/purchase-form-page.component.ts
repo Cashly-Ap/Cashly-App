@@ -23,6 +23,8 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { PurchaseApplicationService } from '@features/procurement/purchases/services/application/purchase-application.service';
 import { PurchaseItemsTableComponent } from '@features/procurement/purchases/components/purchase-items-table/purchase-items-table.component';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import {
   PurchaseFormData,
   PurchaseLineFormData,
@@ -59,6 +61,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly purchaseService = inject(PurchaseApplicationService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly messageService = inject(MessageService);
   private readonly pendingTabsService = inject(PendingTabsService);
 
@@ -75,6 +78,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   readonly pickerVisible = signal<boolean>(false);
 
   readonly selectedSupplierId = computed(() => this.selectedSupplier()?.id ?? null);
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
 
   readonly submitTooltip = signal('');
 
@@ -96,6 +100,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
     this.updateSubmitTooltip();
+    this.resolveSingleWarehouse();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode.set(true);
@@ -121,6 +126,13 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     if (this.isSubmitted) return;
     if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
     this.autoSaveTimer = setTimeout(() => this.savePendingTab(), PENDING_TABS_CONFIG.DEBOUNCE_TIME);
+  }
+
+  private resolveSingleWarehouse(): void {
+    this.singleWarehouseResolver.resolveForCompany().subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
   }
 
   private savePendingTab(): void {

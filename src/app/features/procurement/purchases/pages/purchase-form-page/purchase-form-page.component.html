@@ -90,13 +90,19 @@
       <div class="border-t border-surface-200 dark:border-surface-800">
         <app-purchase-items-table
           [items]="items()"
+          [singleWarehouse]="singleWarehouse()"
           [readonly]="false"
           (itemsChange)="onItemsChange($event)"
         />
       </div>
 
       <app-form-actions
-        [submitLabel]="(isEditMode() ? 'procurement.purchases.savePurchase' : 'procurement.purchases.createPurchaseAction') | translate"
+        [submitLabel]="
+          (isEditMode()
+            ? 'procurement.purchases.savePurchase'
+            : 'procurement.purchases.createPurchaseAction'
+          ) | translate
+        "
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"

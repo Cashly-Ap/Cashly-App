@@ -29,6 +29,7 @@ import {
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 
 @Component({
   selector: 'app-purchase-items-table',
@@ -52,6 +53,7 @@ export class PurchaseItemsTableComponent {
   readonly items = input<PurchaseLineFormData[]>([]);
   readonly products = input<ProductList[]>([]);
   readonly readonly = input<boolean>(false);
+  readonly singleWarehouse = input<SingleWarehouseContext | null>(null);
   readonly itemsChange = output<PurchaseLineFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
@@ -195,5 +197,11 @@ export class PurchaseItemsTableComponent {
     if (item?.productCode && item?.productName) return `${item.productCode} — ${item.productName}`;
     const product = this.products().find((p) => p.id === productId);
     return product ? `${product.code} — ${product.name}` : productId;
+  }
+
+  warehouseForItem(item: PurchaseLineFormData): SingleWarehouseContext | null {
+    const warehouse = this.singleWarehouse();
+    if (!warehouse) return null;
+    return item.warehouseAllocations.length <= 1 ? warehouse : null;
   }
 }
