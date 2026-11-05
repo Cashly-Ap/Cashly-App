@@ -7,6 +7,26 @@ import { OrderItemsTableComponent } from '@features/sales/orders/components/orde
 import { OrderItemFormData } from '@features/sales/orders/models/interfaces/order-form-data.interface';
 import { ProductList } from '@features/catalog/products/models/interfaces/product-list.interface';
 import { ProductPickerSelection } from '@shared/components/product-picker-dialog/product-picker.models';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
+import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
+
+const allocation = (warehouseId: string): WarehouseAllocation => ({
+  warehouseId,
+  warehouseCode: warehouseId.toUpperCase(),
+  warehouseName: warehouseId,
+  available: 10,
+  allocated: 1,
+});
+
+const mockAllocationItem = (allocations: WarehouseAllocation[]): OrderItemFormData => ({
+  productId: 'p1',
+  productCode: 'P1',
+  productName: 'Product 1',
+  stock: [],
+  quantity: 2,
+  unitPrice: 100,
+  warehouseAllocations: allocations,
+});
 
 @Component({
   template: `<app-order-items-table
@@ -15,6 +35,7 @@ import { ProductPickerSelection } from '@shared/components/product-picker-dialog
     [products]="products"
     [customerId]="customerId"
     [readonly]="readonly"
+    [singleWarehouse]="singleWarehouse"
     (itemsChange)="onItemsChange($event)"
   ></app-order-items-table>`,
   imports: [OrderItemsTableComponent],
@@ -25,6 +46,7 @@ class HostComponent {
   products: ProductList[] = [];
   customerId: string | null = null;
   readonly = false;
+  singleWarehouse: SingleWarehouseContext | null = null;
   onItemsChange = vi.fn();
 }
 
@@ -48,6 +70,14 @@ describe('OrderItemsTableComponent', () => {
     fixture.detectChanges();
     component = fixture.debugElement.children[0].componentInstance;
   });
+
+  const recreateWithSingleWarehouse = (warehouse: SingleWarehouseContext): void => {
+    fixture = TestBed.createComponent(HostComponent);
+    hostComponent = fixture.componentInstance;
+    hostComponent.singleWarehouse = warehouse;
+    fixture.detectChanges();
+    component = fixture.debugElement.children[0].componentInstance;
+  };
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -248,6 +278,36 @@ describe('OrderItemsTableComponent', () => {
       warehouseAllocations: [],
     };
     expect(component.isItemOverAllocated(item)).toBe(false);
+  });
+
+  it('should use the single warehouse when the item has no allocation', () => {
+    recreateWithSingleWarehouse({ id: 'wh1', code: 'WH1', name: 'Warehouse 1' });
+
+    expect(component.warehouseForItem(mockAllocationItem([]))).toEqual({
+      id: 'wh1',
+      code: 'WH1',
+      name: 'Warehouse 1',
+    });
+  });
+
+  it('should use the single warehouse when the item has a single allocation', () => {
+    recreateWithSingleWarehouse({ id: 'wh1', code: 'WH1', name: 'Warehouse 1' });
+
+    expect(component.warehouseForItem(mockAllocationItem([allocation('wh1')]))).not.toBeNull();
+  });
+
+  it('should fall back to the dialog when the item has several allocations', () => {
+    recreateWithSingleWarehouse({ id: 'wh1', code: 'WH1', name: 'Warehouse 1' });
+
+    expect(
+      component.warehouseForItem(
+        mockAllocationItem([allocation('wh1'), allocation('wh2')]),
+      ),
+    ).toBeNull();
+  });
+
+  it('should fall back to the dialog without a single warehouse', () => {
+    expect(component.warehouseForItem(mockAllocationItem([]))).toBeNull();
   });
 });
 

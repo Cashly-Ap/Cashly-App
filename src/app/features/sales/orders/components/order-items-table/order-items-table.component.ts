@@ -29,6 +29,7 @@ import {
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
 import { WarehouseAllocation } from '@features/sales/orders/models/interfaces/order-item-allocation.interface';
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 
 @Component({
   selector: 'app-order-items-table',
@@ -56,6 +57,7 @@ export class OrderItemsTableComponent {
   readonly customerIds = input<string[]>([]);
   readonly readonly = input<boolean>(false);
   readonly stockMultiplier = input<number>(1);
+  readonly singleWarehouse = input<SingleWarehouseContext | null>(null);
   readonly itemsChange = output<OrderItemFormData[]>();
 
   readonly pickerVisible = signal<boolean>(false);
@@ -240,5 +242,11 @@ export class OrderItemsTableComponent {
 
   getItemRequiredStock(item: OrderItemFormData): number {
     return item.quantity * this.stockMultiplier();
+  }
+
+  warehouseForItem(item: OrderItemFormData): SingleWarehouseContext | null {
+    const warehouse = this.singleWarehouse();
+    if (!warehouse) return null;
+    return item.warehouseAllocations.length <= 1 ? warehouse : null;
   }
 }

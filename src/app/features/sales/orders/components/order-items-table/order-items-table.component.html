@@ -24,6 +24,7 @@
       [visible]="pickerVisible()"
       [allowUnlimitedStock]="context() === 'quote'"
       [excludedProductIds]="excludedProductIds()"
+      [singleWarehouse]="singleWarehouse()"
       [loadProducts]="loadProducts"
       (productsSelected)="onProductsAdded($event)"
       (cancelled)="onPickerCancelled()"
@@ -94,6 +95,7 @@
                   [productLabel]="resolveProductName(item.productId)"
                   [showStockDetails]="true"
                   [unlimited]="context() === 'quote'"
+                  [singleWarehouse]="warehouseForItem(item)"
                   (saved)="onAllocationSaved(itemIdx, $event)"
                 />
               </div>

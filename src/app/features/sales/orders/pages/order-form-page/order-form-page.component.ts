@@ -22,6 +22,8 @@ import { PendingTabsService } from '@core/pending-tabs';
 import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
 import { OrderApplicationService } from '@features/sales/orders/services/application/order-application.service';
 import { OrderItemsTableComponent } from '@features/sales/orders/components/order-items-table/order-items-table.component';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import {
   OrderFormData,
   OrderItemFormData,
@@ -57,6 +59,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
   private readonly orderService = inject(OrderApplicationService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly messageService = inject(MessageService);
   private readonly pendingTabsService = inject(PendingTabsService);
 
@@ -73,6 +76,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   readonly pickerVisible = signal<boolean>(false);
 
   readonly selectedCustomerId = computed(() => this.selectedCustomer()?.id ?? null);
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
 
   readonly submitTooltip = signal('');
 
@@ -160,6 +164,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
         alias: tab.formData.customerAlias,
         legalName: tab.formData.customerLegalName,
       });
+      this.resolveSingleWarehouse(tab.formData.customerId);
     }
   }
 
@@ -186,6 +191,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
         });
         this.form.patchValue({ customerId: order.customerId });
         this.selectedCustomer.set({ id: order.customerId } as CustomerList);
+        this.resolveSingleWarehouse(order.customerId);
         this.items.set(
           order.items.map((item) => {
             return {
@@ -225,7 +231,15 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
     this.selectedCustomerLabel.set({ alias: customer.alias, legalName: customer.legalName });
     this.form.patchValue({ customerId: customer.id });
     this.pickerVisible.set(false);
+    this.resolveSingleWarehouse(customer.id);
     this.scheduleAutoSave();
+  }
+
+  private resolveSingleWarehouse(customerId: string): void {
+    this.singleWarehouseResolver.resolveForCustomer(customerId).subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
   }
 
   onPickerCancelled(): void {

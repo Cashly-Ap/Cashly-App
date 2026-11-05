@@ -89,13 +89,16 @@
         <app-order-items-table
           [items]="items()"
           [customerId]="selectedCustomerId()"
+          [singleWarehouse]="singleWarehouse()"
           [readonly]="false"
           (itemsChange)="onItemsChange($event)"
         />
       </div>
 
       <app-form-actions
-        [submitLabel]="(isEditMode() ? 'sales.orders.saveOrder' : 'sales.orders.createOrderAction') | translate"
+        [submitLabel]="
+          (isEditMode() ? 'sales.orders.saveOrder' : 'sales.orders.createOrderAction') | translate
+        "
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"
