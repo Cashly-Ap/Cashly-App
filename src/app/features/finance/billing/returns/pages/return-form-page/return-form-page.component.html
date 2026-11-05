@@ -224,6 +224,7 @@
             <app-return-lines-table
               [invoiceLines]="selectedInvoice()!.lines"
               [returnLines]="returnLines()"
+              [singleWarehouse]="singleWarehouse()"
               (returnLinesChange)="returnLines.set($event)"
             />
             <div class="flex justify-end mt-3 px-2">

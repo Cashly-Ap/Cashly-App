@@ -63,6 +63,7 @@
       <app-return-lines-table
         [invoiceLines]="invoice().lines"
         [returnLines]="returnLines()"
+        [singleWarehouse]="singleWarehouse()"
         (returnLinesChange)="onLinesChange($event)"
       />
     } @else {

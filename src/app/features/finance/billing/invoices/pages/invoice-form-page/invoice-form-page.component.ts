@@ -43,6 +43,8 @@ import { ReceivablesApiService } from '@features/finance/treasury/receivables/se
 import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
 import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import { ToastModule } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import {
@@ -93,6 +95,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly balanceApi = inject(CustomerBalanceApiService);
   private readonly customerApi = inject(CustomerApiService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly translations = inject(TranslationService);
 
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -115,6 +118,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   readonly selectedCustomerIds = computed(() =>
     this.selectedCustomers().map((customer) => customer.id),
   );
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
   readonly submitTooltip = signal('');
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);
@@ -312,6 +316,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         legalName: tab.formData.customerLegalName,
       });
       this.loadCustomerDetails(tab.formData.customerId);
+      this.resolveSingleWarehouse(tab.formData.customerId);
     }
   }
 
@@ -345,6 +350,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         this.selectedCustomer.set({ id: invoice.customerId } as CustomerList);
         this.dueDate.set(invoice.dueDate ? this.fromIsoDate(invoice.dueDate) : null);
         this.loadCustomerDetails(invoice.customerId);
+        this.resolveSingleWarehouse(invoice.customerId);
         this.items.set(
           invoice.lines.map((item) => ({
             productId: item.productId,
@@ -554,11 +560,13 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.loadCreditStatus(customer.id);
     this.loadCustomerBalance(customer.id);
     this.loadCustomerDetails(customer.id);
+    this.resolveSingleWarehouse(customer.id);
   }
 
   onCustomersSelected(customers: CustomerList[]): void {
     if (customers.length === 0) return;
     this.resetInvoiceForCustomerChange(false);
+    this.singleWarehouse.set(null);
     const primary = customers[0];
     this.applyCustomerPaymentType(primary.paymentType);
     this.form.patchValue({ customerId: primary.id });
@@ -576,6 +584,13 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.pickerVisible.set(false);
   }
 
+  private resolveSingleWarehouse(customerId: string): void {
+    this.singleWarehouseResolver.resolveForCustomer(customerId).subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
+  }
+
   private resetInvoiceForCustomerChange(notify = true): void {
     const hadInvoiceData =
       this.items().length > 0 ||
@@ -590,6 +605,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     this.selectedCustomers.set([]);
     this.selectedCustomer.set(null);
     this.selectedCustomerLabel.set(null);
+    this.singleWarehouse.set(null);
     this.creditStatus.set(null);
     this.creditStatusByCustomer.set({});
     this.customerBalance.set(0);

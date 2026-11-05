@@ -368,6 +368,7 @@
           [customerId]="selectedCustomerId()"
           [customerIds]="selectedCustomerIds()"
           [stockMultiplier]="bulkMode() ? selectedCustomers().length : 1"
+          [singleWarehouse]="singleWarehouse()"
           [readonly]="false"
           (itemsChange)="onItemsChange($event)"
         />

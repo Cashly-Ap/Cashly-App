@@ -50,6 +50,7 @@
                   [buildEntries]="allocationEntriesFor(idx)"
                   [productLabel]="line.productName"
                   [showStockDetails]="true"
+                  [singleWarehouse]="singleWarehouse()"
                   [emptyMessageKey]="'finance.billing.returns.noStockAvailableInWarehouses'"
                   (saved)="onAllocationSaved(idx, $event)"
                 />

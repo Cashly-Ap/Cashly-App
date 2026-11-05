@@ -26,6 +26,8 @@ import { ReturnApiService } from '@features/finance/billing/returns/services/api
 import { InvoiceDetails } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
 import { ReturnType } from '@features/finance/billing/returns/models/enums/return-type.enum';
 import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import { ReturnLinesTableComponent } from '@features/finance/billing/returns/components/return-lines-table/return-lines-table.component';
 import { ToastModule } from 'primeng/toast';
 
@@ -69,6 +71,7 @@ import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submi
 export class ReturnFormDialogComponent implements OnInit {
   private readonly returnApi = inject(ReturnApiService);
   private readonly warehouseApi = inject(WarehouseApiService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly messageService = inject(MessageService);
 
   readonly visible = input<boolean>(false);
@@ -82,6 +85,7 @@ export class ReturnFormDialogComponent implements OnInit {
   readonly isSubmitting = signal(false);
   readonly returnLines = signal<InvoiceLineFormData[]>([]);
   readonly warehouses = signal<{ id: string; name: string }[]>([]);
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
 
   readonly selectedReturnType = signal<ReturnType>(ReturnType.MANUAL);
   readonly reason = signal('');
@@ -126,6 +130,7 @@ export class ReturnFormDialogComponent implements OnInit {
   }
 
   private initLines(): void {
+    this.resolveSingleWarehouse(this.invoice().customerId);
     this.returnLines.set(
       this.invoice().lines.map((l) => ({
         invoiceLineId: l.id,
@@ -221,5 +226,12 @@ export class ReturnFormDialogComponent implements OnInit {
     this.autoWarehouseId.set('');
     this.returnLines.set([]);
     this.cancelled.emit();
+  }
+
+  private resolveSingleWarehouse(customerId: string): void {
+    this.singleWarehouseResolver.resolveForCustomer(customerId).subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
   }
 }

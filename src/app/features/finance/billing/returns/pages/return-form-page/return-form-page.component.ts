@@ -27,6 +27,8 @@ import { InvoicePickerDialogComponent } from '@shared/ui/invoice-picker-dialog/i
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
 import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import {
   ReturnType,
   RETURN_TYPE_LABELS,
@@ -87,6 +89,7 @@ export class ReturnFormPageComponent implements OnInit {
   private readonly service = inject(ReturnApplicationService);
   private readonly invoiceApi = inject(InvoiceApiService);
   private readonly warehouseApi = inject(WarehouseApiService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly messageService = inject(MessageService);
 
   readonly isSubmitting = signal<boolean>(false);
@@ -97,6 +100,7 @@ export class ReturnFormPageComponent implements OnInit {
 
   readonly showInvoicePicker = signal(false);
   readonly selectedInvoice = signal<InvoiceDetails | null>(null);
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
 
   readonly returnType = signal<ReturnType>(ReturnType.MANUAL);
   readonly returnTypeOptions = Object.values(ReturnType).map((t) => ({
@@ -152,6 +156,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.selectedInvoice.set(null);
     this.form.patchValue({ invoiceId: '' });
     this.returnLines.set([]);
+    this.resolveSingleWarehouse(customer.id);
   }
 
   onCustomerPickerCancelled(): void {
@@ -186,6 +191,7 @@ export class ReturnFormPageComponent implements OnInit {
     this.invoiceApi.getById(invoice.id).subscribe({
       next: (inv) => {
         this.selectedInvoice.set(inv);
+        this.resolveSingleWarehouse(inv.customerId);
         this.resetLines();
       },
     });
@@ -303,6 +309,13 @@ export class ReturnFormPageComponent implements OnInit {
 
   cancel(): void {
     this.navigationHistory.back(['/finance/billing/returns']);
+  }
+
+  private resolveSingleWarehouse(customerId: string): void {
+    this.singleWarehouseResolver.resolveForCustomer(customerId).subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
   }
 
   private resetLines(): void {

@@ -17,6 +17,7 @@ import { InvoiceLineDetail } from '@features/finance/billing/invoices/models/int
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 import { WarehouseApiService } from '@features/inventory/warehouses/services/api/warehouse-api.service';
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 
 export interface WarehouseAlloc {
   warehouseId: string;
@@ -60,6 +61,7 @@ export class ReturnLinesTableComponent implements OnInit {
 
   readonly invoiceLines = input.required<InvoiceLineDetail[]>();
   readonly returnLines = input.required<ReturnLineFormData[]>();
+  readonly singleWarehouse = input<SingleWarehouseContext | null>(null);
   readonly returnLinesChange = output<ReturnLineFormData[]>();
 
   readonly totalAmount = computed(() =>
