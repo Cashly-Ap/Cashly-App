@@ -30,6 +30,16 @@ const stockOrder = {
           available: 0,
         },
       ],
+      warehouseStocks: [
+        {
+          warehouseId: 'w1',
+          warehouseName: 'Main',
+          warehouseCode: 'W',
+          quantity: 2,
+          reserved: 0,
+          available: 2,
+        },
+      ],
     },
   ],
 };

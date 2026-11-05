@@ -35,7 +35,7 @@ export class ConfirmOrderDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
-  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.details()), true));
+  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.details())));
   readonly confirmationModel = computed<DocumentConfirmationModel>(() => {
     const order = this.details();
     const rows = this.stock().rows.map((row) => ({

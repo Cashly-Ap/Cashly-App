@@ -85,7 +85,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
   readonly orderDetails = signal<OrderDetails | null>(null);
   readonly stockLoading = signal(false);
   readonly stockError = signal(false);
-  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.orderDetails()), true));
+  readonly stock = computed(() => reviewDocumentStock(orderStockLines(this.orderDetails())));
   readonly confirmationModel = computed<DocumentConfirmationModel>(() => ({
     title: 'sales.orders.convertToInvoice2',
     subtitle: 'sales.orders.reviewStockAndPaymentBeforeContinuing',
