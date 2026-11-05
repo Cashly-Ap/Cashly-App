@@ -76,6 +76,8 @@
   "sales.orders.findAndSelectTheCustomerForTheOrder": "Busque y seleccione el cliente para el pedido",
   "sales.orders.pageOf": "Página ${current} de ${total}",
   "sales.orders.orderLines": "Líneas del Pedido",
+  "sales.orders.orderTotal": "Total Pedido:",
+  "sales.orders.fixStockBeforeConverting": "Corrige el stock antes de continuar. No es posible ingresar los datos de pago.",
   "sales.orders.invoiceLines": "Líneas de Factura",
   "sales.orders.noWarehousesAvailable": "Sin almacenes disponibles",
   "sales.orders.unableToConnectToTheServerCheckYourInternetConnection": "No se pudo conectar con el servidor. Verifica tu conexión a internet.",

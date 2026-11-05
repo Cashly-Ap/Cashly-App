@@ -7,6 +7,7 @@
   "sales.quotes.completeQuoteInformation": "Información completa del presupuesto",
   "sales.quotes.quoteNumber": "Número de Presupuesto",
   "sales.quotes.quoteLines": "Líneas del Presupuesto",
+  "sales.quotes.quoteTotal": "Total Presupuesto:",
   "sales.quotes.thisQuoteHasNoLines": "No hay líneas en este presupuesto",
   "sales.quotes.thisQuoteWasConvertedToAnOrder": "Este presupuesto fue convertido a pedido",
   "sales.quotes.thisQuoteWasConvertedToAnInvoice": "Este presupuesto fue convertido a factura",

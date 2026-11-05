@@ -194,7 +194,14 @@ export class QuoteFormPageComponent implements OnInit, OnDestroy {
               productName: line.productName,
               quantity: line.quantity,
               unitPrice: line.unitPrice,
-              stock: [],
+              stock: (line.warehouseStocks ?? []).map((stock) => ({
+                warehouseId: stock.warehouseId,
+                warehouseCode: '',
+                warehouseName: stock.warehouseName,
+                quantity: stock.available,
+                reserved: 0,
+                available: stock.available,
+              })),
               warehouseAllocations: line.allocations.map((a) => {
                 const stockInfo = line.warehouseStocks?.find(
                   (ws) => ws.warehouseId === a.warehouseId,

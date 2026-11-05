@@ -404,6 +404,43 @@ describe('QuoteFormPageComponent', () => {
       component.submit();
       expect(addSpy).toHaveBeenCalledWith(expect.objectContaining({ severity: 'warn' }));
     });
+
+    it('should allow lines above the available stock', () => {
+      fixture.detectChanges();
+      component.form.patchValue({ customerId: 'c1' });
+      component.items.set([
+        {
+          productId: 'p1',
+          productCode: 'MOT-10',
+          productName: 'Motor 10HP',
+          quantity: 100,
+          unitPrice: 100,
+          stock: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              quantity: 10,
+              reserved: 0,
+              available: 10,
+            },
+          ],
+          warehouseAllocations: [
+            {
+              warehouseId: 'wh-001',
+              warehouseCode: 'WH1',
+              warehouseName: 'Central',
+              available: 10,
+              allocated: 100,
+            },
+          ],
+        },
+      ]);
+
+      component.submit();
+
+      expect(mockService.create).toHaveBeenCalled();
+    });
   });
 
   describe('submit - EDIT mode', () => {

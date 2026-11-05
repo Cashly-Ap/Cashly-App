@@ -76,6 +76,8 @@
   "sales.orders.findAndSelectTheCustomerForTheOrder": "Find and select the customer for the order",
   "sales.orders.pageOf": "Page ${current} of ${total}",
   "sales.orders.orderLines": "Order lines",
+  "sales.orders.orderTotal": "Order total:",
+  "sales.orders.fixStockBeforeConverting": "Fix the stock before continuing. You cannot enter the payment details.",
   "sales.orders.invoiceLines": "Invoice lines",
   "sales.orders.noWarehousesAvailable": "No warehouses available",
   "sales.orders.unableToConnectToTheServerCheckYourInternetConnection": "Unable to connect to the server. Check your internet connection.",

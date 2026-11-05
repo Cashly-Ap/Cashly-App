@@ -87,6 +87,7 @@
 
       <div class="border-t border-surface-200 dark:border-surface-800">
         <app-order-items-table
+          context="quote"
           [items]="items()"
           [customerId]="selectedCustomerId()"
           [readonly]="false"
@@ -95,7 +96,9 @@
       </div>
 
       <app-form-actions
-        [submitLabel]="(isEditMode() ? 'sales.quotes.saveQuote' : 'sales.quotes.createQuoteAction') | translate"
+        [submitLabel]="
+          (isEditMode() ? 'sales.quotes.saveQuote' : 'sales.quotes.createQuoteAction') | translate
+        "
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid"
