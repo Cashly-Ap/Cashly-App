@@ -27,7 +27,6 @@
   "platform.auth.role.chooseAnAccessLevelOrCustomizeItsActionsModulesWithAccess": "Elige un nivel de acceso o personaliza sus acciones. de módulos con acceso.",
   "platform.auth.role.protectedRoleItsPermissionsAreManagedByTheSystem": "Rol protegido. Sus permisos los gestiona el sistema.",
   "platform.auth.role.editingIsUnavailableWhileSavingOrIfYouDoNotHavePermissionToModifyThisRole": "La edición no está disponible mientras se guarda o si no tienes permiso para modificar este rol.",
-  "platform.auth.role.changesApplyWhenSavingTheRoleYouCanOnlyModifyPermissionsYouHoldActionsRequireViewPermissionsOutsideYourScopeArePreservedGlobalChangesAffectAllModulesEvenThoseHiddenByTheSearch": "Los cambios se aplican al guardar el rol. Solo puedes modificar permisos que tienes. Las acciones necesitan Consultar; los permisos fuera de tu alcance se conservan. Los cambios globales afectan a todos los módulos, aunque estén ocultos por la búsqueda.",
   "platform.auth.role.requiredForProtectedPermissions": "Necesario para permisos protegidos",
   "platform.auth.role.outsideYourScope": "Fuera de tu alcance",
   "platform.auth.role.noModulesMatchTheSearch": "No hay módulos que coincidan con la búsqueda.",
@@ -47,6 +46,7 @@
   "platform.auth.roles.permissions.create": "Crear rol",
   "platform.auth.role.parentModule": "Módulo padre",
   "platform.auth.role.childModule": "Módulo hijo",
+  "platform.auth.role.clearFilters": "Limpiar filtros",
   "platform.auth.role.saveChanges": "Guardar Cambios",
   "platform.auth.role.createRole": "Crear Rol",
   "platform.auth.role.saveRole": "Guardar Rol"

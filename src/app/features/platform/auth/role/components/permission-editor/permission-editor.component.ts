@@ -108,6 +108,27 @@ export class PermissionEditorComponent {
       ),
   );
 
+  readonly allChildOptions = computed(() =>
+    this.modules.map((module) => ({
+      label: this.translations.t(module.moduleKey),
+      value: module.moduleKey,
+    })),
+  );
+
+  readonly widestParentLabel = computed(() =>
+    this.widestLabel([
+      ...this.parentOptions().map((option) => option.label),
+      this.translations.t('platform.auth.role.parentModule'),
+    ]),
+  );
+
+  readonly widestChildLabel = computed(() =>
+    this.widestLabel([
+      ...this.allChildOptions().map((option) => option.label),
+      this.translations.t('platform.auth.role.childModule'),
+    ]),
+  );
+
   readonly filteredCatalog = computed<readonly CatalogArea[]>(() => {
     const term = this.normalize(this.search().trim());
     const parent = this.parentFilter();
@@ -235,6 +256,10 @@ export class PermissionEditorComponent {
 
   private isViewCode(code: AppPermission): boolean {
     return isRootPermission(code);
+  }
+
+  private widestLabel(labels: readonly string[]): string {
+    return labels.reduce((widest, label) => (label.length > widest.length ? label : widest), '');
   }
 
   private normalize(value: string): string {

@@ -27,7 +27,6 @@
   "platform.auth.role.chooseAnAccessLevelOrCustomizeItsActionsModulesWithAccess": "Choose an access level or customize its actions. modules with access.",
   "platform.auth.role.protectedRoleItsPermissionsAreManagedByTheSystem": "Protected role. Its permissions are managed by the system.",
   "platform.auth.role.editingIsUnavailableWhileSavingOrIfYouDoNotHavePermissionToModifyThisRole": "Editing is unavailable while saving or if you do not have permission to modify this role.",
-  "platform.auth.role.changesApplyWhenSavingTheRoleYouCanOnlyModifyPermissionsYouHoldActionsRequireViewPermissionsOutsideYourScopeArePreservedGlobalChangesAffectAllModulesEvenThoseHiddenByTheSearch": "Changes apply when saving the role. You can only modify permissions you hold. Actions require View; permissions outside your scope are preserved. Global changes affect all modules, even those hidden by the search.",
   "platform.auth.role.requiredForProtectedPermissions": "Required for protected permissions",
   "platform.auth.role.outsideYourScope": "Outside your scope",
   "platform.auth.role.noModulesMatchTheSearch": "No modules match the search.",
@@ -47,6 +46,7 @@
   "platform.auth.roles.permissions.create": "Create role",
   "platform.auth.role.parentModule": "Parent module",
   "platform.auth.role.childModule": "Child module",
+  "platform.auth.role.clearFilters": "Clear filters",
   "platform.auth.role.saveChanges": "Save changes",
   "platform.auth.role.createRole": "Create role",
   "platform.auth.role.saveRole": "Save role"

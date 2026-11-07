@@ -36,30 +36,80 @@
         (search)="search.set($event)"
       />
       <div class="flex flex-wrap gap-2 items-center">
-        <app-list-filter
-          [activeCount]="filterActive() ? 1 : 0"
-          [shortcut]="null"
-          (cleared)="clearFilters()"
-        >
-          <p-select
-            [options]="parentOptions()"
-            [ngModel]="parentFilter()"
-            (onChange)="parentFilter.set($event.value); childFilter.set('')"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="'platform.auth.role.parentModule' | translate"
-            styleClass="w-full"
-          />
-          <p-select
-            [options]="childOptions()"
-            [ngModel]="childFilter()"
-            (onChange)="childFilter.set($event.value)"
-            optionLabel="label"
-            optionValue="value"
-            [placeholder]="'platform.auth.role.childModule' | translate"
-            styleClass="w-full"
-          />
-        </app-list-filter>
+        <div class="hidden items-end gap-3 lg:flex">
+          <div class="grid">
+            <span
+              aria-hidden="true"
+              class="invisible col-start-1 row-start-1 whitespace-nowrap py-2 pr-[62px] pl-3 text-base"
+            >
+              {{ widestParentLabel() }}
+            </span>
+            <p-select
+              class="col-start-1 row-start-1 w-full"
+              [options]="parentOptions()"
+              [ngModel]="parentFilter()"
+              (onChange)="parentFilter.set($event.value); childFilter.set('')"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'platform.auth.role.parentModule' | translate"
+              styleClass="w-full"
+            />
+          </div>
+          <div class="grid">
+            <span
+              aria-hidden="true"
+              class="invisible col-start-1 row-start-1 whitespace-nowrap py-2 pr-[62px] pl-3 text-base"
+            >
+              {{ widestChildLabel() }}
+            </span>
+            <p-select
+              class="col-start-1 row-start-1 w-full"
+              [options]="childOptions()"
+              [ngModel]="childFilter()"
+              (onChange)="childFilter.set($event.value)"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'platform.auth.role.childModule' | translate"
+              styleClass="w-full"
+            />
+          </div>
+          @if (filterActive()) {
+            <p-button
+              [label]="'platform.auth.role.clearFilters' | translate"
+              [text]="true"
+              size="small"
+              severity="secondary"
+              (onClick)="clearFilters()"
+            />
+          }
+        </div>
+        <div class="lg:hidden">
+          <app-list-filter
+            [activeCount]="filterActive() ? 1 : 0"
+            [shortcut]="null"
+            [clearLabelKey]="'platform.auth.role.clearFilters'"
+            (cleared)="clearFilters()"
+          >
+            <p-select
+              [options]="parentOptions()"
+              [ngModel]="parentFilter()"
+              (onChange)="parentFilter.set($event.value); childFilter.set('')"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'platform.auth.role.parentModule' | translate"
+              styleClass="w-full"
+            />
+            <p-select
+              [options]="childOptions()"
+              [ngModel]="childFilter()"
+              (onChange)="childFilter.set($event.value)"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'platform.auth.role.childModule' | translate"
+              styleClass="w-full"
+            />
+          </app-list-filter>
+        </div>
         <p-button
           [label]="'platform.auth.role.readOnlyForAll' | translate"
           severity="secondary"
@@ -85,12 +135,6 @@
         />
       </div>
     </div>
-    <p class="text-xs text-surface-500">
-      {{
-        'platform.auth.role.changesApplyWhenSavingTheRoleYouCanOnlyModifyPermissionsYouHoldActionsRequireViewPermissionsOutsideYourScopeArePreservedGlobalChangesAffectAllModulesEvenThoseHiddenByTheSearch'
-          | translate
-      }}
-    </p>
   </div>
 
   <div class="flex flex-col gap-4">
