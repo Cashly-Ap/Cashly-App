@@ -45,6 +45,7 @@ import { PdfBlobViewerHostComponent } from '@core/layouts/components/pdf-blob-vi
 import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
 import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
 import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialog-host/global-dialog-host.component';
@@ -111,6 +112,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   isMobile = signal(false);
 
   private authService = inject(AuthService);
+  readonly notificationPreferences = inject(NotificationPreferencesService);
   private router = inject(Router);
   private readonly navigationLookup = inject(NavigationLookupService);
   private readonly reportActions = inject(ReportActionService);
@@ -227,10 +229,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
     return items
       .filter((item) => {
-        if (
-          item.requiredPermission &&
-          !this.authService.hasPermissionCode(item.requiredPermission)
-        )
+        if (item.requiredPermission && !this.authService.hasPermissionCode(item.requiredPermission))
           return false;
         if (
           item.requiredModule &&

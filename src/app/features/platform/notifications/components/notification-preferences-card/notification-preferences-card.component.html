@@ -1,0 +1,102 @@
+<app-panel-card>
+  <app-details-card-header
+    [title]="'platform.notifications.preferences.title' | translate"
+    [subtitle]="'platform.notifications.preferences.subtitle' | translate"
+  />
+  <div class="p-4 sm:p-6 space-y-5">
+    @if (preferences.loading()) {
+      <p role="status" class="text-sm text-surface-500 dark:text-surface-400">
+        {{ 'platform.notifications.preferences.loading' | translate }}
+      </p>
+    }
+    @if (preferences.error(); as error) {
+      <div
+        role="alert"
+        data-testid="notification-preferences-error"
+        class="flex flex-col items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+      >
+        <span>{{ error | translate }}</span>
+        <p-button
+          [label]="'platform.notifications.preferences.retry' | translate"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          size="small"
+          (onClick)="preferences.retry()"
+        />
+      </div>
+    }
+    @if (preferences.ready()) {
+      <div class="space-y-4">
+        <label class="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            role="switch"
+            data-testid="notification-preferences-master"
+            [checked]="preferences.enabled()"
+            [disabled]="preferences.saving()"
+            (change)="preferences.setEnabled(!preferences.enabled())"
+            class="mt-1 h-4 w-4 accent-black dark:accent-white"
+          />
+          <span>
+            <span class="block font-semibold">
+              {{ 'platform.notifications.preferences.master' | translate }}
+            </span>
+            <span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">
+              {{ 'platform.notifications.preferences.masterDescription' | translate }}
+            </span>
+          </span>
+        </label>
+        <div class="flex flex-col gap-1 text-sm text-surface-500 dark:text-surface-400">
+          <p>{{ 'platform.notifications.preferences.explanationChangesOnly' | translate }}</p>
+          <p>{{ 'platform.notifications.preferences.explanationReadActions' | translate }}</p>
+        </div>
+      </div>
+      @if (preferences.modules().length === 0) {
+        <p
+          data-testid="notification-preferences-empty"
+          class="rounded-2xl border border-dashed border-surface-300 p-4 text-sm text-surface-500 dark:border-surface-700 dark:text-surface-400"
+        >
+          {{ 'platform.notifications.preferences.empty' | translate }}
+        </p>
+      } @else {
+        <div class="flex flex-col gap-4">
+          <h2 class="text-base font-semibold">
+            {{ 'platform.notifications.preferences.modules' | translate }}
+          </h2>
+          @for (area of catalog(); track area.areaKey) {
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200">
+                {{ area.areaKey | translate }}
+              </h3>
+              @for (section of area.sections; track section.sectionKey) {
+                @if (section.sectionKey) {
+                  <h4 class="text-xs font-semibold text-surface-500 dark:text-surface-400">
+                    {{ section.sectionKey | translate }}
+                  </h4>
+                }
+                @for (module of section.modules; track module.module) {
+                  <section
+                    class="rounded-xl border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900 sm:p-5"
+                  >
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                      <h3 class="font-semibold text-sm">{{ module.labelKey | translate }}</h3>
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        [attr.data-testid]="'notification-preferences-module-' + module.module"
+                        [checked]="module.enabled"
+                        [disabled]="!preferences.enabled() || preferences.saving()"
+                        (change)="preferences.setModuleEnabled(module.module, !module.enabled)"
+                        class="h-4 w-4 accent-black dark:accent-white"
+                      />
+                    </div>
+                  </section>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+</app-panel-card>

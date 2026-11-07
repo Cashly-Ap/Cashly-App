@@ -47,7 +47,9 @@
       </div>
 
       <div class="cashly-toolbar-actions flex items-center gap-1 sm:gap-2 shrink-0">
-        <app-notification-bell />
+        @if (notificationPreferences.bellVisible()) {
+          <app-notification-bell />
+        }
         <app-pending-tabs-dropdown />
 
         <button

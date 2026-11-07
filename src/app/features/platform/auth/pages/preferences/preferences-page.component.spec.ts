@@ -3,6 +3,7 @@ import { signal } from '@angular/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { PreferencesPageComponent } from '@features/platform/auth/pages/preferences/preferences-page.component';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 
 describe('personal settings controls', () => {
   const preferences = {
@@ -22,13 +23,27 @@ describe('personal settings controls', () => {
     setShowShortcutHints: vi.fn(),
     retry: vi.fn(),
   };
+  const notificationPreferences = {
+    loading: signal(false),
+    saving: signal(false),
+    error: signal<string | null>(null),
+    ready: signal(true),
+    enabled: signal(true),
+    modules: signal([]),
+    setEnabled: vi.fn(),
+    setModuleEnabled: vi.fn(),
+    retry: vi.fn(),
+  };
   beforeEach(() => {
     vi.clearAllMocks();
     preferences.loading.set(false);
     preferences.error.set(null);
     TestBed.configureTestingModule({
       imports: [PreferencesPageComponent],
-      providers: [{ provide: UserPreferencesService, useValue: preferences }],
+      providers: [
+        { provide: UserPreferencesService, useValue: preferences },
+        { provide: NotificationPreferencesService, useValue: notificationPreferences },
+      ],
     });
   });
   it('changes only the selected personal preference and documents actual shortcuts', () => {

@@ -1,28 +1,41 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { Component, inject, signal, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  effect,
+  inject,
+  signal,
+  ViewChild,
+  OnDestroy,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
+import { Subscription } from 'rxjs';
 import {
   NotificationApiService,
   AppNotification,
 } from '@features/platform/notifications/services/api/notification-api.service';
 import { NotificationWebSocketService } from '@features/platform/notifications/services/websocket/notification-websocket.service';
 import { NotificationDestinationResolver } from '@features/platform/notifications/services/navigation/notification-destination.resolver';
-import { Subject, takeUntil } from 'rxjs';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 
 @Component({
   selector: 'app-notification-bell',
   standalone: true,
   imports: [TranslatePipe, CommonModule, ButtonModule, PopoverModule, TooltipModule],
   templateUrl: './notification-bell.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NotificationBellComponent implements OnInit, OnDestroy {
+export class NotificationBellComponent implements OnDestroy {
   private readonly api = inject(NotificationApiService);
   private readonly wsService = inject(NotificationWebSocketService);
   private readonly destinationResolver = inject(NotificationDestinationResolver);
-  private readonly destroy$ = new Subject<void>();
+  private readonly preferences = inject(NotificationPreferencesService);
+  private wsConnected = false;
+  private notificationSubscription?: Subscription;
+  private unreadCountSubscription?: Subscription;
 
   @ViewChild('panel') panel!: Popover;
 
@@ -30,22 +43,30 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
   readonly notifications = signal<AppNotification[]>([]);
   readonly loading = signal(false);
 
-  ngOnInit(): void {
-    this.wsService.connect();
-
-    this.wsService.notification$.pipe(takeUntil(this.destroy$)).subscribe((notification) => {
-      this.unreadCount.update((c) => c + 1);
-      this.notifications.update((list) => [notification, ...list]);
-    });
-
-    this.api.getUnreadCount().subscribe((res) => {
-      this.unreadCount.set(res.count);
+  constructor() {
+    effect(() => {
+      const visible = this.preferences.bellVisible();
+      if (!visible) {
+        this.stopListening();
+        this.unreadCountSubscription?.unsubscribe();
+        this.unreadCountSubscription = undefined;
+        this.disconnect();
+        return;
+      }
+      this.connect();
+      this.startListening();
+      this.unreadCountSubscription?.unsubscribe();
+      this.unreadCountSubscription = this.api
+        .getUnreadCount()
+        .subscribe((res) => this.unreadCount.set(res.count));
     });
   }
 
   ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.stopListening();
+    this.unreadCountSubscription?.unsubscribe();
+    this.unreadCountSubscription = undefined;
+    this.disconnect();
   }
 
   togglePanel(event: Event): void {
@@ -79,11 +100,15 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
 
   notificationActionLabel(notification: AppNotification): string {
     const labels: Record<string, string> = {
-      PAYMENT: 'Ver pago',
-      QUOTE: 'Ver presupuesto',
-      ORDER: 'Ver pedido',
+      INVOICE: 'platform.notifications.actions.viewInvoice',
+      CUSTOMER: 'platform.notifications.actions.viewCustomer',
+      QUOTE: 'platform.notifications.actions.viewQuote',
+      ORDER: 'platform.notifications.actions.viewOrder',
+      PRODUCT: 'platform.notifications.actions.viewProduct',
+      PAYMENT: 'platform.notifications.actions.viewPayment',
+      RECEIVABLE: 'platform.notifications.actions.viewPayment',
     };
-    return labels[notification.referenceType ?? ''] ?? 'Ir allí';
+    return labels[notification.referenceType ?? ''] ?? 'platform.notifications.goThere';
   }
 
   onNotificationCardClick(): void {}
@@ -115,5 +140,30 @@ export class NotificationBellComponent implements OnInit, OnDestroy {
     if (hours < 24) return `${hours}h`;
     const days = Math.floor(hours / 24);
     return `${days}d`;
+  }
+
+  private connect(): void {
+    if (this.wsConnected) return;
+    this.wsService.connect();
+    this.wsConnected = true;
+  }
+
+  private disconnect(): void {
+    if (!this.wsConnected) return;
+    this.wsService.disconnect();
+    this.wsConnected = false;
+  }
+
+  private startListening(): void {
+    if (this.notificationSubscription) return;
+    this.notificationSubscription = this.wsService.notification$.subscribe((notification) => {
+      this.unreadCount.update((c) => c + 1);
+      this.notifications.update((list) => [notification, ...list]);
+    });
+  }
+
+  private stopListening(): void {
+    this.notificationSubscription?.unsubscribe();
+    this.notificationSubscription = undefined;
   }
 }

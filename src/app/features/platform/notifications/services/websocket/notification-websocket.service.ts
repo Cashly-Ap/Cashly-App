@@ -40,7 +40,7 @@ export class NotificationWebSocketService implements OnDestroy {
           const notification: AppNotification = JSON.parse(message.body);
           this.notification$.next(notification);
         } catch {
-          /* ignore */
+          return;
         }
       });
     };

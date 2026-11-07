@@ -24,6 +24,7 @@ import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
 import { NotificationApiService } from '@features/platform/notifications/services/api/notification-api.service';
 import { NotificationWebSocketService } from '@features/platform/notifications/services/websocket/notification-websocket.service';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@core/layouts/config/menu.config';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -78,6 +79,7 @@ describe('MainLayoutComponent', () => {
     close: vi.fn(),
     request: signal(null),
   };
+  const notificationPreferencesMock = { bellVisible: signal(false) };
 
   beforeEach(async () => {
     authServiceMock = {
@@ -133,6 +135,7 @@ describe('MainLayoutComponent', () => {
     const notificationWebSocketMock = {
       notification$: EMPTY,
       connect: vi.fn(),
+      disconnect: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -158,6 +161,7 @@ describe('MainLayoutComponent', () => {
         { provide: CashRegisterApiService, useValue: pdfApiMock },
         { provide: NotificationApiService, useValue: notificationApiMock },
         { provide: NotificationWebSocketService, useValue: notificationWebSocketMock },
+        { provide: NotificationPreferencesService, useValue: notificationPreferencesMock },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -185,7 +189,24 @@ describe('MainLayoutComponent', () => {
     fixture = TestBed.createComponent(MainLayoutComponent);
     component = fixture.componentInstance;
     customerPicker = TestBed.inject(CustomerPickerActionService);
+    notificationPreferencesMock.bellVisible.set(false);
     fixture.detectChanges();
+  });
+
+  describe('notification bell visibility', () => {
+    it('renders the bell when notifications are visible', () => {
+      notificationPreferencesMock.bellVisible.set(true);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('app-notification-bell')).not.toBeNull();
+    });
+
+    it('does not render the bell when notifications are hidden', () => {
+      notificationPreferencesMock.bellVisible.set(false);
+      fixture.detectChanges();
+
+      expect(fixture.nativeElement.querySelector('app-notification-bell')).toBeNull();
+    });
   });
 
   it('should create', () => {
@@ -275,9 +296,7 @@ describe('MainLayoutComponent', () => {
     });
 
     it('should prune recursively empty report areas and preserve actionable leaves', () => {
-      authServiceMock.hasModulePermission.mockImplementation(
-        () => false,
-      );
+      authServiceMock.hasModulePermission.mockImplementation(() => false);
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(items.map((item) => item.label)).toEqual([]);
       const action = vi.fn();
@@ -294,9 +313,8 @@ describe('MainLayoutComponent', () => {
     });
 
     it('should keep inventory pricing accessible without sales permission', () => {
-      authServiceMock.hasModulePermission.mockImplementation(
-        (module: BusinessModule) =>
-          [BusinessModule.INVENTORY_WAREHOUSES, BusinessModule.INVENTORY_WAREHOUSES].includes(module),
+      authServiceMock.hasModulePermission.mockImplementation((module: BusinessModule) =>
+        [BusinessModule.INVENTORY_WAREHOUSES, BusinessModule.INVENTORY_WAREHOUSES].includes(module),
       );
       const items = component['filterMenuByRole'](menu(), 'OPERATOR');
       expect(routes(items).sort()).toEqual(
@@ -355,9 +373,7 @@ describe('MainLayoutComponent', () => {
       const orders = items
         .find((item) => item.label === 'Ventas')
         ?.children?.find((item) => item.label === 'Pedidos');
-      expect(orders?.children?.some((item) => item.label === 'Reporte de Pedidos PDF')).toBe(
-        false,
-      );
+      expect(orders?.children?.some((item) => item.label === 'Reporte de Pedidos PDF')).toBe(false);
     });
   });
 

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { signal } from '@angular/core';
 import { of, Subject } from 'rxjs';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
 import {
@@ -7,6 +8,7 @@ import {
 } from '@features/platform/notifications/services/api/notification-api.service';
 import { NotificationWebSocketService } from '@features/platform/notifications/services/websocket/notification-websocket.service';
 import { NotificationDestinationResolver } from '@features/platform/notifications/services/navigation/notification-destination.resolver';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 
 const notification: AppNotification = {
   id: 'n1',
@@ -22,6 +24,7 @@ const notification: AppNotification = {
 
 describe('NotificationBellComponent', () => {
   let component: NotificationBellComponent;
+  let fixture: ComponentFixture<NotificationBellComponent>;
   let api: {
     markAsRead: ReturnType<typeof vi.fn>;
     getUnreadCount: ReturnType<typeof vi.fn>;
@@ -29,8 +32,15 @@ describe('NotificationBellComponent', () => {
     markAllAsRead: ReturnType<typeof vi.fn>;
   };
   let resolver: { navigate: ReturnType<typeof vi.fn> };
+  let ws: {
+    connect: ReturnType<typeof vi.fn>;
+    disconnect: ReturnType<typeof vi.fn>;
+    notification$: Subject<AppNotification>;
+  };
+  const preferences = { bellVisible: signal(false) };
 
   beforeEach(async () => {
+    preferences.bellVisible.set(false);
     api = {
       markAsRead: vi.fn(() => of(void 0)),
       getUnreadCount: vi.fn(() => of({ count: 0 })),
@@ -38,18 +48,21 @@ describe('NotificationBellComponent', () => {
       markAllAsRead: vi.fn(() => of(void 0)),
     };
     resolver = { navigate: vi.fn(() => Promise.resolve()) };
+    ws = {
+      connect: vi.fn(),
+      disconnect: vi.fn(),
+      notification$: new Subject<AppNotification>(),
+    };
     await TestBed.configureTestingModule({
       imports: [NotificationBellComponent],
       providers: [
         { provide: NotificationApiService, useValue: api },
-        {
-          provide: NotificationWebSocketService,
-          useValue: { connect: vi.fn(), notification$: new Subject<AppNotification>() },
-        },
+        { provide: NotificationWebSocketService, useValue: ws },
         { provide: NotificationDestinationResolver, useValue: resolver },
+        { provide: NotificationPreferencesService, useValue: preferences },
       ],
     }).compileComponents();
-    const fixture = TestBed.createComponent(NotificationBellComponent);
+    fixture = TestBed.createComponent(NotificationBellComponent);
     component = fixture.componentInstance;
     component.panel = { hide: vi.fn() } as never;
   });
@@ -90,5 +103,45 @@ describe('NotificationBellComponent', () => {
 
     expect(api.markAsRead).not.toHaveBeenCalled();
     expect(resolver.navigate).toHaveBeenCalledWith('QUOTE', 'q1');
+  });
+
+  it('should not connect or request the unread count while hidden', () => {
+    fixture.detectChanges();
+
+    expect(ws.connect).not.toHaveBeenCalled();
+    expect(api.getUnreadCount).not.toHaveBeenCalled();
+  });
+
+  it('should connect and request the unread count when visible', () => {
+    preferences.bellVisible.set(true);
+    fixture.detectChanges();
+
+    expect(ws.connect).toHaveBeenCalledOnce();
+    expect(api.getUnreadCount).toHaveBeenCalledOnce();
+  });
+
+  it('should disconnect when notifications become hidden', () => {
+    preferences.bellVisible.set(true);
+    fixture.detectChanges();
+
+    preferences.bellVisible.set(false);
+    fixture.detectChanges();
+
+    expect(ws.disconnect).toHaveBeenCalledOnce();
+  });
+
+  it('should resume listening when notifications become visible again', () => {
+    preferences.bellVisible.set(true);
+    fixture.detectChanges();
+    preferences.bellVisible.set(false);
+    fixture.detectChanges();
+
+    preferences.bellVisible.set(true);
+    fixture.detectChanges();
+    ws.notification$.next(notification);
+
+    expect(ws.connect).toHaveBeenCalledTimes(2);
+    expect(component.unreadCount()).toBe(1);
+    expect(component.notifications()).toEqual([notification]);
   });
 });

@@ -13,7 +13,8 @@ The Notifications module provides the notification bell rendered in the main lay
 ```
 src/app/features/platform/notifications/
 ├── components/
-│   └── notification-bell/    # Bell, unread badge, and popover panel
+│   ├── notification-bell/    # Bell, unread badge, and popover panel
+│   └── notification-preferences-card/ # Notification preference controls
 ├── i18n/                     # Translations
 └── services/
     ├── api/                  # Notification HTTP service
@@ -50,10 +51,13 @@ src/app/features/platform/notifications/
 export interface AppNotification {
   id: string;
   type: string;
+  title: string;
   message: string;
   referenceType: string | null;
   referenceId: string | null;
   createdAt: string;
+  isRead: boolean;
+  readAt: string | null;
 }
 
 export interface UnreadCount {
@@ -66,6 +70,26 @@ export interface UnreadCount {
 ## API Endpoints
 
 Base URL: `/api/notifications`
+
+Notification preference responses use this exact structure:
+
+```typescript
+export interface NotificationModulePreference {
+  module: string;
+  labelKey: string;
+  enabled: boolean;
+}
+
+export interface NotificationPreferences {
+  enabled: boolean;
+  modules: NotificationModulePreference[];
+}
+```
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| GET | `/api/notifications/preferences` | Load preferences and eligible writable modules |
+| PUT | `/api/notifications/preferences` | Save the complete preference state |
 
 | Method | Endpoint                          | Description                            |
 | ------ | --------------------------------- | -------------------------------------- |

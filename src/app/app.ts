@@ -6,6 +6,7 @@ import { Component, inject, effect } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { PdfViewerDialogComponent } from '@core/pdf-viewer';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 
 @Component({
   selector: 'app-root',
@@ -26,4 +27,5 @@ export class App {
 
   private readonly theme = inject(ThemeService);
   private readonly navigationHistory = inject(NavigationHistoryService);
+  private readonly notificationPreferences = inject(NotificationPreferencesService);
 }

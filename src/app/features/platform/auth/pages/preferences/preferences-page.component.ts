@@ -12,6 +12,8 @@ import {
 import { KEYBOARD_ACTION_SHORTCUTS } from '@core/shortcuts/shortcut-reference';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { NotificationPreferencesCardComponent } from '@features/platform/notifications/components/notification-preferences-card/notification-preferences-card.component';
+
 @Component({
   selector: 'app-preferences-page',
   standalone: true,
@@ -21,6 +23,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     ButtonModule,
     DetailsCardHeaderComponent,
     PageHeaderComponent,
+    NotificationPreferencesCardComponent,
   ],
   templateUrl: './preferences-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -48,3 +48,6 @@ Thumbs.db
 /output/playwright/
 /output/design/
 /test-results/
+
+# Playwright MCP artifacts
+/.playwright-mcp/
