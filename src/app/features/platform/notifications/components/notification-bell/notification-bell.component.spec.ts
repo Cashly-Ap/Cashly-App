@@ -67,6 +67,50 @@ describe('NotificationBellComponent', () => {
     component.panel = { hide: vi.fn() } as never;
   });
 
+  it('labels every reference type with a concrete view action', () => {
+    const referenceTypes = [
+      'INVOICE',
+      'CUSTOMER',
+      'QUOTE',
+      'ORDER',
+      'PRODUCT',
+      'PURCHASE',
+      'CATEGORY',
+      'PRICE_TYPE',
+      'WAREHOUSE',
+      'RETURN',
+      'CREDIT_NOTE',
+      'DEBIT_NOTE',
+      'CASH_REGISTER',
+      'RECEIVABLE',
+      'PAYMENT',
+      'PAYMENT_METHOD',
+      'SUPPLIER',
+      'USER',
+      'ROLE',
+      'DEPARTMENT',
+      'COMPANY',
+    ];
+
+    const labels = referenceTypes.map((referenceType) =>
+      component.notificationActionLabel({ ...notification, referenceType }),
+    );
+
+    expect(labels).not.toContain('platform.notifications.goThere');
+    expect(labels.every((label) => label.startsWith('platform.notifications.actions.view'))).toBe(
+      true,
+    );
+    expect(component.notificationActionLabel({ ...notification, referenceType: 'CATEGORY' })).toBe(
+      'platform.notifications.actions.viewCategory',
+    );
+    expect(component.notificationActionLabel({ ...notification, referenceType: 'WAREHOUSE' })).toBe(
+      'platform.notifications.actions.viewWarehouse',
+    );
+    expect(component.notificationActionLabel({ ...notification, referenceType: null })).toBe(
+      'platform.notifications.actions.view',
+    );
+  });
+
   it('should mark a notification as read without navigating', () => {
     component.unreadCount.set(1);
     component.notifications.set([notification]);

@@ -20,6 +20,7 @@ import {
 import { NotificationWebSocketService } from '@features/platform/notifications/services/websocket/notification-websocket.service';
 import { NotificationDestinationResolver } from '@features/platform/notifications/services/navigation/notification-destination.resolver';
 import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
+import { LanguageService } from '@core/i18n/language.service';
 
 @Component({
   selector: 'app-notification-bell',
@@ -33,6 +34,7 @@ export class NotificationBellComponent implements OnDestroy {
   private readonly wsService = inject(NotificationWebSocketService);
   private readonly destinationResolver = inject(NotificationDestinationResolver);
   private readonly preferences = inject(NotificationPreferencesService);
+  private readonly language = inject(LanguageService);
   private wsConnected = false;
   private notificationSubscription?: Subscription;
   private unreadCountSubscription?: Subscription;
@@ -98,17 +100,35 @@ export class NotificationBellComponent implements OnDestroy {
     this.api.markAsRead(notification.id).subscribe({ error: () => undefined });
   }
 
+  private static readonly ACTION_LABELS: Readonly<Record<string, string>> = {
+    INVOICE: 'platform.notifications.actions.viewInvoice',
+    CUSTOMER: 'platform.notifications.actions.viewCustomer',
+    QUOTE: 'platform.notifications.actions.viewQuote',
+    ORDER: 'platform.notifications.actions.viewOrder',
+    PRODUCT: 'platform.notifications.actions.viewProduct',
+    PURCHASE: 'platform.notifications.actions.viewPurchase',
+    CATEGORY: 'platform.notifications.actions.viewCategory',
+    PRICE_TYPE: 'platform.notifications.actions.viewPriceType',
+    WAREHOUSE: 'platform.notifications.actions.viewWarehouse',
+    RETURN: 'platform.notifications.actions.viewReturn',
+    CREDIT_NOTE: 'platform.notifications.actions.viewCreditNote',
+    DEBIT_NOTE: 'platform.notifications.actions.viewDebitNote',
+    CASH_REGISTER: 'platform.notifications.actions.viewCashRegister',
+    RECEIVABLE: 'platform.notifications.actions.viewReceivable',
+    PAYMENT: 'platform.notifications.actions.viewPayment',
+    PAYMENT_METHOD: 'platform.notifications.actions.viewPaymentMethod',
+    SUPPLIER: 'platform.notifications.actions.viewSupplier',
+    USER: 'platform.notifications.actions.viewUser',
+    ROLE: 'platform.notifications.actions.viewRole',
+    DEPARTMENT: 'platform.notifications.actions.viewDepartment',
+    COMPANY: 'platform.notifications.actions.viewCompany',
+  };
+
   notificationActionLabel(notification: AppNotification): string {
-    const labels: Record<string, string> = {
-      INVOICE: 'platform.notifications.actions.viewInvoice',
-      CUSTOMER: 'platform.notifications.actions.viewCustomer',
-      QUOTE: 'platform.notifications.actions.viewQuote',
-      ORDER: 'platform.notifications.actions.viewOrder',
-      PRODUCT: 'platform.notifications.actions.viewProduct',
-      PAYMENT: 'platform.notifications.actions.viewPayment',
-      RECEIVABLE: 'platform.notifications.actions.viewPayment',
-    };
-    return labels[notification.referenceType ?? ''] ?? 'platform.notifications.goThere';
+    return (
+      NotificationBellComponent.ACTION_LABELS[notification.referenceType ?? ''] ??
+      'platform.notifications.actions.view'
+    );
   }
 
   onNotificationCardClick(): void {}
@@ -132,14 +152,15 @@ export class NotificationBellComponent implements OnDestroy {
     const then = new Date(date + 'Z').getTime();
     const seconds = Math.floor((now - then) / 1000);
 
-    if (seconds < 10) return 'Ahora';
-    if (seconds < 60) return `${seconds}s`;
+    const isEnglish = this.language.language() === 'en';
+    if (seconds < 10) return isEnglish ? 'Now' : 'Ahora';
+    if (seconds < 60) return isEnglish ? `${seconds}s` : `hace ${seconds} s`;
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m`;
+    if (minutes < 60) return isEnglish ? `${minutes}m` : `hace ${minutes} min`;
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h`;
+    if (hours < 24) return isEnglish ? `${hours}h` : `hace ${hours} h`;
     const days = Math.floor(hours / 24);
-    return `${days}d`;
+    return isEnglish ? `${days}d` : `hace ${days} días`;
   }
 
   private connect(): void {
