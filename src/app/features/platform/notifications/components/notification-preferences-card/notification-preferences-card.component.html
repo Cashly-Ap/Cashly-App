@@ -25,18 +25,56 @@
       <div
         class="flex flex-col gap-4 border-b border-surface-200 pb-4 dark:border-surface-700 sm:flex-row sm:items-center sm:justify-between"
       >
-        <app-list-filter
-          [fields]="filterFields()"
-          [activeCount]="activeFilterCount()"
-          [variant]="'compact'"
-          [shortcut]="null"
-          [titleKey]="'platform.notifications.filters.title'"
-          [tooltipKey]="'platform.notifications.filters.title'"
-          [clearLabelKey]="'platform.notifications.filters.clear'"
-          [testId]="'notification-preferences-filter'"
-          (filterChange)="onFilterChange($event)"
-          (cleared)="clearFilters()"
-        />
+        <div class="hidden items-end gap-3 lg:flex">
+          @for (field of filterFields(); track field.key) {
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                {{ field.labelKey | translate }}
+              </label>
+              <div class="grid">
+                <span
+                  aria-hidden="true"
+                  class="invisible col-start-1 row-start-1 whitespace-nowrap py-2 pr-[62px] pl-3 text-base"
+                >
+                  {{ widestLabel(field) }}
+                </span>
+                <p-select
+                  class="col-start-1 row-start-1 w-full"
+                  [options]="selectOptions(field) | translateOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  [ngModel]="field.value"
+                  [ariaLabel]="field.labelKey | translate"
+                  styleClass="w-full"
+                  (onChange)="onFilterChange({ key: field.key, value: $event.value })"
+                />
+              </div>
+            </div>
+          }
+          @if (activeFilterCount() > 0) {
+            <p-button
+              [label]="'platform.notifications.filters.clear' | translate"
+              [text]="true"
+              size="small"
+              severity="secondary"
+              (onClick)="clearFilters()"
+            />
+          }
+        </div>
+        <div class="lg:hidden">
+          <app-list-filter
+            [fields]="filterFields()"
+            [activeCount]="activeFilterCount()"
+            [variant]="'compact'"
+            [shortcut]="null"
+            [titleKey]="'platform.notifications.filters.title'"
+            [tooltipKey]="'platform.notifications.filters.title'"
+            [clearLabelKey]="'platform.notifications.filters.clear'"
+            [testId]="'notification-preferences-filter'"
+            (filterChange)="onFilterChange($event)"
+            (cleared)="clearFilters()"
+          />
+        </div>
         <label class="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"

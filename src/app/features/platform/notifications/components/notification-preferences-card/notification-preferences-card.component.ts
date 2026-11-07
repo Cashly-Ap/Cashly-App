@@ -1,7 +1,11 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { SelectModule } from 'primeng/select';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { TranslationService } from '@core/i18n/translation.service';
 import { DetailsCardHeaderComponent } from '@shared/components/details';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
@@ -126,6 +130,9 @@ const LABEL_KEYS: Readonly<Record<string, string>> = {
   standalone: true,
   imports: [
     ButtonModule,
+    FormsModule,
+    SelectModule,
+    TranslateOptionsPipe,
     TranslatePipe,
     DetailsCardHeaderComponent,
     PanelCardComponent,
@@ -138,6 +145,7 @@ const LABEL_KEYS: Readonly<Record<string, string>> = {
 export class NotificationPreferencesCardComponent {
   readonly embedded = input(false);
   readonly preferences = inject(NotificationPreferencesService);
+  private readonly translations = inject(TranslationService);
   readonly selectedArea = signal<string | null>(null);
   readonly selectedModule = signal<string | null>(null);
 
@@ -168,6 +176,15 @@ export class NotificationPreferencesCardComponent {
     const selectedArea = this.selectedArea();
     const areas = this.catalog().filter((area) => !selectedArea || area.areaKey === selectedArea);
     const modules = areas.flatMap((area) => area.sections.flatMap((section) => section.modules));
+    return [...new Map(modules.map((module) => [module.labelKey, module.labelKey]))].map(
+      ([value, labelKey]) => ({ value, labelKey }),
+    );
+  });
+
+  readonly allModuleOptions = computed<readonly ListFilterOption[]>(() => {
+    const modules = this.catalog().flatMap((area) =>
+      area.sections.flatMap((section) => section.modules),
+    );
     return [...new Map(modules.map((module) => [module.labelKey, module.labelKey]))].map(
       ([value, labelKey]) => ({ value, labelKey }),
     );
@@ -212,6 +229,17 @@ export class NotificationPreferencesCardComponent {
   readonly activeFilterCount = computed(
     () => Number(Boolean(this.selectedArea())) + Number(Boolean(this.selectedModule())),
   );
+
+  selectOptions(field: ListFilterField): { label: string; value: string }[] {
+    return (field.options ?? []).map((option) => ({ label: option.labelKey, value: option.value }));
+  }
+
+  widestLabel(field: ListFilterField): string {
+    const options = field.key === 'module' ? this.allModuleOptions() : (field.options ?? []);
+    return options
+      .map((option) => this.translations.t(option.labelKey))
+      .reduce((widest, label) => (label.length > widest.length ? label : widest), '');
+  }
 
   onFilterChange(change: ListFilterChange): void {
     if (change.key === 'area') {
