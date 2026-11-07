@@ -50,6 +50,22 @@
           <p>{{ 'platform.notifications.preferences.explanationChangesOnly' | translate }}</p>
           <p>{{ 'platform.notifications.preferences.explanationReadActions' | translate }}</p>
         </div>
+        <div
+          class="flex items-center justify-end border-y border-surface-200 py-3 dark:border-surface-700"
+        >
+          <app-list-filter
+            [fields]="filterFields()"
+            [activeCount]="activeFilterCount()"
+            [variant]="'compact'"
+            [shortcut]="null"
+            [titleKey]="'platform.notifications.filters.title'"
+            [tooltipKey]="'platform.notifications.filters.title'"
+            [clearLabelKey]="'platform.notifications.filters.clear'"
+            [testId]="'notification-preferences-filter'"
+            (filterChange)="onFilterChange($event)"
+            (cleared)="clearFilters()"
+          />
+        </div>
       </div>
       @if (preferences.modules().length === 0) {
         <p
@@ -63,7 +79,7 @@
           <h2 class="text-base font-semibold">
             {{ 'platform.notifications.preferences.modules' | translate }}
           </h2>
-          @for (area of catalog(); track area.areaKey) {
+          @for (area of filteredCatalog(); track area.areaKey) {
             <div class="space-y-3">
               <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200">
                 {{ area.areaKey | translate }}
@@ -94,6 +110,13 @@
                 }
               }
             </div>
+          }
+          @if (filteredCatalog().length === 0) {
+            <p
+              class="rounded-xl border border-dashed border-surface-300 p-4 text-sm text-surface-500 dark:border-surface-700"
+            >
+              {{ 'platform.notifications.preferences.noFilteredModules' | translate }}
+            </p>
           }
         </div>
       }

@@ -42,6 +42,7 @@ src/app/features/platform/notifications/
 - Mark all as read
 - Relative timestamps (`Ahora`, `30s`, `5m`, `2h`, `3d`)
 - Navigation to payment, quote, and order references
+- Notification preference filters by main module and submodule
 
 ---
 
@@ -98,7 +99,7 @@ export interface NotificationPreferences {
 | PUT    | `/api/notifications/:id/read`     | Mark one as read                       |
 | PUT    | `/api/notifications/read-all`     | Mark all as read                       |
 
-The list endpoint accepts an `unread` query parameter. The current UI does not expose single-notification deletion.
+The list endpoint accepts an `unread` query parameter. The notification preferences configuration exposes a popover filter for the main module and submodule. The bell popover remains focused on reading and navigating notifications.
 
 ---
 

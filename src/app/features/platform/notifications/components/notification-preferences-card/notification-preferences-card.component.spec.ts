@@ -22,6 +22,7 @@ describe('NotificationPreferencesCardComponent', () => {
     retry: vi.fn(),
   };
   let fixture: ComponentFixture<NotificationPreferencesCardComponent>;
+  let component: NotificationPreferencesCardComponent;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -39,6 +40,7 @@ describe('NotificationPreferencesCardComponent', () => {
       providers: [{ provide: NotificationPreferencesService, useValue: preferences }],
     });
     fixture = TestBed.createComponent(NotificationPreferencesCardComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
@@ -89,6 +91,43 @@ describe('NotificationPreferencesCardComponent', () => {
     ) as HTMLInputElement;
     expect(master.checked).toBe(false);
     expect(module.disabled).toBe(true);
+  });
+
+  it('filters the configuration catalog by module and submodule', () => {
+    modules.set([
+      { module: 'FINANCE_BILLING_INVOICES', labelKey: 'navigation.labels.invoices', enabled: true },
+      {
+        module: 'FINANCE_TREASURY_CASH_REGISTER',
+        labelKey: 'navigation.labels.cashRegister',
+        enabled: true,
+      },
+      { module: 'CONTACTS_CUSTOMERS', labelKey: 'navigation.labels.customers', enabled: true },
+    ]);
+    fixture.detectChanges();
+
+    component.selectedArea.set('navigation.labels.finance');
+    expect(component.filteredCatalog().map((area) => area.areaKey)).toEqual([
+      'navigation.labels.finance',
+    ]);
+    expect(
+      component.filteredCatalog()[0].sections.flatMap((section) => section.modules),
+    ).toHaveLength(2);
+
+    component.selectedModule.set('navigation.labels.invoices');
+    expect(
+      component.filteredCatalog()[0].sections.flatMap((section) => section.modules),
+    ).toHaveLength(1);
+    expect(component.filteredCatalog()[0].sections[0].modules[0].labelKey).toBe(
+      'navigation.labels.invoices',
+    );
+  });
+
+  it('clears a submodule when it is not available in the selected module', () => {
+    component.selectedModule.set('navigation.labels.quotes');
+
+    component.setArea('navigation.labels.finance');
+
+    expect(component.selectedModule()).toBeNull();
   });
 
   it('toggles the master switch and module switches', () => {

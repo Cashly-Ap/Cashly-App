@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DetailsCardHeaderComponent } from '@shared/components/details';
@@ -6,6 +6,12 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
 import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 import { NotificationModulePreference } from '@features/platform/notifications/models/notification-preferences.model';
+import {
+  ListFilterChange,
+  ListFilterComponent,
+  ListFilterField,
+  ListFilterOption,
+} from '@shared/components/list/list-filter/list-filter.component';
 
 interface GroupedModule extends NotificationModulePreference {
   labelKey: string;
@@ -117,12 +123,20 @@ const LABEL_KEYS: Readonly<Record<string, string>> = {
 @Component({
   selector: 'app-notification-preferences-card',
   standalone: true,
-  imports: [ButtonModule, TranslatePipe, DetailsCardHeaderComponent, PanelCardComponent],
+  imports: [
+    ButtonModule,
+    TranslatePipe,
+    DetailsCardHeaderComponent,
+    PanelCardComponent,
+    ListFilterComponent,
+  ],
   templateUrl: './notification-preferences-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationPreferencesCardComponent {
   readonly preferences = inject(NotificationPreferencesService);
+  readonly selectedArea = signal<string | null>(null);
+  readonly selectedModule = signal<string | null>(null);
 
   readonly catalog = computed<NotificationArea[]>(() => {
     const modules = this.preferences.modules().map((module) => ({
@@ -142,6 +156,84 @@ export class NotificationPreferencesCardComponent {
       }))
       .filter((area) => area.sections.length > 0);
   });
+
+  readonly areaOptions = computed<readonly ListFilterOption[]>(() =>
+    this.catalog().map((area) => ({ labelKey: area.areaKey, value: area.areaKey })),
+  );
+
+  readonly moduleOptions = computed<readonly ListFilterOption[]>(() => {
+    const selectedArea = this.selectedArea();
+    const areas = this.catalog().filter((area) => !selectedArea || area.areaKey === selectedArea);
+    const modules = areas.flatMap((area) => area.sections.flatMap((section) => section.modules));
+    return [...new Map(modules.map((module) => [module.labelKey, module.labelKey]))].map(
+      ([value, labelKey]) => ({ value, labelKey }),
+    );
+  });
+
+  readonly filterFields = computed<readonly ListFilterField[]>(() => [
+    {
+      key: 'area',
+      labelKey: 'platform.notifications.filters.module',
+      type: 'select',
+      value: this.selectedArea() ?? '',
+      options: this.areaOptions(),
+    },
+    {
+      key: 'module',
+      labelKey: 'platform.notifications.filters.submodule',
+      type: 'select',
+      value: this.selectedModule() ?? '',
+      options: this.moduleOptions(),
+    },
+  ]);
+
+  readonly filteredCatalog = computed<NotificationArea[]>(() => {
+    const selectedArea = this.selectedArea();
+    const selectedModule = this.selectedModule();
+    return this.catalog()
+      .filter((area) => !selectedArea || area.areaKey === selectedArea)
+      .map((area) => ({
+        ...area,
+        sections: area.sections
+          .map((section) => ({
+            ...section,
+            modules: section.modules.filter(
+              (module) => !selectedModule || module.labelKey === selectedModule,
+            ),
+          }))
+          .filter((section) => section.modules.length > 0),
+      }))
+      .filter((area) => area.sections.length > 0);
+  });
+
+  readonly activeFilterCount = computed(
+    () => Number(Boolean(this.selectedArea())) + Number(Boolean(this.selectedModule())),
+  );
+
+  onFilterChange(change: ListFilterChange): void {
+    if (change.key === 'area') {
+      this.setArea(change.value || null);
+      return;
+    }
+    if (change.key === 'module') {
+      this.selectedModule.set(change.value || null);
+    }
+  }
+
+  setArea(area: string | null): void {
+    this.selectedArea.set(area);
+    if (
+      this.selectedModule() &&
+      !this.moduleOptions().some((option) => option.value === this.selectedModule())
+    ) {
+      this.selectedModule.set(null);
+    }
+  }
+
+  clearFilters(): void {
+    this.selectedArea.set(null);
+    this.selectedModule.set(null);
+  }
 
   private sectionModules(
     section: CatalogSection,

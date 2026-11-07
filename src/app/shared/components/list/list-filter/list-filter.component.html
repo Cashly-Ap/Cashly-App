@@ -28,7 +28,9 @@
 }
 
 <p-popover #filterPopover [appendTo]="appendTo()" [focusOnShow]="false">
-  <div [class]="isCompact() ? 'w-64' : 'flex flex-col gap-4 p-1 min-w-[260px]'">
+  <div
+    [class]="isCompact() ? 'w-[calc(100vw-2rem)] sm:w-80' : 'flex flex-col gap-4 p-1 min-w-[260px]'"
+  >
     <div
       [class]="
         isCompact()
@@ -57,56 +59,57 @@
 
     <div [class]="isCompact() ? 'px-4 py-3 flex flex-col gap-3' : 'flex flex-col gap-4'">
       <ng-content />
+      @for (field of fields(); track field.key) {
+        <div class="flex flex-col gap-1">
+          <label class="text-xs font-medium text-surface-500">{{
+            field.labelKey | translate
+          }}</label>
+
+          @switch (field.type) {
+            @case ('select') {
+              <p-select
+                [options]="fieldOptions(field) | translateOptions"
+                [ngModel]="fieldValue(field)"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
+                styleClass="w-full"
+                (onChange)="changeField(field, $event.value)"
+              />
+            }
+            @case ('date') {
+              <p-datePicker
+                [ngModel]="fieldDate(field)"
+                [showIcon]="true"
+                [dateFormat]="dateFormat()"
+                [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
+                styleClass="w-full"
+                (onSelect)="changeDate(field, $event)"
+              />
+            }
+            @case ('number') {
+              <input
+                pInputText
+                type="number"
+                class="w-full"
+                [ngModel]="fieldValue(field)"
+                [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
+                (ngModelChange)="onTextChange(field, $event)"
+              />
+            }
+            @default {
+              <input
+                pInputText
+                type="text"
+                class="w-full"
+                [ngModel]="fieldValue(field)"
+                [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
+                (ngModelChange)="onTextChange(field, $event)"
+              />
+            }
+          }
+        </div>
+      }
     </div>
-
-    @for (field of fields(); track field.key) {
-      <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-surface-500">{{ field.labelKey | translate }}</label>
-
-        @switch (field.type) {
-          @case ('select') {
-            <p-select
-              [options]="fieldOptions(field) | translateOptions"
-              [ngModel]="fieldValue(field)"
-              optionLabel="label"
-              optionValue="value"
-              [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
-              styleClass="w-full"
-              (onChange)="changeField(field, $event.value)"
-            />
-          }
-          @case ('date') {
-            <p-datePicker
-              [ngModel]="fieldDate(field)"
-              [showIcon]="true"
-              [dateFormat]="dateFormat()"
-              [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
-              styleClass="w-full"
-              (onSelect)="changeDate(field, $event)"
-            />
-          }
-          @case ('number') {
-            <input
-              pInputText
-              type="number"
-              class="w-full"
-              [ngModel]="fieldValue(field)"
-              [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
-              (ngModelChange)="onTextChange(field, $event)"
-            />
-          }
-          @default {
-            <input
-              pInputText
-              type="text"
-              class="w-full"
-              [ngModel]="fieldValue(field)"
-              [placeholder]="field.placeholderKey ? (field.placeholderKey | translate) : ''"
-              (ngModelChange)="onTextChange(field, $event)"
-            />
-          }
-        }
-      </div>
-    }
   </div>
 </p-popover>
