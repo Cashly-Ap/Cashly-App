@@ -60,9 +60,8 @@ describe('Own profile editing', () => {
       firstName: 'Ana',
       lastName: 'García',
       userName: 'ana',
-      email: profile.email,
     });
-    expect(component.control('email').disabled).toBe(true);
+    expect(component.form.get('email')).toBeNull();
     for (const field of [
       'roleId',
       'departmentId',
@@ -186,7 +185,6 @@ describe('Own profile editing', () => {
     );
     component.onEmailChanged('nueva@example.com');
     expect(component.account()?.email).toBe('nueva@example.com');
-    expect(component.control('email').value).toBe('nueva@example.com');
     expect(getProfile).toHaveBeenCalledTimes(1);
   });
 });

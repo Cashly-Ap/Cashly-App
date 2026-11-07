@@ -8,7 +8,6 @@ export function createUserNameForm() {
     firstName: ['', name],
     lastName: ['', name],
     userName: ['', [...name, Validators.minLength(3)]],
-    email: [{ value: '', disabled: true }],
     phone: ['', UserValidators.phoneNumber()],
     street: ['', Validators.maxLength(200)],
     city: ['', Validators.maxLength(100)],

@@ -39,10 +39,7 @@
           >
           <p-tabpanels>
             <p-tabpanel value="general">
-              <app-tab-content
-                [columns]="2"
-                class="block [&>div>*:last-child:nth-child(2n+1)]:md:col-span-full"
-              >
+              <app-tab-content [columns]="2" class="block">
                 <app-file-input
                   class="md:col-span-full"
                   [label]="'auth.profile.profile.photo' | translate"
@@ -80,11 +77,6 @@
                     'auth.profile.username.must.contain.between.3.and.100.characters' | translate
                   "
                   [control]="control('userName')"
-                />
-                <app-text-input
-                  [label]="'auth.profile.email' | translate"
-                  [readonly]="true"
-                  [control]="control('email')"
                 />
               </app-tab-content>
             </p-tabpanel>

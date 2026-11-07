@@ -121,7 +121,6 @@ export class ChangeUsernamePageComponent {
             firstName: user.firstName,
             lastName: user.lastName,
             userName: user.userName,
-            email: user.email,
             phone: user.phone,
             street: user.address?.street ?? '',
             city: user.address?.city ?? '',
@@ -211,7 +210,6 @@ export class ChangeUsernamePageComponent {
 
   onEmailChanged(email: string): void {
     this.account.update((account) => (account ? { ...account, email } : account));
-    this.form.patchValue({ email });
     this.loadProfile();
   }
 }
