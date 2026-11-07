@@ -288,7 +288,6 @@
   "platform.auth.theMonthlyDeductionIsRequired": "The monthly deduction is required",
   "platform.auth.theValueMustBeGreaterThanOrEqualTo": "The value must be greater than or equal to 0",
   "platform.auth.theValueCannotExceed": "The value cannot exceed 100%",
-  "platform.auth.unableToLoadSecuritySettingsTryAgain": "Unable to load security settings. Try again.",
   "platform.auth.unableToGenerateTheQrCodeUseTheManualKey": "Unable to generate the QR code. Use the manual key.",
   "platform.auth.unableToSetUpMfaCheckYourPasswordAndTryAgain": "Unable to set up MFA. Check your password and try again.",
   "platform.auth.invalidCodeOrExpiredSetupCheckTheCodeOrSetUpMfaAgain": "Invalid code or expired setup. Check the code or set up MFA again.",
