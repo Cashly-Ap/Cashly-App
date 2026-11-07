@@ -1,7 +1,7 @@
 {
   "platform.notifications.openNotifications": "Abrir notificaciones",
   "platform.notifications.notifications": "Notificaciones",
-  "platform.notifications.read": "Leídas",
+  "platform.notifications.read": "Marcar todas como leídas",
   "platform.notifications.clearAll": "Limpiar todas",
   "platform.notifications.noNotifications": "No hay notificaciones",
   "platform.notifications.markAsRead": "Marcar como leído",
@@ -33,7 +33,7 @@
   "platform.notifications.actions.viewCompany": "Ver empresa",
   "platform.notifications.actions.view": "Ver",
   "platform.notifications.preferences.title": "Notificaciones",
-  "platform.notifications.preferences.subtitle": "Elegí de qué módulos querés recibir avisos de cambios",
+  "platform.notifications.preferences.subtitle": "Elige de qué módulos quieres recibir avisos de cambios",
   "platform.notifications.preferences.loading": "Cargando tus preferencias de notificaciones",
   "platform.notifications.preferences.master": "Recibir notificaciones",
   "platform.notifications.preferences.masterDescription": "Activa o desactiva todos los avisos de la cuenta.",

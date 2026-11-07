@@ -91,6 +91,7 @@ export class NotificationBellComponent implements OnDestroy {
 
   openNotification(notification: AppNotification): void {
     this.panel.hide();
+    this.markNotificationAsRead(notification);
     void this.destinationResolver.navigate(notification.referenceType, notification.referenceId);
   }
 

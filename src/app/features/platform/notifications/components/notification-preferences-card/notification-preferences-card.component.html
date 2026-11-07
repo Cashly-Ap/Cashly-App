@@ -1,8 +1,4 @@
-<app-panel-card>
-  <app-details-card-header
-    [title]="'platform.notifications.preferences.title' | translate"
-    [subtitle]="'platform.notifications.preferences.subtitle' | translate"
-  />
+<ng-template #content>
   <div class="p-4 sm:p-6 space-y-5">
     @if (preferences.loading()) {
       <p role="status" class="text-sm text-surface-500 dark:text-surface-400">
@@ -26,7 +22,21 @@
       </div>
     }
     @if (preferences.ready()) {
-      <div class="space-y-4">
+      <div
+        class="flex flex-col gap-4 border-b border-surface-200 pb-4 dark:border-surface-700 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <app-list-filter
+          [fields]="filterFields()"
+          [activeCount]="activeFilterCount()"
+          [variant]="'compact'"
+          [shortcut]="null"
+          [titleKey]="'platform.notifications.filters.title'"
+          [tooltipKey]="'platform.notifications.filters.title'"
+          [clearLabelKey]="'platform.notifications.filters.clear'"
+          [testId]="'notification-preferences-filter'"
+          (filterChange)="onFilterChange($event)"
+          (cleared)="clearFilters()"
+        />
         <label class="flex cursor-pointer items-start gap-3">
           <input
             type="checkbox"
@@ -46,26 +56,6 @@
             </span>
           </span>
         </label>
-        <div class="flex flex-col gap-1 text-sm text-surface-500 dark:text-surface-400">
-          <p>{{ 'platform.notifications.preferences.explanationChangesOnly' | translate }}</p>
-          <p>{{ 'platform.notifications.preferences.explanationReadActions' | translate }}</p>
-        </div>
-        <div
-          class="flex items-center justify-end border-y border-surface-200 py-3 dark:border-surface-700"
-        >
-          <app-list-filter
-            [fields]="filterFields()"
-            [activeCount]="activeFilterCount()"
-            [variant]="'compact'"
-            [shortcut]="null"
-            [titleKey]="'platform.notifications.filters.title'"
-            [tooltipKey]="'platform.notifications.filters.title'"
-            [clearLabelKey]="'platform.notifications.filters.clear'"
-            [testId]="'notification-preferences-filter'"
-            (filterChange)="onFilterChange($event)"
-            (cleared)="clearFilters()"
-          />
-        </div>
       </div>
       @if (preferences.modules().length === 0) {
         <p
@@ -122,4 +112,16 @@
       }
     }
   </div>
-</app-panel-card>
+</ng-template>
+
+@if (embedded()) {
+  <ng-container [ngTemplateOutlet]="content" />
+} @else {
+  <app-panel-card>
+    <app-details-card-header
+      [title]="'platform.notifications.preferences.title' | translate"
+      [subtitle]="'platform.notifications.preferences.subtitle' | translate"
+    />
+    <ng-container [ngTemplateOutlet]="content" />
+  </app-panel-card>
+}

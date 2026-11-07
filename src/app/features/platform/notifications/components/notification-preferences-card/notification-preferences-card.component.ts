@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DetailsCardHeaderComponent } from '@shared/components/details';
@@ -129,11 +130,13 @@ const LABEL_KEYS: Readonly<Record<string, string>> = {
     DetailsCardHeaderComponent,
     PanelCardComponent,
     ListFilterComponent,
+    NgTemplateOutlet,
   ],
   templateUrl: './notification-preferences-card.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotificationPreferencesCardComponent {
+  readonly embedded = input(false);
   readonly preferences = inject(NotificationPreferencesService);
   readonly selectedArea = signal<string | null>(null);
   readonly selectedModule = signal<string | null>(null);

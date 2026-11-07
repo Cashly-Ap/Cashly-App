@@ -1,7 +1,7 @@
 {
   "platform.notifications.openNotifications": "Open notifications",
   "platform.notifications.notifications": "Notifications",
-  "platform.notifications.read": "Read",
+  "platform.notifications.read": "Mark all as read",
   "platform.notifications.clearAll": "Clear all",
   "platform.notifications.noNotifications": "No notifications",
   "platform.notifications.markAsRead": "Mark as read",

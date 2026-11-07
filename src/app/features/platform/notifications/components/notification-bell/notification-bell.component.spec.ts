@@ -123,13 +123,15 @@ describe('NotificationBellComponent', () => {
     expect(resolver.navigate).not.toHaveBeenCalled();
   });
 
-  it('should navigate without marking the notification as read', () => {
+  it('should mark the notification as read and remove it when opening it', () => {
+    component.unreadCount.set(1);
     component.notifications.set([notification]);
 
     component.openNotification(notification);
 
-    expect(api.markAsRead).not.toHaveBeenCalled();
-    expect(component.notifications()).toEqual([notification]);
+    expect(api.markAsRead).toHaveBeenCalledWith('n1');
+    expect(component.unreadCount()).toBe(0);
+    expect(component.notifications()).toEqual([]);
     expect(component.panel.hide).toHaveBeenCalled();
     expect(resolver.navigate).toHaveBeenCalledWith('QUOTE', 'q1');
   });
@@ -142,10 +144,15 @@ describe('NotificationBellComponent', () => {
     expect(component.panel.hide).not.toHaveBeenCalled();
   });
 
-  it('should handle clicks on the explicit notification action', () => {
+  it('should mark as read and navigate on the explicit notification action', () => {
+    component.unreadCount.set(1);
+    component.notifications.set([notification]);
+
     component.openNotification(notification);
 
-    expect(api.markAsRead).not.toHaveBeenCalled();
+    expect(api.markAsRead).toHaveBeenCalledWith('n1');
+    expect(component.unreadCount()).toBe(0);
+    expect(component.notifications()).toEqual([]);
     expect(resolver.navigate).toHaveBeenCalledWith('QUOTE', 'q1');
   });
 
