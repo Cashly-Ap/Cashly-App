@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConfigurationPageComponent } from '@features/platform/auth/pages/configuration/configuration-page.component';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { EmailVerificationApiService } from '@features/platform/auth/services/api/email-verification-api.service';
 import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { CurrentAccess } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
@@ -36,6 +37,7 @@ describe('ConfigurationPageComponent', () => {
   const access = signal<CurrentAccess | null>(null);
   const getProfile = vi.fn();
   const ensureAccess = vi.fn();
+  const resendVerification = vi.fn();
   beforeEach(() => {
     access.set({
       roleId: 'role-1',
@@ -46,12 +48,14 @@ describe('ConfigurationPageComponent', () => {
     });
     getProfile.mockReturnValue(of(profile));
     ensureAccess.mockReturnValue(of(access()));
+    resendVerification.mockReturnValue(of(undefined));
     TestBed.configureTestingModule({
       imports: [ConfigurationPageComponent],
       providers: [
         provideRouter([]),
         { provide: SelfProfileService, useValue: { getProfile } },
         { provide: AuthService, useValue: { currentAccess: access, ensureAccess } },
+        { provide: EmailVerificationApiService, useValue: { resend: resendVerification } },
       ],
     });
   });
@@ -154,5 +158,21 @@ describe('ConfigurationPageComponent', () => {
     expect(navigate).toHaveBeenCalledWith(['/platform/auth/change-username']);
     component.onChangePassword();
     expect(navigate).toHaveBeenCalledWith(['/platform/auth/change-password']);
+  });
+  it('requests a new verification email when the address is pending', () => {
+    const { component, fixture } = render();
+    component.resendEmailVerification();
+    expect(resendVerification).toHaveBeenCalledTimes(1);
+    expect(component.verificationNotice()).toBe('platform.auth.verificationSent');
+    fixture.detectChanges();
+    expect((fixture.nativeElement as HTMLElement).textContent).toContain(
+      'Te enviamos un nuevo enlace de verificación',
+    );
+  });
+  it('explains the cooldown when resending too soon', () => {
+    resendVerification.mockReturnValue(throwError(() => ({ status: 429 })));
+    const { component } = render();
+    component.resendEmailVerification();
+    expect(component.verificationNotice()).toBe('platform.auth.verificationRateLimited');
   });
 });

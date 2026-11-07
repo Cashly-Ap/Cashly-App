@@ -11,10 +11,18 @@ import { InputTextModule } from 'primeng/inputtext';
 import { finalize } from 'rxjs';
 import { renderSVG } from 'uqr';
 import { MfaApiService, MfaStatus, MfaSetup } from '@features/platform/auth/services/api/mfa-api.service';
+import { EmailVerificationApiService } from '@features/platform/auth/services/api/email-verification-api.service';
+import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { mfaErrorMessage } from '@features/platform/auth/messages/mfa-error-message';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { MessageService } from 'primeng/api';
+
+const RATE_LIMITED_STATUS = 429;
+
 @Component({
   selector: 'app-security-page',
   standalone: true,
@@ -26,6 +34,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     InputTextModule,
     PageHeaderComponent,
     DetailsCardHeaderComponent,
+    StatusBadgeComponent,
   ],
   templateUrl: './security-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,9 +45,14 @@ export class SecurityPageComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly translations = inject(TranslationService);
+  private readonly profiles = inject(SelfProfileService);
+  private readonly verification = inject(EmailVerificationApiService);
+  private readonly messages = inject(MessageService);
   readonly status = signal<MfaStatus | null>(null);
   readonly busy = signal(false);
-  readonly error = signal('');
+  readonly profile = signal<UserDetails | null>(null);
+  readonly verificationBusy = signal(false);
+  readonly verificationNotice = signal('');
   readonly setup = signal<MfaSetup | null>(null);
   readonly qrCode = signal('');
   readonly recoveryCodes = signal<string[]>([]);
@@ -54,20 +68,44 @@ export class SecurityPageComponent {
 
   constructor() {
     this.loadStatus();
+    this.loadProfile();
+  }
+
+  loadProfile(): void {
+    this.profiles.getProfile().subscribe({
+      next: (profile) => this.profile.set(profile),
+      error: () => this.profile.set(null),
+    });
+  }
+
+  resendVerification(): void {
+    if (this.verificationBusy()) return;
+    this.verificationBusy.set(true);
+    this.verificationNotice.set('');
+    this.verification
+      .resend()
+      .pipe(finalize(() => this.verificationBusy.set(false)))
+      .subscribe({
+        next: () => this.verificationNotice.set('platform.auth.verificationSent'),
+        error: (error: unknown) =>
+          this.verificationNotice.set(
+            (error as { status?: number } | null)?.status === RATE_LIMITED_STATUS
+              ? 'platform.auth.verificationRateLimited'
+              : 'platform.auth.verificationResendFailed',
+          ),
+      });
   }
 
   loadStatus(): void {
-    this.error.set('');
     this.api.status().subscribe({
       next: (status) => this.status.set(status),
-      error: () => this.error.set('No se pudo cargar la seguridad. Vuelve a intentarlo.'),
+      error: () => this.status.set(null),
     });
   }
 
   startSetup(): void {
     if (this.passwordForm.invalid || this.busy()) return;
     this.busy.set(true);
-    this.error.set('');
     this.api
       .setup(this.passwordForm.getRawValue().password)
       .pipe(finalize(() => this.busy.set(false)))
@@ -88,11 +126,11 @@ export class SecurityPageComponent {
             );
           } catch {
             this.qrCode.set('');
-            this.error.set('No se pudo generar el QR. Usa la clave manual.');
+            this.notify('No se pudo generar el QR. Usa la clave manual.');
           }
         },
         error: (error: unknown) =>
-          this.error.set(
+          this.notify(
             mfaErrorMessage(
               error,
               'No se pudo preparar MFA. Comprueba tu contraseña e inténtalo de nuevo.',
@@ -104,7 +142,6 @@ export class SecurityPageComponent {
   enable(): void {
     if (this.codeForm.invalid || this.busy()) return;
     this.busy.set(true);
-    this.error.set('');
     this.api
       .enable(this.codeForm.getRawValue().code)
       .pipe(finalize(() => this.busy.set(false)))
@@ -117,7 +154,7 @@ export class SecurityPageComponent {
           this.recoveryCodes.set(response.recoveryCodes);
         },
         error: (error: unknown) =>
-          this.error.set(
+          this.notify(
             mfaErrorMessage(
               error,
               'Código incorrecto o configuración caducada. Comprueba el código o vuelve a configurar MFA.',
@@ -130,13 +167,11 @@ export class SecurityPageComponent {
     this.setup.set(null);
     this.qrCode.set('');
     this.codeForm.reset();
-    this.error.set('');
   }
 
   disable(): void {
     if (this.disableForm.invalid || this.busy()) return;
     this.busy.set(true);
-    this.error.set('');
     const value = this.disableForm.getRawValue();
     this.api
       .disable(value.password, value.code.trim())
@@ -144,7 +179,7 @@ export class SecurityPageComponent {
       .subscribe({
         next: () => this.finish(),
         error: (error: unknown) =>
-          this.error.set(
+          this.notify(
             mfaErrorMessage(
               error,
               'No se pudo desactivar MFA. Comprueba la contraseña y el código.',
@@ -158,8 +193,12 @@ export class SecurityPageComponent {
       await navigator.clipboard.writeText(this.recoveryCodes().join('\n'));
       this.copied.set(true);
     } catch {
-      this.error.set(this.translations.t('platform.auth.couldNotCopyCodes'));
+      this.notify(this.translations.t('platform.auth.couldNotCopyCodes'));
     }
+  }
+
+  private notify(detail: string): void {
+    this.messages.add({ severity: 'warn', summary: 'Aviso', detail, life: 5000 });
   }
 
   downloadCodes(): void {

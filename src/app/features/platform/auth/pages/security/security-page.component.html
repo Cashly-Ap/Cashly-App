@@ -3,11 +3,45 @@
     [title]="'platform.auth.security' | translate"
     [subtitle]="'platform.auth.protectYourAccountWithTwoStepVerification' | translate"
   />
-  @if (error()) {
-    <p role="alert" class="rounded-lg bg-red-50 p-4 text-red-700 dark:bg-red-950 dark:text-red-300">
-      {{ error() | translate }}
-    </p>
-  }
+  <app-panel-card>
+    <app-details-card-header
+      [title]="'platform.auth.emailVerification' | translate"
+      [subtitle]="'platform.auth.emailVerification.subtitle' | translate"
+    />
+    <div class="flex flex-col gap-5 p-4 sm:p-6">
+      @if (profile(); as current) {
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="text-sm font-medium text-surface-500">{{
+            'platform.auth.email' | translate
+          }}</span>
+          <span class="text-sm font-semibold">{{ current.email }}</span>
+          <app-status-badge
+            [active]="current.emailVerified"
+            [activeLabel]="'auth.profile.verified'"
+            [inactiveLabel]="'auth.profile.pending.verification'"
+          />
+        </div>
+        @if (!current.emailVerified) {
+          <p class="max-w-xl text-sm text-surface-500">
+            {{ 'platform.auth.emailNotVerifiedHelp' | translate }}
+          </p>
+          <p-button
+            [label]="'platform.auth.resendVerification' | translate"
+            [ariaLabel]="'platform.auth.resendVerification' | translate"
+            icon="pi pi-envelope"
+            [outlined]="true"
+            [loading]="verificationBusy()"
+            (onClick)="resendVerification()"
+          />
+        }
+        @if (verificationNotice()) {
+          <p class="text-sm" role="status">{{ verificationNotice() | translate }}</p>
+        }
+      } @else {
+        <p class="text-sm text-surface-500">{{ 'platform.auth.loadingEmail' | translate }}</p>
+      }
+    </div>
+  </app-panel-card>
   @if (recoveryCodes().length) {
     <app-panel-card>
       <app-details-card-header

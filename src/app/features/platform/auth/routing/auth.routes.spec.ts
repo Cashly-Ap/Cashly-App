@@ -6,7 +6,14 @@ import {
 
 describe('Auth Routes', () => {
   it('should keep only public routes in the public auth configuration', () => {
-    expect(AUTH_ROUTES).toHaveLength(2);
+    expect(AUTH_ROUTES).toHaveLength(3);
+  });
+
+  it('should keep email verification public and unguarded', () => {
+    const verificationRoute = AUTH_ROUTES.find((r) => r.path === 'verify-email');
+    expect(verificationRoute).toBeDefined();
+    expect(verificationRoute?.loadComponent).toBeDefined();
+    expect(verificationRoute?.canActivate).toBeUndefined();
   });
 
   it('should have login route', () => {

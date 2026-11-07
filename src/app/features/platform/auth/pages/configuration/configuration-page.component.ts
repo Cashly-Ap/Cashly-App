@@ -11,10 +11,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { EmailVerificationApiService } from '@features/platform/auth/services/api/email-verification-api.service';
 import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
 import { PERMISSION_CATALOG } from '@features/platform/auth/permissions/permission-catalog';
 import { normalizePermissions } from '@features/platform/auth/authorization/models/legacy-permission';
@@ -29,6 +31,9 @@ import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+
+const RATE_LIMITED_STATUS = 429;
+
 @Component({
   selector: 'app-configuration-page',
   standalone: true,
@@ -53,10 +58,13 @@ export class ConfigurationPageComponent {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   private readonly profiles = inject(SelfProfileService);
+  private readonly verification = inject(EmailVerificationApiService);
   private readonly destroyRef = inject(DestroyRef);
   readonly profile = signal<UserDetails | null>(null);
   readonly loading = signal(false);
   readonly error = signal(false);
+  readonly resendingVerification = signal(false);
+  readonly verificationNotice = signal('');
   readonly accessLoading = signal(false);
   readonly accessError = signal(false);
   readonly access = this.authService.currentAccess;
@@ -140,5 +148,26 @@ export class ConfigurationPageComponent {
   }
   onChangePassword(): void {
     void this.router.navigate(['/platform/auth/change-password']);
+  }
+
+  resendEmailVerification(): void {
+    if (this.resendingVerification()) return;
+    this.resendingVerification.set(true);
+    this.verificationNotice.set('');
+    this.verification
+      .resend()
+      .pipe(
+        finalize(() => this.resendingVerification.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => this.verificationNotice.set('platform.auth.verificationSent'),
+        error: (error: unknown) =>
+          this.verificationNotice.set(
+            (error as { status?: number } | null)?.status === RATE_LIMITED_STATUS
+              ? 'platform.auth.verificationRateLimited'
+              : 'platform.auth.verificationResendFailed',
+          ),
+      });
   }
 }

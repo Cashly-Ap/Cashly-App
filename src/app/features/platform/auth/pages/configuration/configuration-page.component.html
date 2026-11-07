@@ -180,6 +180,24 @@
               "
             />
           </app-details-info-grid>
+          @if (!user.emailVerified) {
+            <div class="mt-5 flex flex-col items-start gap-3">
+              <p class="text-sm text-surface-500">
+                {{ 'platform.auth.emailNotVerifiedHelp' | translate }}
+              </p>
+              <p-button
+                [label]="'platform.auth.resendVerification' | translate"
+                [ariaLabel]="'platform.auth.resendVerification' | translate"
+                icon="pi pi-envelope"
+                [outlined]="true"
+                [loading]="resendingVerification()"
+                (onClick)="resendEmailVerification()"
+              />
+              @if (verificationNotice()) {
+                <p class="text-sm" role="status">{{ verificationNotice() | translate }}</p>
+              }
+            </div>
+          }
         </div>
       </app-panel-card>
 

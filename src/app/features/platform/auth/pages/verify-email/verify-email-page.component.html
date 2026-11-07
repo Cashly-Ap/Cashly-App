@@ -1,0 +1,69 @@
+<section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+  <app-page-header
+    [title]="'auth.verify.email.title' | translate"
+    [subtitle]="'auth.verify.email.subtitle' | translate"
+  />
+
+  <app-panel-card>
+    @switch (status()) {
+      @case ('loading') {
+        <app-details-card-header [title]="'auth.verify.email.loading.title' | translate" />
+        <div class="flex flex-col gap-4 p-4 sm:p-6" role="status" aria-live="polite">
+          <p class="text-sm text-surface-500">
+            {{ 'auth.verify.email.loading.message' | translate }}
+          </p>
+        </div>
+      }
+      @case ('success') {
+        <app-details-card-header [title]="'auth.verify.email.success.title' | translate" />
+        <div class="flex flex-col items-start gap-4 p-4 sm:p-6" role="status" aria-live="polite">
+          <p class="text-sm text-surface-500">
+            {{ 'auth.verify.email.success.message' | translate }}
+          </p>
+          <p-button
+            [label]="'auth.verify.email.go.to.security' | translate"
+            icon="pi pi-shield"
+            (onClick)="goToSecurity()"
+          />
+        </div>
+      }
+      @case ('expired') {
+        <app-details-card-header [title]="'auth.verify.email.expired.title' | translate" />
+        <div class="flex flex-col items-start gap-4 p-4 sm:p-6" role="alert">
+          <p class="text-sm text-surface-500">
+            {{ 'auth.verify.email.expired.message' | translate }}
+          </p>
+          <p-button
+            [label]="'auth.verify.email.go.to.login' | translate"
+            icon="pi pi-sign-in"
+            (onClick)="goToLogin()"
+          />
+        </div>
+      }
+      @case ('used') {
+        <app-details-card-header [title]="'auth.verify.email.used.title' | translate" />
+        <div class="flex flex-col items-start gap-4 p-4 sm:p-6" role="alert">
+          <p class="text-sm text-surface-500">{{ 'auth.verify.email.used.message' | translate }}</p>
+          <p-button
+            [label]="'auth.verify.email.go.to.login' | translate"
+            icon="pi pi-sign-in"
+            (onClick)="goToLogin()"
+          />
+        </div>
+      }
+      @default {
+        <app-details-card-header [title]="'auth.verify.email.invalid.title' | translate" />
+        <div class="flex flex-col items-start gap-4 p-4 sm:p-6" role="alert">
+          <p class="text-sm text-surface-500">
+            {{ 'auth.verify.email.invalid.message' | translate }}
+          </p>
+          <p-button
+            [label]="'auth.verify.email.go.to.login' | translate"
+            icon="pi pi-sign-in"
+            (onClick)="goToLogin()"
+          />
+        </div>
+      }
+    }
+  </app-panel-card>
+</section>

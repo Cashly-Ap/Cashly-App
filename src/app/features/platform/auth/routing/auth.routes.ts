@@ -7,6 +7,13 @@ export const AUTH_ROUTES: Routes = [
     loadComponent: () => import('@features/platform/auth/pages').then((m) => m.LoginPageComponent),
   },
   {
+    path: 'verify-email',
+    loadComponent: () =>
+      import('@features/platform/auth/pages/verify-email/verify-email-page.component').then(
+        (m) => m.VerifyEmailPageComponent,
+      ),
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full',
