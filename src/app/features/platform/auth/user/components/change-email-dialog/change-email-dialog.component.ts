@@ -10,6 +10,7 @@ import {
   ValidationErrors,
 } from '@angular/forms';
 import { DialogModule } from 'primeng/dialog';
+import { Observable, map } from 'rxjs';
 import { TextInputComponent } from '@core/forms/components';
 import { UserApplicationService } from '@features/platform/auth/user/services/application/user-application.service';
 import { MessageService } from 'primeng/api';
@@ -61,6 +62,7 @@ export class ChangeEmailDialogComponent implements OnInit {
 
   userId = input.required<string>();
   currentEmail = input<string>('');
+  selfService = input(false);
   visible = input.required<boolean>();
   visibleChange = output<boolean>();
   changed = output<string>();
@@ -97,29 +99,32 @@ export class ChangeEmailDialogComponent implements OnInit {
     }
 
     const value = this.form.getRawValue();
-    this.service
-      .changeEmail(this.userId(), value.email.trim(), value.currentEmail.trim())
-      .subscribe({
-        next: () => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'OK',
-            detail: 'platform.auth.user.emailUpdatedSuccessfully',
-            life: 3000,
-          });
-          this.changed.emit(value.email.trim());
-          this.resetForm();
-          this.visibleChange.emit(false);
-        },
-        error: () => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'platform.auth.user.couldNotUpdateTheEmailAddressPleaseTryAgain',
-            life: 5000,
-          });
-        },
-      });
+    const email = value.email.trim();
+    const currentEmail = value.currentEmail.trim();
+    const request: Observable<void> = this.selfService()
+      ? this.service.changeOwnEmail(email, currentEmail).pipe(map(() => undefined))
+      : this.service.changeEmail(this.userId(), email, currentEmail);
+    request.subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'OK',
+          detail: 'platform.auth.user.emailUpdatedSuccessfully',
+          life: 3000,
+        });
+        this.changed.emit(email);
+        this.resetForm();
+        this.visibleChange.emit(false);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'platform.auth.user.couldNotUpdateTheEmailAddressPleaseTryAgain',
+          life: 5000,
+        });
+      },
+    });
   }
 
   onCancel(): void {

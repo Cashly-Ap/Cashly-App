@@ -55,7 +55,6 @@
   "auth.profile.we.could.not.load.your.profile": "We could not load your profile.",
   "auth.profile.general": "General",
   "auth.profile.contact.and.address": "Contact and address",
-  "auth.profile.your.administrator.manages.your.email.role.department.and.permissions": "Your administrator manages your email, role, department and permissions.",
   "auth.profile.settings": "Settings",
   "auth.profile.customize.your.account.appearance.and.shortcuts": "Customize your account appearance and shortcuts.",
   "auth.profile.retry.settings": "Retry settings",

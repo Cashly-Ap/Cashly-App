@@ -108,4 +108,12 @@ export class UserApiService {
       email,
     });
   }
+
+  changeOwnEmail(email: string, currentEmail: string): Observable<UserDetails> {
+    return this.http.patch<UserDetails>('/api/auth/profile/email', { email, currentEmail });
+  }
+
+  changeOwnPassword(password: string, currentPassword: string): Observable<void> {
+    return this.http.patch<void>('/api/auth/change-password', { password, currentPassword });
+  }
 }

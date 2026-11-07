@@ -111,6 +111,16 @@ export class UserApplicationService {
     );
   }
 
+  changeOwnPassword(password: string, currentPassword: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.changeOwnPassword(password, currentPassword).pipe(
+      tap({ error: (err) => this.error.set(err.message) }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
   changeEmail(id: string, email: string, currentEmail?: string): Observable<void> {
     this.loading.set(true);
     this.error.set(null);
@@ -122,6 +132,24 @@ export class UserApplicationService {
           if (this.currentUser()?.id === id) {
             this.currentUser.update((u) => (u ? { ...u, email } : null));
           }
+        },
+        error: (err) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  changeOwnEmail(email: string, currentEmail: string): Observable<UserDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.changeOwnEmail(email, currentEmail).pipe(
+      tap({
+        next: (updated) => {
+          this.users.update((current) =>
+            current.map((u) => (u.id === updated.id ? { ...u, email: updated.email } : u)),
+          );
+          this.currentUser.set(updated);
         },
         error: (err) => this.error.set(err.message),
       }),

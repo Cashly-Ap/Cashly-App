@@ -162,4 +162,31 @@ describe('Own profile editing', () => {
     expect(navigate).toHaveBeenCalledWith(['/platform/auth/configuration']);
     expect(updateProfile).not.toHaveBeenCalled();
   });
+  it('exposes the own account so email and password can be changed from the profile', () => {
+    const { component } = render();
+    expect(component.account()).toEqual({ id: 'own-id', email: 'ana@example.com' });
+    component.showEmailDialog.set(true);
+    component.showPasswordDialog.set(true);
+    expect(component.showEmailDialog()).toBe(true);
+    expect(component.showPasswordDialog()).toBe(true);
+  });
+  it('renders the credential actions inside the form actions next to cancel', () => {
+    const { fixture } = render();
+    const host = fixture.nativeElement as HTMLElement;
+    const actions = host.querySelector('app-form-actions');
+    expect(actions?.textContent).toContain('Cambiar Correo');
+    expect(actions?.textContent).toContain('Cambiar contraseña');
+    expect(host.textContent).not.toContain('los gestiona tu administrador');
+  });
+  it('refreshes the profile after the email changes', () => {
+    const { component } = render();
+    getProfile.mockClear();
+    getProfile.mockReturnValue(
+      of({ ...profile, email: 'nueva@example.com', emailVerified: false }),
+    );
+    component.onEmailChanged('nueva@example.com');
+    expect(component.account()?.email).toBe('nueva@example.com');
+    expect(component.control('email').value).toBe('nueva@example.com');
+    expect(getProfile).toHaveBeenCalledTimes(1);
+  });
 });

@@ -87,12 +87,6 @@
                   [control]="control('email')"
                 />
               </app-tab-content>
-              <p class="px-4 md:px-6 lg:px-8 pb-4 text-sm text-surface-500">
-                {{
-                  'auth.profile.your.administrator.manages.your.email.role.department.and.permissions'
-                    | translate
-                }}
-              </p>
             </p-tabpanel>
             <p-tabpanel value="contact">
               <app-tab-content
@@ -131,8 +125,43 @@
           [loading]="saving()"
           [disabled]="form.invalid || saving()"
           (cancel)="onCancel()"
-        />
+        >
+          @if (account()) {
+            <p-button
+              [label]="'auth.profile.change.email' | translate"
+              icon="pi pi-envelope"
+              severity="secondary"
+              [outlined]="true"
+              [disabled]="saving()"
+              (onClick)="showEmailDialog.set(true)"
+            />
+            <p-button
+              [label]="'auth.profile.change.password' | translate"
+              icon="pi pi-lock"
+              severity="secondary"
+              [outlined]="true"
+              [disabled]="saving()"
+              (onClick)="showPasswordDialog.set(true)"
+            />
+          }
+        </app-form-actions>
       </app-panel-card>
     </form>
+  }
+  @if (account(); as current) {
+    <app-change-email-dialog
+      [userId]="current.id"
+      [currentEmail]="current.email"
+      [selfService]="true"
+      [visible]="showEmailDialog()"
+      (visibleChange)="showEmailDialog.set($event)"
+      (changed)="onEmailChanged($event)"
+    />
+    <app-change-password-dialog
+      [userId]="current.id"
+      [selfService]="true"
+      [visible]="showPasswordDialog()"
+      (visibleChange)="showPasswordDialog.set($event)"
+    />
   }
 </app-form-container>

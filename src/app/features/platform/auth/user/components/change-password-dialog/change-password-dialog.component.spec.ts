@@ -11,6 +11,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
   imports: [ChangePasswordDialogComponent],
   template: `<app-change-password-dialog
     [userId]="userId"
+    [selfService]="selfService"
     [visible]="visible"
     (visibleChange)="onVisibleChange($event)"
     (changed)="onChanged()"
@@ -18,6 +19,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
 })
 class HostComponent {
   userId = 'user-001';
+  selfService = false;
   visible = true;
   onVisibleChange = vi.fn();
   onChanged = vi.fn();
@@ -33,6 +35,7 @@ describe('ChangePasswordDialogComponent', () => {
   function configureTestBed(changePasswordValue: any = of(undefined)) {
     mockService = {
       changePassword: vi.fn().mockReturnValue(changePasswordValue),
+      changeOwnPassword: vi.fn().mockReturnValue(changePasswordValue),
       loading: signal(false),
     };
 
@@ -132,5 +135,42 @@ describe('ChangePasswordDialogComponent', () => {
     dialogComponent.form.get('confirmPassword')!.setValue('Different1');
     dialogComponent.onSubmit();
     expect(dialogComponent.form.errors).toHaveProperty('passwordsMismatch');
+  });
+
+  it('should request the current password and use the self service on own profile', () => {
+    (TestBed as TestBedStatic).resetTestingModule();
+    configureTestBed();
+    fixture = TestBed.createComponent(HostComponent);
+    hostComponent = fixture.componentInstance;
+    hostComponent.selfService = true;
+    fixture.detectChanges();
+    dialogComponent = fixture.debugElement.children[0].componentInstance;
+
+    expect(dialogComponent.form.contains('currentPassword')).toBe(true);
+
+    dialogComponent.form.get('currentPassword')!.setValue('CurrentPass1');
+    dialogComponent.form.get('password')!.setValue('StrongPass1');
+    dialogComponent.form.get('confirmPassword')!.setValue('StrongPass1');
+    dialogComponent.onSubmit();
+
+    expect(mockService.changeOwnPassword).toHaveBeenCalledWith('StrongPass1', 'CurrentPass1');
+    expect(mockService.changePassword).not.toHaveBeenCalled();
+  });
+
+  it('should block the self service submission without the current password', () => {
+    (TestBed as TestBedStatic).resetTestingModule();
+    configureTestBed();
+    fixture = TestBed.createComponent(HostComponent);
+    hostComponent = fixture.componentInstance;
+    hostComponent.selfService = true;
+    fixture.detectChanges();
+    dialogComponent = fixture.debugElement.children[0].componentInstance;
+
+    dialogComponent.form.get('password')!.setValue('StrongPass1');
+    dialogComponent.form.get('confirmPassword')!.setValue('StrongPass1');
+    dialogComponent.onSubmit();
+
+    expect(mockService.changeOwnPassword).not.toHaveBeenCalled();
+    expect(dialogComponent.currentPasswordControl.hasError('required')).toBe(true);
   });
 });

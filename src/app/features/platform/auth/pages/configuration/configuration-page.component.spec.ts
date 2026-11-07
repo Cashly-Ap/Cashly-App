@@ -106,6 +106,14 @@ describe('ConfigurationPageComponent', () => {
     fixture.detectChanges();
     expect(text()).toContain('Tu cuenta es administradora del sistema');
   });
+  it('does not repeat the system administrator role in the account header', () => {
+    access.update((value) => (value ? { ...value, systemAdministrator: true } : null));
+    getProfile.mockReturnValue(of({ ...profile, roleName: 'Administrador del sistema' }));
+    const { fixture } = render();
+    const header = fixture.nativeElement.querySelector('app-panel-card') as HTMLElement;
+    const occurrences = (header.textContent?.match(/Administrador del sistema/g) ?? []).length;
+    expect(occurrences).toBe(1);
+  });
   it('handles absent optional data and falls back to username', () => {
     getProfile.mockReturnValue(
       of({

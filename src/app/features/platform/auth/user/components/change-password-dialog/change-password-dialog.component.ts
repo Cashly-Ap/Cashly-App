@@ -43,6 +43,7 @@ export class ChangePasswordDialogComponent implements OnInit {
   private readonly messageService = inject(MessageService);
 
   userId = input.required<string>();
+  selfService = input(false);
   visible = input.required<boolean>();
   visibleChange = output<boolean>();
   changed = output<void>();
@@ -50,6 +51,9 @@ export class ChangePasswordDialogComponent implements OnInit {
   loading = this.service.loading;
   form!: FormGroup;
 
+  get currentPasswordControl(): FormControl {
+    return this.form.get('currentPassword') as FormControl;
+  }
   get passwordControl(): FormControl {
     return this.form.get('password') as FormControl;
   }
@@ -60,6 +64,7 @@ export class ChangePasswordDialogComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group(
       {
+        ...(this.selfService() ? { currentPassword: ['', [Validators.required]] } : {}),
         password: ['', [Validators.required, UserValidators.passwordStrength()]],
         confirmPassword: ['', [Validators.required]],
       },
@@ -73,7 +78,11 @@ export class ChangePasswordDialogComponent implements OnInit {
       return;
     }
 
-    this.service.changePassword(this.userId(), this.form.value.password).subscribe({
+    const value = this.form.getRawValue();
+    const request = this.selfService()
+      ? this.service.changeOwnPassword(value.password, value.currentPassword)
+      : this.service.changePassword(this.userId(), value.password);
+    request.subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -103,6 +112,12 @@ export class ChangePasswordDialogComponent implements OnInit {
 
   private resetForm(): void {
     this.form.reset();
+  }
+
+  currentPasswordError(): string {
+    const control = this.form.get('currentPassword');
+    if (!control || !control.touched) return '';
+    return control.hasError('required') ? 'platform.auth.passwordIsRequired' : '';
   }
 
   passwordError(): string {

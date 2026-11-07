@@ -24,6 +24,8 @@ import {
 } from '@core/forms/components';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
+import { ChangeEmailDialogComponent } from '@features/platform/auth/user/components/change-email-dialog/change-email-dialog.component';
+import { ChangePasswordDialogComponent } from '@features/platform/auth/user/components/change-password-dialog/change-password-dialog.component';
 import { createUserNameForm } from '@features/platform/auth/pages/change-username/change-username-page.config';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
@@ -44,6 +46,8 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     TabContentComponent,
     TabsModule,
     ButtonModule,
+    ChangeEmailDialogComponent,
+    ChangePasswordDialogComponent,
   ],
   templateUrl: './change-username-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,6 +69,9 @@ export class ChangeUsernamePageComponent {
   readonly photo = new FormControl<File | null>(null);
   readonly photoUrl = signal<string | null>(null);
   readonly removePhoto = signal(false);
+  readonly account = signal<{ id: string; email: string } | null>(null);
+  readonly showEmailDialog = signal(false);
+  readonly showPasswordDialog = signal(false);
   readonly form = createUserNameForm();
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -96,6 +103,7 @@ export class ChangeUsernamePageComponent {
       .subscribe({
         next: (user) => {
           this.auth.syncProfilePhoto(user.photoPath ?? null);
+          this.account.set({ id: user.id, email: user.email });
           if (user.photoPath)
             this.photos
               .get()
@@ -199,5 +207,11 @@ export class ChangeUsernamePageComponent {
   }
   onCancel(): void {
     if (!this.saving()) this.navigationHistory.back(['/platform/auth/configuration']);
+  }
+
+  onEmailChanged(email: string): void {
+    this.account.update((account) => (account ? { ...account, email } : account));
+    this.form.patchValue({ email });
+    this.loadProfile();
   }
 }

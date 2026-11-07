@@ -37,12 +37,13 @@
             </p>
             <div class="flex flex-wrap gap-2 mt-3">
               <app-status-badge [active]="user.active" />
-              <app-text-badge [label]="display(user.roleName)" variant="label" />
               @if (!accessLoading() && !accessError() && access()?.systemAdministrator) {
                 <app-text-badge
                   [label]="'auth.profile.system.administrator' | translate"
                   variant="label"
                 />
+              } @else {
+                <app-text-badge [label]="display(user.roleName)" variant="label" />
               }
             </div>
           </div>

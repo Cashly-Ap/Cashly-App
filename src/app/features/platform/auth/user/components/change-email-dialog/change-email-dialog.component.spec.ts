@@ -12,6 +12,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
   template: `<app-change-email-dialog
     [userId]="userId"
     [currentEmail]="currentEmail"
+    [selfService]="selfService"
     [visible]="visible"
     (visibleChange)="onVisibleChange($event)"
     (changed)="onChanged($event)"
@@ -20,6 +21,7 @@ import { UserApplicationService } from '@features/platform/auth/user/services/ap
 class HostComponent {
   userId = 'user-001';
   currentEmail = 'old@example.com';
+  selfService = false;
   visible = true;
   onVisibleChange = vi.fn();
   onChanged = vi.fn();
@@ -35,6 +37,7 @@ describe('ChangeEmailDialogComponent', () => {
   function configureTestBed(changeEmailValue: any = of(undefined)) {
     mockService = {
       changeEmail: vi.fn().mockReturnValue(changeEmailValue),
+      changeOwnEmail: vi.fn().mockReturnValue(changeEmailValue),
       loading: signal(false),
     };
 
@@ -177,5 +180,22 @@ describe('ChangeEmailDialogComponent', () => {
   it('should return empty string when no errors', () => {
     fillValidForm();
     expect(dialogComponent.confirmEmailError()).toBe('');
+  });
+
+  it('should use the self service on the own profile', () => {
+    (TestBed as TestBedStatic).resetTestingModule();
+    configureTestBed();
+    fixture = TestBed.createComponent(HostComponent);
+    hostComponent = fixture.componentInstance;
+    hostComponent.selfService = true;
+    fixture.detectChanges();
+    dialogComponent = fixture.debugElement.children[0].componentInstance;
+
+    fillValidForm();
+    dialogComponent.onSubmit();
+
+    expect(mockService.changeOwnEmail).toHaveBeenCalledWith('new@example.com', 'old@example.com');
+    expect(mockService.changeEmail).not.toHaveBeenCalled();
+    expect(hostComponent.onChanged).toHaveBeenCalledWith('new@example.com');
   });
 });
