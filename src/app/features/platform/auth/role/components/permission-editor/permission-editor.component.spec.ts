@@ -63,7 +63,7 @@ describe('Permission editor', () => {
     fixture.detectChanges();
     expect(component.allPermissions()).toContain('COMPANY_VIEW');
     expect(component.allPermissions()).toContain('COMPANY_EDIT');
-    expect(fixture.nativeElement.textContent).toContain('Compañía');
+    expect(fixture.nativeElement.textContent).toContain('Empresa');
     expect(fixture.nativeElement.textContent).toContain('Editar compañía');
   });
 

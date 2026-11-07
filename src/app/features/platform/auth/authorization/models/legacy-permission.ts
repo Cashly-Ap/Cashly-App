@@ -1,4 +1,5 @@
 import { AppPermission } from '@features/platform/auth/permissions/app-permission';
+import { CompanyPermission } from '@features/platform/company/permissions';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 
@@ -67,7 +68,16 @@ const ACTION_SUFFIXES: Partial<Record<PermissionAction, string>> = {
   EXECUTE: 'RECORD_ENTRY',
 };
 
-function modulePrefix(module: BusinessModule): string {
+const MODULE_CODE_OVERRIDES: Readonly<
+  Record<string, Partial<Record<PermissionAction, AppPermission>>>
+> = {
+  COMPANY: {
+    READ: CompanyPermission.VIEW as AppPermission,
+    UPDATE: CompanyPermission.EDIT as AppPermission,
+  },
+};
+
+function modulePrefix(module: BusinessModule): string | undefined {
   return MODULE_PREFIXES[module];
 }
 
@@ -78,9 +88,12 @@ export function legacyPermission(
   if (module === BusinessModule.DASHBOARD) {
     return action === 'READ' ? ('DASHBOARD_VIEW' as AppPermission) : undefined;
   }
+  const override = MODULE_CODE_OVERRIDES[module as string]?.[action];
+  if (override) return override;
   const suffix = ACTION_SUFFIXES[action];
-  if (!suffix) return undefined;
-  return `${modulePrefix(module)}_${suffix}` as AppPermission;
+  const prefix = modulePrefix(module);
+  if (!suffix || !prefix) return undefined;
+  return `${prefix}_${suffix}` as AppPermission;
 }
 
 function normalizeLegacyMatrix(value: Record<string, unknown>): AppPermission[] {
