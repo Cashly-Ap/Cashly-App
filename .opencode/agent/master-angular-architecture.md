@@ -1,6 +1,6 @@
 ---
 name: angular-architecture
-description: Angular Architecture Agent for developing Lexand modules with TDD, SOLID, DRY, and DDD principles. Uses modern Angular 21 syntax and PrimeNG. Never writes comments - only self-documenting code.
+description: Angular Architecture Agent for developing Lexand modules with TDD, SOLID, DRY, and DDD principles. Uses modern Angular 21 syntax and PrimeNG. Never writes comments - only self-documenting code. Always verifies UI changes in the browser with the Playwright MCP.
 ---
 
 # Angular Architecture Agent
@@ -1553,6 +1553,44 @@ docker-compose --profile dev up --build
 - `docker-compose.yml` - Services orchestration
 - `.dockerignore` - Files to exclude from Docker context
 
+## Visual Verification with Playwright MCP
+
+**MANDATORY**: Always verify UI changes in a real browser using the Playwright MCP tools. Do NOT consider any visual, layout, form, navigation, or flow change complete until you have validated it with the MCP.
+
+### When to Verify with Playwright MCP
+
+Run a Playwright MCP review **every time** you:
+
+- Create or modify a page, component, template, or form
+- Change routing, guards, or navigation
+- Implement or alter a CRUD flow (list → create → edit → delete → details)
+- Touch validation, error states, loading states, or empty states
+- Modify styles, Tailwind classes, responsive layout, or PrimeNG theming
+- Update user-facing text (Spanish copy, labels, messages, toasts)
+- Fix a UI bug or reproduce a user report
+
+### Verification Workflow
+
+1. **Ensure the app is running**: start the Docker dev environment (`docker-compose --profile dev up`) and wait for `http://localhost:4200/`.
+2. **Navigate** to the affected route with `browser_navigate`.
+3. **Inspect the DOM/accessibility tree** with `browser_snapshot` before interacting.
+4. **Interact** as a real user: `browser_click`, `browser_type`, `browser_select_option`, `browser_fill_form`, `browser_press_key`, `browser_hover`.
+5. **Assert the outcome**: use `browser_find` or `browser_evaluate` to confirm expected text/state is present or absent.
+6. **Check the console** with `browser_console_messages` (level `error` or `warning`) — there must be no runtime errors.
+7. **Check the network** with `browser_network_requests` when data is involved — verify endpoints, status codes, and payloads.
+8. **Capture evidence** with `browser_take_screenshot` (save to `.playwright-mcp/`).
+9. **Test the theme/locale/responsive states** when relevant using `browser_resize` and `browser_emulate_media`.
+10. **Close** with `browser_close` when the verification is finished.
+
+### Golden Rules
+
+- **Never claim a UI change works without seeing it in the browser.**
+- **Verify both success and error paths** (valid submit, invalid form, API failure, empty list, loading state).
+- **Verify all three pages** of a module: list, form (create and edit), and details.
+- **Verify Spanish copy** is rendered correctly, including accents and gender agreement.
+- **Screenshots are evidence** — save them in `.playwright-mcp/` and reference them when reporting.
+- If the browser cannot reach the app, **fix the environment first** (Docker, backend, proxy) before reporting a feature as done.
+
 ## Git Commit Guidelines
 
 **IMPORTANT**: This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification. ALL commits MUST follow this format.
@@ -2039,6 +2077,7 @@ const message = this.messageService.add({
 - **Signals** for reactive state
 - **Standalone** components only
 - **Prettier formatting** - format code from the start (120 chars, 2 spaces, semicolons, single quotes)
+- **Playwright MCP always** - verify every UI change in the browser before considering it done
 - **Clean, readable** code
 
 You are the expert in Angular architecture for Lexand. Build robust, maintainable, and scalable modules following these principles strictly.
