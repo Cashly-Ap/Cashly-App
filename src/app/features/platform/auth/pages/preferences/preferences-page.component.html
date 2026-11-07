@@ -1,218 +1,261 @@
-<section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
-  <app-page-header
-    [title]="'auth.profile.settings' | translate"
-    [subtitle]="'auth.profile.customize.your.account.appearance.and.shortcuts' | translate"
-  />
-  <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
-    @if (preferences.loading()) {
-      <p role="status">{{ 'auth.profile.loading.your.settings' | translate }}</p>
-    } @else if (preferences.saving()) {
-      <p role="status">{{ 'auth.profile.saving.changes' | translate }}</p>
-    } @else if (!preferences.error()) {
-      <p>
-        {{
-          'auth.profile.changes.are.saved.automatically.to.your.account.and.restored.on.your.devices'
-            | translate
-        }}
-      </p>
-    }
-  </div>
-  @if (preferences.error(); as error) {
+@if (view() === 'form') {
+  <app-form-container>
+    <app-form-header
+      [title]="'auth.profile.edit.preferences' | translate"
+      [subtitle]="'auth.profile.customize.your.account.appearance.and.shortcuts' | translate"
+    />
     <app-panel-card>
-      <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">
-        <p>{{ error | translate }}</p>
-        <p-button
-          [label]="'auth.profile.retry' | translate"
-          [ariaLabel]="'auth.profile.retry.settings' | translate"
-          icon="pi pi-refresh"
-          [outlined]="true"
-          (onClick)="preferences.retry()"
-        />
-      </div>
-    </app-panel-card>
-  }
-  <app-panel-card>
-    <app-details-card-header
-      [title]="'auth.profile.language' | translate"
-      [subtitle]="'auth.profile.language.for.the.application.messages.and.reports' | translate"
-    />
-    <fieldset
-      class="p-4 sm:p-6"
-      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
-    >
-      <legend class="sr-only">{{ 'auth.profile.application.language' | translate }}</legend>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        @for (language of languages; track language.value) {
-          <label
-            class="flex cursor-pointer items-center gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
-          >
-            <input
-              type="radio"
-              name="language"
-              [value]="language.value"
-              [checked]="preferences.language() === language.value"
-              (change)="preferences.setLanguage(language.value)"
-              class="accent-black dark:accent-white"
-            />
-            <span class="font-semibold">{{ language.label }}</span>
-          </label>
-        }
-      </div>
-    </fieldset>
-  </app-panel-card>
-  <app-panel-card>
-    <app-details-card-header
-      [title]="'auth.profile.appearance' | translate"
-      [subtitle]="'auth.profile.choose.the.default.display.mode' | translate"
-    />
-    <fieldset
-      class="p-4 sm:p-6"
-      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
-    >
-      <legend class="sr-only">{{ 'auth.profile.display.mode' | translate }}</legend>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-        @for (theme of themes; track theme.value) {
-          <label
-            class="flex cursor-pointer items-start gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
-          >
-            <input
-              type="radio"
-              name="themeMode"
-              [value]="theme.value"
-              [checked]="preferences.themeMode() === theme.value"
-              (change)="preferences.setThemeMode(theme.value)"
-              class="mt-1 accent-black dark:accent-white"
-            />
-            <span class="flex min-w-0 flex-col gap-2">
-              <span class="flex items-center gap-2 font-semibold"
-                ><i [class]="theme.icon" aria-hidden="true"></i>{{ theme.label | translate }}</span
-              >
-              <span class="text-sm text-surface-500 dark:text-surface-400">{{
-                theme.description | translate
-              }}</span>
-            </span>
-          </label>
-        }
-      </div>
-    </fieldset>
-  </app-panel-card>
-  <app-panel-card>
-    <app-details-card-header
-      [title]="'auth.profile.color.mode' | translate"
-      [subtitle]="'auth.profile.organize.information.visually.as.you.prefer' | translate"
-    />
-    <fieldset
-      class="p-4 sm:p-6"
-      [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
-    >
-      <legend class="sr-only">{{ 'auth.profile.color.mode' | translate }}</legend>
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        @for (color of colors; track color.value) {
-          <label
-            class="flex cursor-pointer items-start gap-3 rounded-2xl border border-surface-300 p-4 has-[:checked]:border-surface-900 dark:border-surface-700 dark:has-[:checked]:border-surface-100"
-          >
-            <input
-              type="radio"
-              name="colorMode"
-              [value]="color.value"
-              [checked]="preferences.colorMode() === color.value"
-              (change)="preferences.setColorMode(color.value)"
-              class="mt-1 accent-black dark:accent-white"
-            />
-            <span class="flex min-w-0 flex-col gap-2">
-              <span class="font-semibold">{{ color.label | translate }}</span>
-              <span class="text-sm text-surface-500 dark:text-surface-400">{{
-                color.description | translate
-              }}</span>
-              @if (color.value === 'informative') {
-                <span class="mt-1 flex gap-2" aria-hidden="true">
-                  <span class="h-3 w-6 rounded-full bg-blue-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-purple-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-teal-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-amber-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-green-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-pink-600"></span>
-                </span>
-              } @else {
-                <span class="mt-1 flex gap-2" aria-hidden="true"
-                  ><span class="h-3 w-6 rounded-full bg-surface-900"></span
-                  ><span class="h-3 w-6 rounded-full bg-surface-600"></span
-                  ><span class="h-3 w-6 rounded-full bg-surface-300"></span
-                ></span>
-              }
-            </span>
-          </label>
-        }
-      </div>
-    </fieldset>
-  </app-panel-card>
-  <app-panel-card>
-    <app-details-card-header
-      [title]="'auth.profile.keyboard.shortcuts' | translate"
-      [subtitle]="'auth.profile.access.modules.and.common.actions.using.the.keyboard' | translate"
-    />
-    <div class="flex flex-col gap-6 p-4 sm:p-6">
-      <label class="flex cursor-pointer items-start gap-3">
-        <input
-          type="checkbox"
-          role="switch"
-          [checked]="preferences.shortcutsEnabled()"
-          [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
-          (change)="preferences.setShortcutsEnabled(!preferences.shortcutsEnabled())"
-          class="mt-1 h-4 w-4 accent-black dark:accent-white"
-        />
-        <span
-          ><span class="block font-semibold">{{
-            'auth.profile.enable.keyboard.shortcuts' | translate
-          }}</span
-          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">{{
-            'auth.profile.they.only.trigger.available.actions.and.modules.you.can.access'
-              | translate
-          }}</span></span
+      <form [formGroup]="form" (ngSubmit)="save()">
+        <p-tabs
+          [value]="activeTab()"
+          (valueChange)="activeTab.set(($event ?? 'general').toString())"
         >
-      </label>
-      <label class="flex cursor-pointer items-start gap-3">
-        <input
-          type="checkbox"
-          role="switch"
-          [attr.aria-label]="'auth.profile.show.shortcuts.on.each.screen' | translate"
-          [checked]="preferences.showShortcutHints()"
-          [disabled]="preferences.loading() || preferences.saving() || !preferences.ready()"
-          (change)="preferences.setShowShortcutHints(!preferences.showShortcutHints())"
-          class="mt-1 h-4 w-4 accent-black dark:accent-white"
-        />
-        <span
-          ><span class="block font-semibold">{{
-            'auth.profile.show.shortcuts.on.each.screen' | translate
-          }}</span
-          ><span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">{{
-            'auth.profile.shows.available.actions.for.the.current.screen.or.dialog.when.shortcuts.are.enabled'
-              | translate
-          }}</span></span
-        >
-      </label>
-      <dl class="grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-2">
-        @for (shortcut of shortcuts; track shortcut.action) {
+          <p-tablist>
+            <p-tab value="general"
+              ><i class="pi pi-sliders-h mr-2"></i>{{ 'auth.profile.general' | translate }}</p-tab
+            >
+            <p-tab value="notifications"
+              ><i class="pi pi-bell mr-2"></i>{{ 'auth.profile.notifications' | translate }}</p-tab
+            >
+          </p-tablist>
+          <p-tabpanels>
+            <p-tabpanel value="general">
+              <div class="flex flex-col gap-6 p-4 sm:p-6">
+                @if (preferences.saving()) {
+                  <p
+                    aria-live="polite"
+                    role="status"
+                    class="text-sm text-surface-600 dark:text-surface-300"
+                  >
+                    {{ 'auth.profile.saving.changes' | translate }}
+                  </p>
+                }
+                @if (preferences.error(); as error) {
+                  <div
+                    role="alert"
+                    class="flex flex-col items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+                  >
+                    <span>{{ error | translate }}</span>
+                    <p-button
+                      [label]="'auth.profile.retry' | translate"
+                      [ariaLabel]="'auth.profile.retry.settings' | translate"
+                      icon="pi pi-refresh"
+                      [outlined]="true"
+                      size="small"
+                      (onClick)="preferences.retry()"
+                    />
+                  </div>
+                }
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <app-select-input
+                    [label]="'auth.profile.language'"
+                    [control]="form.controls.language"
+                    [options]="languageOptions()"
+                    [disabled]="!canEdit()"
+                  />
+                  <app-select-input
+                    [label]="'auth.profile.appearance'"
+                    [control]="form.controls.themeMode"
+                    [options]="themeOptions()"
+                    [disabled]="!canEdit()"
+                  />
+                  <app-select-input
+                    [label]="'auth.profile.color.mode'"
+                    [control]="form.controls.colorMode"
+                    [options]="colorOptions()"
+                    [disabled]="!canEdit()"
+                  />
+                  <app-select-input
+                    [label]="'auth.profile.show.shortcuts.on.each.screen'"
+                    [control]="form.controls.showShortcutHints"
+                    [options]="shortcutHintOptions()"
+                    [disabled]="!canEdit() || !preferences.shortcutsEnabled()"
+                  />
+                </div>
+                <div
+                  class="flex items-center justify-between gap-4 rounded-xl border border-surface-200 p-4 dark:border-surface-700"
+                >
+                  <div class="min-w-0">
+                    <p class="font-semibold">
+                      {{ 'auth.profile.enable.keyboard.shortcuts' | translate }}
+                    </p>
+                    <p class="mt-1 text-sm text-surface-500 dark:text-surface-400">
+                      {{
+                        'auth.profile.they.only.trigger.available.actions.and.modules.you.can.access'
+                          | translate
+                      }}
+                    </p>
+                  </div>
+                  <p-toggleswitch
+                    [formControl]="form.controls.shortcutsEnabled"
+                    [ariaLabel]="'auth.profile.enable.keyboard.shortcuts' | translate"
+                    [disabled]="!canEdit()"
+                  />
+                </div>
+              </div>
+            </p-tabpanel>
+            <p-tabpanel value="notifications">
+              <app-notification-preferences-card [embedded]="true" />
+            </p-tabpanel>
+          </p-tabpanels>
+        </p-tabs>
+        @if (activeTab() === 'general') {
+          <app-form-actions
+            [submitLabel]="'auth.profile.save.changes' | translate"
+            [cancelLabel]="'auth.profile.back.to.settings' | translate"
+            [loading]="preferences.saving()"
+            [disabled]="!hasChanges()"
+            (cancel)="closeForm()"
+          />
+        } @else {
           <div
-            class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 pb-3 dark:border-surface-800"
+            class="flex justify-end border-t border-surface-200 px-4 py-4 sm:px-6 dark:border-surface-700"
           >
-            <dt class="text-sm">{{ shortcut.label | translate }}</dt>
-            <dd>
-              <kbd
-                class="rounded-lg border border-surface-300 px-2 py-1 text-xs dark:border-surface-600"
-                >{{ shortcut.keys }}</kbd
-              >
-            </dd>
+            <p-button
+              [label]="'auth.profile.back.to.settings' | translate"
+              icon="pi pi-arrow-left"
+              [outlined]="true"
+              (onClick)="closeForm()"
+            />
           </div>
         }
-      </dl>
-      <p class="text-sm text-surface-500 dark:text-surface-400">
-        {{
-          'auth.profile.press.one.key.n.for.new.f.for.filters.b.to.search.g.to.save.and.m.for.modules.j.k.move.down.and.up.esc.first.leaves.the.field.then.cancels.or.closes.letters.do.not.trigger.actions.while.typing.or.replace.browser.shortcuts'
-            | translate
-        }}
-      </p>
+      </form>
+    </app-panel-card>
+  </app-form-container>
+} @else {
+  <section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+    <app-page-header
+      [title]="'auth.profile.settings' | translate"
+      [subtitle]="'auth.profile.customize.your.account.appearance.and.shortcuts' | translate"
+    />
+    <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
+      @if (preferences.loading()) {
+        <p role="status">{{ 'auth.profile.loading.your.settings' | translate }}</p>
+      } @else if (preferences.saving()) {
+        <p role="status">{{ 'auth.profile.saving.changes' | translate }}</p>
+      } @else if (!preferences.error()) {
+        <p>
+          {{
+            'auth.profile.changes.are.saved.automatically.to.your.account.and.restored.on.your.devices'
+              | translate
+          }}
+        </p>
+      }
     </div>
-  </app-panel-card>
-  <app-notification-preferences-card />
-</section>
+    @if (preferences.error(); as error) {
+      <app-panel-card>
+        <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">
+          <p>{{ error | translate }}</p>
+          <p-button
+            [label]="'auth.profile.retry' | translate"
+            [ariaLabel]="'auth.profile.retry.settings' | translate"
+            icon="pi pi-refresh"
+            [outlined]="true"
+            (onClick)="preferences.retry()"
+          />
+        </div>
+      </app-panel-card>
+    }
+    <app-panel-card>
+      <app-details-card-header [title]="'auth.profile.general.preferences' | translate">
+        <div actions>
+          <p-button
+            [label]="'auth.profile.edit' | translate"
+            icon="pi pi-pencil"
+            [outlined]="true"
+            [disabled]="!canEdit()"
+            (onClick)="openForm()"
+          />
+        </div>
+      </app-details-card-header>
+      <div class="p-4 sm:p-6">
+        <app-details-info-grid [columns]="2" [fillLastRow]="true">
+          <app-details-info-field
+            [label]="'auth.profile.language' | translate"
+            [value]="languageLabel()"
+          />
+          <app-details-info-field
+            [label]="'auth.profile.appearance' | translate"
+            [value]="themeLabel()"
+          />
+          <app-details-info-field
+            [label]="'auth.profile.color.mode' | translate"
+            [value]="colorLabel()"
+          />
+          <app-details-info-field
+            [label]="'auth.profile.keyboard.shortcuts' | translate"
+            [value]="shortcutsLabel()"
+          />
+          <app-details-info-field
+            [label]="'auth.profile.show.shortcuts.on.each.screen' | translate"
+            [value]="shortcutHintsLabel()"
+          />
+        </app-details-info-grid>
+      </div>
+    </app-panel-card>
+    <app-panel-card>
+      <app-details-card-header
+        [title]="'auth.profile.notifications' | translate"
+        [subtitle]="'platform.notifications.preferences.subtitle' | translate"
+      />
+      <div class="p-4 sm:p-6">
+        @if (notifications.loading()) {
+          <p role="status" class="text-sm text-surface-500 dark:text-surface-400">
+            {{ 'platform.notifications.preferences.loading' | translate }}
+          </p>
+        } @else if (notifications.error(); as error) {
+          <div role="alert" class="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+            <p class="text-sm">{{ error | translate }}</p>
+            <p-button
+              [label]="'platform.notifications.preferences.retry' | translate"
+              icon="pi pi-refresh"
+              [outlined]="true"
+              size="small"
+              (onClick)="notifications.retry()"
+            />
+          </div>
+        } @else {
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'platform.notifications.preferences.master' | translate"
+              [value]="notificationsLabel()"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.enabled.notification.modules' | translate"
+              [value]="notificationModulesLabel()"
+            />
+          </app-details-info-grid>
+        }
+      </div>
+    </app-panel-card>
+    <app-panel-card>
+      <app-details-card-header
+        [title]="'auth.profile.keyboard.shortcuts' | translate"
+        [subtitle]="'auth.profile.access.modules.and.common.actions.using.the.keyboard' | translate"
+      />
+      <div class="flex flex-col gap-6 p-4 sm:p-6">
+        <dl class="grid grid-cols-1 gap-x-8 gap-y-4 lg:grid-cols-2">
+          @for (shortcut of shortcuts; track shortcut.action) {
+            <div
+              class="flex flex-wrap items-center justify-between gap-2 border-b border-surface-200 pb-3 dark:border-surface-800"
+            >
+              <dt class="text-sm">{{ shortcut.label | translate }}</dt>
+              <dd>
+                <kbd
+                  class="rounded-lg border border-surface-300 px-2 py-1 text-xs dark:border-surface-600"
+                  >{{ shortcut.keys }}</kbd
+                >
+              </dd>
+            </div>
+          }
+        </dl>
+        <p class="text-sm text-surface-500 dark:text-surface-400">
+          {{
+            'auth.profile.press.one.key.n.for.new.f.for.filters.b.to.search.g.to.save.and.m.for.modules.j.k.move.down.and.up.esc.first.leaves.the.field.then.cancels.or.closes.letters.do.not.trigger.actions.while.typing.or.replace.browser.shortcuts'
+              | translate
+          }}
+        </p>
+      </div>
+    </app-panel-card>
+  </section>
+}

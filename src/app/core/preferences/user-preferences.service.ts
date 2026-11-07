@@ -114,6 +114,10 @@ export class UserPreferencesService {
     this.update({ showShortcutHints });
   }
 
+  apply(preferences: UserPreferences): void {
+    this.update(preferences);
+  }
+
   retry(): void {
     if (this.saving() || this.loading()) return;
     if (this.loadFailed) {
