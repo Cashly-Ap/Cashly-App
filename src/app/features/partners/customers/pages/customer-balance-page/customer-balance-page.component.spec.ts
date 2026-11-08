@@ -199,7 +199,7 @@ describe('CustomerBalancePageComponent', () => {
 
     const emptyText = fixture.nativeElement.textContent.replace(/\u00a0/g, ' ');
     expect(emptyText).toContain('Cliente sin movimientos');
-    expect(emptyText).toContain('0,00 US$');
+    expect(emptyText).toContain('0,00$');
     expect(fixture.nativeElement.textContent).toContain('No se encontraron movimientos');
   });
 
@@ -323,8 +323,8 @@ describe('CustomerBalancePageComponent', () => {
     fixture.detectChanges();
 
     const renderedText = fixture.nativeElement.textContent.replace(/\u00a0/g, ' ');
-    expect(renderedText).toContain('725,00 US$');
-    expect(renderedText).toContain('30,00 US$');
+    expect(renderedText).toContain('725,00$');
+    expect(renderedText).toContain('30,00$');
     expect(renderedText).toContain('INV-001');
     expect(renderedText).toContain('PAY-001');
     expect(renderedText).toContain('CN-001');

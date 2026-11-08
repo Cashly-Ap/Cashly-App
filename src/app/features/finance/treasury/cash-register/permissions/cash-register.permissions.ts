@@ -7,9 +7,21 @@ export enum CashRegisterPermission {
 }
 
 export const CASH_REGISTER_PERMISSIONS = [
-  { code: CashRegisterPermission.VIEW_LIST, labelKey: 'finance.treasury.cashRegister.permissions.viewList' },
-  { code: CashRegisterPermission.CASH_HISTORY, labelKey: 'finance.treasury.cashRegister.permissions.cashHistory' },
-  { code: CashRegisterPermission.REPORT_CASH_REGISTER, labelKey: 'finance.treasury.cashRegister.permissions.reportCashRegister' },
+  {
+    code: CashRegisterPermission.VIEW_LIST,
+    labelKey: 'finance.treasury.cashRegister.permissions.viewList',
+  },
+  {
+    code: CashRegisterPermission.CASH_HISTORY,
+    labelKey: 'finance.treasury.cashRegister.permissions.cashHistory',
+  },
+  {
+    code: CashRegisterPermission.REPORT_CASH_REGISTER,
+    labelKey: 'finance.treasury.cashRegister.permissions.reportCashRegister',
+  },
   { code: CashRegisterPermission.OPEN, labelKey: 'finance.treasury.cashRegister.permissions.open' },
-  { code: CashRegisterPermission.CLOSE, labelKey: 'finance.treasury.cashRegister.permissions.close' },
+  {
+    code: CashRegisterPermission.CLOSE,
+    labelKey: 'finance.treasury.cashRegister.permissions.close',
+  },
 ] as const;

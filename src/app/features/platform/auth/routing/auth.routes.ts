@@ -32,7 +32,9 @@ export const AUTHENTICATED_AUTH_ROUTES: Routes = [
   {
     path: 'security',
     loadComponent: () =>
-      import('@features/platform/auth/pages/security/security-page.component').then((m) => m.SecurityPageComponent),
+      import('@features/platform/auth/pages/security/security-page.component').then(
+        (m) => m.SecurityPageComponent,
+      ),
     canActivate: [authGuard],
   },
   {

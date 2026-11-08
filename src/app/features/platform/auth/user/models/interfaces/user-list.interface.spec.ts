@@ -53,5 +53,4 @@ describe('UserList interface', () => {
       expect(user.role).toBe(role);
     });
   });
-
 });

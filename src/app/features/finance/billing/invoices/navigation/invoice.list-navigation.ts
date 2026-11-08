@@ -6,6 +6,7 @@ import {
   pdf,
   remove,
   view,
+  history,
 } from '@core/layouts/config/list-navigation.types';
 
 export const INVOICE_LIST_NAVIGATION: ListNavigationDefinition = {
@@ -20,5 +21,6 @@ export const INVOICE_LIST_NAVIGATION: ListNavigationDefinition = {
     listAction('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
     listAction('Duplicar', 'INVOICE_DUPLICATE', 'copy', BusinessModule.FINANCE_INVOICES),
     remove(),
+    history(),
   ],
 };

@@ -1,5 +1,5 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -58,6 +58,7 @@ import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cance
   imports: [
     CancelButtonComponent,
     TranslatePipe,
+    LocalizedCurrencyPipe,
     LocalizedNumberPipe,
     PermissionDirective,
     FormsModule,

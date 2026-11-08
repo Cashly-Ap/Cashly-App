@@ -10,7 +10,11 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { finalize } from 'rxjs';
 import { renderSVG } from 'uqr';
-import { MfaApiService, MfaStatus, MfaSetup } from '@features/platform/auth/services/api/mfa-api.service';
+import {
+  MfaApiService,
+  MfaStatus,
+  MfaSetup,
+} from '@features/platform/auth/services/api/mfa-api.service';
 import { EmailVerificationApiService } from '@features/platform/auth/services/api/email-verification-api.service';
 import { SelfProfileService } from '@features/platform/auth/services/api/self-profile.service';
 import { UserDetails } from '@features/platform/auth/user/models/interfaces/user-details.interface';
@@ -121,9 +125,7 @@ export class SecurityPageComponent {
               blackColor: '#171715',
               whiteColor: '#ffffff',
             });
-            this.qrCode.set(
-              `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
-            );
+            this.qrCode.set(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
           } catch {
             this.qrCode.set('');
             this.notify('No se pudo generar el QR. Usa la clave manual.');
@@ -204,7 +206,11 @@ export class SecurityPageComponent {
   downloadCodes(): void {
     const url = URL.createObjectURL(
       new Blob(
-        [this.translations.t('platform.auth.recoveryCodesFileHeader') + '\n\n' + this.recoveryCodes().join('\n')],
+        [
+          this.translations.t('platform.auth.recoveryCodesFileHeader') +
+            '\n\n' +
+            this.recoveryCodes().join('\n'),
+        ],
         { type: 'text/plain' },
       ),
     );

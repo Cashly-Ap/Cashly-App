@@ -23,7 +23,12 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="PAYMENT_METHOD"
+                [auditEntityId]="pm.id"
+                [auditLabel]="pm.name"
+              >
                 <p-button
                   [appPermission]="'UPDATE'"
                   [label]="'finance.billing.invoices.edit' | translate"

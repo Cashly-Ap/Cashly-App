@@ -19,6 +19,7 @@ import { UserPermission } from '@features/platform/auth/user/permissions';
 import { RolePermission } from '@features/platform/auth/role/permissions';
 import { DepartmentPermission } from '@features/platform/auth/department/permissions';
 import { CompanyPermission } from '@features/platform/company/permissions';
+import { AuditPermission } from '@features/platform/audit/permissions';
 
 export type AppPermission =
   | QuotePermission
@@ -41,4 +42,5 @@ export type AppPermission =
   | UserPermission
   | RolePermission
   | DepartmentPermission
-  | CompanyPermission;
+  | CompanyPermission
+  | AuditPermission;

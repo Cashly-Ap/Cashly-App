@@ -9,9 +9,9 @@ export function provideConfirmHandler(): Provider {
     resource: 'orders',
     label: 'Confirmar',
     load: () =>
-      import('@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.wrapper').then(
-        (module) => module.ConfirmOrderDialogWrapperComponent,
-      ),
+      import(
+        '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.wrapper'
+      ).then((module) => module.ConfirmOrderDialogWrapperComponent),
   };
   return { provide: ACTION_DIALOG_HANDLERS, multi: true, useValue: registration };
 }

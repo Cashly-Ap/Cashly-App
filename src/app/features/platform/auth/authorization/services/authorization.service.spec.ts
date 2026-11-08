@@ -92,14 +92,20 @@ describe('Current role authorization', () => {
       entity: { id: 'u' },
     } as AuthenticationResponse;
     auth.setAuthState(response);
-    auth.currentAccess.set({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] } });
+    auth.currentAccess.set({
+      ...access,
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ'] },
+    });
     vi.spyOn(TestBed.inject(AuthApiService), 'refresh').mockReturnValue(of(response));
     let completed = false;
     auth.refreshTokenSilently().subscribe(() => (completed = true));
     expect(completed).toBe(false);
     const request = http.expectOne('/api/auth/access');
     expect(request.request.context.get(ACCESS_REFRESH_REQUEST)).toBe(true);
-    request.flush({ ...access, permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ', 'CREATE'] } });
+    request.flush({
+      ...access,
+      permissions: { [BusinessModule.CATALOG_PRODUCTS]: ['READ', 'CREATE'] },
+    });
     expect(completed).toBe(true);
     expect(authorization.can(BusinessModule.CATALOG_PRODUCTS, 'CREATE')).toBe(true);
     auth.clearAuthState();

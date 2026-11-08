@@ -21,7 +21,13 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="ORDER"
+                [auditEntityId]="currentOrder.id"
+                [auditLabel]="currentOrder.orderNumber"
+                [auditSubtitle]="currentOrder.customerAlias"
+              >
                 <p-button
                   [appPermission]="'EXPORT'"
                   [label]="'navigation.labels.downloadPdf' | translate"

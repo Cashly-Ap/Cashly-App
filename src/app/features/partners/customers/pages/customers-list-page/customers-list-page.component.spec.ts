@@ -123,7 +123,9 @@ describe('CustomersListPageComponent', () => {
 
     component.onViewBalance(mockCustomer);
 
-    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(BusinessModule.CONTACTS_CUSTOMERS);
+    expect(mockAuthService.hasModulePermission).toHaveBeenCalledWith(
+      BusinessModule.CONTACTS_CUSTOMERS,
+    );
     expect(navigateSpy).toHaveBeenCalledWith(['/partners/customers', mockCustomer.id, 'balance']);
   });
 
@@ -133,6 +135,7 @@ describe('CustomersListPageComponent', () => {
       'Editar',
       'Ver saldo',
       'Eliminar',
+      'Historial',
     ]);
   });
 
@@ -141,7 +144,7 @@ describe('CustomersListPageComponent', () => {
 
     expect(
       component.actionsFor({ ...mockCustomer, deletable: false }).map((action) => action.label),
-    ).toEqual(['Ver detalle', 'Editar', 'Eliminar']);
+    ).toEqual(['Ver detalle', 'Editar', 'Eliminar', 'Historial']);
   });
 
   it('should return correct type label', () => {

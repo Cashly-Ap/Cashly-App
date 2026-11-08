@@ -70,7 +70,6 @@ export class UsersDetailsPageComponent implements OnInit {
   showChangePasswordDialog = signal(false);
   showChangeEmailDialog = signal(false);
 
-
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
@@ -108,7 +107,9 @@ export class UsersDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.user();
     if (!item) return;
-    this.deletion.open('users', item.id, item.userName, () => this.router.navigate(['/platform/users']));
+    this.deletion.open('users', item.id, item.userName, () =>
+      this.router.navigate(['/platform/users']),
+    );
   }
 
   onBack(): void {
@@ -122,5 +123,4 @@ export class UsersDetailsPageComponent implements OnInit {
   getTypeLabel(type: UserType): string {
     return getUserTypeLabel(type);
   }
-
 }

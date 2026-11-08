@@ -102,7 +102,7 @@ describe('runtime language', () => {
     expect(date.transform('2026-10-30', 'dd/MM/yyyy')).toBe('30/10/2026');
     language.setLanguage('en');
     expect(number.transform(1234.5, '1.2-2')).toBe('1,234.50');
-    expect(currency.transform(1234.5, 'USD')).toBe('$1,234.50');
+    expect(currency.transform(1234.5, 'USD')).toBe('1,234.50$');
     expect(date.transform('2026-10-30', 'dd/MM/yyyy')).toBe('10/30/2026');
   });
 });

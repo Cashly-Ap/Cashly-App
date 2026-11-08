@@ -6,8 +6,14 @@ export enum DebitNotePermission {
 }
 
 export const DEBIT_NOTE_PERMISSIONS = [
-  { code: DebitNotePermission.VIEW_LIST, labelKey: 'finance.billing.debitNotes.permissions.viewList' },
-  { code: DebitNotePermission.VIEW_DETAIL, labelKey: 'finance.billing.debitNotes.permissions.viewDetail' },
+  {
+    code: DebitNotePermission.VIEW_LIST,
+    labelKey: 'finance.billing.debitNotes.permissions.viewList',
+  },
+  {
+    code: DebitNotePermission.VIEW_DETAIL,
+    labelKey: 'finance.billing.debitNotes.permissions.viewDetail',
+  },
   { code: DebitNotePermission.DELETE, labelKey: 'finance.billing.debitNotes.permissions.delete' },
   { code: DebitNotePermission.CREATE, labelKey: 'finance.billing.debitNotes.permissions.create' },
 ] as const;

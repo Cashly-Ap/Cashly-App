@@ -97,7 +97,9 @@ describe('CustomersFormPageComponent', () => {
   });
 
   it('returns through navigation history instead of forcing the list destination', () => {
-    const back = vi.spyOn(TestBed.inject(NavigationHistoryService), 'back').mockImplementation(() => undefined);
+    const back = vi
+      .spyOn(TestBed.inject(NavigationHistoryService), 'back')
+      .mockImplementation(() => undefined);
     component.onCancel();
     expect(back).toHaveBeenCalledWith(['/partners/customers']);
   });
@@ -222,10 +224,13 @@ describe('CustomersFormPageComponent', () => {
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     component.mode.set(FormMode.EDIT);
     component.entityId.set('uuid-001');
-    component.form.patchValue({ legalName: 'Acme Corp', rif: 'J-12345678-9', priceTypeId: 'pt-001' });
+    component.form.patchValue({
+      legalName: 'Acme Corp',
+      rif: 'J-12345678-9',
+      priceTypeId: 'pt-001',
+    });
     component.array('addresses').at(0).patchValue({ address: 'Av. Principal' });
     component.onSubmit();
     expect(navigate).toHaveBeenCalledWith(['/partners/customers', 'uuid-001']);
   });
-
 });

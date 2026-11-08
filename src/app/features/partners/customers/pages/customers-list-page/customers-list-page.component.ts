@@ -39,6 +39,7 @@ import {
   editAction,
   deleteAction,
   listAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -299,6 +300,13 @@ export class CustomersListPageComponent implements OnInit {
     }
 
     actions.push(deleteAction(() => this.onDelete(customer)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'CUSTOMER',
+        entityId: customer.id,
+        label: customer.legalName,
+      }),
+    );
 
     return actions;
   }

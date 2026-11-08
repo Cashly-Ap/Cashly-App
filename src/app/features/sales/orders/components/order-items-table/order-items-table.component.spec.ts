@@ -300,9 +300,7 @@ describe('OrderItemsTableComponent', () => {
     recreateWithSingleWarehouse({ id: 'wh1', code: 'WH1', name: 'Warehouse 1' });
 
     expect(
-      component.warehouseForItem(
-        mockAllocationItem([allocation('wh1'), allocation('wh2')]),
-      ),
+      component.warehouseForItem(mockAllocationItem([allocation('wh1'), allocation('wh2')])),
     ).toBeNull();
   });
 

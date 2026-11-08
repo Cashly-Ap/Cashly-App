@@ -15,17 +15,53 @@ export enum ReceivablePermission {
 }
 
 export const RECEIVABLE_PERMISSIONS = [
-  { code: ReceivablePermission.VIEW_LIST, labelKey: 'finance.treasury.receivables.permissions.viewList' },
-  { code: ReceivablePermission.VIEW_DEBT, labelKey: 'finance.treasury.receivables.permissions.viewDebt' },
-  { code: ReceivablePermission.REPORT_PDF, labelKey: 'finance.treasury.receivables.permissions.reportPdf' },
-  { code: ReceivablePermission.PAY_ALL, labelKey: 'finance.treasury.receivables.permissions.payAll' },
-  { code: ReceivablePermission.PARTIAL_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.partialPayment' },
-  { code: ReceivablePermission.PAY_DIRECT, labelKey: 'finance.treasury.receivables.permissions.payDirect' },
-  { code: ReceivablePermission.PAY_WITH_VALIDATION, labelKey: 'finance.treasury.receivables.permissions.payWithValidation' },
-  { code: ReceivablePermission.REFUND, labelKey: 'finance.treasury.receivables.permissions.refund' },
-  { code: ReceivablePermission.ADVANCE, labelKey: 'finance.treasury.receivables.permissions.advance' },
-  { code: ReceivablePermission.APPROVE_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.approvePayment' },
-  { code: ReceivablePermission.REJECT_PAYMENT, labelKey: 'finance.treasury.receivables.permissions.rejectPayment' },
+  {
+    code: ReceivablePermission.VIEW_LIST,
+    labelKey: 'finance.treasury.receivables.permissions.viewList',
+  },
+  {
+    code: ReceivablePermission.VIEW_DEBT,
+    labelKey: 'finance.treasury.receivables.permissions.viewDebt',
+  },
+  {
+    code: ReceivablePermission.REPORT_PDF,
+    labelKey: 'finance.treasury.receivables.permissions.reportPdf',
+  },
+  {
+    code: ReceivablePermission.PAY_ALL,
+    labelKey: 'finance.treasury.receivables.permissions.payAll',
+  },
+  {
+    code: ReceivablePermission.PARTIAL_PAYMENT,
+    labelKey: 'finance.treasury.receivables.permissions.partialPayment',
+  },
+  {
+    code: ReceivablePermission.PAY_DIRECT,
+    labelKey: 'finance.treasury.receivables.permissions.payDirect',
+  },
+  {
+    code: ReceivablePermission.PAY_WITH_VALIDATION,
+    labelKey: 'finance.treasury.receivables.permissions.payWithValidation',
+  },
+  {
+    code: ReceivablePermission.REFUND,
+    labelKey: 'finance.treasury.receivables.permissions.refund',
+  },
+  {
+    code: ReceivablePermission.ADVANCE,
+    labelKey: 'finance.treasury.receivables.permissions.advance',
+  },
+  {
+    code: ReceivablePermission.APPROVE_PAYMENT,
+    labelKey: 'finance.treasury.receivables.permissions.approvePayment',
+  },
+  {
+    code: ReceivablePermission.REJECT_PAYMENT,
+    labelKey: 'finance.treasury.receivables.permissions.rejectPayment',
+  },
   { code: ReceivablePermission.EDIT, labelKey: 'finance.treasury.receivables.permissions.edit' },
-  { code: ReceivablePermission.DELETE, labelKey: 'finance.treasury.receivables.permissions.delete' },
+  {
+    code: ReceivablePermission.DELETE,
+    labelKey: 'finance.treasury.receivables.permissions.delete',
+  },
 ] as const;

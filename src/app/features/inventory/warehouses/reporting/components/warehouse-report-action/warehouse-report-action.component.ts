@@ -39,7 +39,9 @@ export class WarehouseReportActionComponent {
   stockExcel(filters: StockPdfFilters): void {
     this.stockExcelApi
       .getExcel(filters)
-      .subscribe({ next: (blob) => FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx') });
+      .subscribe({
+        next: (blob) => FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx'),
+      });
   }
 
   movementsPdf(filters: MovementsPdfFilters): void {
@@ -53,11 +55,9 @@ export class WarehouseReportActionComponent {
   }
 
   movementsExcel(filters: MovementsPdfFilters): void {
-    this.movementsExcelApi
-      .getExcel(filters)
-      .subscribe({
-        next: (blob) => FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx'),
-      });
+    this.movementsExcelApi.getExcel(filters).subscribe({
+      next: (blob) => FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx'),
+    });
   }
 
   close(): void {

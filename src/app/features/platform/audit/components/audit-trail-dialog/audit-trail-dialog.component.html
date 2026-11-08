@@ -1,0 +1,229 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [maximizable]="true"
+  [dismissableMask]="true"
+  [closeOnEscape]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '72rem' }"
+  [breakpoints]="{ '1199px': '92vw', '767px': '100vw' }"
+  [contentStyle]="{ 'max-height': '70vh', 'overflow-y': 'auto' }"
+  [closeAriaLabel]="'shared.close' | translate"
+  [attr.aria-label]="'audit.title' | translate"
+  (visibleChange)="visible.set($event)"
+  (onHide)="onHidden()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex flex-col">
+      <h2 class="m-0 text-lg font-semibold text-surface-900 dark:text-surface-0">
+        {{ 'audit.title' | translate }} — {{ request().label }}
+      </h2>
+      <p class="m-0 text-sm text-surface-500 dark:text-surface-400">
+        {{ request().subtitle ?? ('audit.subtitle' | translate) }}
+      </p>
+    </div>
+  </ng-template>
+
+  <div class="mb-4 flex justify-start sm:hidden">
+    <app-list-filter
+      [variant]="'compact'"
+      [activeCount]="activeFilterCount()"
+      [clearAsIcon]="true"
+      [shortcut]="null"
+      [appendTo]="'body'"
+      clearLabelKey="audit.filters.clear"
+      (cleared)="clearFilters()"
+    >
+      @if (actionOptions().length > 0) {
+        <app-filter-field labelKey="audit.filters.action">
+          <p-multiselect
+            [options]="actionOptions()"
+            [ngModel]="selectedActions()"
+            (onChange)="onActionsChange($event.value)"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'audit.filters.action' | translate"
+            appendTo="body"
+            styleClass="w-full"
+          />
+        </app-filter-field>
+      }
+
+      @if (actorOptions().length > 0) {
+        <app-filter-field labelKey="audit.filters.actor">
+          <p-select
+            [options]="actorOptions()"
+            [ngModel]="selectedActorId()"
+            (onChange)="onActorChange($event.value)"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'audit.filters.actor' | translate"
+            appendTo="body"
+            styleClass="w-full"
+          />
+        </app-filter-field>
+      }
+
+      <app-filter-field labelKey="audit.filters.from">
+        <p-datepicker
+          [ngModel]="fromDate()"
+          (onSelect)="onFromChange($event)"
+          (onClear)="onFromChange(null)"
+          [showIcon]="true"
+          [showClear]="true"
+          [minDate]="minDate()"
+          [maxDate]="maxDate()"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+          [placeholder]="'audit.filters.from' | translate"
+          appendTo="body"
+          styleClass="w-full"
+          [fluid]="true"
+        />
+      </app-filter-field>
+
+      <app-filter-field labelKey="audit.filters.to">
+        <p-datepicker
+          [ngModel]="toDate()"
+          (onSelect)="onToChange($event)"
+          (onClear)="onToChange(null)"
+          [showIcon]="true"
+          [showClear]="true"
+          [minDate]="minDate()"
+          [maxDate]="maxDate()"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+          [placeholder]="'audit.filters.to' | translate"
+          appendTo="body"
+          styleClass="w-full"
+          [fluid]="true"
+        />
+      </app-filter-field>
+    </app-list-filter>
+  </div>
+
+  <div class="mb-4 hidden gap-3 sm:grid sm:grid-cols-2 xl:grid-cols-5">
+    @if (actionOptions().length > 0) {
+      <app-filter-field labelKey="audit.filters.action">
+        <p-multiselect
+          [options]="actionOptions()"
+          [ngModel]="selectedActions()"
+          (onChange)="onActionsChange($event.value)"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [showClear]="true"
+          [placeholder]="'audit.filters.action' | translate"
+          appendTo="body"
+          styleClass="w-full"
+        />
+      </app-filter-field>
+    }
+
+    @if (actorOptions().length > 0) {
+      <app-filter-field labelKey="audit.filters.actor">
+        <p-select
+          [options]="actorOptions()"
+          [ngModel]="selectedActorId()"
+          (onChange)="onActorChange($event.value)"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [showClear]="true"
+          [placeholder]="'audit.filters.actor' | translate"
+          appendTo="body"
+          styleClass="w-full"
+        />
+      </app-filter-field>
+    }
+
+    <app-filter-field labelKey="audit.filters.from">
+      <p-datepicker
+        [ngModel]="fromDate()"
+        (onSelect)="onFromChange($event)"
+        (onClear)="onFromChange(null)"
+        [showIcon]="true"
+        [showClear]="true"
+        [minDate]="minDate()"
+        [maxDate]="maxDate()"
+        [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+        [placeholder]="'audit.filters.from' | translate"
+        appendTo="body"
+        styleClass="w-full"
+        [fluid]="true"
+      />
+    </app-filter-field>
+
+    <app-filter-field labelKey="audit.filters.to">
+      <p-datepicker
+        [ngModel]="toDate()"
+        (onSelect)="onToChange($event)"
+        (onClear)="onToChange(null)"
+        [showIcon]="true"
+        [showClear]="true"
+        [minDate]="minDate()"
+        [maxDate]="maxDate()"
+        [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+        [placeholder]="'audit.filters.to' | translate"
+        appendTo="body"
+        styleClass="w-full"
+        [fluid]="true"
+      />
+    </app-filter-field>
+
+    <div class="flex items-end">
+      <p-button
+        icon="pi pi-filter-slash"
+        [outlined]="true"
+        severity="secondary"
+        [ariaLabel]="'audit.filters.clear' | translate"
+        [pTooltip]="'audit.filters.clear' | translate"
+        (onClick)="clearFilters()"
+      />
+    </div>
+  </div>
+
+  <div class="mt-4">
+    @if (trail.loading() && trail.events().length === 0) {
+      <div class="flex justify-center py-10">
+        <app-loading-spinner [message]="'audit.loading' | translate" />
+      </div>
+    } @else if (trail.error()) {
+      <div
+        class="flex flex-col items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-6 text-center dark:border-red-800 dark:bg-red-900/20"
+      >
+        <i class="pi pi-exclamation-triangle text-2xl text-red-500" aria-hidden="true"></i>
+        <p class="m-0 text-sm text-red-700 dark:text-red-300">
+          {{ trail.error() | translate }}
+        </p>
+        <p-button
+          [label]="'audit.retry' | translate"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="trail.reload()"
+        />
+      </div>
+    } @else if (trail.events().length === 0) {
+      <app-empty-state icon="pi pi-history" [message]="'audit.empty' | translate" />
+    } @else {
+      <app-audit-trail-list [events]="trail.events()" />
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    @if (trail.totalElements() > 0) {
+      <app-paginator
+        [first]="trail.page() * trail.filters().size"
+        [rows]="trail.filters().size"
+        [totalRecords]="trail.totalElements()"
+        [rowsPerPageOptions]="[10, 20, 50]"
+        [currentPageReportTemplate]="pageReportTemplate()"
+        (pageChange)="onPageChange($event)"
+      />
+    }
+  </ng-template>
+</p-dialog>

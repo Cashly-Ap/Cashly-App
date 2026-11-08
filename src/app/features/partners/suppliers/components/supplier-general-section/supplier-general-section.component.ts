@@ -14,7 +14,8 @@ import { SUPPLIER_TYPES } from '@features/partners/suppliers/models/enums/suppli
   selector: 'app-supplier-general-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     ToggleSwitchModule,
     TextareaModule,

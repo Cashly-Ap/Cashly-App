@@ -139,6 +139,19 @@ describe('InvoiceListPageComponent', () => {
     expect(navigateSpy).not.toHaveBeenCalled();
   });
 
+  it('exposes the audit history action for the record', () => {
+    const history = component
+      .actionsFor(mockInvoices[0])
+      .find((action) => action.label === 'Historial');
+
+    expect(history).toBeDefined();
+    expect(history!.audit).toEqual({
+      entityType: 'INVOICE',
+      entityId: mockInvoices[0].id,
+      label: mockInvoices[0].invoiceNumber,
+    });
+  });
+
   it('should load invoices on init', () => {
     fixture.detectChanges();
     expect(mockService.loadAll).toHaveBeenCalled();

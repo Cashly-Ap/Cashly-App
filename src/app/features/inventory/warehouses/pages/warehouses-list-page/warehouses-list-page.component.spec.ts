@@ -98,6 +98,7 @@ describe('WarehousesListPageComponent', () => {
       'Ver detalle',
       'Editar',
       'Eliminar',
+      'Historial',
     ]);
   });
 

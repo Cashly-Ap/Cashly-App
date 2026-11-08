@@ -30,7 +30,8 @@ import { ProductPricesSectionComponent } from '@features/catalog/products/compon
   selector: 'app-product-general-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     CommonModule,
     ReactiveFormsModule,
     SelectModule,

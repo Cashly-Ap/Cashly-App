@@ -1,6 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { ListFilterComponent, ListFilterField } from '@shared/components/list/list-filter/list-filter.component';
+import {
+  ListFilterComponent,
+  ListFilterField,
+} from '@shared/components/list/list-filter/list-filter.component';
 
 describe('ListFilterComponent', () => {
   let component: ListFilterComponent;

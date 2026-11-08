@@ -2,10 +2,7 @@ import { map } from 'rxjs';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
 import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
 import { documentListAction } from '@shared/models/document-list-action';
-import {
-  arrayLookupResult,
-  lookupDescription,
-} from '@shared/utils/navigation-lookup';
+import { arrayLookupResult, lookupDescription } from '@shared/utils/navigation-lookup';
 
 export const DEBIT_NOTE_LOOKUP: LookupDefinition = {
   route: '/finance/billing/debit-notes',

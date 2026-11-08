@@ -10,5 +10,13 @@
 <p-popover #actionsPopover appendTo="body">
   <div class="flex min-w-52 flex-col gap-1 p-1">
     <ng-content />
+    @if (audit(); as request) {
+      <app-audit-trail-action
+        [entityType]="request.entityType!"
+        [entityId]="request.entityId"
+        [label]="request.label"
+        [subtitle]="request.subtitle"
+      />
+    }
   </div>
 </p-popover>

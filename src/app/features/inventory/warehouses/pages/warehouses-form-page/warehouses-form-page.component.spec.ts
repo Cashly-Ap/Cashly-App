@@ -483,10 +483,12 @@ describe('WarehousesFormPageComponent', () => {
     createComponent();
     fixture.detectChanges();
     const navigate = vi.spyOn(router, 'navigate').mockResolvedValue(true);
-    component.form.patchValue({ name: 'Updated warehouse', state: 'Carabobo', municipality: 'Valencia' });
+    component.form.patchValue({
+      name: 'Updated warehouse',
+      state: 'Carabobo',
+      municipality: 'Valencia',
+    });
     component.onSubmit();
     expect(navigate).toHaveBeenCalledWith(['/inventory/warehouses', 'wh-001']);
   });
-
-
 });

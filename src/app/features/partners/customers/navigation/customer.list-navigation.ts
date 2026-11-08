@@ -5,6 +5,7 @@ import {
   listAction,
   remove,
   view,
+  history,
 } from '@core/layouts/config/list-navigation.types';
 
 export const CUSTOMER_LIST_NAVIGATION: ListNavigationDefinition = {
@@ -16,5 +17,6 @@ export const CUSTOMER_LIST_NAVIGATION: ListNavigationDefinition = {
     edit(),
     listAction('Ver saldo', 'CUSTOMER_BALANCE', 'wallet', BusinessModule.CONTACTS_CUSTOMERS),
     remove(),
+    history(),
   ],
 };

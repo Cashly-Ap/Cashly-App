@@ -50,9 +50,7 @@ export const INVOICE_LOOKUP: LookupDefinition = {
     const listAction = action === 'CANCEL' ? undefined : action;
     const invoiceStatus = textLookupFilter(query.filters['status']);
     const statuses =
-      !invoiceStatus || invoiceStatus === 'ALL'
-        ? Object.values(InvoiceStatus)
-        : [invoiceStatus];
+      !invoiceStatus || invoiceStatus === 'ALL' ? Object.values(InvoiceStatus) : [invoiceStatus];
     const returnStatus = textLookupFilter(query.filters['returnStatus']);
     const dueStatus = textLookupFilter(query.filters['dueStatus']);
     return api

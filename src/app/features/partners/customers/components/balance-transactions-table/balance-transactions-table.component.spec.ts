@@ -43,7 +43,7 @@ describe('BalanceTransactionsTableComponent', () => {
     expect(desktop.className).toContain('md:block');
     expect(mobile.textContent).toContain('INV-001');
     expect(mobile.textContent).toContain('PED-001');
-    expect(mobile.textContent?.replace(/\u00a0/g, ' ')).toContain('125,00 US$');
+    expect(mobile.textContent?.replace(/\u00a0/g, ' ')).toContain('125,00$');
   });
 
   it('translates the movement type badge with the active language', () => {

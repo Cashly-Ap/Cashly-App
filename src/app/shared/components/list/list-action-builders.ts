@@ -2,9 +2,12 @@ import { ListAction } from '@shared/components/list/list-action-buttons/list-act
 import { LIST_ACTION_PRESETS } from '@shared/models/list-action-presets';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
+import { AuditTrailRequest } from '@features/platform/audit/models';
 
 export interface ListActionOptions {
   module?: BusinessModule;
+  requiredPermissionCode?: AppPermission;
   requiredPermissions?: string[];
   danger?: boolean;
   disabled?: boolean;
@@ -124,3 +127,19 @@ export const duplicateInvoiceAction = (
     command,
     options,
   );
+
+export const historyAction = (command: () => void, options?: ListActionOptions): ListAction => ({
+  label: LIST_ACTION_PRESETS.history.label,
+  icon: `pi pi-${LIST_ACTION_PRESETS.history.icon}`,
+  requiredPermissionCode: LIST_ACTION_PRESETS.history.requiredPermissionCode,
+  command,
+  ...options,
+});
+
+export const auditHistoryAction = (request: AuditTrailRequest): ListAction => ({
+  label: LIST_ACTION_PRESETS.history.label,
+  icon: `pi pi-${LIST_ACTION_PRESETS.history.icon}`,
+  requiredPermissionCode: LIST_ACTION_PRESETS.history.requiredPermissionCode,
+  command: () => undefined,
+  audit: request,
+});

@@ -141,7 +141,9 @@ export class ProductsDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.product();
     if (!item) return;
-    this.deletion.open('products', item.id, item.name, () => this.router.navigate(['/catalog/products']));
+    this.deletion.open('products', item.id, item.name, () =>
+      this.router.navigate(['/catalog/products']),
+    );
   }
 
   onBack(): void {

@@ -6,8 +6,14 @@ export enum CreditNotePermission {
 }
 
 export const CREDIT_NOTE_PERMISSIONS = [
-  { code: CreditNotePermission.VIEW_LIST, labelKey: 'finance.billing.creditNotes.permissions.viewList' },
-  { code: CreditNotePermission.VIEW_DETAIL, labelKey: 'finance.billing.creditNotes.permissions.viewDetail' },
+  {
+    code: CreditNotePermission.VIEW_LIST,
+    labelKey: 'finance.billing.creditNotes.permissions.viewList',
+  },
+  {
+    code: CreditNotePermission.VIEW_DETAIL,
+    labelKey: 'finance.billing.creditNotes.permissions.viewDetail',
+  },
   { code: CreditNotePermission.DELETE, labelKey: 'finance.billing.creditNotes.permissions.delete' },
   { code: CreditNotePermission.CREATE, labelKey: 'finance.billing.creditNotes.permissions.create' },
 ] as const;

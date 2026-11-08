@@ -9,9 +9,9 @@ export function provideConvertToInvoiceHandler(): Provider {
     resource: 'quotes',
     label: 'Convertir a factura',
     load: () =>
-      import('@features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.wrapper').then(
-        (module) => module.QuoteConvertToInvoiceDialogWrapperComponent,
-      ),
+      import(
+        '@features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.wrapper'
+      ).then((module) => module.QuoteConvertToInvoiceDialogWrapperComponent),
   };
   return { provide: ACTION_DIALOG_HANDLERS, multi: true, useValue: registration };
 }

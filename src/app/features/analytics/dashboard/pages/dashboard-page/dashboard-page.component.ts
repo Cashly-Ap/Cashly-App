@@ -80,7 +80,7 @@ export class DashboardPageComponent implements OnInit {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
       },
     },
   };
@@ -94,7 +94,7 @@ export class DashboardPageComponent implements OnInit {
     scales: {
       x: {
         beginAtZero: true,
-        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
       },
       y: { ticks: { font: { size: 11 } } },
     },
@@ -109,7 +109,7 @@ export class DashboardPageComponent implements OnInit {
     scales: {
       x: {
         beginAtZero: true,
-        ticks: { callback: (v) => '$' + (v as number).toLocaleString(this.language.locale()) },
+        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
       },
       y: { ticks: { font: { size: 11 } } },
     },
@@ -124,7 +124,7 @@ export class DashboardPageComponent implements OnInit {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: { callback: (v) => '$' + Number(v).toLocaleString(this.language.locale()) },
+        ticks: { callback: (v) => Number(v).toLocaleString(this.language.locale()) + '$' },
       },
     },
   };

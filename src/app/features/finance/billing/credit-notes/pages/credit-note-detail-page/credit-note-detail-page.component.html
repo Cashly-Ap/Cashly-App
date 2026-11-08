@@ -24,7 +24,12 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CREDIT_NOTE"
+                [auditEntityId]="cn.id"
+                [auditLabel]="cn.noteNumber"
+              >
                 <p-button
                   [appPermission]="'DELETE'"
                   [label]="'finance.billing.creditnotes.delete' | translate"

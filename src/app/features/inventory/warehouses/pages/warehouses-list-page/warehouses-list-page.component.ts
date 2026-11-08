@@ -32,6 +32,7 @@ import {
   editAction,
   deleteAction,
   listAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 
@@ -233,6 +234,13 @@ export class WarehousesListPageComponent implements OnInit {
       editAction(() => this.onEdit(warehouse)),
     ];
     actions.push(deleteAction(() => this.onDelete(warehouse)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'WAREHOUSE',
+        entityId: warehouse.id,
+        label: warehouse.name,
+      }),
+    );
     return actions;
   }
 

@@ -4,7 +4,14 @@ import { orderStatusVariant } from '@features/sales/orders/models/order-status.p
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';

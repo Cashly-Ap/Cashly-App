@@ -25,6 +25,7 @@ const modulePaths = [
   'platform/auth',
   'platform/company',
   'platform/notifications',
+  'platform/audit',
 ];
 const publicScreens = [
   'platform/auth',

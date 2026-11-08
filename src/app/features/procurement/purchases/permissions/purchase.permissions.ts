@@ -12,12 +12,18 @@ export enum PurchasePermission {
 
 export const PURCHASE_PERMISSIONS = [
   { code: PurchasePermission.VIEW_LIST, labelKey: 'procurement.purchases.permissions.viewList' },
-  { code: PurchasePermission.VIEW_DETAIL, labelKey: 'procurement.purchases.permissions.viewDetail' },
+  {
+    code: PurchasePermission.VIEW_DETAIL,
+    labelKey: 'procurement.purchases.permissions.viewDetail',
+  },
   { code: PurchasePermission.EDIT, labelKey: 'procurement.purchases.permissions.edit' },
   { code: PurchasePermission.DELETE, labelKey: 'procurement.purchases.permissions.delete' },
   { code: PurchasePermission.CREATE, labelKey: 'procurement.purchases.permissions.create' },
   { code: PurchasePermission.REPORT_PDF, labelKey: 'procurement.purchases.permissions.reportPdf' },
-  { code: PurchasePermission.DOWNLOAD_PDF, labelKey: 'procurement.purchases.permissions.downloadPdf' },
+  {
+    code: PurchasePermission.DOWNLOAD_PDF,
+    labelKey: 'procurement.purchases.permissions.downloadPdf',
+  },
   { code: PurchasePermission.CONFIRM, labelKey: 'procurement.purchases.permissions.confirm' },
   { code: PurchasePermission.CANCEL, labelKey: 'procurement.purchases.permissions.cancel' },
 ] as const;

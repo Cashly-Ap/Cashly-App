@@ -24,7 +24,8 @@ interface SelectOption {
   selector: 'app-customer-general-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     ReactiveFormsModule,
     ToggleSwitchModule,
     TextareaModule,

@@ -47,6 +47,7 @@ import {
   cancelAction,
   convertToOrderAction,
   convertToInvoiceAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -257,6 +258,9 @@ export class QuoteListPageComponent implements OnInit {
         deleteAction(() => this.onDelete(quote)),
       );
     }
+    actions.push(
+      auditHistoryAction({ entityType: 'QUOTE', entityId: quote.id, label: quote.quoteNumber }),
+    );
     return actions;
   }
 

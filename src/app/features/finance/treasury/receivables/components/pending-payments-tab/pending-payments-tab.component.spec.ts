@@ -115,9 +115,7 @@ describe('PendingPaymentsTabComponent', () => {
   it('should render the voucher button disabled when voucherUrl is null', () => {
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector(
-      'p-button[icon="pi pi-paperclip"] button',
-    );
+    const button = fixture.nativeElement.querySelector('p-button[icon="pi pi-paperclip"] button');
 
     expect(button.disabled).toBe(true);
   });
@@ -131,9 +129,7 @@ describe('PendingPaymentsTabComponent', () => {
     component.payments.set([paymentWithVoucher]);
     fixture.detectChanges();
 
-    const button = fixture.nativeElement.querySelector(
-      'p-button[icon="pi pi-paperclip"] button',
-    );
+    const button = fixture.nativeElement.querySelector('p-button[icon="pi pi-paperclip"] button');
     expect(button.disabled).toBe(false);
 
     component.openVoucher(paymentWithVoucher);

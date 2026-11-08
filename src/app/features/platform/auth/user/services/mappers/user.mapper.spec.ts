@@ -36,7 +36,6 @@ describe('UserMapper', () => {
       expect(result.createdAt).toBe('2025-01-01T00:00:00Z');
     });
 
-
     it('should not include updatedAt in UserList', () => {
       const result = UserMapper.toList(mockUserDetails);
       expect(result).not.toHaveProperty('updatedAt');

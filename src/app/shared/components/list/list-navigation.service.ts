@@ -7,6 +7,7 @@ import { PermissionAction } from '@features/platform/auth/authorization/models/a
 import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { MessageService } from 'primeng/api';
 import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
+import { AuditTrailDialogService } from '@shared/services/audit-trail-dialog.service';
 
 export interface ListNavigationFilter {
   label: string;
@@ -73,14 +74,12 @@ export class ListNavigationService {
   private readonly router = inject(Router);
   private readonly authorization = inject(AuthorizationService);
   private readonly messages = inject(MessageService, { optional: true });
+  private readonly auditDialog = inject(AuditTrailDialogService);
   readonly session = signal<ListNavigationSession | null>(null);
   private readonly registrations = new Map<object, ListNavigationRegistration<unknown>>();
 
   register<T>(registration: ListNavigationRegistration<T>): void {
-    this.registrations.set(
-      registration.owner,
-      registration as ListNavigationRegistration<unknown>,
-    );
+    this.registrations.set(registration.owner, registration as ListNavigationRegistration<unknown>);
   }
 
   unregister(owner: object): void {
@@ -119,11 +118,18 @@ export class ListNavigationService {
   }
 
   allowed(action: ListAction | undefined, module: BusinessModule | null): boolean {
+    if (!action) return false;
+    const hasModuleGate = !!action.requiredAction;
+    const hasCodeGate = !!action.requiredPermissionCode;
+    const actionModule = action.module ?? module;
+    const moduleAllowed = hasModuleGate
+      ? !!actionModule && this.authorization.can(actionModule, action.requiredAction!)
+      : true;
+    const codeAllowed = hasCodeGate ? this.authorization.can(action.requiredPermissionCode!) : true;
     return (
-      !!action &&
-      !!(action.module ?? module) &&
-      !!action.requiredAction &&
-      this.authorization.can((action.module ?? module) as BusinessModule, action.requiredAction) &&
+      (hasModuleGate || hasCodeGate) &&
+      moduleAllowed &&
+      codeAllowed &&
       (action.requiredPermissions ?? []).every((grant) => {
         const [owner, permission] = grant.split(':');
         return this.authorization.can(owner as BusinessModule, permission as PermissionAction);
@@ -147,8 +153,13 @@ export class ListNavigationService {
     this.session.set(null);
     session.onClose?.();
     const navigated = session.route ? await this.clearRequest(session.route) : true;
-    if (navigated !== false && this.allowed(action, session.module) && !action.disabled)
+    if (navigated !== false && this.allowed(action, session.module) && !action.disabled) {
+      if (action.audit) {
+        this.auditDialog.open(action.audit);
+        return;
+      }
       action.command();
+    }
   }
 
   dismiss(): void {
@@ -179,7 +190,13 @@ export class ListNavigationService {
     }
     this.session.set(null);
     const navigated = await this.clearRequest(route);
-    if (navigated !== false && !action.disabled && this.allowed(action, module)) action.command();
+    if (navigated !== false && !action.disabled && this.allowed(action, module)) {
+      if (action.audit) {
+        this.auditDialog.open(action.audit);
+        return;
+      }
+      action.command();
+    }
   }
 
   private clearRequest(route: ActivatedRoute): Promise<boolean> {
@@ -292,9 +309,9 @@ export function connectListNavigation<T>(options: ListNavigationOptions<T>): voi
       const records = computed(() =>
         options
           .records()
-           .map((record) => ({
-             id: keyFor(record),
-             label: options.label(record),
+          .map((record) => ({
+            id: keyFor(record),
+            label: options.label(record),
             description: options.description?.(record) ?? '',
             action: () =>
               [...options.actions(record), ...(options.extras?.(record) ?? [])].find(

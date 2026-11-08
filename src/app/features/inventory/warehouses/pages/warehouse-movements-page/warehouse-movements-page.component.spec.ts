@@ -12,9 +12,7 @@ import {
   MovementOverviewResponse,
 } from '@features/inventory/warehouses/services/api/movement-overview-api.service';
 
-function movement(
-  overrides: Partial<MovementOverviewItem> = {},
-): MovementOverviewItem {
+function movement(overrides: Partial<MovementOverviewItem> = {}): MovementOverviewItem {
   return {
     id: 'm1',
     warehouseId: 'wh-1',
@@ -36,9 +34,7 @@ function movement(
   };
 }
 
-function groupFor(
-  mode: Exclude<MovementGroupBy, 'NONE'>,
-): MovementOverviewGroup {
+function groupFor(mode: Exclude<MovementGroupBy, 'NONE'>): MovementOverviewGroup {
   const base = {
     movementCount: 2,
     entryQuantity: 12,
@@ -441,9 +437,7 @@ describe('WarehouseMovementsPageComponent', () => {
     expect(fixture.nativeElement.textContent).toContain(
       'Error al cargar los movimientos del almacén.',
     );
-    expect(fixture.nativeElement.textContent).not.toContain(
-      'No hay movimientos que coincidan',
-    );
+    expect(fixture.nativeElement.textContent).not.toContain('No hay movimientos que coincidan');
 
     api.getOverview.mockReturnValue(of(overview()));
     component.load();
@@ -454,9 +448,7 @@ describe('WarehouseMovementsPageComponent', () => {
   });
 
   it('reports a backend 400 rejection as a failed load instead of an empty result', () => {
-    api.getOverview.mockReturnValue(
-      throwError(() => ({ status: 400, statusText: 'Bad Request' })),
-    );
+    api.getOverview.mockReturnValue(throwError(() => ({ status: 400, statusText: 'Bad Request' })));
     fixture.detectChanges();
 
     expect(component.failed()).toBe(true);

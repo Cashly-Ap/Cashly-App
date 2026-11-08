@@ -110,25 +110,24 @@
                                 >
                                   <span
                                     >{{ 'finance.billing.invoices.limit' | translate }}
-                                    <strong
-                                      >${{ warning.creditLimit | localizedNumber: '1.2-2' }}</strong
-                                    ></span
+                                    <strong>{{
+                                      warning.creditLimit
+                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                                    }}</strong></span
                                   >
                                   <span
                                     >{{ 'finance.billing.invoices.available' | translate }}
-                                    <strong
-                                      >${{
-                                        warning.availableCredit | localizedNumber: '1.2-2'
-                                      }}</strong
-                                    ></span
+                                    <strong>{{
+                                      warning.availableCredit
+                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                                    }}</strong></span
                                   >
                                   <span
                                     >{{ 'finance.billing.returns.total' | translate }}
-                                    <strong
-                                      >${{
-                                        warning.invoiceTotal | localizedNumber: '1.2-2'
-                                      }}</strong
-                                    ></span
+                                    <strong>{{
+                                      warning.invoiceTotal
+                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                                    }}</strong></span
                                   >
                                 </div>
                                 <p class="text-[11px] text-surface-500 dark:text-surface-400 mt-1">
@@ -191,21 +190,21 @@
                 >
                   <span class="text-surface-600 dark:text-surface-400"
                     >{{ 'finance.billing.invoices.limit2' | translate }}
-                    <strong class="text-surface-900 dark:text-surface-0"
-                      >${{ info.creditLimit | localizedNumber: '1.2-2' }}</strong
-                    ></span
+                    <strong class="text-surface-900 dark:text-surface-0">{{
+                      info.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                    }}</strong></span
                   >
                   <span class="text-surface-600 dark:text-surface-400"
                     >{{ 'finance.billing.invoices.creditBalance2' | translate }}
-                    <strong class="text-green-600"
-                      >${{ info.customerBalance | localizedNumber: '1.2-2' }}</strong
-                    ></span
+                    <strong class="text-green-600">{{
+                      info.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                    }}</strong></span
                   >
                   <span class="text-surface-600 dark:text-surface-400"
                     >{{ 'finance.billing.invoices.availableCredit' | translate }}
-                    <strong class="text-surface-900 dark:text-surface-0"
-                      >${{ info.availableCredit | localizedNumber: '1.2-2' }}</strong
-                    ></span
+                    <strong class="text-surface-900 dark:text-surface-0">{{
+                      info.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                    }}</strong></span
                   >
                 </div>
               }
@@ -335,17 +334,21 @@
                   >
                     <span
                       >{{ 'finance.billing.invoices.limit2' | translate }}
-                      <strong>${{ warning.creditLimit | localizedNumber: '1.2-2' }}</strong></span
+                      <strong>{{
+                        warning.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</strong></span
                     >
                     <span
                       >{{ 'finance.billing.invoices.available' | translate }}
-                      <strong
-                        >${{ warning.availableCredit | localizedNumber: '1.2-2' }}</strong
-                      ></span
+                      <strong>{{
+                        warning.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</strong></span
                     >
                     <span
                       >{{ 'finance.billing.returns.total' | translate }}
-                      <strong>${{ warning.invoiceTotal | localizedNumber: '1.2-2' }}</strong></span
+                      <strong>{{
+                        warning.invoiceTotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</strong></span
                     >
                   </div>
                   <p class="text-xs text-surface-500 dark:text-surface-400 mt-1">

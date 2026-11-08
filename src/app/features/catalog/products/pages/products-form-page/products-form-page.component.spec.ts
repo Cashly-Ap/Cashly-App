@@ -467,5 +467,4 @@ describe('ProductsFormPageComponent', () => {
     expect(mockPhotoService.uploadPhoto).toHaveBeenCalledWith('prod-001', photo);
     expect(navigate).toHaveBeenCalledWith(['/catalog/products', 'prod-001']);
   });
-
 });

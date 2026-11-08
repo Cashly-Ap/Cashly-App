@@ -29,7 +29,8 @@ interface ProductOption {
 @Component({
   selector: 'app-product-composition-section',
   standalone: true,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     PermissionDirective,
     CommonModule,
     ReactiveFormsModule,

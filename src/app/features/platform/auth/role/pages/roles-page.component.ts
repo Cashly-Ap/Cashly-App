@@ -15,6 +15,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 
 import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
@@ -183,6 +184,7 @@ export class RolesPageComponent {
       actions.push(editAction(() => this.onEdit(item)));
       actions.push(deleteAction(() => this.remove(item)));
     }
+    actions.push(auditHistoryAction({ entityType: 'ROLE', entityId: item.id, label: item.name }));
     return actions;
   }
   private selectRoute(): void {

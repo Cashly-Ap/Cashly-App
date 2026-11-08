@@ -6,7 +6,11 @@ import {
 } from '@features/finance/billing/invoices/models/invoice-status.presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,6 +54,7 @@ import {
   cancelAction,
   confirmAction,
   duplicateInvoiceAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -95,6 +100,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     LocalizedNumberPipe,
     CommonModule,
     FormsModule,
@@ -348,6 +354,13 @@ export class InvoiceListPageComponent implements OnInit {
       actions.push(cancelAction('Cancelar factura', () => this.onCancelInvoice(invoice)));
     }
     actions.push(duplicateInvoiceAction(() => this.onDuplicate(invoice)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'INVOICE',
+        entityId: invoice.id,
+        label: invoice.invoiceNumber,
+      }),
+    );
     return actions;
   }
 

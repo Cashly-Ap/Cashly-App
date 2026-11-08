@@ -1,0 +1,52 @@
+export type AuditEntityType =
+  | 'QUOTE'
+  | 'ORDER'
+  | 'PURCHASE'
+  | 'INVOICE'
+  | 'INVOICE_LINE'
+  | 'RETURN'
+  | 'CREDIT_NOTE'
+  | 'DEBIT_NOTE'
+  | 'PAYMENT'
+  | 'PAYMENT_ALLOCATION'
+  | 'RECEIVABLE'
+  | 'CASH_REGISTER'
+  | 'CASH_MOVEMENT'
+  | 'PRODUCT'
+  | 'CATEGORY'
+  | 'PRICE_TYPE'
+  | 'WAREHOUSE'
+  | 'CUSTOMER'
+  | 'SUPPLIER'
+  | 'USER'
+  | 'ROLE'
+  | 'DEPARTMENT'
+  | 'COMPANY'
+  | 'PAYMENT_METHOD';
+
+export const AUDIT_ENTITY_TYPES: readonly AuditEntityType[] = [
+  'QUOTE',
+  'ORDER',
+  'PURCHASE',
+  'INVOICE',
+  'INVOICE_LINE',
+  'RETURN',
+  'CREDIT_NOTE',
+  'DEBIT_NOTE',
+  'PAYMENT',
+  'PAYMENT_ALLOCATION',
+  'RECEIVABLE',
+  'CASH_REGISTER',
+  'CASH_MOVEMENT',
+  'PRODUCT',
+  'CATEGORY',
+  'PRICE_TYPE',
+  'WAREHOUSE',
+  'CUSTOMER',
+  'SUPPLIER',
+  'USER',
+  'ROLE',
+  'DEPARTMENT',
+  'COMPANY',
+  'PAYMENT_METHOD',
+];

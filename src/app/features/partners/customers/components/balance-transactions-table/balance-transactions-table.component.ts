@@ -19,6 +19,10 @@ const TYPE_KEYS: Record<string, string> = {
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+import {
+  TextBadgeComponent,
+  TextBadgeVariant,
+} from '@shared/components/ui/text-badge/text-badge.component';
 @Component({
   selector: 'app-balance-transactions-table',
   standalone: true,
@@ -26,6 +30,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
   imports: [
     PaginatorComponent,
     PanelCardComponent,
+    TextBadgeComponent,
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
@@ -55,19 +60,16 @@ export class BalanceTransactionsTableComponent {
     return TYPE_KEYS[type] ?? type;
   }
 
-  typeBadgeClass(type: string): string {
-    const base = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
-    const variants: Record<string, string> = {
-      ADVANCED: `${base} bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200`,
-      RETURNS: `${base} bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200`,
-      PAYMENTS: `${base} bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200`,
-      INVOICES: `${base} bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200`,
-      REFUND: `${base} bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200`,
-      CREDIT_NOTE: `${base} bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200`,
-      DEBIT_NOTE: `${base} bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200`,
+  typeBadgeVariant(type: string): TextBadgeVariant {
+    const variants: Record<string, TextBadgeVariant> = {
+      ADVANCED: 'info',
+      RETURNS: 'warning',
+      PAYMENTS: 'success',
+      INVOICES: 'default',
+      REFUND: 'danger',
+      CREDIT_NOTE: 'success',
+      DEBIT_NOTE: 'warning',
     };
-    return (
-      variants[type] ?? `${base} bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200`
-    );
+    return variants[type] ?? 'secondary';
   }
 }

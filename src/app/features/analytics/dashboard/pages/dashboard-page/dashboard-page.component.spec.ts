@@ -127,8 +127,16 @@ describe('Dashboard chart theme', () => {
       useValue: {
         getSummary: () => of(null),
         getMonthlySales: monthlySales,
-        getTopProducts: () => of([{ id: '1', name: 'A', total: 100 }, { id: '2', name: 'B', total: 200 }]),
-        getTopCustomers: () => of([{ id: '1', name: 'A', total: 100 }, { id: '2', name: 'B', total: 200 }]),
+        getTopProducts: () =>
+          of([
+            { id: '1', name: 'A', total: 100 },
+            { id: '2', name: 'B', total: 200 },
+          ]),
+        getTopCustomers: () =>
+          of([
+            { id: '1', name: 'A', total: 100 },
+            { id: '2', name: 'B', total: 200 },
+          ]),
         getRecentActivity: () => of([]),
         getInvoiceDueSchedule: () => of([{ dueDate: '2026-11-14', amount: 100 }]),
       },
@@ -148,5 +156,4 @@ describe('Dashboard chart theme', () => {
     expect(component.productsChartData().datasets[0].data).toEqual([100, 200]);
     expect(monthlySales).toHaveBeenCalledTimes(1);
   });
-
 });

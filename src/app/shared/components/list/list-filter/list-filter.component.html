@@ -47,13 +47,26 @@
         >{{ titleKey() | translate }}</span
       >
       @if (hasActiveFilters()) {
-        <p-button
-          [label]="clearLabelKey() | translate"
-          [text]="true"
-          size="small"
-          severity="secondary"
-          (onClick)="cleared.emit()"
-        />
+        @if (clearAsIcon()) {
+          <p-button
+            icon="pi pi-filter-slash"
+            [text]="true"
+            [rounded]="true"
+            size="small"
+            severity="secondary"
+            [ariaLabel]="clearLabelKey() | translate"
+            [pTooltip]="clearLabelKey() | translate"
+            (onClick)="cleared.emit()"
+          />
+        } @else {
+          <p-button
+            [label]="clearLabelKey() | translate"
+            [text]="true"
+            size="small"
+            severity="secondary"
+            (onClick)="cleared.emit()"
+          />
+        }
       }
     </div>
 

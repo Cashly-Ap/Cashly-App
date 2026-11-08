@@ -45,6 +45,7 @@ import {
   deleteAction,
   cancelAction,
   confirmAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -257,6 +258,13 @@ export class PurchaseListPageComponent implements OnInit {
     if (purchase.status === 'CONFIRMED') {
       actions.push(cancelAction('Cancelar compra', () => this.onCancelPurchase(purchase)));
     }
+    actions.push(
+      auditHistoryAction({
+        entityType: 'PURCHASE',
+        entityId: purchase.id,
+        label: purchase.purchaseNumber,
+      }),
+    );
     return actions;
   }
 

@@ -20,6 +20,9 @@ export const ORDER_PERMISSIONS = [
   { code: OrderPermission.REPORT_PDF, labelKey: 'sales.orders.permissions.reportPdf' },
   { code: OrderPermission.DOWNLOAD_PDF, labelKey: 'sales.orders.permissions.downloadPdf' },
   { code: OrderPermission.CONFIRM, labelKey: 'sales.orders.permissions.confirm' },
-  { code: OrderPermission.CONVERT_TO_INVOICE, labelKey: 'sales.orders.permissions.convertToInvoice' },
+  {
+    code: OrderPermission.CONVERT_TO_INVOICE,
+    labelKey: 'sales.orders.permissions.convertToInvoice',
+  },
   { code: OrderPermission.CANCEL, labelKey: 'sales.orders.permissions.cancel' },
 ] as const;

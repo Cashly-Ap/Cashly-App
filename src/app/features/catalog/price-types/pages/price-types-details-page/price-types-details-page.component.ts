@@ -89,7 +89,9 @@ export class PriceTypesDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.priceType();
     if (!item) return;
-    this.deletion.open('price-types', item.id, item.name, () => this.router.navigate(['/catalog/price-types']));
+    this.deletion.open('price-types', item.id, item.name, () =>
+      this.router.navigate(['/catalog/price-types']),
+    );
   }
 
   onBack(): void {

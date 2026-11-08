@@ -48,6 +48,7 @@ import {
   cancelAction,
   confirmAction,
   convertToInvoiceAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -262,6 +263,9 @@ export class OrderListPageComponent implements OnInit {
         cancelAction('Cancelar pedido', () => this.onCancelOrder(order)),
       );
     }
+    actions.push(
+      auditHistoryAction({ entityType: 'ORDER', entityId: order.id, label: order.orderNumber }),
+    );
     return actions;
   }
 

@@ -38,9 +38,7 @@ export const PERMISSION_CATALOG = [
     sections: [
       {
         sectionKey: null,
-        modules: [
-          { moduleKey: 'navigation.labels.purchases', permissions: PURCHASE_PERMISSIONS },
-        ],
+        modules: [{ moduleKey: 'navigation.labels.purchases', permissions: PURCHASE_PERMISSIONS }],
       },
     ],
   },
@@ -84,8 +82,14 @@ export const PERMISSION_CATALOG = [
         sectionKey: 'navigation.labels.treasury',
         modules: [
           { moduleKey: 'navigation.labels.cashRegister', permissions: CASH_REGISTER_PERMISSIONS },
-          { moduleKey: 'navigation.labels.accountsReceivable', permissions: RECEIVABLE_PERMISSIONS },
-          { moduleKey: 'navigation.labels.paymentMethods', permissions: PAYMENT_METHOD_PERMISSIONS },
+          {
+            moduleKey: 'navigation.labels.accountsReceivable',
+            permissions: RECEIVABLE_PERMISSIONS,
+          },
+          {
+            moduleKey: 'navigation.labels.paymentMethods',
+            permissions: PAYMENT_METHOD_PERMISSIONS,
+          },
         ],
       },
     ],
@@ -107,9 +111,7 @@ export const PERMISSION_CATALOG = [
     sections: [
       {
         sectionKey: null,
-        modules: [
-          { moduleKey: 'navigation.labels.dashboard', permissions: DASHBOARD_PERMISSIONS },
-        ],
+        modules: [{ moduleKey: 'navigation.labels.dashboard', permissions: DASHBOARD_PERMISSIONS }],
       },
     ],
   },

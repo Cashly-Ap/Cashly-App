@@ -25,7 +25,8 @@ import {
   selector: 'app-customer-addresses-section',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslatePipe,
+  imports: [
+    TranslatePipe,
     PermissionDirective,
     CommonModule,
     ReactiveFormsModule,

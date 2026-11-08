@@ -68,6 +68,7 @@ describe('Department management navigation and form', () => {
       'Ver detalle',
       'Editar',
       'Eliminar',
+      'Historial',
     ]);
   });
 

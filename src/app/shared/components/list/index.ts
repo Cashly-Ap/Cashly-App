@@ -22,6 +22,8 @@ export {
   listAction,
   pdfAction,
   viewAction,
+  historyAction,
+  auditHistoryAction,
   type ListActionOptions,
 } from '@shared/components/list/list-action-builders';
 export {

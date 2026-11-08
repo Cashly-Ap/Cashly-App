@@ -22,7 +22,9 @@ export function provideNavigationActionHandlers(): Provider[] {
     ...Object.entries(RECEIVABLE_ACTIONS).map(([label, action]) => ({
       provide: NAVIGATION_ACTION_HANDLERS,
       multi: true,
-      useFactory: (service: ReceivablesActionDialogService): NavigationActionHandlerRegistration => ({
+      useFactory: (
+        service: ReceivablesActionDialogService,
+      ): NavigationActionHandlerRegistration => ({
         resource: 'receivables',
         label,
         execute: (record: NavigationActionRecord) =>

@@ -5,7 +5,10 @@ import { BehaviorSubject } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import { connectListNavigation, ListNavigationService } from '@shared/components/list/list-navigation.service';
+import {
+  connectListNavigation,
+  ListNavigationService,
+} from '@shared/components/list/list-navigation.service';
 import { ListAction } from '@shared/components/list/list-action-buttons/list-action-buttons.component';
 
 describe('List navigation actions', () => {
@@ -122,7 +125,9 @@ describe('List navigation actions', () => {
       ],
     });
 
-    expect(navigation.executeRecordAction('/catalog/products', 'Editar', 'first-record')).toBe(true);
+    expect(navigation.executeRecordAction('/catalog/products', 'Editar', 'first-record')).toBe(
+      true,
+    );
     expect(registeredCommand).toHaveBeenCalledOnce();
   });
 
@@ -143,7 +148,9 @@ describe('List navigation actions', () => {
       ],
     });
 
-    expect(navigation.executeRegistered('/partners/customers', 'Eliminar', 'first-record')).toBe(false);
+    expect(navigation.executeRegistered('/partners/customers', 'Eliminar', 'first-record')).toBe(
+      false,
+    );
     expect(registeredCommand).not.toHaveBeenCalled();
   });
 
@@ -154,7 +161,12 @@ describe('List navigation actions', () => {
     const stale = navigation.session()!.records()[0];
     records.set([{ id: 'other-record', name: 'Protected record' }]);
     await navigation.select(stale);
-    expect(navigation.session()!.records().map((record) => record.label)).toEqual(['Protected record']);
+    expect(
+      navigation
+        .session()!
+        .records()
+        .map((record) => record.label),
+    ).toEqual(['Protected record']);
     expect(command).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
   });

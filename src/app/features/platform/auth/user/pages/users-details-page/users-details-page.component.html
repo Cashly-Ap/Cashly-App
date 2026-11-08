@@ -24,7 +24,12 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="USER"
+                [auditEntityId]="currentUser.id"
+                [auditLabel]="currentUser.userName"
+              >
                 <p-button
                   [appPermission]="'UPDATE'"
                   [label]="'users.profile.edit' | translate"

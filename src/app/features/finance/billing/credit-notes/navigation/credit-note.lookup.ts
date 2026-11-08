@@ -2,10 +2,7 @@ import { map } from 'rxjs';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
 import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
 import { documentListAction } from '@shared/models/document-list-action';
-import {
-  arrayLookupResult,
-  lookupDescription,
-} from '@shared/utils/navigation-lookup';
+import { arrayLookupResult, lookupDescription } from '@shared/utils/navigation-lookup';
 
 export const CREDIT_NOTE_LOOKUP: LookupDefinition = {
   route: '/finance/billing/credit-notes',

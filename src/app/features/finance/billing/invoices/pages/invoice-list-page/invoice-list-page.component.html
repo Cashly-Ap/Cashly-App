@@ -217,12 +217,12 @@
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium">{{
-                        invoice.total | localizedNumber: '1.2-2'
+                        invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </td>
                     <td class="text-right">
                       <span class="text-sm font-medium">{{
-                        pendingAmount(invoice) | localizedNumber: '1.2-2'
+                        pendingAmount(invoice) | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </td>
                     <td>
@@ -294,11 +294,11 @@
                     </h3>
                     <p class="text-sm font-medium mb-1">
                       {{ 'finance.billing.returns.total' | translate }}
-                      {{ invoice.total | localizedNumber: '1.2-2' }}
+                      {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </p>
                     <p class="text-sm text-surface-500 mb-2">
                       {{ 'finance.billing.invoices.outstanding2' | translate }}
-                      {{ pendingAmount(invoice) | localizedNumber: '1.2-2' }}
+                      {{ pendingAmount(invoice) | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </p>
                     <div class="flex flex-nowrap gap-2">
                       <app-text-badge

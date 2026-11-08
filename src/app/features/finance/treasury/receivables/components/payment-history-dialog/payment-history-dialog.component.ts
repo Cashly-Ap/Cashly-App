@@ -11,7 +11,10 @@ import {
   computed,
 } from '@angular/core';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
-import { ReceivableTone, receivableAmountClass } from '@features/finance/treasury/receivables/components/receivables-presentation';
+import {
+  ReceivableTone,
+  receivableAmountClass,
+} from '@features/finance/treasury/receivables/components/receivables-presentation';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';

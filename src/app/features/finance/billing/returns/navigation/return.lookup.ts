@@ -2,10 +2,7 @@ import { map } from 'rxjs';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
 import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
 import { documentListAction } from '@shared/models/document-list-action';
-import {
-  arrayLookupResult,
-  lookupDescription,
-} from '@shared/utils/navigation-lookup';
+import { arrayLookupResult, lookupDescription } from '@shared/utils/navigation-lookup';
 
 export const RETURN_LOOKUP: LookupDefinition = {
   route: '/finance/billing/returns',

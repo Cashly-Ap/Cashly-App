@@ -21,7 +21,13 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CUSTOMER"
+                [auditEntityId]="currentCustomer.id"
+                [auditLabel]="currentCustomer.legalName"
+                [auditSubtitle]="currentCustomer.alias"
+              >
                 <p-button
                   [appPermission]="'UPDATE'"
                   [label]="'finance.billing.invoices.edit' | translate"

@@ -100,10 +100,25 @@ describe('ListActionButtonsComponent', () => {
   });
 
   it('gates export actions only on the owning module EXPORT grant', () => {
-    can.mockImplementation((module: BusinessModule, action?: string) => !(module === BusinessModule.FINANCE_INVOICES && action === 'EXPORT'));
+    can.mockImplementation(
+      (module: BusinessModule, action?: string) =>
+        !(module === BusinessModule.FINANCE_INVOICES && action === 'EXPORT'),
+    );
     fixture.componentRef.setInput('actions', [
-      { label: 'Export', icon: '', requiredAction: 'EXPORT', module: BusinessModule.FINANCE_INVOICES, command: vi.fn() },
-      { label: 'Report', icon: '', requiredAction: 'EXPORT', module: BusinessModule.FINANCE_INVOICES, command: vi.fn() },
+      {
+        label: 'Export',
+        icon: '',
+        requiredAction: 'EXPORT',
+        module: BusinessModule.FINANCE_INVOICES,
+        command: vi.fn(),
+      },
+      {
+        label: 'Report',
+        icon: '',
+        requiredAction: 'EXPORT',
+        module: BusinessModule.FINANCE_INVOICES,
+        command: vi.fn(),
+      },
     ]);
     fixture.detectChanges();
     expect(component.orderedActions().map((action) => action.label)).toEqual([]);

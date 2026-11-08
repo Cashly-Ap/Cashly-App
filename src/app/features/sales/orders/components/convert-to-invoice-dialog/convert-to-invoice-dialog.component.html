@@ -113,7 +113,7 @@
             >
               <span class="text-xs text-surface-400">{{ 'shared.limit' | translate }}</span>
               <span class="font-mono text-sm font-semibold"
-                >${{ status.creditLimit | localizedNumber: '1.2-2' }}</span
+                >{{ status.creditLimit | localizedNumber: '1.2-2' }}$</span
               >
             </div>
             <div
@@ -126,7 +126,7 @@
                 class="font-mono text-sm font-semibold"
                 [class.text-green-600]="status.availableCredit >= totalAmount()"
               >
-                ${{ status.availableCredit | localizedNumber: '1.2-2' }}
+                {{ status.availableCredit | localizedNumber: '1.2-2' }}$
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-4 py-3">
@@ -134,7 +134,7 @@
                 'sales.orders.invoiceTotal' | translate
               }}</span>
               <span class="font-mono text-sm font-semibold"
-                >${{ totalAmount() | localizedNumber: '1.2-2' }}</span
+                >{{ totalAmount() | localizedNumber: '1.2-2' }}$</span
               >
             </div>
           </div>
@@ -188,7 +188,7 @@
                 }}</span>
               </div>
               <span class="font-mono font-bold text-blue-600 dark:text-blue-400"
-                >${{ customerBalance() | localizedNumber: '1.2-2' }}</span
+                >{{ customerBalance() | localizedNumber: '1.2-2' }}$</span
               >
             </div>
           </div>
@@ -311,7 +311,7 @@
               class="font-mono font-bold text-lg"
               [class.text-green-600]="totalPayments() === totalAmount()"
             >
-              ${{ totalPayments() | localizedNumber: '1.2-2' }}
+              {{ totalPayments() | localizedNumber: '1.2-2' }}$
             </span>
           </div>
           @if (remainingToPay() > 0) {

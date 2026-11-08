@@ -31,6 +31,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -156,6 +157,13 @@ export class PriceTypesListPageComponent implements OnInit {
       editAction(() => this.onEdit(priceType)),
     ];
     actions.push(deleteAction(() => this.onDelete(priceType)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'PRICE_TYPE',
+        entityId: priceType.id,
+        label: priceType.name,
+      }),
+    );
     return actions;
   }
 

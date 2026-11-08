@@ -5,6 +5,7 @@ import {
   pdf,
   remove,
   view,
+  history,
 } from '@core/layouts/config/list-navigation.types';
 
 export const PURCHASE_LIST_NAVIGATION: ListNavigationDefinition = {
@@ -18,5 +19,6 @@ export const PURCHASE_LIST_NAVIGATION: ListNavigationDefinition = {
     listAction('Confirmar compra', 'CONFIRM', 'check'),
     listAction('Cancelar compra', 'CANCEL', 'ban', undefined, ['INVENTORY_WAREHOUSES:RECORD_EXIT']),
     remove(),
+    history(),
   ],
 };

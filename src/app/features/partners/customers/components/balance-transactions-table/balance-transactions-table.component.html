@@ -12,7 +12,10 @@
         <app-panel-card padding="p-5">
           <div class="flex items-start justify-between gap-3">
             <div class="min-w-0">
-              <span [class]="typeBadgeClass(tx.type)">{{ translateType(tx.type) | translate }}</span>
+              <app-text-badge
+                [label]="translateType(tx.type)"
+                [variant]="typeBadgeVariant(tx.type)"
+              />
               <p class="mt-2 text-xs text-surface-500 dark:text-surface-400">
                 {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
               </p>
@@ -107,9 +110,7 @@
           {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
         </td>
         <td>
-          <span [class]="typeBadgeClass(tx.type)">
-            {{ translateType(tx.type) | translate }}
-          </span>
+          <app-text-badge [label]="translateType(tx.type)" [variant]="typeBadgeVariant(tx.type)" />
         </td>
         <td
           class="text-right font-medium"

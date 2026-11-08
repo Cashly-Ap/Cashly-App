@@ -18,6 +18,7 @@ function actionLabel(action: string, singular: string): string {
 }
 
 function actionOrder(item: MenuItem): number {
+  if (item.label === 'Historial') return 6;
   if (/^Ver detalle|^Ver detalles|^Ver deuda/.test(item.label)) return 0;
   if (item.requiredAction === 'UPDATE') return 1;
   if (item.requiredAction === 'DELETE') return 2;
@@ -69,9 +70,10 @@ export function addListNavigationActions(
           (entry): MenuItem => ({
             label: actionLabel(entry.label, definition.singular),
             icon: entry.icon,
-            requiredModule: entry.module ?? module,
+            requiredModule: entry.requiredAction ? (entry.module ?? module) : undefined,
             requiredAction: entry.requiredAction,
             requiredPermissions: entry.requiredPermissions,
+            requiredPermission: entry.requiredPermissionCode,
             command:
               definition.route === '/partners/customers' && entry.label === 'Editar'
                 ? callbacks.openCustomerEditPicker

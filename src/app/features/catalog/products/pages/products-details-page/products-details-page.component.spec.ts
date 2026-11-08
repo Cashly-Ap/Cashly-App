@@ -282,7 +282,9 @@ describe('ProductsDetailsPageComponent', () => {
   });
 
   it('returns through navigation history instead of forcing the list destination', () => {
-    const back = vi.spyOn(TestBed.inject(NavigationHistoryService), 'back').mockImplementation(() => undefined);
+    const back = vi
+      .spyOn(TestBed.inject(NavigationHistoryService), 'back')
+      .mockImplementation(() => undefined);
     component.onBack();
     expect(back).toHaveBeenCalledWith(['/catalog/products']);
   });

@@ -135,7 +135,9 @@ export class CustomersDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.customer();
     if (!item) return;
-    this.deletion.open('customers', item.id, item.legalName, () => this.router.navigate(['/partners/customers']));
+    this.deletion.open('customers', item.id, item.legalName, () =>
+      this.router.navigate(['/partners/customers']),
+    );
   }
 
   onBack(): void {

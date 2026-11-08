@@ -1,11 +1,14 @@
 import { MenuItem } from '@core/layouts/models';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { LIST_ACTION_PRESETS } from '@shared/models/list-action-presets';
+import { AuditPermission } from '@features/platform/audit/permissions';
 
 export interface NavigationActionDefinition {
   label: string;
-  requiredAction: PermissionAction;
+  requiredAction?: PermissionAction;
+  requiredPermissionCode?: AppPermission;
   icon: string;
   module?: BusinessModule;
   requiredPermissions?: string[];
@@ -32,6 +35,12 @@ export const listAction = (
   icon: `pi pi-${icon}`,
   ...(module ? { module } : {}),
   ...(requiredPermissions ? { requiredPermissions } : {}),
+});
+
+export const history = (): NavigationActionDefinition => ({
+  label: LIST_ACTION_PRESETS.history.label,
+  requiredPermissionCode: AuditPermission.VIEW_LIST,
+  icon: `pi pi-${LIST_ACTION_PRESETS.history.icon}`,
 });
 
 export const view = () =>

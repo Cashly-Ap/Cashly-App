@@ -35,6 +35,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -197,6 +198,13 @@ export class PaymentMethodListPageComponent implements OnInit {
     if (!paymentMethod.hasAssociatedRecords) {
       actions.push(deleteAction(() => this.onDelete(paymentMethod)));
     }
+    actions.push(
+      auditHistoryAction({
+        entityType: 'PAYMENT_METHOD',
+        entityId: paymentMethod.id,
+        label: paymentMethod.name,
+      }),
+    );
     return actions;
   }
 

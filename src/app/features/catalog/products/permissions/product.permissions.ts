@@ -13,5 +13,8 @@ export const PRODUCT_PERMISSIONS = [
   { code: ProductPermission.EDIT, labelKey: 'catalog.products.permissions.edit' },
   { code: ProductPermission.DELETE, labelKey: 'catalog.products.permissions.delete' },
   { code: ProductPermission.CREATE, labelKey: 'catalog.products.permissions.create' },
-  { code: ProductPermission.COMMERCIAL_CATALOG_PDF, labelKey: 'catalog.products.permissions.commercialCatalogPdf' },
+  {
+    code: ProductPermission.COMMERCIAL_CATALOG_PDF,
+    labelKey: 'catalog.products.permissions.commercialCatalogPdf',
+  },
 ] as const;

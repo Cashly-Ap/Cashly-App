@@ -67,7 +67,9 @@
               >{{ row.statusLabel | translate }} · {{ stockStatusLabel(row) | translate }}</span
             >
           </span>
-          <span class="font-mono text-sm">${{ row.total | localizedNumber: '1.2-2' }}</span>
+          <span class="font-mono text-sm">{{
+            row.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+          }}</span>
           <button
             type="button"
             class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs text-surface-600 dark:text-surface-300 border border-surface-200 dark:border-surface-700 hover:border-primary hover:text-primary"
@@ -94,8 +96,9 @@
                         <span class="text-surface-400">({{ line.productCode }})</span></span
                       >
                       <span class="shrink-0"
-                        >{{ line.quantity }} × ${{ line.unitPrice | localizedNumber: '1.2-2' }} =
-                        ${{ line.subtotal | localizedNumber: '1.2-2' }}</span
+                        >{{ line.quantity }} ×
+                        {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }} =
+                        {{ line.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
                       >
                     </div>
                     <div

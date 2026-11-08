@@ -1,4 +1,4 @@
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
@@ -24,9 +24,7 @@ import { getQuoteStatusLabel } from '@features/sales/quotes/models/enums/quote-s
 
 type SourceLine = QuoteLineDetail | OrderItemDetail;
 type SourceAllocation = QuoteAllocationDetail | OrderItemAllocationDetail;
-type SourceStock =
-  | QuoteWarehouseStock
-  | NonNullable<OrderItemDetail['warehouseStocks']>[number];
+type SourceStock = QuoteWarehouseStock | NonNullable<OrderItemDetail['warehouseStocks']>[number];
 
 export interface InvoiceSourceSelection {
   orderIds: string[];
@@ -67,7 +65,14 @@ import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cance
 @Component({
   selector: 'app-invoice-source-picker-dialog',
   standalone: true,
-  imports: [CancelButtonComponent, TranslatePipe, LocalizedNumberPipe, DialogModule, ButtonModule],
+  imports: [
+    CancelButtonComponent,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
+    LocalizedNumberPipe,
+    DialogModule,
+    ButtonModule,
+  ],
   templateUrl: './invoice-source-picker-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -325,7 +330,8 @@ export class InvoiceSourcePickerDialogComponent {
           continue;
         }
         loadedDetails[result.row.key] = result.detail;
-        const lines: SourceLine[] = 'items' in result.detail ? result.detail.items : result.detail.lines;
+        const lines: SourceLine[] =
+          'items' in result.detail ? result.detail.items : result.detail.lines;
         const required = lines.reduce((sum, line) => sum + Number(line.quantity), 0);
         const available = lines.reduce(
           (sum, line) =>

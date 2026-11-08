@@ -12,16 +12,14 @@ import { DocumentListAction } from '@shared/models/document-list-action';
 export class AccessManagementService {
   private readonly http = inject(HttpClient);
   roles(action?: 'EDIT' | DocumentListAction) {
-    return this.http
-      .get<Role[]>('/api/roles', action ? { params: { action } } : {})
-      .pipe(
-        map((roles) =>
-          roles.map((role) => ({
-            ...role,
-            permissions: normalizePermissions(role.permissions),
-          })),
-        ),
-      );
+    return this.http.get<Role[]>('/api/roles', action ? { params: { action } } : {}).pipe(
+      map((roles) =>
+        roles.map((role) => ({
+          ...role,
+          permissions: normalizePermissions(role.permissions),
+        })),
+      ),
+    );
   }
   departments(action?: DocumentListAction) {
     return this.http.get<Department[]>('/api/departments', action ? { params: { action } } : {});

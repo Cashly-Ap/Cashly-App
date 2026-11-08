@@ -9,9 +9,9 @@ export function provideConvertToOrderHandler(): Provider {
     resource: 'quotes',
     label: 'Convertir a pedido',
     load: () =>
-      import('@features/sales/quotes/components/convert-to-order-dialog/convert-to-order-dialog.wrapper').then(
-        (module) => module.ConvertToOrderDialogWrapperComponent,
-      ),
+      import(
+        '@features/sales/quotes/components/convert-to-order-dialog/convert-to-order-dialog.wrapper'
+      ).then((module) => module.ConvertToOrderDialogWrapperComponent),
   };
   return { provide: ACTION_DIALOG_HANDLERS, multi: true, useValue: registration };
 }

@@ -10,10 +10,32 @@ import { DirectNavigationActionService } from '@shared/services/direct-navigatio
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { CancelDialogService } from '@shared/services/cancel-dialog.service';
 import { PdfActionService } from '@shared/services/pdf-action.service';
+import { AuditTrailDialogService } from '@shared/services/audit-trail-dialog.service';
+import { AuditEntityType } from '@features/platform/audit/models';
 
 const RECORD_PATH_SEGMENTS: Record<string, readonly string[]> = {
   'Ver detalle': [],
   Editar: ['edit'],
+};
+
+const AUDIT_ENTITY_BY_ROUTE: Record<string, AuditEntityType> = {
+  '/sales/quotes': 'QUOTE',
+  '/sales/orders': 'ORDER',
+  '/procurement/purchases': 'PURCHASE',
+  '/catalog/products': 'PRODUCT',
+  '/catalog/categories': 'CATEGORY',
+  '/catalog/price-types': 'PRICE_TYPE',
+  '/inventory/warehouses': 'WAREHOUSE',
+  '/finance/billing/invoices': 'INVOICE',
+  '/finance/billing/returns': 'RETURN',
+  '/finance/billing/credit-notes': 'CREDIT_NOTE',
+  '/finance/billing/debit-notes': 'DEBIT_NOTE',
+  '/finance/treasury/payment-methods': 'PAYMENT_METHOD',
+  '/partners/customers': 'CUSTOMER',
+  '/partners/suppliers': 'SUPPLIER',
+  '/platform/users': 'USER',
+  '/platform/roles': 'ROLE',
+  '/platform/departments': 'DEPARTMENT',
 };
 import { LookupDefinitionRegistry } from '@shared/services/lookup-definition.registry';
 
@@ -36,6 +58,7 @@ export class ActionDispatcherService {
   private readonly cancellation = inject(CancelDialogService);
   private readonly pdfActions = inject(PdfActionService);
   private readonly lookups = inject(LookupDefinitionRegistry);
+  private readonly auditDialog = inject(AuditTrailDialogService);
 
   dispatchDestination(destination: MenuItem, queryParams?: Record<string, string>): void {
     if (!destination.routerLink) return;
@@ -49,6 +72,16 @@ export class ActionDispatcherService {
   dispatchRecord(context: ActionDispatchContext): boolean {
     const { route, label, record, queryParams } = context;
     const resource = this.resource(route);
+    if (label === 'Historial') {
+      const entityType = AUDIT_ENTITY_BY_ROUTE[route];
+      if (!entityType) return false;
+      this.auditDialog.open({
+        entityType,
+        entityId: record.id,
+        label: record.label,
+      });
+      return true;
+    }
     if (label === 'Eliminar') {
       this.deletion.open(resource, record.id, record.label);
       return true;

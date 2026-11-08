@@ -36,6 +36,7 @@ import {
   ListContainerComponent,
   viewAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { DebitNoteApplicationService } from '@features/finance/billing/debit-notes/services/application/debit-note-application.service';
 import { DebitNoteFilters } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
@@ -183,6 +184,11 @@ export class DebitNoteListPageComponent implements OnInit {
     return [
       viewAction(() => this.onDetail(debitNote)),
       deleteAction(() => this.onDelete(debitNote)),
+      auditHistoryAction({
+        entityType: 'DEBIT_NOTE',
+        entityId: debitNote.id,
+        label: debitNote.noteNumber,
+      }),
     ];
   }
 

@@ -12,27 +12,25 @@ export const RECEIVABLE_LOOKUP: LookupDefinition = {
   load: (injector, query) => {
     const api = injector.get(ReceivablesApiService);
     if (query.label === 'Aprobar pago' || query.label === 'Rechazar pago') {
-      return api
-        .listPendingPayments(query.label === 'Aprobar pago' ? 'APPROVE' : 'REJECT')
-        .pipe(
-          map((items) =>
-            arrayLookupResult(
-              items,
-              (item) => ({
-                id: item.id,
-                label: item.paymentNumber,
-                description: lookupDescription(
-                  item.customerName,
-                  item.invoiceNumber,
-                  item.referenceNumber,
-                ),
-              }),
-              query.search,
-              query.page,
-              query.size,
-            ),
+      return api.listPendingPayments(query.label === 'Aprobar pago' ? 'APPROVE' : 'REJECT').pipe(
+        map((items) =>
+          arrayLookupResult(
+            items,
+            (item) => ({
+              id: item.id,
+              label: item.paymentNumber,
+              description: lookupDescription(
+                item.customerName,
+                item.invoiceNumber,
+                item.referenceNumber,
+              ),
+            }),
+            query.search,
+            query.page,
+            query.size,
           ),
-        );
+        ),
+      );
     }
     const debtAction =
       query.label === 'Pagar todo'

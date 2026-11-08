@@ -35,6 +35,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
@@ -196,6 +197,13 @@ export class CategoriesListPageComponent implements OnInit {
       editAction(() => this.onEdit(category)),
     ];
     actions.push(deleteAction(() => this.onDelete(category)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'CATEGORY',
+        entityId: category.id,
+        label: category.name,
+      }),
+    );
     return actions;
   }
 

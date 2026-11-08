@@ -75,9 +75,7 @@ describe('BUSINESS_MODULE_LABELS', () => {
     expect(BUSINESS_MODULE_LABELS[BusinessModule.FINANCE_CASH_REGISTER]).toBe(
       'platform.auth.financeCashRegister',
     );
-    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe(
-      'platform.auth.purchases',
-    );
+    expect(BUSINESS_MODULE_LABELS[BusinessModule.PURCHASES]).toBe('platform.auth.purchases');
   });
 
   it('has a non-empty label key for every contract module and no extra keys', () => {

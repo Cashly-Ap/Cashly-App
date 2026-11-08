@@ -1,4 +1,8 @@
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { StatusVariant } from '@shared/models/status-variant';
 import {
   invoiceStatusVariant,
@@ -31,7 +35,10 @@ import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/l
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { DuplicateInvoiceDialogComponent } from '@features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component';
-import { ConfirmInvoiceDialogComponent, type ConfirmInvoiceSubmit } from '@features/finance/billing/invoices/components/confirm-invoice-dialog/confirm-invoice-dialog.component';
+import {
+  ConfirmInvoiceDialogComponent,
+  type ConfirmInvoiceSubmit,
+} from '@features/finance/billing/invoices/components/confirm-invoice-dialog/confirm-invoice-dialog.component';
 import { CancelInvoiceDialogComponent } from '@features/finance/billing/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
 import { PdfViewerService } from '@core/pdf-viewer';
@@ -57,6 +64,7 @@ import { BackButtonComponent } from '@shared/components/ui/back-button/back-butt
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     LocalizedNumberPipe,
     PermissionDirective,
     ButtonModule,

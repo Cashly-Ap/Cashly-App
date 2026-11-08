@@ -37,6 +37,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -272,6 +273,13 @@ export class ProductsListPageComponent implements OnInit {
       editAction(() => this.onEdit(product)),
     ];
     actions.push(deleteAction(() => this.onDelete(product)));
+    actions.push(
+      auditHistoryAction({
+        entityType: 'PRODUCT',
+        entityId: product.id,
+        label: product.name,
+      }),
+    );
     return actions;
   }
 

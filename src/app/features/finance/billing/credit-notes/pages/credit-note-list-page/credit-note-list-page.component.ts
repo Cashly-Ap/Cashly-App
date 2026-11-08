@@ -36,6 +36,7 @@ import {
   ListContainerComponent,
   viewAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { CreditNoteApplicationService } from '@features/finance/billing/credit-notes/services/application/credit-note-application.service';
 import { CreditNoteFilters } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
@@ -183,6 +184,11 @@ export class CreditNoteListPageComponent implements OnInit {
     return [
       viewAction(() => this.onDetail(creditNote)),
       deleteAction(() => this.onDelete(creditNote)),
+      auditHistoryAction({
+        entityType: 'CREDIT_NOTE',
+        entityId: creditNote.id,
+        label: creditNote.noteNumber,
+      }),
     ];
   }
 

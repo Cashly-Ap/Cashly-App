@@ -6,6 +6,7 @@ import {
   pdf,
   remove,
   view,
+  history,
 } from '@core/layouts/config/list-navigation.types';
 
 export const ORDER_LIST_NAVIGATION: ListNavigationDefinition = {
@@ -20,5 +21,6 @@ export const ORDER_LIST_NAVIGATION: ListNavigationDefinition = {
     listAction('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
     listAction('Cancelar', 'CANCEL', 'times', BusinessModule.FINANCE_INVOICES),
     remove(),
+    history(),
   ],
 };

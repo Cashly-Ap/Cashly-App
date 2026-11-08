@@ -13,12 +13,21 @@ export enum InvoicePermission {
 
 export const INVOICE_PERMISSIONS = [
   { code: InvoicePermission.VIEW_LIST, labelKey: 'finance.billing.invoices.permissions.viewList' },
-  { code: InvoicePermission.VIEW_DETAIL, labelKey: 'finance.billing.invoices.permissions.viewDetail' },
+  {
+    code: InvoicePermission.VIEW_DETAIL,
+    labelKey: 'finance.billing.invoices.permissions.viewDetail',
+  },
   { code: InvoicePermission.EDIT, labelKey: 'finance.billing.invoices.permissions.edit' },
   { code: InvoicePermission.DELETE, labelKey: 'finance.billing.invoices.permissions.delete' },
   { code: InvoicePermission.CREATE, labelKey: 'finance.billing.invoices.permissions.create' },
-  { code: InvoicePermission.REPORT_PDF, labelKey: 'finance.billing.invoices.permissions.reportPdf' },
-  { code: InvoicePermission.DOWNLOAD_PDF, labelKey: 'finance.billing.invoices.permissions.downloadPdf' },
+  {
+    code: InvoicePermission.REPORT_PDF,
+    labelKey: 'finance.billing.invoices.permissions.reportPdf',
+  },
+  {
+    code: InvoicePermission.DOWNLOAD_PDF,
+    labelKey: 'finance.billing.invoices.permissions.downloadPdf',
+  },
   { code: InvoicePermission.CONFIRM, labelKey: 'finance.billing.invoices.permissions.confirm' },
   { code: InvoicePermission.CANCEL, labelKey: 'finance.billing.invoices.permissions.cancel' },
   { code: InvoicePermission.DUPLICATE, labelKey: 'finance.billing.invoices.permissions.duplicate' },

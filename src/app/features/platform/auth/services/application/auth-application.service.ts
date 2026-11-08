@@ -212,9 +212,7 @@ export class AuthService {
   hasPermissionCode(code: AppPermission | string): boolean {
     if (this.isSuperAdmin()) return true;
     const permissions = this.currentAccess()?.permissions;
-    const codes = Array.isArray(permissions)
-      ? permissions
-      : normalizePermissions(permissions);
+    const codes = Array.isArray(permissions) ? permissions : normalizePermissions(permissions);
     return codes.includes(code as AppPermission);
   }
 

@@ -3,7 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, forkJoin, map, Observable, tap, throwError } from 'rxjs';
 import { Role } from '@features/platform/auth/authorization/models/access.model';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
-import { PermissionCatalogArea, PermissionCatalogModule } from '@features/platform/auth/permissions/models/permission-catalog.model';
+import {
+  PermissionCatalogArea,
+  PermissionCatalogModule,
+} from '@features/platform/auth/permissions/models/permission-catalog.model';
 
 @Injectable({ providedIn: 'root' })
 export class PermissionCatalogService {
@@ -19,32 +22,34 @@ export class PermissionCatalogService {
   readonly error = this.errorState.asReadonly();
 
   loadCatalog(): Observable<PermissionCatalogModule[]> {
-    return this.http.get<PermissionCatalogArea[] | PermissionCatalogModule[]>('/api/permissions/catalog').pipe(
-      map((catalog) =>
-        catalog.length > 0 && 'domains' in catalog[0]
-          ? (catalog as PermissionCatalogArea[]).flatMap((area) =>
-              area.domains.map((domain) => ({
-                module: domain.module,
-                parent: area.area,
-                section: this.sectionFor(domain.module),
-                sortOrder: domain.sortOrder,
-                groups: [
-                  {
-                    key: 'module',
-                    labelKey: this.moduleLabelKey(domain.module),
-                    sortOrder: domain.sortOrder,
-                  permissions: domain.permissions.map((permission) => ({
-                    ...permission,
-                    labelKey: this.actionLabelKey(permission.action),
-                    descriptionKey: this.actionDescriptionKey(permission.action),
-                  })),
-                  },
-                ],
-              })),
-            )
-          : (catalog as PermissionCatalogModule[]),
-      ),
-    );
+    return this.http
+      .get<PermissionCatalogArea[] | PermissionCatalogModule[]>('/api/permissions/catalog')
+      .pipe(
+        map((catalog) =>
+          catalog.length > 0 && 'domains' in catalog[0]
+            ? (catalog as PermissionCatalogArea[]).flatMap((area) =>
+                area.domains.map((domain) => ({
+                  module: domain.module,
+                  parent: area.area,
+                  section: this.sectionFor(domain.module),
+                  sortOrder: domain.sortOrder,
+                  groups: [
+                    {
+                      key: 'module',
+                      labelKey: this.moduleLabelKey(domain.module),
+                      sortOrder: domain.sortOrder,
+                      permissions: domain.permissions.map((permission) => ({
+                        ...permission,
+                        labelKey: this.actionLabelKey(permission.action),
+                        descriptionKey: this.actionDescriptionKey(permission.action),
+                      })),
+                    },
+                  ],
+                })),
+              )
+            : (catalog as PermissionCatalogModule[]),
+        ),
+      );
   }
 
   loadRoles(): Observable<Role[]> {
@@ -69,7 +74,13 @@ export class PermissionCatalogService {
   }
 
   private sectionFor(module: string): string {
-    if (module.startsWith('FINANCE_INVOICES') || module.startsWith('FINANCE_RETURNS') || module.includes('CREDIT_NOTES') || module.includes('DEBIT_NOTES')) return 'Billing';
+    if (
+      module.startsWith('FINANCE_INVOICES') ||
+      module.startsWith('FINANCE_RETURNS') ||
+      module.includes('CREDIT_NOTES') ||
+      module.includes('DEBIT_NOTES')
+    )
+      return 'Billing';
     if (module.startsWith('FINANCE_')) return 'Treasury';
     if (module.startsWith('INVENTORY_')) return 'Warehouses';
     if (module.startsWith('CATALOG_')) return 'Catalog';
@@ -77,6 +88,7 @@ export class PermissionCatalogService {
     if (module.startsWith('SALES_')) return 'Sales';
     if (module.startsWith('PURCHASES_')) return 'Purchases';
     if (module === 'USERS' || module === 'ROLES' || module === 'DEPARTMENTS') return 'Platform';
+    if (module === 'AUDIT_TRAIL') return 'Platform';
     return '';
   }
 
@@ -198,6 +210,7 @@ export class PermissionCatalogService {
       USERS: 'platform.auth.userManagement',
       ROLES: 'platform.auth.roles',
       DEPARTMENTS: 'platform.auth.departments',
+      AUDIT_TRAIL: 'platform.auth.auditTrail',
     };
     return keys[module] ?? 'platform.auth.reports';
   }

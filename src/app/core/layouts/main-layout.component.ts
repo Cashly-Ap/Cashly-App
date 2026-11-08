@@ -52,6 +52,7 @@ import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialo
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
 import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
+import { AuditTrailDialogHostComponent } from '@core/layouts/components/audit-trail-dialog-host/audit-trail-dialog-host.component';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -95,6 +96,7 @@ export type ContentMaxWidth =
     ConfirmDialogModule,
     DeleteDialogComponent,
     CancelDialogComponent,
+    AuditTrailDialogHostComponent,
   ],
   templateUrl: './main-layout.component.html',
 })

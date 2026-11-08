@@ -37,6 +37,7 @@ import {
   ListContainerComponent,
   viewAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { ReturnApplicationService } from '@features/finance/billing/returns/services/application/return-application.service';
 import { ReturnFilters } from '@features/finance/billing/returns/services/api/return-api.service';
@@ -182,7 +183,15 @@ export class ReturnListPageComponent implements OnInit {
   }
 
   actionsFor(ret: ReturnList): ListAction[] {
-    return [viewAction(() => this.onDetail(ret)), deleteAction(() => this.onDelete(ret))];
+    return [
+      viewAction(() => this.onDetail(ret)),
+      deleteAction(() => this.onDelete(ret)),
+      auditHistoryAction({
+        entityType: 'RETURN',
+        entityId: ret.id,
+        label: ret.returnNumber,
+      }),
+    ];
   }
 
   onDelete(ret: ReturnList): void {

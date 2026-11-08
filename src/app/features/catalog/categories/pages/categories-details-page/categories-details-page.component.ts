@@ -91,7 +91,9 @@ export class CategoriesDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.category();
     if (!item) return;
-    this.deletion.open('categories', item.id, item.name, () => this.router.navigate(['/catalog/categories']));
+    this.deletion.open('categories', item.id, item.name, () =>
+      this.router.navigate(['/catalog/categories']),
+    );
   }
 
   onBack(): void {

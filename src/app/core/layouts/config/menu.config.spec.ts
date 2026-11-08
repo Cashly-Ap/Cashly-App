@@ -82,6 +82,7 @@ describe('ERP navigation', () => {
       const entries = group?.children ?? [];
       expect(entries[0]?.routerLink).toBe(definition.route);
       const priority = (item: MenuItem) => {
+        if (item.label === 'Historial') return 6;
         if (/^Ver detalle|^Ver detalles|^Ver deuda/.test(item.label)) return 0;
         if (item.requiredAction === 'UPDATE') return 1;
         if (item.requiredAction === 'DELETE') return 2;
@@ -271,9 +272,9 @@ describe('ERP navigation', () => {
         ).toBe(true);
       for (const action of definition.actions) {
         if (definition.route === '/partners/customers' && action.label === 'Editar') {
-           expect(callbacks.openCustomerEditPicker).toHaveBeenCalled();
-         } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
-           expect(callbacks.openCustomerBalancePicker).toHaveBeenCalled();
+          expect(callbacks.openCustomerEditPicker).toHaveBeenCalled();
+        } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
+          expect(callbacks.openCustomerBalancePicker).toHaveBeenCalled();
         } else {
           expect(callbacks.openListAction).toHaveBeenCalledWith(
             definition.route,

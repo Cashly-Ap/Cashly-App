@@ -9,7 +9,8 @@ export function provideCancelHandler(): Provider {
     multi: true,
     useFactory: (service: InvoiceApplicationService): CancelHandlerRegistration => ({
       resource: 'invoices',
-      execute: (id: string, reason: string) => service.cancel(id, reason).pipe(map(() => undefined)),
+      execute: (id: string, reason: string) =>
+        service.cancel(id, reason).pipe(map(() => undefined)),
     }),
     deps: [InvoiceApplicationService],
   };

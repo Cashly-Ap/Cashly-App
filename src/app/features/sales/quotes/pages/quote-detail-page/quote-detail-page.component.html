@@ -21,7 +21,13 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="QUOTE"
+                [auditEntityId]="currentQuote.id"
+                [auditLabel]="currentQuote.quoteNumber"
+                [auditSubtitle]="currentQuote.customerName"
+              >
                 <p-button
                   [appPermission]="'EXPORT'"
                   [label]="'navigation.labels.downloadPdf' | translate"

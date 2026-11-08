@@ -9,9 +9,9 @@ export function provideConfirmHandler(): Provider {
     resource: 'purchases',
     label: 'Confirmar compra',
     load: () =>
-      import('@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.wrapper').then(
-        (module) => module.ConfirmPurchaseDialogWrapperComponent,
-      ),
+      import(
+        '@features/procurement/purchases/components/confirm-purchase-dialog/confirm-purchase-dialog.wrapper'
+      ).then((module) => module.ConfirmPurchaseDialogWrapperComponent),
   };
   return { provide: ACTION_DIALOG_HANDLERS, multi: true, useValue: registration };
 }

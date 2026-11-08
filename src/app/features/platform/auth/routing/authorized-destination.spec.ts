@@ -29,14 +29,20 @@ describe('authorizedDestination', () => {
 
   it('prefers an accessible page within the requested ERP area', () => {
     expect(
-      authorizedDestination(auth([BusinessModule.CONTACTS_CUSTOMERS, BusinessModule.INVENTORY_WAREHOUSES]), 'inventory'),
+      authorizedDestination(
+        auth([BusinessModule.CONTACTS_CUSTOMERS, BusinessModule.INVENTORY_WAREHOUSES]),
+        'inventory',
+      ),
     ).toBe('/inventory/warehouses');
   });
 
   it('selects treasury rather than billing when opening the treasury root', () => {
-    expect(authorizedDestination(auth([BusinessModule.FINANCE_INVOICES, BusinessModule.FINANCE_CASH_REGISTER]), 'finance/treasury')).toBe(
-      '/finance/treasury/cash-register',
-    );
+    expect(
+      authorizedDestination(
+        auth([BusinessModule.FINANCE_INVOICES, BusinessModule.FINANCE_CASH_REGISTER]),
+        'finance/treasury',
+      ),
+    ).toBe('/finance/treasury/cash-register');
   });
 
   it('requires the inventory permission before offering consolidated inventory reporting', () => {

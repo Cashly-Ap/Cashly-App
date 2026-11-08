@@ -35,7 +35,7 @@
         module="sales"
         [primary]="true"
       >
-        ${{ summary()!.monthlySales | localizedNumber: '1.2-2' }}
+        {{ summary()!.monthlySales | localizedNumber: '1.2-2' }}$
       </app-metric-card>
 
       <app-metric-card
@@ -51,7 +51,7 @@
         icon="pi pi-exclamation-triangle"
         module="finance"
       >
-        ${{ summary()!.overdueReceivables | localizedNumber: '1.2-2' }}
+        {{ summary()!.overdueReceivables | localizedNumber: '1.2-2' }}$
       </app-metric-card>
 
       <app-metric-card labelKey="analytics.dashboard.lowStock" icon="pi pi-box" module="inventory">
@@ -177,7 +177,7 @@
                     {{ invoice.customerName }}
                   </td>
                   <td class="py-3 text-right font-medium">
-                    ${{ invoice.amount | localizedNumber: '1.2-2' }}
+                    {{ invoice.amount | localizedNumber: '1.2-2' }}$
                   </td>
                 </tr>
               }
@@ -259,7 +259,7 @@
                   <td
                     class="py-3 text-right text-surface-900 dark:text-surface-0 font-medium text-xs"
                   >
-                    ${{ item.amount | localizedNumber: '1.2-2' }}
+                    {{ item.amount | localizedNumber: '1.2-2' }}$
                   </td>
                 </tr>
               }
@@ -279,7 +279,7 @@
                   {{ activityLabel(item.type) }}
                 </span>
                 <span class="font-mono text-base font-bold text-surface-900 dark:text-surface-0">
-                  ${{ item.amount | localizedNumber: '1.2-2' }}
+                  {{ item.amount | localizedNumber: '1.2-2' }}$
                 </span>
               </div>
               <div class="space-y-2">

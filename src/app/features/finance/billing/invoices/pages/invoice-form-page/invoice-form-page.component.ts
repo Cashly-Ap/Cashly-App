@@ -2,7 +2,11 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
@@ -64,6 +68,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     LocalizedNumberPipe,
     ReactiveFormsModule,
     ButtonModule,

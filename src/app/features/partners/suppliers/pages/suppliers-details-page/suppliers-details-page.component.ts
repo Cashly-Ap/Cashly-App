@@ -93,7 +93,9 @@ export class SuppliersDetailsPageComponent implements OnInit {
   onDelete(): void {
     const item = this.supplier();
     if (!item) return;
-    this.deletion.open('suppliers', item.id, item.legalName, () => this.router.navigate(['/partners/suppliers']));
+    this.deletion.open('suppliers', item.id, item.legalName, () =>
+      this.router.navigate(['/partners/suppliers']),
+    );
   }
 
   onBack(): void {

@@ -2,6 +2,7 @@ import { BusinessModule } from '@features/platform/auth/user/models/enums/busine
 import {
   ListNavigationDefinition,
   destination,
+  history,
   listAction,
   recordActions,
 } from '@core/layouts/config/list-navigation.types';
@@ -27,8 +28,19 @@ export const WAREHOUSE_LIST_NAVIGATION: ListNavigationDefinition = {
     ),
   ],
   actions: [
-    listAction('Registrar entrada', 'EXECUTE', 'arrow-circle-down', BusinessModule.INVENTORY_WAREHOUSES),
-    listAction('Registrar salida', 'EXECUTE', 'arrow-circle-up', BusinessModule.INVENTORY_WAREHOUSES),
+    listAction(
+      'Registrar entrada',
+      'EXECUTE',
+      'arrow-circle-down',
+      BusinessModule.INVENTORY_WAREHOUSES,
+    ),
+    listAction(
+      'Registrar salida',
+      'EXECUTE',
+      'arrow-circle-up',
+      BusinessModule.INVENTORY_WAREHOUSES,
+    ),
     ...recordActions(),
+    history(),
   ],
 };

@@ -7,9 +7,24 @@ export enum PaymentMethodPermission {
 }
 
 export const PAYMENT_METHOD_PERMISSIONS = [
-  { code: PaymentMethodPermission.VIEW_LIST, labelKey: 'finance.treasury.paymentMethods.permissions.viewList' },
-  { code: PaymentMethodPermission.VIEW_DETAIL, labelKey: 'finance.treasury.paymentMethods.permissions.viewDetail' },
-  { code: PaymentMethodPermission.EDIT, labelKey: 'finance.treasury.paymentMethods.permissions.edit' },
-  { code: PaymentMethodPermission.DELETE, labelKey: 'finance.treasury.paymentMethods.permissions.delete' },
-  { code: PaymentMethodPermission.CREATE, labelKey: 'finance.treasury.paymentMethods.permissions.create' },
+  {
+    code: PaymentMethodPermission.VIEW_LIST,
+    labelKey: 'finance.treasury.paymentMethods.permissions.viewList',
+  },
+  {
+    code: PaymentMethodPermission.VIEW_DETAIL,
+    labelKey: 'finance.treasury.paymentMethods.permissions.viewDetail',
+  },
+  {
+    code: PaymentMethodPermission.EDIT,
+    labelKey: 'finance.treasury.paymentMethods.permissions.edit',
+  },
+  {
+    code: PaymentMethodPermission.DELETE,
+    labelKey: 'finance.treasury.paymentMethods.permissions.delete',
+  },
+  {
+    code: PaymentMethodPermission.CREATE,
+    labelKey: 'finance.treasury.paymentMethods.permissions.create',
+  },
 ] as const;

@@ -67,6 +67,7 @@ export class ListFilterComponent {
   readonly tooltipKey = input('shared.filters');
   readonly titleKey = input('shared.filters');
   readonly clearLabelKey = input('finance.billing.creditnotes.clear');
+  readonly clearAsIcon = input(false);
   readonly testId = input<string | null>(null);
   readonly buttonClass = input('');
   readonly dateFormat = input('dd/mm/yy');

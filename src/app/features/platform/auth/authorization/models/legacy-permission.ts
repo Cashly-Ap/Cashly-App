@@ -85,6 +85,9 @@ export function legacyPermission(
   module: BusinessModule,
   action: PermissionAction,
 ): AppPermission | undefined {
+  if ((module as string) === 'AUDIT_TRAIL') {
+    return action === 'READ' ? ('AUDIT_TRAIL_VIEW_LIST' as AppPermission) : undefined;
+  }
   if (module === BusinessModule.DASHBOARD) {
     return action === 'READ' ? ('DASHBOARD_VIEW' as AppPermission) : undefined;
   }

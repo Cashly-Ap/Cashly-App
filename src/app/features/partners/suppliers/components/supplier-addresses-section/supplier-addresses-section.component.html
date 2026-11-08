@@ -46,7 +46,9 @@
         }
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'finance.billing.invoices.status' | translate }}</label>
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{
+              'finance.billing.invoices.status' | translate
+            }}</label>
             <p-select
               formControlName="state"
               [options]="stateOptions"
@@ -58,7 +60,9 @@
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'inventory.warehouses.municipality' | translate }}</label>
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{
+              'inventory.warehouses.municipality' | translate
+            }}</label>
             <p-select
               formControlName="municipality"
               [options]="municipalityOptions($index)"
@@ -70,8 +74,15 @@
             />
           </div>
           <div class="flex flex-col gap-1">
-            <label class="text-xs text-surface-500 dark:text-surface-400">{{ 'partners.suppliers.postalCode' | translate }}</label>
-            <input pInputText formControlName="postalCode" [placeholder]="'partners.suppliers.eG1060' | translate" class="w-full" />
+            <label class="text-xs text-surface-500 dark:text-surface-400">{{
+              'partners.suppliers.postalCode' | translate
+            }}</label>
+            <input
+              pInputText
+              formControlName="postalCode"
+              [placeholder]="'partners.suppliers.eG1060' | translate"
+              class="w-full"
+            />
           </div>
         </div>
         <div class="flex gap-6 mt-3">

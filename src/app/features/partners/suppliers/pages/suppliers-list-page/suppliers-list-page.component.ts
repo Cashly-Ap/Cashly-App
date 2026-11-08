@@ -36,6 +36,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -281,6 +282,13 @@ export class SuppliersListPageComponent implements OnInit {
     if (!supplier.hasPurchases) {
       actions.push(deleteAction(() => this.onDelete(supplier)));
     }
+    actions.push(
+      auditHistoryAction({
+        entityType: 'SUPPLIER',
+        entityId: supplier.id,
+        label: supplier.legalName,
+      }),
+    );
     return actions;
   }
 

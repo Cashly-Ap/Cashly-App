@@ -4,7 +4,9 @@ import { modulePermissionGuard } from '@features/platform/auth/guards/module-per
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 const page = () =>
-  import('@features/platform/auth/department/pages/departments-page.component').then((m) => m.DepartmentsPageComponent);
+  import('@features/platform/auth/department/pages/departments-page.component').then(
+    (m) => m.DepartmentsPageComponent,
+  );
 
 export const DEPARTMENTS_ROUTES: Routes = [
   {

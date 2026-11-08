@@ -48,13 +48,24 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     label,
     icon,
     command,
-    requiredAction: ({
-      'Reporte de Presupuestos PDF': 'REPORT_QUOTES', 'Reporte de Pedidos PDF': 'REPORT_ORDERS',
-      'Reporte de Compras PDF': 'REPORT_PURCHASES', 'Reporte de Productos PDF': 'REPORT_PRODUCTS',
-      'Catálogo Comercial PDF': 'REPORT_COMMERCIAL_CATALOG', Stock: 'REPORT_STOCK', Movimientos: 'REPORT_MOVEMENTS',
-      'Reporte de Facturas PDF': 'REPORT_INVOICES', 'Reportes de Caja': 'REPORT_CASH_REGISTER',
-      'Cuentas por Cobrar PDF': 'REPORT_RECEIVABLES',
-    } as Record<string, import('@features/platform/auth/authorization/models/access.model').PermissionAction>)[label] ?? 'EXPORT',
+    requiredAction:
+      (
+        {
+          'Reporte de Presupuestos PDF': 'REPORT_QUOTES',
+          'Reporte de Pedidos PDF': 'REPORT_ORDERS',
+          'Reporte de Compras PDF': 'REPORT_PURCHASES',
+          'Reporte de Productos PDF': 'REPORT_PRODUCTS',
+          'Catálogo Comercial PDF': 'REPORT_COMMERCIAL_CATALOG',
+          Stock: 'REPORT_STOCK',
+          Movimientos: 'REPORT_MOVEMENTS',
+          'Reporte de Facturas PDF': 'REPORT_INVOICES',
+          'Reportes de Caja': 'REPORT_CASH_REGISTER',
+          'Cuentas por Cobrar PDF': 'REPORT_RECEIVABLES',
+        } as Record<
+          string,
+          import('@features/platform/auth/authorization/models/access.model').PermissionAction
+        >
+      )[label] ?? 'EXPORT',
     requiredModule,
     allowedRoles: businessRoles,
   });
@@ -87,7 +98,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       ]),
       group('Compras', 'pi pi-shopping-cart', [
         withReports(
-          page('Compras', 'pi pi-shopping-cart', '/procurement/purchases', BusinessModule.PURCHASES),
+          page(
+            'Compras',
+            'pi pi-shopping-cart',
+            '/procurement/purchases',
+            BusinessModule.PURCHASES,
+          ),
           report(
             'Reporte de Compras PDF',
             'pi pi-file-pdf',
@@ -103,17 +119,22 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             'Reporte de Productos PDF',
             'pi pi-table',
             callbacks.openCatalogModal,
-             BusinessModule.CATALOG_PRODUCTS,
+            BusinessModule.CATALOG_PRODUCTS,
           ),
           report(
             'Catálogo Comercial PDF',
             'pi pi-book',
             callbacks.openCommercialCatalogModal,
-             BusinessModule.CATALOG_PRODUCTS,
+            BusinessModule.CATALOG_PRODUCTS,
           ),
         ),
         page('Categorías', 'pi pi-tags', '/catalog/categories', BusinessModule.CATALOG_CATEGORIES),
-        page('Tipos de precios', 'pi pi-tag', '/catalog/price-types', BusinessModule.CATALOG_PRICES),
+        page(
+          'Tipos de precios',
+          'pi pi-tag',
+          '/catalog/price-types',
+          BusinessModule.CATALOG_PRICES,
+        ),
       ]),
       group('Inventario', 'pi pi-box', [
         withReports(
@@ -124,7 +145,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             BusinessModule.INVENTORY_WAREHOUSES,
           ),
           group('Reportes', 'pi pi-chart-bar', [
-            report('Stock', 'pi pi-warehouse', callbacks.openStockModal, BusinessModule.INVENTORY_WAREHOUSES),
+            report(
+              'Stock',
+              'pi pi-warehouse',
+              callbacks.openStockModal,
+              BusinessModule.INVENTORY_WAREHOUSES,
+            ),
             report(
               'Movimientos',
               'pi pi-arrow-right-arrow-left',
@@ -137,7 +163,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       group('Finanzas', 'pi pi-dollar', [
         group('Facturación', 'pi pi-file', [
           withReports(
-            page('Facturas', 'pi pi-file', '/finance/billing/invoices', BusinessModule.FINANCE_INVOICES),
+            page(
+              'Facturas',
+              'pi pi-file',
+              '/finance/billing/invoices',
+              BusinessModule.FINANCE_INVOICES,
+            ),
             report(
               'Reporte de Facturas PDF',
               'pi pi-file-pdf',
@@ -145,7 +176,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               BusinessModule.FINANCE_INVOICES,
             ),
           ),
-          page('Devoluciones', 'pi pi-undo', '/finance/billing/returns', BusinessModule.FINANCE_RETURNS),
+          page(
+            'Devoluciones',
+            'pi pi-undo',
+            '/finance/billing/returns',
+            BusinessModule.FINANCE_RETURNS,
+          ),
           page(
             'Notas de crédito',
             'pi pi-file-plus',
@@ -161,7 +197,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
         ]),
         group('Tesorería', 'pi pi-wallet', [
           withReports(
-            page('Caja', 'pi pi-calculator', '/finance/treasury/cash-register', BusinessModule.FINANCE_CASH_REGISTER),
+            page(
+              'Caja',
+              'pi pi-calculator',
+              '/finance/treasury/cash-register',
+              BusinessModule.FINANCE_CASH_REGISTER,
+            ),
             page(
               'Historial de caja',
               'pi pi-history',
@@ -199,7 +240,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
       ]),
       group('Contactos', 'pi pi-address-book', [
         page('Clientes', 'pi pi-id-card', '/partners/customers', BusinessModule.CONTACTS_CUSTOMERS),
-        page('Proveedores', 'pi pi-truck', '/partners/suppliers', BusinessModule.CONTACTS_SUPPLIERS),
+        page(
+          'Proveedores',
+          'pi pi-truck',
+          '/partners/suppliers',
+          BusinessModule.CONTACTS_SUPPLIERS,
+        ),
       ]),
       group('Análisis', 'pi pi-chart-line', [
         page('Dashboard', 'pi pi-chart-line', '/analytics/dashboard', BusinessModule.DASHBOARD),

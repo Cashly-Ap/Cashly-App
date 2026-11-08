@@ -20,6 +20,9 @@ export const QUOTE_PERMISSIONS = [
   { code: QuotePermission.REPORT_PDF, labelKey: 'sales.quotes.permissions.reportPdf' },
   { code: QuotePermission.DOWNLOAD_PDF, labelKey: 'sales.quotes.permissions.downloadPdf' },
   { code: QuotePermission.CONVERT_TO_ORDER, labelKey: 'sales.quotes.permissions.convertToOrder' },
-  { code: QuotePermission.CONVERT_TO_INVOICE, labelKey: 'sales.quotes.permissions.convertToInvoice' },
+  {
+    code: QuotePermission.CONVERT_TO_INVOICE,
+    labelKey: 'sales.quotes.permissions.convertToInvoice',
+  },
   { code: QuotePermission.CANCEL, labelKey: 'sales.quotes.permissions.cancel' },
 ] as const;

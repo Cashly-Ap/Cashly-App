@@ -54,8 +54,12 @@ describe('PendingPaymentActionDialogHostComponent', () => {
         { provide: MessageService, useValue: messages },
       ],
     })
-      .overrideComponent(PendingPaymentApproveDialogComponent, { set: { template: '', imports: [] } })
-      .overrideComponent(PendingPaymentRejectDialogComponent, { set: { template: '', imports: [] } })
+      .overrideComponent(PendingPaymentApproveDialogComponent, {
+        set: { template: '', imports: [] },
+      })
+      .overrideComponent(PendingPaymentRejectDialogComponent, {
+        set: { template: '', imports: [] },
+      })
       .compileComponents();
 
     fixture = TestBed.createComponent(PendingPaymentActionDialogHostComponent);

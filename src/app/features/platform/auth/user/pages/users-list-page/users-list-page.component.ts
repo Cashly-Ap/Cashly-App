@@ -40,6 +40,7 @@ import {
   viewAction,
   editAction,
   deleteAction,
+  auditHistoryAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -263,6 +264,9 @@ export class UsersListPageComponent implements OnInit {
       editAction(() => this.onEdit(user)),
     ];
     actions.push(deleteAction(() => this.onDelete(user)));
+    actions.push(
+      auditHistoryAction({ entityType: 'USER', entityId: user.id, label: user.userName }),
+    );
     return actions;
   }
 

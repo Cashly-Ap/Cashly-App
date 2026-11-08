@@ -33,12 +33,8 @@ describe('MovementOverviewApiService', () => {
     const req = http.expectOne((request) => request.url === '/api/warehouses/movements');
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('groupBy')).toBe('MOVEMENT_TYPE');
-    expect(req.request.params.get('warehouseId')).toBe(
-      '11111111-1111-4111-8111-111111111111',
-    );
-    expect(req.request.params.get('productId')).toBe(
-      '22222222-2222-4222-8222-222222222222',
-    );
+    expect(req.request.params.get('warehouseId')).toBe('11111111-1111-4111-8111-111111111111');
+    expect(req.request.params.get('productId')).toBe('22222222-2222-4222-8222-222222222222');
     expect(req.request.params.get('movementType')).toBe('EXIT');
     expect(req.request.params.get('search')).toBe('M-01');
     expect(req.request.params.get('page')).toBe('2');
@@ -66,9 +62,7 @@ describe('MovementOverviewApiService', () => {
   });
 
   it('omits an empty warehouseId so the backend treats it as optional', () => {
-    service
-      .getOverview({ groupBy: 'PRODUCT', warehouseId: '', page: 0, size: 10 })
-      .subscribe();
+    service.getOverview({ groupBy: 'PRODUCT', warehouseId: '', page: 0, size: 10 }).subscribe();
 
     const req = http.expectOne((request) => request.url === '/api/warehouses/movements');
     expect(req.request.params.has('warehouseId')).toBe(false);

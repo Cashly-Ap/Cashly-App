@@ -23,7 +23,13 @@
                 styleClass="w-full sm:w-auto"
                 (back)="onBack()"
               />
-              <app-detail-actions-menu #actionsMenu>
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="INVOICE"
+                [auditEntityId]="currentInvoice.id"
+                [auditLabel]="currentInvoice.invoiceNumber"
+                [auditSubtitle]="currentInvoice.customerName"
+              >
                 <p-button
                   [appPermission]="'EXPORT'"
                   [label]="'navigation.labels.downloadPdf' | translate"
@@ -121,7 +127,7 @@
               />
               <app-details-info-field [label]="'shared.total' | translate" type="badge">
                 <span class="font-mono font-bold text-lg">
-                  {{ currentInvoice.total | localizedNumber: '1.2-2' }}
+                  {{ currentInvoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </app-details-info-field>
               <app-details-info-field
@@ -129,7 +135,7 @@
                 type="badge"
               >
                 <span class="font-mono">
-                  {{ currentInvoice.subtotal | localizedNumber: '1.2-2' }}
+                  {{ currentInvoice.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </app-details-info-field>
               @if (currentInvoice.returnedTotal > 0) {
@@ -138,7 +144,9 @@
                   type="badge"
                 >
                   <span class="font-mono font-semibold text-amber-600 dark:text-amber-400">
-                    -{{ currentInvoice.returnedTotal | localizedNumber: '1.2-2' }}
+                    -{{
+                      currentInvoice.returnedTotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                    }}
                   </span>
                 </app-details-info-field>
               }
@@ -211,7 +219,7 @@
                     <span
                       class="font-mono text-sm font-semibold text-amber-600 dark:text-amber-400"
                     >
-                      -{{ ret.total | localizedNumber: '1.2-2' }}
+                      -{{ ret.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </span>
                   </div>
                   @if (ret.reason) {
@@ -254,7 +262,7 @@
                               'finance.billing.returns.unitPrice' | translate
                             }}</span>
                             <span class="font-mono">{{
-                              line.unitPrice | localizedNumber: '1.2-2'
+                              line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                             }}</span>
                           </div>
                           <div class="flex flex-col gap-0.5">
@@ -262,7 +270,7 @@
                               'finance.billing.returns.subtotal' | translate
                             }}</span>
                             <span class="font-mono font-semibold">{{
-                              line.subtotal | localizedNumber: '1.2-2'
+                              line.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                             }}</span>
                           </div>
                         </div>
@@ -316,10 +324,10 @@
                           </td>
                           <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
                           <td class="text-right font-mono text-sm">
-                            {{ line.unitPrice | localizedNumber: '1.2-2' }}
+                            {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                           </td>
                           <td class="text-right font-mono font-semibold text-sm">
-                            {{ line.subtotal | localizedNumber: '1.2-2' }}
+                            {{ line.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                           </td>
                         </tr>
                         @if (line.allocations.length > 0) {
@@ -393,14 +401,16 @@
                       <span class="text-xs text-surface-400">{{
                         'finance.billing.returns.unitPrice' | translate
                       }}</span>
-                      <span class="font-mono">{{ line.unitPrice | localizedNumber: '1.2-2' }}</span>
+                      <span class="font-mono">{{
+                        line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
                       <span class="text-xs text-surface-400">{{
                         'finance.billing.returns.subtotal' | translate
                       }}</span>
                       <span class="font-mono font-semibold">{{
-                        line.lineTotal | localizedNumber: '1.2-2'
+                        line.lineTotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
@@ -409,7 +419,7 @@
                       }}</span>
                       <span class="font-mono">{{
                         line.lineTotal - line.returnedQuantity * line.unitPrice
-                          | localizedNumber: '1.2-2'
+                          | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </div>
                   </div>
@@ -421,7 +431,7 @@
                 <div class="flex justify-between text-sm font-semibold">
                   <span>{{ 'finance.billing.invoices.subtotal' | translate }}</span>
                   <span class="font-mono">{{
-                    currentInvoice.subtotal | localizedNumber: '1.2-2'
+                    currentInvoice.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                   }}</span>
                 </div>
                 @if (currentInvoice.returnedTotal > 0) {
@@ -431,7 +441,7 @@
                     <span>{{ 'finance.billing.invoices.netTotal2' | translate }}</span>
                     <span class="font-mono">{{
                       currentInvoice.subtotal - currentInvoice.returnedTotal
-                        | localizedNumber: '1.2-2'
+                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                     }}</span>
                   </div>
                 }
@@ -482,15 +492,15 @@
                       }
                     </td>
                     <td class="text-right font-mono text-sm">
-                      {{ line.unitPrice | localizedNumber: '1.2-2' }}
+                      {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </td>
                     <td class="text-right font-mono font-semibold text-sm">
-                      {{ line.lineTotal | localizedNumber: '1.2-2' }}
+                      {{ line.lineTotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </td>
                     <td class="text-right font-mono text-sm">
                       {{
                         line.lineTotal - line.returnedQuantity * line.unitPrice
-                          | localizedNumber: '1.2-2'
+                          | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}
                     </td>
                   </tr>
@@ -501,7 +511,7 @@
                       {{ 'finance.billing.invoices.subtotal' | translate }}
                     </td>
                     <td class="text-right font-mono text-sm">
-                      {{ currentInvoice.subtotal | localizedNumber: '1.2-2' }}
+                      {{ currentInvoice.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </td>
                   </tr>
                   @if (currentInvoice.returnedTotal > 0) {
@@ -515,7 +525,7 @@
                       <td class="text-right font-mono text-sm font-semibold">
                         {{
                           currentInvoice.subtotal - currentInvoice.returnedTotal
-                            | localizedNumber: '1.2-2'
+                            | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                         }}
                       </td>
                     </tr>
@@ -544,7 +554,7 @@
                   <div class="flex items-start justify-between gap-2">
                     <span class="font-mono text-sm">{{ note.noteNumber }}</span>
                     <span class="font-mono text-sm text-green-600 dark:text-green-400">
-                      -{{ note.amount | localizedNumber: '1.2-2' }}
+                      -{{ note.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </span>
                   </div>
                   <div class="flex flex-col gap-0.5">
@@ -571,7 +581,7 @@
                   <tr>
                     <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                     <td class="text-right font-mono text-green-600 dark:text-green-400">
-                      -{{ note.amount | localizedNumber: '1.2-2' }}
+                      -{{ note.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </td>
                     <td class="text-sm">{{ note.reason }}</td>
                     <td class="text-sm">
@@ -597,7 +607,7 @@
                   <div class="flex items-start justify-between gap-2">
                     <span class="font-mono text-sm">{{ note.noteNumber }}</span>
                     <span class="font-mono text-sm text-red-600 dark:text-red-400">
-                      +{{ note.amount | localizedNumber: '1.2-2' }}
+                      +{{ note.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </span>
                   </div>
                   <div class="flex flex-col gap-0.5">
@@ -624,7 +634,7 @@
                   <tr>
                     <td class="font-mono text-sm">{{ note.noteNumber }}</td>
                     <td class="text-right font-mono text-red-600 dark:text-red-400">
-                      +{{ note.amount | localizedNumber: '1.2-2' }}
+                      +{{ note.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </td>
                     <td class="text-sm">{{ note.reason }}</td>
                     <td class="text-sm">

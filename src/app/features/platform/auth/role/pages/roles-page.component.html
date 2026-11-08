@@ -223,8 +223,13 @@
                     styleClass="w-full sm:w-auto"
                     (back)="onBack()"
                   />
-                  @if (!isSystemAdministrator(value)) {
-                    <app-detail-actions-menu #actionsMenu>
+                  <app-detail-actions-menu
+                    #actionsMenu
+                    auditEntityType="ROLE"
+                    [auditEntityId]="value.id"
+                    [auditLabel]="value.name"
+                  >
+                    @if (!isSystemAdministrator(value)) {
                       <p-button
                         [appPermission]="'UPDATE'"
                         [label]="'finance.billing.invoices.edit' | translate"
@@ -234,16 +239,16 @@
                         styleClass="w-full justify-start text-left text-sm"
                       />
                       <p-button
-                    [appPermission]="'DELETE'"
-                    [label]="'finance.billing.creditnotes.delete' | translate"
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [link]="true"
-                    (onClick)="actionsMenu.hide(); remove(value)"
-                    styleClass="w-full justify-start text-left text-sm"
-                  />
-                </app-detail-actions-menu>
-                  }
+                        [appPermission]="'DELETE'"
+                        [label]="'finance.billing.creditnotes.delete' | translate"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [link]="true"
+                        (onClick)="actionsMenu.hide(); remove(value)"
+                        styleClass="w-full justify-start text-left text-sm"
+                      />
+                    }
+                  </app-detail-actions-menu>
                 </div>
               </app-details-card-header>
               <div class="p-4 sm:p-6">
@@ -394,7 +399,10 @@
               </p-tabpanels>
             </p-tabs>
             <app-form-actions
-              [submitLabel]="(value.id ? 'platform.auth.role.saveRole' : 'platform.auth.role.createRole') | translate"
+              [submitLabel]="
+                (value.id ? 'platform.auth.role.saveRole' : 'platform.auth.role.createRole')
+                  | translate
+              "
               [cancelLabel]="'shared.cancel' | translate"
               [loading]="busy()"
               [disabled]="form.invalid"

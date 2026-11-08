@@ -64,7 +64,9 @@ describe('modulePermissionGuard', () => {
     snapshot.pathFromRoot.push({
       data: { module: BusinessModule.INVENTORY_WAREHOUSES },
     } as ActivatedRouteSnapshot);
-    auth.hasPermission.mockImplementation((module) => module === BusinessModule.INVENTORY_WAREHOUSES);
+    auth.hasPermission.mockImplementation(
+      (module) => module === BusinessModule.INVENTORY_WAREHOUSES,
+    );
     const result = TestBed.runInInjectionContext(() =>
       modulePermissionGuard(snapshot, {} as never),
     );

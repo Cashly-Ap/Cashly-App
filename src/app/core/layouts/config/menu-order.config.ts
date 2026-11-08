@@ -14,7 +14,6 @@ export interface MenuUseCase {
   action: PermissionAction;
 }
 
-
 const noop = (): void => undefined;
 
 const contractCallbacks: MenuCallbacks = {
@@ -57,5 +56,3 @@ export const MENU_AREA_ORDER: readonly MenuAreaOrder[] = navbar.map((area) => {
   );
   return { area: area.label, modules: [...new Set(modules)] };
 });
-
-

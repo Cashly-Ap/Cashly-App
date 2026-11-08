@@ -1,8 +1,5 @@
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
-import {
-  ListNavigationDefinition,
-  listAction,
-} from '@core/layouts/config/list-navigation.types';
+import { ListNavigationDefinition, listAction } from '@core/layouts/config/list-navigation.types';
 
 export const CASH_REGISTER_LIST_NAVIGATION: ListNavigationDefinition = {
   route: '/finance/treasury/cash-register',
