@@ -1,8 +1,17 @@
 <app-form-container>
-  <app-form-header
-    [title]="'platform.company.editCompany' | translate"
-    [subtitle]="'platform.company.yourCompanyTaxDetailsContactInformationAndIdentity' | translate"
-  />
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <app-form-header
+      [title]="'platform.company.editCompany' | translate"
+      [subtitle]="'platform.company.yourCompanyTaxDetailsContactInformationAndIdentity' | translate"
+    />
+    @if (service.company(); as company) {
+      <app-audit-trail-action
+        entityType="COMPANY"
+        [entityId]="company.id"
+        [label]="company.tradeName || company.legalName"
+      />
+    }
+  </div>
   @if (loading()) {
     <app-panel-card
       ><div class="p-6" role="status">

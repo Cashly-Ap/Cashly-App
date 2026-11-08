@@ -277,6 +277,7 @@ describe('MainLayoutComponent', () => {
         openAccountsReceivablePdfModal: vi.fn(),
         openCashRegisterModal: vi.fn(),
         openPurchasesPdfModal: vi.fn(),
+        openCompanyAuditHistory: vi.fn(),
       };
       return buildMenuItems(callbacks);
     }

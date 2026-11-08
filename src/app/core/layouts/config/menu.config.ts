@@ -2,9 +2,11 @@ import { addListNavigationActions } from '@core/layouts/config/list-navigation.c
 import { MenuItem } from '@core/layouts/models';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { CompanyPermission } from '@features/platform/company/permissions';
+import { AuditPermission } from '@features/platform/audit/permissions';
 
 export interface MenuCallbacks {
   openListAction: (route: string, action: string, queryParams?: Record<string, string>) => void;
+  openCompanyAuditHistory: () => void;
   openCustomerEditPicker: () => void;
   openCustomerBalancePicker: () => void;
   openCatalogModal: () => void;
@@ -268,6 +270,13 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             routerLink: '/platform/company/edit',
             allowedRoles: businessRoles,
             requiredPermission: CompanyPermission.EDIT,
+          },
+          {
+            label: 'Historial',
+            icon: 'pi pi-history',
+            command: callbacks.openCompanyAuditHistory,
+            allowedRoles: businessRoles,
+            requiredPermission: AuditPermission.VIEW_LIST,
           },
         ]),
       ]),

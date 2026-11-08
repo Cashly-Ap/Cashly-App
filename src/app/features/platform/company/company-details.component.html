@@ -38,15 +38,25 @@
             </h2>
             <p class="text-sm text-surface-500 break-words mt-1">{{ company.legalName }}</p>
           </div>
-          @if (canEdit()) {
-            <p-button
-              [label]="'platform.company.editCompany' | translate"
-              [ariaLabel]="'platform.company.editCompany' | translate"
-              icon="pi pi-pencil"
-              [outlined]="true"
-              (onClick)="edit()"
-            />
-          }
+          <div actions class="flex gap-3">
+            <app-detail-actions-menu
+              #actionsMenu
+              auditEntityType="COMPANY"
+              [auditEntityId]="company.id"
+              [auditLabel]="company.tradeName || company.legalName"
+            >
+              @if (canEdit()) {
+                <p-button
+                  [label]="'platform.company.editCompany' | translate"
+                  [ariaLabel]="'platform.company.editCompany' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); edit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              }
+            </app-detail-actions-menu>
+          </div>
         </div>
       </app-panel-card>
       <app-panel-card>

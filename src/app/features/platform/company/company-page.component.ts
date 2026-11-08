@@ -21,6 +21,7 @@ import {
   CountryInputComponent,
 } from '@core/forms/components';
 import { CompanyService } from '@features/platform/company/company.service';
+import { AuditTrailActionComponent } from '@features/platform/audit/components/audit-trail-action/audit-trail-action.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 @Component({
   selector: 'app-company-page',
@@ -39,6 +40,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     FileInputComponent,
     CountryInputComponent,
     PdfViewerModalComponent,
+    AuditTrailActionComponent,
   ],
   templateUrl: './company-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

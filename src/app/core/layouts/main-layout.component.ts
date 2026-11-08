@@ -53,6 +53,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
 import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
 import { AuditTrailDialogHostComponent } from '@core/layouts/components/audit-trail-dialog-host/audit-trail-dialog-host.component';
+import { AuditTrailDialogService } from '@shared/services/audit-trail-dialog.service';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -119,6 +120,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly navigationLookup = inject(NavigationLookupService);
   private readonly reportActions = inject(ReportActionService);
   private readonly customerPicker = inject(CustomerPickerActionService);
+  private readonly auditTrailDialog = inject(AuditTrailDialogService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
@@ -211,6 +213,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     const callbacks = {
       openListAction: (route: string, action: string, queryParams?: Record<string, string>) => {
         this.navigationLookup.open(route, action, queryParams);
+      },
+      openCompanyAuditHistory: () => {
+        const company = this.companyService.company();
+        this.auditTrailDialog.open({
+          entityType: 'COMPANY',
+          ...(company?.id ? { entityId: company.id } : {}),
+          label: this.companyName(),
+        });
       },
       openCustomerEditPicker: () => this.customerPicker.open('edit'),
       openCustomerBalancePicker: () => this.customerPicker.open('balance'),

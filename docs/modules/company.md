@@ -46,6 +46,7 @@ Both routes use `authGuard` and `modulePermissionGuard`.
 - PDF logo preview against a sample document before saving
 - Automatic image optimization on the backend
 - Permission-based edit action visibility
+- Audit trail access from the details actions menu, the edit page, and the `Plataforma → Compañía → Historial` menubar entry (entity type `COMPANY`)
 - Redirect to the details page after a successful save
 
 ---
@@ -137,7 +138,7 @@ Empty text fields are trimmed and sent as `null`.
 | `COMPANY_VIEW` | Access the company details page       |
 | `COMPANY_EDIT` | Access the edit page and save changes |
 
-The edit button is only rendered when the user has `COMPANY_EDIT`.
+The edit button is only rendered when the user has `COMPANY_EDIT`. Audit history links are only rendered when the user has the audit list permission.
 
 ---
 

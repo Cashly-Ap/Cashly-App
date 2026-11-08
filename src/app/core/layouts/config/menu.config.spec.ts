@@ -1,6 +1,7 @@
 import { LIST_NAVIGATION_DEFINITIONS } from '@core/layouts/config/list-navigation.config';
 import { describe, expect, it, vi } from 'vitest';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { AuditPermission } from '@features/platform/audit/permissions';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems, MenuCallbacks } from '@app/core/layouts/config/menu.config';
 
@@ -19,6 +20,7 @@ function createCallbacks(): MenuCallbacks {
     openAccountsReceivablePdfModal: vi.fn(),
     openCashRegisterModal: vi.fn(),
     openPurchasesPdfModal: vi.fn(),
+    openCompanyAuditHistory: vi.fn(),
   };
 }
 
@@ -149,6 +151,17 @@ describe('ERP navigation', () => {
     expect(new Set(routes).size).toBe(routes.length);
   });
 
+  it('exposes the company audit history from the menubar', () => {
+    const callbacks = createCallbacks();
+    const all = flatten(buildMenuItems(callbacks));
+    const company = all.find((item) => item.label === 'Compañía');
+    const history = company?.children?.find((item) => item.label === 'Historial');
+    expect(history?.requiredPermission).toBe(AuditPermission.VIEW_LIST);
+    expect(history?.routerLink).toBeUndefined();
+    history?.command?.();
+    expect(callbacks.openCompanyAuditHistory).toHaveBeenCalledTimes(1);
+  });
+
   it('places reports directly inside their owning module without report groups', () => {
     const menu = buildMenuItems(createCallbacks());
     const all = flatten(menu);
@@ -181,8 +194,13 @@ describe('ERP navigation', () => {
 
   it('should preserve every report action exactly once', () => {
     const callbacks = createCallbacks();
-    const { openListAction, openCustomerEditPicker, openCustomerBalancePicker, ...reports } =
-      callbacks;
+    const {
+      openListAction,
+      openCustomerEditPicker,
+      openCustomerBalancePicker,
+      openCompanyAuditHistory,
+      ...reports
+    } = callbacks;
     const actions = flatten(buildMenuItems(callbacks)).filter((item) =>
       Object.values(reports).some((callback) => callback === item.command),
     );

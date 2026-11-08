@@ -11,6 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import {
+  DetailActionsMenuComponent,
   DetailsCardHeaderComponent,
   DetailsInfoFieldComponent,
   DetailsInfoGridComponent,
@@ -29,6 +30,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
     TranslatePipe,
     ButtonModule,
     PageHeaderComponent,
+    DetailActionsMenuComponent,
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,

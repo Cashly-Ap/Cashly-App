@@ -30,6 +30,7 @@ const contractCallbacks: MenuCallbacks = {
   openAccountsReceivablePdfModal: noop,
   openCashRegisterModal: noop,
   openPurchasesPdfModal: noop,
+  openCompanyAuditHistory: noop,
 };
 
 function collectModules(items: MenuItem[]): BusinessModule[] {
