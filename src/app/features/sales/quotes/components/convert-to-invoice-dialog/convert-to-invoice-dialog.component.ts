@@ -1,7 +1,7 @@
 import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
@@ -77,7 +77,7 @@ import { TableCardComponent } from '@shared/components/ui/table-card/table-card.
     TableCardComponent,
     TranslateOptionsPipe,
     TranslatePipe,
-    LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     CommonModule,
     ButtonModule,
     SelectModule,

@@ -1,4 +1,4 @@
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
@@ -37,6 +37,7 @@ import { SingleWarehouseContext } from '@features/inventory/warehouses/models/in
   imports: [
     TranslatePipe,
     LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     FormsModule,
     ButtonModule,
     TooltipModule,

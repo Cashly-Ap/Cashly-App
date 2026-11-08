@@ -107,7 +107,7 @@
                   'sales.orders.unitPrice' | translate
                 }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitPrice | localizedNumber: '1.2-2' }}
+                  {{ item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </div>
 
@@ -120,7 +120,9 @@
                 <span
                   class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100"
                 >
-                  {{ item.quantity * item.unitPrice | localizedNumber: '1.2-2' }}
+                  {{
+                    item.quantity * item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                  }}
                 </span>
               </div>
 
@@ -178,7 +180,7 @@
                   'sales.orders.unitPrice' | translate
                 }}</span>
                 <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-100">
-                  {{ item.unitPrice | localizedNumber: '1.2-2' }}
+                  {{ item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </div>
               <span class="text-surface-300 dark:text-surface-600 shrink-0">·</span>
@@ -189,7 +191,9 @@
                 <span
                   class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-100"
                 >
-                  {{ item.quantity * item.unitPrice | localizedNumber: '1.2-2' }}
+                  {{
+                    item.quantity * item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                  }}
                 </span>
               </div>
               @if (item.warehouseAllocations.length > 0) {
@@ -217,7 +221,7 @@
             totalLabel() | translate
           }}</span>
           <span class="font-mono font-semibold text-lg text-surface-900 dark:text-surface-100">
-            {{ total() | localizedNumber: '1.2-2' }}
+            {{ total() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
           </span>
         </div>
       </div>

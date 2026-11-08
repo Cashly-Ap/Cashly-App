@@ -1,4 +1,8 @@
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { StatusVariant } from '@shared/models/status-variant';
 import { quoteStatusVariant } from '@features/sales/quotes/models/quote-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -48,6 +52,7 @@ import { computed, signal } from '@angular/core';
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     ButtonModule,
     TableModule,

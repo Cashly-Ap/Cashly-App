@@ -4,7 +4,7 @@ import { orderStatusVariant } from '@features/sales/orders/models/order-status.p
 import { ConfirmOrderDialogComponent } from '@features/sales/orders/components/confirm-order-dialog/confirm-order-dialog.component';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -88,7 +88,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
-    LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     CommonModule,
     FormsModule,
     ButtonModule,

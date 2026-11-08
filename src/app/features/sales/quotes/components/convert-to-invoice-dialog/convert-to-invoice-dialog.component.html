@@ -34,7 +34,7 @@
         </div>
         <p class="text-sm text-surface-500 ml-6">{{ info.customerName }}</p>
         <p class="text-sm text-surface-500 ml-6 font-medium">
-          {{ info.subtotal | localizedNumber: '1.2-2' }}
+          {{ info.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
         </p>
         <p class="text-xs text-surface-400 ml-6 mt-1">
           <i class="pi pi-info-circle mr-1"></i>
@@ -165,7 +165,7 @@
               >
                 <span class="text-xs text-surface-400">{{ 'shared.limit' | translate }}</span>
                 <span class="font-mono text-sm font-semibold"
-                  >{{ status.creditLimit | localizedNumber: '1.2-2' }}$</span
+                  >{{ status.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
                 >
               </div>
               <div
@@ -178,7 +178,7 @@
                   class="font-mono text-sm font-semibold"
                   [class.text-green-600]="status.availableCredit >= totalAmount()"
                 >
-                  {{ status.availableCredit | localizedNumber: '1.2-2' }}$
+                  {{ status.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                 </span>
               </div>
               <div class="flex flex-col gap-0.5 px-4 py-3">
@@ -186,7 +186,7 @@
                   'sales.orders.invoiceTotal' | translate
                 }}</span>
                 <span class="font-mono text-sm font-semibold"
-                  >{{ totalAmount() | localizedNumber: '1.2-2' }}$</span
+                  >{{ totalAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
                 >
               </div>
             </div>
@@ -240,7 +240,7 @@
                   }}</span>
                 </div>
                 <span class="font-mono font-bold text-blue-600 dark:text-blue-400"
-                  >{{ customerBalance() | localizedNumber: '1.2-2' }}$</span
+                  >{{ customerBalance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
                 >
               </div>
             </div>
@@ -363,7 +363,7 @@
                 class="font-mono font-bold text-lg"
                 [class.text-green-600]="totalPayments() === totalAmount()"
               >
-                {{ totalPayments() | localizedNumber: '1.2-2' }}$
+                {{ totalPayments() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
               </span>
             </div>
             @if (remainingToPay() > 0) {
@@ -371,7 +371,7 @@
                 <i class="pi pi-exclamation-circle text-xs"></i>
                 <span class="text-xs font-medium">{{
                   'finance.billing.invoices.remainingAllocation'
-                    | translate: { amount: (remainingToPay() | localizedNumber: '1.2-2') }
+                    | translate: { amount: (remainingToPay() | localizedCurrency: 'USD' : 'symbol' : '1.2-2') }
                 }}</span>
               </div>
             }

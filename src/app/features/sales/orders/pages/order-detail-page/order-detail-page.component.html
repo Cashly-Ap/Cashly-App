@@ -113,7 +113,9 @@
               />
               <app-details-info-field
                 [label]="'shared.total' | translate"
-                [value]="(currentOrder.totalAmount | localizedNumber: '1.2-2') || ''"
+                [value]="
+                  (currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
+                "
                 type="currency"
               />
               <app-details-info-field
@@ -159,14 +161,16 @@
                       <span class="text-xs text-surface-400">{{
                         'finance.billing.returns.unitPrice' | translate
                       }}</span>
-                      <span class="font-mono">{{ item.unitPrice | localizedNumber: '1.2-2' }}</span>
+                      <span class="font-mono">{{
+                        item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
                       <span class="text-xs text-surface-400">{{
                         'finance.billing.returns.subtotal' | translate
                       }}</span>
                       <span class="font-mono font-semibold">{{
-                        item.subtotal | localizedNumber: '1.2-2'
+                        item.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </div>
                   </div>
@@ -177,7 +181,7 @@
               >
                 <span>{{ 'finance.billing.returns.total' | translate }}</span>
                 <span class="font-mono text-lg">{{
-                  currentOrder.totalAmount | localizedNumber: '1.2-2'
+                  currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                 }}</span>
               </div>
             </div>
@@ -205,11 +209,13 @@
                       <span class="font-mono">{{ item.quantity | localizedNumber: '1.0-3' }}</span>
                     </td>
                     <td class="text-right">
-                      <span class="font-mono">{{ item.unitPrice | localizedNumber: '1.2-2' }}</span>
+                      <span class="font-mono">{{
+                        item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
                     </td>
                     <td class="text-right">
                       <span class="font-mono font-semibold">{{
-                        item.subtotal | localizedNumber: '1.2-2'
+                        item.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </td>
                   </tr>
@@ -221,7 +227,9 @@
                     </td>
                     <td class="text-right">
                       <span class="font-mono font-bold text-lg">
-                        {{ currentOrder.totalAmount | localizedNumber: '1.2-2' }}
+                        {{
+                          currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
                       </span>
                     </td>
                   </tr>

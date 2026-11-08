@@ -1,4 +1,8 @@
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { StatusVariant } from '@shared/models/status-variant';
 import { orderStatusVariant } from '@features/sales/orders/models/order-status.presentation';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
@@ -54,6 +58,7 @@ import { OrderList } from '@features/sales/orders/models/interfaces/order-list.i
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     ButtonModule,
     TableModule,
