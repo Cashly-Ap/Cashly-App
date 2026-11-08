@@ -38,373 +38,368 @@
       </div>
     }
 
-    <p-tabs [(value)]="activeTab" styleClass="mt-4">
-      <p-tablist>
-        <p-tab value="customers">{{
-          'finance.treasury.receivables.customersWithDebt' | translate
-        }}</p-tab>
-        <p-tab value="pending">{{
-          'finance.treasury.receivables.paymentsAwaitingReview' | translate
-        }}</p-tab>
-      </p-tablist>
-      <p-tabpanels>
-        <p-tabpanel value="customers">
-          <app-panel-card [overflowHidden]="true">
-            <div class="p-6">
-              <div class="mb-6">
-                <div class="relative">
-                  <app-search-field
-                    [value]="searchTerm()"
-                    [placeholder]="'finance.treasury.receivables.searchByNameOrTaxId' | translate"
-                    (search)="onSearch($event)"
-                  />
-                </div>
-              </div>
+    <app-panel-card [overflowHidden]="true" extraClass="mt-4">
+      <div
+        class="flex flex-wrap items-center gap-1 border-b border-surface-200 bg-surface-50 px-4 py-2 sm:px-6 dark:border-surface-700 dark:bg-surface-800"
+      >
+        <button
+          type="button"
+          (click)="activeTab.set('customers')"
+          class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+          [class.bg-surface-900]="activeTab() === 'customers'"
+          [class.text-surface-0]="activeTab() === 'customers'"
+          [class.shadow-sm]="activeTab() === 'customers'"
+          [class.dark:bg-surface-100]="activeTab() === 'customers'"
+          [class.dark:text-surface-900]="activeTab() === 'customers'"
+          [class.text-surface-600]="activeTab() !== 'customers'"
+          [class.hover:bg-surface-200]="activeTab() !== 'customers'"
+          [class.dark:text-surface-300]="activeTab() !== 'customers'"
+          [class.dark:hover:bg-surface-700]="activeTab() !== 'customers'"
+        >
+          <i class="pi pi-users text-xs"></i>
+          {{ 'finance.treasury.receivables.customersWithDebt' | translate }}
+        </button>
+        <button
+          type="button"
+          (click)="activeTab.set('pending')"
+          class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+          [class.bg-surface-900]="activeTab() === 'pending'"
+          [class.text-surface-0]="activeTab() === 'pending'"
+          [class.shadow-sm]="activeTab() === 'pending'"
+          [class.dark:bg-surface-100]="activeTab() === 'pending'"
+          [class.dark:text-surface-900]="activeTab() === 'pending'"
+          [class.text-surface-600]="activeTab() !== 'pending'"
+          [class.hover:bg-surface-200]="activeTab() !== 'pending'"
+          [class.dark:text-surface-300]="activeTab() !== 'pending'"
+          [class.dark:hover:bg-surface-700]="activeTab() !== 'pending'"
+        >
+          <i class="pi pi-shield text-xs"></i>
+          {{ 'finance.treasury.receivables.paymentsAwaitingReview' | translate }}
+        </button>
+      </div>
 
-              @if (showInitialLoading()) {
-                <div class="space-y-4">
-                  @for (_ of [1, 2, 3, 4, 5]; track _) {
-                    <app-list-row-skeleton />
-                  }
-                </div>
-              } @else if (isEmpty()) {
-                <div class="py-16 text-center">
-                  <div
-                    class="inline-flex items-center justify-center w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full mb-4"
-                  >
-                    <i class="pi pi-users text-4xl text-surface-400"></i>
-                  </div>
-                  <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-2">
-                    {{ 'finance.treasury.receivables.noCustomersWithDebt' | translate }}
-                  </h3>
-                  <p class="text-sm text-surface-500 dark:text-surface-400">
-                    {{
-                      'finance.treasury.receivables.allCustomersAreUpToDateWithTheirPayments'
-                        | translate
-                    }}
-                  </p>
-                </div>
-              } @else {
-                <div
-                  class="hidden md:block overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700"
-                >
-                  <p-table
-                    [value]="service.customers()"
-                    [loading]="service.loading()"
-                    styleClass="p-datatable-striped"
-                    [tableStyle]="{ 'min-width': '100%' }"
-                  >
-                    <ng-template pTemplate="header">
-                      <tr>
-                        <th class="bg-surface-50 dark:bg-surface-800">
-                          <div
-                            class="flex items-center gap-2 cursor-pointer select-none"
-                            (click)="toggleSort('customerName')"
-                          >
-                            {{ 'shared.customer' | translate }}
-                            <i [class]="sortIcon('customerName')"></i>
-                          </div>
-                        </th>
-                        <th class="text-right bg-surface-50 dark:bg-surface-800">
-                          <div
-                            class="flex items-center gap-2 justify-end cursor-pointer select-none"
-                            (click)="toggleSort('totalDebt')"
-                          >
-                            {{ 'finance.treasury.receivables.totalDebt' | translate }}
-                            <i [class]="sortIcon('totalDebt')"></i>
-                          </div>
-                        </th>
-                        <th class="text-right bg-surface-50 dark:bg-surface-800">
-                          <div
-                            class="flex items-center gap-2 justify-end cursor-pointer select-none"
-                            (click)="toggleSort('creditLimit')"
-                          >
-                            {{ 'finance.treasury.receivables.creditLimit2' | translate }}
-                            <i [class]="sortIcon('creditLimit')"></i>
-                          </div>
-                        </th>
-                        <th class="text-right bg-surface-50 dark:bg-surface-800">
-                          <div
-                            class="flex items-center gap-2 justify-end cursor-pointer select-none"
-                            (click)="toggleSort('availableCredit')"
-                          >
-                            {{ 'finance.treasury.receivables.availableCredit' | translate }}
-                            <i [class]="sortIcon('availableCredit')"></i>
-                          </div>
-                        </th>
-                        <th class="text-right bg-surface-50 dark:bg-surface-800">
-                          <div class="font-semibold text-surface-700 dark:text-surface-200">
-                            {{ 'finance.billing.invoices.creditBalance' | translate }}
-                          </div>
-                        </th>
-                        <th class="text-center bg-surface-50 dark:bg-surface-800">
-                          <div
-                            class="flex items-center gap-2 justify-center cursor-pointer select-none"
-                            (click)="toggleSort('pendingInvoicesCount')"
-                          >
-                            {{ 'finance.treasury.receivables.outstandingInvoices' | translate }}
-                            <i [class]="sortIcon('pendingInvoicesCount')"></i>
-                          </div>
-                        </th>
-                        <th class="text-center bg-surface-50 dark:bg-surface-800">
-                          <div class="font-semibold text-surface-700 dark:text-surface-200">
-                            {{ 'shared.actions' | translate }}
-                          </div>
-                        </th>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-customer>
-                      <tr
-                        class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
-                      >
-                        <td>
-                          <div class="flex items-center gap-3">
-                            <div
-                              class="flex items-center justify-center w-10 h-10 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold"
-                            >
-                              {{ customer.customerName.charAt(0).toUpperCase() }}
-                            </div>
-                            <div>
-                              <div class="font-semibold text-surface-900 dark:text-surface-0">
-                                {{ customer.customerName }}
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          <span class="font-mono font-bold text-lg text-red-600 dark:text-red-400">
-                            {{ customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-                          </span>
-                        </td>
-                        <td class="text-right">
-                          <span
-                            class="font-mono font-semibold text-surface-900 dark:text-surface-0"
-                          >
-                            {{
-                              customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                            }}
-                          </span>
-                        </td>
-                        <td class="text-right">
-                          @if (customer.availableCredit > 0) {
-                            <span
-                              class="font-mono font-semibold text-green-600 dark:text-green-400"
-                            >
-                              {{
-                                customer.availableCredit
-                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          } @else {
-                            <span class="font-mono font-semibold text-red-600 dark:text-red-400">
-                              {{
-                                customer.availableCredit
-                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          }
-                        </td>
-                        <td class="text-right">
-                          @if (customer.customerBalance > 0) {
-                            <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
-                              {{
-                                customer.customerBalance
-                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          } @else {
-                            <span class="font-mono text-surface-400 dark:text-surface-500"
-                              >$0.00</span
-                            >
-                          }
-                        </td>
-                        <td class="text-center">
-                          <span
-                            class="inline-flex items-center justify-center px-3 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-sm font-semibold rounded-full"
-                          >
-                            {{ customer.pendingInvoicesCount }}
-                          </span>
-                        </td>
-                        <td class="text-center">
-                          <app-list-action-buttons
-                            [actions]="customerActions(customer)"
-                            [ariaLabel]="
-                              'finance.treasury.receivables.openCustomerActions' | translate
-                            "
-                          />
-                        </td>
-                      </tr>
-                    </ng-template>
-                    <ng-template pTemplate="emptymessage">
-                      <tr>
-                        <td colspan="6" class="py-16">
-                          <div class="flex flex-col items-center gap-4">
-                            <div
-                              class="w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
-                            >
-                              <i class="pi pi-users text-4xl text-surface-400"></i>
-                            </div>
-                            <div class="text-center">
-                              <p
-                                class="text-lg font-semibold text-surface-700 dark:text-surface-200 mb-1"
-                              >
-                                {{ 'finance.treasury.receivables.noCustomersFound' | translate }}
-                              </p>
-                              <p class="text-sm text-surface-500 dark:text-surface-400">
-                                {{
-                                  'finance.treasury.receivables.noCustomersRegisteredInTheSystem'
-                                    | translate
-                                }}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    </ng-template>
-                  </p-table>
-                </div>
+      @if (activeTab() === 'customers') {
+        <div class="p-6">
+          <div class="mb-6">
+            <div class="relative">
+              <app-search-field
+                [value]="searchTerm()"
+                [placeholder]="'finance.treasury.receivables.searchByNameOrTaxId' | translate"
+                (search)="onSearch($event)"
+              />
+            </div>
+          </div>
 
-                <div class="md:hidden space-y-4">
-                  @if (service.loading()) {
-                    <div class="flex items-center justify-center py-12">
-                      <i
-                        class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100"
-                      ></i>
-                    </div>
-                  } @else {
-                    @for (customer of service.customers(); track customer.customerId) {
-                      <app-panel-card padding="p-5">
-                        <div class="flex items-start gap-3 mb-3">
-                          <div
-                            class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold text-lg flex-shrink-0"
-                          >
-                            {{ customer.customerName.charAt(0).toUpperCase() }}
-                          </div>
-                          <div class="flex-1 min-w-0">
-                            <h3
-                              class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1"
-                            >
-                              {{ customer.customerName }}
-                            </h3>
-                          </div>
-                        </div>
-                        <div class="space-y-2 mb-3">
-                          <div
-                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
-                          >
-                            <span
-                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >{{ 'finance.treasury.receivables.totalDebt' | translate }}</span
-                            >
-                            <span class="font-mono font-bold text-red-600 dark:text-red-400">
-                              {{
-                                customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          </div>
-                          <div
-                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400"
-                          >
-                            <span
-                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >{{ 'finance.treasury.receivables.creditLimit2' | translate }}</span
-                            >
-                            <span
-                              class="font-mono font-semibold text-surface-900 dark:text-surface-0"
-                            >
-                              {{
-                                customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          </div>
-                          <div
-                            class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
-                          >
-                            <span
-                              class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                              >{{
-                                'finance.treasury.receivables.availableCredit' | translate
-                              }}</span
-                            >
-                            <span
-                              class="font-mono font-semibold"
-                              [class.text-green-600]="customer.availableCredit > 0"
-                              [class.dark:text-green-400]="customer.availableCredit > 0"
-                              [class.text-red-600]="customer.availableCredit <= 0"
-                              [class.dark:text-red-400]="customer.availableCredit <= 0"
-                            >
-                              {{
-                                customer.availableCredit
-                                  | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                              }}
-                            </span>
-                          </div>
-                          @if (customer.customerBalance > 0) {
-                            <div
-                              class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
-                            >
-                              <span
-                                class="text-xs font-medium text-surface-600 dark:text-surface-400"
-                                >{{ 'finance.billing.invoices.creditBalance' | translate }}</span
-                              >
-                              <span
-                                class="font-mono font-semibold text-blue-600 dark:text-blue-400"
-                              >
-                                {{
-                                  customer.customerBalance
-                                    | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                                }}
-                              </span>
-                            </div>
-                          }
-                          <div class="flex items-center justify-between">
-                            <span class="text-xs text-surface-600 dark:text-surface-400">{{
-                              'finance.treasury.receivables.outstandingInvoices' | translate
-                            }}</span>
-                            <span
-                              class="px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-xs font-semibold rounded-full"
-                            >
-                              {{ customer.pendingInvoicesCount }}
-                            </span>
-                          </div>
-                        </div>
-                        <app-list-action-buttons
-                          [actions]="customerActions(customer)"
-                          [ariaLabel]="
-                            'finance.treasury.receivables.openCustomerActions' | translate
-                          "
-                        />
-                      </app-panel-card>
-                    }
-                  }
-                </div>
+          @if (showInitialLoading()) {
+            <div class="space-y-4">
+              @for (_ of [1, 2, 3, 4, 5]; track _) {
+                <app-list-row-skeleton />
               }
             </div>
-          </app-panel-card>
+          } @else if (isEmpty()) {
+            <div class="py-16 text-center">
+              <div
+                class="inline-flex items-center justify-center w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full mb-4"
+              >
+                <i class="pi pi-users text-4xl text-surface-400"></i>
+              </div>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-2">
+                {{ 'finance.treasury.receivables.noCustomersWithDebt' | translate }}
+              </h3>
+              <p class="text-sm text-surface-500 dark:text-surface-400">
+                {{
+                  'finance.treasury.receivables.allCustomersAreUpToDateWithTheirPayments'
+                    | translate
+                }}
+              </p>
+            </div>
+          } @else {
+            <div
+              class="hidden md:block overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700"
+            >
+              <p-table
+                [value]="service.customers()"
+                [loading]="service.loading()"
+                styleClass="p-datatable-striped"
+                [tableStyle]="{ 'min-width': '100%' }"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="bg-surface-50 dark:bg-surface-800">
+                      <div
+                        class="flex items-center gap-2 cursor-pointer select-none"
+                        (click)="toggleSort('customerName')"
+                      >
+                        {{ 'shared.customer' | translate }}
+                        <i [class]="sortIcon('customerName')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div
+                        class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                        (click)="toggleSort('totalDebt')"
+                      >
+                        {{ 'finance.treasury.receivables.totalDebt' | translate }}
+                        <i [class]="sortIcon('totalDebt')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div
+                        class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                        (click)="toggleSort('creditLimit')"
+                      >
+                        {{ 'finance.treasury.receivables.creditLimit2' | translate }}
+                        <i [class]="sortIcon('creditLimit')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div
+                        class="flex items-center gap-2 justify-end cursor-pointer select-none"
+                        (click)="toggleSort('availableCredit')"
+                      >
+                        {{ 'finance.treasury.receivables.availableCredit' | translate }}
+                        <i [class]="sortIcon('availableCredit')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                      <div class="font-semibold text-surface-700 dark:text-surface-200">
+                        {{ 'finance.billing.invoices.creditBalance' | translate }}
+                      </div>
+                    </th>
+                    <th class="text-center bg-surface-50 dark:bg-surface-800">
+                      <div
+                        class="flex items-center gap-2 justify-center cursor-pointer select-none"
+                        (click)="toggleSort('pendingInvoicesCount')"
+                      >
+                        {{ 'finance.treasury.receivables.outstandingInvoices' | translate }}
+                        <i [class]="sortIcon('pendingInvoicesCount')"></i>
+                      </div>
+                    </th>
+                    <th class="text-center bg-surface-50 dark:bg-surface-800">
+                      <div class="font-semibold text-surface-700 dark:text-surface-200">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-customer>
+                  <tr
+                    class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
+                  >
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="flex items-center justify-center w-10 h-10 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold"
+                        >
+                          {{ customer.customerName.charAt(0).toUpperCase() }}
+                        </div>
+                        <div>
+                          <div class="font-semibold text-surface-900 dark:text-surface-0">
+                            {{ customer.customerName }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-bold text-lg text-red-600 dark:text-red-400">
+                        {{ customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                        {{ customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      @if (customer.availableCredit > 0) {
+                        <span class="font-mono font-semibold text-green-600 dark:text-green-400">
+                          {{
+                            customer.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      } @else {
+                        <span class="font-mono font-semibold text-red-600 dark:text-red-400">
+                          {{
+                            customer.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      }
+                    </td>
+                    <td class="text-right">
+                      @if (customer.customerBalance > 0) {
+                        <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                          {{
+                            customer.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      } @else {
+                        <span class="font-mono text-surface-400 dark:text-surface-500">$0.00</span>
+                      }
+                    </td>
+                    <td class="text-center">
+                      <span
+                        class="inline-flex items-center justify-center px-3 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-sm font-semibold rounded-full"
+                      >
+                        {{ customer.pendingInvoicesCount }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <app-list-action-buttons
+                        [actions]="customerActions(customer)"
+                        [ariaLabel]="'finance.treasury.receivables.openCustomerActions' | translate"
+                      />
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="6" class="py-16">
+                      <div class="flex flex-col items-center gap-4">
+                        <div
+                          class="w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
+                        >
+                          <i class="pi pi-users text-4xl text-surface-400"></i>
+                        </div>
+                        <div class="text-center">
+                          <p
+                            class="text-lg font-semibold text-surface-700 dark:text-surface-200 mb-1"
+                          >
+                            {{ 'finance.treasury.receivables.noCustomersFound' | translate }}
+                          </p>
+                          <p class="text-sm text-surface-500 dark:text-surface-400">
+                            {{
+                              'finance.treasury.receivables.noCustomersRegisteredInTheSystem'
+                                | translate
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
 
-          <app-panel-card padding="px-6 py-3" extraClass="mt-4">
-            <app-paginator
-              [first]="first()"
-              [rows]="rows()"
-              [totalRecords]="service.totalCustomers()"
-              [rowsPerPageOptions]="[10, 20, 50]"
-              [showCurrentPageReport]="true"
-              [currentPageReportTemplate]="
-                'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate
-              "
-              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
-            />
-          </app-panel-card>
-        </p-tabpanel>
-        <p-tabpanel value="pending">
-          <app-pending-payments-tab
-            [focusPaymentId]="focusPaymentId()"
-            (focusHandled)="onPaymentFocusHandled($event)"
-            (paymentValidated)="onPaymentValidated()"
+            <div class="md:hidden space-y-4">
+              @if (service.loading()) {
+                <div class="flex items-center justify-center py-12">
+                  <i
+                    class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100"
+                  ></i>
+                </div>
+              } @else {
+                @for (customer of service.customers(); track customer.customerId) {
+                  <app-panel-card padding="p-5">
+                    <div class="flex items-start gap-3 mb-3">
+                      <div
+                        class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg text-surface-0 dark:text-surface-900 font-bold text-lg flex-shrink-0"
+                      >
+                        {{ customer.customerName.charAt(0).toUpperCase() }}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                          {{ customer.customerName }}
+                        </h3>
+                      </div>
+                    </div>
+                    <div class="space-y-2 mb-3">
+                      <div
+                        class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
+                      >
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.receivables.totalDebt' | translate
+                        }}</span>
+                        <span class="font-mono font-bold text-red-600 dark:text-red-400">
+                          {{ customer.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div
+                        class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400"
+                      >
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.receivables.creditLimit2' | translate
+                        }}</span>
+                        <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                          {{ customer.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div
+                        class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
+                      >
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.receivables.availableCredit' | translate
+                        }}</span>
+                        <span
+                          class="font-mono font-semibold"
+                          [class.text-green-600]="customer.availableCredit > 0"
+                          [class.dark:text-green-400]="customer.availableCredit > 0"
+                          [class.text-red-600]="customer.availableCredit <= 0"
+                          [class.dark:text-red-400]="customer.availableCredit <= 0"
+                        >
+                          {{
+                            customer.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      </div>
+                      @if (customer.customerBalance > 0) {
+                        <div
+                          class="flex items-center justify-between p-3 bg-surface-50 dark:bg-surface-900/50 rounded-lg border-l-4 border-surface-400 dark:border-surface-600"
+                        >
+                          <span
+                            class="text-xs font-medium text-surface-600 dark:text-surface-400"
+                            >{{ 'finance.billing.invoices.creditBalance' | translate }}</span
+                          >
+                          <span class="font-mono font-semibold text-blue-600 dark:text-blue-400">
+                            {{
+                              customer.customerBalance
+                                | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                            }}
+                          </span>
+                        </div>
+                      }
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.receivables.outstandingInvoices' | translate
+                        }}</span>
+                        <span
+                          class="px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-900 dark:text-surface-100 text-xs font-semibold rounded-full"
+                        >
+                          {{ customer.pendingInvoicesCount }}
+                        </span>
+                      </div>
+                    </div>
+                    <app-list-action-buttons
+                      [actions]="customerActions(customer)"
+                      [ariaLabel]="'finance.treasury.receivables.openCustomerActions' | translate"
+                    />
+                  </app-panel-card>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <div class="border-t border-surface-200 px-4 py-2 sm:px-6 dark:border-surface-700">
+          <app-paginator
+            [first]="first()"
+            [rows]="rows()"
+            [totalRecords]="service.totalCustomers()"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [showCurrentPageReport]="true"
+            [currentPageReportTemplate]="
+              'finance.treasury.receivables.showingFirstToLastOfTotalrecordsCustomers' | translate
+            "
+            (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
           />
-        </p-tabpanel>
-      </p-tabpanels>
-    </p-tabs>
+        </div>
+      } @else {
+        <app-pending-payments-tab
+          [focusPaymentId]="focusPaymentId()"
+          (focusHandled)="onPaymentFocusHandled($event)"
+          (paymentValidated)="onPaymentValidated()"
+        />
+      }
+    </app-panel-card>
   </div>
 </div>
 

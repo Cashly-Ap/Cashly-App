@@ -23,7 +23,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
-import { TabsModule } from 'primeng/tabs';
 import { PaginatorModule } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { PdfViewerService, PdfViewerConfig } from '@core/pdf-viewer';
@@ -69,7 +68,6 @@ import { ListRowSkeletonComponent } from '@shared/components/ui/skeletons/list-r
     IconFieldModule,
     InputIconModule,
     TooltipModule,
-    TabsModule,
     PaginatorModule,
     SkeletonModule,
     CustomerDebtDialogComponent,
