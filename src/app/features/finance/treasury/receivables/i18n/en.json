@@ -149,6 +149,8 @@
   "finance.treasury.receivables.paymentForInvoice": "Record payment - {{number}}",
   "finance.treasury.receivables.payCustomerDebt": "Pay full debt - {{customer}}",
   "finance.treasury.receivables.partialPaymentForCustomer": "Partial payment - {{customer}}",
+  "finance.treasury.receivables.paymentWithValidationForCustomer": "Payment with validation - {{customer}}",
+  "finance.treasury.receivables.withoutInvoice": "No invoice",
   "finance.treasury.receivables.amountRequired": "An amount is required",
   "finance.treasury.receivables.amountMustBePositive": "The amount must be greater than zero",
   "finance.treasury.receivables.coveredByCreditBalance": "Payment fully covered by credit balance",

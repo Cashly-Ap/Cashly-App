@@ -57,7 +57,11 @@ describe('NavigationLookupService', () => {
         { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: MessageService, useValue: { add: vi.fn() } },
         { provide: PdfViewerService, useValue: pdfViewer },
-        { provide: LOOKUP_DEFINITIONS, multi: true, useValue: definition('/sales/quotes', 'q1', 'QUO-001') },
+        {
+          provide: LOOKUP_DEFINITIONS,
+          multi: true,
+          useValue: definition('/sales/quotes', 'q1', 'QUO-001'),
+        },
         {
           provide: LOOKUP_DEFINITIONS,
           multi: true,
@@ -150,9 +154,7 @@ describe('NavigationLookupService', () => {
 
     lookup.open('/sales/quotes', 'Convertir a pedido');
     await navigation.select(navigation.session()!.records()[0]);
-    await vi.waitFor(() =>
-      expect(actionDialogs.request()?.component).toBe(TestActionComponent),
-    );
+    await vi.waitFor(() => expect(actionDialogs.request()?.component).toBe(TestActionComponent));
   });
 
   it('dispatches receivables and warehouse actions through their handlers', async () => {
@@ -162,6 +164,14 @@ describe('NavigationLookupService', () => {
       customerId: 'c1',
       customerName: 'Acme',
       action: 'pay_all',
+    });
+
+    lookup.open('/finance/treasury/receivables', 'Pagar con validación');
+    await navigation.select(navigation.session()!.records()[0]);
+    expect(receivables.request()).toEqual({
+      customerId: 'c1',
+      customerName: 'Acme',
+      action: 'pay_with_validation',
     });
 
     lookup.open('/inventory/warehouses', 'Registrar entrada');

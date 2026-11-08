@@ -13,6 +13,8 @@ import {
   BulkPaymentResult,
 } from '@features/finance/treasury/receivables/models/interfaces/payment-result.interface';
 import {
+  CreatePaymentRequest,
+  CreatedPaymentResponse,
   PayInvoiceRequest,
   PayCustomerDebtRequest,
   PayPartialDebtRequest,
@@ -64,6 +66,10 @@ export class ReceivablesApiService {
   }
 
   private readonly paymentsBaseUrl = `${environment.apiUrl}/payments`;
+
+  createPayment(request: CreatePaymentRequest): Observable<CreatedPaymentResponse> {
+    return this.http.post<CreatedPaymentResponse>(this.paymentsBaseUrl, request);
+  }
 
   payInvoice(invoiceId: string, request: PayInvoiceRequest): Observable<PaymentResult> {
     return this.http.post<PaymentResult>(

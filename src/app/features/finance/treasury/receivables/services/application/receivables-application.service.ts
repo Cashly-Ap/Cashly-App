@@ -8,6 +8,7 @@ import {
   ReceivablesSearchParams,
 } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { RECEIVABLES_ERROR_MESSAGES } from '@features/finance/treasury/receivables/messages/error-messages';
+import { RECEIVABLES_SUCCESS_MESSAGES } from '@features/finance/treasury/receivables/messages/success-messages';
 import { GlobalDebtSummary } from '@features/finance/treasury/receivables/models/interfaces/global-debt-summary.interface';
 import { CustomerDebtList } from '@features/finance/treasury/receivables/models/interfaces/customer-debt-list.interface';
 import { CustomerDebtSummary } from '@features/finance/treasury/receivables/models/interfaces/customer-debt-summary.interface';
@@ -18,6 +19,8 @@ import {
   BulkPaymentResult,
 } from '@features/finance/treasury/receivables/models/interfaces/payment-result.interface';
 import {
+  CreatePaymentRequest,
+  CreatedPaymentResponse,
   PayInvoiceRequest,
   PayCustomerDebtRequest,
   PayPartialDebtRequest,
@@ -239,6 +242,37 @@ export class ReceivablesApplicationService {
             severity: 'error',
             summary: 'Error',
             detail: RECEIVABLES_ERROR_MESSAGES.PAY_PARTIAL_DEBT_FAILED,
+            life: 5000,
+          });
+        },
+      }),
+      catchError(() => of(null)),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  createPayment(request: CreatePaymentRequest): Observable<CreatedPaymentResponse | null> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.createPayment(request).pipe(
+      tap({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Éxito',
+            detail: RECEIVABLES_SUCCESS_MESSAGES.PAYMENT_REGISTERED_FOR_VALIDATION,
+            life: 4000,
+          });
+          this.pendingPaymentsChange.next();
+          this.customerDebtChange.next();
+        },
+        error: () => {
+          this.error.set(RECEIVABLES_ERROR_MESSAGES.CREATE_PAYMENT_FAILED);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: RECEIVABLES_ERROR_MESSAGES.CREATE_PAYMENT_FAILED,
             life: 5000,
           });
         },

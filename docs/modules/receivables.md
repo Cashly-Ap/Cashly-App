@@ -59,6 +59,7 @@ src/app/features/finance/treasury/receivables/
 - Register payments for single invoices
 - Pay entire customer debt in one operation
 - Pay partial amounts distributed across invoices (oldest first)
+- Register a payment that requires validation (`POST /api/payments`, status `PENDING`) from the row actions or the navigation menu
 - Payment proof file upload (required for MERCHANT payments)
 - Payment validation workflow for merchant-registered payments
 - Approve or reject pending payments (USER/ADMIN only)

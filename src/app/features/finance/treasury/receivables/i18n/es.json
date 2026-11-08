@@ -149,6 +149,8 @@
   "finance.treasury.receivables.paymentForInvoice": "Registrar Pago - {{number}}",
   "finance.treasury.receivables.payCustomerDebt": "Pagar Toda la Deuda - {{customer}}",
   "finance.treasury.receivables.partialPaymentForCustomer": "Pago Parcial - {{customer}}",
+  "finance.treasury.receivables.paymentWithValidationForCustomer": "Pago con validación - {{customer}}",
+  "finance.treasury.receivables.withoutInvoice": "Sin factura",
   "finance.treasury.receivables.amountRequired": "El monto es requerido",
   "finance.treasury.receivables.amountMustBePositive": "El monto debe ser mayor a cero",
   "finance.treasury.receivables.coveredByCreditBalance": "Pago cubierto completamente por saldo a favor",

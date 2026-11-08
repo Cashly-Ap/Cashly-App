@@ -97,7 +97,7 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   readonly selectedCustomer = signal<CustomerDebtList | null>(null);
 
   readonly paymentFormVisible = signal(false);
-  readonly paymentFormMode = signal<'single' | 'all' | 'partial'>('single');
+  readonly paymentFormMode = signal<'single' | 'all' | 'partial' | 'validation'>('single');
   readonly paymentInvoice = signal<CustomerInvoiceDebt | null>(null);
   readonly paymentCustomerName = signal('');
   readonly paymentTotalDebt = signal(0);
@@ -216,6 +216,15 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
           disabled: customer.totalDebt <= 0,
         },
       ),
+      listAction(
+        'Pagar con validación',
+        'PAY_WITH_VALIDATION',
+        'shield',
+        () => this.openCustomerPayment(customer, 'validation'),
+        {
+          disabled: customer.totalDebt <= 0,
+        },
+      ),
       listAction('Reintegro', 'EXECUTE', 'undo', () => this.openBalanceAction(customer, 'refund'), {
         disabled: customer.customerBalance <= 0,
       }),
@@ -225,14 +234,18 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     ];
   }
 
-  private openCustomerPayment(customer: CustomerDebtList, mode: 'all' | 'partial'): void {
+  private openCustomerPayment(
+    customer: CustomerDebtList,
+    mode: 'all' | 'partial' | 'validation',
+  ): void {
     this.selectedCustomer.set(customer);
     this.service
       .loadCustomerDebt(customer.customerId)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
         if (mode === 'all') this.onCustomerDebtPayAll();
-        else this.onCustomerDebtPayPartial();
+        else if (mode === 'partial') this.onCustomerDebtPayPartial();
+        else this.onCustomerDebtPayWithValidation();
       });
   }
 
@@ -276,6 +289,16 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
     if (!customer) return;
     const summary = this.service.currentCustomer();
     this.paymentFormMode.set('partial');
+    this.paymentCustomerName.set(customer.customerName);
+    this.paymentTotalDebt.set(summary?.totalDebt ?? 0);
+    this.paymentFormVisible.set(true);
+  }
+
+  onCustomerDebtPayWithValidation(): void {
+    const customer = this.selectedCustomer();
+    if (!customer) return;
+    const summary = this.service.currentCustomer();
+    this.paymentFormMode.set('validation');
     this.paymentCustomerName.set(customer.customerName);
     this.paymentTotalDebt.set(summary?.totalDebt ?? 0);
     this.paymentFormVisible.set(true);
@@ -336,6 +359,28 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
             this.onClosePaymentFormDialog();
             this.service.customerDebtChange.next();
             this.debtDialog().refreshVisibleDetails();
+            this.loadCustomers();
+          },
+        });
+    } else if (this.paymentFormMode() === 'validation') {
+      this.service
+        .createPayment({
+          customerId: customer.customerId,
+          status: 'PENDING',
+          amount: event.request.amount ?? 0,
+          paymentMethodId: event.request.paymentMethodId,
+          ...(event.request.referenceNumber
+            ? { referenceNumber: event.request.referenceNumber }
+            : {}),
+          paymentDate: event.request.paymentDate,
+        })
+        .pipe(
+          finalize(() => this.paymentSubmitting.set(false)),
+          takeUntil(this.destroy$),
+        )
+        .subscribe({
+          next: () => {
+            this.onClosePaymentFormDialog();
             this.loadCustomers();
           },
         });

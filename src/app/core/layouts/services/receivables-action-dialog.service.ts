@@ -1,6 +1,12 @@
 import { Injectable, signal } from '@angular/core';
 
-export type ReceivablesActionKind = 'view' | 'pay_all' | 'pay_partial' | 'refund' | 'advance';
+export type ReceivablesActionKind =
+  | 'view'
+  | 'pay_all'
+  | 'pay_partial'
+  | 'pay_with_validation'
+  | 'refund'
+  | 'advance';
 
 export interface ReceivablesActionDialogRequest {
   customerId: string;

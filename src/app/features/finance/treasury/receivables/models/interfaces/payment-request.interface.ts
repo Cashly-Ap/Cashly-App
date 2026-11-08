@@ -23,3 +23,26 @@ export interface PayPartialDebtRequest {
   useBalance?: boolean;
   balanceAmount?: number;
 }
+
+export interface CreatePaymentRequest {
+  customerId: string;
+  status: 'PENDING';
+  amount: number;
+  paymentMethodId: string;
+  referenceNumber?: string;
+  paymentDate: string;
+  notes?: string;
+}
+
+export interface CreatedPaymentResponse {
+  id: string;
+  paymentNumber: string;
+  customerId: string;
+  amount: number;
+  status: string;
+  paymentMethodId: string;
+  referenceNumber: string | null;
+  paymentDate: string;
+  notes: string | null;
+  createdAt: string;
+}

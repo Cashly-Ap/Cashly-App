@@ -6,6 +6,7 @@ export const RECEIVABLES_ERROR_MESSAGES = {
   PAY_INVOICE_FAILED: 'Error al procesar el pago de la factura',
   PAY_ALL_DEBT_FAILED: 'Error al procesar el pago total de la deuda',
   PAY_PARTIAL_DEBT_FAILED: 'Error al procesar el pago parcial',
+  CREATE_PAYMENT_FAILED: 'Error al registrar el pago para validación',
   LOAD_PENDING_PAYMENTS_FAILED: 'Error al cargar los pagos pendientes',
   LOAD_PAYMENT_HISTORY_FAILED: 'Error al cargar el historial de pagos',
   LOAD_MERCHANT_PAYMENTS_FAILED: 'Error al cargar los pagos del comercio',

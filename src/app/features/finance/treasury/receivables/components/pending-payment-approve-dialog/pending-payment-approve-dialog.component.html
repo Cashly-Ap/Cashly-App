@@ -27,7 +27,7 @@
         <div>
           <span class="block text-xs text-surface-500">{{ 'shared.invoice' | translate }}</span>
           <span class="font-mono font-medium text-surface-900 dark:text-surface-0">{{
-            payment.invoiceNumber || '-'
+            payment.invoiceNumber || ('finance.treasury.receivables.withoutInvoice' | translate)
           }}</span>
         </div>
         <div>
@@ -57,6 +57,12 @@
           <span class="font-medium text-surface-900 dark:text-surface-0">{{
             payment.referenceNumber || '-'
           }}</span>
+        </div>
+        <div>
+          <span class="block text-xs text-surface-500">{{ 'shared.amount' | translate }}</span>
+          <span class="font-mono text-lg font-bold text-surface-900 dark:text-surface-0">
+            {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </span>
         </div>
         @if (payment.notes) {
           <div class="col-span-2">

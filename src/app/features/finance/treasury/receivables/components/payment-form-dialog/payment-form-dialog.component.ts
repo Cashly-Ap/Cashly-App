@@ -28,7 +28,7 @@ import { PagedResponse } from '@shared/models/interfaces/paged-response.interfac
 import { CustomerInvoiceDebt } from '@features/finance/treasury/receivables/models/interfaces/customer-invoice-debt.interface';
 import { PayInvoiceRequest } from '@features/finance/treasury/receivables/models/interfaces/payment-request.interface';
 
-export type PaymentFormMode = 'single' | 'all' | 'partial';
+export type PaymentFormMode = 'single' | 'all' | 'partial' | 'validation';
 
 export interface PaymentSubmitEvent {
   request: PayInvoiceRequest;
@@ -114,6 +114,13 @@ export class PaymentFormDialogComponent implements OnInit {
         return this.translations.t('finance.treasury.receivables.partialPaymentForCustomer', {
           customer: this.customerName(),
         });
+      case 'validation':
+        return this.translations.t(
+          'finance.treasury.receivables.paymentWithValidationForCustomer',
+          {
+            customer: this.customerName(),
+          },
+        );
       default:
         return 'Registrar Pago';
     }
@@ -150,6 +157,7 @@ export class PaymentFormDialogComponent implements OnInit {
       case 'all':
         return this.totalDebt();
       case 'partial':
+      case 'validation':
         return this.totalDebt();
       default:
         return 0;
@@ -161,8 +169,10 @@ export class PaymentFormDialogComponent implements OnInit {
   }
 
   protected showAmountField = computed(() => {
-    return this.mode() === 'single' || this.mode() === 'partial';
+    return this.mode() === 'single' || this.mode() === 'partial' || this.mode() === 'validation';
   });
+
+  protected balanceAllowed = computed(() => this.mode() !== 'validation');
 
   constructor() {
     effect(() => {
@@ -175,7 +185,7 @@ export class PaymentFormDialogComponent implements OnInit {
         const defaultAmount =
           currentMode === 'single'
             ? inv?.balance || 0
-            : currentMode === 'partial'
+            : currentMode === 'partial' || currentMode === 'validation'
               ? this.totalDebt()
               : 0;
         const today = new Date();
@@ -239,7 +249,7 @@ export class PaymentFormDialogComponent implements OnInit {
         const defaultAmount =
           currentMode === 'single'
             ? inv?.balance || 0
-            : currentMode === 'partial'
+            : currentMode === 'partial' || currentMode === 'validation'
               ? this.totalDebt()
               : 0;
         amountCtrl.patchValue(defaultAmount, { emitEvent: false });
@@ -287,11 +297,11 @@ export class PaymentFormDialogComponent implements OnInit {
         paymentMethodId: formValue.paymentMethodId,
         referenceNumber: formValue.referenceNumber || undefined,
         paymentDate: this.formatDate(formValue.paymentDate),
-        useBalance: this.useBalance(),
+        useBalance: this.mode() === 'validation' ? false : this.useBalance(),
         balanceAmount: this.balanceApplied(),
       };
 
-      if (this.mode() === 'single' || this.mode() === 'partial') {
+      if (this.mode() === 'single' || this.mode() === 'partial' || this.mode() === 'validation') {
         const totalBeforeBalance =
           this.mode() === 'single' ? this.invoice()?.balance || 0 : this.totalDebt();
         request.amount = this.useBalance() ? totalBeforeBalance : formValue.amount;
@@ -321,7 +331,7 @@ export class PaymentFormDialogComponent implements OnInit {
     const defaultAmount =
       this.mode() === 'single'
         ? inv?.balance || 0
-        : this.mode() === 'partial'
+        : this.mode() === 'partial' || this.mode() === 'validation'
           ? this.maxAmount()
           : 0;
     const today = new Date();

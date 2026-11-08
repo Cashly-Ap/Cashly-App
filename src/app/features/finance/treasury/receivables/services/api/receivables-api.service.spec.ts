@@ -34,4 +34,26 @@ describe('Receivables action queries', () => {
     expect(request.request.params.has('action')).toBe(false);
     request.flush({ content: [] });
   });
+
+  it('creates a pending payment for validation', () => {
+    service
+      .createPayment({
+        customerId: 'customer-1',
+        status: 'PENDING',
+        amount: 25,
+        paymentMethodId: 'method-1',
+        referenceNumber: 'REF-1',
+        paymentDate: '2026-01-15',
+      })
+      .subscribe();
+    const request = http.expectOne((item) => item.url.endsWith('/payments'));
+    expect(request.request.method).toBe('POST');
+    expect(request.request.body).toMatchObject({
+      customerId: 'customer-1',
+      status: 'PENDING',
+      amount: 25,
+      paymentMethodId: 'method-1',
+    });
+    request.flush({ id: 'payment-1', status: 'PENDING' });
+  });
 });

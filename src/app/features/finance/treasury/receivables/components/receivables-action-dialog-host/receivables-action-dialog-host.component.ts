@@ -67,8 +67,14 @@ export class ReceivablesActionDialogHostComponent {
           this.debtVisible.set(true);
           return;
         case 'pay_all':
-        case 'pay_partial': {
-          const mode: PaymentFormMode = request.action === 'pay_all' ? 'all' : 'partial';
+        case 'pay_partial':
+        case 'pay_with_validation': {
+          const mode: PaymentFormMode =
+            request.action === 'pay_all'
+              ? 'all'
+              : request.action === 'pay_partial'
+                ? 'partial'
+                : 'validation';
           this.service
             .loadCustomerDebt(request.customerId)
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -125,6 +131,21 @@ export class ReceivablesActionDialogHostComponent {
       const invoice = this.paymentInvoice();
       if (!invoice) return;
       this.sendPayment(this.service.payInvoice(invoice.invoiceId, event.request));
+      return;
+    }
+    if (mode === 'validation') {
+      this.sendPayment(
+        this.service.createPayment({
+          customerId: this.customerId(),
+          status: 'PENDING',
+          amount: event.request.amount ?? 0,
+          paymentMethodId: event.request.paymentMethodId,
+          ...(event.request.referenceNumber
+            ? { referenceNumber: event.request.referenceNumber }
+            : {}),
+          paymentDate: event.request.paymentDate,
+        }),
+      );
       return;
     }
     this.sendPayment(
