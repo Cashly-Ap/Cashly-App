@@ -1,5 +1,6 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import {
@@ -200,8 +201,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    customerId: 'Cliente',
-    paymentType: 'Tipo de Pago',
+    customerId: 'shared.fields.customer',
+    paymentType: 'shared.fields.paymentType',
   };
 
   readonly paymentTypeOptions = computed(() =>
@@ -312,6 +313,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       issueDate: tab.formData.issueDate ? this.fromIsoDate(tab.formData.issueDate) : new Date(),
     });
     this.items.set(tab.formData.items);
+    this.updateSubmitTooltip();
     this.sourceOrderIds.set(tab.formData.orderIds ?? []);
     this.sourceQuoteIds.set(tab.formData.quoteIds ?? []);
     if (tab.formData.customerId) {
@@ -334,7 +336,8 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    if (this.items().length === 0) invalid.push('shared.fields.product');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   private loadInvoice(id: string): void {
@@ -605,6 +608,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
       this.selectedCustomers().length > 0;
 
     this.items.set([]);
+    this.updateSubmitTooltip();
     this.sourceOrderIds.set([]);
     this.sourceQuoteIds.set([]);
     this.selectedCustomers.set([]);
@@ -678,6 +682,7 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
   onItemsChange(updated: OrderItemFormData[]): void {
     this.items.set(updated);
+    this.updateSubmitTooltip();
     this.scheduleAutoSave();
   }
 

@@ -78,7 +78,7 @@ export class CustomerAddressesSectionComponent {
         state: [''],
         municipality: [''],
         postalCode: [''],
-        billing: [false],
+        billing: [this.addressesArray.length === 0],
         active: [true],
       }),
     );

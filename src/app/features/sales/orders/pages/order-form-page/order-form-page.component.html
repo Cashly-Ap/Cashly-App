@@ -101,7 +101,7 @@
         "
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
-        [disabled]="form.invalid"
+        [disabled]="form.invalid || items().length === 0"
         [tooltipMessage]="submitTooltip()"
         (cancel)="cancel()"
       />

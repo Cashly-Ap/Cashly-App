@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -41,6 +43,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
   templateUrl: './payment-method-form-page.component.html',
 })
 export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMethodFormData> {
+  private readonly translations = inject(TranslationService);
   private service = inject(PaymentMethodApplicationService);
   private messageService = inject(MessageService);
 
@@ -49,7 +52,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
   submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    name: 'Nombre',
+    name: 'shared.fields.name',
   };
 
   override ngOnInit(): void {
@@ -62,7 +65,7 @@ export class PaymentMethodFormPageComponent extends BaseFormComponent<PaymentMet
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   getConfig(): FormConfig {

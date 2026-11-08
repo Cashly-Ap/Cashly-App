@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
@@ -51,6 +53,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DebitNoteFormPageComponent implements OnInit {
+  private readonly translations = inject(TranslationService);
   readonly locale = inject(LanguageService).locale;
 
   private readonly navigationHistory = inject(NavigationHistoryService);
@@ -72,10 +75,10 @@ export class DebitNoteFormPageComponent implements OnInit {
   readonly submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    customerId: 'Cliente',
-    invoiceId: 'Factura',
-    amount: 'Monto',
-    reason: 'Motivo',
+    customerId: 'shared.fields.customer',
+    invoiceId: 'shared.fields.invoice',
+    amount: 'shared.fields.amount',
+    reason: 'shared.fields.reason',
   };
 
   readonly form = this.fb.group({
@@ -94,7 +97,7 @@ export class DebitNoteFormPageComponent implements OnInit {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   openPicker(): void {

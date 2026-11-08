@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
@@ -56,6 +58,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PurchaseFormPageComponent implements OnInit, OnDestroy {
+  private readonly translations = inject(TranslationService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -83,7 +86,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   readonly submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    supplierId: 'Proveedor',
+    supplierId: 'shared.fields.supplier',
   };
 
   readonly items = signal<PurchaseLineFormData[]>([]);
@@ -168,6 +171,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     if (!tab) return;
     this.form.patchValue({ supplierId: tab.formData.supplierId, notes: tab.formData.notes });
     this.items.set(tab.formData.items);
+    this.updateSubmitTooltip();
     if (tab.formData.supplierId) {
       this.selectedSupplier.set({ id: tab.formData.supplierId } as SupplierList);
       this.selectedSupplierLabel.set({
@@ -186,7 +190,8 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    if (this.items().length === 0) invalid.push('shared.fields.product');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   private loadPurchase(id: string): void {
@@ -248,6 +253,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
   onItemsChange(updated: PurchaseLineFormData[]): void {
     this.items.set(updated);
+    this.updateSubmitTooltip();
     this.scheduleAutoSave();
   }
 

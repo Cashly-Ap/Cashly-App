@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
@@ -62,6 +64,7 @@ export class WarehousesFormPageComponent
   extends BaseFormComponent<WarehouseFormData>
   implements OnInit
 {
+  private readonly translations = inject(TranslationService);
   private service = inject(WarehouseApplicationService);
   private messageService = inject(MessageService);
 
@@ -70,9 +73,9 @@ export class WarehousesFormPageComponent
   submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    name: 'Nombre',
-    state: 'Estado',
-    municipality: 'Municipio',
+    name: 'shared.fields.name',
+    state: 'shared.fields.state',
+    municipality: 'shared.fields.municipality',
   };
 
   stateOptions = VENEZUELA_STATES.map((s: VenezuelaState) => ({ value: s.name, label: s.name }));
@@ -130,7 +133,7 @@ export class WarehousesFormPageComponent
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   protected override restoreFormData(data: WarehouseFormData): void {

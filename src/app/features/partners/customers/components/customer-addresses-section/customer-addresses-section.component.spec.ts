@@ -50,8 +50,14 @@ describe('CustomerAddressesSectionComponent', () => {
     component.addAddress();
     const group = component.addressGroup(0);
     expect(group.get('address')?.value).toBe('');
-    expect(group.get('billing')?.value).toBe(false);
+    expect(group.get('billing')?.value).toBe(true);
     expect(group.get('active')?.value).toBe(true);
+  });
+
+  it('should not mark subsequent addresses as billing by default', () => {
+    component.addAddress();
+    component.addAddress();
+    expect(component.addressGroup(1).get('billing')?.value).toBe(false);
   });
 
   it('should remove address', () => {

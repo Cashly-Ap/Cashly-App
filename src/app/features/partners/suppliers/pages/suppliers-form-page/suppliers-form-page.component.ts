@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -71,6 +73,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
   templateUrl: './suppliers-form-page.component.html',
 })
 export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormData> {
+  private readonly translations = inject(TranslationService);
   private service = inject(SupplierApplicationService);
   private mapper = inject(SupplierMapper);
   private messageService = inject(MessageService);
@@ -82,12 +85,12 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
   submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    legalName: 'Razón social',
-    type: 'Tipo de proveedor',
-    rif: 'RIF',
-    emails: 'Correos electrónicos',
-    phones: 'Teléfonos',
-    addresses: 'Direcciones',
+    legalName: 'shared.fields.legalName',
+    type: 'shared.fields.supplierType',
+    rif: 'shared.fields.rif',
+    emails: 'shared.fields.emails',
+    phones: 'shared.fields.phones',
+    addresses: 'shared.fields.addresses',
   };
 
   override ngOnInit(): void {
@@ -100,7 +103,7 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   getConfig(): FormConfig {

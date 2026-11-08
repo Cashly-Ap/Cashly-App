@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   Component,
@@ -66,6 +68,7 @@ export class ProductsFormPageComponent
   extends BaseFormComponent<ProductFormData>
   implements OnInit
 {
+  private readonly translations = inject(TranslationService);
   private readonly service = inject(ProductApplicationService);
   private readonly photoService = inject(ProductPhotoService);
   private readonly messageService = inject(MessageService);
@@ -80,15 +83,15 @@ export class ProductsFormPageComponent
   submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    name: 'Nombre',
-    categoryId: 'Categoría',
+    name: 'shared.fields.name',
+    categoryId: 'shared.fields.category',
   };
 
   private updateSubmitTooltip(): void {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   get componentsArray(): FormArray {

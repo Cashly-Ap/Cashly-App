@@ -217,6 +217,17 @@ describe('InvoiceFormPageComponent', () => {
   it('should clear submit tooltip when form is valid', () => {
     fixture.detectChanges();
     component.form.patchValue({ customerId: 'c1' });
+    component.onItemsChange([
+      {
+        productId: 'p1',
+        productCode: 'PRD-1',
+        productName: 'Product',
+        quantity: 1,
+        unitPrice: 10,
+        stock: [],
+        warehouseAllocations: [],
+      },
+    ]);
     fixture.detectChanges();
     expect(component.submitTooltip()).toBe('');
   });

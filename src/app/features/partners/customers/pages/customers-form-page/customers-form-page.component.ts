@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, computed } from '@angular/core';
@@ -81,6 +83,7 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
   templateUrl: './customers-form-page.component.html',
 })
 export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormData> {
+  private readonly translations = inject(TranslationService);
   private service = inject(CustomerApplicationService);
   private customerApi = inject(CustomerApiService);
   private warehouseService = inject(WarehouseApplicationService);
@@ -114,16 +117,16 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
   submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    legalName: 'Razón social',
-    type: 'Tipo de cliente',
-    rif: 'RIF',
-    paymentType: 'Tipo de pago',
-    creditDays: 'Días de crédito',
-    creditLimit: 'Límite de crédito',
-    priceTypeId: 'Tipo de precio',
-    emails: 'Correos electrónicos',
-    phones: 'Teléfonos',
-    addresses: 'Direcciones',
+    legalName: 'shared.fields.legalName',
+    type: 'shared.fields.customerType',
+    rif: 'shared.fields.rif',
+    paymentType: 'shared.fields.paymentType',
+    creditDays: 'shared.fields.creditDays',
+    creditLimit: 'shared.fields.creditLimit',
+    priceTypeId: 'shared.fields.priceType',
+    emails: 'shared.fields.emails',
+    phones: 'shared.fields.phones',
+    addresses: 'shared.fields.addresses',
   };
 
   override ngOnInit(): void {
@@ -139,9 +142,9 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
     if (this.warehouseAccess().length === 0) {
-      invalid.push('Almacenes');
+      invalid.push('shared.fields.warehouses');
     }
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   getConfig(): FormConfig {
@@ -168,7 +171,10 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
       active: [true],
       emails: this.fb.array([]),
       phones: this.fb.array([]),
-      addresses: this.fb.array([this.createAddressGroup()], [CustomerValidators.minLengthArray(1)]),
+      addresses: this.fb.array(
+        [this.createAddressGroup({ billing: true })],
+        [CustomerValidators.minLengthArray(1)],
+      ),
       notes: [''],
       priceTypeId: [null, Validators.required],
     });

@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
@@ -54,6 +56,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
   templateUrl: './credit-note-form-page.component.html',
 })
 export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFormData> {
+  private readonly translations = inject(TranslationService);
   readonly locale = inject(LanguageService).locale;
 
   private service = inject(CreditNoteApplicationService);
@@ -73,10 +76,10 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
   );
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    customerName: 'Cliente',
-    invoiceId: 'Factura',
-    amount: 'Monto',
-    reason: 'Motivo',
+    customerName: 'shared.fields.customer',
+    invoiceId: 'shared.fields.invoice',
+    amount: 'shared.fields.amount',
+    reason: 'shared.fields.reason',
   };
 
   override ngOnInit(): void {
@@ -89,7 +92,7 @@ export class CreditNoteFormPageComponent extends BaseFormComponent<CreditNoteFor
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   getConfig(): FormConfig {

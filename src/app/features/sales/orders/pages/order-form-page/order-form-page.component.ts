@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
@@ -54,6 +56,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrderFormPageComponent implements OnInit, OnDestroy {
+  private readonly translations = inject(TranslationService);
   private readonly navigationHistory = inject(NavigationHistoryService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -81,7 +84,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
   readonly submitTooltip = signal('');
 
   private readonly FIELD_LABELS: Record<string, string> = {
-    customerId: 'Cliente',
+    customerId: 'shared.fields.customer',
   };
 
   readonly items = signal<OrderItemFormData[]>([]);
@@ -158,6 +161,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
     if (!tab) return;
     this.form.patchValue({ customerId: tab.formData.customerId, notes: tab.formData.notes });
     this.items.set(tab.formData.items);
+    this.updateSubmitTooltip();
     if (tab.formData.customerId) {
       this.selectedCustomer.set({ id: tab.formData.customerId } as CustomerList);
       this.selectedCustomerLabel.set({
@@ -177,7 +181,8 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
     const invalid = Object.entries(this.FIELD_LABELS)
       .filter(([key]) => this.form.get(key)?.invalid)
       .map(([, label]) => label);
-    this.submitTooltip.set(invalid.length ? `Campos requeridos: ${invalid.join(', ')}` : '');
+    if (this.items().length === 0) invalid.push('shared.fields.product');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
   }
 
   private loadOrder(id: string): void {
@@ -248,6 +253,7 @@ export class OrderFormPageComponent implements OnInit, OnDestroy {
 
   onItemsChange(updated: OrderItemFormData[]): void {
     this.items.set(updated);
+    this.updateSubmitTooltip();
     this.scheduleAutoSave();
   }
 
