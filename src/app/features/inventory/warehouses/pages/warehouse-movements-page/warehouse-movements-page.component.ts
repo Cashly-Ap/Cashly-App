@@ -89,10 +89,13 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
 import { StatCardComponent } from '@shared/components/ui/stat-card/stat-card.component';
 import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-warehouse-movements-page',
   standalone: true,
   imports: [
+    DataTableComponent,
     PaginatorComponent,
     StatCardComponent,
     BackButtonComponent,

@@ -214,7 +214,7 @@
                   </dl>
                 </div>
                 <div class="hidden overflow-x-auto sm:block">
-                  <table class="w-full text-sm">
+                  <app-data-table>
                     <thead>
                       <tr class="border-y border-surface-200 dark:border-surface-700">
                         <th
@@ -293,7 +293,7 @@
                         </tr>
                       }
                     </tbody>
-                  </table>
+                  </app-data-table>
                 </div>
                 <div
                   class="flex flex-col divide-y divide-surface-100 dark:divide-surface-800 sm:hidden"
@@ -350,7 +350,7 @@
           </div>
         } @else {
           <div class="hidden overflow-x-auto sm:block">
-            <table class="w-full text-sm">
+            <app-data-table>
               <thead>
                 <tr
                   class="border-b border-surface-200 bg-surface-50 dark:border-surface-700 dark:bg-surface-800"
@@ -408,7 +408,7 @@
                   </tr>
                 }
               </tbody>
-            </table>
+            </app-data-table>
           </div>
           <div class="flex flex-col gap-3 p-4 sm:hidden">
             @for (item of stock(); track item.id) {

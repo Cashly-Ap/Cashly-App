@@ -124,7 +124,7 @@
         </div>
         @if (invoiceDueSchedule().length) {
           <span
-            class="text-xs px-2 py-1 rounded-full bg-surface-100 text-surface-900 dark:bg-surface-800 dark:text-surface-100"
+            class="text-xs px-2 py-1 rounded-full bg-surface-200 text-surface-700 dark:bg-surface-800 dark:text-surface-100"
           >
             {{ invoiceDueSchedule().length }}
             {{ 'analytics.dashboard.pendingInvoices' | translate }}
@@ -141,7 +141,7 @@
           ></canvas>
         </div>
         <div class="mt-5 overflow-x-auto">
-          <table class="w-full text-sm">
+          <app-data-table>
             <thead>
               <tr class="border-b border-surface-100 dark:border-surface-800">
                 <th class="text-left py-3 text-xs text-surface-500 uppercase">
@@ -182,7 +182,7 @@
                 </tr>
               }
             </tbody>
-          </table>
+          </app-data-table>
         </div>
       } @else {
         <p class="dashboard-empty text-sm text-surface-500 dark:text-surface-400 py-16 text-center">
@@ -222,7 +222,7 @@
       </h3>
       @if (recentActivity().length) {
         <div class="hidden md:block overflow-x-auto">
-          <table class="w-full text-sm">
+          <app-data-table>
             <thead>
               <tr class="border-b border-surface-100 dark:border-surface-800">
                 <th class="text-left py-3 text-xs text-surface-500 uppercase">
@@ -244,7 +244,7 @@
                 <tr class="border-b border-surface-50 dark:border-surface-800">
                   <td class="py-3">
                     <span
-                      class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
+                      class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-200 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
                       [attr.data-module]="item.type === 'invoice' ? 'finance' : 'sales'"
                     >
                       {{ activityLabel(item.type) }}
@@ -264,7 +264,7 @@
                 </tr>
               }
             </tbody>
-          </table>
+          </app-data-table>
         </div>
         <div class="md:hidden space-y-3">
           @for (item of recentActivity(); track item.id) {
@@ -273,7 +273,7 @@
             >
               <div class="flex items-center justify-between mb-3">
                 <span
-                  class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-100 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
+                  class="dashboard-activity-label text-xs px-3 py-1 rounded-full bg-surface-200 text-surface-700 dark:bg-surface-800 dark:text-surface-200"
                   [attr.data-module]="item.type === 'invoice' ? 'finance' : 'sales'"
                 >
                   {{ activityLabel(item.type) }}

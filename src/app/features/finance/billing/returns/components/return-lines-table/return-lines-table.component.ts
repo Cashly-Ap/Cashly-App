@@ -34,11 +34,14 @@ export interface ReturnLineFormData {
   warehouseAllocations: WarehouseAlloc[];
 }
 
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-return-lines-table',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
     TranslatePipe,
     LocalizedNumberPipe,
     CommonModule,

@@ -27,11 +27,14 @@ import { TableCardComponent } from '@shared/components/ui/table-card/table-card.
 import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialog-header.component';
 import { TableRowSkeletonComponent } from '@shared/components/ui/skeletons/table-row-skeleton.component';
 import { CardSkeletonComponent } from '@shared/components/ui/skeletons/card-skeleton.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-list-navigation-picker',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
     TableRowSkeletonComponent,
     CardSkeletonComponent,
     DialogHeaderComponent,

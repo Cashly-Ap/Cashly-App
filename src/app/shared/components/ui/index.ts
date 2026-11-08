@@ -8,6 +8,7 @@ export * from '@shared/components/ui/picker-trigger/picker-trigger.component';
 export * from '@shared/components/ui/dialog-header/dialog-header.component';
 export * from '@shared/components/ui/code-badge/code-badge.component';
 export * from '@shared/components/ui/table-card/table-card.component';
+export * from '@shared/components/ui/data-table/data-table.component';
 export * from '@shared/components/ui/filter-field/filter-field.component';
 export * from '@shared/components/ui/paginator/paginator.component';
 export * from '@shared/components/ui/report-pdf-modal/report-pdf-modal.component';

@@ -7,7 +7,7 @@
   </h3>
 
   <div class="overflow-x-auto">
-    <table class="w-full text-sm">
+    <app-data-table>
       <thead>
         <tr class="border-b border-surface-200 dark:border-surface-700">
           <th class="text-left py-2 font-semibold">
@@ -71,6 +71,6 @@
           <td class="text-right py-3 font-bold">{{ totalAmount() | localizedNumber: '1.2-2' }}</td>
         </tr>
       </tfoot>
-    </table>
+    </app-data-table>
   </div>
 </div>

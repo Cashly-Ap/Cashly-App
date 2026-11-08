@@ -8,10 +8,13 @@ import { DocumentConfirmationModel } from '@shared/models/document-confirmation'
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-document-confirmation-dialog',
   standalone: true,
   imports: [
+    DataTableComponent,
     CancelButtonComponent,
     DialogModule,
     ButtonModule,

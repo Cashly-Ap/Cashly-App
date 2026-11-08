@@ -270,6 +270,16 @@ body:not(.p-overflow-hidden) .p-drawer-mask {
   --cashly-muted: #64645e;
   --cashly-line: #deded9;
   --cashly-dot: #c5c5bf;
+  --table-header-bg: var(--cashly-panel);
+  --table-header-color: #171715;
+  --table-header-hover-bg: #f0f0ed;
+  --table-header-hover-color: #171715;
+  --table-row-bg: #ffffff;
+  --table-row-color: #252522;
+  --table-row-striped-bg: #fafaf9;
+  --table-row-hover-bg: #f0f0ed;
+  --table-row-hover-color: #171715;
+  --table-border: #deded9;
   --app-bg-primary: var(--cashly-canvas);
   --app-bg-primary-via: var(--cashly-canvas);
   --app-bg-primary-to: var(--cashly-canvas);
@@ -282,6 +292,16 @@ body:not(.p-overflow-hidden) .p-drawer-mask {
   --cashly-muted: #a5a59d;
   --cashly-line: #393935;
   --cashly-dot: #54544e;
+  --table-header-bg: var(--cashly-panel);
+  --table-header-color: #f5f5f3;
+  --table-header-hover-bg: #252522;
+  --table-header-hover-color: #f5f5f3;
+  --table-row-bg: #0b0b0a;
+  --table-row-color: #e8e8e4;
+  --table-row-striped-bg: #0f0f0e;
+  --table-row-hover-bg: #1a1a18;
+  --table-row-hover-color: #ffffff;
+  --table-border: #262624;
   --app-bg-primary: var(--cashly-canvas);
   --app-bg-primary-via: var(--cashly-canvas);
   --app-bg-primary-to: var(--cashly-canvas);
@@ -361,23 +381,74 @@ app-loading-spinner > div {
 }
 
 :root:not(.my-app-dark) .p-datatable {
-  --p-datatable-header-cell-background: #171715;
-  --p-datatable-header-cell-color: #f5f5f3;
-  --p-datatable-header-cell-hover-background: #000000;
-  --p-datatable-header-cell-hover-color: #ffffff;
-  --p-datatable-row-background: #ffffff;
-  --p-datatable-row-color: #252522;
-  --p-datatable-row-striped-background: #fafaf9;
-  --p-datatable-row-hover-background: #f0f0ed;
-  --p-datatable-row-hover-color: #171715;
-  --p-datatable-body-cell-border-color: #deded9;
+  --p-datatable-header-cell-background: var(--table-header-bg);
+  --p-datatable-header-cell-color: var(--table-header-color);
+  --p-datatable-header-cell-hover-background: var(--table-header-hover-bg);
+  --p-datatable-header-cell-hover-color: var(--table-header-hover-color);
+  --p-datatable-row-background: var(--table-row-bg);
+  --p-datatable-row-color: var(--table-row-color);
+  --p-datatable-row-striped-background: var(--table-row-striped-bg);
+  --p-datatable-row-hover-background: var(--table-row-hover-bg);
+  --p-datatable-row-hover-color: var(--table-row-hover-color);
+  --p-datatable-body-cell-border-color: var(--table-border);
 }
 
 .my-app-dark .p-datatable {
-  --p-datatable-header-cell-background: #f5f5f3;
-  --p-datatable-header-cell-color: #171715;
-  --p-datatable-header-cell-hover-background: #deded9;
-  --p-datatable-header-cell-hover-color: #171715;
+  --p-datatable-header-cell-background: var(--table-header-bg);
+  --p-datatable-header-cell-color: var(--table-header-color);
+  --p-datatable-header-cell-hover-background: var(--table-header-hover-bg);
+  --p-datatable-header-cell-hover-color: var(--table-header-hover-color);
+  --p-datatable-row-background: var(--table-row-bg);
+  --p-datatable-row-color: var(--table-row-color);
+  --p-datatable-row-striped-background: var(--table-row-striped-bg);
+  --p-datatable-row-hover-background: var(--table-row-hover-bg);
+  --p-datatable-row-hover-color: var(--table-row-hover-color);
+  --p-datatable-body-cell-border-color: var(--table-border);
+}
+
+.cashly-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.cashly-data-table thead tr {
+  background: var(--table-header-bg) !important;
+}
+
+.cashly-data-table thead th {
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  color: var(--table-header-color) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cashly-data-table tbody tr {
+  background: var(--table-row-bg) !important;
+}
+
+.cashly-data-table tbody tr:nth-child(even) {
+  background: var(--table-row-striped-bg) !important;
+}
+
+.cashly-data-table tbody tr:hover {
+  background: var(--table-row-hover-bg) !important;
+  color: var(--table-row-hover-color);
+}
+
+.cashly-data-table tbody td {
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  border-top: 1px solid var(--table-border);
+}
+
+.cashly-data-table tbody td[colspan] {
+  padding: 2.5rem 1rem !important;
+  border-top: none;
 }
 
 :root:not(.my-app-dark) .p-datatable-thead > tr > th {
@@ -489,9 +560,13 @@ a:focus-visible {
   color: inherit;
 }
 .dashboard-activity-label {
-  background: var(--cashly-canvas);
+  background: var(--p-surface-200);
   color: var(--cashly-ink);
   border: 1px solid var(--cashly-line);
+}
+.my-app-dark .dashboard-activity-label {
+  background: var(--p-surface-800);
+  color: var(--p-surface-200);
 }
 .cashly-login .login-panel {
   border-radius: 0;

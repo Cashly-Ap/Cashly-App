@@ -43,11 +43,14 @@ interface InvoiceLineFormData {
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-return-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
     SubmitButtonComponent,
     CancelButtonComponent,
     LocalizedNumberPipe,

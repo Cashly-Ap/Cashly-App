@@ -41,11 +41,14 @@ const PAGE_SIZE = 10;
 
 type RememberedAllocation = { warehouseId: string; allocated: number };
 
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-product-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
     TableRowSkeletonComponent,
     CardSkeletonComponent,
     DialogHeaderComponent,

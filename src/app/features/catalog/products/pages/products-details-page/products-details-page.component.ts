@@ -34,11 +34,14 @@ import { ProductStockByWarehouse } from '@features/catalog/products/models/inter
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
 @Component({
   selector: 'app-products-details-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
     BackButtonComponent,
     PanelCardComponent,
     TranslatePipe,

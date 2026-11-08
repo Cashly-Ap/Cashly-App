@@ -187,8 +187,8 @@ export class ReceivablesPageComponent implements OnInit, OnDestroy {
   sortIcon(field: string): string {
     if (this.sortField() !== field) return 'pi pi-fw pi-sort-alt text-surface-400';
     return this.sortOrder() === 1
-      ? 'pi pi-fw pi-sort-up font-bold text-surface-0 dark:text-surface-900'
-      : 'pi pi-fw pi-sort-down font-bold text-surface-0 dark:text-surface-900';
+      ? 'pi pi-fw pi-sort-up font-bold text-surface-900 dark:text-surface-0'
+      : 'pi pi-fw pi-sort-down font-bold text-surface-900 dark:text-surface-0';
   }
 
   private readonly debtDialog = viewChild.required(CustomerDebtDialogComponent);
