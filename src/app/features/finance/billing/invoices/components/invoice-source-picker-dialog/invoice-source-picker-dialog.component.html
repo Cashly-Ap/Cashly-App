@@ -134,7 +134,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex justify-end gap-2">
-      <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="cancel()" />
+      <app-cancel-button icon="" (cancelled)="cancel()" />
       <p-button
         [label]="'finance.billing.invoices.loadSelected' | translate"
         icon="pi pi-download"

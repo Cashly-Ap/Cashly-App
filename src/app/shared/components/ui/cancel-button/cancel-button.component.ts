@@ -15,7 +15,7 @@ export class CancelButtonComponent {
   readonly label = input<string>();
   readonly icon = input('pi pi-times');
   readonly text = input(false);
-  readonly outlined = input(true);
+  readonly outlined = input(false);
   readonly severity = input<ButtonSeverity>('secondary');
   readonly disabled = input(false);
   readonly loading = input(false);

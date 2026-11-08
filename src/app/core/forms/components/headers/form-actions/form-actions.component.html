@@ -5,6 +5,7 @@
   <app-cancel-button
     [labelKey]="cancelLabel()"
     [disabled]="loading()"
+    [outlined]="true"
     (cancelled)="cancel.emit()"
   />
   <span

@@ -130,7 +130,7 @@
 
   <ng-container reportFooter>
     <div class="flex justify-end gap-2">
-      <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
+      <app-cancel-button icon="" (cancelled)="onHide()" />
       <p-button
         [appPermissionModule]="'PURCHASES'"
         [appPermission]="'EXPORT'"

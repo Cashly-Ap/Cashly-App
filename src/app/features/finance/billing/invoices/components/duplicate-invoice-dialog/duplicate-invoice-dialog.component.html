@@ -51,8 +51,7 @@
           <p-button
             [label]="'finance.billing.invoices.selectCustomer' | translate"
             icon="pi pi-search"
-            severity="secondary"
-            [outlined]="true"
+            severity="contrast"
             size="small"
             (onClick)="showCustomerPicker.set(true)"
           />
@@ -63,13 +62,15 @@
               {{ customer.legalName }}
             </p>
             <p class="text-xs text-surface-500 font-mono">{{ customer.rif }}</p>
-            <button
-              type="button"
-              class="text-xs text-blue-600 dark:text-blue-400 hover:underline mt-1"
-              (click)="onClearCustomer()"
-            >
-              {{ 'finance.billing.invoices.useOriginalCustomer' | translate }}
-            </button>
+            <p-button
+              [label]="'finance.billing.invoices.useOriginalCustomer' | translate"
+              icon="pi pi-undo"
+              severity="contrast"
+              [outlined]="true"
+              size="small"
+              styleClass="mt-2"
+              (onClick)="onClearCustomer()"
+            />
           } @else {
             <p class="text-sm text-surface-500">
               {{ info.customerName }}

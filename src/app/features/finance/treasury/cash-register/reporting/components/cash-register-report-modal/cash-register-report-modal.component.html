@@ -126,7 +126,7 @@
 
   <ng-template pTemplate="footer">
     <div class="flex gap-2 justify-end">
-      <app-cancel-button icon="" [text]="true" [outlined]="false" (cancelled)="onHide()" />
+      <app-cancel-button icon="" (cancelled)="onHide()" />
       <p-button
         [label]="
           format() === 'PDF'
