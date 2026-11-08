@@ -125,7 +125,7 @@
               >
                 <ng-template pTemplate="header">
                   <tr>
-                    <th class="bg-surface-50 dark:bg-surface-800">
+                    <th>
                       <div
                         class="flex items-center gap-2 cursor-pointer select-none"
                         (click)="toggleSort('customerName')"
@@ -134,7 +134,7 @@
                         <i [class]="sortIcon('customerName')"></i>
                       </div>
                     </th>
-                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                    <th class="text-right">
                       <div
                         class="flex items-center gap-2 justify-end cursor-pointer select-none"
                         (click)="toggleSort('totalDebt')"
@@ -143,7 +143,7 @@
                         <i [class]="sortIcon('totalDebt')"></i>
                       </div>
                     </th>
-                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                    <th class="text-right">
                       <div
                         class="flex items-center gap-2 justify-end cursor-pointer select-none"
                         (click)="toggleSort('creditLimit')"
@@ -152,7 +152,7 @@
                         <i [class]="sortIcon('creditLimit')"></i>
                       </div>
                     </th>
-                    <th class="text-right bg-surface-50 dark:bg-surface-800">
+                    <th class="text-right">
                       <div
                         class="flex items-center gap-2 justify-end cursor-pointer select-none"
                         (click)="toggleSort('availableCredit')"
@@ -161,12 +161,12 @@
                         <i [class]="sortIcon('availableCredit')"></i>
                       </div>
                     </th>
-                    <th class="text-right bg-surface-50 dark:bg-surface-800">
-                      <div class="font-semibold text-surface-700 dark:text-surface-200">
+                    <th class="text-right">
+                      <div class="font-semibold">
                         {{ 'finance.billing.invoices.creditBalance' | translate }}
                       </div>
                     </th>
-                    <th class="text-center bg-surface-50 dark:bg-surface-800">
+                    <th class="text-center">
                       <div
                         class="flex items-center gap-2 justify-center cursor-pointer select-none"
                         (click)="toggleSort('pendingInvoicesCount')"
@@ -175,8 +175,8 @@
                         <i [class]="sortIcon('pendingInvoicesCount')"></i>
                       </div>
                     </th>
-                    <th class="text-center bg-surface-50 dark:bg-surface-800">
-                      <div class="font-semibold text-surface-700 dark:text-surface-200">
+                    <th class="text-center">
+                      <div class="font-semibold">
                         {{ 'shared.actions' | translate }}
                       </div>
                     </th>

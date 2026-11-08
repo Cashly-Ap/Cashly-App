@@ -361,16 +361,23 @@ app-loading-spinner > div {
 }
 
 :root:not(.my-app-dark) .p-datatable {
-  --p-datatable-header-cell-background: #ebebe8;
-  --p-datatable-header-cell-color: #171715;
-  --p-datatable-header-cell-hover-background: #deded9;
-  --p-datatable-header-cell-hover-color: #171715;
+  --p-datatable-header-cell-background: #171715;
+  --p-datatable-header-cell-color: #f5f5f3;
+  --p-datatable-header-cell-hover-background: #000000;
+  --p-datatable-header-cell-hover-color: #ffffff;
   --p-datatable-row-background: #ffffff;
   --p-datatable-row-color: #252522;
   --p-datatable-row-striped-background: #fafaf9;
   --p-datatable-row-hover-background: #f0f0ed;
   --p-datatable-row-hover-color: #171715;
   --p-datatable-body-cell-border-color: #deded9;
+}
+
+.my-app-dark .p-datatable {
+  --p-datatable-header-cell-background: #f5f5f3;
+  --p-datatable-header-cell-color: #171715;
+  --p-datatable-header-cell-hover-background: #deded9;
+  --p-datatable-header-cell-hover-color: #171715;
 }
 
 :root:not(.my-app-dark) .p-datatable-thead > tr > th {
