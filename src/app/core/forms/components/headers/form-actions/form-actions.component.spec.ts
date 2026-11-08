@@ -1,7 +1,27 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
 import { By } from '@angular/platform-browser';
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
+
+@Component({
+  selector: 'app-form-actions-host',
+  standalone: true,
+  imports: [ReactiveFormsModule, FormActionsComponent],
+  template: `
+    <form [formGroup]="form">
+      <app-form-actions [disabled]="false" />
+    </form>
+  `,
+})
+class FormActionsHostComponent {
+  readonly form = new FormGroup({ name: new FormControl('') });
+}
+
+const routerMock = { url: '/test', events: EMPTY };
 
 describe('FormActionsComponent', () => {
   let component: FormActionsComponent;
@@ -9,14 +29,20 @@ describe('FormActionsComponent', () => {
   let compiled: HTMLElement;
 
   beforeEach(() => {
+    routerMock.url = '/test';
     TestBed.configureTestingModule({
-      imports: [FormActionsComponent],
+      imports: [FormActionsComponent, FormActionsHostComponent],
+      providers: [{ provide: Router, useValue: routerMock }],
     });
 
     fixture = TestBed.createComponent(FormActionsComponent);
     component = fixture.componentInstance;
     compiled = fixture.nativeElement;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    routerMock.url = '/test';
   });
 
   it('should create', () => {
@@ -91,5 +117,52 @@ describe('FormActionsComponent', () => {
     const container = compiled.querySelector('div');
     expect(container?.className).toContain('px-4');
     expect(container?.className).toContain('md:px-6');
+  });
+
+  it('should disable submit on edit routes while the form is pristine', () => {
+    routerMock.url = '/test/edit';
+    const hostFixture = TestBed.createComponent(FormActionsHostComponent);
+    hostFixture.detectChanges();
+
+    const actions = hostFixture.debugElement.query(By.directive(FormActionsComponent))
+      .componentInstance as FormActionsComponent;
+
+    expect(actions.submitDisabled()).toBe(true);
+
+    hostFixture.componentInstance.form.markAsDirty();
+    expect(actions.submitDisabled()).toBe(true);
+
+    hostFixture.componentInstance.form.get('name')?.setValue('changed');
+    expect(actions.submitDisabled()).toBe(false);
+
+    hostFixture.componentInstance.form.get('name')?.setValue('');
+    expect(actions.submitDisabled()).toBe(true);
+  });
+
+  it('uses the loaded values as the baseline when the form is patched while pristine', () => {
+    routerMock.url = '/test/edit';
+    const hostFixture = TestBed.createComponent(FormActionsHostComponent);
+    hostFixture.detectChanges();
+
+    const actions = hostFixture.debugElement.query(By.directive(FormActionsComponent))
+      .componentInstance as FormActionsComponent;
+
+    hostFixture.componentInstance.form.get('name')?.setValue('loaded');
+    expect(actions.submitDisabled()).toBe(true);
+
+    hostFixture.componentInstance.form.markAsDirty();
+    hostFixture.componentInstance.form.get('name')?.setValue('edited');
+    expect(actions.submitDisabled()).toBe(false);
+  });
+
+  it('should keep submit enabled on create routes while the form is pristine', () => {
+    routerMock.url = '/test/new';
+    const hostFixture = TestBed.createComponent(FormActionsHostComponent);
+    hostFixture.detectChanges();
+
+    const actions = hostFixture.debugElement.query(By.directive(FormActionsComponent))
+      .componentInstance as FormActionsComponent;
+
+    expect(actions.submitDisabled()).toBe(false);
   });
 });

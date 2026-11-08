@@ -8,7 +8,7 @@
     (cancelled)="cancel.emit()"
   />
   <span
-    [pTooltip]="disabled() ? tooltipMessage() : ''"
+    [pTooltip]="resolvedTooltip()"
     tooltipPosition="top"
     [tooltipOptions]="{ showDelay: 200 }"
     class="inline-flex"
@@ -17,7 +17,7 @@
       type="submit"
       [label]="submitLabel()"
       [loading]="loading()"
-      [disabled]="disabled()"
+      [disabled]="submitDisabled()"
     />
   </span>
 </div>
