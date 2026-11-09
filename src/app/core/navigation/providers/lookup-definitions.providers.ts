@@ -9,6 +9,7 @@ import { CREDIT_NOTE_LOOKUP } from '@features/finance/billing/credit-notes/navig
 import { DEBIT_NOTE_LOOKUP } from '@features/finance/billing/debit-notes/navigation/debit-note.lookup';
 import { RECEIVABLE_LOOKUP } from '@features/finance/treasury/receivables/navigation/receivable.lookup';
 import { PAYMENT_METHOD_LOOKUP } from '@features/finance/treasury/payment-methods/navigation/payment-method.lookup';
+import { EXPENSE_LOOKUP } from '@features/finance/treasury/expenses/navigation/expense.lookup';
 import { PRODUCT_LOOKUP } from '@features/catalog/products/navigation/product.lookup';
 import { CATEGORY_LOOKUP } from '@features/catalog/categories/navigation/category.lookup';
 import { PRICE_TYPE_LOOKUP } from '@features/catalog/price-types/navigation/price-type.lookup';
@@ -29,6 +30,7 @@ const DEFINITIONS = [
   DEBIT_NOTE_LOOKUP,
   RECEIVABLE_LOOKUP,
   PAYMENT_METHOD_LOOKUP,
+  EXPENSE_LOOKUP,
   PRODUCT_LOOKUP,
   CATEGORY_LOOKUP,
   PRICE_TYPE_LOOKUP,

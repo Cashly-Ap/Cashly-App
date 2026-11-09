@@ -136,6 +136,7 @@ describe('ERP navigation', () => {
         '/inventory/warehouses/movements',
         '/finance/treasury/cash-register',
         '/finance/treasury/cash-register/history',
+        '/finance/treasury/expenses',
         '/finance/treasury/receivables',
         '/finance/billing/credit-notes',
         '/finance/billing/debit-notes',

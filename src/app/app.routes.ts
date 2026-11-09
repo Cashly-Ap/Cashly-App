@@ -275,6 +275,13 @@ export const routes: Routes = [
                     (m) => m.RECEIVABLES_ROUTES,
                   ),
               },
+              {
+                path: 'expenses',
+                loadChildren: () =>
+                  import('@features/finance/treasury/expenses/routing').then(
+                    (m) => m.EXPENSES_ROUTES,
+                  ),
+              },
             ],
           },
         ],

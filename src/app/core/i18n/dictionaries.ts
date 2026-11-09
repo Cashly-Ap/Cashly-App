@@ -76,6 +76,8 @@ import spanish38 from '@shared/i18n/es.json';
 import english38 from '@shared/i18n/en.json';
 import spanish39 from '@features/platform/audit/i18n/es.json';
 import english39 from '@features/platform/audit/i18n/en.json';
+import spanish40 from '@features/finance/treasury/expenses/i18n/es.json';
+import english40 from '@features/finance/treasury/expenses/i18n/en.json';
 
 export const spanish: Readonly<Record<string, string>> = {
   ...spanish1,
@@ -117,6 +119,7 @@ export const spanish: Readonly<Record<string, string>> = {
   ...spanish37,
   ...spanish38,
   ...spanish39,
+  ...spanish40,
 };
 export const english: Readonly<Record<string, string>> = {
   ...english1,
@@ -158,4 +161,5 @@ export const english: Readonly<Record<string, string>> = {
   ...english37,
   ...english38,
   ...english39,
+  ...english40,
 };

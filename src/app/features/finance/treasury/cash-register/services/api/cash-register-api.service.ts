@@ -38,6 +38,10 @@ export class CashRegisterApiService {
     return this.http.post<CashMovementResponse>(`${this.baseUrl}/${id}/movements`, request);
   }
 
+  deleteMovement(movementId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/movements/${movementId}`);
+  }
+
   getHistory(
     page: number,
     size: number,

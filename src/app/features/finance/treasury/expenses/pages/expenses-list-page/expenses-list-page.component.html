@@ -1,0 +1,280 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.expenses.expenses"
+      subtitle="finance.treasury.expenses.subtitle"
+    />
+
+    <app-list-container>
+      <div class="px-4 py-4 sm:px-6">
+        <div
+          class="flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center sm:gap-4"
+        >
+          <div class="flex w-full items-center gap-2 sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:min-w-[300px] sm:flex-none"
+              [value]="searchTerm()"
+              [placeholder]="'finance.treasury.expenses.searchPlaceholder' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearAllFilters()">
+              <app-filter-field labelKey="finance.billing.invoices.startDate2">
+                <p-datepicker
+                  [ngModel]="filterDateFrom()"
+                  (onSelect)="onDateFromChange($event)"
+                  [showIcon]="true"
+                  [placeholder]="'finance.billing.invoices.from' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.endDate2">
+                <p-datepicker
+                  [ngModel]="filterDateTo()"
+                  (onSelect)="onDateToChange($event)"
+                  [showIcon]="true"
+                  [placeholder]="'finance.billing.invoices.to' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.treasury.expenses.paymentMethod">
+                <p-select
+                  [options]="paymentMethodOptions()"
+                  [ngModel]="filterPaymentMethodId()"
+                  (onChange)="onPaymentMethodFilterChange($event.value)"
+                  optionLabel="name"
+                  optionValue="id"
+                  [placeholder]="'finance.treasury.expenses.allPaymentMethods' | translate"
+                  styleClass="w-full"
+                  appendTo="body"
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <div class="flex flex-col gap-1 sm:items-end">
+            <app-submit-button
+              labelKey="finance.treasury.expenses.newExpense"
+              shortcut="new"
+              permission="EXECUTE"
+              permissionModule="FINANCE_CASH_REGISTER"
+              [disabled]="!service.hasOpenRegister()"
+              (action)="onCreate()"
+            />
+            @if (!service.hasOpenRegister()) {
+              <small class="text-xs text-amber-600 dark:text-amber-400">
+                {{ 'finance.treasury.expenses.openRegisterHint' | translate }}
+              </small>
+            }
+          </div>
+        </div>
+      </div>
+    </app-list-container>
+
+    <div class="h-4"></div>
+
+    @if (showInitialLoading()) {
+      <app-panel-card>
+        <app-loading-spinner [message]="'finance.treasury.expenses.loading' | translate" />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card>
+        <app-empty-state
+          icon="pi-receipt"
+          title="finance.treasury.expenses.noExpenses"
+          message="finance.treasury.expenses.noExpensesMessage"
+          [buttonLabel]="
+            service.hasOpenRegister() ? ('finance.treasury.expenses.newExpense' | translate) : ''
+          "
+          (buttonClick)="onCreate()"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-surface-0/70 dark:bg-surface-800/70"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              title="finance.billing.creditnotes.noResultsFound"
+              message="finance.treasury.expenses.noExpensesMatchYourSearch"
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="service.expenses()"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+                styleClass="p-datatable-striped"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="occurredAt" class="w-40">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.expenses.date' | translate }}
+                        <p-sortIcon field="occurredAt" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="description" class="w-auto">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.expenses.description' | translate }}
+                        <p-sortIcon field="description" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="paymentMethodName" class="w-44">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.expenses.paymentMethod' | translate }}
+                        <p-sortIcon field="paymentMethodName" />
+                      </div>
+                    </th>
+                    <th class="w-44 hidden lg:table-cell">
+                      <div class="font-semibold">
+                        {{ 'finance.treasury.expenses.register' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-40 hidden xl:table-cell">
+                      <div class="font-semibold">
+                        {{ 'finance.treasury.expenses.recordedBy' | translate }}
+                      </div>
+                    </th>
+                    <th pSortableColumn="amount" class="w-32">
+                      <div class="flex items-center justify-end gap-2 font-semibold">
+                        {{ 'finance.treasury.expenses.amount' | translate }}
+                        <p-sortIcon field="amount" />
+                      </div>
+                    </th>
+                    <th class="w-20">
+                      <div class="text-center font-semibold">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-expense>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <span class="text-sm text-surface-600 dark:text-surface-300">
+                        {{ expense.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="font-medium">{{ expense.description }}</div>
+                    </td>
+                    <td>
+                      <div class="text-sm text-surface-600 dark:text-surface-400">
+                        {{ expense.paymentMethodName }}
+                      </div>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm text-surface-600 dark:text-surface-400">
+                        {{ expense.registerOpenedAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                      </div>
+                    </td>
+                    <td class="hidden xl:table-cell">
+                      <div class="text-sm text-surface-600 dark:text-surface-400">
+                        {{ expense.createdByName || '—' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div
+                        class="text-right font-mono text-sm font-semibold text-red-600 dark:text-red-400"
+                      >
+                        {{ expense.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center">
+                        <app-list-action-buttons [actions]="actionsFor(expense)" />
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 py-3 sm:px-6">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'finance.treasury.expenses.showingFirstToLastOfTotalrecordsExpenses' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="relative mt-6 md:hidden">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 z-10 flex min-h-[200px] items-center justify-center rounded-2xl bg-surface-0/70 dark:bg-surface-800/70"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              title="finance.billing.creditnotes.noResultsFound"
+              message="finance.treasury.expenses.noExpensesMatchYourSearch"
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (expense of service.expenses(); track expense.id) {
+              <app-panel-card padding="p-5">
+                <div class="mb-3 flex items-start justify-between gap-3">
+                  <div class="min-w-0 flex-1">
+                    <h3 class="mb-1 text-base font-bold text-surface-900 dark:text-surface-0">
+                      {{ expense.description }}
+                    </h3>
+                    <p class="text-xs text-surface-500">
+                      {{ expense.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
+                      {{ expense.paymentMethodName }}
+                    </p>
+                    <p class="mt-1 text-xs text-surface-500">
+                      {{ expense.createdByName || '—' }}
+                    </p>
+                  </div>
+                  <span class="font-mono text-base font-semibold text-red-600 dark:text-red-400">
+                    {{ expense.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                  </span>
+                </div>
+                <div
+                  class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(expense)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="mt-2 px-4 py-3">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'finance.treasury.expenses.showingFirstToLastOfTotalrecordsExpenses' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<p-confirmDialog styleClass="max-w-md" />

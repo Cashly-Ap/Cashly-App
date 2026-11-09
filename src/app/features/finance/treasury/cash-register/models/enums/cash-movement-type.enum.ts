@@ -29,3 +29,17 @@ export const CASH_MOVEMENT_TYPE_LABELS: Record<CashMovementType, string> = {
 export function getCashMovementTypeLabel(type: string): string {
   return CASH_MOVEMENT_TYPE_LABELS[type as CashMovementType] ?? type;
 }
+
+const CASH_AFFECTING_TYPES = new Set<CashMovementType>([
+  CashMovementType.PAYMENT,
+  CashMovementType.ADVANCE,
+  CashMovementType.REFUND,
+  CashMovementType.MANUAL_INCOME,
+  CashMovementType.EXPENSE,
+  CashMovementType.WITHDRAWAL,
+  CashMovementType.ADJUSTMENT,
+]);
+
+export function cashMovementAffectsCash(type: string): boolean {
+  return CASH_AFFECTING_TYPES.has(type as CashMovementType);
+}

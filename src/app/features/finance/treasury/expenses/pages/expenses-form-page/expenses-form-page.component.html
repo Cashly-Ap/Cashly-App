@@ -1,0 +1,98 @@
+<app-form-container>
+  <app-form-header [title]="title() | translate" [subtitle]="subtitle() | translate" />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-panel-card>
+      <div class="flex flex-col gap-4 p-4 md:p-6">
+        <div
+          class="flex flex-col gap-2 rounded-xl border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900"
+        >
+          <label
+            for="expenseAmount"
+            class="text-sm font-semibold text-surface-700 dark:text-surface-300"
+          >
+            {{ 'finance.treasury.expenses.amount' | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <p-inputnumber
+            inputId="expenseAmount"
+            formControlName="amount"
+            mode="currency"
+            currency="USD"
+            [locale]="locale()"
+            [min]="0.01"
+            styleClass="w-full"
+          />
+          @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <small class="text-xs text-red-500">
+              {{ 'finance.treasury.expenses.amountRequired' | translate }}
+            </small>
+          }
+        </div>
+
+        <div
+          class="flex flex-col gap-2 rounded-xl border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900"
+        >
+          <label
+            for="expensePaymentMethod"
+            class="text-sm font-semibold text-surface-700 dark:text-surface-300"
+          >
+            {{ 'finance.treasury.expenses.paymentMethod' | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <p-select
+            inputId="expensePaymentMethod"
+            formControlName="paymentMethodId"
+            [options]="service.paymentMethods()"
+            optionLabel="name"
+            optionValue="id"
+            [placeholder]="'finance.treasury.expenses.selectPaymentMethod' | translate"
+            appendTo="body"
+            styleClass="w-full"
+          />
+          @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {
+            <small class="text-xs text-red-500">
+              {{ 'finance.treasury.expenses.paymentMethodRequired' | translate }}
+            </small>
+          }
+          @if (service.paymentMethods().length === 0) {
+            <small class="text-xs text-amber-600">
+              {{ 'finance.treasury.expenses.noPaymentMethods' | translate }}
+            </small>
+          }
+        </div>
+
+        <div
+          class="flex flex-col gap-2 rounded-xl border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900"
+        >
+          <label
+            for="expenseDescription"
+            class="text-sm font-semibold text-surface-700 dark:text-surface-300"
+          >
+            {{ 'finance.treasury.expenses.description' | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <textarea
+            id="expenseDescription"
+            pTextarea
+            formControlName="description"
+            rows="4"
+            class="w-full"
+            [placeholder]="'finance.treasury.expenses.descriptionPlaceholder' | translate"
+          ></textarea>
+          @if (form.get('description')?.invalid && form.get('description')?.touched) {
+            <small class="text-xs text-red-500">
+              {{ 'finance.treasury.expenses.descriptionRequired' | translate }}
+            </small>
+          }
+        </div>
+      </div>
+
+      <app-form-actions
+        [submitLabel]="submitLabel()"
+        [cancelLabel]="'shared.cancel' | translate"
+        [disabled]="form.invalid"
+        (cancel)="onCancel()"
+      />
+    </app-panel-card>
+  </form>
+</app-form-container>

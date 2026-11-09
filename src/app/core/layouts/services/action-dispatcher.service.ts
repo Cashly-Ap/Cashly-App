@@ -31,6 +31,7 @@ const AUDIT_ENTITY_BY_ROUTE: Record<string, AuditEntityType> = {
   '/finance/billing/credit-notes': 'CREDIT_NOTE',
   '/finance/billing/debit-notes': 'DEBIT_NOTE',
   '/finance/treasury/payment-methods': 'PAYMENT_METHOD',
+  '/finance/treasury/expenses': 'CASH_MOVEMENT',
   '/partners/customers': 'CUSTOMER',
   '/partners/suppliers': 'SUPPLIER',
   '/platform/users': 'USER',

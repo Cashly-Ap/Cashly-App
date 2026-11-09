@@ -114,91 +114,252 @@
         </div>
       </app-list-container>
 
-      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <app-panel-card padding="p-6">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-file text-surface-600 dark:text-surface-400"></i>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >{{ 'finance.treasury.cashregister.openingBalance' | translate }}</span
-            >
-          </div>
-          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
-            {{ c.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </app-panel-card>
-        <app-panel-card padding="p-6">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-receipt text-surface-600 dark:text-surface-400"></i>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >{{ 'finance.treasury.cashregister.billing' | translate }}</span
-            >
-          </div>
-          <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
-            {{ c.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </app-panel-card>
-        <app-panel-card padding="p-6">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-arrow-right text-surface-600 dark:text-surface-400"></i>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >{{ 'finance.treasury.cashregister.moneyIn' | translate }}</span
-            >
-          </div>
-          <p class="text-2xl font-bold text-green-600 dark:text-green-400">
-            {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </app-panel-card>
-        <app-panel-card padding="p-6">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-arrow-left text-surface-600 dark:text-surface-400"></i>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >{{ 'finance.treasury.cashregister.moneyOut' | translate }}</span
-            >
-          </div>
-          <p class="text-2xl font-bold text-red-600 dark:text-red-400">
-            {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </app-panel-card>
-        <app-panel-card padding="p-6">
-          <div class="flex items-center gap-3 mb-3">
-            <div
-              class="w-10 h-10 rounded-xl bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
-            >
-              <i class="pi pi-chart-bar text-surface-600 dark:text-surface-400"></i>
-            </div>
-            <span
-              class="text-sm font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
-              >{{ 'finance.treasury.cashregister.expectedBalance' | translate }}</span
-            >
-          </div>
-          <p
-            class="text-2xl font-bold"
-            [class.text-green-600]="c.expectedBalance >= 0"
-            [class.text-red-600]="c.expectedBalance < 0"
+      <div class="mt-6">
+        <h2
+          class="mb-3 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400"
+        >
+          {{ 'finance.treasury.cashregister.sessionSummary' | translate }}
+        </h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.openingBalance"
+            icon="pi pi-wallet"
+            module="finance"
           >
-            {{ c.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </p>
-        </app-panel-card>
+            {{ c.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.billing"
+            icon="pi pi-receipt"
+            module="finance"
+          >
+            {{ c.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.moneyIn"
+            icon="pi pi-arrow-down-left"
+            module="finance"
+          >
+            <span class="text-green-600 dark:text-green-400">
+              {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.moneyOut"
+            icon="pi pi-arrow-up-right"
+            module="finance"
+          >
+            <span class="text-red-600 dark:text-red-400">
+              {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.expectedBalance"
+            icon="pi pi-chart-line"
+            module="finance"
+          >
+            <span
+              [class]="
+                c.expectedBalance >= 0
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              "
+            >
+              {{ c.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h2
+          class="mb-3 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400"
+        >
+          {{ 'finance.treasury.cashregister.sessionAnalytics' | translate }}
+        </h2>
+
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+          <section class="dashboard-widget xl:col-span-2">
+            <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.cashFlow' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.cashFlowSubtitle' | translate }}
+                </p>
+              </div>
+              <span
+                class="rounded-full bg-surface-100 px-3 py-1 text-xs font-medium text-surface-600 dark:bg-surface-800 dark:text-surface-300"
+              >
+                {{ c.totalIncome - c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                {{ 'finance.treasury.cashregister.netFlow' | translate }}
+              </span>
+            </div>
+            <div style="height: 280px">
+              <canvas
+                baseChart
+                [type]="barChartType"
+                [data]="flowChartData()"
+                [options]="flowChartOptions()"
+              ></canvas>
+            </div>
+          </section>
+
+          <section class="dashboard-widget">
+            <div class="mb-5">
+              <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                {{ 'finance.treasury.cashregister.paymentMethodsBreakdown' | translate }}
+              </h3>
+              <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                {{ 'finance.treasury.cashregister.paymentMethodsBreakdownSubtitle' | translate }}
+              </p>
+            </div>
+            @if (hasPaymentBreakdown()) {
+              <div style="height: 280px">
+                <canvas
+                  baseChart
+                  [type]="barChartType"
+                  [data]="paymentBreakdownChartData()"
+                  [options]="paymentBreakdownChartOptions()"
+                ></canvas>
+              </div>
+            } @else {
+              <div
+                class="dashboard-empty flex h-[280px] flex-col items-center justify-center px-4 text-center"
+              >
+                <i class="pi pi-credit-card text-2xl text-surface-400"></i>
+                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.noPaymentMethodData' | translate }}
+                </p>
+              </div>
+            }
+          </section>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <section class="dashboard-widget">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.incomeByType' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.incomeByTypeSubtitle' | translate }}
+                </p>
+              </div>
+              <span class="text-sm font-semibold text-green-600 dark:text-green-400">
+                {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            @if (hasIncomeMovements()) {
+              <div style="height: 260px">
+                <canvas
+                  baseChart
+                  [type]="doughnutChartType"
+                  [data]="incomeByTypeChartData()"
+                  [options]="doughnutChartOptions()"
+                ></canvas>
+              </div>
+            } @else {
+              <div
+                class="dashboard-empty flex h-[260px] flex-col items-center justify-center px-4 text-center"
+              >
+                <i class="pi pi-arrow-down-left text-2xl text-surface-400"></i>
+                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.noIncomeMovements' | translate }}
+                </p>
+              </div>
+            }
+          </section>
+
+          <section class="dashboard-widget">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.expenseByType' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.expenseByTypeSubtitle' | translate }}
+                </p>
+              </div>
+              <span class="text-sm font-semibold text-red-600 dark:text-red-400">
+                {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            @if (hasExpenseMovements()) {
+              <div style="height: 260px">
+                <canvas
+                  baseChart
+                  [type]="doughnutChartType"
+                  [data]="expenseByTypeChartData()"
+                  [options]="doughnutChartOptions()"
+                ></canvas>
+              </div>
+            } @else {
+              <div
+                class="dashboard-empty flex h-[260px] flex-col items-center justify-center px-4 text-center"
+              >
+                <i class="pi pi-arrow-up-right text-2xl text-surface-400"></i>
+                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.noExpenseMovements' | translate }}
+                </p>
+              </div>
+            }
+          </section>
+        </div>
+
+        @if (hasNonCashMovements()) {
+          <section class="dashboard-widget mt-4">
+            <div class="mb-4">
+              <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                {{ 'finance.treasury.cashregister.nonCashMovements' | translate }}
+              </h3>
+              <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                {{ 'finance.treasury.cashregister.nonCashMovementsSubtitle' | translate }}
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              @for (item of nonCashMovements(); track item.direction + ':' + item.type) {
+                <span
+                  class="inline-flex items-center gap-2 rounded-full border border-surface-200 px-3 py-1.5 text-sm dark:border-surface-700"
+                >
+                  <i
+                    [class]="
+                      item.direction === 'IN'
+                        ? 'pi pi-arrow-down-left text-surface-400'
+                        : 'pi pi-arrow-up-right text-surface-400'
+                    "
+                  ></i>
+                  <span class="font-medium">{{ getMovementTypeLabel(item.type) | translate }}</span>
+                  <span class="text-surface-400">·</span>
+                  <span class="font-mono text-surface-600 dark:text-surface-300">
+                    {{ item.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                  </span>
+                </span>
+              }
+            </div>
+          </section>
+        }
+
+        <section class="dashboard-widget mt-4">
+          <div class="mb-5">
+            <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+              {{ 'finance.treasury.cashregister.balanceEvolution' | translate }}
+            </h3>
+            <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+              {{ 'finance.treasury.cashregister.balanceEvolutionSubtitle' | translate }}
+            </p>
+          </div>
+          <div style="height: 260px">
+            <canvas
+              baseChart
+              [type]="lineChartType"
+              [data]="balanceTimelineChartData()"
+              [options]="balanceTimelineChartOptions()"
+            ></canvas>
+          </div>
+        </section>
       </div>
     }
   </div>

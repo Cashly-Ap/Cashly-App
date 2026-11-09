@@ -233,6 +233,12 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             ),
           ),
           page(
+            'Gastos',
+            'pi pi-receipt',
+            '/finance/treasury/expenses',
+            BusinessModule.FINANCE_CASH_REGISTER,
+          ),
+          page(
             'Métodos de pago',
             'pi pi-credit-card',
             '/finance/treasury/payment-methods',

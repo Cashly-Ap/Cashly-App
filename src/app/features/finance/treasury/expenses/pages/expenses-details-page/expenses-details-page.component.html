@@ -1,0 +1,88 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-[1800px] px-4 py-4 sm:px-6 sm:py-6">
+    @if (service.loading() && !expense()) {
+      <app-loading-spinner />
+    }
+    @if (expense(); as e) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'finance.treasury.expenses.expenseDetails' | translate"
+          [subtitle]="'finance.treasury.expenses.expenseDetailsSubtitle' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="e.description"
+            [subtitle]="'finance.treasury.expenses.expense' | translate"
+          >
+            <div actions class="flex flex-wrap gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CASH_MOVEMENT"
+                [auditEntityId]="e.id"
+                [auditLabel]="e.description"
+                [auditSubtitle]="e.paymentMethodName"
+              >
+                <p-button
+                  [appPermission]="'EXECUTE'"
+                  [label]="'finance.treasury.expenses.deleteExpense' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  styleClass="w-full justify-start text-left text-sm"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.amount' | translate"
+                [value]="(e.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.paymentMethod' | translate"
+                [value]="e.paymentMethodName"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.date' | translate"
+                [value]="(e.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.recordedBy' | translate"
+                [value]="e.createdByName || '—'"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.description' | translate"
+                [value]="e.description"
+                colspan="full"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.affectsCash' | translate"
+                type="tag"
+                [tagLabel]="'finance.treasury.expenses.yes' | translate"
+                tagSeverity="danger"
+              />
+              @if (e.registerOpenedAt) {
+                <app-details-info-field
+                  [label]="'finance.treasury.expenses.registerOpenedAt' | translate"
+                  [value]="(e.registerOpenedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              }
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+
+<p-confirmDialog styleClass="max-w-md" />

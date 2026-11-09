@@ -12,6 +12,7 @@ import { CREDIT_NOTE_LIST_NAVIGATION } from '@features/finance/billing/credit-no
 import { DEBIT_NOTE_LIST_NAVIGATION } from '@features/finance/billing/debit-notes/navigation/debit-note.list-navigation';
 import { PAYMENT_METHOD_LIST_NAVIGATION } from '@features/finance/treasury/payment-methods/navigation/payment-method.list-navigation';
 import { RECEIVABLE_LIST_NAVIGATION } from '@features/finance/treasury/receivables/navigation/receivable.list-navigation';
+import { EXPENSE_LIST_NAVIGATION } from '@features/finance/treasury/expenses/navigation/expense.list-navigation';
 import { CASH_REGISTER_LIST_NAVIGATION } from '@features/finance/treasury/cash-register/navigation/cash-register.list-navigation';
 import { CUSTOMER_LIST_NAVIGATION } from '@features/partners/customers/navigation/customer.list-navigation';
 import { SUPPLIER_LIST_NAVIGATION } from '@features/partners/suppliers/navigation/supplier.list-navigation';
@@ -33,6 +34,7 @@ export const LIST_NAVIGATION_DEFINITIONS: ListNavigationDefinition[] = [
   DEBIT_NOTE_LIST_NAVIGATION,
   PAYMENT_METHOD_LIST_NAVIGATION,
   RECEIVABLE_LIST_NAVIGATION,
+  EXPENSE_LIST_NAVIGATION,
   CASH_REGISTER_LIST_NAVIGATION,
   CUSTOMER_LIST_NAVIGATION,
   SUPPLIER_LIST_NAVIGATION,

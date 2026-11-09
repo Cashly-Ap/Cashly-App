@@ -11,6 +11,7 @@ import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
 import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
+import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
 describe('CashRegisterPageComponent', () => {
   let fixture: ComponentFixture<CashRegisterPageComponent>;
@@ -33,6 +34,7 @@ describe('CashRegisterPageComponent', () => {
       imports: [CashRegisterPageComponent],
       providers: [
         { provide: AuthorizationService, useValue: { can: () => true } },
+        { provide: ThemeService, useValue: { isDarkMode: signal(false) } },
         provideRouter([]),
         { provide: CashRegisterApplicationService, useValue: service },
       ],
