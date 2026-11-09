@@ -34,7 +34,17 @@
         </div>
         <div class="space-y-3">
           <div
-            class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'shared.fields.legalName' | translate
+            }}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ customer()!.customerName }}
+            </span>
+          </div>
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.customerTaxId' | translate
@@ -44,7 +54,7 @@
             </span>
           </div>
           <div
-            class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.phone' | translate
@@ -56,7 +66,7 @@
               }}
             </span>
           </div>
-          <div class="flex items-center justify-between py-2">
+          <div class="flex min-h-12 items-center justify-between py-2">
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.email' | translate
             }}</span>
@@ -83,7 +93,7 @@
         </div>
         <div class="space-y-3">
           <div
-            class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.totalDebt' | translate
@@ -93,7 +103,7 @@
             </span>
           </div>
           <div
-            class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.creditLimit' | translate
@@ -103,7 +113,7 @@
             </span>
           </div>
           <div
-            class="flex items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
           >
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.billing.invoices.creditBalance' | translate
@@ -112,7 +122,7 @@
               {{ customer()!.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
             </span>
           </div>
-          <div class="flex items-center justify-between py-2">
+          <div class="flex min-h-12 items-center justify-between py-2">
             <span class="text-sm text-surface-500 dark:text-surface-400">{{
               'finance.treasury.receivables.availableCredit' | translate
             }}</span>
