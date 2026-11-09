@@ -162,9 +162,10 @@
                         {{ 'shared.total' | translate }} <p-sortIcon field="total" />
                       </div>
                     </th>
-                    <th class="w-32 text-right">
+                    <th pSortableColumn="createdAt" class="w-32">
                       <div class="font-semibold">
-                        {{ 'finance.billing.invoices.outstanding' | translate }}
+                        {{ 'finance.billing.invoices.date' | translate }}
+                        <p-sortIcon field="createdAt" />
                       </div>
                     </th>
                     <th class="w-32">
@@ -220,10 +221,10 @@
                         invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
                       }}</span>
                     </td>
-                    <td class="text-right">
-                      <span class="text-sm font-medium">{{
-                        pendingAmount(invoice) | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                      }}</span>
+                    <td>
+                      <span class="text-sm text-surface-500">
+                        {{ (invoice.issueDate || invoice.createdAt) | localizedDate: 'dd/MM/yyyy' }}
+                      </span>
                     </td>
                     <td>
                       @if (invoice.overdue) {
