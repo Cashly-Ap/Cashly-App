@@ -80,5 +80,21 @@
   "finance.treasury.cashRegister.permissions.reportCashRegister": "Cash register reports",
   "finance.treasury.cashRegister.permissions.open": "Open cash register",
   "finance.treasury.cashRegister.permissions.close": "Close cash register",
-  "finance.treasury.cashregister.cashRegisterReport": "Cash register report"
+  "finance.treasury.cashregister.cashRegisterReport": "Cash register report",
+  "finance.treasury.cashregister.statusOpen": "Open",
+  "finance.treasury.cashregister.statusClosed": "Closed",
+  "finance.treasury.cashregister.statusVerified": "Verified",
+  "finance.treasury.cashregister.movementDescription.partialCustomerDebt": "Partial customer debt payment",
+  "finance.treasury.cashregister.movementDescription.totalCustomerDebt": "Full customer debt payment",
+  "finance.treasury.cashregister.movementDescription.partialDebt": "Partial debt payment",
+  "finance.treasury.cashregister.movementDescription.totalDebt": "Full debt payment",
+  "finance.treasury.cashregister.movementDescription.partialDebtCreditBalance": "Payment with credit balance - Partial debt payment",
+  "finance.treasury.cashregister.movementDescription.totalDebtCreditBalance": "Payment with credit balance - Full debt payment",
+  "finance.treasury.cashregister.movementDescription.invoicePayment": "Invoice payment ${number}",
+  "finance.treasury.cashregister.movementDescription.invoicePaymentCreditBalance": "Payment with credit balance - Invoice ${number}",
+  "finance.treasury.cashregister.movementDescription.customerAdvance": "Customer advance",
+  "finance.treasury.cashregister.movementDescription.invoiceConfirmed": "Invoice confirmed ${number}",
+  "finance.treasury.cashregister.movementDescription.creditNoteMovement": "Credit note ${number}",
+  "finance.treasury.cashregister.movementDescription.debitNoteMovement": "Debit note ${number}",
+  "finance.treasury.cashregister.movementTypeExpense": "Expense"
 }

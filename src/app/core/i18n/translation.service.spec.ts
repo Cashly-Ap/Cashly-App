@@ -7,15 +7,28 @@ import { TranslationService } from '@core/i18n/translation.service';
 import { LanguageService } from '@core/i18n/language.service';
 import { english, spanish } from '@core/i18n/dictionaries';
 import { languageInterceptor } from '@core/i18n/language.interceptor';
-import { TranslatedConfirmationService, TranslatedMessageService } from '@core/i18n/translated-feedback.service';
+import {
+  TranslatedConfirmationService,
+  TranslatedMessageService,
+} from '@core/i18n/translated-feedback.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
-import { LocalizedNumberPipe, LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedNumberPipe,
+  LocalizedCurrencyPipe,
+  LocalizedDatePipe,
+} from '@core/i18n/localized-format.pipe';
 
 describe('runtime language', () => {
-  beforeEach(() => TestBed.configureTestingModule({ providers: [
-    provideHttpClient(withInterceptors([languageInterceptor])), provideHttpClientTesting(),
-    TranslatedConfirmationService, TranslatedMessageService,
-  ] }));
+  beforeEach(() =>
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withInterceptors([languageInterceptor])),
+        provideHttpClientTesting(),
+        TranslatedConfirmationService,
+        TranslatedMessageService,
+      ],
+    }),
+  );
 
   it('starts in Spanish and translates the same labels after changing language', () => {
     const service = TestBed.inject(TranslationService);
@@ -79,17 +92,41 @@ describe('runtime language', () => {
       expect(value?.message).toBe('Are you sure you want to delete order #ORD.001?');
       value?.accept?.();
     });
-    confirmation.confirm({ header: 'Confirmar Eliminación', message: '¿Está seguro de que desea eliminar el pedido #ORD.001?', accept: () => { accepted = true; } });
+    confirmation.confirm({
+      header: 'Confirmar Eliminación',
+      message: '¿Está seguro de que desea eliminar el pedido #ORD.001?',
+      accept: () => {
+        accepted = true;
+      },
+    });
     expect(accepted).toBe(true);
   });
 
   it('translates controlled option labels and preserves user data and values in placeholder mode', () => {
     TestBed.inject(LanguageService).setLanguage('en');
     const pipe = TestBed.runInInjectionContext(() => new TranslateOptionsPipe());
-    const original = [{ label: 'Todos', value: null }, { label: 'Clientes', value: 'user-id' }];
-    expect(pipe.transform(original, true)).toEqual([{ label: 'All', value: null }, { label: 'Clientes', value: 'user-id' }]);
+    const original = [
+      { label: 'Todos', value: null },
+      { label: 'Clientes', value: 'user-id' },
+    ];
+    expect(pipe.transform(original, true)).toEqual([
+      { label: 'All', value: null },
+      { label: 'Clientes', value: 'user-id' },
+    ]);
     expect(original[0].label).toBe('Todos');
-    expect(pipe.transform([{ label: 'Borrador', value: 'DRAFT' }])).toEqual([{ label: 'Draft', value: 'DRAFT' }]);
+    expect(pipe.transform([{ label: 'Borrador', value: 'DRAFT' }])).toEqual([
+      { label: 'Draft', value: 'DRAFT' },
+    ]);
+  });
+
+  it('translates generated cash movement descriptions while preserving free-text notes', () => {
+    const service = TestBed.inject(TranslationService);
+    TestBed.inject(LanguageService).setLanguage('en');
+    expect(service.t('Pago parcial de deuda del cliente')).toBe('Partial customer debt payment');
+    expect(service.t('Pago de factura F-001')).toBe('Invoice payment F-001');
+    expect(service.t('Nota de crédito NC-10')).toBe('Credit note NC-10');
+    expect(service.t('Gasto')).toBe('Expense');
+    expect(service.t('Pago de luz')).toBe('Pago de luz');
   });
 
   it('formats numbers, currency and dates using the active language', () => {

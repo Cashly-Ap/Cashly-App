@@ -80,5 +80,21 @@
   "finance.treasury.cashRegister.permissions.reportCashRegister": "Reportes de Caja",
   "finance.treasury.cashRegister.permissions.open": "Abrir caja",
   "finance.treasury.cashRegister.permissions.close": "Cerrar caja",
-  "finance.treasury.cashregister.cashRegisterReport": "Reporte de Caja"
+  "finance.treasury.cashregister.cashRegisterReport": "Reporte de Caja",
+  "finance.treasury.cashregister.statusOpen": "Abierto",
+  "finance.treasury.cashregister.statusClosed": "Cerrado",
+  "finance.treasury.cashregister.statusVerified": "Verificado",
+  "finance.treasury.cashregister.movementDescription.partialCustomerDebt": "Pago parcial de deuda del cliente",
+  "finance.treasury.cashregister.movementDescription.totalCustomerDebt": "Pago total de deuda del cliente",
+  "finance.treasury.cashregister.movementDescription.partialDebt": "Pago parcial de deuda",
+  "finance.treasury.cashregister.movementDescription.totalDebt": "Pago total de deuda",
+  "finance.treasury.cashregister.movementDescription.partialDebtCreditBalance": "Pago con saldo a favor - Pago parcial de deuda",
+  "finance.treasury.cashregister.movementDescription.totalDebtCreditBalance": "Pago con saldo a favor - Pago total de deuda",
+  "finance.treasury.cashregister.movementDescription.invoicePayment": "Pago de factura ${number}",
+  "finance.treasury.cashregister.movementDescription.invoicePaymentCreditBalance": "Pago con saldo a favor - Factura ${number}",
+  "finance.treasury.cashregister.movementDescription.customerAdvance": "Anticipo de cliente",
+  "finance.treasury.cashregister.movementDescription.invoiceConfirmed": "Factura confirmada ${number}",
+  "finance.treasury.cashregister.movementDescription.creditNoteMovement": "Nota de crédito ${number}",
+  "finance.treasury.cashregister.movementDescription.debitNoteMovement": "Nota de débito ${number}",
+  "finance.treasury.cashregister.movementTypeExpense": "Gasto"
 }

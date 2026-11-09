@@ -57,7 +57,7 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
               <app-text-badge
-                [label]="getStatusLabel(c.status)"
+                [label]="getStatusLabel(c.status) | translate"
                 [severity]="getStatusSeverity(c.status)"
               />
               <div>

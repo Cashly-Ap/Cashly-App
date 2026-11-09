@@ -99,11 +99,11 @@ export class CashRegisterPageComponent implements OnInit {
   getStatusLabel(status: string | undefined): string {
     switch (status) {
       case 'OPEN':
-        return 'Abierto';
+        return 'finance.treasury.cashregister.statusOpen';
       case 'CLOSED':
-        return 'Cerrado';
+        return 'finance.treasury.cashregister.statusClosed';
       case 'VERIFIED':
-        return 'Verificado';
+        return 'finance.treasury.cashregister.statusVerified';
       default:
         return status ?? '';
     }
