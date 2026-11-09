@@ -379,6 +379,15 @@ app-loading-spinner > div {
 .p-datatable-tbody > tr > td {
   border-color: var(--cashly-line);
 }
+.p-datatable.cashly-detail-lines {
+  --p-datatable-row-background: var(--cashly-panel);
+  --p-datatable-row-striped-background: var(--cashly-panel);
+  --p-datatable-body-cell-border-color: var(--cashly-line);
+}
+.my-app-dark .p-datatable.cashly-detail-lines {
+  --p-datatable-row-background: var(--cashly-panel);
+  --p-datatable-row-striped-background: var(--cashly-panel);
+}
 
 :root:not(.my-app-dark) .p-datatable {
   --p-datatable-header-cell-background: var(--table-header-bg);
