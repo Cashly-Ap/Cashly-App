@@ -35,7 +35,7 @@
     <div class="space-y-2">
       @for (item of items(); track item.productId; let itemIdx = $index) {
         <div
-          class="border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-surface-950"
+          class="border border-surface-200 dark:border-surface-800 rounded-lg bg-white dark:bg-[var(--cashly-panel)]"
         >
           @if (!readonly()) {
             <div class="flex items-center gap-2 px-3 py-2.5 flex-wrap">
