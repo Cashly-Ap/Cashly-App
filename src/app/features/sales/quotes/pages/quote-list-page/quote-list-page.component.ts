@@ -128,7 +128,7 @@ export class QuoteListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly filterStatus = signal('');
+  readonly filterStatus = signal('DRAFT');
 
   readonly orderDialogVisible = signal(false);
   readonly quoteToConvertToOrder = signal<QuoteList | null>(null);
@@ -140,18 +140,15 @@ export class QuoteListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
-    { label: 'Todos (Borradores)', value: '' },
     { label: 'Borrador', value: 'DRAFT' },
     ...Object.values(QuoteStatus)
       .filter((s) => s !== QuoteStatus.DRAFT && s !== QuoteStatus.CANCELLED)
       .map((s) => ({ label: QUOTE_STATUS_LABELS[s], value: s })),
   ];
 
-  readonly activeFilterCount = computed(() => {
-    let count = 0;
-    if (this.filterStatus()) count++;
-    return count;
-  });
+  readonly activeFilterCount = computed(() =>
+    this.filterStatus() && this.filterStatus() !== 'DRAFT' ? 1 : 0,
+  );
 
   readonly showInitialLoading = computed(
     () => this.loading() && (this.quotes()?.length ?? 0) === 0,
@@ -179,7 +176,6 @@ export class QuoteListPageComponent implements OnInit {
     first: () => this.first(),
     rows: () => this.rows(),
     search: (term) => {
-      this.filterStatus.set('ALL');
       this.onSearch(term);
     },
     paginate: (event) => this.onPageChange(event),
@@ -200,7 +196,7 @@ export class QuoteListPageComponent implements OnInit {
   }
 
   onStatusFilterChange(value: string | null): void {
-    const normalized = value ?? '';
+    const normalized = value ?? 'DRAFT';
     if (normalized === this.filterStatus()) return;
     this.filterStatus.set(normalized);
     this.first.set(0);

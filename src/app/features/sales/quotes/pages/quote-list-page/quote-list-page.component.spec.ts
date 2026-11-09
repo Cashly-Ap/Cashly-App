@@ -154,7 +154,7 @@ describe('QuoteListPageComponent', () => {
     expect(component.searchTerm()).toBe('');
     expect(component.first()).toBe(0);
     expect(component.rows()).toBe(10);
-    expect(component.filterStatus()).toBe('');
+    expect(component.filterStatus()).toBe('DRAFT');
     expect(component.orderBy()).toBe('createdAt');
     expect(component.orderDir()).toBe('desc');
   });
@@ -190,9 +190,9 @@ describe('QuoteListPageComponent', () => {
       expect(component.activeFilterCount()).toBe(1);
     });
 
-    it('should compute active filter count when status is DRAFT', () => {
+    it('should not count the default DRAFT status as an active filter', () => {
       component.filterStatus.set('DRAFT');
-      expect(component.activeFilterCount()).toBe(1);
+      expect(component.activeFilterCount()).toBe(0);
     });
   });
 
@@ -443,8 +443,8 @@ describe('QuoteListPageComponent', () => {
     it('should have status options including DRAFT', () => {
       fixture.detectChanges();
       expect(component.statusOptions.length).toBeGreaterThan(0);
-      expect(component.statusOptions[0].label).toBe('Todos (Borradores)');
-      expect(component.statusOptions[0].value).toBe('');
+      expect(component.statusOptions[0].label).toBe('Borrador');
+      expect(component.statusOptions[0].value).toBe('DRAFT');
     });
   });
 });

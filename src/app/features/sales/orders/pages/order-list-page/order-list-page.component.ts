@@ -130,7 +130,7 @@ export class OrderListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly filterStatus = signal('');
+  readonly filterStatus = signal('DRAFT');
 
   readonly confirmOrderId = signal<string | null>(null);
 
@@ -144,12 +144,12 @@ export class OrderListPageComponent implements OnInit {
   readonly orderDir = signal<'asc' | 'desc'>('desc');
 
   readonly statusOptions = [
-    { label: 'Todos los borradores', value: '' },
     ...Object.values(OrderStatus).map((s) => ({ label: ORDER_STATUS_LABELS[s], value: s })),
-    { label: 'Todos', value: 'ALL' },
   ];
 
-  readonly activeFilterCount = computed(() => (this.filterStatus() ? 1 : 0));
+  readonly activeFilterCount = computed(() =>
+    this.filterStatus() && this.filterStatus() !== 'DRAFT' ? 1 : 0,
+  );
 
   readonly showInitialLoading = computed(
     () => this.loading() && (this.orders()?.length ?? 0) === 0,
@@ -184,7 +184,6 @@ export class OrderListPageComponent implements OnInit {
     first: () => this.first(),
     rows: () => this.rows(),
     search: (term) => {
-      this.filterStatus.set('ALL');
       this.onSearch(term);
     },
     paginate: (event) => this.onPageChange(event),
@@ -205,7 +204,7 @@ export class OrderListPageComponent implements OnInit {
   }
 
   onStatusFilterChange(value: string | null): void {
-    const normalized = value ?? '';
+    const normalized = value ?? 'DRAFT';
     if (normalized === this.filterStatus()) return;
     this.filterStatus.set(normalized);
     this.first.set(0);
@@ -228,7 +227,7 @@ export class OrderListPageComponent implements OnInit {
   }
 
   clearFilters(): void {
-    this.filterStatus.set('');
+    this.filterStatus.set('DRAFT');
     this.first.set(0);
     this.loadWithFilters();
   }

@@ -156,7 +156,7 @@ describe('OrderListPageComponent', () => {
     expect(component.searchTerm()).toBe('');
     expect(component.first()).toBe(0);
     expect(component.rows()).toBe(10);
-    expect(component.filterStatus()).toBe('');
+    expect(component.filterStatus()).toBe('DRAFT');
     expect(component.orderBy()).toBe('createdAt');
     expect(component.orderDir()).toBe('desc');
   });
@@ -187,9 +187,9 @@ describe('OrderListPageComponent', () => {
       expect(component.hasFilteredResults()).toBe(true);
     });
 
-    it('should compute active filter count', () => {
+    it('should not count the default DRAFT status as an active filter', () => {
       component.filterStatus.set('DRAFT');
-      expect(component.activeFilterCount()).toBe(1);
+      expect(component.activeFilterCount()).toBe(0);
     });
 
     it('should compute zero active filter count when no filters', () => {
@@ -259,9 +259,9 @@ describe('OrderListPageComponent', () => {
 
     it('should clear filters', () => {
       fixture.detectChanges();
-      component.filterStatus.set('DRAFT');
+      component.filterStatus.set('CONFIRMED');
       component.clearFilters();
-      expect(component.filterStatus()).toBe('');
+      expect(component.filterStatus()).toBe('DRAFT');
       expect(component.first()).toBe(0);
     });
 
@@ -274,14 +274,14 @@ describe('OrderListPageComponent', () => {
     it('should not reload if same status', () => {
       fixture.detectChanges();
       const callCount = (mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length;
-      component.onStatusFilterChange('');
+      component.onStatusFilterChange('DRAFT');
       expect((mockService.loadAll as ReturnType<typeof vi.fn>).mock.calls.length).toBe(callCount);
     });
 
-    it('should normalize null status to empty string', () => {
+    it('should normalize null status to DRAFT', () => {
       fixture.detectChanges();
       component.onStatusFilterChange(null);
-      expect(component.filterStatus()).toBe('');
+      expect(component.filterStatus()).toBe('DRAFT');
     });
   });
 
@@ -376,8 +376,8 @@ describe('OrderListPageComponent', () => {
     it('should have status options including "Todos"', () => {
       fixture.detectChanges();
       expect(component.statusOptions.length).toBeGreaterThan(0);
-      expect(component.statusOptions[0].label).toBe('Todos los borradores');
-      expect(component.statusOptions[0].value).toBe('');
+      expect(component.statusOptions[0].label).toBe('Borrador');
+      expect(component.statusOptions[0].value).toBe('DRAFT');
     });
   });
 });
