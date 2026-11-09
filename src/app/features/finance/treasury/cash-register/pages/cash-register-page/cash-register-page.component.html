@@ -29,13 +29,13 @@
                 | translate
             }}
           </p>
-          <div class="mt-7 flex w-full max-w-md flex-col gap-3 sm:flex-row">
+          <div class="mt-7 flex w-full max-w-lg flex-col gap-3 sm:flex-row">
             <p-button
               [appPermission]="'EXECUTE'"
               [label]="'finance.treasury.cashregister.openCashRegister' | translate"
               icon="pi pi-lock-open"
               severity="contrast"
-              styleClass="w-full"
+              styleClass="w-full h-full"
               class="flex-1"
               (onClick)="onOpenDialogOpen()"
             />
@@ -44,8 +44,8 @@
               icon="pi pi-history"
               severity="secondary"
               [outlined]="true"
-              styleClass="w-full"
-              class="flex-1"
+              styleClass="w-full h-full whitespace-nowrap"
+              class="flex-[1.4]"
               (onClick)="onViewHistory()"
             />
           </div>

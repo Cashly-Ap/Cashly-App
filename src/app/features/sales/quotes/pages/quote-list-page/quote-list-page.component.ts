@@ -21,6 +21,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DatePickerModule } from 'primeng/datepicker';
+import { LanguageService } from '@core/i18n/language.service';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
@@ -90,6 +92,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     LocalizedCurrencyPipe,
     CommonModule,
     FormsModule,
+    DatePickerModule,
     ButtonModule,
     TableModule,
     InputTextModule,
@@ -113,6 +116,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
   providers: [provideTranslatedConfirmation()],
 })
 export class QuoteListPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
   private readonly deletion = inject(DeleteDialogService);
   private readonly cancellation = inject(CancelDialogService);
   private readonly quoteService = inject(QuoteApplicationService);
@@ -129,6 +133,8 @@ export class QuoteListPageComponent implements OnInit {
   readonly first = signal(0);
   readonly rows = signal(10);
   readonly filterStatus = signal('DRAFT');
+  readonly dateFrom = signal<Date | null>(null);
+  readonly dateTo = signal<Date | null>(null);
 
   readonly orderDialogVisible = signal(false);
   readonly quoteToConvertToOrder = signal<QuoteList | null>(null);
@@ -146,9 +152,13 @@ export class QuoteListPageComponent implements OnInit {
       .map((s) => ({ label: QUOTE_STATUS_LABELS[s], value: s })),
   ];
 
-  readonly activeFilterCount = computed(() =>
-    this.filterStatus() && this.filterStatus() !== 'DRAFT' ? 1 : 0,
-  );
+  readonly activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterStatus() && this.filterStatus() !== 'DRAFT') count++;
+    if (this.dateFrom()) count++;
+    if (this.dateTo()) count++;
+    return count;
+  });
 
   readonly showInitialLoading = computed(
     () => this.loading() && (this.quotes()?.length ?? 0) === 0,
@@ -203,8 +213,22 @@ export class QuoteListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
+  onDateFromChange(value: Date | null): void {
+    this.dateFrom.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onDateToChange(value: Date | null): void {
+    this.dateTo.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
   clearFilters(): void {
     this.filterStatus.set('DRAFT');
+    this.dateFrom.set(null);
+    this.dateTo.set(null);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -364,6 +388,10 @@ export class QuoteListPageComponent implements OnInit {
     if (this.navigationAction()) filters.action = this.navigationAction();
     if (this.searchTerm()) filters.search = this.searchTerm();
     if (!this.navigationAction() && this.filterStatus()) filters.status = this.filterStatus();
+    const dateFrom = this.toDateParameter(this.dateFrom());
+    const dateTo = this.toDateParameter(this.dateTo());
+    if (dateFrom) filters.dateFrom = dateFrom;
+    if (dateTo) filters.dateTo = dateTo;
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();
     this.listRequest?.unsubscribe();
@@ -371,5 +399,13 @@ export class QuoteListPageComponent implements OnInit {
       .loadAll(filters)
       .pipe(takeUntilDestroyed(this.listDestroyRef))
       .subscribe();
+  }
+
+  private toDateParameter(value: Date | null): string | undefined {
+    if (!value) return undefined;
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

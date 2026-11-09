@@ -1,4 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { TranslationService } from '@core/i18n/translation.service';
 import { Observable, tap, finalize } from 'rxjs';
 import {
   PurchaseApiService,
@@ -13,6 +15,8 @@ import { PurchaseEdit } from '@features/procurement/purchases/models/interfaces/
 
 @Injectable({ providedIn: 'root' })
 export class PurchaseApplicationService {
+  private readonly messages = inject(MessageService);
+  private readonly translations = inject(TranslationService);
   private readonly api = inject(PurchaseApiService);
 
   readonly purchases = signal<PurchaseList[]>([]);
@@ -31,7 +35,7 @@ export class PurchaseApplicationService {
           this.purchases.set(items);
           this.totalElements.set(items.length);
         },
-        error: (err: Error) => this.error.set(err.message),
+        error: (err: Error) => this.reportError(err),
       }),
       finalize(() => this.loading.set(false)),
     );
@@ -158,5 +162,30 @@ export class PurchaseApplicationService {
 
   getWarehousesForPurchase() {
     return this.api.getWarehousesForPurchase();
+  }
+
+  private reportError(error: unknown): void {
+    const message = this.errorMessage(error);
+    this.error.set(message);
+    this.messages.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+      life: 5000,
+    });
+  }
+
+  private errorMessage(error: unknown): string {
+    if (typeof error === 'object' && error !== null) {
+      const response = error as { error?: unknown; message?: unknown };
+      if (typeof response.error === 'object' && response.error !== null) {
+        const detail = (response.error as { message?: unknown }).message;
+        if (typeof detail === 'string' && detail.trim()) return detail;
+      }
+      if (typeof response.message === 'string' && response.message.trim()) {
+        return response.message;
+      }
+    }
+    return this.translations.t('shared.requestFailed');
   }
 }

@@ -30,6 +30,32 @@
                   styleClass="w-full"
                 />
               </app-filter-field>
+              <app-filter-field labelKey="shared.dateFrom">
+                <p-datepicker
+                  [ngModel]="dateFrom()"
+                  (ngModelChange)="onDateFromChange($event)"
+                  [showIcon]="true"
+                  [showClear]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'shared.dateFrom' | translate"
+                  appendTo="body"
+                  styleClass="w-full"
+                  [fluid]="true"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="shared.dateTo">
+                <p-datepicker
+                  [ngModel]="dateTo()"
+                  (ngModelChange)="onDateToChange($event)"
+                  [showIcon]="true"
+                  [showClear]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'shared.dateTo' | translate"
+                  appendTo="body"
+                  styleClass="w-full"
+                  [fluid]="true"
+                />
+              </app-filter-field>
             </app-list-filter>
           </div>
           <app-submit-button

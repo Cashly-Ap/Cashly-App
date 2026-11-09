@@ -100,8 +100,8 @@ export class PurchaseApiService {
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.status) params = params.set('status', filters.status);
-    if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
-    if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
+    if (filters?.dateFrom) params = params.set('fromDate', filters.dateFrom);
+    if (filters?.dateTo) params = params.set('toDate', filters.dateTo);
     if (filters?.supplierId) params = params.set('supplierId', filters.supplierId);
     if (filters?.productId) params = params.set('productId', filters.productId);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);

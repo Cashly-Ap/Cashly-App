@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { OrderApplicationService } from '@features/sales/orders/services/application/order-application.service';
@@ -51,7 +52,11 @@ describe('OrderApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [OrderApplicationService, { provide: OrderApiService, useValue: mockApi }],
+      providers: [
+        MessageService,
+        OrderApplicationService,
+        { provide: OrderApiService, useValue: mockApi },
+      ],
     });
 
     service = TestBed.inject(OrderApplicationService);

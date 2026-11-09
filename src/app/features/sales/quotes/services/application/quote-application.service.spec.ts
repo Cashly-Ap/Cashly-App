@@ -1,3 +1,4 @@
+import { MessageService } from 'primeng/api';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { QuoteApplicationService } from '@features/sales/quotes/services/application/quote-application.service';
@@ -68,7 +69,7 @@ describe('QuoteApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [QuoteApplicationService, { provide: QuoteApiService, useValue: mockApi }],
+      providers: [MessageService, QuoteApplicationService, { provide: QuoteApiService, useValue: mockApi }],
     });
 
     service = TestBed.inject(QuoteApplicationService);
@@ -91,6 +92,23 @@ describe('QuoteApplicationService', () => {
 
       expect(service.error()).toBe('Network error');
       expect(service.loading()).toBe(false);
+    });
+
+    it('should notify the user when loading fails', () => {
+      const messages = TestBed.inject(MessageService);
+      const add = vi.spyOn(messages, 'add');
+      mockApi.getAll = vi
+        .fn()
+        .mockReturnValue(throwError(() => ({ error: { message: 'Invalid request' } })));
+
+      service.loadAll().subscribe({ error: () => {} });
+
+      expect(add).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'error',
+          detail: 'Invalid request',
+        }),
+      );
     });
   });
 

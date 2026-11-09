@@ -177,8 +177,8 @@ describe('OrderApiService', () => {
       service.getAll(filters).subscribe();
 
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
-      expect(req.request.params.get('dateFrom')).toBe('2025-01-01');
-      expect(req.request.params.get('dateTo')).toBe('2025-01-31');
+      expect(req.request.params.get('fromDate')).toBe('2025-01-01');
+      expect(req.request.params.get('toDate')).toBe('2025-01-31');
       req.flush([]);
     });
 

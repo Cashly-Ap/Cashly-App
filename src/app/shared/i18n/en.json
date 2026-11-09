@@ -179,5 +179,8 @@
   "shared.fields.lastName": "Last name",
   "shared.fields.role": "Role",
   "shared.fields.department": "Department",
-  "shared.fields.language": "Language"
+  "shared.fields.language": "Language",
+  "shared.dateFrom": "From",
+  "shared.dateTo": "To",
+  "shared.requestFailed": "The request could not be completed. Please try again."
 }
