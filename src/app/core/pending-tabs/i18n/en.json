@@ -1,6 +1,8 @@
 {
   "core.pendingtabs.clearAll": "Clear all",
   "core.pendingtabs.pendingTabs": "Pending tabs",
+  "core.pendingtabs.create": "Create",
+  "core.pendingtabs.edit": "Edit",
   "core.pendingtabs.noPendingTabs": "No pending tabs",
   "core.pendingtabs.messages.daysDaysAgo": "${days} days ago",
   "core.pendingtabs.messages.justNow": "Just now",

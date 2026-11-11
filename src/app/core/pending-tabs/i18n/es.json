@@ -1,6 +1,8 @@
 {
   "core.pendingtabs.clearAll": "Borrar Todas",
   "core.pendingtabs.pendingTabs": "Pestañas Pendientes",
+  "core.pendingtabs.create": "Crear",
+  "core.pendingtabs.edit": "Editar",
   "core.pendingtabs.noPendingTabs": "No hay pestañas pendientes",
   "core.pendingtabs.messages.daysDaysAgo": "Hace ${days} días",
   "core.pendingtabs.messages.justNow": "Hace un momento",

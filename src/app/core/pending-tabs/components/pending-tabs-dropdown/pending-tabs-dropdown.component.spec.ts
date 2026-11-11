@@ -254,12 +254,12 @@ describe('PendingTabsDropdownComponent', () => {
   });
 
   describe('getTypeLabel', () => {
-    it('should return "Crear" for create type', () => {
-      expect(component.getTypeLabel('create')).toBe('Crear');
+    it('should return the create translation key for create type', () => {
+      expect(component.getTypeLabel('create')).toBe('core.pendingtabs.create');
     });
 
-    it('should return "Editar" for edit type', () => {
-      expect(component.getTypeLabel('edit')).toBe('Editar');
+    it('should return the edit translation key for edit type', () => {
+      expect(component.getTypeLabel('edit')).toBe('core.pendingtabs.edit');
     });
   });
 

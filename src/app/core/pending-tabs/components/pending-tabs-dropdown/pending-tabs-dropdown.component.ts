@@ -105,7 +105,7 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
   }
 
   getTypeLabel(type: 'create' | 'edit'): string {
-    return type === 'create' ? 'Crear' : 'Editar';
+    return type === 'create' ? 'core.pendingtabs.create' : 'core.pendingtabs.edit';
   }
 
   getTypeClass(type: 'create' | 'edit'): string {
