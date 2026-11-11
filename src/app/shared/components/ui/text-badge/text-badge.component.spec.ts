@@ -47,8 +47,8 @@ describe('TextBadgeComponent', () => {
     fixture.detectChanges();
 
     const span = fixture.nativeElement.querySelector('span');
-    expect(span.className).toContain('bg-surface-200');
-    expect(span.className).toContain('text-surface-600');
+    expect(span.className).toContain('bg-surface-300');
+    expect(span.className).toContain('text-surface-700');
   });
 
   it('should apply info variant classes', () => {

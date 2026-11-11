@@ -40,7 +40,8 @@ describe('StatusBadgeComponent', () => {
     const badge = compiled.querySelector('span');
     expect(badge).toBeTruthy();
     expect(badge.textContent?.trim()).toBe('Inactivo');
-    expect(badge.className).toContain('bg-surface-200');
+    expect(badge.className).toContain('bg-surface-300');
+    expect(badge.className).toContain('text-surface-700');
   });
 
   it('should use custom labels', () => {

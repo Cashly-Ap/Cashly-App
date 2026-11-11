@@ -14,7 +14,7 @@ describe('CancelButtonComponent', () => {
     expect(component.labelKey()).toBe('shared.cancel');
     expect(component.label()).toBeUndefined();
     expect(component.icon()).toBe('pi pi-times');
-    expect(component.outlined()).toBe(true);
+    expect(component.outlined()).toBe(false);
     expect(component.severity()).toBe('secondary');
     expect(component.disabled()).toBe(false);
   });
