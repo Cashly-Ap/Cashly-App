@@ -27,7 +27,6 @@ import {
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterOutlet, NavigationStart } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
 import { MenuItem as PrimeMenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { Ripple } from 'primeng/ripple';
@@ -80,7 +79,6 @@ export type ContentMaxWidth =
     UserAvatarComponent,
     NgOptimizedImage,
     ButtonModule,
-    ToastModule,
     MenubarModule,
     Ripple,
     AvatarModule,

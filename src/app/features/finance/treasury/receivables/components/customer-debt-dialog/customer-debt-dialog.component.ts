@@ -47,7 +47,6 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { BalanceTransactionResponse } from '@features/partners/customers/models/interfaces/balance-transaction.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { MessageService } from 'primeng/api';
-import { ToastModule } from 'primeng/toast';
 import { ReturnFormDialogComponent } from '@features/finance/billing/returns/components/return-form-dialog/return-form-dialog.component';
 import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog/note-form-dialog.component';
 import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
@@ -105,7 +104,6 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     SelectModule,
     FormsModule,
     ReactiveFormsModule,
-    ToastModule,
     ReturnFormDialogComponent,
     NoteFormDialogComponent,
   ],

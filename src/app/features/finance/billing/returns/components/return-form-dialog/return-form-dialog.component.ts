@@ -29,7 +29,6 @@ import { WarehouseApiService } from '@features/inventory/warehouses/services/api
 import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
 import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import { ReturnLinesTableComponent } from '@features/finance/billing/returns/components/return-lines-table/return-lines-table.component';
-import { ToastModule } from 'primeng/toast';
 
 interface InvoiceLineFormData {
   invoiceLineId: string;
@@ -65,7 +64,6 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    ToastModule,
     ReturnLinesTableComponent,
   ],
   providers: [provideTranslatedMessages()],

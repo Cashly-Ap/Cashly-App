@@ -50,7 +50,6 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
 import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
-import { ToastModule } from 'primeng/toast';
 import { forkJoin } from 'rxjs';
 import {
   InvoiceSourcePickerDialogComponent,
@@ -76,7 +75,6 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
     TextareaModule,
     SelectModule,
     DatePickerModule,
-    ToastModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormActionsComponent,
