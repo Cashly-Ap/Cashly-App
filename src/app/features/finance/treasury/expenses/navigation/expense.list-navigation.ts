@@ -10,6 +10,7 @@ export const EXPENSE_LIST_NAVIGATION: ListNavigationDefinition = {
   singular: 'gasto',
   actions: [
     listAction('Ver detalle', 'EXECUTE', 'eye', BusinessModule.FINANCE_CASH_REGISTER),
+    listAction('Cancelar', 'EXECUTE', 'times-circle', BusinessModule.FINANCE_CASH_REGISTER),
     listAction('Eliminar gasto', 'EXECUTE', 'trash', BusinessModule.FINANCE_CASH_REGISTER),
     history(),
   ],

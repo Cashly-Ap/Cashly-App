@@ -45,8 +45,7 @@ export class NavigationLookupService {
       module,
       definitionAction,
       queryParams,
-      onSelect: (record) =>
-        this.dispatcher.dispatchRecord({ route, label, record, queryParams }),
+      onSelect: (record) => this.dispatcher.dispatchRecord({ route, label, record, queryParams }),
     });
   }
 }

@@ -6,12 +6,20 @@ import {
   provideTranslatedMessages,
 } from '@core/i18n/translated-feedback.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ExpensesApplicationService } from '@features/finance/treasury/expenses/services/application/expenses-application.service';
+import { ExpenseCancelDialogComponent } from '@features/finance/treasury/expenses/components/expense-cancel-dialog/expense-cancel-dialog.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -34,6 +42,7 @@ import { DetailsInfoGridComponent } from '@shared/components/details/details-inf
     DetailsCardHeaderComponent,
     DetailsInfoFieldComponent,
     DetailsInfoGridComponent,
+    ExpenseCancelDialogComponent,
     ButtonModule,
     PermissionDirective,
     ConfirmDialogModule,
@@ -53,6 +62,15 @@ export class ExpensesDetailsPageComponent implements OnInit {
   private readonly messageService = inject(MessageService);
 
   readonly expense = this.service.currentExpense;
+  readonly cancelDialogVisible = signal(false);
+  readonly canDelete = computed(() => {
+    const expense = this.expense();
+    return !!expense && !expense.cancelled && expense.registerStatus === 'OPEN';
+  });
+  readonly canCancel = computed(() => {
+    const expense = this.expense();
+    return !!expense && !expense.cancelled && expense.registerStatus === 'CLOSED';
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
@@ -106,5 +124,37 @@ export class ExpensesDetailsPageComponent implements OnInit {
         });
       },
     });
+  }
+
+  onCancelExpense(): void {
+    if (!this.canCancel()) return;
+    this.cancelDialogVisible.set(true);
+  }
+
+  onCancelConfirmed(event: { id: string; reason: string }): void {
+    this.service.cancelExpense(event.id, event.reason).subscribe({
+      next: () => {
+        this.cancelDialogVisible.set(false);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Gasto cancelado exitosamente',
+          life: 3000,
+        });
+        this.service.loadExpense(event.id).subscribe();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cancelar el gasto. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onCancelDialogClosed(): void {
+    this.cancelDialogVisible.set(false);
   }
 }

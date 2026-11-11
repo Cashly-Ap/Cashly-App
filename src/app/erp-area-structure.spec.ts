@@ -19,6 +19,7 @@ const modulePaths = [
   'finance/treasury/cash-register',
   'finance/treasury/receivables',
   'finance/treasury/payment-methods',
+  'finance/treasury/expenses',
   'partners/customers',
   'partners/suppliers',
   'analytics/dashboard',
@@ -47,6 +48,7 @@ const publicScreens = [
   'finance/billing/returns',
   'finance/treasury/cash-register',
   'finance/treasury/receivables',
+  'finance/treasury/expenses',
 ];
 const shell = routes.find((route) => route.path === '' && route.children)!;
 

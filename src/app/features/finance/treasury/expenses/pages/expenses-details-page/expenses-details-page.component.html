@@ -28,15 +28,28 @@
                 [auditLabel]="e.description"
                 [auditSubtitle]="e.paymentMethodName"
               >
-                <p-button
-                  [appPermission]="'EXECUTE'"
-                  [label]="'finance.treasury.expenses.deleteExpense' | translate"
-                  icon="pi pi-trash"
-                  severity="danger"
-                  [link]="true"
-                  styleClass="w-full justify-start text-left text-sm"
-                  (onClick)="actionsMenu.hide(); onDelete()"
-                />
+                @if (canDelete()) {
+                  <p-button
+                    [appPermission]="'EXECUTE'"
+                    [label]="'finance.treasury.expenses.deleteExpense' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                  />
+                }
+                @if (canCancel()) {
+                  <p-button
+                    [appPermission]="'EXECUTE'"
+                    [label]="'finance.treasury.expenses.cancelExpense' | translate"
+                    icon="pi pi-times-circle"
+                    severity="danger"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (onClick)="actionsMenu.hide(); onCancelExpense()"
+                  />
+                }
               </app-detail-actions-menu>
             </div>
           </app-details-card-header>
@@ -66,10 +79,52 @@
                 colspan="full"
               />
               <app-details-info-field
+                [label]="'finance.treasury.expenses.status' | translate"
+                type="tag"
+                [tagLabel]="
+                  (e.cancelled
+                    ? 'finance.treasury.expenses.cancelled'
+                    : 'finance.treasury.expenses.active'
+                  ) | translate
+                "
+                [tagSeverity]="e.cancelled ? 'danger' : 'success'"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.expenses.registerStatus' | translate"
+                [value]="
+                  (e.registerStatus === 'OPEN'
+                    ? 'finance.treasury.expenses.openRegister'
+                    : 'finance.treasury.expenses.closedRegister'
+                  ) | translate
+                "
+              />
+              @if (e.cancellationReason) {
+                <app-details-info-field
+                  [label]="'finance.treasury.expenses.cancelledReason' | translate"
+                  [value]="e.cancellationReason"
+                  colspan="full"
+                />
+              }
+              @if (e.cancelledAt) {
+                <app-details-info-field
+                  [label]="'finance.treasury.expenses.cancelledAt' | translate"
+                  [value]="(e.cancelledAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+                />
+              }
+              @if (e.cancelledByName) {
+                <app-details-info-field
+                  [label]="'finance.treasury.expenses.cancelledBy' | translate"
+                  [value]="e.cancelledByName"
+                />
+              }
+              <app-details-info-field
                 [label]="'finance.treasury.expenses.affectsCash' | translate"
                 type="tag"
-                [tagLabel]="'finance.treasury.expenses.yes' | translate"
-                tagSeverity="danger"
+                [tagLabel]="
+                  (e.cancelled ? 'finance.treasury.expenses.no' : 'finance.treasury.expenses.yes')
+                    | translate
+                "
+                [tagSeverity]="e.cancelled ? 'secondary' : 'danger'"
               />
               @if (e.registerOpenedAt) {
                 <app-details-info-field
@@ -86,3 +141,10 @@
 </div>
 
 <p-confirmDialog styleClass="max-w-md" />
+
+<app-expense-cancel-dialog
+  [visible]="cancelDialogVisible()"
+  [expense]="expense()"
+  (confirmed)="onCancelConfirmed($event)"
+  (cancelled)="onCancelDialogClosed()"
+/>

@@ -1,17 +1,21 @@
 import { DestroyRef, Injectable, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, finalize, tap } from 'rxjs';
+import { Observable, finalize, forkJoin, map, tap } from 'rxjs';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { PaymentMethodApplicationService } from '@features/finance/treasury/payment-methods/services/application/payment-method-application.service';
 import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
-import { CashRegisterResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
+import {
+  CashMovementResponse,
+  CashRegisterResponse,
+} from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import { ExpenseApiService } from '@features/finance/treasury/expenses/services/api/expense-api.service';
 import {
   Expense,
   ExpenseCreate,
   ExpenseFilters,
+  ExpenseRegisterOption,
 } from '@features/finance/treasury/expenses/models/interfaces/expense.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -25,18 +29,26 @@ export class ExpensesApplicationService {
   readonly activeClosure = this.cashRegister.activeClosure;
   readonly expenses = signal<Expense[]>([]);
   readonly currentExpense = signal<Expense | null>(null);
+  readonly registers = signal<ExpenseRegisterOption[]>([]);
   readonly loading = signal(false);
   readonly totalElements = signal(0);
+
   readonly hasOpenRegister = computed(() => this.activeClosure()?.status === 'OPEN');
+  readonly hasRegisters = computed(() => this.registers().length > 0);
+  readonly defaultRegisterId = computed(
+    () => this.activeClosure()?.id ?? this.registers()[0]?.id ?? '',
+  );
 
   readonly paymentMethods = computed<PaymentMethodList[]>(() =>
     this.paymentMethodService.paymentMethods().filter((method) => method.isActive),
   );
 
   readonly totalAmount = computed(() =>
-    this.expenses().reduce((total, expense) => total + expense.amount, 0),
+    this.expenses()
+      .filter((expense) => !expense.cancelled)
+      .reduce((total, expense) => total + expense.amount, 0),
   );
-  readonly count = computed(() => this.expenses().length);
+  readonly count = computed(() => this.expenses().filter((expense) => !expense.cancelled).length);
 
   loadExpenses(filters: ExpenseFilters = {}): Observable<PagedResponse<Expense>> {
     this.loading.set(true);
@@ -52,9 +64,19 @@ export class ExpensesApplicationService {
     );
   }
 
+  loadRegisters(): Observable<ExpenseRegisterOption[]> {
+    return this.api.listRegisters().pipe(
+      tap((registers) => this.registers.set(registers)),
+      takeUntilDestroyed(this.destroyRef),
+    );
+  }
+
   loadContext(): Observable<CashRegisterResponse | null> {
     this.loadPaymentMethods();
-    return this.cashRegister.loadActiveClosure();
+    return forkJoin({
+      registers: this.loadRegisters(),
+      active: this.cashRegister.loadActiveClosure(),
+    }).pipe(map(({ active }) => active));
   }
 
   loadExpense(id: string): Observable<Expense | undefined> {
@@ -66,18 +88,35 @@ export class ExpensesApplicationService {
     );
   }
 
-  createExpense(request: ExpenseCreate): Observable<CashRegisterResponse | null> {
-    const closure = this.activeClosure();
-    if (!closure) {
-      throw new Error('No hay una caja abierta para registrar el gasto');
-    }
-    return this.cashRegister.addMovement(closure.id, {
-      direction: 'OUT',
-      type: 'EXPENSE',
-      amount: request.amount,
-      paymentMethodId: request.paymentMethodId,
-      description: request.description,
-    });
+  createExpense(request: ExpenseCreate): Observable<CashMovementResponse> {
+    this.loading.set(true);
+    return this.api.create(request).pipe(
+      tap(() => {
+        this.loadRegisters().subscribe();
+        this.cashRegister.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      }),
+      finalize(() => this.loading.set(false)),
+      takeUntilDestroyed(this.destroyRef),
+    );
+  }
+
+  cancelExpense(id: string, reason: string): Observable<CashMovementResponse> {
+    this.loading.set(true);
+    return this.api.cancel(id, reason).pipe(
+      tap(() => {
+        this.expenses.update((expenses) =>
+          expenses.map((expense) =>
+            expense.id === id
+              ? { ...expense, cancelled: true, cancellationReason: reason }
+              : expense,
+          ),
+        );
+        this.loadRegisters().subscribe();
+        this.cashRegister.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+      }),
+      finalize(() => this.loading.set(false)),
+      takeUntilDestroyed(this.destroyRef),
+    );
   }
 
   findExpense(id: string): Expense | undefined {
@@ -90,7 +129,8 @@ export class ExpensesApplicationService {
       tap(() => {
         this.expenses.update((expenses) => expenses.filter((expense) => expense.id !== id));
         this.totalElements.update((total) => Math.max(0, total - 1));
-        this.cashRegister.loadActiveClosure().subscribe();
+        this.loadRegisters().subscribe();
+        this.cashRegister.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
       }),
       finalize(() => this.loading.set(false)),
       takeUntilDestroyed(this.destroyRef),

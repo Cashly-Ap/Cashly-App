@@ -1,30 +1,44 @@
 import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '@env/environment';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { CashRegisterApiService } from '@features/finance/treasury/cash-register/services/api/cash-register-api.service';
-import { CashMovementResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
+import {
+  CashMovementRequest,
+  CashMovementResponse,
+} from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import {
   Expense,
+  ExpenseCreate,
   ExpenseFilters,
+  ExpenseRegisterOption,
 } from '@features/finance/treasury/expenses/models/interfaces/expense.interface';
 
 const HISTORY_PAGE_SIZE = 200;
+const REGISTER_PAGE_SIZE = 100;
 
 @Injectable({ providedIn: 'root' })
 export class ExpenseApiService {
+  private readonly http = inject(HttpClient);
   private readonly cashRegisterApi = inject(CashRegisterApiService);
+  private readonly baseUrl = `${environment.apiUrl}/cash-register`;
 
   list(filters: ExpenseFilters = {}): Observable<PagedResponse<Expense>> {
-    return this.cashRegisterApi
-      .getHistory(
-        0,
-        HISTORY_PAGE_SIZE,
-        filters.dateFrom,
-        filters.dateTo,
-        'openedAt,desc',
-        'DETAILED',
-      )
-      .pipe(map((response) => this.paginate(this.flatten(response.content), filters)));
+    let params = new HttpParams()
+      .set('page', String(filters.page ?? 0))
+      .set('size', String(filters.size ?? 10))
+      .set('sort', `${filters.orderBy ?? 'occurredAt'},${filters.orderDir ?? 'desc'}`);
+
+    if (filters.dateFrom) params = params.set('dateFrom', filters.dateFrom);
+    if (filters.dateTo) params = params.set('dateTo', filters.dateTo);
+    if (filters.registerId) params = params.set('registerId', filters.registerId);
+    if (filters.paymentMethodId) {
+      params = params.set('paymentMethodId', filters.paymentMethodId);
+    }
+    if (filters.search) params = params.set('search', filters.search);
+
+    return this.http.get<PagedResponse<Expense>>(`${this.baseUrl}/expenses`, { params });
   }
 
   getById(id: string): Observable<Expense | undefined> {
@@ -33,69 +47,38 @@ export class ExpenseApiService {
     );
   }
 
-  private flatten(
-    sessions: {
-      id: string;
-      openedAt: string;
-      movements: CashMovementResponse[];
-    }[],
-  ): Expense[] {
-    return sessions.flatMap((session) =>
-      session.movements
-        .filter((movement) => movement.type === 'EXPENSE' && movement.direction === 'OUT')
-        .map((movement) => ({
-          id: movement.id,
-          registerId: session.id,
-          registerOpenedAt: session.openedAt,
-          amount: Number(movement.amount),
-          description: movement.description ?? '',
-          paymentMethodId: movement.paymentMethodId,
-          paymentMethodName: movement.paymentMethodName,
-          createdByName: movement.createdByName,
-          occurredAt: movement.occurredAt,
-        })),
-    );
+  listRegisters(): Observable<ExpenseRegisterOption[]> {
+    return this.cashRegisterApi
+      .getHistory(0, REGISTER_PAGE_SIZE, undefined, undefined, 'openedAt,desc', 'SIMPLE')
+      .pipe(
+        map((response) =>
+          response.content.map((session) => ({
+            id: session.id,
+            openedAt: session.openedAt,
+            closedAt: session.closedAt,
+            status: session.status,
+            openedByName: session.openedByName,
+          })),
+        ),
+      );
   }
 
-  private paginate(expenses: Expense[], filters: ExpenseFilters): PagedResponse<Expense> {
-    const search = filters.search?.trim().toLowerCase();
-    const filtered = expenses.filter((expense) => {
-      if (filters.paymentMethodId && expense.paymentMethodId !== filters.paymentMethodId) {
-        return false;
-      }
-      if (!search) return true;
-      return [expense.description, expense.paymentMethodName, expense.createdByName]
-        .filter((value): value is string => !!value)
-        .some((value) => value.toLowerCase().includes(search));
-    });
+  create(request: ExpenseCreate): Observable<CashMovementResponse> {
+    return this.cashRegisterApi.addMovement(request.registerId, this.toMovementRequest(request));
+  }
 
-    const orderBy = filters.orderBy ?? 'occurredAt';
-    const direction = filters.orderDir === 'asc' ? 1 : -1;
-    const sorted = [...filtered].sort((a, b) => {
-      const first = a[orderBy];
-      const second = b[orderBy];
-      if (typeof first === 'number' && typeof second === 'number') {
-        return (first - second) * direction;
-      }
-      return String(first).localeCompare(String(second)) * direction;
-    });
+  cancel(id: string, reason: string): Observable<CashMovementResponse> {
+    return this.cashRegisterApi.cancelMovement(id, { reason });
+  }
 
-    const size = filters.size ?? 10;
-    const page = filters.page ?? 0;
-    const start = page * size;
-    const content = sorted.slice(start, start + size);
-    const totalElements = sorted.length;
-    const totalPages = Math.max(1, Math.ceil(totalElements / size));
-
+  private toMovementRequest(request: ExpenseCreate): CashMovementRequest {
     return {
-      content,
-      totalElements,
-      totalPages,
-      size,
-      number: page,
-      first: page === 0,
-      last: page >= totalPages - 1,
-      empty: totalElements === 0,
+      direction: 'OUT',
+      type: 'EXPENSE',
+      amount: request.amount,
+      paymentMethodId: request.paymentMethodId,
+      description: request.description,
+      occurredAt: request.occurredAt,
     };
   }
 }

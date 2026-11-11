@@ -43,10 +43,12 @@ export class LookupSessionService {
     const filterSources: {
       values: Record<string, string>;
       categories: LookupFilterOption[];
+      registers: LookupFilterOption[];
       roles: LookupFilterOption[];
     } = {
       values: filterValues(),
       categories: [],
+      registers: [],
       roles: [],
     };
     const filters = () =>
@@ -132,7 +134,12 @@ export class LookupSessionService {
 
   private defaultsFor(definition: LookupDefinition): Record<string, string> {
     const defaults: Record<string, string> = {};
-    for (const filter of definition.filters({ values: {}, categories: [], roles: [] })) {
+    for (const filter of definition.filters({
+      values: {},
+      categories: [],
+      registers: [],
+      roles: [],
+    })) {
       defaults[filter.key] = filter.defaultValue;
     }
     return defaults;

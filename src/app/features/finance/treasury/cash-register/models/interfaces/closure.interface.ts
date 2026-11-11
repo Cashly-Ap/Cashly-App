@@ -49,6 +49,11 @@ export interface CashMovementResponse {
   createdBy: string | null;
   createdByName: string | null;
   occurredAt: string;
+  cancelled: boolean;
+  cancellationReason: string | null;
+  cancelledAt: string | null;
+  cancelledBy: string | null;
+  cancelledByName: string | null;
 }
 
 export interface CashRegisterDetailResponse {
@@ -89,4 +94,9 @@ export interface CashMovementRequest {
   amount: number;
   paymentMethodId: string;
   description: string;
+  occurredAt?: string;
+}
+
+export interface CashMovementCancelRequest {
+  reason: string;
 }

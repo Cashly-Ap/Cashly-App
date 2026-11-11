@@ -1,5 +1,7 @@
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { LanguageService } from '@core/i18n/language.service';
+import { TranslationService } from '@core/i18n/translation.service';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import {
   ChangeDetectionStrategy,
@@ -47,6 +49,7 @@ import {
   auditHistoryAction,
 } from '@shared/components/list';
 import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { ExpenseCancelDialogComponent } from '@features/finance/treasury/expenses/components/expense-cancel-dialog/expense-cancel-dialog.component';
 
 @Component({
   selector: 'app-expenses-list-page',
@@ -68,6 +71,7 @@ import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-f
     TranslateOptionsPipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
+    ExpenseCancelDialogComponent,
     CommonModule,
     FormsModule,
     TableModule,
@@ -85,6 +89,8 @@ export class ExpensesListPageComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly confirmation = inject(ConfirmationService);
   private readonly messageService = inject(MessageService);
+  private readonly translation = inject(TranslationService);
+  private readonly locale = inject(LanguageService).locale;
 
   protected readonly loading = this.service.loading;
   protected readonly totalElements = this.service.totalElements;
@@ -97,14 +103,36 @@ export class ExpensesListPageComponent implements OnInit {
   readonly filterDateFrom = signal<Date | null>(null);
   readonly filterDateTo = signal<Date | null>(null);
   readonly filterPaymentMethodId = signal('');
+  readonly filterRegisterId = signal('');
+  readonly expenseToCancel = signal<Expense | null>(null);
+  readonly cancelDialogVisible = signal(false);
 
   readonly paymentMethodOptions = computed(() => this.service.paymentMethods());
+
+  readonly registerOptions = computed(() => {
+    const formatter = new Intl.DateTimeFormat(this.locale(), {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return this.service.registers().map((register) => ({
+      id: register.id,
+      label: `${formatter.format(new Date(register.openedAt))} · ${
+        register.status === 'OPEN'
+          ? this.translation.t('finance.treasury.expenses.openRegister')
+          : this.translation.t('finance.treasury.expenses.closedRegister')
+      }`,
+    }));
+  });
 
   readonly activeFilterCount = computed(() => {
     let count = 0;
     if (this.filterDateFrom()) count++;
     if (this.filterDateTo()) count++;
     if (this.filterPaymentMethodId()) count++;
+    if (this.filterRegisterId()) count++;
     return count;
   });
 
@@ -189,10 +217,19 @@ export class ExpensesListPageComponent implements OnInit {
     this.loadWithFilters();
   }
 
+  onRegisterFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterRegisterId()) return;
+    this.filterRegisterId.set(normalized);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
   clearFilters(): void {
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
     this.filterPaymentMethodId.set('');
+    this.filterRegisterId.set('');
   }
 
   clearAllFilters(): void {
@@ -202,7 +239,7 @@ export class ExpensesListPageComponent implements OnInit {
   }
 
   onCreate(): void {
-    if (!this.service.hasOpenRegister()) return;
+    if (!this.service.hasRegisters()) return;
     this.router.navigate(['/finance/treasury/expenses/new']);
   }
 
@@ -211,18 +248,70 @@ export class ExpensesListPageComponent implements OnInit {
   }
 
   actionsFor(expense: Expense): ListAction[] {
-    return [
+    const actions: ListAction[] = [
       listAction('Ver detalle', 'EXECUTE', 'eye', () => this.onView(expense)),
-      listAction('Eliminar gasto', 'EXECUTE', 'trash', () => this.onDelete(expense), {
-        danger: true,
-      }),
+    ];
+
+    if (!expense.cancelled && expense.registerStatus === 'OPEN') {
+      actions.push(
+        listAction('Eliminar gasto', 'EXECUTE', 'trash', () => this.onDelete(expense), {
+          danger: true,
+        }),
+      );
+    }
+
+    if (!expense.cancelled && expense.registerStatus === 'CLOSED') {
+      actions.push(
+        listAction('Cancelar gasto', 'EXECUTE', 'times-circle', () => this.onCancel(expense), {
+          danger: true,
+        }),
+      );
+    }
+
+    actions.push(
       auditHistoryAction({
         entityType: 'CASH_MOVEMENT',
         entityId: expense.id,
         label: expense.description,
         subtitle: expense.paymentMethodName,
       }),
-    ];
+    );
+
+    return actions;
+  }
+
+  onCancel(expense: Expense): void {
+    this.expenseToCancel.set(expense);
+    this.cancelDialogVisible.set(true);
+  }
+
+  onCancelConfirmed(event: { id: string; reason: string }): void {
+    this.service.cancelExpense(event.id, event.reason).subscribe({
+      next: () => {
+        this.cancelDialogVisible.set(false);
+        this.expenseToCancel.set(null);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Gasto cancelado exitosamente',
+          life: 3000,
+        });
+        this.loadWithFilters();
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cancelar el gasto. Por favor, intente nuevamente.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onCancelDialogClosed(): void {
+    this.cancelDialogVisible.set(false);
+    this.expenseToCancel.set(null);
   }
 
   private onDelete(expense: Expense): void {
@@ -268,6 +357,7 @@ export class ExpensesListPageComponent implements OnInit {
     if (this.filterDateFrom()) filters.dateFrom = this.toIsoDate(this.filterDateFrom()!);
     if (this.filterDateTo()) filters.dateTo = this.toIsoDate(this.filterDateTo()!);
     if (this.filterPaymentMethodId()) filters.paymentMethodId = this.filterPaymentMethodId();
+    if (this.filterRegisterId()) filters.registerId = this.filterRegisterId();
 
     this.service.loadExpenses(filters).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }

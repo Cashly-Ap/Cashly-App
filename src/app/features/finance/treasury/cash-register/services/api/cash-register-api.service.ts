@@ -15,6 +15,7 @@ import {
   CashRegisterReportFormat,
   CashMovementRequest,
   CashMovementResponse,
+  CashMovementCancelRequest,
 } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 
 @Injectable({ providedIn: 'root' })
@@ -40,6 +41,16 @@ export class CashRegisterApiService {
 
   deleteMovement(movementId: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/movements/${movementId}`);
+  }
+
+  cancelMovement(
+    movementId: string,
+    request: CashMovementCancelRequest,
+  ): Observable<CashMovementResponse> {
+    return this.http.post<CashMovementResponse>(
+      `${this.baseUrl}/movements/${movementId}/cancel`,
+      request,
+    );
   }
 
   getHistory(

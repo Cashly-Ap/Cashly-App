@@ -20,6 +20,7 @@ export interface LookupFilterValueMap {
 export interface LookupFilterSources {
   values: LookupFilterValueMap;
   categories: readonly LookupFilterOption[];
+  registers: readonly LookupFilterOption[];
   roles: readonly LookupFilterOption[];
 }
 
