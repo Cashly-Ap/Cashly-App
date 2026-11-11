@@ -151,7 +151,6 @@ export class CashRegisterPageComponent implements OnInit {
   readonly lineChartType = 'line' as const;
 
   private readonly incomeByType = computed(() => this.groupMovements('IN'));
-  private readonly expenseByType = computed(() => this.groupMovements('OUT'));
 
   private readonly tickColor = computed(() =>
     this.theme.isDarkMode() ? CHART_COLORS.darkTicks : CHART_COLORS.lightTicks,
@@ -239,13 +238,13 @@ export class CashRegisterPageComponent implements OnInit {
   });
 
   readonly expenseByTypeChartData = computed<ChartData<'doughnut'>>(() => {
-    const rows = this.expenseByType();
+    const rows = this.closure()?.expenseSummary ?? [];
     const colors = this.theme.isDarkMode() ? CHART_COLORS.expenseDark : CHART_COLORS.expenseLight;
     return {
-      labels: rows.map((row) => this.translations.t(getCashMovementTypeLabel(row.type))),
+      labels: rows.map((row) => row.concept),
       datasets: [
         {
-          data: rows.map((row) => row.total),
+          data: rows.map((row) => Number(row.total)),
           backgroundColor: rows.map((_, index) => colors[index % colors.length]),
           borderWidth: 0,
           hoverOffset: 6,
