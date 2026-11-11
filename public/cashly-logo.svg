@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img" aria-label="Cashly">
   <rect x="2" y="2" width="60" height="60" rx="14" fill="#171715"/>
-  <text x="31" y="49" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="49" font-weight="700" letter-spacing="-2" fill="#f5f5f3">G</text>
+  <text x="31" y="49" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="49" font-weight="700" letter-spacing="-2" fill="#f5f5f3">C</text>
   <text x="78" y="46" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="700" letter-spacing="-1.5" fill="#171715">Cashly</text>
 </svg>
