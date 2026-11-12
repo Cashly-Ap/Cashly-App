@@ -39,6 +39,7 @@ import { buildMenuItems } from '@core/layouts/config';
 import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
 import { ReportActionService } from '@shared/services/report-action.service';
 import { CustomerPickerActionService } from '@features/sales/orders/services/customer-picker-action.service';
+import { SupplierPickerActionService } from '@features/procurement/purchases/services/supplier-picker-action.service';
 import { ReportActionHostComponent } from '@core/layouts/components/report-action-host/report-action-host.component';
 import { PdfBlobViewerHostComponent } from '@core/layouts/components/pdf-blob-viewer-host/pdf-blob-viewer-host.component';
 import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
@@ -118,6 +119,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly navigationLookup = inject(NavigationLookupService);
   private readonly reportActions = inject(ReportActionService);
   private readonly customerPicker = inject(CustomerPickerActionService);
+  private readonly supplierPicker = inject(SupplierPickerActionService);
   private readonly auditTrailDialog = inject(AuditTrailDialogService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private scrollSubscription?: Subscription;
@@ -222,6 +224,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       },
       openCustomerEditPicker: () => this.customerPicker.open('edit'),
       openCustomerBalancePicker: () => this.customerPicker.open('balance'),
+      openSupplierBalancePicker: () => this.supplierPicker.open('balance'),
       openCatalogModal: () => this.reportActions.open('catalog'),
       openCommercialCatalogModal: () => this.reportActions.open('commercialCatalog'),
       openStockModal: () => this.reportActions.open('stock'),
@@ -231,6 +234,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
       openQuotesPdfModal: () => this.reportActions.open('quotes'),
       openPurchasesPdfModal: () => this.reportActions.open('purchases'),
       openAccountsReceivablePdfModal: () => this.reportActions.open('accountsReceivable'),
+      openAccountsPayablePdfModal: () => this.reportActions.open('accountsPayable'),
       openCashRegisterModal: () => this.reportActions.open('cashRegister'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);

@@ -10,6 +10,7 @@ function createCallbacks(): MenuCallbacks {
     openListAction: vi.fn(),
     openCustomerEditPicker: vi.fn(),
     openCustomerBalancePicker: vi.fn(),
+    openSupplierBalancePicker: vi.fn(),
     openCatalogModal: vi.fn(),
     openCommercialCatalogModal: vi.fn(),
     openStockModal: vi.fn(),
@@ -18,6 +19,7 @@ function createCallbacks(): MenuCallbacks {
     openInvoicesPdfModal: vi.fn(),
     openQuotesPdfModal: vi.fn(),
     openAccountsReceivablePdfModal: vi.fn(),
+    openAccountsPayablePdfModal: vi.fn(),
     openCashRegisterModal: vi.fn(),
     openPurchasesPdfModal: vi.fn(),
     openCompanyAuditHistory: vi.fn(),
@@ -138,6 +140,7 @@ describe('ERP navigation', () => {
         '/finance/treasury/cash-register/history',
         '/finance/treasury/expenses',
         '/finance/treasury/receivables',
+        '/finance/treasury/payables',
         '/finance/billing/credit-notes',
         '/finance/billing/debit-notes',
         '/finance/billing/returns',
@@ -184,6 +187,7 @@ describe('ERP navigation', () => {
       ['Facturas', ['Reporte de Facturas PDF']],
       ['Caja', ['Reportes de Caja']],
       ['Cuentas por cobrar', ['Cuentas por Cobrar PDF']],
+      ['Cuentas por pagar', ['Cuentas por Pagar PDF']],
     ] as const) {
       const sections = all.filter((item) => item.label === owner && item.children);
       for (const label of reports)
@@ -199,13 +203,14 @@ describe('ERP navigation', () => {
       openListAction,
       openCustomerEditPicker,
       openCustomerBalancePicker,
+      openSupplierBalancePicker,
       openCompanyAuditHistory,
       ...reports
     } = callbacks;
     const actions = flatten(buildMenuItems(callbacks)).filter((item) =>
       Object.values(reports).some((callback) => callback === item.command),
     );
-    expect(actions).toHaveLength(10);
+    expect(actions).toHaveLength(11);
     actions.forEach((item) => item.command?.());
     Object.values(reports).forEach((callback) => expect(callback).toHaveBeenCalledOnce());
   });
@@ -294,6 +299,8 @@ describe('ERP navigation', () => {
           expect(callbacks.openCustomerEditPicker).toHaveBeenCalled();
         } else if (definition.route === '/partners/customers' && action.label === 'Ver saldo') {
           expect(callbacks.openCustomerBalancePicker).toHaveBeenCalled();
+        } else if (definition.route === '/partners/suppliers' && action.label === 'Ver saldo') {
+          expect(callbacks.openSupplierBalancePicker).toHaveBeenCalled();
         } else {
           expect(callbacks.openListAction).toHaveBeenCalledWith(
             definition.route,

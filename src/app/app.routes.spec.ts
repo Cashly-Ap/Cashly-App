@@ -21,6 +21,7 @@ const aliases = [
   ['debit-notes', 'finance/billing/debit-notes'],
   ['cash-register', 'finance/treasury/cash-register'],
   ['receivables', 'finance/treasury/receivables'],
+  ['payables', 'finance/treasury/payables'],
   ['payment-methods', 'finance/treasury/payment-methods'],
   ['customers', 'partners/customers'],
   ['suppliers', 'partners/suppliers'],

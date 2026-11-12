@@ -9,6 +9,7 @@ export interface MenuCallbacks {
   openCompanyAuditHistory: () => void;
   openCustomerEditPicker: () => void;
   openCustomerBalancePicker: () => void;
+  openSupplierBalancePicker: () => void;
   openCatalogModal: () => void;
   openCommercialCatalogModal: () => void;
   openStockModal: () => void;
@@ -17,6 +18,7 @@ export interface MenuCallbacks {
   openInvoicesPdfModal: () => void;
   openQuotesPdfModal: () => void;
   openAccountsReceivablePdfModal: () => void;
+  openAccountsPayablePdfModal: () => void;
   openCashRegisterModal: () => void;
   openPurchasesPdfModal: () => void;
 }
@@ -63,6 +65,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           'Reporte de Facturas PDF': 'REPORT_INVOICES',
           'Reportes de Caja': 'REPORT_CASH_REGISTER',
           'Cuentas por Cobrar PDF': 'REPORT_RECEIVABLES',
+          'Cuentas por Pagar PDF': 'REPORT_PAYABLES',
         } as Record<
           string,
           import('@features/platform/auth/authorization/models/access.model').PermissionAction
@@ -230,6 +233,20 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
               'pi pi-file-pdf',
               callbacks.openAccountsReceivablePdfModal,
               BusinessModule.FINANCE_RECEIVABLES,
+            ),
+          ),
+          withReports(
+            page(
+              'Cuentas por pagar',
+              'pi pi-wallet',
+              '/finance/treasury/payables',
+              BusinessModule.FINANCE_PAYABLES,
+            ),
+            report(
+              'Cuentas por Pagar PDF',
+              'pi pi-file-pdf',
+              callbacks.openAccountsPayablePdfModal,
+              BusinessModule.FINANCE_PAYABLES,
             ),
           ),
           page(

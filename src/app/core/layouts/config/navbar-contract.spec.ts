@@ -27,6 +27,7 @@ const REPORT_ACTIONS: ReadonlyArray<readonly [label: string, action: string]> = 
   ['Reporte de Facturas PDF', 'REPORT_INVOICES'],
   ['Reportes de Caja', 'REPORT_CASH_REGISTER'],
   ['Cuentas por Cobrar PDF', 'REPORT_RECEIVABLES'],
+  ['Cuentas por Pagar PDF', 'REPORT_PAYABLES'],
 ];
 
 function callbacks(): MenuCallbacks {
@@ -34,6 +35,7 @@ function callbacks(): MenuCallbacks {
     openListAction: vi.fn(),
     openCustomerEditPicker: vi.fn(),
     openCustomerBalancePicker: vi.fn(),
+    openSupplierBalancePicker: vi.fn(),
     openCatalogModal: vi.fn(),
     openCommercialCatalogModal: vi.fn(),
     openStockModal: vi.fn(),
@@ -42,6 +44,7 @@ function callbacks(): MenuCallbacks {
     openInvoicesPdfModal: vi.fn(),
     openQuotesPdfModal: vi.fn(),
     openAccountsReceivablePdfModal: vi.fn(),
+    openAccountsPayablePdfModal: vi.fn(),
     openCashRegisterModal: vi.fn(),
     openPurchasesPdfModal: vi.fn(),
     openCompanyAuditHistory: vi.fn(),
@@ -102,6 +105,7 @@ describe('navbar contract', () => {
       ['/finance/billing/debit-notes', BusinessModule.FINANCE_DEBIT_NOTES],
       ['/finance/treasury/cash-register', BusinessModule.FINANCE_CASH_REGISTER],
       ['/finance/treasury/receivables', BusinessModule.FINANCE_RECEIVABLES],
+      ['/finance/treasury/payables', BusinessModule.FINANCE_PAYABLES],
       ['/finance/treasury/payment-methods', BusinessModule.FINANCE_PAYMENT_METHODS],
       ['/partners/customers', BusinessModule.CONTACTS_CUSTOMERS],
       ['/partners/suppliers', BusinessModule.CONTACTS_SUPPLIERS],

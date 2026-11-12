@@ -52,6 +52,7 @@ export const routes: Routes = [
   legacyRoute('debit-notes', 'finance/billing/debit-notes'),
   legacyRoute('cash-register', 'finance/treasury/cash-register'),
   legacyRoute('receivables', 'finance/treasury/receivables'),
+  legacyRoute('payables', 'finance/treasury/payables'),
   legacyRoute('payment-methods', 'finance/treasury/payment-methods'),
   legacyRoute('customers', 'partners/customers'),
   legacyRoute('suppliers', 'partners/suppliers'),
@@ -273,6 +274,13 @@ export const routes: Routes = [
                 loadChildren: () =>
                   import('@features/finance/treasury/receivables/routing').then(
                     (m) => m.RECEIVABLES_ROUTES,
+                  ),
+              },
+              {
+                path: 'payables',
+                loadChildren: () =>
+                  import('@features/finance/treasury/payables/routing').then(
+                    (m) => m.PAYABLES_ROUTES,
                   ),
               },
               {

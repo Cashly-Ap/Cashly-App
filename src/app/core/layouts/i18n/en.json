@@ -302,5 +302,7 @@
   "common.cancel.success": "{{label}} cancelled successfully.",
   "common.cancel.error": "The record could not be cancelled.",
   "common.cancel.missingHandler": "The record could not be cancelled.",
-  "core.layouts.actionNotAvailable": "This action is not available yet."
+  "core.layouts.actionNotAvailable": "This action is not available yet.",
+  "navigation.labels.accountsPayable": "Accounts payable",
+  "navigation.labels.accountsPayablePdf": "Accounts payable PDF"
 }

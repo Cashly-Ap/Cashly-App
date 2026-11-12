@@ -302,5 +302,7 @@
   "common.cancel.success": "{{label}} se canceló exitosamente.",
   "common.cancel.error": "No se pudo cancelar el registro.",
   "common.cancel.missingHandler": "No se pudo cancelar el registro.",
-  "core.layouts.actionNotAvailable": "Esta acción todavía no está disponible."
+  "core.layouts.actionNotAvailable": "Esta acción todavía no está disponible.",
+  "navigation.labels.accountsPayable": "Cuentas por pagar",
+  "navigation.labels.accountsPayablePdf": "Cuentas por Pagar PDF"
 }
