@@ -12,6 +12,9 @@ export interface PurchaseLineCreate {
 
 export interface PurchaseCreate {
   supplierId: string;
+  paymentType?: 'CASH' | 'CREDIT';
+  issueDate?: string;
+  dueDate?: string;
   notes: string | null;
   lines: PurchaseLineCreate[];
 }

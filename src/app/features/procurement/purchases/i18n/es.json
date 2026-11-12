@@ -98,5 +98,17 @@
   "procurement.purchases.messages.purchaseNotFound": "Compra no encontrada.",
   "procurement.purchases.purchasesReport": "Reporte de Compras",
   "procurement.purchases.createPurchaseAction": "Crear Compra",
-  "procurement.purchases.savePurchase": "Guardar Compra"
+  "procurement.purchases.savePurchase": "Guardar Compra",
+  "procurement.purchases.paymentType": "Tipo de Pago",
+  "procurement.purchases.cash": "Contado",
+  "procurement.purchases.credit": "Crédito",
+  "procurement.purchases.issueDate": "Fecha de Emisión",
+  "procurement.purchases.dueDate": "Fecha de Vencimiento",
+  "procurement.purchases.creditLimitExceeded": "Límite de crédito excedido",
+  "procurement.purchases.thisPurchaseExceedsTheAvailableCreditBy": "Esta compra excede el crédito disponible por {{amount}}",
+  "procurement.purchases.creditLimit": "Límite",
+  "procurement.purchases.availableCredit": "Disponible",
+  "procurement.purchases.currentDebt": "Deuda actual",
+  "procurement.purchases.confirmingWillExceedTheSupplierCreditLimitReviewTheDetailsBeforeContinuing": "Al confirmar se excederá el límite de crédito del proveedor. Revise los detalles antes de continuar.",
+  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "La compra se creará como borrador. Deberás ingresar tu contraseña para confirmarla si excede el crédito disponible."
 }

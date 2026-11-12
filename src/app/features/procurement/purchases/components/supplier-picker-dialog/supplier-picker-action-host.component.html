@@ -1,0 +1,7 @@
+@if (actions.action()) {
+  <app-supplier-picker-dialog
+    [visible]="true"
+    (supplierSelected)="select($event)"
+    (cancelled)="close()"
+  />
+}

@@ -1,6 +1,8 @@
 import { TranslationService } from '@core/i18n/translation.service';
 import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import {
   ChangeDetectionStrategy,
@@ -14,8 +16,10 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
 import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
@@ -32,6 +36,8 @@ import {
   PurchaseLineFormData,
 } from '@features/procurement/purchases/models/interfaces/purchase-form-data.interface';
 import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
+import { PayablesApiService } from '@features/finance/treasury/payables/services/api/payables-api.service';
+import { SupplierDebtSummary } from '@features/finance/treasury/payables/models/interfaces/supplier-debt-summary.interface';
 import { SupplierPickerDialogComponent } from '@features/procurement/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
 import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
 
@@ -44,10 +50,15 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
     PickerTriggerComponent,
     PanelCardComponent,
     TranslatePipe,
+    LocalizedCurrencyPipe,
+    LocalizedDatePipe,
+    TranslateOptionsPipe,
     ReactiveFormsModule,
     ButtonModule,
+    InputTextModule,
     TextareaModule,
     DatePickerModule,
+    SelectModule,
     FormContainerComponent,
     FormHeaderComponent,
     FormActionsComponent,
@@ -67,6 +78,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
   private readonly messageService = inject(MessageService);
   private readonly pendingTabsService = inject(PendingTabsService);
+  private readonly payablesApi = inject(PayablesApiService);
 
   private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
   private isSubmitted = false;
@@ -82,6 +94,13 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
   readonly selectedSupplierId = computed(() => this.selectedSupplier()?.id ?? null);
   readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
+  readonly paymentType = signal<'CASH' | 'CREDIT'>('CASH');
+  readonly supplierCredit = signal<SupplierDebtSummary | null>(null);
+
+  readonly paymentTypes = [
+    { label: 'procurement.purchases.cash', value: 'CASH' },
+    { label: 'procurement.purchases.credit', value: 'CREDIT' },
+  ];
 
   readonly submitTooltip = signal('');
 
@@ -97,7 +116,31 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
   readonly form = this.fb.group({
     supplierId: ['', [Validators.required]],
+    paymentType: [{ value: 'CASH', disabled: true }, [Validators.required]],
+    issueDate: [new Date()],
+    dueDate: [new Date()],
     notes: [''],
+  });
+
+  readonly supplierHasCredit = computed(() => {
+    const credit = this.supplierCredit();
+    if (credit) return (credit.creditDays ?? 0) > 0;
+    return (this.selectedSupplier()?.creditDays ?? 0) > 0;
+  });
+
+  readonly creditWarning = computed(() => {
+    if (this.paymentType() !== 'CREDIT') return null;
+    const credit = this.supplierCredit();
+    const total = this.total();
+    if (!credit || total <= 0) return null;
+    if (total <= credit.availableCredit) return null;
+    const deficit = total - credit.availableCredit;
+    return {
+      creditLimit: credit.creditLimit,
+      availableCredit: credit.availableCredit,
+      totalDebt: credit.totalDebt,
+      deficit,
+    };
   });
 
   ngOnInit(): void {
@@ -116,6 +159,11 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
       this.restoreFromPendingTab();
     }
     this.form.controls.notes.valueChanges.subscribe(() => this.scheduleAutoSave());
+    this.form.controls.paymentType.valueChanges.subscribe((value) => {
+      this.paymentType.set(value === 'CASH' ? 'CASH' : 'CREDIT');
+      this.recalculateDueDate();
+    });
+    this.form.controls.issueDate.valueChanges.subscribe(() => this.recalculateDueDate());
   }
 
   ngOnDestroy(): void {
@@ -204,6 +252,10 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
           rif: purchase.supplierRif,
         });
         this.form.patchValue({ supplierId: purchase.supplierId });
+        this.form.controls.paymentType.disable();
+        this.form.controls.issueDate.disable();
+        this.form.controls.dueDate.disable();
+        this.loadSupplierCredit(purchase.supplierId);
         this.selectedSupplier.set({ id: purchase.supplierId } as SupplierList);
         this.items.set(
           purchase.lines.map((line) => {
@@ -243,6 +295,9 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
     this.selectedSupplier.set(supplier);
     this.selectedSupplierLabel.set({ name: supplier.alias, rif: supplier.legalName });
     this.form.patchValue({ supplierId: supplier.id });
+    this.loadSupplierCredit(supplier.id);
+    this.syncPaymentTypeAvailability();
+    this.recalculateDueDate();
     this.pickerVisible.set(false);
     this.scheduleAutoSave();
   }
@@ -275,7 +330,7 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
     this.isSubmitting.set(true);
 
-    const formValue = this.form.value;
+    const formValue = this.form.getRawValue();
 
     if (this.isEditMode() && this.purchaseId()) {
       this.purchaseService
@@ -349,5 +404,50 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
   cancel(): void {
     this.navigationHistory.back(['/procurement/purchases']);
+  }
+
+  private loadSupplierCredit(supplierId: string): void {
+    this.payablesApi.getSupplierDebt(supplierId).subscribe({
+      next: (credit) => {
+        this.supplierCredit.set(credit);
+        this.syncPaymentTypeAvailability();
+        this.recalculateDueDate();
+      },
+      error: () => this.supplierCredit.set(null),
+    });
+  }
+
+  private recalculateDueDate(): void {
+    if (this.paymentType() !== 'CREDIT') return;
+    const creditDays = this.supplierCredit()?.creditDays ?? 0;
+    const issueDate = this.form.controls.issueDate.value;
+    if (!issueDate) return;
+    const due = new Date(issueDate);
+    due.setDate(due.getDate() + creditDays);
+    this.form.controls.dueDate.setValue(due, { emitEvent: false });
+  }
+
+  private formatDate(value: Date | null | undefined): string | undefined {
+    if (!value) return undefined;
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private syncPaymentTypeAvailability(): void {
+    const control = this.form.controls.paymentType;
+    if (!this.supplierHasCredit()) {
+      control.setValue('CASH', { emitEvent: false });
+      control.disable({ emitEvent: false });
+      this.paymentType.set('CASH');
+      return;
+    }
+    const wasDisabled = control.disabled;
+    control.enable({ emitEvent: false });
+    if (wasDisabled) {
+      control.setValue('CREDIT', { emitEvent: false });
+      this.paymentType.set('CREDIT');
+    }
   }
 }

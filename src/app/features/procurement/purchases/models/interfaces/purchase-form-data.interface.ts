@@ -5,6 +5,9 @@ export interface PurchaseFormData {
   supplierId: string;
   supplierName: string;
   supplierRif: string;
+  paymentType?: 'CASH' | 'CREDIT';
+  issueDate?: string;
+  dueDate?: string;
   notes: string;
   items: PurchaseLineFormData[];
 }

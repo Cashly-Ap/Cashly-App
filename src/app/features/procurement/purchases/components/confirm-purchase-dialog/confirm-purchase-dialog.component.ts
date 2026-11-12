@@ -14,6 +14,8 @@ import { DocumentConfirmationDialogComponent } from '@shared/components/document
 import { DocumentConfirmationModel } from '@shared/models/document-confirmation';
 import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PayablesApiService } from '@features/finance/treasury/payables/services/api/payables-api.service';
+import { SupplierDebtSummary } from '@features/finance/treasury/payables/models/interfaces/supplier-debt-summary.interface';
 
 const QUANTITY_TOLERANCE = 0.000001;
 @Component({
@@ -25,6 +27,7 @@ const QUANTITY_TOLERANCE = 0.000001;
 })
 export class ConfirmPurchaseDialogComponent implements OnChanges {
   private readonly api = inject(PurchaseApiService);
+  private readonly payablesApi = inject(PayablesApiService);
   private requestVersion = 0;
 
   readonly purchaseId = input<string | null>(null);
@@ -36,8 +39,15 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
   readonly loading = signal(false);
   readonly confirming = signal(false);
   readonly error = signal<string | null>(null);
+  readonly supplierCredit = signal<SupplierDebtSummary | null>(null);
 
   readonly purchase = computed(() => this.details());
+  readonly creditExceeded = computed(() => {
+    const credit = this.supplierCredit();
+    const purchase = this.details();
+    if (!credit || !purchase) return false;
+    return purchase.subtotal > credit.availableCredit;
+  });
   readonly previewComplete = computed(() => {
     const purchase = this.details();
     return (
@@ -106,14 +116,37 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
               monospace: true,
             },
             { label: 'shared.total', value: purchase.subtotal },
+            ...(this.supplierCredit()
+              ? [
+                  {
+                    label: 'procurement.purchases.creditLimit',
+                    value: this.formatMoney(this.supplierCredit()!.creditLimit),
+                  },
+                  {
+                    label: 'procurement.purchases.availableCredit',
+                    value: this.formatMoney(this.supplierCredit()!.availableCredit),
+                  },
+                  {
+                    label: 'procurement.purchases.currentDebt',
+                    value: this.formatMoney(this.supplierCredit()!.totalDebt),
+                  },
+                ]
+              : []),
           ]
         : [],
-      notice: {
-        severity: 'info',
-        title: 'procurement.purchases.areYouSureYouWantToConfirmThisPurchase',
-        description:
-          'procurement.purchases.confirmingWillGenerateStockMovementsAndYouWillNoLongerBeAbleToEditThePurchase',
-      },
+      notice: this.creditExceeded()
+        ? {
+            severity: 'warning',
+            title: 'procurement.purchases.creditLimitExceeded',
+            description:
+              'procurement.purchases.confirmingWillExceedTheSupplierCreditLimitReviewTheDetailsBeforeContinuing',
+          }
+        : {
+            severity: 'info',
+            title: 'procurement.purchases.areYouSureYouWantToConfirmThisPurchase',
+            description:
+              'procurement.purchases.confirmingWillGenerateStockMovementsAndYouWillNoLongerBeAbleToEditThePurchase',
+          },
       inventory: { rows, blocking: false },
       acceptLabel: 'procurement.purchases.confirmPurchase2',
       acceptIcon: 'pi pi-check',
@@ -145,6 +178,7 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
           return;
         }
         this.details.set(result);
+        this.loadSupplierCredit(result.supplierId);
         this.loading.set(false);
         if (!this.previewComplete()) {
           this.error.set('procurement.purchases.confirmationPreviewIncomplete');
@@ -177,6 +211,7 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
   reset(): void {
     ++this.requestVersion;
     this.details.set(null);
+    this.supplierCredit.set(null);
     this.loading.set(false);
     this.confirming.set(false);
     this.error.set(null);
@@ -184,5 +219,16 @@ export class ConfirmPurchaseDialogComponent implements OnChanges {
 
   availableStock(line: PurchaseDetails['lines'][number], warehouseId: string): number {
     return line.stockItems.find((stock) => stock.warehouseId === warehouseId)?.available ?? 0;
+  }
+
+  private loadSupplierCredit(supplierId: string): void {
+    this.payablesApi.getSupplierDebt(supplierId).subscribe({
+      next: (credit) => this.supplierCredit.set(credit),
+      error: () => this.supplierCredit.set(null),
+    });
+  }
+
+  private formatMoney(value: number): string {
+    return `$${value.toFixed(2)}`;
   }
 }

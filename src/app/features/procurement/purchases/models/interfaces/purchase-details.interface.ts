@@ -37,6 +37,12 @@ export interface PurchaseDetails {
   createdBy: string;
   createdByName: string;
   status: PurchaseStatus;
+  paymentType?: 'CASH' | 'CREDIT';
+  issueDate?: string;
+  dueDate?: string;
+  returnedTotal?: number;
+  totalPaid?: number;
+  balance?: number;
   notes: string | null;
   subtotal: number;
   lines: PurchaseLineDetail[];

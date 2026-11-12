@@ -98,5 +98,17 @@
   "procurement.purchases.messages.purchaseNotFound": "Purchase not found.",
   "procurement.purchases.purchasesReport": "Purchases report",
   "procurement.purchases.createPurchaseAction": "Create purchase",
-  "procurement.purchases.savePurchase": "Save purchase"
+  "procurement.purchases.savePurchase": "Save purchase",
+  "procurement.purchases.paymentType": "Payment Type",
+  "procurement.purchases.cash": "Cash",
+  "procurement.purchases.credit": "Credit",
+  "procurement.purchases.issueDate": "Issue Date",
+  "procurement.purchases.dueDate": "Due Date",
+  "procurement.purchases.creditLimitExceeded": "Credit limit exceeded",
+  "procurement.purchases.thisPurchaseExceedsTheAvailableCreditBy": "This purchase exceeds the available credit by {{amount}}",
+  "procurement.purchases.creditLimit": "Limit",
+  "procurement.purchases.availableCredit": "Available",
+  "procurement.purchases.currentDebt": "Current debt",
+  "procurement.purchases.confirmingWillExceedTheSupplierCreditLimitReviewTheDetailsBeforeContinuing": "Confirming will exceed the supplier credit limit. Review the details before continuing.",
+  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "The purchase will be created as a draft. You will need to enter your password to confirm it if it exceeds the available credit."
 }

@@ -110,9 +110,47 @@
                 [label]="'finance.treasury.receivables.customerTaxId' | translate"
                 [value]="currentPurchase.supplierRif"
               />
+              @if (currentPurchase.paymentType) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.paymentType' | translate"
+                  type="badge"
+                >
+                  <app-text-badge
+                    [label]="
+                      (currentPurchase.paymentType === 'CASH'
+                        ? 'finance.treasury.payables.cash'
+                        : 'finance.treasury.payables.credit'
+                      ) | translate
+                    "
+                    [variant]="currentPurchase.paymentType === 'CASH' ? 'success' : 'info'"
+                  />
+                </app-details-info-field>
+              }
+              @if (currentPurchase.issueDate) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.issueDate' | translate"
+                  [value]="(currentPurchase.issueDate | localizedDate: 'dd/MM/yyyy') || ''"
+                />
+              }
+              @if (currentPurchase.dueDate) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.dueDate' | translate"
+                  [value]="(currentPurchase.dueDate | localizedDate: 'dd/MM/yyyy') || ''"
+                />
+              }
               <app-details-info-field
                 [label]="'shared.total' | translate"
                 [value]="(currentPurchase.subtotal | localizedNumber: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.totalPaid' | translate"
+                [value]="(currentPurchase.totalPaid ?? 0 | localizedNumber: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.balance' | translate"
+                [value]="(currentPurchase.balance ?? 0 | localizedNumber: '1.2-2') || ''"
                 type="currency"
               />
               <app-details-info-field
