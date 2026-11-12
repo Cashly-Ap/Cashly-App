@@ -33,6 +33,7 @@ export type PermissionAction =
   | 'REPORT_INVOICES'
   | 'REPORT_CASH_REGISTER'
   | 'REPORT_RECEIVABLES'
+  | 'REPORT_PAYABLES'
   | 'CASH_HISTORY'
   | 'INVOICE_DUPLICATE'
   | 'STOCK'

@@ -541,5 +541,8 @@
   "auth.verify.email.invalid.title": "Enlace inválido",
   "auth.verify.email.invalid.message": "No pudimos validar este enlace de verificación. Solicita uno nuevo desde la sección de seguridad.",
   "auth.verify.email.go.to.login": "Ir a iniciar sesión",
-  "auth.verify.email.go.to.security": "Ir a seguridad"
+  "auth.verify.email.go.to.security": "Ir a seguridad",
+  "platform.auth.financePayables": "Cuentas por pagar",
+  "platform.auth.permissionActionReportPayables": "Reporte de cuentas por pagar",
+  "platform.auth.reportPayables": "Permite consultar reportes de cuentas por pagar"
 }

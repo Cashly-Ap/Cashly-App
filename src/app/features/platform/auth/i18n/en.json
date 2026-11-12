@@ -541,5 +541,8 @@
   "auth.verify.email.invalid.title": "Invalid link",
   "auth.verify.email.invalid.message": "We could not validate this verification link. Request a new one from the security section.",
   "auth.verify.email.go.to.login": "Go to sign in",
-  "auth.verify.email.go.to.security": "Go to security"
+  "auth.verify.email.go.to.security": "Go to security",
+  "platform.auth.financePayables": "Accounts payable",
+  "platform.auth.permissionActionReportPayables": "Report accounts payable",
+  "platform.auth.reportPayables": "Allows viewing accounts payable reports"
 }

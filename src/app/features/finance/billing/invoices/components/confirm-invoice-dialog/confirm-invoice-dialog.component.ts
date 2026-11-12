@@ -21,6 +21,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { SelectModule } from 'primeng/select';
 import { LanguageService } from '@core/i18n/language.service';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
+import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
+import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
 import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
@@ -75,6 +77,7 @@ export class ConfirmInvoiceDialogComponent {
   readonly locale = inject(LanguageService).locale;
 
   private readonly balanceApi = inject(CustomerBalanceApiService);
+  private readonly receivablesApi = inject(ReceivablesApiService);
   private readonly paymentMethodApi = inject(PaymentMethodApiService);
   private readonly messages = inject(MessageService);
 
@@ -90,6 +93,7 @@ export class ConfirmInvoiceDialogComponent {
   readonly confirmationPassword = signal('');
   readonly paymentMethods = signal<PaymentMethodList[]>([]);
   readonly paymentLines = signal<PaymentLine[]>([]);
+  readonly creditStatus = signal<CreditStatusResponse | null>(null);
 
   readonly totalPayments = computed(() => {
     const balance = this.useBalanceConfirm()
@@ -127,6 +131,7 @@ export class ConfirmInvoiceDialogComponent {
       if (!this.visible() || !invoice) return;
       this.reset();
       if (invoice.paymentType === PaymentType.CASH) this.loadPaymentOptions(invoice.customerId);
+      else this.loadCreditStatus(invoice.customerId);
     });
   }
 
@@ -208,6 +213,7 @@ export class ConfirmInvoiceDialogComponent {
     this.confirmationPassword.set('');
     this.paymentMethods.set([]);
     this.paymentLines.set([]);
+    this.creditStatus.set(null);
   }
 
   private loadPaymentOptions(customerId: string): void {
@@ -218,6 +224,13 @@ export class ConfirmInvoiceDialogComponent {
     this.paymentMethodApi.getAll({ active: true }).subscribe({
       next: (methods) => this.paymentMethods.set(methods.content),
       error: () => this.paymentMethods.set([]),
+    });
+  }
+
+  private loadCreditStatus(customerId: string): void {
+    this.receivablesApi.getCreditStatus(customerId).subscribe({
+      next: (status) => this.creditStatus.set(status),
+      error: () => this.creditStatus.set(null),
     });
   }
 }

@@ -25,6 +25,7 @@ import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angu
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { InputTextModule } from 'primeng/inputtext';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MessageService } from 'primeng/api';
 import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
@@ -74,6 +75,7 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
     ButtonModule,
     TextareaModule,
     SelectModule,
+    InputTextModule,
     DatePickerModule,
     FormContainerComponent,
     FormHeaderComponent,
@@ -211,9 +213,12 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   );
 
   readonly hasCreditEnabled = computed(() => {
-    const status = this.creditStatus();
+    if (this.bulkMode()) {
+      return this.selectedCustomers().some((customer) => customer.paymentType === 'CREDIT');
+    }
     const customer = this.selectedCustomer();
-    return (status?.creditLimit ?? 0) > 0 || customer?.paymentType === 'CREDIT';
+    if (customer?.paymentType) return customer.paymentType === 'CREDIT';
+    return (this.creditStatus()?.creditLimit ?? 0) > 0;
   });
 
   readonly items = signal<OrderItemFormData[]>([]);

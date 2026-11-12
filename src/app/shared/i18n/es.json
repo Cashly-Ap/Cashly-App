@@ -182,5 +182,11 @@
   "shared.fields.language": "Idioma",
   "shared.dateFrom": "Desde",
   "shared.dateTo": "Hasta",
-  "shared.requestFailed": "No se pudo completar la solicitud. Intente nuevamente."
+  "shared.requestFailed": "No se pudo completar la solicitud. Intente nuevamente.",
+  "shared.supplier": "Proveedor",
+  "shared.purchase": "Compra",
+  "shared.purchase2": "compra",
+  "shared.warning": "Advertencia",
+  "shared.completeAmountAndPaymentMethod": "Complete el monto y el método de pago",
+  "shared.amountMustBePositiveAndNotExceedBalance": "El monto debe ser mayor a cero y no puede exceder el saldo a favor"
 }

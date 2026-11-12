@@ -182,5 +182,11 @@
   "shared.fields.language": "Language",
   "shared.dateFrom": "From",
   "shared.dateTo": "To",
-  "shared.requestFailed": "The request could not be completed. Please try again."
+  "shared.requestFailed": "The request could not be completed. Please try again.",
+  "shared.supplier": "Supplier",
+  "shared.purchase": "Purchase",
+  "shared.purchase2": "purchase",
+  "shared.warning": "Warning",
+  "shared.completeAmountAndPaymentMethod": "Complete the amount and payment method",
+  "shared.amountMustBePositiveAndNotExceedBalance": "The amount must be greater than zero and cannot exceed the credit balance"
 }

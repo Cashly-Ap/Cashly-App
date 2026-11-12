@@ -202,5 +202,7 @@
   "finance.billing.invoices.invoicesReport": "Reporte de Facturas",
   "finance.billing.invoices.messages.invoicesCreated": "Se crearon ${count} facturas.",
   "finance.billing.invoices.createInvoiceAction": "Crear Factura",
-  "finance.billing.invoices.saveInvoice": "Guardar Factura"
+  "finance.billing.invoices.saveInvoice": "Guardar Factura",
+  "finance.billing.invoices.pendingBalance": "Saldo Pendiente",
+  "finance.billing.invoices.overdueInvoices": "Facturas Vencidas"
 }
