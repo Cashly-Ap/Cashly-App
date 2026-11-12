@@ -3,5 +3,6 @@
   [label]="url() ? undefined : name().charAt(0).toUpperCase() || 'U'"
   [size]="size()"
   shape="circle"
+  styleClass="bg-surface-900! text-surface-0! dark:bg-surface-0! dark:text-surface-900!"
   (onImageError)="url.set(null)"
 />
