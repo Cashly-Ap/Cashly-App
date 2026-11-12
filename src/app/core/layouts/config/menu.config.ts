@@ -81,7 +81,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
 
   return addListNavigationActions(
     [
-      group('Ventas', 'pi pi-briefcase', [
+      group('Ventas', 'pi pi-shopping-bag', [
         withReports(
           page('Presupuestos', 'pi pi-file-edit', '/sales/quotes', BusinessModule.SALES_QUOTES),
           report(
@@ -117,7 +117,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ),
         ),
       ]),
-      group('Catálogo', 'pi pi-book', [
+      group('Catálogo', 'pi pi-list', [
         withReports(
           page('Productos', 'pi pi-box', '/catalog/products', BusinessModule.CATALOG_PRODUCTS),
           report(
@@ -141,18 +141,18 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           BusinessModule.CATALOG_PRICES,
         ),
       ]),
-      group('Inventario', 'pi pi-box', [
+      group('Inventario', 'pi pi-database', [
         withReports(
           page(
             'Almacenes',
-            'pi pi-database',
+            'pi pi-warehouse',
             '/inventory/warehouses',
             BusinessModule.INVENTORY_WAREHOUSES,
           ),
           group('Reportes', 'pi pi-chart-bar', [
             report(
               'Stock',
-              'pi pi-warehouse',
+              'pi pi-chart-bar',
               callbacks.openStockModal,
               BusinessModule.INVENTORY_WAREHOUSES,
             ),
@@ -263,7 +263,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
           ),
         ]),
       ]),
-      group('Contactos', 'pi pi-address-book', [
+      group('Contactos', 'pi pi-users', [
         page('Clientes', 'pi pi-id-card', '/partners/customers', BusinessModule.CONTACTS_CUSTOMERS),
         page(
           'Proveedores',
