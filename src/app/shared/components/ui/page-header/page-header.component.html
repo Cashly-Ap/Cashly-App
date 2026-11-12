@@ -1,4 +1,4 @@
-<div class="cashly-page-header mb-8 text-left">
+<div class="cashly-page-header relative mb-8 pr-24 text-left sm:pr-32">
   @if (kicker()) {
     <p
       class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
@@ -15,5 +15,14 @@
     <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
       {{ subtitle() | translate }}
     </p>
+  }
+
+  @if (showIcon() && displayIcon(); as headerIcon) {
+    <span
+      class="cashly-page-icon absolute right-0 top-0 flex size-20 items-center justify-center rounded-full sm:size-28"
+      aria-hidden="true"
+    >
+      <i [class]="headerIcon + ' text-4xl sm:text-5xl'"></i>
+    </span>
   }
 </div>

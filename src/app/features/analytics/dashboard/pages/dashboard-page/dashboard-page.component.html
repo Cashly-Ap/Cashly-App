@@ -1,5 +1,5 @@
 <div class="cashly-dashboard p-4 sm:p-6 lg:p-8 max-w-[1800px] mx-auto">
-  <div class="flex items-end justify-between gap-6 mb-8 lg:mb-10">
+  <div class="flex items-center justify-between gap-6 mb-8 lg:mb-10">
     <div>
       <p
         class="dashboard-kicker text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
@@ -13,19 +13,12 @@
         {{ 'analytics.dashboard.businessActivityAndMetricsOverview' | translate }}
       </p>
     </div>
-    <div
-      class="cashly-dot-grid hidden sm:grid grid-cols-5 gap-2 p-2 text-surface-900 dark:text-surface-100"
+    <span
+      class="cashly-page-icon flex size-20 shrink-0 items-center justify-center rounded-full sm:size-28"
       aria-hidden="true"
     >
-      @for (
-        dot of [
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-        ];
-        track dot
-      ) {
-        <span class="size-1.5 rounded-full bg-current"></span>
-      }
-    </div>
+      <i class="pi pi-chart-line text-4xl sm:text-5xl"></i>
+    </span>
   </div>
   @if (summary()) {
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">

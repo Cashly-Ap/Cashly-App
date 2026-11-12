@@ -322,6 +322,7 @@ app-loading-spinner > div {
   background: var(--cashly-panel);
   border: 1px solid var(--cashly-line);
   border-radius: 28px;
+  max-width: 100%;
   @apply shadow-xl;
   backdrop-filter: none;
 }
@@ -335,6 +336,21 @@ app-loading-spinner > div {
 }
 .cashly-page-header h1 {
   letter-spacing: -0.045em;
+}
+.cashly-page-icon {
+  background: var(--p-surface-900);
+  color: var(--p-surface-0);
+}
+.my-app-dark .cashly-page-icon {
+  background: var(--p-surface-0);
+  color: var(--p-surface-900);
+}
+.cashly-informative .cashly-page-icon {
+  background: var(--cashly-accent);
+  color: #fff;
+}
+.my-app-dark.cashly-informative .cashly-page-icon {
+  color: var(--p-surface-950);
 }
 .cashly-page-header:has(> h1:first-child)::before,
 .dashboard-kicker {
@@ -723,6 +739,10 @@ a:focus-visible {
 .cashly-informative .cashly-workspace .cashly-panel :is(app-details-card-header, app-form-header):first-child > div {
   border-start-start-radius: inherit;
   border-start-end-radius: inherit;
+}
+
+.cashly-informative .cashly-workspace .cashly-panel:has(:is(app-details-card-header, app-form-header)) {
+  overflow: hidden;
 }
 
 app-user-avatar .p-avatar img {
