@@ -11,7 +11,6 @@ import {
   isInvoiceOverdue,
 } from '@features/finance/treasury/receivables/components/receivables-presentation';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
-import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
@@ -80,6 +79,10 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 import { listAction } from '@shared/components/list/list-action-builders';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+import {
+  BalanceMovementDialogComponent,
+  BalanceMovementSubmit,
+} from '@shared/components/ui/balance-movement-dialog/balance-movement-dialog.component';
 @Component({
   selector: 'app-customer-debt-dialog',
   standalone: true,
@@ -104,10 +107,10 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     SelectModule,
     FormsModule,
     ReactiveFormsModule,
+    BalanceMovementDialogComponent,
     ReturnFormDialogComponent,
     NoteFormDialogComponent,
   ],
-  providers: [provideTranslatedMessages()],
   templateUrl: './customer-debt-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -479,18 +482,74 @@ export class CustomerDebtDialogComponent {
   }
 
   protected onAdvanceVisibleChange(visible: boolean): void {
+    this.showAdvanceDialog.set(visible);
     if (!visible) {
       this.advanceForm.reset();
     }
   }
 
-  protected submitAdvance(): void {
-    if (this.advanceForm.invalid) return;
+  protected onAdvanceSubmitted(event: BalanceMovementSubmit): void {
+    const customerId = this.customerId();
+    if (!customerId) return;
+
+    this.creatingAdvance.set(true);
+    this.balanceApi
+      .createAdvance(customerId, {
+        amount: event.amount,
+        paymentMethodId: event.paymentMethodId,
+        notes: event.notes,
+      })
+      .subscribe({
+        next: (response) => {
+          this.balance.set(response.totalBalance);
+          this.showAdvanceDialog.set(false);
+          this.service.loadCustomerDebt(customerId).subscribe();
+          this.service.customerDebtChange.next();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'finance.treasury.receivables.advanceRecorded',
+            detail: `Se agregaron $${Number(event.amount).toFixed(2)} al balance del cliente`,
+            life: 8000,
+          });
+          this.loadTransactionsForCurrentFilter();
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'finance.treasury.receivables.couldNotRecordTheAdvance',
+            life: 8000,
+          });
+          this.creatingAdvance.set(false);
+        },
+        complete: () => this.creatingAdvance.set(false),
+      });
+  }
+
+  protected legacySubmitAdvance(): void {
+    if (this.advanceForm.invalid) {
+      this.advanceForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Complete el monto y el método de pago para registrar el anticipo',
+        life: 8000,
+      });
+      return;
+    }
     const amount = this.advanceForm.get('amount')?.value;
     const notes = this.advanceForm.get('notes')?.value;
     const paymentMethodId = this.advanceForm.get('paymentMethodId')?.value;
     const customerId = this.customerId();
-    if (!amount || amount <= 0 || !customerId || !paymentMethodId) return;
+    if (!amount || amount <= 0 || !customerId || !paymentMethodId) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Complete el monto y el método de pago para registrar el anticipo',
+        life: 8000,
+      });
+      return;
+    }
 
     this.creatingAdvance.set(true);
     this.balanceApi
@@ -525,8 +584,19 @@ export class CustomerDebtDialogComponent {
   }
 
   protected onCreateRefund(): void {
+    const maxRefund = Math.max(
+      this.balance() || this.service.currentCustomer()?.customerBalance || 0,
+      0,
+    );
+    const amountControl = this.refundForm.get('amount');
+    amountControl?.setValidators([
+      Validators.required,
+      Validators.min(0.01),
+      Validators.max(maxRefund),
+    ]);
+    amountControl?.updateValueAndValidity();
     this.refundForm.reset({
-      amount: null,
+      amount: maxRefund > 0 ? maxRefund : null,
       paymentMethodId: this.defaultPaymentMethod(),
       notes: '',
     });
@@ -539,18 +609,74 @@ export class CustomerDebtDialogComponent {
   }
 
   protected onRefundVisibleChange(visible: boolean): void {
+    this.showRefundDialog.set(visible);
     if (!visible) {
       this.refundForm.reset();
     }
   }
 
-  protected submitRefund(): void {
-    if (this.refundForm.invalid) return;
+  protected onRefundSubmitted(event: BalanceMovementSubmit): void {
+    const customerId = this.customerId();
+    if (!customerId) return;
+
+    this.creatingRefund.set(true);
+    this.balanceApi
+      .createRefund(customerId, {
+        amount: event.amount,
+        paymentMethodId: event.paymentMethodId,
+        notes: event.notes,
+      })
+      .subscribe({
+        next: (response) => {
+          this.balance.set(response.totalBalance);
+          this.showRefundDialog.set(false);
+          this.service.loadCustomerDebt(customerId).subscribe();
+          this.service.customerDebtChange.next();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'finance.treasury.receivables.refundCompleted',
+            detail: `Se reintegraron $${Number(event.amount).toFixed(2)} al cliente`,
+            life: 8000,
+          });
+          this.loadTransactionsForCurrentFilter();
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'finance.treasury.receivables.couldNotCompleteTheRefund',
+            life: 8000,
+          });
+          this.creatingRefund.set(false);
+        },
+        complete: () => this.creatingRefund.set(false),
+      });
+  }
+
+  protected legacySubmitRefund(): void {
+    if (this.refundForm.invalid) {
+      this.refundForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Complete el monto y el método de pago para realizar el reintegro',
+        life: 8000,
+      });
+      return;
+    }
     const amount = this.refundForm.get('amount')?.value;
     const paymentMethodId = this.refundForm.get('paymentMethodId')?.value;
     const notes = this.refundForm.get('notes')?.value;
     const customerId = this.customerId();
-    if (!amount || amount <= 0 || !customerId || !paymentMethodId) return;
+    if (!amount || amount <= 0 || amount > this.balance() || !customerId || !paymentMethodId) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'El monto debe ser mayor a cero y no puede exceder el saldo a favor',
+        life: 8000,
+      });
+      return;
+    }
 
     this.creatingRefund.set(true);
     this.balanceApi

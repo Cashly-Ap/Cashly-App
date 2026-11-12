@@ -153,6 +153,7 @@
   "finance.treasury.receivables.withoutInvoice": "Sin factura",
   "finance.treasury.receivables.amountRequired": "El monto es requerido",
   "finance.treasury.receivables.amountMustBePositive": "El monto debe ser mayor a cero",
+  "finance.treasury.receivables.amountExceedsBalance": "El monto no puede superar el saldo a favor disponible",
   "finance.treasury.receivables.coveredByCreditBalance": "Pago cubierto completamente por saldo a favor",
   "finance.treasury.receivables.referenceRequired": "La referencia es requerida",
   "finance.treasury.receivables.referenceLengthLimit": "La referencia no puede exceder 100 caracteres",

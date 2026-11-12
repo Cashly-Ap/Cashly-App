@@ -473,9 +473,17 @@
             >
               <i class="pi pi-history text-surface-700 dark:text-surface-300 text-lg"></i>
             </div>
-            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
-              {{ 'finance.treasury.receivables.balanceMovements' | translate }}
-            </h3>
+            <div>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+                {{ 'finance.treasury.receivables.balanceMovements' | translate }}
+              </h3>
+              <p class="text-xs text-surface-500 dark:text-surface-400">
+                {{ 'finance.treasury.receivables.currentCustomerBalance' | translate }}:
+                <strong class="text-surface-900 dark:text-surface-0">{{
+                  balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                }}</strong>
+              </p>
+            </div>
           </div>
           <div class="flex flex-col sm:flex-row gap-2">
             <p-button
@@ -739,243 +747,34 @@
   </ng-template>
 </p-dialog>
 
-<p-dialog
-  [(visible)]="showRefundDialog"
-  [header]="'finance.treasury.receivables.refundMoney' | translate"
-  [modal]="true"
-  [style]="{ width: '90vw', maxWidth: '550px' }"
-  [dismissableMask]="false"
-  [closable]="!creatingRefund()"
-  [closeOnEscape]="!creatingRefund()"
-  appendTo="body"
+<app-balance-movement-dialog
+  [visible]="showRefundDialog()"
+  titleKey="finance.treasury.receivables.refundMoney"
+  balanceLabelKey="finance.treasury.receivables.currentCustomerBalance"
+  amountLabelKey="finance.treasury.receivables.amountToRefund"
+  submitLabelKey="finance.treasury.receivables.refund2"
+  submitIcon="pi pi-undo"
+  notesPlaceholderKey="finance.treasury.receivables.refundReasonOptional"
+  permissionModule="FINANCE_RECEIVABLES"
+  [balance]="balance()"
+  [maxAmount]="balance()"
+  [loading]="creatingRefund()"
   (visibleChange)="onRefundVisibleChange($event)"
->
-  <form [formGroup]="refundForm">
-    <div class="space-y-5">
-      <div
-        class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
-            'finance.treasury.receivables.currentCustomerBalance' | translate
-          }}</span>
-          <span class="font-mono text-lg font-bold" [class]="amountColor('info')">
-            {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </span>
-        </div>
-      </div>
-      <div class="space-y-2">
-        <label
-          for="refundAmount"
-          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
-        >
-          {{ 'finance.treasury.receivables.amountToRefund' | translate }}
-          <span [class]="amountColor('danger')">*</span>
-        </label>
-        <p-inputNumber
-          id="refundAmount"
-          formControlName="amount"
-          mode="currency"
-          currency="USD"
-          [locale]="locale()"
-          [min]="0.01"
-          [max]="balance()"
-          [maxFractionDigits]="2"
-          fluid
-          [class.ng-invalid]="
-            refundForm.get('amount')?.invalid && refundForm.get('amount')?.touched
-          "
-        />
-        @if (refundForm.get('amount')?.invalid && refundForm.get('amount')?.touched) {
-          <small class="text-xs block mt-1" [class]="amountColor('danger')">
-            @if (refundForm.get('amount')?.errors?.['required']) {
-              {{ 'finance.treasury.receivables.amountRequired' | translate }}
-            }
-            @if (refundForm.get('amount')?.errors?.['min']) {
-              {{ 'finance.treasury.receivables.amountMustBePositive' | translate }}
-            }
-          </small>
-        }
-      </div>
-      <div class="space-y-2">
-        <label for="refundPaymentMethod" class="block text-sm font-semibold"
-          >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
-          <span [class]="amountColor('danger')">*</span></label
-        >
-        <p-select
-          inputId="refundPaymentMethod"
-          formControlName="paymentMethodId"
-          [options]="paymentMethods()"
-          optionLabel="label"
-          optionValue="value"
-          [placeholder]="'finance.treasury.receivables.selectMethod' | translate"
-          fluid
-        />
-      </div>
-      <div class="space-y-2">
-        <label for="refundNotes" class="block text-sm font-semibold">{{
-          'finance.billing.invoices.notes' | translate
-        }}</label>
-        <input
-          id="refundNotes"
-          pInputText
-          formControlName="notes"
-          [placeholder]="'finance.treasury.receivables.refundReasonOptional' | translate"
-          class="w-full"
-        />
-      </div>
-    </div>
-  </form>
-  <ng-template pTemplate="footer">
-    <div class="flex flex-col sm:flex-row gap-2 justify-end">
-      <app-cancel-button
-        [outlined]="false"
-        [disabled]="creatingRefund()"
-        styleClass="font-medium w-full sm:w-auto"
-        (cancelled)="onCancelRefund()"
-      />
-      <p-button
-        severity="contrast"
-        [label]="'finance.treasury.receivables.refund2' | translate"
-        icon="pi pi-undo"
-        (onClick)="submitRefund()"
-        [disabled]="refundForm.invalid || creatingRefund()"
-        [loading]="creatingRefund()"
-        styleClass="font-medium w-full sm:w-auto"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
+  (submitted)="onRefundSubmitted($event)"
+/>
 
-<p-dialog
-  [(visible)]="showAdvanceDialog"
-  [header]="'finance.treasury.receivables.recordAdvance3' | translate"
-  [modal]="true"
-  [style]="{ width: '90vw', maxWidth: '550px' }"
-  [dismissableMask]="false"
-  [closable]="!creatingAdvance()"
-  [closeOnEscape]="!creatingAdvance()"
-  appendTo="body"
+<app-balance-movement-dialog
+  [visible]="showAdvanceDialog()"
+  titleKey="finance.treasury.receivables.recordAdvance3"
+  balanceLabelKey="finance.treasury.receivables.currentCustomerBalance"
+  amountLabelKey="finance.treasury.receivables.advanceAmount"
+  submitLabelKey="finance.treasury.receivables.recordAdvance3"
+  submitIcon="pi pi-plus-circle"
+  notesPlaceholderKey="finance.treasury.receivables.advanceReasonOptional"
+  permissionModule="FINANCE_RECEIVABLES"
+  [balance]="balance()"
+  [maxAmount]="null"
+  [loading]="creatingAdvance()"
   (visibleChange)="onAdvanceVisibleChange($event)"
-  styleClass="advance-form-dialog"
->
-  <form [formGroup]="advanceForm">
-    <div class="space-y-5">
-      <div
-        class="bg-surface-50 dark:bg-surface-900/50 border border-surface-200 dark:border-surface-700 rounded-lg p-4"
-      >
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
-            'finance.treasury.receivables.currentCustomerBalance' | translate
-          }}</span>
-          <span class="font-mono text-lg font-bold" [class]="amountColor('info')">
-            {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
-          </span>
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <label for="advancePaymentMethod" class="block text-sm font-semibold"
-          >{{ 'finance.treasury.receivables.paymentMethod' | translate }}
-          <span [class]="amountColor('danger')">*</span></label
-        >
-        <p-select
-          inputId="advancePaymentMethod"
-          formControlName="paymentMethodId"
-          [options]="paymentMethods()"
-          optionLabel="label"
-          optionValue="value"
-          [placeholder]="'finance.treasury.receivables.selectMethod' | translate"
-          fluid
-        />
-      </div>
-
-      <div class="space-y-2">
-        <label
-          for="advanceAmount"
-          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
-        >
-          {{ 'finance.treasury.receivables.advanceAmount' | translate }}
-          <span [class]="amountColor('danger')">*</span>
-        </label>
-        <p-inputNumber
-          id="advanceAmount"
-          formControlName="amount"
-          mode="currency"
-          currency="USD"
-          [locale]="locale()"
-          [min]="0.01"
-          [maxFractionDigits]="2"
-          fluid
-          [class.ng-invalid]="
-            advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched
-          "
-        />
-        @if (advanceForm.get('amount')?.invalid && advanceForm.get('amount')?.touched) {
-          <small class="text-xs block mt-1" [class]="amountColor('danger')">
-            @if (advanceForm.get('amount')?.errors?.['required']) {
-              {{ 'finance.treasury.receivables.amountRequired' | translate }}
-            }
-            @if (advanceForm.get('amount')?.errors?.['min']) {
-              {{ 'finance.treasury.receivables.amountMustBePositive' | translate }}
-            }
-          </small>
-        }
-      </div>
-
-      <div class="space-y-2">
-        <label
-          for="advanceNotes"
-          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
-        >
-          {{ 'finance.billing.invoices.notes' | translate }}
-        </label>
-        <input
-          id="advanceNotes"
-          type="text"
-          pInputText
-          formControlName="notes"
-          [placeholder]="'finance.treasury.receivables.advanceReasonOptional' | translate"
-          class="w-full"
-        />
-      </div>
-    </div>
-  </form>
-
-  <ng-template pTemplate="footer">
-    <div class="flex flex-col sm:flex-row gap-2 justify-end">
-      <app-cancel-button
-        [outlined]="false"
-        [disabled]="creatingAdvance()"
-        styleClass="font-medium w-full sm:w-auto"
-        (cancelled)="onCancelAdvance()"
-      />
-      <p-button
-        [appPermissionModule]="'FINANCE_RECEIVABLES'"
-        [appPermission]="'EXECUTE'"
-        severity="contrast"
-        [label]="'finance.treasury.receivables.recordAdvance3' | translate"
-        icon="pi pi-plus-circle"
-        (onClick)="submitAdvance()"
-        [disabled]="advanceForm.invalid || creatingAdvance()"
-        [loading]="creatingAdvance()"
-        styleClass="font-medium w-full sm:w-auto"
-      />
-    </div>
-  </ng-template>
-</p-dialog>
-
-@if (selectedInvoiceDetails(); as inv) {
-  <app-return-form-dialog
-    [visible]="showReturnDialog()"
-    [invoice]="inv"
-    (confirmed)="onReturnDialogConfirmed()"
-    (cancelled)="onReturnDialogDismissed()"
-  />
-  <app-note-form-dialog
-    [visible]="showNoteDialog()"
-    [invoice]="inv"
-    (confirmed)="onNoteDialogConfirmed()"
-    (cancelled)="onNoteDialogDismissed()"
-  />
-}
+  (submitted)="onAdvanceSubmitted($event)"
+/>

@@ -153,6 +153,7 @@
   "finance.treasury.receivables.withoutInvoice": "No invoice",
   "finance.treasury.receivables.amountRequired": "An amount is required",
   "finance.treasury.receivables.amountMustBePositive": "The amount must be greater than zero",
+  "finance.treasury.receivables.amountExceedsBalance": "The amount cannot exceed the available balance",
   "finance.treasury.receivables.coveredByCreditBalance": "Payment fully covered by credit balance",
   "finance.treasury.receivables.referenceRequired": "A reference is required",
   "finance.treasury.receivables.referenceLengthLimit": "The reference cannot exceed 100 characters",
