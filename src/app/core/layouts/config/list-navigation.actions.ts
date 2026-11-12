@@ -6,6 +6,7 @@ export interface ListNavigationCallbacks {
   openListAction: (route: string, action: string, queryParams?: Record<string, string>) => void;
   openCustomerEditPicker: () => void;
   openCustomerBalancePicker: () => void;
+  openSupplierBalancePicker: () => void;
 }
 
 function actionLabel(action: string, singular: string): string {
@@ -79,8 +80,10 @@ export function addListNavigationActions(
                 ? callbacks.openCustomerEditPicker
                 : definition.route === '/partners/customers' && entry.label === 'Ver saldo'
                   ? callbacks.openCustomerBalancePicker
-                  : () =>
-                      callbacks.openListAction(definition.route, entry.label, entry.queryParams),
+                  : definition.route === '/partners/suppliers' && entry.label === 'Ver saldo'
+                    ? callbacks.openSupplierBalancePicker
+                    : () =>
+                        callbacks.openListAction(definition.route, entry.label, entry.queryParams),
           }),
         ),
       ]

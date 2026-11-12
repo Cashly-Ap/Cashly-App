@@ -1,0 +1,439 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    <app-page-header
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.payables.accountsPayable"
+      subtitle="finance.treasury.payables.manageSupplierDebtAndPendingPayments"
+    />
+
+    @if (service.globalSummary(); as summary) {
+      <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <app-metric-card
+          labelKey="finance.treasury.payables.totalDebt"
+          icon="pi pi-dollar"
+          [primary]="true"
+        >
+          {{ summary.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+        </app-metric-card>
+        <app-metric-card
+          labelKey="finance.treasury.payables.outstandingPurchases"
+          icon="pi pi-shopping-cart"
+        >
+          {{ summary.totalPurchasesWithDebt }}
+        </app-metric-card>
+        <app-metric-card labelKey="finance.treasury.payables.suppliersWithDebt" icon="pi pi-truck">
+          {{ summary.totalSuppliersWithDebt }}
+        </app-metric-card>
+      </div>
+    } @else if (service.loading()) {
+      <div class="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+        @for (_ of [1, 2, 3]; track _) {
+          <app-panel-card padding="p-6">
+            <app-metric-skeleton />
+          </app-panel-card>
+        }
+      </div>
+    }
+
+    <app-panel-card [overflowHidden]="true" extraClass="mt-4">
+      <div
+        class="flex flex-wrap items-center gap-1 border-b border-surface-200 bg-surface-50 px-4 py-2 sm:px-6 dark:border-surface-700 dark:bg-surface-800"
+      >
+        <button
+          type="button"
+          (click)="activeTab.set('suppliers')"
+          class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+          [class.bg-surface-900]="activeTab() === 'suppliers'"
+          [class.text-surface-0]="activeTab() === 'suppliers'"
+          [class.shadow-sm]="activeTab() === 'suppliers'"
+          [class.dark:bg-surface-100]="activeTab() === 'suppliers'"
+          [class.dark:text-surface-900]="activeTab() === 'suppliers'"
+          [class.text-surface-600]="activeTab() !== 'suppliers'"
+          [class.hover:bg-surface-200]="activeTab() !== 'suppliers'"
+          [class.dark:text-surface-300]="activeTab() !== 'suppliers'"
+          [class.dark:hover:bg-surface-700]="activeTab() !== 'suppliers'"
+        >
+          <i class="pi pi-truck text-xs"></i>
+          {{ 'finance.treasury.payables.suppliersWithDebt' | translate }}
+        </button>
+        <button
+          type="button"
+          (click)="activeTab.set('pending')"
+          class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors"
+          [class.bg-surface-900]="activeTab() === 'pending'"
+          [class.text-surface-0]="activeTab() === 'pending'"
+          [class.shadow-sm]="activeTab() === 'pending'"
+          [class.dark:bg-surface-100]="activeTab() === 'pending'"
+          [class.dark:text-surface-900]="activeTab() === 'pending'"
+          [class.text-surface-600]="activeTab() !== 'pending'"
+          [class.hover:bg-surface-200]="activeTab() !== 'pending'"
+          [class.dark:text-surface-300]="activeTab() !== 'pending'"
+          [class.dark:hover:bg-surface-700]="activeTab() !== 'pending'"
+        >
+          <i class="pi pi-shield text-xs"></i>
+          {{ 'finance.treasury.payables.paymentsAwaitingReview' | translate }}
+        </button>
+      </div>
+
+      @if (activeTab() === 'suppliers') {
+        <div class="p-6">
+          <div class="mb-6">
+            <div class="relative">
+              <app-search-field
+                [value]="searchTerm()"
+                [placeholder]="'finance.treasury.payables.searchByNameOrTaxId' | translate"
+                (search)="onSearch($event)"
+              />
+            </div>
+          </div>
+
+          @if (showInitialLoading()) {
+            <div class="space-y-4">
+              @for (_ of [1, 2, 3, 4, 5]; track _) {
+                <app-list-row-skeleton />
+              }
+            </div>
+          } @else if (isEmpty()) {
+            <div class="py-16 text-center">
+              <div
+                class="mb-4 inline-flex h-20 w-20 items-center justify-center rounded-full bg-surface-100 dark:bg-surface-700"
+              >
+                <i class="pi pi-truck text-4xl text-surface-400"></i>
+              </div>
+              <h3 class="mb-2 text-lg font-semibold text-surface-900 dark:text-surface-0">
+                {{ 'finance.treasury.payables.noSuppliersWithDebt' | translate }}
+              </h3>
+              <p class="text-sm text-surface-500 dark:text-surface-400">
+                {{
+                  'finance.treasury.payables.allSuppliersAreUpToDateWithTheirPayments' | translate
+                }}
+              </p>
+            </div>
+          } @else {
+            <div
+              class="hidden overflow-hidden rounded-xl border border-surface-200 md:block dark:border-surface-700"
+            >
+              <p-table
+                [value]="service.suppliers()"
+                [loading]="service.loading()"
+                styleClass="p-datatable-striped"
+                [tableStyle]="{ 'min-width': '100%' }"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>
+                      <div
+                        class="flex cursor-pointer select-none items-center gap-2"
+                        (click)="toggleSort('supplierName')"
+                      >
+                        {{ 'shared.supplier' | translate }}
+                        <i [class]="sortIcon('supplierName')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right">
+                      <div
+                        class="flex cursor-pointer select-none items-center justify-end gap-2"
+                        (click)="toggleSort('totalDebt')"
+                      >
+                        {{ 'finance.treasury.payables.totalDebt' | translate }}
+                        <i [class]="sortIcon('totalDebt')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right">
+                      <div
+                        class="flex cursor-pointer select-none items-center justify-end gap-2"
+                        (click)="toggleSort('creditLimit')"
+                      >
+                        {{ 'finance.treasury.payables.creditLimit2' | translate }}
+                        <i [class]="sortIcon('creditLimit')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right">
+                      <div
+                        class="flex cursor-pointer select-none items-center justify-end gap-2"
+                        (click)="toggleSort('availableCredit')"
+                      >
+                        {{ 'finance.treasury.payables.availableCredit' | translate }}
+                        <i [class]="sortIcon('availableCredit')"></i>
+                      </div>
+                    </th>
+                    <th class="text-right">
+                      <div class="font-semibold">
+                        {{ 'finance.treasury.payables.supplierBalance' | translate }}
+                      </div>
+                    </th>
+                    <th class="text-center">
+                      <div
+                        class="flex cursor-pointer select-none items-center justify-center gap-2"
+                        (click)="toggleSort('pendingPurchasesCount')"
+                      >
+                        {{ 'finance.treasury.payables.outstandingPurchases' | translate }}
+                        <i [class]="sortIcon('pendingPurchasesCount')"></i>
+                      </div>
+                    </th>
+                    <th class="text-center">
+                      <div class="font-semibold">{{ 'shared.actions' | translate }}</div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-supplier>
+                  <tr
+                    class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
+                  >
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div
+                          class="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-900 font-bold text-surface-0 dark:bg-surface-100 dark:text-surface-900"
+                        >
+                          {{ supplier.supplierName.charAt(0).toUpperCase() }}
+                        </div>
+                        <div>
+                          <div class="font-semibold text-surface-900 dark:text-surface-0">
+                            {{ supplier.supplierName }}
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <span class="font-mono text-xs text-surface-500">
+                              {{ supplier.supplierRif }}
+                            </span>
+                            @if (isOverdue(supplier)) {
+                              <span
+                                class="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                              >
+                                {{ 'finance.treasury.payables.overdue' | translate }}
+                              </span>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+                        {{ supplier.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                        {{ supplier.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                      </span>
+                    </td>
+                    <td class="text-right">
+                      @if (supplier.availableCredit > 0) {
+                        <span class="font-mono font-semibold text-green-600 dark:text-green-400">
+                          {{
+                            supplier.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      } @else {
+                        <span class="font-mono font-semibold text-red-600 dark:text-red-400">
+                          {{
+                            supplier.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      }
+                    </td>
+                    <td class="text-right">
+                      @if (supplier.supplierBalance > 0) {
+                        <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">
+                          {{
+                            supplier.supplierBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      } @else {
+                        <span class="font-mono text-surface-400 dark:text-surface-500">$0.00</span>
+                      }
+                    </td>
+                    <td class="text-center">
+                      <span
+                        class="inline-flex items-center justify-center rounded-full bg-surface-200 px-3 py-1 text-sm font-semibold text-surface-700 dark:bg-surface-800 dark:text-surface-100"
+                      >
+                        {{ supplier.pendingPurchasesCount }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <app-list-action-buttons
+                        [actions]="supplierActions(supplier)"
+                        [ariaLabel]="'finance.treasury.payables.openSupplierActions' | translate"
+                      />
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                  <tr>
+                    <td colspan="7" class="py-16">
+                      <div class="flex flex-col items-center gap-4">
+                        <div
+                          class="flex h-20 w-20 items-center justify-center rounded-full bg-surface-100 dark:bg-surface-700"
+                        >
+                          <i class="pi pi-truck text-4xl text-surface-400"></i>
+                        </div>
+                        <div class="text-center">
+                          <p
+                            class="mb-1 text-lg font-semibold text-surface-700 dark:text-surface-200"
+                          >
+                            {{ 'finance.treasury.payables.noSuppliersFound' | translate }}
+                          </p>
+                          <p class="text-sm text-surface-500 dark:text-surface-400">
+                            {{
+                              'finance.treasury.payables.noSuppliersRegisteredInTheSystem'
+                                | translate
+                            }}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+
+            <div class="space-y-4 md:hidden">
+              @if (service.loading()) {
+                <div class="flex items-center justify-center py-12">
+                  <i
+                    class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100"
+                  ></i>
+                </div>
+              } @else {
+                @for (supplier of service.suppliers(); track supplier.supplierId) {
+                  <app-panel-card padding="p-5">
+                    <div class="mb-3 flex items-start gap-3">
+                      <div
+                        class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-surface-900 text-lg font-bold text-surface-0 dark:bg-surface-100 dark:text-surface-900"
+                      >
+                        {{ supplier.supplierName.charAt(0).toUpperCase() }}
+                      </div>
+                      <div class="min-w-0 flex-1">
+                        <h3 class="mb-1 text-base font-bold text-surface-900 dark:text-surface-0">
+                          {{ supplier.supplierName }}
+                        </h3>
+                        <span class="font-mono text-xs text-surface-500">
+                          {{ supplier.supplierRif }}
+                        </span>
+                      </div>
+                      @if (isOverdue(supplier)) {
+                        <span
+                          class="rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                        >
+                          {{ 'finance.treasury.payables.overdue' | translate }}
+                        </span>
+                      }
+                    </div>
+                    <div class="mb-3 space-y-2">
+                      <div
+                        class="flex items-center justify-between rounded-lg border-l-4 border-surface-400 bg-surface-50 p-3 dark:border-surface-600 dark:bg-surface-900/50"
+                      >
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.payables.totalDebt' | translate
+                        }}</span>
+                        <span class="font-mono font-bold text-red-600 dark:text-red-400">
+                          {{ supplier.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                        </span>
+                      </div>
+                      <div
+                        class="flex items-center justify-between rounded-lg border-l-4 border-surface-400 bg-surface-50 p-3 dark:bg-surface-900/50"
+                      >
+                        <span class="text-xs font-medium text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.payables.availableCredit' | translate
+                        }}</span>
+                        <span
+                          class="font-mono font-semibold"
+                          [class.text-green-600]="supplier.availableCredit > 0"
+                          [class.dark:text-green-400]="supplier.availableCredit > 0"
+                          [class.text-red-600]="supplier.availableCredit <= 0"
+                          [class.dark:text-red-400]="supplier.availableCredit <= 0"
+                        >
+                          {{
+                            supplier.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                          }}
+                        </span>
+                      </div>
+                      @if (supplier.supplierBalance > 0) {
+                        <div
+                          class="flex items-center justify-between rounded-lg border-l-4 border-surface-400 bg-surface-50 p-3 dark:border-surface-600 dark:bg-surface-900/50"
+                        >
+                          <span
+                            class="text-xs font-medium text-surface-600 dark:text-surface-400"
+                            >{{ 'finance.treasury.payables.supplierBalance' | translate }}</span
+                          >
+                          <span
+                            class="font-mono font-semibold text-surface-900 dark:text-surface-0"
+                          >
+                            {{
+                              supplier.supplierBalance
+                                | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                            }}
+                          </span>
+                        </div>
+                      }
+                      <div class="flex items-center justify-between">
+                        <span class="text-xs text-surface-600 dark:text-surface-400">{{
+                          'finance.treasury.payables.outstandingPurchases' | translate
+                        }}</span>
+                        <span
+                          class="rounded-full bg-surface-200 px-2 py-1 text-xs font-semibold text-surface-700 dark:bg-surface-800 dark:text-surface-100"
+                        >
+                          {{ supplier.pendingPurchasesCount }}
+                        </span>
+                      </div>
+                    </div>
+                    <app-list-action-buttons
+                      [actions]="supplierActions(supplier)"
+                      [ariaLabel]="'finance.treasury.payables.openSupplierActions' | translate"
+                    />
+                  </app-panel-card>
+                }
+              }
+            </div>
+          }
+        </div>
+
+        <div class="border-t border-surface-200 px-4 py-2 sm:px-6 dark:border-surface-700">
+          <app-paginator
+            [first]="first()"
+            [rows]="rows()"
+            [totalRecords]="service.totalSuppliers()"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [showCurrentPageReport]="true"
+            [currentPageReportTemplate]="
+              'finance.treasury.payables.showingFirstToLastOfTotalrecordsSuppliers' | translate
+            "
+            (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+          />
+        </div>
+      } @else {
+        <app-pending-supplier-payments-tab
+          [focusPaymentId]="focusPaymentId()"
+          (focusHandled)="onPaymentFocusHandled($event)"
+          (paymentValidated)="onPaymentValidated()"
+        />
+      }
+    </app-panel-card>
+  </div>
+</div>
+
+<app-supplier-debt-dialog
+  [visible]="supplierDebtVisible()"
+  [supplierId]="selectedSupplier()?.supplierId ?? ''"
+  (close)="onCloseSupplierDebtDialog()"
+  (payPurchase)="onSupplierDebtPayPurchase($event)"
+  (payAll)="onSupplierDebtPayAll()"
+  (payPartial)="onSupplierDebtPayPartial()"
+  (viewPurchasePaymentHistory)="onViewPurchasePaymentHistory($event)"
+/>
+
+<app-supplier-payment-form-dialog
+  [visible]="paymentFormVisible()"
+  [mode]="paymentFormMode()"
+  [purchase]="paymentPurchase()"
+  [supplierName]="paymentSupplierName()"
+  [totalDebt]="paymentTotalDebt()"
+  (close)="onClosePaymentFormDialog()"
+  (submit)="onSubmitPayment($event)"
+/>
+
+<app-payment-history-dialog
+  [visible]="paymentHistoryVisible()"
+  [supplierId]="paymentHistorySupplierId()"
+  [purchaseId]="paymentHistoryPurchaseId()"
+  (close)="onClosePaymentHistoryDialog()"
+/>

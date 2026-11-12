@@ -9,9 +9,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
       key: 'catalog',
       inputs: { reportKey: 'catalog' },
       load: () =>
-        import('@features/catalog/products/reporting/components/catalog-report-action/catalog-report-action.component').then(
-          (module) => module.CatalogReportActionComponent,
-        ),
+        import(
+          '@features/catalog/products/reporting/components/catalog-report-action/catalog-report-action.component'
+        ).then((module) => module.CatalogReportActionComponent),
     },
   },
   {
@@ -21,9 +21,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
       key: 'commercialCatalog',
       inputs: { reportKey: 'commercialCatalog' },
       load: () =>
-        import('@features/catalog/products/reporting/components/catalog-report-action/catalog-report-action.component').then(
-          (module) => module.CatalogReportActionComponent,
-        ),
+        import(
+          '@features/catalog/products/reporting/components/catalog-report-action/catalog-report-action.component'
+        ).then((module) => module.CatalogReportActionComponent),
     },
   },
   {
@@ -33,9 +33,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
       key: 'stock',
       inputs: { reportKey: 'stock' },
       load: () =>
-        import('@features/inventory/warehouses/reporting/components/warehouse-report-action/warehouse-report-action.component').then(
-          (module) => module.WarehouseReportActionComponent,
-        ),
+        import(
+          '@features/inventory/warehouses/reporting/components/warehouse-report-action/warehouse-report-action.component'
+        ).then((module) => module.WarehouseReportActionComponent),
     },
   },
   {
@@ -45,9 +45,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
       key: 'movements',
       inputs: { reportKey: 'movements' },
       load: () =>
-        import('@features/inventory/warehouses/reporting/components/warehouse-report-action/warehouse-report-action.component').then(
-          (module) => module.WarehouseReportActionComponent,
-        ),
+        import(
+          '@features/inventory/warehouses/reporting/components/warehouse-report-action/warehouse-report-action.component'
+        ).then((module) => module.WarehouseReportActionComponent),
     },
   },
   {
@@ -56,9 +56,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'orders',
       load: () =>
-        import('@features/sales/orders/reporting/components/order-report-action/order-report-action.component').then(
-          (module) => module.OrderReportActionComponent,
-        ),
+        import(
+          '@features/sales/orders/reporting/components/order-report-action/order-report-action.component'
+        ).then((module) => module.OrderReportActionComponent),
     },
   },
   {
@@ -67,9 +67,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'quotes',
       load: () =>
-        import('@features/sales/quotes/reporting/components/quote-report-action/quote-report-action.component').then(
-          (module) => module.QuoteReportActionComponent,
-        ),
+        import(
+          '@features/sales/quotes/reporting/components/quote-report-action/quote-report-action.component'
+        ).then((module) => module.QuoteReportActionComponent),
     },
   },
   {
@@ -78,9 +78,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'purchases',
       load: () =>
-        import('@features/procurement/purchases/reporting/components/purchase-report-action/purchase-report-action.component').then(
-          (module) => module.PurchaseReportActionComponent,
-        ),
+        import(
+          '@features/procurement/purchases/reporting/components/purchase-report-action/purchase-report-action.component'
+        ).then((module) => module.PurchaseReportActionComponent),
     },
   },
   {
@@ -89,9 +89,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'invoices',
       load: () =>
-        import('@features/finance/billing/invoices/reporting/components/invoice-report-action/invoice-report-action.component').then(
-          (module) => module.InvoiceReportActionComponent,
-        ),
+        import(
+          '@features/finance/billing/invoices/reporting/components/invoice-report-action/invoice-report-action.component'
+        ).then((module) => module.InvoiceReportActionComponent),
     },
   },
   {
@@ -100,9 +100,20 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'accountsReceivable',
       load: () =>
-        import('@features/finance/treasury/receivables/reporting/components/receivable-report-action/receivable-report-action.component').then(
-          (module) => module.ReceivableReportActionComponent,
-        ),
+        import(
+          '@features/finance/treasury/receivables/reporting/components/receivable-report-action/receivable-report-action.component'
+        ).then((module) => module.ReceivableReportActionComponent),
+    },
+  },
+  {
+    provide: REPORT_ACTION_HANDLERS,
+    multi: true,
+    useValue: {
+      key: 'accountsPayable',
+      load: () =>
+        import(
+          '@features/finance/treasury/payables/reporting/components/payable-report-action/payable-report-action.component'
+        ).then((module) => module.PayableReportActionComponent),
     },
   },
   {
@@ -111,9 +122,9 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
     useValue: {
       key: 'cashRegister',
       load: () =>
-        import('@features/finance/treasury/cash-register/reporting/components/cash-register-report-action/cash-register-report-action.component').then(
-          (module) => module.CashRegisterReportActionComponent,
-        ),
+        import(
+          '@features/finance/treasury/cash-register/reporting/components/cash-register-report-action/cash-register-report-action.component'
+        ).then((module) => module.CashRegisterReportActionComponent),
     },
   },
 ];

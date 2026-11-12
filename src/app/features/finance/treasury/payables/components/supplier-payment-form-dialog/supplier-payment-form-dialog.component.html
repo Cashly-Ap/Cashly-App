@@ -1,0 +1,227 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="title() | translate"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '550px' }"
+  [dismissableMask]="false"
+  [closable]="!loading()"
+  [closeOnEscape]="!loading()"
+  appendTo="body"
+  (visibleChange)="onVisibleChange($event)"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="space-y-5">
+      @if (mode() === 'single' && purchase()) {
+        <div
+          class="rounded-lg border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900/50"
+        >
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.treasury.payables.outstandingBalance' | translate
+            }}</span>
+            <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+              {{ purchase()!.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (mode() !== 'single' && supplierName()) {
+        <div
+          class="rounded-lg border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900/50"
+        >
+          <div class="mb-2 flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'shared.supplier' | translate
+            }}</span>
+            <span class="font-semibold text-surface-900 dark:text-surface-0">
+              {{ supplierName() }}
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+              'finance.treasury.payables.totalDebt' | translate
+            }}</span>
+            <span class="font-mono text-lg font-bold text-red-600 dark:text-red-400">
+              {{ totalDebt() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (showAmountField()) {
+        <div class="space-y-2">
+          <label
+            for="amount"
+            class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+          >
+            {{ 'shared.amount' | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <p-inputNumber
+            inputId="amount"
+            formControlName="amount"
+            mode="currency"
+            currency="USD"
+            [locale]="locale()"
+            [min]="0.01"
+            [max]="maxAmount()"
+            [maxFractionDigits]="2"
+            fluid
+            [class.ng-invalid]="form.get('amount')?.invalid && form.get('amount')?.touched"
+          />
+          @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+            <small class="mt-1 block text-xs text-red-500">
+              @if (form.get('amount')?.errors?.['required']) {
+                {{ 'finance.treasury.payables.amountRequired' | translate }}
+              }
+              @if (form.get('amount')?.errors?.['min']) {
+                {{ 'finance.treasury.payables.amountMustBePositive' | translate }}
+              }
+            </small>
+          }
+          <small class="mt-1 block text-xs text-surface-500 dark:text-surface-400">
+            {{
+              'finance.treasury.payables.maximumAmount'
+                | translate
+                  : { amount: (maxAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2') }
+            }}
+          </small>
+        </div>
+      } @else {
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+            {{ 'finance.treasury.payables.totalAmountToPay' | translate }}
+          </label>
+          <div
+            class="rounded-lg border-2 border-surface-200 bg-surface-50 p-4 text-center dark:border-surface-700 dark:bg-surface-900/50"
+          >
+            <span class="font-mono text-2xl font-bold text-green-600 dark:text-green-400">
+              {{ totalDebt() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      }
+
+      <div class="space-y-2">
+        <label
+          for="paymentDate"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
+          {{ 'finance.treasury.payables.paymentDate' | translate }}
+        </label>
+        <p-datepicker
+          inputId="paymentDate"
+          formControlName="paymentDate"
+          [showIcon]="true"
+          [showButtonBar]="true"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+          [defaultDate]="maxDate"
+          [maxDate]="maxDate"
+          [autofocus]="false"
+          appendTo="body"
+          styleClass="w-full"
+          [class.ng-invalid]="form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched"
+        />
+        @if (form.get('paymentDate')?.invalid && form.get('paymentDate')?.touched) {
+          <small class="mt-1 block text-xs text-red-500">
+            {{ 'finance.treasury.payables.dateIsRequired' | translate }}
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label
+          for="paymentMethod"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
+          {{ 'finance.treasury.cashregister.paymentMethod' | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-select
+          inputId="paymentMethod"
+          formControlName="paymentMethodId"
+          [options]="paymentMethods()"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.treasury.payables.selectAPaymentMethod' | translate"
+          appendTo="body"
+          styleClass="w-full"
+          [class.ng-invalid]="
+            form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched
+          "
+        />
+        @if (form.get('paymentMethodId')?.invalid && form.get('paymentMethodId')?.touched) {
+          <small class="mt-1 block text-xs text-red-500">
+            {{ 'finance.treasury.payables.paymentMethodIsRequired' | translate }}
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label
+          for="reference"
+          class="block text-sm font-semibold text-surface-900 dark:text-surface-0"
+        >
+          {{ 'finance.treasury.payables.reference' | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="reference"
+          type="text"
+          pInputText
+          formControlName="referenceNumber"
+          [placeholder]="'finance.treasury.payables.enterThePaymentReference' | translate"
+          class="w-full"
+          [class.ng-invalid]="
+            form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched
+          "
+        />
+        @if (form.get('referenceNumber')?.invalid && form.get('referenceNumber')?.touched) {
+          <small class="mt-1 block text-xs text-red-500">
+            @if (form.get('referenceNumber')?.errors?.['required']) {
+              {{ 'finance.treasury.payables.referenceRequired' | translate }}
+            }
+            @if (form.get('referenceNumber')?.errors?.['maxlength']) {
+              {{ 'finance.treasury.payables.referenceLengthLimit' | translate }}
+            }
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label for="notes" class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          {{ 'finance.billing.invoices.notes' | translate }}
+        </label>
+        <input
+          id="notes"
+          type="text"
+          pInputText
+          formControlName="notes"
+          [placeholder]="'finance.treasury.cashregister.optionalNotes' | translate"
+          class="w-full"
+        />
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col justify-end gap-2 sm:flex-row">
+      <app-cancel-button
+        [outlined]="false"
+        [disabled]="loading()"
+        styleClass="font-medium w-full sm:w-auto"
+        (cancelled)="onCancel()"
+      />
+      <app-submit-button
+        [permissionModule]="'FINANCE_PAYABLES'"
+        [permission]="'EXECUTE'"
+        labelKey="finance.treasury.payables.recordPayment"
+        (action)="onSubmit()"
+        [disabled]="form.invalid || loading()"
+        [loading]="loading()"
+        styleClass="font-medium w-full sm:w-auto"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
