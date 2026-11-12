@@ -1,0 +1,176 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-[1800px] px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
+    <div class="flex flex-col gap-6">
+      <div class="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <app-page-header
+          class="min-w-0"
+          [title]="'partners.suppliers.supplierBalance' | translate"
+          [subtitle]="'partners.suppliers.balanceAndMovementsOverview' | translate"
+        />
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <app-back-button
+            labelKey="finance.billing.creditnotes.back"
+            severity="contrast"
+            [outlined]="false"
+            styleClass="w-full sm:w-auto !border-surface-900 !bg-surface-900 !text-white hover:!bg-surface-800 dark:!border-surface-100 dark:!bg-surface-100 dark:!text-surface-900 dark:hover:!bg-surface-200"
+            (back)="onBack()"
+          />
+          <p-button
+            [label]="'partners.suppliers.searchSuppliers' | translate"
+            icon="pi pi-search"
+            severity="secondary"
+            [outlined]="true"
+            styleClass="w-full sm:w-auto"
+            (onClick)="supplierPickerVisible.set(true)"
+          />
+        </div>
+      </div>
+
+      <app-supplier-balance-summary-card
+        [supplierBalance]="balance()"
+        [pendingBalance]="pendingBalance()"
+        [supplierName]="supplierName()"
+        [supplierAlias]="supplierAlias()"
+      />
+
+      <app-panel-card [overflowHidden]="true">
+        <div class="p-3 sm:p-5 lg:p-6">
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h2 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+              {{ 'inventory.warehouses.movementHistory2' | translate }}
+            </h2>
+            <app-list-filter
+              #balanceFilter
+              [activeCount]="activeFilterCount()"
+              buttonClass="ml-auto block shrink-0"
+              (cleared)="clearFilters()"
+            >
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-from" class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.from' | translate
+                  }}</label>
+                  <p-datepicker
+                    inputId="balance-filter-from"
+                    [ngModel]="filterDateFrom()"
+                    (ngModelChange)="filterDateFrom.set($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [placeholder]="'finance.billing.invoices.startDate' | translate"
+                    styleClass="w-full"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-to" class="text-xs font-medium text-surface-500">{{
+                    'finance.billing.invoices.to' | translate
+                  }}</label>
+                  <p-datepicker
+                    inputId="balance-filter-to"
+                    [ngModel]="filterDateTo()"
+                    (ngModelChange)="filterDateTo.set($event)"
+                    [showIcon]="true"
+                    dateFormat="dd/mm/yy"
+                    [placeholder]="'finance.billing.invoices.endDate' | translate"
+                    styleClass="w-full"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="balance-filter-type" class="text-xs font-medium text-surface-500">{{
+                  'shared.type' | translate
+                }}</label>
+                <p-select
+                  inputId="balance-filter-type"
+                  [options]="transactionTypeOptions | translateOptions"
+                  [ngModel]="filterType()"
+                  (ngModelChange)="filterType.set($event)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allTypes' | translate"
+                  [showClear]="true"
+                  styleClass="w-full"
+                />
+              </div>
+
+              <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="flex flex-col gap-1">
+                  <label for="balance-filter-number" class="text-xs font-medium text-surface-500">{{
+                    'analytics.dashboard.number' | translate
+                  }}</label>
+                  <input
+                    id="balance-filter-number"
+                    pInputText
+                    type="text"
+                    [ngModel]="filterNumber()"
+                    (ngModelChange)="filterNumber.set($event)"
+                    [placeholder]="'partners.suppliers.eGInv001' | translate"
+                  />
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label
+                    for="balance-filter-reference"
+                    class="text-xs font-medium text-surface-500"
+                    >{{ 'finance.treasury.receivables.reference' | translate }}</label
+                  >
+                  <input
+                    id="balance-filter-reference"
+                    pInputText
+                    type="text"
+                    [ngModel]="filterReference()"
+                    (ngModelChange)="filterReference.set($event)"
+                    [placeholder]="'partners.suppliers.searchReference' | translate"
+                  />
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label for="balance-filter-amount" class="text-xs font-medium text-surface-500">{{
+                  'shared.amount' | translate
+                }}</label>
+                <p-inputnumber
+                  inputId="balance-filter-amount"
+                  [ngModel]="filterAmount()"
+                  (ngModelChange)="filterAmount.set($event)"
+                  mode="currency"
+                  currency="USD"
+                  locale="en-US"
+                  placeholder="$0.00"
+                  styleClass="w-full"
+                  inputStyleClass="w-full"
+                />
+              </div>
+
+              <div
+                class="flex justify-end border-t border-surface-200 pt-3 dark:border-surface-700"
+              >
+                <p-button
+                  [label]="'partners.suppliers.applyFilters' | translate"
+                  icon="pi pi-check"
+                  severity="contrast"
+                  (onClick)="applyFilters(); balanceFilter.close()"
+                />
+              </div>
+            </app-list-filter>
+          </div>
+          <app-supplier-balance-transactions-table
+            [transactions]="transactions()"
+            [loading]="transactionsLoading()"
+            [totalRecords]="totalRecords()"
+            [rows]="pageSize()"
+            [first]="page() * pageSize()"
+            (pageChanged)="onPageChange($event)"
+          />
+        </div>
+      </app-panel-card>
+    </div>
+  </div>
+</div>
+
+@if (supplierPickerVisible()) {
+  <app-supplier-picker-dialog
+    [visible]="true"
+    (supplierSelected)="onSupplierSelected($event)"
+    (cancelled)="supplierPickerVisible.set(false)"
+  />
+}

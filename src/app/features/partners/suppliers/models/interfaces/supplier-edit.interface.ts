@@ -29,6 +29,8 @@ export interface SupplierEdit {
   type: SupplierType;
   rif: string;
   alias: string;
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   emails: SupplierEditEmail[];
   phones: SupplierEditPhone[];
@@ -43,6 +45,8 @@ export interface SupplierFormData {
   type: SupplierType;
   rif: string;
   alias: string;
+  creditDays: number;
+  creditLimit: number;
   active?: boolean;
   emails?: SupplierEditEmail[];
   phones?: SupplierEditPhone[];

@@ -22,6 +22,8 @@ export interface SupplierCreate {
   type: SupplierType;
   rif: string;
   alias: string;
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   emails: SupplierCreateEmail[];
   phones: SupplierCreatePhone[];

@@ -2,3 +2,6 @@ export * from '@features/partners/suppliers/models/interfaces/supplier-list.inte
 export * from '@features/partners/suppliers/models/interfaces/supplier-details.interface';
 export * from '@features/partners/suppliers/models/interfaces/supplier-create.interface';
 export * from '@features/partners/suppliers/models/interfaces/supplier-edit.interface';
+export * from '@features/partners/suppliers/models/interfaces/supplier-balance.interface';
+export * from '@features/partners/suppliers/models/interfaces/supplier-balance-transaction.interface';
+export * from '@features/partners/suppliers/models/interfaces/supplier-balance-action.interface';

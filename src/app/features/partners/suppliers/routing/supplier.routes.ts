@@ -35,6 +35,14 @@ export const SUPPLIER_ROUTES: Routes = [
         title: 'Detalles del Proveedor',
       },
       {
+        path: ':id/balance',
+        loadComponent: () =>
+          import(
+            '@features/partners/suppliers/pages/suppliers-balance-page/suppliers-balance-page.component'
+          ).then((m) => m.SuppliersBalancePageComponent),
+        title: 'Saldo del Proveedor',
+      },
+      {
         path: ':id/edit',
         loadComponent: () =>
           import(

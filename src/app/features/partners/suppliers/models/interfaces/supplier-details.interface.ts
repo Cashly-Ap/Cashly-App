@@ -30,6 +30,8 @@ export interface SupplierDetails {
   type: SupplierType;
   rif: string;
   alias: string;
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   createdAt: string;
   emails: SupplierEmail[];

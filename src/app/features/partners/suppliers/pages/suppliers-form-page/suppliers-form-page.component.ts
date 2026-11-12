@@ -41,6 +41,9 @@ interface SupplierFormData {
   type: SupplierType | string;
   rif: string;
   alias: string;
+  paymentType: 'CASH' | 'CREDIT';
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   emails: string[];
   phones: string[];
@@ -88,6 +91,8 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
     legalName: 'shared.fields.legalName',
     type: 'shared.fields.supplierType',
     rif: 'shared.fields.rif',
+    creditDays: 'shared.fields.creditDays',
+    creditLimit: 'shared.fields.creditLimit',
     emails: 'shared.fields.emails',
     phones: 'shared.fields.phones',
     addresses: 'shared.fields.addresses',
@@ -121,6 +126,12 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
       type: [SupplierType.JURIDICO, Validators.required],
       rif: ['', [Validators.required, SupplierValidators.rif()]],
       alias: ['', [SupplierValidators.supplierAlias()]],
+      paymentType: ['CASH', Validators.required],
+      creditDays: [
+        { value: 0, disabled: true },
+        [Validators.required, Validators.min(0), Validators.max(365)],
+      ],
+      creditLimit: [{ value: 0, disabled: true }, [Validators.required, Validators.min(0)]],
       active: [true],
       emails: this.fb.array([]),
       phones: this.fb.array([]),
@@ -159,6 +170,9 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
       type: data.type,
       rif: data.rif,
       alias: data.alias,
+      paymentType: data.paymentType ?? 'CASH',
+      creditDays: data.creditDays ?? 0,
+      creditLimit: data.creditLimit ?? 0,
       active: data.active,
       notes: data.notes ?? '',
     });
@@ -196,6 +210,9 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
           type: formModel.type,
           rif: formModel.rif,
           alias: formModel.alias,
+          paymentType: (formModel.creditDays ?? 0) > 0 ? 'CREDIT' : 'CASH',
+          creditDays: formModel.creditDays,
+          creditLimit: formModel.creditLimit,
           active: formModel.active,
           notes: formModel.notes ?? '',
         });
@@ -223,6 +240,8 @@ export class SuppliersFormPageComponent extends BaseFormComponent<SupplierFormDa
         type: formValue.type as SupplierType,
         rif: formValue.rif,
         alias: formValue.alias,
+        creditDays: formValue.paymentType === 'CREDIT' ? (formValue.creditDays ?? 0) : 0,
+        creditLimit: formValue.paymentType === 'CREDIT' ? (formValue.creditLimit ?? 0) : 0,
         active: formValue.active,
         emails: formValue.emails.map((email) => ({ id: '', supplierId: '', email })),
         phones: formValue.phones.map((phone) => ({ id: '', supplierId: '', phone })),

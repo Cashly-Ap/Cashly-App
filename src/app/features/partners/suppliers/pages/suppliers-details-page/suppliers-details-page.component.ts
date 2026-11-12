@@ -1,4 +1,4 @@
-import { LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
@@ -20,6 +20,10 @@ import { MessageService } from 'primeng/api';
 import { SupplierApplicationService } from '@features/partners/suppliers/services/application/supplier-application.service';
 import { SupplierDetails } from '@features/partners/suppliers/models/interfaces/supplier-details.interface';
 import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/supplier-type.enum';
+import { PayablesApiService } from '@features/finance/treasury/payables/services/api/payables-api.service';
+import { SupplierDebtSummary } from '@features/finance/treasury/payables/models/interfaces/supplier-debt-summary.interface';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
 import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
@@ -31,6 +35,7 @@ import { BackButtonComponent } from '@shared/components/ui/back-button/back-butt
     PanelCardComponent,
     TranslatePipe,
     LocalizedDatePipe,
+    LocalizedCurrencyPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,
@@ -52,8 +57,19 @@ export class SuppliersDetailsPageComponent implements OnInit {
   private router = inject(Router);
   private messageService = inject(MessageService);
   private readonly deletion = inject(DeleteDialogService);
+  private readonly authService = inject(AuthService);
+  private readonly payablesApi = inject(PayablesApiService);
 
   supplier = signal<SupplierDetails | null>(null);
+  readonly credit = signal<SupplierDebtSummary | null>(null);
+  readonly paymentTypeLabel = computed(() =>
+    (this.supplier()?.creditDays ?? 0) > 0
+      ? 'finance.treasury.payables.credit'
+      : 'finance.treasury.payables.cash',
+  );
+  readonly showBalance = computed(() =>
+    this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES),
+  );
   loading = signal(false);
 
   ngOnInit(): void {
@@ -69,6 +85,10 @@ export class SuppliersDetailsPageComponent implements OnInit {
       next: (supplier) => {
         this.supplier.set(supplier);
         this.loading.set(false);
+        this.payablesApi.getSupplierDebt(id).subscribe({
+          next: (credit) => this.credit.set(credit),
+          error: () => this.credit.set(null),
+        });
       },
       error: () => {
         this.loading.set(false);
@@ -96,6 +116,11 @@ export class SuppliersDetailsPageComponent implements OnInit {
     this.deletion.open('suppliers', item.id, item.legalName, () =>
       this.router.navigate(['/partners/suppliers']),
     );
+  }
+
+  onViewBalance(): void {
+    const id = this.supplier()?.id;
+    if (id) this.router.navigate(['/partners/suppliers', id, 'balance']);
   }
 
   onBack(): void {

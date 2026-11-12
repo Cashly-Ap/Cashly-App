@@ -36,6 +36,15 @@
                   (onClick)="actionsMenu.hide(); onEdit()"
                   styleClass="w-full justify-start text-left text-sm"
                 />
+                @if (showBalance()) {
+                  <p-button
+                    [label]="'partners.suppliers.viewBalance' | translate"
+                    icon="pi pi-wallet"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onViewBalance()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
                 <p-button
                   [appPermission]="'DELETE'"
                   [label]="'finance.billing.creditnotes.delete' | translate"
@@ -74,6 +83,42 @@
                 type="badge"
                 ><app-status-badge [active]="currentSupplier.active"
               /></app-details-info-field>
+              <app-details-info-field
+                [label]="'partners.customers.paymentTerms' | translate"
+                type="badge"
+                ><app-text-badge [label]="paymentTypeLabel() | translate" variant="label"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'partners.suppliers.creditDays' | translate"
+                [value]="currentSupplier.creditDays + ' ' + ('partners.suppliers.days' | translate)"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.creditLimit' | translate"
+                [value]="
+                  (currentSupplier.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2') ||
+                  ''
+                "
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.supplierBalance' | translate"
+                [value]="
+                  (credit()?.supplierBalance ?? 0
+                    | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
+                "
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.totalDebt' | translate"
+                [value]="
+                  (credit()?.totalDebt ?? 0 | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
+                "
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.availableCredit' | translate"
+                [value]="
+                  (credit()?.availableCredit ?? 0
+                    | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
+                "
+              />
               <app-details-info-field
                 [label]="'partners.suppliers.registrationDate' | translate"
                 [value]="(currentSupplier.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"

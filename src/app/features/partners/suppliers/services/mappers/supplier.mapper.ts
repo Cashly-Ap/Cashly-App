@@ -11,6 +11,8 @@ export interface SupplierFormModel {
   type: string;
   rif: string;
   alias: string;
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   emails: Array<{ id?: string; supplierId?: string; email: string }>;
   phones: Array<{ id?: string; supplierId?: string; phone: string }>;
@@ -37,6 +39,8 @@ export class SupplierMapper {
       legalName: details.legalName,
       rif: details.rif,
       type: details.type,
+      creditDays: details.creditDays,
+      creditLimit: details.creditLimit,
       active: details.active,
       hasPurchases: false,
     };
@@ -50,6 +54,8 @@ export class SupplierMapper {
       type: details.type,
       rif: details.rif,
       alias: details.alias,
+      creditDays: details.creditDays,
+      creditLimit: details.creditLimit,
       active: details.active,
       emails: details.emails.map((e) => ({ id: e.id, supplierId: e.supplierId, email: e.email })),
       phones: details.phones.map((p) => ({ id: p.id, supplierId: p.supplierId, phone: p.phone })),
@@ -73,6 +79,8 @@ export class SupplierMapper {
       type: form.type as SupplierCreate['type'],
       rif: form.rif,
       alias: form.alias,
+      creditDays: form.creditDays ?? 0,
+      creditLimit: form.creditLimit ?? 0,
       active: form.active ?? true,
       emails: form.emails.map((e) => ({ email: e.email })),
       phones: form.phones.map((p) => ({ phone: p.phone })),
@@ -95,6 +103,8 @@ export class SupplierMapper {
       type: form.type as SupplierEdit['type'],
       rif: form.rif,
       alias: form.alias,
+      creditDays: form.creditDays ?? 0,
+      creditLimit: form.creditLimit ?? 0,
       active: form.active ?? true,
       emails: form.emails.map((e) => ({ email: e.email })),
       phones: form.phones.map((p) => ({ phone: p.phone })),

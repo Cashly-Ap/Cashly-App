@@ -32,6 +32,36 @@
     [errorMessage]="'partners.suppliers.labels.aSupplierTypeIsRequired' | translate"
   />
 
+  <app-select-input
+    [control]="control('paymentType')"
+    [label]="'partners.customers.paymentTerms' | translate"
+    [placeholder]="'partners.customers.selectPaymentTerms' | translate"
+    [options]="paymentTypes"
+    optionLabel="label"
+    optionValue="value"
+    [errorMessage]="'partners.customers.labels.aPaymentTermIsRequired' | translate"
+  />
+
+  @if (isCreditPayment()) {
+    <app-number-input
+      [control]="control('creditDays')"
+      [label]="'partners.suppliers.creditDays' | translate"
+      [min]="0"
+      [max]="365"
+      [errorMessage]="'partners.suppliers.labels.creditDaysMustBeBetween0And365' | translate"
+    />
+
+    <app-number-input
+      [control]="control('creditLimit')"
+      [label]="'partners.suppliers.creditLimit' | translate"
+      [min]="0"
+      mode="decimal"
+      [minFractionDigits]="2"
+      [maxFractionDigits]="2"
+      [errorMessage]="'partners.suppliers.labels.theCreditLimitCannotBeNegative' | translate"
+    />
+  }
+
   @if (isEditMode()) {
     <div
       [formGroup]="form()"

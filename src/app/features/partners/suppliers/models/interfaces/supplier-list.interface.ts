@@ -7,6 +7,8 @@ export interface SupplierList {
   legalName: string;
   rif: string;
   type: SupplierType;
+  creditDays: number;
+  creditLimit: number;
   active: boolean;
   hasPurchases: boolean;
 }

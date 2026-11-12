@@ -37,6 +37,7 @@ import {
   editAction,
   deleteAction,
   auditHistoryAction,
+  listAction,
 } from '@shared/components/list';
 import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
@@ -49,6 +50,8 @@ import {
   SUPPLIER_TYPES,
 } from '@features/partners/suppliers/models/enums/supplier-type.enum';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import {
   VENEZUELA_STATE_NAMES,
   getMunicipalitiesForState,
@@ -97,6 +100,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
   providers: [provideTranslatedConfirmation()],
 })
 export class SuppliersListPageComponent implements OnInit {
+  private readonly authService = inject(AuthService);
   private readonly deletion = inject(DeleteDialogService);
   private service = inject(SupplierApplicationService);
   private router = inject(Router);
@@ -274,11 +278,23 @@ export class SuppliersListPageComponent implements OnInit {
     this.router.navigate(['/partners/suppliers', supplier.id, 'edit']);
   }
 
+  onViewBalance(supplier: SupplierList): void {
+    if (!this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES)) return;
+    this.router.navigate(['/partners/suppliers', supplier.id, 'balance']);
+  }
+
   actionsFor(supplier: SupplierList): ListAction[] {
     const actions: ListAction[] = [
       viewAction(() => this.onView(supplier)),
       editAction(() => this.onEdit(supplier)),
     ];
+    if (this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES)) {
+      actions.push(
+        listAction('Ver saldo', 'READ', 'wallet', () => this.onViewBalance(supplier), {
+          module: BusinessModule.FINANCE_PAYABLES,
+        }),
+      );
+    }
     if (!supplier.hasPurchases) {
       actions.push(deleteAction(() => this.onDelete(supplier)));
     }
