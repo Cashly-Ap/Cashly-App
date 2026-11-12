@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 
 import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
 import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
@@ -25,13 +26,14 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { DatePickerModule } from 'primeng/datepicker';
 import { PaginatorModule } from 'primeng/paginator';
-import { PopoverModule } from 'primeng/popover';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { TooltipModule } from 'primeng/tooltip';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
-import { CashRegisterHistoryView } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
+import { CashRegisterResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-register/models/enums/cash-movement-type.enum';
+import { CashRegisterMovementsDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-movements-dialog/cash-register-movements-dialog.component';
 
 import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
@@ -69,6 +71,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     IconFieldModule,
     InputIconModule,
     TooltipModule,
+    CashRegisterMovementsDialogComponent,
   ],
   templateUrl: './cash-register-history-page.component.html',
 })
@@ -90,7 +93,10 @@ export class CashRegisterHistoryPageComponent implements OnInit {
   readonly filterDateTo = signal<Date | null>(null);
   readonly orderBy = signal('openedAt');
   readonly orderDir = signal<'asc' | 'desc'>('desc');
-  readonly viewMode = signal<CashRegisterHistoryView>('SIMPLE');
+  readonly selectedRegister = signal<CashRegisterResponse | null>(null);
+  readonly movementsRegister = signal<CashRegisterResponse | null>(null);
+  readonly movementsDialogVisible = signal(false);
+  readonly movementsLoading = signal(false);
 
   readonly activeFilterCount = computed(() => {
     let count = 0;
@@ -156,11 +162,38 @@ export class CashRegisterHistoryPageComponent implements OnInit {
     this.loadHistory();
   }
 
-  onViewModeChange(view: CashRegisterHistoryView): void {
-    if (this.viewMode() === view) return;
-    this.viewMode.set(view);
-    this.first.set(0);
-    this.loadHistory();
+  openRowActions(event: Event, register: CashRegisterResponse, popover: Popover): void {
+    this.selectedRegister.set(register);
+    popover.toggle(event);
+  }
+
+  onViewMovements(): void {
+    const register = this.selectedRegister();
+    if (!register) return;
+
+    this.movementsRegister.set(register);
+    this.movementsDialogVisible.set(true);
+    this.movementsLoading.set(true);
+
+    this.service
+      .getSessionById(register.id)
+      .pipe(
+        finalize(() => this.movementsLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (session) => {
+          if (session) this.movementsRegister.set(session);
+        },
+      });
+  }
+
+  onViewDetail(): void {
+    const register = this.selectedRegister();
+    if (!register) return;
+    this.router.navigate(['/finance/treasury/cash-register'], {
+      queryParams: { session: register.id },
+    });
   }
 
   onBack(): void {
@@ -200,7 +233,7 @@ export class CashRegisterHistoryPageComponent implements OnInit {
       : undefined;
 
     this.service
-      .loadHistory(this.currentPage, this.rows(), dateFrom, dateTo, sort, this.viewMode())
+      .loadHistory(this.currentPage, this.rows(), dateFrom, dateTo, sort, 'SIMPLE')
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe();
   }

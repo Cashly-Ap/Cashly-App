@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import {
   CashRegisterActionDialogService,
@@ -15,7 +16,6 @@ import {
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
 import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
-import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 
 const ACTION_LABELS: Record<CashRegisterActionKind, string> = {
   open: 'Abrir caja',
@@ -27,22 +27,18 @@ const ACTION_LABELS: Record<CashRegisterActionKind, string> = {
   selector: 'app-cash-register-action-dialog-host',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    CashRegisterOpenDialogComponent,
-    CashRegisterCloseDialogComponent,
-    CashRegisterDetailDialogComponent,
-  ],
+  imports: [CashRegisterOpenDialogComponent, CashRegisterCloseDialogComponent],
   templateUrl: './cash-register-action-dialog-host.component.html',
 })
 export class CashRegisterActionDialogHostComponent {
   private readonly actions = inject(CashRegisterActionDialogService);
   private readonly service = inject(CashRegisterApplicationService);
   private readonly messages = inject(MessageService);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly openVisible = signal(false);
   readonly closeVisible = signal(false);
-  readonly detailVisible = signal(false);
 
   private requestVersion = 0;
 
@@ -57,13 +53,15 @@ export class CashRegisterActionDialogHostComponent {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           if (version !== this.requestVersion) return;
+
+          if (request.action === 'detail') {
+            this.actions.close();
+            this.router.navigate(['/finance/treasury/cash-register']);
+            return;
+          }
+
           const closure = this.service.activeClosure();
-          const eligible =
-            request.action === 'open'
-              ? !closure
-              : request.action === 'close'
-                ? closure?.status === 'OPEN'
-                : !!closure;
+          const eligible = request.action === 'open' ? !closure : closure?.status === 'OPEN';
 
           if (!eligible) {
             this.messages.add({
@@ -82,9 +80,6 @@ export class CashRegisterActionDialogHostComponent {
             case 'close':
               this.closeVisible.set(true);
               return;
-            case 'detail':
-              this.detailVisible.set(true);
-              return;
           }
         });
     });
@@ -98,12 +93,6 @@ export class CashRegisterActionDialogHostComponent {
 
   onCloseClosed(isVisible: boolean): void {
     this.closeVisible.set(isVisible);
-    if (isVisible) return;
-    this.actions.close();
-  }
-
-  onDetailClosed(isVisible: boolean): void {
-    this.detailVisible.set(isVisible);
     if (isVisible) return;
     this.actions.close();
   }

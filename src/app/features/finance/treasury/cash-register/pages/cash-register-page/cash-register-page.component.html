@@ -48,6 +48,15 @@
               class="flex-[1.4]"
               (onClick)="onViewHistory()"
             />
+            <p-button
+              [label]="'finance.treasury.cashregister.viewRegisters' | translate"
+              icon="pi pi-box"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full h-full whitespace-nowrap"
+              class="flex-1"
+              (onClick)="onOpenSessionPicker()"
+            />
           </div>
         </div>
       </app-panel-card>
@@ -81,11 +90,11 @@
               <p-popover #actionsPopover>
                 <div class="flex min-w-48 flex-col gap-1 p-1">
                   <p-button
-                    [label]="'finance.treasury.cashregister.viewDetails' | translate"
-                    icon="pi pi-table"
+                    [label]="'finance.treasury.cashregister.viewRegisters' | translate"
+                    icon="pi pi-box"
                     [link]="true"
                     styleClass="w-full justify-start text-left text-sm"
-                    (click)="actionsPopover.hide(); onOpenDetailDialog()"
+                    (click)="actionsPopover.hide(); onOpenSessionPicker()"
                   />
                   <p-button
                     [label]="'finance.treasury.cashregister.viewHistory' | translate"
@@ -367,4 +376,7 @@
 
 <app-cash-register-open-dialog [(visible)]="openDialogVisible" />
 <app-cash-register-close-dialog [(visible)]="closeDialogVisible" />
-<app-cash-register-detail-dialog [(visible)]="detailDialogVisible" />
+<app-cash-register-session-picker-dialog
+  [(visible)]="sessionPickerVisible"
+  (selected)="onSelectSession($event)"
+/>

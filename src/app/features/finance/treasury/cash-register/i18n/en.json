@@ -114,5 +114,16 @@
   "finance.treasury.cashregister.balanceEvolution": "Balance evolution",
   "finance.treasury.cashregister.balanceEvolutionSubtitle": "Running balance across the session",
   "finance.treasury.cashregister.nonCashMovements": "Documents not affecting cash",
-  "finance.treasury.cashregister.nonCashMovementsSubtitle": "Credit notes, returns and debit notes do not change the cash balance."
+  "finance.treasury.cashregister.nonCashMovementsSubtitle": "Credit notes, returns and debit notes do not change the cash balance.",
+  "finance.treasury.cashregister.viewRegisters": "View cash registers",
+  "finance.treasury.cashregister.viewInDetail": "View in detail",
+  "finance.treasury.cashregister.viewMovements": "View movements",
+  "finance.treasury.cashregister.selectSession": "Select an open or closed cash register to view its detail.",
+  "finance.treasury.cashregister.select": "Select",
+  "finance.treasury.cashregister.sessionNotFound": "Cash session not found",
+  "finance.treasury.cashregister.couldNotLoadTheCashSession": "Could not load the cash session",
+  "finance.treasury.cashregister.searchSessions": "Search cash registers",
+  "finance.treasury.cashregister.register": "cash register",
+  "finance.treasury.cashregister.registers": "cash registers",
+  "finance.treasury.cashregister.statusAll": "All statuses"
 }

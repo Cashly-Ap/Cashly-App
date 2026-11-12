@@ -114,5 +114,16 @@
   "finance.treasury.cashregister.balanceEvolution": "Evolución del saldo",
   "finance.treasury.cashregister.balanceEvolutionSubtitle": "Saldo acumulado a lo largo de la sesión",
   "finance.treasury.cashregister.nonCashMovements": "Documentos sin efecto en caja",
-  "finance.treasury.cashregister.nonCashMovementsSubtitle": "Notas de crédito, devoluciones y notas de débito no modifican el efectivo de la caja."
+  "finance.treasury.cashregister.nonCashMovementsSubtitle": "Notas de crédito, devoluciones y notas de débito no modifican el efectivo de la caja.",
+  "finance.treasury.cashregister.viewRegisters": "Ver cajas",
+  "finance.treasury.cashregister.viewInDetail": "Ver en detalle",
+  "finance.treasury.cashregister.viewMovements": "Ver movimientos",
+  "finance.treasury.cashregister.selectSession": "Selecciona una caja abierta o cerrada para ver su detalle.",
+  "finance.treasury.cashregister.select": "Seleccionar",
+  "finance.treasury.cashregister.sessionNotFound": "No se encontró la sesión de caja",
+  "finance.treasury.cashregister.couldNotLoadTheCashSession": "Error al cargar la sesión de caja",
+  "finance.treasury.cashregister.searchSessions": "Buscar cajas",
+  "finance.treasury.cashregister.register": "caja",
+  "finance.treasury.cashregister.registers": "cajas",
+  "finance.treasury.cashregister.statusAll": "Todos los estados"
 }

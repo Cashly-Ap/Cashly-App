@@ -19,6 +19,7 @@ export class CashRegisterApplicationService {
   private readonly authService = inject(AuthService);
 
   readonly activeClosure = signal<CashRegisterResponse | null>(null);
+  readonly selectedClosure = signal<CashRegisterResponse | null>(null);
   readonly loading = signal(false);
   readonly error = signal<string | null>(null);
   readonly history = signal<CashRegisterResponse[]>([]);
@@ -52,6 +53,47 @@ export class CashRegisterApplicationService {
       catchError(() => of(null)),
       finalize(() => this.loading.set(false)),
     );
+  }
+
+  loadSession(id: string): Observable<CashRegisterResponse | null> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.getSession(id).pipe(
+      tap({
+        next: (closure) => {
+          this.selectedClosure.set(closure);
+          if (!closure) {
+            this.error.set('No se encontró la sesión de caja');
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'No se encontró la sesión de caja',
+              life: 5000,
+            });
+          }
+        },
+        error: () => {
+          this.error.set('Error al cargar la sesión de caja');
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Error al cargar la sesión de caja',
+            life: 5000,
+          });
+        },
+      }),
+      catchError(() => of(null)),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  getSessionById(id: string): Observable<CashRegisterResponse | null> {
+    return this.api.getSession(id);
+  }
+
+  clearSelectedClosure(): void {
+    this.selectedClosure.set(null);
   }
 
   openRegister(
@@ -96,8 +138,11 @@ export class CashRegisterApplicationService {
 
     return this.api.close(id, request).pipe(
       tap({
-        next: () => {
+        next: (closure) => {
           this.activeClosure.set(null);
+          if (closure && this.selectedClosure()?.id === closure.id) {
+            this.selectedClosure.set(closure);
+          }
           this.messageService.add({
             severity: 'success',
             summary: 'Éxito',

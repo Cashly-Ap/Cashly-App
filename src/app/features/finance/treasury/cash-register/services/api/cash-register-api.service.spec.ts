@@ -38,6 +38,16 @@ describe('CashRegisterApiService', () => {
     request.flush({ content: [] });
   });
 
+  it('loads a single detailed session by register id', () => {
+    service.getSession('register-1').subscribe();
+
+    const request = http.expectOne((candidate) => candidate.url === `${baseUrl}/history`);
+    expect(request.request.params.get('registerId')).toBe('register-1');
+    expect(request.request.params.get('detailed')).toBe('true');
+    expect(request.request.params.get('size')).toBe('1');
+    request.flush({ content: [] });
+  });
+
   it('downloads a simple PDF for a selected session', () => {
     service.exportSession('register-1', 'PDF', 'SIMPLE').subscribe();
 

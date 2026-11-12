@@ -36,26 +36,6 @@
             </app-list-filter>
           </div>
           <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-            <div
-              class="grid w-full grid-cols-2 rounded-lg border border-surface-200 p-1 dark:border-surface-700 sm:w-auto"
-            >
-              <p-button
-                [label]="'finance.billing.invoices.simple' | translate"
-                size="small"
-                [text]="viewMode() !== 'SIMPLE'"
-                [severity]="viewMode() === 'SIMPLE' ? 'contrast' : 'secondary'"
-                styleClass="w-full"
-                (onClick)="onViewModeChange('SIMPLE')"
-              />
-              <p-button
-                [label]="'finance.billing.invoices.detailed' | translate"
-                size="small"
-                [text]="viewMode() !== 'DETAILED'"
-                [severity]="viewMode() === 'DETAILED' ? 'contrast' : 'secondary'"
-                styleClass="w-full"
-                (onClick)="onViewModeChange('DETAILED')"
-              />
-            </div>
             <app-back-button
               labelKey="finance.billing.creditnotes.back"
               styleClass="w-full sm:w-auto"
@@ -118,10 +98,20 @@
                         }
                       </p>
                     </div>
-                    <app-text-badge
-                      [label]="getStatusLabel(register.status) | translate"
-                      [severity]="getStatusSeverity(register.status)"
-                    />
+                    <div class="flex shrink-0 items-center gap-2">
+                      <app-text-badge
+                        [label]="getStatusLabel(register.status) | translate"
+                        [severity]="getStatusSeverity(register.status)"
+                      />
+                      <p-button
+                        icon="pi pi-ellipsis-v"
+                        [text]="true"
+                        [rounded]="true"
+                        severity="secondary"
+                        size="small"
+                        (onClick)="openRowActions($event, register, rowActionsPopover)"
+                      />
+                    </div>
                   </div>
 
                   <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
@@ -183,76 +173,6 @@
                       </dd>
                     </div>
                   </dl>
-
-                  @if (viewMode() === 'DETAILED') {
-                    <div class="mt-4 border-t border-surface-200 pt-4 dark:border-surface-700">
-                      <div class="mb-3 flex items-center justify-between gap-2">
-                        <span
-                          class="text-xs font-semibold uppercase tracking-wide text-surface-500"
-                          >{{ 'finance.treasury.cashregister.movements' | translate }}</span
-                        >
-                        <span class="text-xs text-surface-500"
-                          >{{ register.movements.length }}
-                          {{ 'finance.treasury.cashregister.transactions' | translate }}</span
-                        >
-                      </div>
-                      @if (register.movements.length === 0) {
-                        <p class="text-sm text-surface-500">
-                          {{
-                            'finance.treasury.cashregister.thisSessionHasNoRecordedMovements'
-                              | translate
-                          }}
-                        </p>
-                      } @else {
-                        <div class="grid gap-2">
-                          @for (movement of register.movements; track movement.id) {
-                            <div
-                              class="grid grid-cols-[auto_1fr] gap-3 rounded-lg bg-surface-50 p-3 dark:bg-surface-800"
-                            >
-                              <i
-                                [class]="
-                                  movement.direction === 'IN'
-                                    ? 'pi pi-arrow-down-left text-green-600'
-                                    : 'pi pi-arrow-up-right text-red-600'
-                                "
-                              ></i>
-                              <div class="min-w-0">
-                                <div class="flex flex-wrap justify-between gap-2">
-                                  <p class="min-w-0 break-words text-sm font-medium">
-                                    {{
-                                      movement.description || getMovementTypeLabel(movement.type)
-                                        | translate
-                                    }}
-                                  </p>
-                                  <span
-                                    [class]="
-                                      movement.direction === 'IN'
-                                        ? 'font-medium text-green-600'
-                                        : 'font-medium text-red-600'
-                                    "
-                                  >
-                                    {{ movement.direction === 'IN' ? '+' : '-'
-                                    }}{{
-                                      movement.amount
-                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                                    }}
-                                  </span>
-                                </div>
-                                <p class="mt-1 break-words text-xs text-surface-500">
-                                  {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
-                                  {{ movement.paymentMethodName }} ·
-                                  {{
-                                    movement.createdByName ||
-                                      ('finance.treasury.cashregister.system' | translate)
-                                  }}
-                                </p>
-                              </div>
-                            </div>
-                          }
-                        </div>
-                      }
-                    </div>
-                  }
                 </app-panel-card>
               }
             </div>
@@ -319,6 +239,9 @@
                     <th class="w-28 text-right">
                       {{ 'finance.treasury.cashregister.difference' | translate }}
                     </th>
+                    <th class="w-16 text-right">
+                      {{ 'shared.actions' | translate }}
+                    </th>
                   </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-register>
@@ -384,82 +307,17 @@
                         }}</span
                       >
                     </td>
+                    <td class="text-right">
+                      <p-button
+                        icon="pi pi-ellipsis-v"
+                        [text]="true"
+                        [rounded]="true"
+                        severity="secondary"
+                        size="small"
+                        (onClick)="openRowActions($event, register, rowActionsPopover)"
+                      />
+                    </td>
                   </tr>
-                  @if (viewMode() === 'DETAILED') {
-                    <tr>
-                      <td colspan="8" class="!p-0">
-                        <div
-                          class="border-y border-surface-200 bg-surface-50 px-5 py-4 dark:border-surface-700 dark:bg-surface-900"
-                        >
-                          <div class="mb-3 flex items-center justify-between">
-                            <span
-                              class="text-xs font-semibold uppercase tracking-wide text-surface-500"
-                              >{{
-                                'finance.treasury.cashregister.sessionMovements' | translate
-                              }}</span
-                            >
-                            <span class="text-xs text-surface-500"
-                              >{{ register.movements.length }}
-                              {{ 'finance.treasury.cashregister.transactions' | translate }}</span
-                            >
-                          </div>
-                          @if (register.movements.length === 0) {
-                            <p class="text-sm text-surface-500">
-                              {{
-                                'finance.treasury.cashregister.thisSessionHasNoRecordedMovements'
-                                  | translate
-                              }}
-                            </p>
-                          } @else {
-                            <div class="grid gap-2">
-                              @for (movement of register.movements; track movement.id) {
-                                <div
-                                  class="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg bg-surface-0 px-3 py-2 dark:bg-surface-800"
-                                >
-                                  <i
-                                    [class]="
-                                      movement.direction === 'IN'
-                                        ? 'pi pi-arrow-down-left text-green-600'
-                                        : 'pi pi-arrow-up-right text-red-600'
-                                    "
-                                  ></i>
-                                  <div>
-                                    <p class="text-sm font-medium">
-                                      {{
-                                        movement.description || getMovementTypeLabel(movement.type)
-                                          | translate
-                                      }}
-                                    </p>
-                                    <p class="text-xs text-surface-500">
-                                      {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
-                                      · {{ movement.paymentMethodName }} ·
-                                      {{
-                                        movement.createdByName ||
-                                          ('finance.treasury.cashregister.system' | translate)
-                                      }}
-                                    </p>
-                                  </div>
-                                  <span
-                                    [class]="
-                                      movement.direction === 'IN'
-                                        ? 'font-medium text-green-600'
-                                        : 'font-medium text-red-600'
-                                    "
-                                  >
-                                    {{ movement.direction === 'IN' ? '+' : '-'
-                                    }}{{
-                                      movement.amount
-                                        | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
-                                    }}
-                                  </span>
-                                </div>
-                              }
-                            </div>
-                          }
-                        </div>
-                      </td>
-                    </tr>
-                  }
                 </ng-template>
               </p-table>
             </div>
@@ -477,9 +335,33 @@
                 (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
               />
             </div>
+            <p-popover #rowActionsPopover>
+              <div class="flex min-w-52 flex-col gap-1 p-1">
+                <p-button
+                  [label]="'finance.treasury.cashregister.viewMovements' | translate"
+                  icon="pi pi-list"
+                  [link]="true"
+                  styleClass="w-full justify-start text-left text-sm"
+                  (click)="rowActionsPopover.hide(); onViewMovements()"
+                />
+                <p-button
+                  [label]="'finance.treasury.cashregister.viewInDetail' | translate"
+                  icon="pi pi-chart-bar"
+                  [link]="true"
+                  styleClass="w-full justify-start text-left text-sm"
+                  (click)="rowActionsPopover.hide(); onViewDetail()"
+                />
+              </div>
+            </p-popover>
           }
         </div>
       </app-list-container>
     }
   </div>
 </div>
+
+<app-cash-register-movements-dialog
+  [(visible)]="movementsDialogVisible"
+  [register]="movementsRegister()"
+  [loading]="movementsLoading()"
+/>

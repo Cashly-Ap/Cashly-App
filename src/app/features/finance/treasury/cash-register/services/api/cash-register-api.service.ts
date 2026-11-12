@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '@env/environment';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
@@ -53,6 +53,12 @@ export class CashRegisterApiService {
     );
   }
 
+  getSession(id: string): Observable<CashRegisterResponse | null> {
+    return this.getHistory(0, 1, undefined, undefined, 'openedAt,desc', 'DETAILED', id).pipe(
+      map((response) => response.content?.[0] ?? null),
+    );
+  }
+
   getHistory(
     page: number,
     size: number,
@@ -60,11 +66,13 @@ export class CashRegisterApiService {
     dateTo?: string,
     sort?: string,
     view: CashRegisterHistoryView = 'SIMPLE',
+    registerId?: string,
   ): Observable<PagedResponse<CashRegisterResponse>> {
     let params = new HttpParams().set('page', page.toString()).set('size', size.toString());
     if (dateFrom) params = params.set('dateFrom', dateFrom);
     if (dateTo) params = params.set('dateTo', dateTo);
     if (sort) params = params.set('sort', sort);
+    if (registerId) params = params.set('registerId', registerId);
     params = params.set('detailed', String(view === 'DETAILED'));
     return this.http.get<PagedResponse<CashRegisterResponse>>(`${this.baseUrl}/history`, {
       params,

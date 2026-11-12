@@ -1,0 +1,95 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="'finance.treasury.cashregister.sessionMovements' | translate"
+  [modal]="true"
+  [style]="{ width: 'min(720px, calc(100vw - 2rem))' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="visible.set($event)"
+>
+  @if (register(); as session) {
+    <div
+      class="mb-4 flex flex-wrap items-center gap-2 text-sm text-surface-500 dark:text-surface-400"
+    >
+      <span class="font-medium text-surface-900 dark:text-surface-0">
+        {{ session.openedAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+      </span>
+      <span>·</span>
+      <span>{{ session.openedByName }}</span>
+      <span>·</span>
+      <span>
+        {{ movements().length }} {{ 'finance.treasury.cashregister.transactions' | translate }}
+      </span>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="flex items-center justify-center gap-3 py-10">
+      <i class="pi pi-spin pi-spinner text-2xl text-primary"></i>
+      <span class="text-sm text-surface-500">
+        {{ 'finance.treasury.cashregister.loadingHistory' | translate }}
+      </span>
+    </div>
+  } @else if (movements().length === 0) {
+    <div class="flex flex-col items-center px-4 py-10 text-center" role="status">
+      <div
+        class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+      >
+        <i class="pi pi-inbox text-2xl text-surface-500 dark:text-surface-400"></i>
+      </div>
+      <h3 class="mt-4 text-lg font-semibold text-surface-900 dark:text-surface-0">
+        {{ 'finance.treasury.cashregister.noMovements' | translate }}
+      </h3>
+      <p class="mt-2 max-w-sm text-sm text-surface-500 dark:text-surface-400">
+        {{ 'finance.treasury.cashregister.thisSessionHasNoRecordedMovements' | translate }}
+      </p>
+    </div>
+  } @else {
+    <div class="grid max-h-[60vh] gap-2 overflow-y-auto pr-1">
+      @for (movement of movements(); track movement.id) {
+        <div
+          class="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-lg bg-surface-50 px-3 py-2 dark:bg-surface-800"
+        >
+          <i
+            [class]="
+              movement.direction === 'IN'
+                ? 'pi pi-arrow-down-left text-green-600'
+                : 'pi pi-arrow-up-right text-red-600'
+            "
+          ></i>
+          <div class="min-w-0">
+            <p class="break-words text-sm font-medium">
+              {{ movement.description || getMovementTypeLabel(movement.type) | translate }}
+            </p>
+            <p class="break-words text-xs text-surface-500">
+              {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
+              {{ movement.paymentMethodName }} ·
+              {{ movement.createdByName || ('finance.treasury.cashregister.system' | translate) }}
+            </p>
+          </div>
+          <span
+            [class]="
+              movement.direction === 'IN'
+                ? 'font-medium text-green-600 dark:text-green-400'
+                : 'font-medium text-red-600 dark:text-red-400'
+            "
+          >
+            {{ movement.direction === 'IN' ? '+' : '-'
+            }}{{ movement.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </span>
+        </div>
+      }
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        [label]="'shared.close' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="visible.set(false)"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

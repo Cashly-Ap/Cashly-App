@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { of } from 'rxjs';
 import { MessageService } from 'primeng/api';
@@ -7,7 +8,6 @@ import { CashRegisterApplicationService } from '@features/finance/treasury/cash-
 import { CashRegisterResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
-import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
 import { CashRegisterActionDialogService } from '@core/layouts/services/cash-register-action-dialog.service';
 import { CashRegisterActionDialogHostComponent } from '@features/finance/treasury/cash-register/components/cash-register-action-dialog-host/cash-register-action-dialog-host.component';
 
@@ -16,6 +16,7 @@ describe('CashRegisterActionDialogHostComponent', () => {
   let component: CashRegisterActionDialogHostComponent;
   let actions: CashRegisterActionDialogService;
   let messages: { add: ReturnType<typeof vi.fn> };
+  const router = { navigate: vi.fn(() => Promise.resolve(true)) };
 
   const activeClosure = signal<CashRegisterResponse | null>(null);
   const service = {
@@ -37,12 +38,12 @@ describe('CashRegisterActionDialogHostComponent', () => {
       imports: [CashRegisterActionDialogHostComponent],
       providers: [
         { provide: MessageService, useValue: messages },
+        { provide: Router, useValue: router },
         { provide: CashRegisterApplicationService, useValue: service },
       ],
     })
       .overrideComponent(CashRegisterOpenDialogComponent, { set: { template: '', imports: [] } })
       .overrideComponent(CashRegisterCloseDialogComponent, { set: { template: '', imports: [] } })
-      .overrideComponent(CashRegisterDetailDialogComponent, { set: { template: '', imports: [] } })
       .compileComponents();
 
     fixture = TestBed.createComponent(CashRegisterActionDialogHostComponent);
@@ -54,7 +55,6 @@ describe('CashRegisterActionDialogHostComponent', () => {
   it('starts with every dialog hidden', () => {
     expect(component.openVisible()).toBe(false);
     expect(component.closeVisible()).toBe(false);
-    expect(component.detailVisible()).toBe(false);
   });
 
   it('opens the open dialog when there is no active closure', () => {
@@ -63,7 +63,6 @@ describe('CashRegisterActionDialogHostComponent', () => {
 
     expect(component.openVisible()).toBe(true);
     expect(component.closeVisible()).toBe(false);
-    expect(component.detailVisible()).toBe(false);
     expect(service.loadActiveClosure).toHaveBeenCalled();
     expect(messages.add).not.toHaveBeenCalled();
   });
@@ -78,13 +77,14 @@ describe('CashRegisterActionDialogHostComponent', () => {
     expect(messages.add).not.toHaveBeenCalled();
   });
 
-  it('opens the detail dialog when there is an active closure', () => {
+  it('navigates to the cash register page when details are requested', () => {
     activeClosure.set(createClosure());
     actions.open({ action: 'detail' });
     fixture.detectChanges();
 
-    expect(component.detailVisible()).toBe(true);
+    expect(router.navigate).toHaveBeenCalledWith(['/finance/treasury/cash-register']);
     expect(component.openVisible()).toBe(false);
+    expect(actions.request()).toBeNull();
     expect(messages.add).not.toHaveBeenCalled();
   });
 
@@ -103,14 +103,14 @@ describe('CashRegisterActionDialogHostComponent', () => {
   });
 
   it('closes the request when the opened dialog hides', () => {
-    actions.open({ action: 'detail' });
+    actions.open({ action: 'close' });
     activeClosure.set(createClosure());
     fixture.detectChanges();
 
-    component.onDetailClosed(false);
+    component.onCloseClosed(false);
     fixture.detectChanges();
 
-    expect(component.detailVisible()).toBe(false);
+    expect(component.closeVisible()).toBe(false);
     expect(actions.request()).toBeNull();
   });
 });

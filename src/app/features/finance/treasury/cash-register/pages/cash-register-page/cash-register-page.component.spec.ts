@@ -9,7 +9,7 @@ import { CashRegisterResponse } from '@features/finance/treasury/cash-register/m
 import { CashRegisterPageComponent } from '@features/finance/treasury/cash-register/pages/cash-register-page/cash-register-page.component';
 import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
-import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
+import { CashRegisterSessionPickerDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-session-picker-dialog/cash-register-session-picker-dialog.component';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 
@@ -17,18 +17,26 @@ describe('CashRegisterPageComponent', () => {
   let fixture: ComponentFixture<CashRegisterPageComponent>;
   let component: CashRegisterPageComponent;
   const activeClosure = signal<CashRegisterResponse | null>(null);
+  const selectedClosure = signal<CashRegisterResponse | null>(null);
 
   const service = {
     activeClosure,
+    selectedClosure,
+    history: signal<CashRegisterResponse[]>([]),
     loading: signal(false),
     currentUserName: signal('Cajero'),
+    loadHistory: vi.fn(() => of(null)),
     loadActiveClosure: vi.fn(() => of(null)),
+    loadSession: vi.fn(() => of(null)),
+    getSessionById: vi.fn(() => of(null)),
+    clearSelectedClosure: vi.fn(() => selectedClosure.set(null)),
     openRegister: vi.fn(() => of(null)),
     closeRegister: vi.fn(() => of(null)),
   };
 
   beforeEach(async () => {
     activeClosure.set(null);
+    selectedClosure.set(null);
     vi.clearAllMocks();
     await TestBed.configureTestingModule({
       imports: [CashRegisterPageComponent],
@@ -57,17 +65,17 @@ describe('CashRegisterPageComponent', () => {
     expect(text).toContain('Facturación');
   });
 
-  it('delegates the detail dialog to the shared dialog component', () => {
+  it('delegates the session picker to the shared dialog component', () => {
     activeClosure.set(createClosure());
     fixture.detectChanges();
 
-    component.onOpenDetailDialog();
+    component.onOpenSessionPicker();
     fixture.detectChanges();
 
-    const detail = fixture.debugElement.query(By.directive(CashRegisterDetailDialogComponent));
-    expect(detail.componentInstance.visible()).toBe(true);
-    expect(document.body.textContent).toContain('Sin movimientos');
-    expect(document.body.textContent).toContain('Esta sesión todavía no tiene operaciones');
+    const picker = fixture.debugElement.query(
+      By.directive(CashRegisterSessionPickerDialogComponent),
+    );
+    expect(picker.componentInstance.visible()).toBe(true);
   });
 
   it('delegates the open and close dialogs to the shared dialog components', () => {

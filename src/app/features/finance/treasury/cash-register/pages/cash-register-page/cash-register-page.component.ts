@@ -15,7 +15,7 @@ import {
   ChangeDetectionStrategy,
   DestroyRef,
 } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
@@ -27,7 +27,7 @@ import { Popover } from 'primeng/popover';
 import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
 import { CashRegisterOpenDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-open-dialog/cash-register-open-dialog.component';
 import { CashRegisterCloseDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-close-dialog/cash-register-close-dialog.component';
-import { CashRegisterDetailDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-detail-dialog/cash-register-detail-dialog.component';
+import { CashRegisterSessionPickerDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-session-picker-dialog/cash-register-session-picker-dialog.component';
 import { CashMovementResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
 import {
   cashMovementAffectsCash,
@@ -87,7 +87,7 @@ interface NonCashMovementTotal {
     BaseChartDirective,
     CashRegisterOpenDialogComponent,
     CashRegisterCloseDialogComponent,
-    CashRegisterDetailDialogComponent,
+    CashRegisterSessionPickerDialogComponent,
   ],
   providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './cash-register-page.component.html',
@@ -95,6 +95,7 @@ interface NonCashMovementTotal {
 export class CashRegisterPageComponent implements OnInit {
   private readonly service = inject(CashRegisterApplicationService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translations = inject(TranslationService);
   private readonly language = inject(LanguageService);
@@ -103,15 +104,11 @@ export class CashRegisterPageComponent implements OnInit {
   readonly activeClosure = this.service.activeClosure;
   readonly loading = this.service.loading;
 
-  readonly showInitialLoading = computed(
-    () => this.service.loading() && this.service.activeClosure() === null,
-  );
+  readonly showInitialLoading = computed(() => this.service.loading() && this.closure() === null);
 
-  readonly showEmptyState = computed(
-    () => !this.service.loading() && this.service.activeClosure() === null,
-  );
+  readonly showEmptyState = computed(() => !this.service.loading() && this.closure() === null);
 
-  readonly closure = computed(() => this.service.activeClosure());
+  readonly closure = computed(() => this.service.selectedClosure() ?? this.service.activeClosure());
   readonly details = computed(() => this.closure()?.details ?? []);
   readonly movements = computed<CashMovementResponse[]>(() => this.closure()?.movements ?? []);
   readonly isOpen = computed(() => this.closure()?.status === 'OPEN');
@@ -382,10 +379,18 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly openDialogVisible = signal(false);
   readonly closeDialogVisible = signal(false);
-  readonly detailDialogVisible = signal(false);
+  readonly sessionPickerVisible = signal(false);
 
   ngOnInit(): void {
-    this.service.loadActiveClosure().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+    this.service
+      .loadActiveClosure()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const sessionId = this.route.snapshot.queryParamMap.get('session');
+        if (sessionId && sessionId !== this.service.activeClosure()?.id) {
+          this.service.loadSession(sessionId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+        }
+      });
   }
 
   onOpenDialogOpen(): void {
@@ -396,8 +401,23 @@ export class CashRegisterPageComponent implements OnInit {
     this.closeDialogVisible.set(true);
   }
 
-  onOpenDetailDialog(): void {
-    this.detailDialogVisible.set(true);
+  onOpenSessionPicker(): void {
+    this.sessionPickerVisible.set(true);
+  }
+
+  onSelectSession(id: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { session: id },
+      queryParamsHandling: 'merge',
+    });
+
+    if (id === this.service.activeClosure()?.id) {
+      this.service.clearSelectedClosure();
+      return;
+    }
+
+    this.service.loadSession(id).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   onViewHistory(): void {

@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CashRegisterResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
@@ -17,6 +17,7 @@ describe('CashRegisterHistoryPageComponent', () => {
     loading: signal(false),
     totalElements: signal(1),
     loadHistory: vi.fn(() => of(null)),
+    getSessionById: vi.fn(() => of(createClosure())),
   };
 
   beforeEach(async () => {
@@ -51,6 +52,30 @@ describe('CashRegisterHistoryPageComponent', () => {
     expect(
       fixture.nativeElement.querySelector('[data-testid="cash-history-desktop"]'),
     ).not.toBeNull();
+  });
+
+  it('opens the movements dialog for the selected register', () => {
+    fixture.detectChanges();
+
+    component.selectedRegister.set(createClosure());
+    component.onViewMovements();
+    fixture.detectChanges();
+
+    expect(service.getSessionById).toHaveBeenCalledWith('cash-1');
+    expect(component.movementsDialogVisible()).toBe(true);
+  });
+
+  it('navigates to the register detail page for the selected session', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    fixture.detectChanges();
+
+    component.selectedRegister.set(createClosure());
+    component.onViewDetail();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/finance/treasury/cash-register'], {
+      queryParams: { session: 'cash-1' },
+    });
   });
 
   it.each([
