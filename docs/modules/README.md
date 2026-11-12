@@ -32,10 +32,11 @@ This directory documents the frontend features of the Cashly application. Featur
 | Finance     | Debit Notes     | `/finance/billing/debit-notes/*`      | `features/finance/billing/debit-notes`         | [debit-notes.md](./debit-notes.md)         |
 | Finance     | Cash Register   | `/finance/treasury/cash-register/*`   | `features/finance/treasury/cash-register`      | [cash-register.md](./cash-register.md)     |
 | Finance     | Receivables     | `/finance/treasury/receivables`       | `features/finance/treasury/receivables`        | [receivables.md](./receivables.md)         |
+| Finance     | Payables *(planned)* | `/finance/treasury/payables`     | `features/finance/treasury/payables`           | [payables.md](./payables.md)               |
 | Finance     | Payment Methods | `/finance/treasury/payment-methods/*` | `features/finance/treasury/payment-methods`    | [payment-methods.md](./payment-methods.md) |
 | Finance     | Payment Reports | Dialogs from the main menu            | `features/finance/treasury/payments/reporting` | [payments.md](./payments.md)               |
 
-All entries are implemented. The old `/customers`, `/products`, `/orders`, `/invoices`, `/warehouses`, `/dashboard`, and related URLs redirect to their area-prefixed equivalents through `legacyRoute` entries in `src/app/app.routes.ts`.
+All entries except Payables (planned) are implemented. The old `/customers`, `/products`, `/orders`, `/invoices`, `/warehouses`, `/dashboard`, and related URLs redirect to their area-prefixed equivalents through `legacyRoute` entries in `src/app/app.routes.ts`.
 
 ---
 
@@ -46,7 +47,7 @@ All entries are implemented. The old `/customers`, `/products`, `/orders`, `/inv
 | `analytics`        | dashboard, reporting composition                                            |
 | `catalog`          | products, categories, price-types                                           |
 | `finance/billing`  | invoices, returns, credit-notes, debit-notes                                |
-| `finance/treasury` | cash-register, payment-methods, receivables, payment reporting              |
+| `finance/treasury` | cash-register, payment-methods, receivables, payables (planned), reporting  |
 | `inventory`        | warehouses                                                                  |
 | `partners`         | customers, suppliers                                                        |
 | `platform`         | auth (login, user, role, department, authorization), company, notifications |
