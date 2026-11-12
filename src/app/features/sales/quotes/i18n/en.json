@@ -63,5 +63,6 @@
   "sales.quotes.messages.unableToLoadQuoteData": "Unable to load the quote data",
   "sales.quotes.quotesReport": "Quotes report",
   "sales.quotes.createQuoteAction": "Create quote",
-  "sales.quotes.saveQuote": "Save quote"
+  "sales.quotes.saveQuote": "Save quote",
+  "sales.quotes.editQuoteWithNumber": "Edit Quote ${number}"
 }

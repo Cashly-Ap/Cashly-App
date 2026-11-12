@@ -110,5 +110,6 @@
   "procurement.purchases.availableCredit": "Available",
   "procurement.purchases.currentDebt": "Current debt",
   "procurement.purchases.confirmingWillExceedTheSupplierCreditLimitReviewTheDetailsBeforeContinuing": "Confirming will exceed the supplier credit limit. Review the details before continuing.",
-  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "The purchase will be created as a draft. You will need to enter your password to confirm it if it exceeds the available credit."
+  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "The purchase will be created as a draft. You will need to enter your password to confirm it if it exceeds the available credit.",
+  "procurement.purchases.editPurchaseWithNumber": "Edit Purchase ${number}"
 }

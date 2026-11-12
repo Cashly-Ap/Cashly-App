@@ -204,5 +204,6 @@
   "finance.billing.invoices.createInvoiceAction": "Create invoice",
   "finance.billing.invoices.saveInvoice": "Save invoice",
   "finance.billing.invoices.pendingBalance": "Pending Balance",
-  "finance.billing.invoices.overdueInvoices": "Overdue Invoices"
+  "finance.billing.invoices.overdueInvoices": "Overdue Invoices",
+  "finance.billing.invoices.editInvoiceWithNumber": "Edit Invoice ${number}"
 }

@@ -42,6 +42,18 @@ describe('runtime language', () => {
     expect(service.t('Clientes')).toBe('Clientes');
   });
 
+  it('translates dynamic pending tab titles in English', () => {
+    const service = TestBed.inject(TranslationService);
+    const language = TestBed.inject(LanguageService);
+    language.setLanguage('en');
+    expect(service.t('Editar Factura INV-2025-0016')).toBe('Edit Invoice INV-2025-0016');
+    expect(service.t('Editar Compra PUR-2025-0015')).toBe('Edit Purchase PUR-2025-0015');
+    expect(service.t('Editar Pedido ORD-2025-0001')).toBe('Edit Order ORD-2025-0001');
+    expect(service.t('Editar Presupuesto QUO-2025-0001')).toBe('Edit Quote QUO-2025-0001');
+    expect(service.t('Hace 2 min')).toBe('2 min ago');
+    expect(service.t('Hace un momento')).toBe('Just now');
+  });
+
   it('keeps every dictionary key in both languages with nonempty translations', () => {
     expect(Object.keys(english).sort()).toEqual(Object.keys(spanish).sort());
     for (const [key, value] of Object.entries(english)) {

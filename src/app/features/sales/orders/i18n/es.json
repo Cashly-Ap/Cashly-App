@@ -98,5 +98,6 @@
   "sales.orders.messages.orderNotFound": "Pedido no encontrado.",
   "sales.orders.ordersReport": "Reporte de Pedidos",
   "sales.orders.createOrderAction": "Crear Pedido",
-  "sales.orders.saveOrder": "Guardar Pedido"
+  "sales.orders.saveOrder": "Guardar Pedido",
+  "sales.orders.editOrderWithNumber": "Editar Pedido ${number}"
 }

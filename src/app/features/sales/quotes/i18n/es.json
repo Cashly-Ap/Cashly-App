@@ -63,5 +63,6 @@
   "sales.quotes.messages.unableToLoadQuoteData": "Error al cargar datos del presupuesto",
   "sales.quotes.quotesReport": "Reporte de Presupuestos",
   "sales.quotes.createQuoteAction": "Crear Presupuesto",
-  "sales.quotes.saveQuote": "Guardar Presupuesto"
+  "sales.quotes.saveQuote": "Guardar Presupuesto",
+  "sales.quotes.editQuoteWithNumber": "Editar Presupuesto ${number}"
 }

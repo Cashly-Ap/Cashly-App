@@ -110,5 +110,6 @@
   "procurement.purchases.availableCredit": "Disponible",
   "procurement.purchases.currentDebt": "Deuda actual",
   "procurement.purchases.confirmingWillExceedTheSupplierCreditLimitReviewTheDetailsBeforeContinuing": "Al confirmar se excederá el límite de crédito del proveedor. Revise los detalles antes de continuar.",
-  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "La compra se creará como borrador. Deberás ingresar tu contraseña para confirmarla si excede el crédito disponible."
+  "procurement.purchases.thePurchaseWillBeCreatedAsADraftYouMustEnterYourPasswordToConfirmIt": "La compra se creará como borrador. Deberás ingresar tu contraseña para confirmarla si excede el crédito disponible.",
+  "procurement.purchases.editPurchaseWithNumber": "Editar Compra ${number}"
 }

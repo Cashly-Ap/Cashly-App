@@ -98,5 +98,6 @@
   "sales.orders.messages.orderNotFound": "Order not found.",
   "sales.orders.ordersReport": "Orders report",
   "sales.orders.createOrderAction": "Create order",
-  "sales.orders.saveOrder": "Save order"
+  "sales.orders.saveOrder": "Save order",
+  "sales.orders.editOrderWithNumber": "Edit Order ${number}"
 }
