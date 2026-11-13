@@ -61,7 +61,6 @@
   "inventory.warehouses.noStockMatchesTheFilters": "No hay existencias que coincidan con los filtros",
   "inventory.warehouses.view": "Vista",
   "inventory.warehouses.groupBy": "Agrupar por",
-  "inventory.warehouses.totalsIncludeAllFilteredResults": "Los totales abarcan todos los resultados filtrados.",
   "inventory.warehouses.products": "Productos",
   "inventory.warehouses.warehousesWithProducts": "Almacenes con productos",
   "inventory.warehouses.physicalStock": "Stock físico",

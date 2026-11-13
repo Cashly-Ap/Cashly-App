@@ -61,7 +61,6 @@
   "inventory.warehouses.noStockMatchesTheFilters": "No stock matches the filters",
   "inventory.warehouses.view": "View",
   "inventory.warehouses.groupBy": "Group by",
-  "inventory.warehouses.totalsIncludeAllFilteredResults": "Totals include all filtered results.",
   "inventory.warehouses.products": "Products",
   "inventory.warehouses.warehousesWithProducts": "Warehouses with products",
   "inventory.warehouses.physicalStock": "Physical stock",
