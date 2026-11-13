@@ -54,6 +54,8 @@ const CHART_COLORS = {
   incomeDark: ['#86efac', '#4ade80', '#22c55e', '#16a34a', '#15803d'],
   expenseLight: ['#b91c1c', '#dc2626', '#ef4444', '#f87171', '#fca5a5'],
   expenseDark: ['#fca5a5', '#f87171', '#ef4444', '#dc2626', '#b91c1c'],
+  nonCashLight: ['#334155', '#475569', '#64748b', '#94a3b8', '#cbd5e1'],
+  nonCashDark: ['#cbd5e1', '#94a3b8', '#64748b', '#475569', '#334155'],
 } as const;
 
 interface MovementTypeTotal {
@@ -142,6 +144,26 @@ export class CashRegisterPageComponent implements OnInit {
     return [...totals.values()].sort((a, b) => b.total - a.total);
   });
   readonly hasNonCashMovements = computed(() => this.nonCashMovements().length > 0);
+
+  readonly analyticsGridClass = computed(() =>
+    this.hasNonCashMovements() ? 'mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2' : 'mt-4',
+  );
+
+  readonly nonCashChartData = computed<ChartData<'doughnut'>>(() => {
+    const rows = this.nonCashMovements();
+    const colors = this.theme.isDarkMode() ? CHART_COLORS.nonCashDark : CHART_COLORS.nonCashLight;
+    return {
+      labels: rows.map((row) => this.translations.t(getCashMovementTypeLabel(row.type))),
+      datasets: [
+        {
+          data: rows.map((row) => Number(row.total)),
+          backgroundColor: rows.map((_, index) => colors[index % colors.length]),
+          borderWidth: 0,
+          hoverOffset: 6,
+        },
+      ],
+    };
+  });
 
   readonly barChartType = 'bar' as const;
   readonly doughnutChartType = 'doughnut' as const;
