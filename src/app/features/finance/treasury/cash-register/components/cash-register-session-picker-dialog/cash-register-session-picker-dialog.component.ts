@@ -185,7 +185,7 @@ export class CashRegisterSessionPickerDialogComponent {
     this.filterDateFrom.set(null);
     this.filterDateTo.set(null);
     this.filterStatus.set(null);
-    this.selectedSession.set(this.activeClosure());
+    this.selectedSession.set(this.service.selectedClosure() ?? this.activeClosure());
   }
 
   private reload(): void {

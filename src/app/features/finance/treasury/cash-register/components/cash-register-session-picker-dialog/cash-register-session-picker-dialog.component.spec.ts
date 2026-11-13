@@ -14,11 +14,14 @@ describe('CashRegisterSessionPickerDialogComponent', () => {
     history,
     loading: signal(false),
     activeClosure: signal<CashRegisterResponse | null>(null),
+    selectedClosure: signal<CashRegisterResponse | null>(null),
     loadHistory: vi.fn(() => of(null)),
   };
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    service.activeClosure.set(null);
+    service.selectedClosure.set(null);
     await TestBed.configureTestingModule({
       imports: [CashRegisterSessionPickerDialogComponent],
       providers: [{ provide: CashRegisterApplicationService, useValue: service }],
@@ -56,6 +59,18 @@ describe('CashRegisterSessionPickerDialogComponent', () => {
 
     expect(emitted).toEqual(['cash-1']);
     expect(component.visible()).toBe(false);
+  });
+
+  it('preselects the session currently being viewed instead of the open one', () => {
+    const viewed = createRegister();
+    const open = { ...createRegister(), id: 'cash-2' };
+    service.selectedClosure.set(viewed);
+    service.activeClosure.set(open);
+    component.visible.set(true);
+    fixture.detectChanges();
+
+    expect(component.isSelected(viewed)).toBe(true);
+    expect(component.isSelected(open)).toBe(false);
   });
 
   it('filters sessions by the search term', () => {
