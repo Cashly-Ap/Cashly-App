@@ -50,12 +50,8 @@ const CHART_COLORS = {
   darkGrid: '#404040',
   lightFill: 'rgba(23, 23, 23, 0.12)',
   darkFill: 'rgba(245, 245, 245, 0.12)',
-  incomeLight: ['#15803d', '#16a34a', '#22c55e', '#4ade80', '#86efac'],
-  incomeDark: ['#86efac', '#4ade80', '#22c55e', '#16a34a', '#15803d'],
-  expenseLight: ['#b91c1c', '#dc2626', '#ef4444', '#f87171', '#fca5a5'],
-  expenseDark: ['#fca5a5', '#f87171', '#ef4444', '#dc2626', '#b91c1c'],
-  nonCashLight: ['#334155', '#475569', '#64748b', '#94a3b8', '#cbd5e1'],
-  nonCashDark: ['#cbd5e1', '#94a3b8', '#64748b', '#475569', '#334155'],
+  monoLight: ['#171717', '#404040', '#737373', '#a3a3a3', '#d4d4d4'],
+  monoDark: ['#f5f5f5', '#d4d4d4', '#a3a3a3', '#737373', '#404040'],
 } as const;
 
 interface MovementTypeTotal {
@@ -111,14 +107,12 @@ export class CashRegisterPageComponent implements OnInit {
   readonly showEmptyState = computed(() => !this.service.loading() && this.closure() === null);
 
   readonly closure = computed(() => this.service.selectedClosure() ?? this.service.activeClosure());
-  readonly details = computed(() => this.closure()?.details ?? []);
   readonly movements = computed<CashMovementResponse[]>(() => this.closure()?.movements ?? []);
   readonly isOpen = computed(() => this.closure()?.status === 'OPEN');
   readonly isClosed = computed(() => this.closure()?.status === 'CLOSED');
 
   readonly canClose = computed(() => this.isOpen());
 
-  readonly hasPaymentBreakdown = computed(() => this.details().length > 0);
   readonly hasIncomeMovements = computed(() =>
     this.movements().some(
       (movement) => movement.direction === 'IN' && cashMovementAffectsCash(movement.type),
@@ -145,13 +139,9 @@ export class CashRegisterPageComponent implements OnInit {
   });
   readonly hasNonCashMovements = computed(() => this.nonCashMovements().length > 0);
 
-  readonly analyticsGridClass = computed(() =>
-    this.hasNonCashMovements() ? 'mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2' : 'mt-4',
-  );
-
   readonly nonCashChartData = computed<ChartData<'doughnut'>>(() => {
     const rows = this.nonCashMovements();
-    const colors = this.theme.isDarkMode() ? CHART_COLORS.nonCashDark : CHART_COLORS.nonCashLight;
+    const colors = this.monoColors();
     return {
       labels: rows.map((row) => this.translations.t(getCashMovementTypeLabel(row.type))),
       datasets: [
@@ -170,6 +160,7 @@ export class CashRegisterPageComponent implements OnInit {
   readonly lineChartType = 'line' as const;
 
   private readonly incomeByType = computed(() => this.groupMovements('IN'));
+  private readonly expenseByType = computed(() => this.groupMovements('OUT'));
 
   private readonly tickColor = computed(() =>
     this.theme.isDarkMode() ? CHART_COLORS.darkTicks : CHART_COLORS.lightTicks,
@@ -177,6 +168,10 @@ export class CashRegisterPageComponent implements OnInit {
   private readonly gridColor = computed(() =>
     this.theme.isDarkMode() ? CHART_COLORS.darkGrid : CHART_COLORS.lightGrid,
   );
+
+  private monoColors(): readonly string[] {
+    return this.theme.isDarkMode() ? CHART_COLORS.monoDark : CHART_COLORS.monoLight;
+  }
 
   readonly flowChartData = computed<ChartData<'bar'>>(() => {
     const closure = this.closure();
@@ -200,8 +195,8 @@ export class CashRegisterPageComponent implements OnInit {
             : [],
           backgroundColor: [
             isDark ? CHART_COLORS.darkMuted : CHART_COLORS.lightMuted,
-            isDark ? '#86efac' : '#15803d',
-            isDark ? '#fca5a5' : '#b91c1c',
+            isDark ? CHART_COLORS.darkSeries : CHART_COLORS.lightSeries,
+            isDark ? '#737373' : '#a3a3a3',
             isDark ? CHART_COLORS.darkSeries : CHART_COLORS.lightSeries,
           ],
           borderRadius: 8,
@@ -242,7 +237,7 @@ export class CashRegisterPageComponent implements OnInit {
 
   readonly incomeByTypeChartData = computed<ChartData<'doughnut'>>(() => {
     const rows = this.incomeByType();
-    const colors = this.theme.isDarkMode() ? CHART_COLORS.incomeDark : CHART_COLORS.incomeLight;
+    const colors = this.monoColors();
     return {
       labels: rows.map((row) => this.translations.t(getCashMovementTypeLabel(row.type))),
       datasets: [
@@ -257,16 +252,13 @@ export class CashRegisterPageComponent implements OnInit {
   });
 
   readonly expenseByTypeChartData = computed<ChartData<'doughnut'>>(() => {
-    const rows = this.closure()?.expenseSummary ?? [];
-    const colors = this.theme.isDarkMode() ? CHART_COLORS.expenseDark : CHART_COLORS.expenseLight;
+    const rows = this.expenseByType();
+    const colors = this.monoColors();
     return {
-      labels: rows.map(
-        (row) =>
-          row.concept || this.translations.t('finance.treasury.cashregister.noPaymentMethod'),
-      ),
+      labels: rows.map((row) => this.translations.t(getCashMovementTypeLabel(row.type))),
       datasets: [
         {
-          data: rows.map((row) => Number(row.total)),
+          data: rows.map((row) => row.total),
           backgroundColor: rows.map((_, index) => colors[index % colors.length]),
           borderWidth: 0,
           hoverOffset: 6,
@@ -295,51 +287,6 @@ export class CashRegisterPageComponent implements OnInit {
       },
     },
   }));
-
-  readonly paymentBreakdownChartData = computed<ChartData<'bar'>>(() => {
-    const isDark = this.theme.isDarkMode();
-    return {
-      labels: this.details().map((detail) => detail.paymentMethodName),
-      datasets: [
-        {
-          data: this.details().map((detail) => Number(detail.expectedAmount)),
-          backgroundColor: isDark ? '#86efac' : '#15803d',
-          borderRadius: 8,
-          maxBarThickness: 24,
-        },
-      ],
-    };
-  });
-
-  readonly paymentBreakdownChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => {
-    const ticks = this.tickColor();
-    const grid = this.gridColor();
-    return {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: { label: (context) => ` ${this.formatCurrency(Number(context.raw))}` },
-        },
-      },
-      scales: {
-        x: {
-          beginAtZero: true,
-          ticks: { color: ticks, callback: (value) => this.formatCurrency(Number(value)) },
-          grid: { color: grid },
-          border: { color: grid },
-        },
-        y: {
-          ticks: { color: ticks, font: { size: 12 } },
-          grid: { display: false },
-          border: { color: grid },
-        },
-      },
-    };
-  });
 
   readonly balanceTimelineChartData = computed<ChartData<'line'>>(() => {
     const closure = this.closure();

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 
+export type MetricTone = 'default' | 'positive' | 'negative';
+
 @Component({
   selector: 'app-metric-card',
   standalone: true,
@@ -14,6 +16,7 @@ export class MetricCardComponent {
   readonly icon = input('pi pi-chart-line');
   readonly module = input<string | null>(null);
   readonly primary = input(false);
+  readonly tone = input<MetricTone>('default');
 
   readonly metricClass = computed(() =>
     [
@@ -23,5 +26,9 @@ export class MetricCardComponent {
     ]
       .filter(Boolean)
       .join(' '),
+  );
+
+  readonly valueClass = computed(
+    () => 'dashboard-metric-value text-3xl font-bold tracking-tight mt-7',
   );
 }

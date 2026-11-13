@@ -1,15 +1,13 @@
 <div [attr.data-module]="module()" [class]="metricClass()">
   <div class="flex items-center justify-between mb-3">
-    <span class="text-sm text-surface-500 dark:text-surface-400">{{ labelKey() | translate }}</span>
+    <span class="dashboard-metric-label text-sm">{{ labelKey() | translate }}</span>
     <div
       class="dashboard-metric-icon size-11 rounded-full bg-surface-100 dark:bg-surface-800 flex items-center justify-center"
     >
       <i [class]="icon() + ' text-surface-700 dark:text-surface-200 text-base'"></i>
     </div>
   </div>
-  <p
-    class="dashboard-metric-value text-3xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mt-7"
-  >
+  <p [class]="valueClass()" [attr.data-tone]="tone()">
     <ng-content />
   </p>
 </div>

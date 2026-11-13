@@ -188,8 +188,8 @@
           {{ 'finance.treasury.cashregister.sessionAnalytics' | translate }}
         </h2>
 
-        <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
-          <section class="dashboard-widget xl:col-span-2">
+        <div class="mt-4">
+          <section class="dashboard-widget">
             <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
@@ -215,39 +215,9 @@
               ></canvas>
             </div>
           </section>
-
-          <section class="dashboard-widget">
-            <div class="mb-5">
-              <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
-                {{ 'finance.treasury.cashregister.paymentMethodsBreakdown' | translate }}
-              </h3>
-              <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
-                {{ 'finance.treasury.cashregister.paymentMethodsBreakdownSubtitle' | translate }}
-              </p>
-            </div>
-            @if (hasPaymentBreakdown()) {
-              <div style="height: 280px">
-                <canvas
-                  baseChart
-                  [type]="barChartType"
-                  [data]="paymentBreakdownChartData()"
-                  [options]="paymentBreakdownChartOptions()"
-                ></canvas>
-              </div>
-            } @else {
-              <div
-                class="dashboard-empty flex h-[280px] flex-col items-center justify-center px-4 text-center"
-              >
-                <i class="pi pi-credit-card text-2xl text-surface-400"></i>
-                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
-                  {{ 'finance.treasury.cashregister.noPaymentMethodData' | translate }}
-                </p>
-              </div>
-            }
-          </section>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
           <section class="dashboard-widget">
             <div class="mb-4 flex items-center justify-between gap-3">
               <div>
@@ -317,9 +287,7 @@
               </div>
             }
           </section>
-        </div>
 
-        <div [class]="analyticsGridClass()">
           @if (hasNonCashMovements()) {
             <section class="dashboard-widget">
               <div class="mb-4">
@@ -340,26 +308,26 @@
               </div>
             </section>
           }
-
-          <section class="dashboard-widget">
-            <div class="mb-5">
-              <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
-                {{ 'finance.treasury.cashregister.balanceEvolution' | translate }}
-              </h3>
-              <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
-                {{ 'finance.treasury.cashregister.balanceEvolutionSubtitle' | translate }}
-              </p>
-            </div>
-            <div style="height: 260px">
-              <canvas
-                baseChart
-                [type]="lineChartType"
-                [data]="balanceTimelineChartData()"
-                [options]="balanceTimelineChartOptions()"
-              ></canvas>
-            </div>
-          </section>
         </div>
+
+        <section class="dashboard-widget mt-4">
+          <div class="mb-5">
+            <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+              {{ 'finance.treasury.cashregister.balanceEvolution' | translate }}
+            </h3>
+            <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+              {{ 'finance.treasury.cashregister.balanceEvolutionSubtitle' | translate }}
+            </p>
+          </div>
+          <div style="height: 260px">
+            <canvas
+              baseChart
+              [type]="lineChartType"
+              [data]="balanceTimelineChartData()"
+              [options]="balanceTimelineChartOptions()"
+            ></canvas>
+          </div>
+        </section>
       </div>
     }
   </div>

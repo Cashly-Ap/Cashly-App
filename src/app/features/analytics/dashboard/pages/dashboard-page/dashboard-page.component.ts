@@ -11,15 +11,17 @@ import {
   OnInit,
   ChangeDetectionStrategy,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { chartPalette, moduleColor } from '@core/preferences/module-appearance';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
 import {
   DashboardApiService,
+  DashboardPeriod,
   DashboardSummary,
   MonthlySales,
+  ProfitSummary,
   TopItem,
   InvoiceDue,
 } from '@features/analytics/dashboard/services/api/dashboard-api.service';
@@ -37,6 +39,11 @@ const DASHBOARD_CHART_COLORS = {
   lightGrid: '#e5e5e5',
   darkTicks: '#d4d4d4',
   darkGrid: '#404040',
+} as const;
+
+const MONO_PALETTE = {
+  light: ['#171717', '#404040', '#737373', '#a3a3a3', '#d4d4d4'],
+  dark: ['#f5f5f5', '#d4d4d4', '#a3a3a3', '#737373', '#404040'],
 } as const;
 
 import { ModuleIconComponent } from '@shared/components/ui/module-icon/module-icon.component';
@@ -75,28 +82,48 @@ export class DashboardPageComponent implements OnInit {
   readonly monthlySales = signal<MonthlySales[]>([]);
   readonly topProducts = signal<TopItem[]>([]);
   readonly topCustomers = signal<TopItem[]>([]);
-  readonly invoiceDueSchedule = signal<InvoiceDue[]>([]);
-  readonly pendingInvoiceCount = computed(() => this.invoiceDueSchedule().length);
-  readonly overdueInvoiceCount = computed(
-    () => this.invoiceDueSchedule().filter((invoice) => this.isOverdue(invoice.dueDate)).length,
+  readonly upcomingInvoices = signal<InvoiceDue[]>([]);
+  readonly overdueInvoices = signal<InvoiceDue[]>([]);
+  readonly profitSummary = signal<ProfitSummary | null>(null);
+  readonly pendingInvoiceCount = computed(
+    () => this.summary()?.pendingInvoices ?? this.upcomingInvoices().length,
   );
+  readonly overdueInvoiceCount = computed(
+    () => this.summary()?.overdueInvoices ?? this.overdueInvoices().length,
+  );
+  readonly monthlyExpenses = computed(() => this.summary()?.monthlyExpenses ?? 0);
+  readonly monthlyProfit = computed(() => {
+    const summary = this.summary();
+    if (!summary) return 0;
+    return summary.monthlyProfit ?? summary.monthlySales - this.monthlyExpenses();
+  });
   readonly loading = signal(true);
-  readonly salesPeriod = signal<'WEEK' | 'MONTH' | 'YEAR'>('MONTH');
+  readonly salesPeriod = signal<DashboardPeriod>('MONTH');
+  readonly profitPeriod = signal<DashboardPeriod>('MONTH');
   readonly salesPeriodOptions = [
+    { label: 'analytics.dashboard.periodDay', value: 'DAY' },
     { label: 'analytics.dashboard.periodWeek', value: 'WEEK' },
     { label: 'analytics.dashboard.periodMonth', value: 'MONTH' },
     { label: 'analytics.dashboard.periodYear', value: 'YEAR' },
   ];
 
   readonly barChartType = 'bar' as const;
-  readonly horizontalBarChartType = 'bar' as const;
+  readonly doughnutChartType = 'doughnut' as const;
   readonly lineChartType = 'line' as const;
 
   private readonly salesChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
   private readonly salesChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context) =>
+            `${context.label ?? ''}: ${this.formatCurrency(Number(context.parsed.y))}`,
+        },
+      },
+    },
     scales: {
       y: {
         beginAtZero: true,
@@ -105,48 +132,30 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  private readonly productsChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  private readonly productsChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
-    indexAxis: 'y',
+  private readonly productsChartSource = signal<ChartData<'doughnut'>>({
+    labels: [],
+    datasets: [],
+  });
+  private readonly productsChartBaseOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        beginAtZero: true,
-        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
-      },
-      y: { ticks: { font: { size: 11 } } },
-    },
+    cutout: '62%',
   };
 
-  private readonly customersChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
-  private readonly customersChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
-    indexAxis: 'y',
+  private readonly customersChartSource = signal<ChartData<'doughnut'>>({
+    labels: [],
+    datasets: [],
+  });
+  private readonly customersChartBaseOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        beginAtZero: true,
-        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
-      },
-      y: { ticks: { font: { size: 11 } } },
-    },
+    cutout: '62%',
   };
 
-  private readonly invoiceCustomerChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
-    indexAxis: 'y',
+  private readonly invoiceChartBaseOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      x: {
-        beginAtZero: true,
-        ticks: { callback: (v) => Number(v).toLocaleString(this.language.locale()) + '$' },
-      },
-      y: { ticks: { font: { size: 11 } } },
-    },
+    cutout: '62%',
   };
 
   readonly salesChartData = computed(() => {
@@ -177,110 +186,170 @@ export class DashboardPageComponent implements OnInit {
     scales: this.themedScales(this.salesChartBaseOptions?.scales, this.themeService.isDarkMode()),
   }));
 
-  readonly productsChartData = computed(() => {
+  private readonly profitChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: (context) =>
+            `${context.label ?? ''}: ${this.formatCurrency(Number(context.parsed.y))}`,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { callback: (v) => (v as number).toLocaleString(this.language.locale()) + '$' },
+      },
+    },
+  };
+
+  readonly profitChartData = computed<ChartData<'bar'>>(() => {
     const isDark = this.themeService.isDarkMode();
-    const color =
+    const colors =
       this.preferences.colorMode() === 'informative'
-        ? chartPalette(this.productsChartSource().labels?.length ?? 0, isDark)
-        : isDark
-          ? DASHBOARD_CHART_COLORS.darkSeries
-          : DASHBOARD_CHART_COLORS.lightSeries;
+        ? chartPalette(3, isDark)
+        : [...MONO_PALETTE[isDark ? 'dark' : 'light']].slice(0, 3);
+    const billing = this.profitSummary()?.billing ?? this.summary()?.monthlySales ?? 0;
+    const expenses = this.profitSummary()?.expenses ?? this.monthlyExpenses();
+    const net = this.profitSummary()?.net ?? billing - expenses;
+    return {
+      labels: [
+        this.translations.t('analytics.dashboard.profit'),
+        this.translations.t('analytics.dashboard.totalExpenses'),
+        this.translations.t('analytics.dashboard.net'),
+      ],
+      datasets: [
+        {
+          data: [billing, expenses, net],
+          backgroundColor: colors,
+          borderRadius: 6,
+          maxBarThickness: 96,
+        },
+      ],
+    };
+  });
+
+  readonly profitChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
+    ...this.profitChartBaseOptions,
+    animation: false,
+    scales: this.themedScales(this.profitChartBaseOptions?.scales, this.themeService.isDarkMode()),
+  }));
+
+  readonly productsChartData = computed<ChartData<'doughnut'>>(() => {
+    const isDark = this.themeService.isDarkMode();
     const source = this.productsChartSource();
+    const count = source.labels?.length ?? 0;
+    const colors = this.doughnutColors(count, isDark);
     return {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
         label: this.translations.t(dataset.label),
-        backgroundColor: color,
-        borderColor: color,
-        pointBackgroundColor: color,
+        backgroundColor: colors,
+        borderColor: isDark ? '#171717' : '#ffffff',
+        borderWidth: 2,
+        hoverOffset: 6,
       })),
     };
   });
 
-  readonly productsChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
-    ...this.productsChartBaseOptions,
-    animation: false,
-    scales: this.themedScales(
-      this.productsChartBaseOptions?.scales,
-      this.themeService.isDarkMode(),
-    ),
-  }));
+  readonly productsChartOptions = computed<ChartConfiguration<'doughnut'>['options']>(() =>
+    this.doughnutOptions(this.productsChartBaseOptions, this.themeService.isDarkMode()),
+  );
 
-  readonly customersChartData = computed(() => {
+  readonly customersChartData = computed<ChartData<'doughnut'>>(() => {
     const isDark = this.themeService.isDarkMode();
-    const color =
-      this.preferences.colorMode() === 'informative'
-        ? chartPalette(this.customersChartSource().labels?.length ?? 0, isDark).reverse()
-        : isDark
-          ? DASHBOARD_CHART_COLORS.darkSeries
-          : DASHBOARD_CHART_COLORS.lightSeries;
     const source = this.customersChartSource();
+    const count = source.labels?.length ?? 0;
+    const colors = this.doughnutColors(count, isDark);
     return {
       ...source,
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
         label: this.translations.t(dataset.label),
-        backgroundColor: color,
-        borderColor: color,
-        pointBackgroundColor: color,
+        backgroundColor: colors,
+        borderColor: isDark ? '#171717' : '#ffffff',
+        borderWidth: 2,
+        hoverOffset: 6,
       })),
     };
   });
 
-  readonly customersChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
-    ...this.customersChartBaseOptions,
-    animation: false,
-    scales: this.themedScales(
-      this.customersChartBaseOptions?.scales,
-      this.themeService.isDarkMode(),
-    ),
-  }));
-
-  private readonly dueColor = computed(() => {
-    const isDark = this.themeService.isDarkMode();
-    return this.preferences.colorMode() === 'informative'
-      ? moduleColor('finance', isDark)
-      : isDark
-        ? DASHBOARD_CHART_COLORS.darkSeries
-        : DASHBOARD_CHART_COLORS.lightSeries;
-  });
-
-  readonly pendingInvoicesChartData = computed<ChartData<'bar'>>(() =>
-    this.invoicesByCustomer(this.invoiceDueSchedule()),
+  readonly customersChartOptions = computed<ChartConfiguration<'doughnut'>['options']>(() =>
+    this.doughnutOptions(this.customersChartBaseOptions, this.themeService.isDarkMode()),
   );
 
-  readonly overdueInvoicesChartData = computed<ChartData<'bar'>>(() =>
-    this.invoicesByCustomer(
-      this.invoiceDueSchedule().filter((invoice) => this.isOverdue(invoice.dueDate)),
-    ),
+  readonly pendingInvoicesChartData = computed<ChartData<'doughnut'>>(() =>
+    this.invoicesByCustomer(this.upcomingInvoices()),
   );
 
-  readonly invoiceCustomerChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
-    ...this.invoiceCustomerChartBaseOptions,
-    animation: false,
-    scales: this.themedScales(
-      this.invoiceCustomerChartBaseOptions?.scales,
-      this.themeService.isDarkMode(),
-    ),
-  }));
+  readonly overdueInvoicesChartData = computed<ChartData<'doughnut'>>(() =>
+    this.invoicesByCustomer(this.overdueInvoices()),
+  );
 
-  private invoicesByCustomer(invoices: InvoiceDue[]): ChartData<'bar'> {
+  readonly invoiceCustomerChartOptions = computed<ChartConfiguration<'doughnut'>['options']>(() =>
+    this.doughnutOptions(this.invoiceChartBaseOptions, this.themeService.isDarkMode()),
+  );
+
+  private invoicesByCustomer(invoices: InvoiceDue[]): ChartData<'doughnut'> {
     const totals = new Map<string, number>();
     for (const invoice of invoices) {
       totals.set(invoice.customerName, (totals.get(invoice.customerName) ?? 0) + invoice.amount);
     }
     const entries = [...totals.entries()].sort((a, b) => b[1] - a[1]);
+    const isDark = this.themeService.isDarkMode();
     return {
       labels: entries.map(([customer]) => customer),
       datasets: [
         {
           data: entries.map(([, total]) => total),
-          backgroundColor: this.dueColor(),
-          borderRadius: 6,
+          backgroundColor: this.doughnutColors(entries.length, isDark),
+          borderColor: isDark ? '#171717' : '#ffffff',
+          borderWidth: 2,
+          hoverOffset: 6,
         },
       ],
     };
+  }
+
+  private doughnutColors(count: number, isDark: boolean): string[] {
+    return this.preferences.colorMode() === 'informative'
+      ? chartPalette(count, isDark)
+      : [...MONO_PALETTE[isDark ? 'dark' : 'light']].slice(0, Math.max(count, 1));
+  }
+
+  private doughnutOptions(
+    base: ChartConfiguration<'doughnut'>['options'],
+    isDark: boolean,
+  ): ChartConfiguration<'doughnut'>['options'] {
+    return {
+      ...base,
+      animation: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            boxWidth: 8,
+            color: isDark ? DASHBOARD_CHART_COLORS.darkTicks : DASHBOARD_CHART_COLORS.lightTicks,
+          },
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) =>
+              `${context.label ?? ''}: ${this.formatCurrency(Number(context.parsed))}`,
+          },
+        },
+      },
+    };
+  }
+
+  private formatCurrency(value: number): string {
+    return `${new DecimalPipe(this.language.locale()).transform(value, '1.2-2')}$`;
   }
 
   private themedScales(
@@ -309,6 +378,7 @@ export class DashboardPageComponent implements OnInit {
     this.api.getSummary().subscribe((s) => this.summary.set(s));
 
     this.loadSales(this.salesPeriod());
+    this.loadProfit(this.profitPeriod());
 
     this.api.getTopProducts(5).subscribe((data) => {
       this.topProducts.set(data);
@@ -318,7 +388,6 @@ export class DashboardPageComponent implements OnInit {
           {
             data: data.map((d) => d.total),
             backgroundColor: DASHBOARD_CHART_COLORS.neutral,
-            borderRadius: 6,
           },
         ],
       });
@@ -332,7 +401,6 @@ export class DashboardPageComponent implements OnInit {
           {
             data: data.map((d) => d.total),
             backgroundColor: DASHBOARD_CHART_COLORS.neutral,
-            borderRadius: 6,
           },
         ],
       });
@@ -340,19 +408,31 @@ export class DashboardPageComponent implements OnInit {
 
     this.loading.set(false);
 
-    this.api.getInvoiceDueSchedule().subscribe((data) => {
-      const limitedSchedule = data.slice(0, 10);
-      this.invoiceDueSchedule.set(limitedSchedule);
+    this.api.getInvoiceDueSchedule('UPCOMING').subscribe((data) => {
+      this.upcomingInvoices.set(data.slice(0, 10));
+    });
+    this.api.getInvoiceDueSchedule('OVERDUE').subscribe((data) => {
+      this.overdueInvoices.set(data.slice(0, 10));
     });
   }
 
-  onSalesPeriodChange(period: 'WEEK' | 'MONTH' | 'YEAR' | null): void {
+  onSalesPeriodChange(period: DashboardPeriod | null): void {
     if (!period) return;
     this.salesPeriod.set(period);
     this.loadSales(period);
   }
 
-  private loadSales(period: 'WEEK' | 'MONTH' | 'YEAR'): void {
+  onProfitPeriodChange(period: DashboardPeriod | null): void {
+    if (!period) return;
+    this.profitPeriod.set(period);
+    this.loadProfit(period);
+  }
+
+  private loadProfit(period: DashboardPeriod): void {
+    this.api.getProfitSummary(period).subscribe((data) => this.profitSummary.set(data));
+  }
+
+  private loadSales(period: DashboardPeriod): void {
     this.api.getMonthlySales(period).subscribe((data) => {
       this.monthlySales.set(data);
       this.salesChartSource.set({
@@ -370,12 +450,21 @@ export class DashboardPageComponent implements OnInit {
 
   private formatSalesBucket(bucket: string): string {
     const period = this.salesPeriod();
+    if (period === 'DAY') return this.formatDay(bucket);
     if (period === 'YEAR') return bucket;
     if (period === 'WEEK') {
       const [, week] = bucket.split('-W');
       return `${this.translations.t('analytics.dashboard.weekShort')} ${week}`;
     }
     return this.formatMonth(bucket);
+  }
+
+  private formatDay(day: string): string {
+    const [year, month, date] = day.split('-').map(Number);
+    return new Intl.DateTimeFormat(this.language.locale(), {
+      weekday: 'short',
+      day: '2-digit',
+    }).format(new Date(year, month - 1, date));
   }
 
   private formatMonth(month: string): string {

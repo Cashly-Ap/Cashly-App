@@ -42,4 +42,21 @@ describe('MetricCardComponent', () => {
     expect(card.classList.contains('dashboard-metric-primary')).toBe(true);
     expect(card.getAttribute('data-module')).toBe('sales');
   });
+
+  it('colors the value according to the metric tone', () => {
+    const fixture = TestBed.createComponent(MetricCardComponent);
+    fixture.componentRef.setInput('labelKey', 'analytics.dashboard.monthlyProfit');
+    fixture.detectChanges();
+
+    const value = fixture.nativeElement.querySelector('.dashboard-metric-value') as HTMLElement;
+    expect(value.getAttribute('data-tone')).toBe('default');
+
+    fixture.componentRef.setInput('tone', 'positive');
+    fixture.detectChanges();
+    expect(value.getAttribute('data-tone')).toBe('positive');
+
+    fixture.componentRef.setInput('tone', 'negative');
+    fixture.detectChanges();
+    expect(value.getAttribute('data-tone')).toBe('negative');
+  });
 });

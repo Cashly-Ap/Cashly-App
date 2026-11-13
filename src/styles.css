@@ -530,9 +530,29 @@ a:focus-visible {
   background: var(--cashly-ink);
   color: var(--cashly-panel);
 }
-.dashboard-metric-primary p,
-.dashboard-metric-primary span {
-  color: inherit;
+.dashboard-metric-label {
+  color: var(--cashly-ink);
+}
+.dashboard-metric-value {
+  color: var(--cashly-ink);
+}
+.dashboard-metric-value[data-tone='positive'] {
+  color: #15803d;
+}
+.dashboard-metric-value[data-tone='negative'] {
+  color: #b91c1c;
+}
+.dashboard-metric-primary .dashboard-metric-label {
+  color: var(--cashly-panel);
+}
+.dashboard-metric-primary .dashboard-metric-value {
+  color: var(--cashly-panel);
+}
+.dashboard-metric-primary .dashboard-metric-value[data-tone='positive'] {
+  color: #4ade80;
+}
+.dashboard-metric-primary .dashboard-metric-value[data-tone='negative'] {
+  color: #f87171;
 }
 .dashboard-empty {
   border: 1px dashed var(--cashly-line);
@@ -629,52 +649,52 @@ a:focus-visible {
   filter: invert(1);
 }
 
-.cashly-informative :is([data-module="sales"], .cashly-module-sales) {
+.cashly-informative :is([data-module='sales'], .cashly-module-sales) {
   --cashly-accent: #1d4ed8;
 }
-.my-app-dark.cashly-informative :is([data-module="sales"], .cashly-module-sales) {
+.my-app-dark.cashly-informative :is([data-module='sales'], .cashly-module-sales) {
   --cashly-accent: #93c5fd;
 }
-.cashly-informative :is([data-module="procurement"], .cashly-module-procurement) {
+.cashly-informative :is([data-module='procurement'], .cashly-module-procurement) {
   --cashly-accent: #7e22ce;
 }
-.my-app-dark.cashly-informative :is([data-module="procurement"], .cashly-module-procurement) {
+.my-app-dark.cashly-informative :is([data-module='procurement'], .cashly-module-procurement) {
   --cashly-accent: #d8b4fe;
 }
-.cashly-informative :is([data-module="catalog"], .cashly-module-catalog) {
+.cashly-informative :is([data-module='catalog'], .cashly-module-catalog) {
   --cashly-accent: #0f766e;
 }
-.my-app-dark.cashly-informative :is([data-module="catalog"], .cashly-module-catalog) {
+.my-app-dark.cashly-informative :is([data-module='catalog'], .cashly-module-catalog) {
   --cashly-accent: #5eead4;
 }
-.cashly-informative :is([data-module="inventory"], .cashly-module-inventory) {
+.cashly-informative :is([data-module='inventory'], .cashly-module-inventory) {
   --cashly-accent: #a16207;
 }
-.my-app-dark.cashly-informative :is([data-module="inventory"], .cashly-module-inventory) {
+.my-app-dark.cashly-informative :is([data-module='inventory'], .cashly-module-inventory) {
   --cashly-accent: #fcd34d;
 }
-.cashly-informative :is([data-module="finance"], .cashly-module-finance) {
+.cashly-informative :is([data-module='finance'], .cashly-module-finance) {
   --cashly-accent: #15803d;
 }
-.my-app-dark.cashly-informative :is([data-module="finance"], .cashly-module-finance) {
+.my-app-dark.cashly-informative :is([data-module='finance'], .cashly-module-finance) {
   --cashly-accent: #86efac;
 }
-.cashly-informative :is([data-module="partners"], .cashly-module-partners) {
+.cashly-informative :is([data-module='partners'], .cashly-module-partners) {
   --cashly-accent: #be185d;
 }
-.my-app-dark.cashly-informative :is([data-module="partners"], .cashly-module-partners) {
+.my-app-dark.cashly-informative :is([data-module='partners'], .cashly-module-partners) {
   --cashly-accent: #f9a8d4;
 }
-.cashly-informative :is([data-module="analytics"], .cashly-module-analytics) {
+.cashly-informative :is([data-module='analytics'], .cashly-module-analytics) {
   --cashly-accent: #4338ca;
 }
-.my-app-dark.cashly-informative :is([data-module="analytics"], .cashly-module-analytics) {
+.my-app-dark.cashly-informative :is([data-module='analytics'], .cashly-module-analytics) {
   --cashly-accent: #a5b4fc;
 }
-.cashly-informative :is([data-module="platform"], .cashly-module-platform) {
+.cashly-informative :is([data-module='platform'], .cashly-module-platform) {
   --cashly-accent: #475569;
 }
-.my-app-dark.cashly-informative :is([data-module="platform"], .cashly-module-platform) {
+.my-app-dark.cashly-informative :is([data-module='platform'], .cashly-module-platform) {
   --cashly-accent: #cbd5e1;
 }
 
@@ -697,10 +717,21 @@ a:focus-visible {
 .cashly-informative .cashly-workspace .p-datatable {
   --p-datatable-header-cell-background: var(--cashly-accent-soft);
   --p-datatable-header-cell-color: var(--cashly-accent);
-  --p-datatable-header-cell-hover-background: color-mix(in srgb, var(--cashly-accent) 14%, var(--cashly-panel));
+  --p-datatable-header-cell-hover-background: color-mix(
+    in srgb,
+    var(--cashly-accent) 14%,
+    var(--cashly-panel)
+  );
   --p-datatable-header-cell-hover-color: var(--cashly-accent);
 }
-.cashly-informative :is(.main-menubar .p-menubar-item, .mobile-panel-menu .p-panelmenu-panel, .mobile-panel-menu .p-menuitem) > :is(.p-menubar-item-content, .p-panelmenu-header, .p-menuitem-content) :is(.p-menubar-item-icon, .p-panelmenu-header-icon, .p-menuitem-icon) {
+.cashly-informative
+  :is(
+    .main-menubar .p-menubar-item,
+    .mobile-panel-menu .p-panelmenu-panel,
+    .mobile-panel-menu .p-menuitem
+  )
+  > :is(.p-menubar-item-content, .p-panelmenu-header, .p-menuitem-content)
+  :is(.p-menubar-item-icon, .p-panelmenu-header-icon, .p-menuitem-icon) {
   color: var(--cashly-accent);
 }
 .cashly-informative .cashly-module-sales,
@@ -738,13 +769,22 @@ a:focus-visible {
   color: var(--cashly-accent);
 }
 
-.cashly-informative .cashly-workspace .cashly-panel :is(app-details-card-header, app-form-header):first-child,
-.cashly-informative .cashly-workspace .cashly-panel :is(app-details-card-header, app-form-header):first-child > div {
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel
+  :is(app-details-card-header, app-form-header):first-child,
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel
+  :is(app-details-card-header, app-form-header):first-child
+  > div {
   border-start-start-radius: inherit;
   border-start-end-radius: inherit;
 }
 
-.cashly-informative .cashly-workspace .cashly-panel:has(:is(app-details-card-header, app-form-header)) {
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel:has(:is(app-details-card-header, app-form-header)) {
   overflow: hidden;
 }
 
@@ -765,52 +805,106 @@ app-user-avatar .p-avatar img {
 }
 
 @keyframes cashly-login-feedback {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .cashly-login .login-enter {
   animation: cashly-login-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   animation-delay: var(--login-enter-delay, 0ms);
 }
-.cashly-login .login-delay-1 { --login-enter-delay: 40ms; }
-.cashly-login .login-delay-2 { --login-enter-delay: 80ms; }
-.cashly-login .login-delay-3 { --login-enter-delay: 120ms; }
-.cashly-login .login-delay-4 { --login-enter-delay: 160ms; }
-.cashly-login .login-delay-5 { --login-enter-delay: 200ms; }
-.cashly-login .login-feedback { animation: cashly-login-feedback 160ms ease-out; }
+.cashly-login .login-delay-1 {
+  --login-enter-delay: 40ms;
+}
+.cashly-login .login-delay-2 {
+  --login-enter-delay: 80ms;
+}
+.cashly-login .login-delay-3 {
+  --login-enter-delay: 120ms;
+}
+.cashly-login .login-delay-4 {
+  --login-enter-delay: 160ms;
+}
+.cashly-login .login-delay-5 {
+  --login-enter-delay: 200ms;
+}
+.cashly-login .login-feedback {
+  animation: cashly-login-feedback 160ms ease-out;
+}
 .cashly-login .login-field {
   transition: transform 180ms ease-out;
 }
-.cashly-login .login-field:focus-within { transform: translateY(-1px); }
+.cashly-login .login-field:focus-within {
+  transform: translateY(-1px);
+}
 .cashly-login .login-submit button,
 .cashly-login .login-submit .p-button-icon {
   transition: transform 160ms ease-out;
 }
-.cashly-login .login-submit button:not(:disabled):hover { transform: translateY(-1px); }
-.cashly-login .login-submit button:not(:disabled):hover .p-button-icon { transform: translateX(3px); }
-.cashly-login .login-submit button:not(:disabled):active { transform: translateY(0) scale(0.99); }
+.cashly-login .login-submit button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.cashly-login .login-submit button:not(:disabled):hover .p-button-icon {
+  transform: translateX(3px);
+}
+.cashly-login .login-submit button:not(:disabled):active {
+  transform: translateY(0) scale(0.99);
+}
 
 @keyframes cashly-login-orbit {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 @keyframes cashly-login-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.15); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
 }
 @keyframes cashly-login-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 @media (min-width: 1024px) {
-  .cashly-login .login-orbit { animation: cashly-login-orbit 90s linear infinite; }
-  .cashly-login .login-orbit:nth-child(2) { animation-duration: 75s; animation-direction: reverse; }
-  .cashly-login .login-orbit:nth-child(3) { animation-duration: 60s; }
-  .cashly-login .login-orbit:nth-child(4) { animation-duration: 45s; animation-direction: reverse; }
-  .cashly-login .login-orbit:nth-child(5) { animation-duration: 30s; }
-  .cashly-login .login-core { animation: cashly-login-pulse 5s ease-in-out infinite; }
-  .cashly-login .login-artwork-copy { animation: cashly-login-float 8s ease-in-out infinite; }
+  .cashly-login .login-orbit {
+    animation: cashly-login-orbit 90s linear infinite;
+  }
+  .cashly-login .login-orbit:nth-child(2) {
+    animation-duration: 75s;
+    animation-direction: reverse;
+  }
+  .cashly-login .login-orbit:nth-child(3) {
+    animation-duration: 60s;
+  }
+  .cashly-login .login-orbit:nth-child(4) {
+    animation-duration: 45s;
+    animation-direction: reverse;
+  }
+  .cashly-login .login-orbit:nth-child(5) {
+    animation-duration: 30s;
+  }
+  .cashly-login .login-core {
+    animation: cashly-login-pulse 5s ease-in-out infinite;
+  }
+  .cashly-login .login-artwork-copy {
+    animation: cashly-login-float 8s ease-in-out infinite;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

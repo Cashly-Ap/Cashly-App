@@ -148,7 +148,6 @@
             labelKey="inventory.warehouses.netVariation"
             [tone]="totals.netQuantity < 0 ? 'danger' : 'default'"
           >
-            0" >
             {{ totals.netQuantity | localizedNumber: '1.0-2' }}
           </app-stat-card>
           <app-stat-card labelKey="inventory.warehouses.products">
