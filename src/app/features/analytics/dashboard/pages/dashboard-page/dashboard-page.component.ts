@@ -37,6 +37,7 @@ const DASHBOARD_CHART_COLORS = {
   darkGrid: '#404040',
 } as const;
 
+import { ModuleIconComponent } from '@shared/components/ui/module-icon/module-icon.component';
 import { MetricCardComponent } from '@shared/components/ui/metric-card/metric-card.component';
 import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
 import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
@@ -53,6 +54,7 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     LocalizedNumberPipe,
     CommonModule,
     BaseChartDirective,
+    ModuleIconComponent,
   ],
   providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './dashboard-page.component.html',

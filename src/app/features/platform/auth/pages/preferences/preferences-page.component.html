@@ -123,25 +123,20 @@
     </app-panel-card>
   </app-form-container>
 } @else {
-  <section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-4 sm:px-6 sm:py-6">
+  <section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
     <app-page-header
       [title]="'auth.profile.settings' | translate"
       [subtitle]="'auth.profile.customize.your.account.appearance.and.shortcuts' | translate"
     />
-    <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
-      @if (preferences.loading()) {
-        <p role="status">{{ 'auth.profile.loading.your.settings' | translate }}</p>
-      } @else if (preferences.saving()) {
-        <p role="status">{{ 'auth.profile.saving.changes' | translate }}</p>
-      } @else if (!preferences.error()) {
-        <p>
-          {{
-            'auth.profile.changes.are.saved.automatically.to.your.account.and.restored.on.your.devices'
-              | translate
-          }}
-        </p>
-      }
-    </div>
+    @if (preferences.loading() || preferences.saving()) {
+      <div aria-live="polite" class="text-sm text-surface-600 dark:text-surface-300">
+        @if (preferences.loading()) {
+          <p role="status">{{ 'auth.profile.loading.your.settings' | translate }}</p>
+        } @else {
+          <p role="status">{{ 'auth.profile.saving.changes' | translate }}</p>
+        }
+      </div>
+    }
     @if (preferences.error(); as error) {
       <app-panel-card>
         <div role="alert" class="flex flex-col items-start gap-4 p-4 sm:p-6">

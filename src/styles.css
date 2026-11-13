@@ -364,6 +364,9 @@ app-loading-spinner > div {
   content: 'Cashly / Gestión';
   margin-bottom: 0.75rem;
 }
+.flex.flex-col.gap-6 > app-page-header > .cashly-page-header {
+  margin-bottom: 0.5rem;
+}
 .cashly-topbar {
   box-shadow: none;
   background: var(--cashly-panel);

@@ -25,7 +25,16 @@ export const MODULE_ICONS: Record<BusinessModule, string> = {
   [BusinessModule.DASHBOARD]: 'pi pi-chart-line',
 };
 
+const PLATFORM_ROUTE_ICONS: ReadonlyArray<readonly [string, string]> = [
+  ['/platform/company', 'pi pi-building'],
+  ['/platform/auth/security', 'pi pi-shield'],
+  ['/platform/auth/preferences', 'pi pi-sliders-h'],
+  ['/platform/auth/configuration', 'pi pi-user'],
+];
+
 export function moduleIconForUrl(url: string): string | null {
+  const platformIcon = PLATFORM_ROUTE_ICONS.find(([prefix]) => url.startsWith(prefix));
+  if (platformIcon) return platformIcon[1];
   const module = moduleForUrl(url);
   return module ? MODULE_ICONS[module] : null;
 }

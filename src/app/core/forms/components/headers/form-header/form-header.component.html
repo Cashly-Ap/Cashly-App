@@ -1,12 +1,3 @@
-<div class="cashly-page-header text-left mb-8">
-  <h1
-    class="text-3xl sm:text-4xl font-semibold tracking-tight text-surface-900 dark:text-surface-50 mb-1"
-  >
-    {{ title() }}
-  </h1>
-  @if (subtitle()) {
-    <p class="text-surface-500 dark:text-surface-400 text-sm">
-      {{ subtitle() }}
-    </p>
-  }
-</div>
+<app-page-header [title]="title()" [subtitle]="subtitle()" [icon]="icon()"
+  ><ng-content
+/></app-page-header>

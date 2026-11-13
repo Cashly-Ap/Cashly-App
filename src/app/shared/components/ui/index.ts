@@ -23,3 +23,4 @@ export * from '@shared/components/ui/skeletons/table-row-skeleton.component';
 export * from '@shared/components/ui/skeletons/card-skeleton.component';
 export * from '@shared/components/ui/skeletons/metric-skeleton.component';
 export * from '@shared/components/ui/skeletons/list-row-skeleton.component';
+export * from '@shared/components/ui/module-icon/module-icon.component';

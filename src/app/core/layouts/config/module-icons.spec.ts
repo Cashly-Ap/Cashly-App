@@ -16,7 +16,15 @@ describe('moduleIconForUrl', () => {
     expect(moduleIconForUrl('/catalog/products/42/edit')).toBe('pi pi-box');
   });
 
+  it('should resolve the icon of platform settings pages', () => {
+    expect(moduleIconForUrl('/platform/company')).toBe('pi pi-building');
+    expect(moduleIconForUrl('/platform/company/edit')).toBe('pi pi-building');
+    expect(moduleIconForUrl('/platform/auth/configuration')).toBe('pi pi-user');
+    expect(moduleIconForUrl('/platform/auth/preferences')).toBe('pi pi-sliders-h');
+    expect(moduleIconForUrl('/platform/auth/security')).toBe('pi pi-shield');
+  });
+
   it('should return null for routes without a business module', () => {
-    expect(moduleIconForUrl('/platform/auth/preferences')).toBeNull();
+    expect(moduleIconForUrl('/platform/auth/verify-email')).toBeNull();
   });
 });
