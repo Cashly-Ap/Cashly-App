@@ -22,9 +22,12 @@ describe('moduleIconForUrl', () => {
     expect(moduleIconForUrl('/platform/auth/configuration')).toBe('pi pi-user');
     expect(moduleIconForUrl('/platform/auth/preferences')).toBe('pi pi-sliders-h');
     expect(moduleIconForUrl('/platform/auth/security')).toBe('pi pi-shield');
+    expect(moduleIconForUrl('/platform/auth/change-username')).toBe('pi pi-user-edit');
+    expect(moduleIconForUrl('/platform/auth/change-password')).toBe('pi pi-key');
+    expect(moduleIconForUrl('/platform/auth/verify-email')).toBe('pi pi-envelope');
   });
 
   it('should return null for routes without a business module', () => {
-    expect(moduleIconForUrl('/platform/auth/verify-email')).toBeNull();
+    expect(moduleIconForUrl('/platform/auth/login')).toBeNull();
   });
 });

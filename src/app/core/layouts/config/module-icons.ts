@@ -30,6 +30,9 @@ const PLATFORM_ROUTE_ICONS: ReadonlyArray<readonly [string, string]> = [
   ['/platform/auth/security', 'pi pi-shield'],
   ['/platform/auth/preferences', 'pi pi-sliders-h'],
   ['/platform/auth/configuration', 'pi pi-user'],
+  ['/platform/auth/change-username', 'pi pi-user-edit'],
+  ['/platform/auth/change-password', 'pi pi-key'],
+  ['/platform/auth/verify-email', 'pi pi-envelope'],
 ];
 
 export function moduleIconForUrl(url: string): string | null {
