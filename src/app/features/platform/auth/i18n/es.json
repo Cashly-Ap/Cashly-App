@@ -68,7 +68,6 @@
   "auth.profile.show.shortcuts.on.each.screen": "Mostrar atajos en cada pantalla",
   "auth.profile.loading.your.settings": "Cargando tu configuración…",
   "auth.profile.saving.changes": "Guardando cambios…",
-  "auth.profile.changes.are.saved.automatically.to.your.account.and.restored.on.your.devices": "Los cambios se guardan automáticamente en tu cuenta y se recuperan en tus dispositivos.",
   "auth.profile.application.language": "Idioma de la aplicación",
   "auth.profile.display.mode": "Modo de visualización",
   "auth.profile.enable.keyboard.shortcuts": "Habilitar atajos de teclado",
