@@ -21,7 +21,7 @@ const ROUTE_MODULES: ReadonlyArray<readonly [string, BusinessModule]> = [
   ['/finance/billing/debit-notes', BusinessModule.FINANCE_DEBIT_NOTES],
   ['/finance/treasury/cash-register/history', BusinessModule.FINANCE_CASH_REGISTER],
   ['/finance/treasury/cash-register', BusinessModule.FINANCE_CASH_REGISTER],
-  ['/finance/treasury/expenses', BusinessModule.FINANCE_CASH_REGISTER],
+  ['/finance/treasury/expenses', BusinessModule.FINANCE_EXPENSES],
   ['/finance/treasury/receivables', BusinessModule.FINANCE_RECEIVABLES],
   ['/finance/treasury/payables', BusinessModule.FINANCE_PAYABLES],
   ['/finance/treasury/payment-methods', BusinessModule.FINANCE_PAYMENT_METHODS],

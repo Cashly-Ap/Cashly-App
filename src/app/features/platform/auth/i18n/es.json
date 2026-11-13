@@ -543,5 +543,6 @@
   "auth.verify.email.go.to.security": "Ir a seguridad",
   "platform.auth.financePayables": "Cuentas por pagar",
   "platform.auth.permissionActionReportPayables": "Reporte de cuentas por pagar",
-  "platform.auth.reportPayables": "Permite consultar reportes de cuentas por pagar"
+  "platform.auth.reportPayables": "Permite consultar reportes de cuentas por pagar",
+  "platform.auth.financeExpenses": "Gastos"
 }

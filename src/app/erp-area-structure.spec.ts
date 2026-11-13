@@ -17,6 +17,7 @@ const modulePaths = [
   'finance/billing/debit-notes',
   'finance/treasury/payments',
   'finance/treasury/cash-register',
+  'finance/treasury/payables',
   'finance/treasury/receivables',
   'finance/treasury/payment-methods',
   'finance/treasury/expenses',
@@ -47,6 +48,7 @@ const publicScreens = [
   'finance/billing/debit-notes',
   'finance/billing/returns',
   'finance/treasury/cash-register',
+  'finance/treasury/payables',
   'finance/treasury/receivables',
   'finance/treasury/expenses',
 ];

@@ -253,7 +253,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
             'Gastos',
             'pi pi-receipt',
             '/finance/treasury/expenses',
-            BusinessModule.FINANCE_CASH_REGISTER,
+            BusinessModule.FINANCE_EXPENSES,
           ),
           page(
             'Métodos de pago',

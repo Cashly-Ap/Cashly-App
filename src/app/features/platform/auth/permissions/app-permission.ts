@@ -10,6 +10,8 @@ import { ReturnPermission } from '@features/finance/billing/returns/permissions'
 import { CreditNotePermission } from '@features/finance/billing/credit-notes/permissions';
 import { DebitNotePermission } from '@features/finance/billing/debit-notes/permissions';
 import { CashRegisterPermission } from '@features/finance/treasury/cash-register/permissions';
+import { PayablePermission } from '@features/finance/treasury/payables/permissions';
+import { ExpensePermission } from '@features/finance/treasury/expenses/permissions';
 import { ReceivablePermission } from '@features/finance/treasury/receivables/permissions';
 import { PaymentMethodPermission } from '@features/finance/treasury/payment-methods/permissions';
 import { CustomerPermission } from '@features/partners/customers/permissions';
@@ -35,6 +37,8 @@ export type AppPermission =
   | DebitNotePermission
   | CashRegisterPermission
   | ReceivablePermission
+  | PayablePermission
+  | ExpensePermission
   | PaymentMethodPermission
   | CustomerPermission
   | SupplierPermission

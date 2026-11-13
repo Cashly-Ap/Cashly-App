@@ -10,7 +10,9 @@ import { RETURN_PERMISSIONS } from '@features/finance/billing/returns/permission
 import { CREDIT_NOTE_PERMISSIONS } from '@features/finance/billing/credit-notes/permissions';
 import { DEBIT_NOTE_PERMISSIONS } from '@features/finance/billing/debit-notes/permissions';
 import { CASH_REGISTER_PERMISSIONS } from '@features/finance/treasury/cash-register/permissions';
+import { EXPENSE_PERMISSIONS } from '@features/finance/treasury/expenses/permissions';
 import { RECEIVABLE_PERMISSIONS } from '@features/finance/treasury/receivables/permissions';
+import { PAYABLE_PERMISSIONS } from '@features/finance/treasury/payables/permissions';
 import { PAYMENT_METHOD_PERMISSIONS } from '@features/finance/treasury/payment-methods/permissions';
 import { CUSTOMER_PERMISSIONS } from '@features/partners/customers/permissions';
 import { SUPPLIER_PERMISSIONS } from '@features/partners/suppliers/permissions';
@@ -19,6 +21,7 @@ import { USER_PERMISSIONS } from '@features/platform/auth/user/permissions';
 import { ROLE_PERMISSIONS } from '@features/platform/auth/role/permissions';
 import { DEPARTMENT_PERMISSIONS } from '@features/platform/auth/department/permissions';
 import { COMPANY_PERMISSIONS } from '@features/platform/company/permissions';
+import { AUDIT_PERMISSIONS } from '@features/platform/audit/permissions';
 
 export const PERMISSION_CATALOG = [
   {
@@ -82,9 +85,14 @@ export const PERMISSION_CATALOG = [
         sectionKey: 'navigation.labels.treasury',
         modules: [
           { moduleKey: 'navigation.labels.cashRegister', permissions: CASH_REGISTER_PERMISSIONS },
+          { moduleKey: 'navigation.labels.expenses', permissions: EXPENSE_PERMISSIONS },
           {
             moduleKey: 'navigation.labels.accountsReceivable',
             permissions: RECEIVABLE_PERMISSIONS,
+          },
+          {
+            moduleKey: 'navigation.labels.accountsPayable',
+            permissions: PAYABLE_PERMISSIONS,
           },
           {
             moduleKey: 'navigation.labels.paymentMethods',
@@ -125,6 +133,7 @@ export const PERMISSION_CATALOG = [
           { moduleKey: 'navigation.labels.roles', permissions: ROLE_PERMISSIONS },
           { moduleKey: 'navigation.labels.departments', permissions: DEPARTMENT_PERMISSIONS },
           { moduleKey: 'navigation.labels.company', permissions: COMPANY_PERMISSIONS },
+          { moduleKey: 'navigation.labels.auditTrail', permissions: AUDIT_PERMISSIONS },
         ],
       },
     ],

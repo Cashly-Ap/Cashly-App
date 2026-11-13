@@ -543,5 +543,6 @@
   "auth.verify.email.go.to.security": "Go to security",
   "platform.auth.financePayables": "Accounts payable",
   "platform.auth.permissionActionReportPayables": "Report accounts payable",
-  "platform.auth.reportPayables": "Allows viewing accounts payable reports"
+  "platform.auth.reportPayables": "Allows viewing accounts payable reports",
+  "platform.auth.financeExpenses": "Expenses"
 }

@@ -204,6 +204,7 @@ export class PermissionCatalogService {
       FINANCE_CREDIT_NOTES: 'platform.auth.financeCreditNotes',
       FINANCE_DEBIT_NOTES: 'platform.auth.financeDebitNotes',
       FINANCE_CASH_REGISTER: 'platform.auth.financeCashRegister',
+      FINANCE_EXPENSES: 'platform.auth.financeExpenses',
       FINANCE_RECEIVABLES: 'platform.auth.financeReceivables',
       FINANCE_PAYABLES: 'platform.auth.financePayables',
       FINANCE_PAYMENT_METHODS: 'platform.auth.financePaymentMethods',

@@ -17,6 +17,7 @@ export const MODULE_ICONS: Record<BusinessModule, string> = {
   [BusinessModule.FINANCE_CREDIT_NOTES]: 'pi pi-file-plus',
   [BusinessModule.FINANCE_DEBIT_NOTES]: 'pi pi-minus-circle',
   [BusinessModule.FINANCE_CASH_REGISTER]: 'pi pi-calculator',
+  [BusinessModule.FINANCE_EXPENSES]: 'pi pi-receipt',
   [BusinessModule.FINANCE_RECEIVABLES]: 'pi pi-money-bill',
   [BusinessModule.FINANCE_PAYABLES]: 'pi pi-wallet',
   [BusinessModule.FINANCE_PAYMENT_METHODS]: 'pi pi-credit-card',

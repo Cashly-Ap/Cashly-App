@@ -7,7 +7,7 @@ export const EXPENSES_ROUTES: Routes = [
   {
     path: '',
     canActivate: [authGuard, modulePermissionGuard],
-    data: { module: BusinessModule.FINANCE_CASH_REGISTER },
+    data: { module: BusinessModule.FINANCE_EXPENSES },
     canActivateChild: [modulePermissionGuard],
     children: [
       {

@@ -9,9 +9,9 @@ export const EXPENSE_LIST_NAVIGATION: ListNavigationDefinition = {
   route: '/finance/treasury/expenses',
   singular: 'gasto',
   actions: [
-    listAction('Ver detalle', 'EXECUTE', 'eye', BusinessModule.FINANCE_CASH_REGISTER),
-    listAction('Cancelar', 'EXECUTE', 'times-circle', BusinessModule.FINANCE_CASH_REGISTER),
-    listAction('Eliminar gasto', 'EXECUTE', 'trash', BusinessModule.FINANCE_CASH_REGISTER),
+    listAction('Ver detalle', 'READ', 'eye', BusinessModule.FINANCE_EXPENSES),
+    listAction('Cancelar', 'READ', 'times-circle', BusinessModule.FINANCE_EXPENSES),
+    listAction('Eliminar gasto', 'READ', 'trash', BusinessModule.FINANCE_EXPENSES),
     history(),
   ],
   destinations: [
@@ -19,8 +19,8 @@ export const EXPENSE_LIST_NAVIGATION: ListNavigationDefinition = {
       label: 'Nuevo gasto',
       icon: 'pi pi-plus',
       routerLink: '/finance/treasury/expenses/new',
-      requiredAction: 'EXECUTE',
-      requiredModule: BusinessModule.FINANCE_CASH_REGISTER,
+      requiredAction: 'READ',
+      requiredModule: BusinessModule.FINANCE_EXPENSES,
     },
   ],
 };

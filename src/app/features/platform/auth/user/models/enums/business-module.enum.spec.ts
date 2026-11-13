@@ -19,6 +19,7 @@ const NAVBAR_CONTRACT_MODULES = [
   'FINANCE_CREDIT_NOTES',
   'FINANCE_DEBIT_NOTES',
   'FINANCE_CASH_REGISTER',
+  'FINANCE_EXPENSES',
   'FINANCE_RECEIVABLES',
   'FINANCE_PAYABLES',
   'FINANCE_PAYMENT_METHODS',
@@ -43,7 +44,7 @@ const LEGACY_MODULES = [
 describe('BusinessModule', () => {
   it('matches exactly the navbar contract modules in contract order', () => {
     expect(Object.values(BusinessModule)).toEqual(NAVBAR_CONTRACT_MODULES);
-    expect(Object.values(BusinessModule)).toHaveLength(21);
+    expect(Object.values(BusinessModule)).toHaveLength(22);
   });
 
   it('exposes each enum key as its own value', () => {
