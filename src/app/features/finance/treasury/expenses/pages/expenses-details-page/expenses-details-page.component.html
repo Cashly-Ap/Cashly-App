@@ -30,7 +30,7 @@
               >
                 @if (canDelete()) {
                   <p-button
-                    [appPermission]="'EXECUTE'"
+                    [appPermissionCode]="ExpensePermission.DELETE"
                     [label]="'finance.treasury.expenses.deleteExpense' | translate"
                     icon="pi pi-trash"
                     severity="danger"
@@ -41,7 +41,7 @@
                 }
                 @if (canCancel()) {
                   <p-button
-                    [appPermission]="'EXECUTE'"
+                    [appPermissionCode]="ExpensePermission.CANCEL"
                     [label]="'finance.treasury.expenses.cancelExpense' | translate"
                     icon="pi pi-times-circle"
                     severity="danger"
@@ -63,7 +63,10 @@
               />
               <app-details-info-field
                 [label]="'finance.treasury.expenses.paymentMethod' | translate"
-                [value]="e.paymentMethodName"
+                [value]="
+                  e.paymentMethodName ||
+                  ('finance.treasury.cashregister.noPaymentMethod' | translate)
+                "
               />
               <app-details-info-field
                 [label]="'finance.treasury.expenses.date' | translate"

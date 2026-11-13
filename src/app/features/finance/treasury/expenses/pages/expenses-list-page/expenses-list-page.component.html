@@ -68,8 +68,7 @@
             <app-submit-button
               labelKey="finance.treasury.expenses.newExpense"
               shortcut="new"
-              permission="EXECUTE"
-              permissionModule="FINANCE_CASH_REGISTER"
+              [permissionCode]="ExpensePermission.CREATE"
               [disabled]="!service.hasRegisters()"
               (action)="onCreate()"
             />
@@ -185,7 +184,10 @@
                     </td>
                     <td>
                       <div class="text-sm text-surface-600 dark:text-surface-400">
-                        {{ expense.paymentMethodName }}
+                        {{
+                          expense.paymentMethodName ||
+                            ('finance.treasury.cashregister.noPaymentMethod' | translate)
+                        }}
                       </div>
                     </td>
                     <td class="hidden lg:table-cell">
@@ -283,7 +285,10 @@
                     </h3>
                     <p class="text-xs text-surface-500">
                       {{ expense.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
-                      {{ expense.paymentMethodName }}
+                      {{
+                        expense.paymentMethodName ||
+                          ('finance.treasury.cashregister.noPaymentMethod' | translate)
+                      }}
                     </p>
                     <p class="mt-1 text-xs text-surface-500">
                       {{ expense.createdByName || '—' }}

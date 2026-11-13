@@ -125,5 +125,6 @@
   "finance.treasury.cashregister.searchSessions": "Buscar cajas",
   "finance.treasury.cashregister.register": "caja",
   "finance.treasury.cashregister.registers": "cajas",
-  "finance.treasury.cashregister.statusAll": "Todos los estados"
+  "finance.treasury.cashregister.statusAll": "Todos los estados",
+  "finance.treasury.cashregister.noPaymentMethod": "Sin método de pago"
 }

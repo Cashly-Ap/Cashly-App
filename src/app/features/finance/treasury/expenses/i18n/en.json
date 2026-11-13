@@ -68,5 +68,9 @@
   "finance.treasury.expenses.expenseDeleted": "Expense deleted successfully",
   "finance.treasury.expenses.couldNotDeleteExpense": "Could not delete the expense. Please try again.",
   "finance.treasury.expenses.menuViewExpenses": "View expenses",
-  "finance.treasury.expenses.menuViewExpenseDetails": "View expense details"
+  "finance.treasury.expenses.menuViewExpenseDetails": "View expense details",
+  "finance.treasury.expenses.permissions.viewList": "View expenses",
+  "finance.treasury.expenses.permissions.create": "Register expenses",
+  "finance.treasury.expenses.permissions.delete": "Delete expenses",
+  "finance.treasury.expenses.permissions.cancel": "Cancel expenses"
 }

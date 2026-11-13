@@ -19,6 +19,7 @@ import { ButtonModule } from 'primeng/button';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ExpensesApplicationService } from '@features/finance/treasury/expenses/services/application/expenses-application.service';
+import { ExpensePermission } from '@features/finance/treasury/expenses/permissions';
 import { ExpenseCancelDialogComponent } from '@features/finance/treasury/expenses/components/expense-cancel-dialog/expense-cancel-dialog.component';
 import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
 import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
@@ -55,6 +56,7 @@ import { DetailsInfoGridComponent } from '@shared/components/details/details-inf
 })
 export class ExpensesDetailsPageComponent implements OnInit {
   protected readonly service = inject(ExpensesApplicationService);
+  protected readonly ExpensePermission = ExpensePermission;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly navigationHistory = inject(NavigationHistoryService);

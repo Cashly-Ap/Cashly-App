@@ -68,5 +68,9 @@
   "finance.treasury.expenses.expenseDeleted": "Gasto eliminado exitosamente",
   "finance.treasury.expenses.couldNotDeleteExpense": "Error al eliminar el gasto. Por favor, intente nuevamente.",
   "finance.treasury.expenses.menuViewExpenses": "Ver gastos",
-  "finance.treasury.expenses.menuViewExpenseDetails": "Ver detalle de gasto"
+  "finance.treasury.expenses.menuViewExpenseDetails": "Ver detalle de gasto",
+  "finance.treasury.expenses.permissions.viewList": "Ver listado de gastos",
+  "finance.treasury.expenses.permissions.create": "Registrar gastos",
+  "finance.treasury.expenses.permissions.delete": "Eliminar gastos",
+  "finance.treasury.expenses.permissions.cancel": "Cancelar gastos"
 }

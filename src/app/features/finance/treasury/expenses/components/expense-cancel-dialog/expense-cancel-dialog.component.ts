@@ -14,6 +14,7 @@ import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
 import { Expense } from '@features/finance/treasury/expenses/models/interfaces/expense.interface';
+import { ExpensePermission } from '@features/finance/treasury/expenses/permissions';
 
 @Component({
   selector: 'app-expense-cancel-dialog',
@@ -31,6 +32,7 @@ import { Expense } from '@features/finance/treasury/expenses/models/interfaces/e
   templateUrl: './expense-cancel-dialog.component.html',
 })
 export class ExpenseCancelDialogComponent implements OnChanges {
+  protected readonly ExpensePermission = ExpensePermission;
   private readonly fb = inject(FormBuilder);
 
   readonly visible = input<boolean>(false);

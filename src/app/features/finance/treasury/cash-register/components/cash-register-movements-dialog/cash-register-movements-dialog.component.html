@@ -63,7 +63,11 @@
             </p>
             <p class="break-words text-xs text-surface-500">
               {{ movement.occurredAt | localizedDate: 'dd/MM/yyyy HH:mm' }} ·
-              {{ movement.paymentMethodName }} ·
+              {{
+                movement.paymentMethodName ||
+                  ('finance.treasury.cashregister.noPaymentMethod' | translate)
+              }}
+              ·
               {{ movement.createdByName || ('finance.treasury.cashregister.system' | translate) }}
             </p>
           </div>

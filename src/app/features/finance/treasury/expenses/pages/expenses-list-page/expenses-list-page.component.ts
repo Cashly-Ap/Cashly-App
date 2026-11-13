@@ -28,6 +28,7 @@ import {
   provideTranslatedMessages,
 } from '@core/i18n/translated-feedback.service';
 import { ExpensesApplicationService } from '@features/finance/treasury/expenses/services/application/expenses-application.service';
+import { ExpensePermission } from '@features/finance/treasury/expenses/permissions';
 import {
   Expense,
   ExpenseFilters,
@@ -85,6 +86,7 @@ import { ExpenseCancelDialogComponent } from '@features/finance/treasury/expense
 })
 export class ExpensesListPageComponent implements OnInit {
   protected readonly service = inject(ExpensesApplicationService);
+  protected readonly ExpensePermission = ExpensePermission;
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly confirmation = inject(ConfirmationService);
@@ -249,12 +251,15 @@ export class ExpensesListPageComponent implements OnInit {
 
   actionsFor(expense: Expense): ListAction[] {
     const actions: ListAction[] = [
-      listAction('Ver detalle', 'EXECUTE', 'eye', () => this.onView(expense)),
+      listAction('Ver detalle', 'READ', 'eye', () => this.onView(expense), {
+        requiredPermissionCode: ExpensePermission.VIEW_LIST,
+      }),
     ];
 
     if (!expense.cancelled && expense.registerStatus === 'OPEN') {
       actions.push(
-        listAction('Eliminar gasto', 'EXECUTE', 'trash', () => this.onDelete(expense), {
+        listAction('Eliminar gasto', 'READ', 'trash', () => this.onDelete(expense), {
+          requiredPermissionCode: ExpensePermission.DELETE,
           danger: true,
         }),
       );
@@ -262,7 +267,8 @@ export class ExpensesListPageComponent implements OnInit {
 
     if (!expense.cancelled && expense.registerStatus === 'CLOSED') {
       actions.push(
-        listAction('Cancelar gasto', 'EXECUTE', 'times-circle', () => this.onCancel(expense), {
+        listAction('Cancelar gasto', 'READ', 'times-circle', () => this.onCancel(expense), {
+          requiredPermissionCode: ExpensePermission.CANCEL,
           danger: true,
         }),
       );

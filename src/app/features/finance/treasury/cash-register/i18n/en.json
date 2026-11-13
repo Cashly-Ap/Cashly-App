@@ -125,5 +125,6 @@
   "finance.treasury.cashregister.searchSessions": "Search cash registers",
   "finance.treasury.cashregister.register": "cash register",
   "finance.treasury.cashregister.registers": "cash registers",
-  "finance.treasury.cashregister.statusAll": "All statuses"
+  "finance.treasury.cashregister.statusAll": "All statuses",
+  "finance.treasury.cashregister.noPaymentMethod": "No payment method"
 }

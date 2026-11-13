@@ -5,6 +5,7 @@ import { ShortcutDirective } from '@core/shortcuts/shortcut.directive';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import { PermissionAction } from '@features/platform/auth/authorization/models/access.model';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
 
 export type SubmitButtonAction = 'new' | 'submit';
 
@@ -22,6 +23,7 @@ export class SubmitButtonComponent {
   readonly permission = input<PermissionAction | null>(null);
   readonly permissionModule = input<BusinessModule | string | null>(null);
   readonly requiredPermissions = input<string[]>([]);
+  readonly permissionCode = input<AppPermission | null>(null);
   readonly icon = input<string | null>(null);
   readonly severity = input<ButtonSeverity>('contrast');
   readonly type = input<'button' | 'submit'>('button');

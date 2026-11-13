@@ -238,7 +238,10 @@ export class CashRegisterPageComponent implements OnInit {
     const rows = this.closure()?.expenseSummary ?? [];
     const colors = this.theme.isDarkMode() ? CHART_COLORS.expenseDark : CHART_COLORS.expenseLight;
     return {
-      labels: rows.map((row) => row.concept),
+      labels: rows.map(
+        (row) =>
+          row.concept || this.translations.t('finance.treasury.cashregister.noPaymentMethod'),
+      ),
       datasets: [
         {
           data: rows.map((row) => Number(row.total)),
