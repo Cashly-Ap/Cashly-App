@@ -82,6 +82,7 @@ describe('NotificationBellComponent', () => {
       'CREDIT_NOTE',
       'DEBIT_NOTE',
       'CASH_REGISTER',
+      'EXPENSE',
       'RECEIVABLE',
       'PAYMENT',
       'PAYMENT_METHOD',
@@ -105,6 +106,9 @@ describe('NotificationBellComponent', () => {
     );
     expect(component.notificationActionLabel({ ...notification, referenceType: 'WAREHOUSE' })).toBe(
       'platform.notifications.actions.viewWarehouse',
+    );
+    expect(component.notificationActionLabel({ ...notification, referenceType: 'EXPENSE' })).toBe(
+      'platform.notifications.actions.viewExpense',
     );
     expect(component.notificationActionLabel({ ...notification, referenceType: null })).toBe(
       'platform.notifications.actions.view',

@@ -115,6 +115,7 @@ export class NotificationBellComponent implements OnDestroy {
     CREDIT_NOTE: 'platform.notifications.actions.viewCreditNote',
     DEBIT_NOTE: 'platform.notifications.actions.viewDebitNote',
     CASH_REGISTER: 'platform.notifications.actions.viewCashRegister',
+    EXPENSE: 'platform.notifications.actions.viewExpense',
     RECEIVABLE: 'platform.notifications.actions.viewReceivable',
     PAYMENT: 'platform.notifications.actions.viewPayment',
     PAYMENT_METHOD: 'platform.notifications.actions.viewPaymentMethod',

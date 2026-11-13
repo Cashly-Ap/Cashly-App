@@ -53,5 +53,6 @@
   "platform.notifications.preferences.groups.financeTreasury": "Finanzas · Tesorería",
   "platform.notifications.preferences.groups.partners": "Contactos",
   "platform.notifications.preferences.groups.platform": "Plataforma",
-  "platform.notifications.preferences.groups.other": "Otros"
+  "platform.notifications.preferences.groups.other": "Otros",
+  "platform.notifications.actions.viewExpense": "Ver gasto"
 }
