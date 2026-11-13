@@ -47,8 +47,10 @@ export class DashboardApiService {
     return this.http.get<DashboardSummary>(`${this.baseUrl}/summary`);
   }
 
-  getMonthlySales(): Observable<MonthlySales[]> {
-    return this.http.get<MonthlySales[]>(`${this.baseUrl}/monthly-sales`);
+  getMonthlySales(period: 'WEEK' | 'MONTH' | 'YEAR' = 'MONTH'): Observable<MonthlySales[]> {
+    return this.http.get<MonthlySales[]>(`${this.baseUrl}/monthly-sales`, {
+      params: { period },
+    });
   }
 
   getTopProducts(limit = 5): Observable<TopItem[]> {

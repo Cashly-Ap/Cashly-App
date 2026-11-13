@@ -22,5 +22,15 @@
   "analytics.dashboard.recentActivity": "Actividad Reciente",
   "analytics.dashboard.number": "Número",
   "analytics.dashboard.noRecentActivity": "Sin actividad reciente",
-  "analytics.dashboard.permissions.view": "Dashboard"
+  "analytics.dashboard.permissions.view": "Dashboard",
+  "analytics.dashboard.salesTrend": "Tendencia de ventas",
+  "analytics.dashboard.salesTrendSubtitle": "Filtra las ventas por semana, mes o año",
+  "analytics.dashboard.periodWeek": "Semana",
+  "analytics.dashboard.periodMonth": "Mes",
+  "analytics.dashboard.periodYear": "Año",
+  "analytics.dashboard.byDueDate": "Por fecha de vencimiento",
+  "analytics.dashboard.byCustomer": "Por cliente",
+  "analytics.dashboard.overdueInvoices": "Facturas vencidas",
+  "analytics.dashboard.pendingInvoicesTitle": "Facturas pendientes",
+  "analytics.dashboard.weekShort": "Semana"
 }

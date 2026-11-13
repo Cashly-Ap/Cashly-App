@@ -22,5 +22,15 @@
   "analytics.dashboard.recentActivity": "Recent activity",
   "analytics.dashboard.number": "Number",
   "analytics.dashboard.noRecentActivity": "No recent activity",
-  "analytics.dashboard.permissions.view": "Dashboard"
+  "analytics.dashboard.permissions.view": "Dashboard",
+  "analytics.dashboard.salesTrend": "Sales trend",
+  "analytics.dashboard.salesTrendSubtitle": "Filter sales by week, month or year",
+  "analytics.dashboard.periodWeek": "Week",
+  "analytics.dashboard.periodMonth": "Month",
+  "analytics.dashboard.periodYear": "Year",
+  "analytics.dashboard.byDueDate": "By due date",
+  "analytics.dashboard.byCustomer": "By customer",
+  "analytics.dashboard.overdueInvoices": "Overdue invoices",
+  "analytics.dashboard.pendingInvoicesTitle": "Pending invoices",
+  "analytics.dashboard.weekShort": "Week"
 }

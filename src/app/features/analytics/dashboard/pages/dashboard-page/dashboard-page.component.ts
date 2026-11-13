@@ -2,6 +2,7 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import {
   Component,
   inject,
@@ -11,6 +12,7 @@ import {
   ChangeDetectionStrategy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { chartPalette, moduleColor } from '@core/preferences/module-appearance';
 import { ThemeService } from '@core/theme/components/theme-toggle/theme.service';
@@ -19,11 +21,11 @@ import {
   DashboardSummary,
   MonthlySales,
   TopItem,
-  RecentActivity,
   InvoiceDue,
 } from '@features/analytics/dashboard/services/api/dashboard-api.service';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { ChartConfiguration, ChartData } from 'chart.js';
+import { SelectModule } from 'primeng/select';
 
 const DASHBOARD_CHART_COLORS = {
   neutral: '#777777',
@@ -55,6 +57,9 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     CommonModule,
     BaseChartDirective,
     ModuleIconComponent,
+    FormsModule,
+    SelectModule,
+    TranslateOptionsPipe,
   ],
   providers: [provideCharts(withDefaultRegisterables())],
   templateUrl: './dashboard-page.component.html',
@@ -70,9 +75,18 @@ export class DashboardPageComponent implements OnInit {
   readonly monthlySales = signal<MonthlySales[]>([]);
   readonly topProducts = signal<TopItem[]>([]);
   readonly topCustomers = signal<TopItem[]>([]);
-  readonly recentActivity = signal<RecentActivity[]>([]);
   readonly invoiceDueSchedule = signal<InvoiceDue[]>([]);
+  readonly pendingInvoiceCount = computed(() => this.invoiceDueSchedule().length);
+  readonly overdueInvoiceCount = computed(
+    () => this.invoiceDueSchedule().filter((invoice) => this.isOverdue(invoice.dueDate)).length,
+  );
   readonly loading = signal(true);
+  readonly salesPeriod = signal<'WEEK' | 'MONTH' | 'YEAR'>('MONTH');
+  readonly salesPeriodOptions = [
+    { label: 'analytics.dashboard.periodWeek', value: 'WEEK' },
+    { label: 'analytics.dashboard.periodMonth', value: 'MONTH' },
+    { label: 'analytics.dashboard.periodYear', value: 'YEAR' },
+  ];
 
   readonly barChartType = 'bar' as const;
   readonly horizontalBarChartType = 'bar' as const;
@@ -81,6 +95,7 @@ export class DashboardPageComponent implements OnInit {
   private readonly salesChartSource = signal<ChartData<'bar'>>({ labels: [], datasets: [] });
   private readonly salesChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
       y: {
@@ -120,17 +135,17 @@ export class DashboardPageComponent implements OnInit {
     },
   };
 
-  private readonly dueChartSource = signal<ChartData<'line'>>({ labels: [], datasets: [] });
-  private readonly dueChartBaseOptions: ChartConfiguration<'line'>['options'] = {
+  private readonly invoiceCustomerChartBaseOptions: ChartConfiguration<'bar'>['options'] = {
+    indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
-    interaction: { intersect: false, mode: 'index' },
     plugins: { legend: { display: false } },
     scales: {
-      y: {
+      x: {
         beginAtZero: true,
         ticks: { callback: (v) => Number(v).toLocaleString(this.language.locale()) + '$' },
       },
+      y: { ticks: { font: { size: 11 } } },
     },
   };
 
@@ -145,7 +160,7 @@ export class DashboardPageComponent implements OnInit {
     const source = this.salesChartSource();
     return {
       ...source,
-      labels: this.monthlySales().map((month) => this.formatMonth(month.month)),
+      labels: this.monthlySales().map((item) => this.formatSalesBucket(item.month)),
       datasets: source.datasets.map((dataset) => ({
         ...dataset,
         label: this.translations.t(dataset.label),
@@ -222,36 +237,51 @@ export class DashboardPageComponent implements OnInit {
     ),
   }));
 
-  readonly dueChartData = computed(() => {
+  private readonly dueColor = computed(() => {
     const isDark = this.themeService.isDarkMode();
-    const informative = this.preferences.colorMode() === 'informative';
-    const color = informative
+    return this.preferences.colorMode() === 'informative'
       ? moduleColor('finance', isDark)
       : isDark
         ? DASHBOARD_CHART_COLORS.darkSeries
         : DASHBOARD_CHART_COLORS.lightSeries;
-    const source = this.dueChartSource();
-    return {
-      ...source,
-      datasets: source.datasets.map((dataset) => ({
-        ...dataset,
-        label: this.translations.t(dataset.label),
-        backgroundColor: informative
-          ? `${color}20`
-          : isDark
-            ? DASHBOARD_CHART_COLORS.darkFill
-            : DASHBOARD_CHART_COLORS.lightFill,
-        borderColor: color,
-        pointBackgroundColor: color,
-      })),
-    };
   });
 
-  readonly dueChartOptions = computed<ChartConfiguration<'line'>['options']>(() => ({
-    ...this.dueChartBaseOptions,
+  readonly pendingInvoicesChartData = computed<ChartData<'bar'>>(() =>
+    this.invoicesByCustomer(this.invoiceDueSchedule()),
+  );
+
+  readonly overdueInvoicesChartData = computed<ChartData<'bar'>>(() =>
+    this.invoicesByCustomer(
+      this.invoiceDueSchedule().filter((invoice) => this.isOverdue(invoice.dueDate)),
+    ),
+  );
+
+  readonly invoiceCustomerChartOptions = computed<ChartConfiguration<'bar'>['options']>(() => ({
+    ...this.invoiceCustomerChartBaseOptions,
     animation: false,
-    scales: this.themedScales(this.dueChartBaseOptions?.scales, this.themeService.isDarkMode()),
+    scales: this.themedScales(
+      this.invoiceCustomerChartBaseOptions?.scales,
+      this.themeService.isDarkMode(),
+    ),
   }));
+
+  private invoicesByCustomer(invoices: InvoiceDue[]): ChartData<'bar'> {
+    const totals = new Map<string, number>();
+    for (const invoice of invoices) {
+      totals.set(invoice.customerName, (totals.get(invoice.customerName) ?? 0) + invoice.amount);
+    }
+    const entries = [...totals.entries()].sort((a, b) => b[1] - a[1]);
+    return {
+      labels: entries.map(([customer]) => customer),
+      datasets: [
+        {
+          data: entries.map(([, total]) => total),
+          backgroundColor: this.dueColor(),
+          borderRadius: 6,
+        },
+      ],
+    };
+  }
 
   private themedScales(
     scales: NonNullable<ChartConfiguration<'bar'>['options']>['scales'],
@@ -278,19 +308,7 @@ export class DashboardPageComponent implements OnInit {
   ngOnInit(): void {
     this.api.getSummary().subscribe((s) => this.summary.set(s));
 
-    this.api.getMonthlySales().subscribe((data) => {
-      this.monthlySales.set(data);
-      this.salesChartSource.set({
-        labels: data.map((d) => this.formatMonth(d.month)),
-        datasets: [
-          {
-            data: data.map((d) => d.total),
-            backgroundColor: DASHBOARD_CHART_COLORS.neutral,
-            borderRadius: 6,
-          },
-        ],
-      });
-    });
+    this.loadSales(this.salesPeriod());
 
     this.api.getTopProducts(5).subscribe((data) => {
       this.topProducts.set(data);
@@ -320,39 +338,44 @@ export class DashboardPageComponent implements OnInit {
       });
     });
 
-    this.api.getRecentActivity().subscribe((data) => {
-      this.recentActivity.set(data);
-      this.loading.set(false);
-    });
+    this.loading.set(false);
 
     this.api.getInvoiceDueSchedule().subscribe((data) => {
       const limitedSchedule = data.slice(0, 10);
       this.invoiceDueSchedule.set(limitedSchedule);
-      const byDate = new Map<string, number>();
-      for (const invoice of limitedSchedule) {
-        byDate.set(invoice.dueDate, (byDate.get(invoice.dueDate) ?? 0) + invoice.amount);
-      }
-      const dates = [...byDate.keys()].sort();
-      this.dueChartSource.set({
-        labels: dates.map((date) => this.formatDate(date)),
+    });
+  }
+
+  onSalesPeriodChange(period: 'WEEK' | 'MONTH' | 'YEAR' | null): void {
+    if (!period) return;
+    this.salesPeriod.set(period);
+    this.loadSales(period);
+  }
+
+  private loadSales(period: 'WEEK' | 'MONTH' | 'YEAR'): void {
+    this.api.getMonthlySales(period).subscribe((data) => {
+      this.monthlySales.set(data);
+      this.salesChartSource.set({
+        labels: data.map((item) => this.formatSalesBucket(item.month)),
         datasets: [
           {
-            data: dates.map((date) => byDate.get(date) ?? 0),
-            borderColor: DASHBOARD_CHART_COLORS.lightSeries,
-            backgroundColor: DASHBOARD_CHART_COLORS.lightFill,
-            fill: true,
-            tension: 0.3,
-            pointRadius: 4,
-            pointBackgroundColor: DASHBOARD_CHART_COLORS.lightSeries,
+            data: data.map((item) => item.total),
+            backgroundColor: DASHBOARD_CHART_COLORS.neutral,
+            borderRadius: 6,
           },
         ],
       });
     });
   }
 
-  activityLabel(type: string): string {
-    const labels: Record<string, string> = { invoice: 'Factura', order: 'Pedido' };
-    return labels[type] ?? type;
+  private formatSalesBucket(bucket: string): string {
+    const period = this.salesPeriod();
+    if (period === 'YEAR') return bucket;
+    if (period === 'WEEK') {
+      const [, week] = bucket.split('-W');
+      return `${this.translations.t('analytics.dashboard.weekShort')} ${week}`;
+    }
+    return this.formatMonth(bucket);
   }
 
   private formatMonth(month: string): string {

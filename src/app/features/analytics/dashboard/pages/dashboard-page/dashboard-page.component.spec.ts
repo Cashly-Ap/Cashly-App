@@ -38,7 +38,7 @@ describe('Dashboard chart theme', () => {
       component.salesChartOptions(),
       component.productsChartOptions(),
       component.customersChartOptions(),
-      component.dueChartOptions(),
+      component.invoiceCustomerChartOptions(),
     ];
     for (const chartOptions of options) {
       for (const axis of ['x', 'y']) {
@@ -82,8 +82,8 @@ describe('Dashboard chart theme', () => {
         expect(data.datasets[0].backgroundColor).toBe(color);
         expect(data.datasets[0].data).toEqual([100]);
       }
-      expect(component.dueChartData().datasets[0].borderColor).toBe(color);
-      expect(component.dueChartData().datasets[0].data).toEqual([100]);
+      expect(component.pendingInvoicesChartData().datasets[0].backgroundColor).toBe(color);
+      expect(component.pendingInvoicesChartData().datasets[0].data).toEqual([100]);
       expectChartPalette(component, dark ? '#d4d4d4' : '#525252', dark ? '#404040' : '#e5e5e5');
     }
   });
@@ -94,7 +94,7 @@ describe('Dashboard chart theme', () => {
       component.salesChartOptions(),
       component.productsChartOptions(),
       component.customersChartOptions(),
-      component.dueChartOptions(),
+      component.invoiceCustomerChartOptions(),
     ];
     const currencyFormatter = component.salesChartOptions()?.scales?.['y']?.ticks?.callback;
 
@@ -106,14 +106,13 @@ describe('Dashboard chart theme', () => {
       component.salesChartOptions(),
       component.productsChartOptions(),
       component.customersChartOptions(),
-      component.dueChartOptions(),
+      component.invoiceCustomerChartOptions(),
     ];
     updatedOptions.forEach((options, index) => expect(options).not.toBe(previousOptions[index]));
     expect(component.salesChartOptions()?.scales?.['y']?.ticks?.callback).toBe(currencyFormatter);
     expect(component.productsChartOptions()?.indexAxis).toBe('y');
     expect(component.productsChartOptions()?.maintainAspectRatio).toBe(false);
     expect(component.productsChartOptions()?.scales?.['y']?.ticks?.font).toEqual({ size: 11 });
-    expect(component.dueChartOptions()?.interaction).toEqual({ intersect: false, mode: 'index' });
 
     isDarkMode.set(false);
     colorMode.set('minimal');
@@ -148,7 +147,7 @@ describe('Dashboard chart theme', () => {
     const products = component.productsChartData().datasets[0];
     expect(new Set(products.backgroundColor as string[]).size).toBe(2);
     expect(products.data).toEqual([100, 200]);
-    expect(component.dueChartData().datasets[0].borderColor).toBe('#15803d');
+    expect(component.pendingInvoicesChartData().datasets[0].backgroundColor).toBe('#15803d');
     isDarkMode.set(true);
     expect(component.salesChartData().datasets[0].backgroundColor).toBe('#93c5fd');
     colorMode.set('minimal');
