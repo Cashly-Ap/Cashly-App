@@ -71,11 +71,13 @@ const BUSINESS_MODULE_BY_CATALOG_KEY: Readonly<Record<string, string[]>> = {
     'FINANCE_CASH_REGISTER',
     'CASH_REGISTER',
   ],
+  'navigation.labels.expenses': ['FINANCE_TREASURY_EXPENSES', 'EXPENSE'],
   'navigation.labels.accountsReceivable': [
     'FINANCE_TREASURY_RECEIVABLES',
     'FINANCE_RECEIVABLES',
     'RECEIVABLE',
   ],
+  'navigation.labels.accountsPayable': ['FINANCE_TREASURY_PAYABLES', 'FINANCE_PAYABLES', 'PAYABLE'],
   'navigation.labels.paymentMethods': [
     'FINANCE_TREASURY_PAYMENT_METHODS',
     'FINANCE_PAYMENT_METHODS',
@@ -88,6 +90,7 @@ const BUSINESS_MODULE_BY_CATALOG_KEY: Readonly<Record<string, string[]>> = {
   'navigation.labels.roles': ['ROLES', 'ROLE'],
   'navigation.labels.departments': ['DEPARTMENTS', 'DEPARTMENT'],
   'navigation.labels.company': ['COMPANY'],
+  'navigation.labels.auditTrail': ['AUDIT_TRAIL', 'AUDIT'],
 };
 
 const ALIASES: Readonly<Record<string, string>> = Object.fromEntries(
@@ -104,6 +107,9 @@ const LABEL_KEYS: Readonly<Record<string, string>> = {
   'finance treasury cash register': 'navigation.labels.cashRegister',
   'finance treasury payment methods': 'navigation.labels.paymentMethods',
   'finance treasury receivables': 'navigation.labels.accountsReceivable',
+  'finance treasury expenses': 'navigation.labels.expenses',
+  'finance treasury payables': 'navigation.labels.accountsPayable',
+  'audit trail': 'navigation.labels.auditTrail',
   categories: 'navigation.labels.categories',
   'price types': 'navigation.labels.priceTypes',
   products: 'navigation.labels.products',

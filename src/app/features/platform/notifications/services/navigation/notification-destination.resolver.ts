@@ -35,6 +35,10 @@ const DESTINATIONS: Record<string, NotificationDestination> = {
     collection: '/finance/treasury/cash-register',
     module: BusinessModule.FINANCE_CASH_REGISTER,
   },
+  EXPENSE: {
+    collection: '/finance/treasury/expenses',
+    module: BusinessModule.FINANCE_EXPENSES,
+  },
   RECEIVABLE: { collection: RECEIVABLES_ROUTE, module: BusinessModule.FINANCE_RECEIVABLES },
   PAYMENT: { collection: RECEIVABLES_ROUTE, module: BusinessModule.FINANCE_RECEIVABLES },
   PAYMENT_METHOD: {

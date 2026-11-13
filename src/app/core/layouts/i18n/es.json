@@ -304,5 +304,7 @@
   "common.cancel.missingHandler": "No se pudo cancelar el registro.",
   "core.layouts.actionNotAvailable": "Esta acción todavía no está disponible.",
   "navigation.labels.accountsPayable": "Cuentas por pagar",
-  "navigation.labels.accountsPayablePdf": "Cuentas por Pagar PDF"
+  "navigation.labels.accountsPayablePdf": "Cuentas por Pagar PDF",
+  "navigation.labels.auditTrail": "Historial de auditoría",
+  "navigation.labels.expenses": "Gastos"
 }

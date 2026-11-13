@@ -304,5 +304,7 @@
   "common.cancel.missingHandler": "The record could not be cancelled.",
   "core.layouts.actionNotAvailable": "This action is not available yet.",
   "navigation.labels.accountsPayable": "Accounts payable",
-  "navigation.labels.accountsPayablePdf": "Accounts payable PDF"
+  "navigation.labels.accountsPayablePdf": "Accounts payable PDF",
+  "navigation.labels.auditTrail": "Audit history",
+  "navigation.labels.expenses": "Expenses"
 }
