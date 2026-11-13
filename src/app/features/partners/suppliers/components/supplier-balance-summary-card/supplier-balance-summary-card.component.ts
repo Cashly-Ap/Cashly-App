@@ -15,6 +15,4 @@ import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.
 export class SupplierBalanceSummaryCardComponent {
   readonly supplierBalance = input<SupplierBalanceResponse | null>(null);
   readonly pendingBalance = input(0);
-  readonly supplierName = input<string>('');
-  readonly supplierAlias = input<string>('');
 }

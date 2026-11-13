@@ -162,7 +162,7 @@ describe('CustomerBalancePageComponent', () => {
     const filterButton = Array.from<HTMLButtonElement>(
       fixture.nativeElement.querySelectorAll('button'),
     ).find((button) => button.getAttribute('aria-label') === 'Filtros');
-    expect(filterButton?.parentElement?.className).toContain('ml-auto');
+    expect(filterButton?.parentElement?.className).toContain('shrink-0');
   });
 
   it('shows an empty balance when the customer has no balance record', () => {
