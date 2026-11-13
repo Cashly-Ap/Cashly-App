@@ -28,7 +28,7 @@ export const MODULE_ICONS: Record<BusinessModule, string> = {
 const PLATFORM_ROUTE_ICONS: ReadonlyArray<readonly [string, string]> = [
   ['/platform/company', 'pi pi-building'],
   ['/platform/auth/security', 'pi pi-shield'],
-  ['/platform/auth/preferences', 'pi pi-sliders-h'],
+  ['/platform/auth/preferences', 'pi pi-cog'],
   ['/platform/auth/configuration', 'pi pi-user'],
   ['/platform/auth/change-username', 'pi pi-user-edit'],
   ['/platform/auth/change-password', 'pi pi-key'],
