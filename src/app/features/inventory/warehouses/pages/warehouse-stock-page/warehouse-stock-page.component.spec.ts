@@ -145,7 +145,7 @@ describe('WarehouseStockPageComponent', () => {
   let params: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
   const api = { getOverview: vi.fn() };
   const history = { back: vi.fn() };
-  const router = { navigate: vi.fn().mockResolvedValue(true) };
+  const router = { navigate: vi.fn().mockResolvedValue(true), events: of(), url: '/' };
 
   beforeEach(() => {
     vi.clearAllMocks();
