@@ -132,6 +132,9 @@ export class QuoteListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
+  readonly pagedQuotes = computed(() =>
+    this.quotes().slice(this.first(), this.first() + this.rows()),
+  );
   readonly filterStatus = signal('DRAFT');
   readonly dateFrom = signal<Date | null>(null);
   readonly dateTo = signal<Date | null>(null);

@@ -126,6 +126,9 @@ export class PurchaseListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
+  readonly pagedPurchases = computed(() =>
+    this.purchases().slice(this.first(), this.first() + this.rows()),
+  );
   readonly filterStatus = signal('DRAFT');
   readonly dateFrom = signal<Date | null>(null);
   readonly dateTo = signal<Date | null>(null);

@@ -145,6 +145,9 @@ export class InvoiceListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
+  readonly pagedInvoices = computed(() =>
+    this.invoices().slice(this.first(), this.first() + this.rows()),
+  );
   readonly selectedStatus = signal('');
   readonly selectedReturnStatus = signal('');
   readonly selectedDueStatus = signal('');
@@ -233,7 +236,7 @@ export class InvoiceListPageComponent implements OnInit {
   private listRequest?: Subscription;
 
   private readonly listNavigation = connectListNavigation({
-    records: () => this.invoices(),
+    records: () => this.invoices().slice(this.first(), this.first() + this.rows()),
     loading: () => this.loading(),
     total: () => this.totalElements(),
     first: () => this.first(),
