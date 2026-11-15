@@ -183,20 +183,20 @@ const destinations = [
     path: '/inventory/warehouses',
   },
   {
-    labels: ['Finanzas', 'Facturación', 'Facturas'],
-    path: '/finance/billing/invoices',
+    labels: ['Ventas', 'Facturas', 'Ver facturas'],
+    path: '/sales/invoices',
   },
   {
-    labels: ['Finanzas', 'Facturación', 'Devoluciones'],
-    path: '/finance/billing/returns',
+    labels: ['Ventas', 'Facturas', 'Devoluciones', 'Ver devoluciones'],
+    path: '/sales/returns',
   },
   {
-    labels: ['Finanzas', 'Facturación', 'Notas de crédito'],
-    path: '/finance/billing/credit-notes',
+    labels: ['Ventas', 'Facturas', 'Notas de crédito', 'Ver notas de crédito'],
+    path: '/sales/credit-notes',
   },
   {
-    labels: ['Finanzas', 'Facturación', 'Notas de débito'],
-    path: '/finance/billing/debit-notes',
+    labels: ['Ventas', 'Facturas', 'Notas de débito', 'Ver notas de débito'],
+    path: '/sales/debit-notes',
   },
   {
     labels: ['Finanzas', 'Tesorería', 'Caja'],
@@ -267,8 +267,7 @@ const reports = [
   { group: 'Ventas', label: 'Reporte de Presupuestos PDF', title: 'Reporte de Presupuestos - PDF' },
   { group: 'Ventas', label: 'Reporte de Pedidos PDF', title: 'Reporte de Pedidos - PDF' },
   {
-    group: 'Finanzas',
-    subgroup: 'Facturación',
+    group: 'Ventas',
     label: 'Reporte de Facturas PDF',
     title: 'Reporte de Facturas - PDF',
   },
@@ -392,7 +391,7 @@ test('given mobile navigation when opening treasury then nested destinations sta
 for (const [legacy, canonical] of [
   ['/quotes?search=legacy#documents', '/sales/quotes?search=legacy#documents'],
   ['/orders', '/sales/orders'],
-  ['/invoices', '/finance/billing/invoices'],
+  ['/invoices', '/sales/invoices'],
   [
     '/cash-register/history?closed=true#sessions',
     '/finance/treasury/cash-register/history?closed=true#sessions',
@@ -483,12 +482,12 @@ for (const [modules, destination] of [
 
 for (const [area, modules, destination] of [
   ['/sales', ['SALES'], '/sales/quotes'],
+  ['/sales', ['FINANCES'], '/sales/invoices'],
   ['/inventory', ['INVENTORY'], '/inventory/warehouses'],
-  ['/finance/billing', ['FINANCES'], '/finance/billing/credit-notes'],
   ['/finance/treasury', ['FINANCES'], '/finance/treasury/cash-register'],
   ['/platform', ['SALES'], '/platform/auth/configuration'],
 ] as const) {
-  test(`area root ${area} opens an authorized screen inside the requested area`, async ({
+  test(`area root ${area} with ${modules.join(',')} opens an authorized screen inside the requested area`, async ({
     page,
   }) => {
     await authenticate(page, [...modules], 'OPERATOR');

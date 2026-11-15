@@ -90,7 +90,7 @@ export const REPORT_ACTION_HANDLER_PROVIDERS: Provider[] = [
       key: 'invoices',
       load: () =>
         import(
-          '@features/finance/billing/invoices/reporting/components/invoice-report-action/invoice-report-action.component'
+          '@features/sales/invoices/invoices/reporting/components/invoice-report-action/invoice-report-action.component'
         ).then((module) => module.InvoiceReportActionComponent),
     },
   },

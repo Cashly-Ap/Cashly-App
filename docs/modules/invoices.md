@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Invoices module manages sales invoices in the billing area. An invoice belongs to a customer, can be created directly or from orders/quotes, supports cash or credit payment terms, tracks payments and returns, and can be confirmed, cancelled, duplicated, or downloaded as PDF.
+The Invoices module manages sales invoices in the sales area. An invoice belongs to a customer, can be created directly or from orders/quotes, supports cash or credit payment terms, tracks payments and returns, and can be confirmed, cancelled, duplicated, or downloaded as PDF. Returns, credit notes and debit notes live beside the invoice feature inside the same `invoices` container.
 
 **Module Type**: `CRUD` with document actions (confirm, cancel, duplicate, PDF)
 
@@ -11,33 +11,25 @@ The Invoices module manages sales invoices in the billing area. An invoice belon
 ## Module Structure
 
 ```
-src/app/features/finance/billing/invoices/
-├── actions/                  # Cancel, confirm, duplicate, delete, and PDF action providers
-├── components/               # Invoice dialogs and form sections
-├── i18n/                     # Translations
-├── messages/                 # Toast and error messages
-├── models/                   # Interfaces and enums
-├── navigation/               # Menu and navigation contributions
-├── pages/                    # List, form, and details pages
-├── permissions/              # Invoice permission constants
-├── reporting/                # Invoice PDF report
-├── routing/                  # Lazy-loaded routes
-├── services/                 # API and application services
-└── index.ts
+src/app/features/sales/invoices/
+├── invoices/                 # Invoice feature (actions, pages, services, models, routing...)
+├── returns/                 # Customer returns feature
+├── credit-notes/            # Customer credit notes feature
+└── debit-notes/             # Customer debit notes feature
 ```
 
 ---
 
 ## Routes
 
-| Route                                | Page            |
-| ------------------------------------ | --------------- |
-| `/finance/billing/invoices`          | Invoice list    |
-| `/finance/billing/invoices/new`      | Create invoice  |
-| `/finance/billing/invoices/:id`      | Invoice details |
-| `/finance/billing/invoices/:id/edit` | Edit invoice    |
+| Route                      | Page            |
+| -------------------------- | --------------- |
+| `/sales/invoices`          | Invoice list    |
+| `/sales/invoices/new`      | Create invoice  |
+| `/sales/invoices/:id`      | Invoice details |
+| `/sales/invoices/:id/edit` | Edit invoice    |
 
-Legacy `/invoices` redirects to `/finance/billing/invoices`.
+Legacy `/invoices` redirects to `/sales/invoices`.
 
 ---
 
@@ -206,9 +198,9 @@ interface InvoiceConfirmRequest {
 
 ## Permissions
 
-`FINANCE_BILLING_INVOICES_VIEW_LIST`, `FINANCE_BILLING_INVOICES_VIEW_DETAIL`, `FINANCE_BILLING_INVOICES_CREATE`, `FINANCE_BILLING_INVOICES_EDIT`, `FINANCE_BILLING_INVOICES_DELETE`, `FINANCE_BILLING_INVOICES_CONFIRM`, `FINANCE_BILLING_INVOICES_CANCEL`, `FINANCE_BILLING_INVOICES_DUPLICATE`, `FINANCE_BILLING_INVOICES_REPORT_PDF`, `FINANCE_BILLING_INVOICES_DOWNLOAD_PDF`.
+`SALES_INVOICES_INVOICES_VIEW_LIST`, `SALES_INVOICES_INVOICES_VIEW_DETAIL`, `SALES_INVOICES_INVOICES_CREATE`, `SALES_INVOICES_INVOICES_EDIT`, `SALES_INVOICES_INVOICES_DELETE`, `SALES_INVOICES_INVOICES_CONFIRM`, `SALES_INVOICES_INVOICES_CANCEL`, `SALES_INVOICES_INVOICES_DUPLICATE`, `SALES_INVOICES_INVOICES_REPORT_PDF`, `SALES_INVOICES_INVOICES_DOWNLOAD_PDF`.
 
-Invoice creation from orders/quotes also requires `FINANCE_BILLING_INVOICES_CREATE` in addition to the source-document conversion permission.
+Invoice creation from orders/quotes also requires `SALES_INVOICES_INVOICES_CREATE` in addition to the source-document conversion permission.
 
 ---
 

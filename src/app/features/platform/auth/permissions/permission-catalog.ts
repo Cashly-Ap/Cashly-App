@@ -5,10 +5,10 @@ import { PRODUCT_PERMISSIONS } from '@features/catalog/products/permissions';
 import { CATEGORY_PERMISSIONS } from '@features/catalog/categories/permissions';
 import { PRICE_TYPE_PERMISSIONS } from '@features/catalog/price-types/permissions';
 import { WAREHOUSE_PERMISSIONS } from '@features/inventory/warehouses/permissions';
-import { INVOICE_PERMISSIONS } from '@features/finance/billing/invoices/permissions';
-import { RETURN_PERMISSIONS } from '@features/finance/billing/returns/permissions';
-import { CREDIT_NOTE_PERMISSIONS } from '@features/finance/billing/credit-notes/permissions';
-import { DEBIT_NOTE_PERMISSIONS } from '@features/finance/billing/debit-notes/permissions';
+import { INVOICE_PERMISSIONS } from '@features/sales/invoices/invoices/permissions';
+import { RETURN_PERMISSIONS } from '@features/sales/invoices/returns/permissions';
+import { CREDIT_NOTE_PERMISSIONS } from '@features/sales/invoices/credit-notes/permissions';
+import { DEBIT_NOTE_PERMISSIONS } from '@features/sales/invoices/debit-notes/permissions';
 import { CASH_REGISTER_PERMISSIONS } from '@features/finance/treasury/cash-register/permissions';
 import { EXPENSE_PERMISSIONS } from '@features/finance/treasury/expenses/permissions';
 import { RECEIVABLE_PERMISSIONS } from '@features/finance/treasury/receivables/permissions';
@@ -32,6 +32,22 @@ export const PERMISSION_CATALOG = [
         modules: [
           { moduleKey: 'navigation.labels.quotes', permissions: QUOTE_PERMISSIONS },
           { moduleKey: 'navigation.labels.orders', permissions: ORDER_PERMISSIONS },
+          {
+            moduleKey: 'platform.auth.domains.sales_invoices_invoices',
+            permissions: INVOICE_PERMISSIONS,
+          },
+          {
+            moduleKey: 'platform.auth.domains.sales_invoices_returns',
+            permissions: RETURN_PERMISSIONS,
+          },
+          {
+            moduleKey: 'platform.auth.domains.sales_invoices_credit_notes',
+            permissions: CREDIT_NOTE_PERMISSIONS,
+          },
+          {
+            moduleKey: 'platform.auth.domains.sales_invoices_debit_notes',
+            permissions: DEBIT_NOTE_PERMISSIONS,
+          },
         ],
       },
     ],
@@ -72,15 +88,6 @@ export const PERMISSION_CATALOG = [
   {
     areaKey: 'navigation.labels.finance',
     sections: [
-      {
-        sectionKey: 'navigation.labels.billing',
-        modules: [
-          { moduleKey: 'navigation.labels.invoices', permissions: INVOICE_PERMISSIONS },
-          { moduleKey: 'navigation.labels.returns', permissions: RETURN_PERMISSIONS },
-          { moduleKey: 'navigation.labels.creditNotes', permissions: CREDIT_NOTE_PERMISSIONS },
-          { moduleKey: 'navigation.labels.debitNotes', permissions: DEBIT_NOTE_PERMISSIONS },
-        ],
-      },
       {
         sectionKey: 'navigation.labels.treasury',
         modules: [

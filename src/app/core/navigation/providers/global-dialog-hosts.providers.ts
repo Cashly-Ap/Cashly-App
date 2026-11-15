@@ -53,7 +53,7 @@ export const GLOBAL_DIALOG_HOST_PROVIDERS: Provider[] = [
       key: 'invoices',
       load: () =>
         import(
-          '@features/finance/billing/invoices/components/invoice-action-dialog-host/invoice-action-dialog-host.component'
+          '@features/sales/invoices/invoices/components/invoice-action-dialog-host/invoice-action-dialog-host.component'
         ).then((module) => module.InvoiceActionDialogHostComponent),
     },
   },

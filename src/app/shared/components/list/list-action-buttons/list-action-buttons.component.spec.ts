@@ -102,21 +102,21 @@ describe('ListActionButtonsComponent', () => {
   it('gates export actions only on the owning module EXPORT grant', () => {
     can.mockImplementation(
       (module: BusinessModule, action?: string) =>
-        !(module === BusinessModule.FINANCE_INVOICES && action === 'EXPORT'),
+        !(module === BusinessModule.SALES_INVOICES_INVOICES && action === 'EXPORT'),
     );
     fixture.componentRef.setInput('actions', [
       {
         label: 'Export',
         icon: '',
         requiredAction: 'EXPORT',
-        module: BusinessModule.FINANCE_INVOICES,
+        module: BusinessModule.SALES_INVOICES_INVOICES,
         command: vi.fn(),
       },
       {
         label: 'Report',
         icon: '',
         requiredAction: 'EXPORT',
-        module: BusinessModule.FINANCE_INVOICES,
+        module: BusinessModule.SALES_INVOICES_INVOICES,
         command: vi.fn(),
       },
     ]);

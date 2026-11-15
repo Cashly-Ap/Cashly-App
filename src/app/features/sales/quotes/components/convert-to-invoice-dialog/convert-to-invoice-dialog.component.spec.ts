@@ -8,7 +8,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { ConvertToInvoiceDialogComponent } from '@features/sales/quotes/components/convert-to-invoice-dialog/convert-to-invoice-dialog.component';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
-import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
+import { PaymentType } from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
 
 @Component({
   template: `<app-convert-to-invoice-dialog

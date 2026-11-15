@@ -50,12 +50,12 @@ describe('Permission editor', () => {
     TestBed.inject(LanguageService).setLanguage('es');
   });
 
-  it('groups Finance into Billing and Treasury', () => {
+  it('groups billing documents into Sales and keeps Treasury under Finance', () => {
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
-    expect(text).toContain('Facturación');
+    expect(text).toContain('Ventas');
     expect(text).toContain('Tesorería');
-    expect(component.allPermissions()).toContain('FINANCE_BILLING_INVOICES_VIEW_LIST');
+    expect(component.allPermissions()).toContain('SALES_INVOICES_INVOICES_VIEW_LIST');
     expect(component.allPermissions()).toContain('FINANCE_TREASURY_CASH_REGISTER_VIEW_LIST');
   });
 
@@ -68,20 +68,20 @@ describe('Permission editor', () => {
   });
 
   it('filters by area and module', () => {
-    component.parentFilter.set('navigation.labels.finance');
+    component.parentFilter.set('navigation.labels.sales');
     expect(
       component
         .filteredCatalog()
         .flatMap((area) => area.sections.flatMap((section) => section.modules))
         .map((module) => module.moduleKey),
-    ).toContain('navigation.labels.invoices');
-    component.childFilter.set('navigation.labels.cashRegister');
+    ).toContain('platform.auth.domains.sales_invoices_invoices');
+    component.childFilter.set('navigation.labels.orders');
     expect(
       component
         .filteredCatalog()
         .flatMap((area) => area.sections.flatMap((section) => section.modules))
         .map((module) => module.moduleKey),
-    ).toEqual(['navigation.labels.cashRegister']);
+    ).toEqual(['navigation.labels.orders']);
   });
 
   it('adds the module root when selecting an action', () => {

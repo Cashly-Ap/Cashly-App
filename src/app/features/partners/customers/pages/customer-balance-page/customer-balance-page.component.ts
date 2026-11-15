@@ -32,13 +32,13 @@ import { BalanceTransactionResponse } from '@features/partners/customers/models/
 import { BalanceSummaryCardComponent } from '@features/partners/customers/components/balance-summary-card/balance-summary-card.component';
 import { BalanceTransactionsTableComponent } from '@features/partners/customers/components/balance-transactions-table/balance-transactions-table.component';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
-import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { PendingPayment } from '@features/finance/treasury/receivables/models/interfaces/pending-payment.interface';
-import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
-import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
-import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
+import { CreditNoteApiService } from '@features/sales/invoices/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/sales/invoices/debit-notes/services/api/debit-note-api.service';
+import { ReturnApiService } from '@features/sales/invoices/returns/services/api/return-api.service';
+import { InvoiceStatus } from '@features/sales/invoices/invoices/models/enums/invoice-status.enum';
 import { catchError, distinctUntilChanged, forkJoin, map, of, Subscription } from 'rxjs';
 
 interface BalanceTransactionFilters {

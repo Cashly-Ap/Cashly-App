@@ -11,10 +11,10 @@ import { provideDeleteHandler as departments } from '@features/platform/auth/dep
 import { provideDeleteHandler as quotes } from '@features/sales/quotes/actions/delete.provider';
 import { provideDeleteHandler as orders } from '@features/sales/orders/actions/delete.provider';
 import { provideDeleteHandler as purchases } from '@features/procurement/purchases/actions/delete.provider';
-import { provideDeleteHandler as invoices } from '@features/finance/billing/invoices/actions/delete.provider';
-import { provideDeleteHandler as returns } from '@features/finance/billing/returns/actions/delete.provider';
-import { provideDeleteHandler as creditNotes } from '@features/finance/billing/credit-notes/actions/delete.provider';
-import { provideDeleteHandler as debitNotes } from '@features/finance/billing/debit-notes/actions/delete.provider';
+import { provideDeleteHandler as invoices } from '@features/sales/invoices/invoices/actions/delete.provider';
+import { provideDeleteHandler as returns } from '@features/sales/invoices/returns/actions/delete.provider';
+import { provideDeleteHandler as creditNotes } from '@features/sales/invoices/credit-notes/actions/delete.provider';
+import { provideDeleteHandler as debitNotes } from '@features/sales/invoices/debit-notes/actions/delete.provider';
 import { provideDeleteHandler as paymentMethods } from '@features/finance/treasury/payment-methods/actions/delete.provider';
 
 export const DELETE_HANDLER_PROVIDERS: Provider[] = [

@@ -11,10 +11,10 @@ const modulePaths = [
   'catalog/categories',
   'catalog/price-types',
   'inventory/warehouses',
-  'finance/billing/invoices',
-  'finance/billing/returns',
-  'finance/billing/credit-notes',
-  'finance/billing/debit-notes',
+  'sales/invoices/invoices',
+  'sales/invoices/returns',
+  'sales/invoices/credit-notes',
+  'sales/invoices/debit-notes',
   'finance/treasury/payments',
   'finance/treasury/cash-register',
   'finance/treasury/payables',
@@ -42,11 +42,11 @@ const publicScreens = [
   'inventory/warehouses',
   'sales/orders',
   'sales/quotes',
-  'finance/billing/invoices',
+  'sales/invoices',
   'finance/treasury/payment-methods',
-  'finance/billing/credit-notes',
-  'finance/billing/debit-notes',
-  'finance/billing/returns',
+  'sales/credit-notes',
+  'sales/debit-notes',
+  'sales/returns',
   'finance/treasury/cash-register',
   'finance/treasury/payables',
   'finance/treasury/receivables',
@@ -91,9 +91,9 @@ describe('ERP business areas', () => {
     ).toEqual([]);
   });
 
-  it('keeps returns in billing and reports inside their business owners', () => {
+  it('keeps billing documents inside sales and reports inside their business owners', () => {
     expect(
-      featureSources.filter((path) => /\/features\/(reports|sales\/returns)\//.test(path)),
+      featureSources.filter((path) => /\/features\/(reports|finance\/billing)\//.test(path)),
     ).toEqual([]);
   });
 
@@ -115,7 +115,7 @@ describe('ERP business areas', () => {
       'sales/quotes/reporting/services/api/quote-pdf-api.service.ts',
       'sales/orders/reporting/services/api/order-pdf-api.service.ts',
       'procurement/purchases/reporting/services/api/purchase-pdf-api.service.ts',
-      'finance/billing/invoices/reporting/services/api/invoice-pdf-api.service.ts',
+      'sales/invoices/invoices/reporting/services/api/invoice-pdf-api.service.ts',
       'catalog/products/reporting/services/api/catalog-api.service.ts',
       'inventory/warehouses/reporting/services/api/stock-excel-api.service.ts',
       'inventory/warehouses/reporting/services/api/movements-pdf-api.service.ts',

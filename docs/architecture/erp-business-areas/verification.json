@@ -577,17 +577,17 @@
       "tests": 25
     },
     {
-      "file": "src/app/features/finance/billing/invoices/messages/error-messages.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/messages/error-messages.spec.ts",
       "status": "passed",
       "tests": 10
     },
     {
-      "file": "src/app/features/finance/billing/invoices/messages/success-messages.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/messages/success-messages.spec.ts",
       "status": "passed",
       "tests": 5
     },
     {
-      "file": "src/app/features/finance/billing/invoices/routing/invoices.routes.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/routing/invoices.routes.spec.ts",
       "status": "passed",
       "tests": 9
     },
@@ -1077,87 +1077,87 @@
       "tests": 7
     },
     {
-      "file": "src/app/features/finance/billing/credit-notes/pages/credit-note-form-page/credit-note-form-page.component.spec.ts",
+      "file": "src/app/features/sales/invoices/credit-notes/pages/credit-note-form-page/credit-note-form-page.component.spec.ts",
       "status": "passed",
       "tests": 2
     },
     {
-      "file": "src/app/features/finance/billing/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/components/cancel-invoice-dialog/cancel-invoice-dialog.component.spec.ts",
       "status": "passed",
       "tests": 15
     },
     {
-      "file": "src/app/features/finance/billing/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/components/duplicate-invoice-dialog/duplicate-invoice-dialog.component.spec.ts",
       "status": "passed",
       "tests": 14
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/enums/invoice-status.enum.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/enums/invoice-status.enum.spec.ts",
       "status": "passed",
       "tests": 15
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/enums/payment-type.enum.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/enums/payment-type.enum.spec.ts",
       "status": "passed",
       "tests": 6
     },
     {
-      "file": "src/app/features/finance/billing/invoices/pages/invoice-detail-page/invoice-detail-page.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/pages/invoice-detail-page/invoice-detail-page.component.spec.ts",
       "status": "passed",
       "tests": 11
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-create.interface.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/interfaces/invoice-create.interface.spec.ts",
       "status": "passed",
       "tests": 2
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-details.interface.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/interfaces/invoice-details.interface.spec.ts",
       "status": "passed",
       "tests": 7
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-edit.interface.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/interfaces/invoice-edit.interface.spec.ts",
       "status": "passed",
       "tests": 2
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-form-data.interface.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/interfaces/invoice-form-data.interface.spec.ts",
       "status": "passed",
       "tests": 2
     },
     {
-      "file": "src/app/features/finance/billing/invoices/models/interfaces/invoice-list.interface.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/models/interfaces/invoice-list.interface.spec.ts",
       "status": "passed",
       "tests": 2
     },
     {
-      "file": "src/app/features/finance/billing/invoices/pages/invoice-form-page/invoice-form-page.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/pages/invoice-form-page/invoice-form-page.component.spec.ts",
       "status": "passed",
       "tests": 27
     },
     {
-      "file": "src/app/features/finance/billing/invoices/pages/invoice-list-page/invoice-list-page.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/pages/invoice-list-page/invoice-list-page.component.spec.ts",
       "status": "passed",
       "tests": 29
     },
     {
-      "file": "src/app/features/finance/billing/invoices/services/api/invoice-api.service.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/services/api/invoice-api.service.spec.ts",
       "status": "passed",
       "tests": 15
     },
     {
-      "file": "src/app/features/finance/billing/invoices/services/mappers/invoice.mapper.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/services/mappers/invoice.mapper.spec.ts",
       "status": "passed",
       "tests": 3
     },
     {
-      "file": "src/app/features/finance/billing/invoices/services/application/invoice-application.service.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/services/application/invoice-application.service.spec.ts",
       "status": "passed",
       "tests": 12
     },
     {
-      "file": "src/app/features/finance/billing/returns/components/return-lines-table/return-lines-table.component.spec.ts",
+      "file": "src/app/features/sales/invoices/returns/components/return-lines-table/return-lines-table.component.spec.ts",
       "status": "passed",
       "tests": 8
     },
@@ -1307,17 +1307,17 @@
       "tests": 8
     },
     {
-      "file": "src/app/features/finance/billing/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/reporting/components/invoice-pdf-modal/invoice-pdf-modal.component.spec.ts",
       "status": "passed",
       "tests": 19
     },
     {
-      "file": "src/app/features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/reporting/services/api/invoice-pdf-api.service.spec.ts",
       "status": "passed",
       "tests": 10
     },
     {
-      "file": "src/app/features/finance/billing/invoices/reporting/models/interfaces/index.spec.ts",
+      "file": "src/app/features/sales/invoices/invoices/reporting/models/interfaces/index.spec.ts",
       "status": "passed",
       "tests": 4
     }

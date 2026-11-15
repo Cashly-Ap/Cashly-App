@@ -9,7 +9,7 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
-import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { ReceivablesApplicationService } from '@features/finance/treasury/receivables/services/application/receivables-application.service';

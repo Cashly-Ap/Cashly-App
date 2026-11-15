@@ -40,8 +40,11 @@ export class PermissionCatalogService {
                       sortOrder: domain.sortOrder,
                       permissions: domain.permissions.map((permission) => ({
                         ...permission,
-                        labelKey: this.actionLabelKey(permission.action),
-                        descriptionKey: this.actionDescriptionKey(permission.action),
+                        labelKey: this.permissionLabelKey(domain.module, permission.action),
+                        descriptionKey: this.permissionDescriptionKey(
+                          domain.module,
+                          permission.action,
+                        ),
                       })),
                     },
                   ],
@@ -75,12 +78,12 @@ export class PermissionCatalogService {
 
   private sectionFor(module: string): string {
     if (
-      module.startsWith('FINANCE_INVOICES') ||
-      module.startsWith('FINANCE_RETURNS') ||
+      module.includes('INVOICES') ||
+      module.includes('RETURNS') ||
       module.includes('CREDIT_NOTES') ||
       module.includes('DEBIT_NOTES')
     )
-      return 'Billing';
+      return 'Sales';
     if (module.startsWith('FINANCE_')) return 'Treasury';
     if (module.startsWith('INVENTORY_')) return 'Warehouses';
     if (module.startsWith('CATALOG_')) return 'Catalog';
@@ -90,6 +93,45 @@ export class PermissionCatalogService {
     if (module === 'USERS' || module === 'ROLES' || module === 'DEPARTMENTS') return 'Platform';
     if (module === 'AUDIT_TRAIL') return 'Platform';
     return '';
+  }
+
+  private readonly moduleScopedPermissionModules = new Set([
+    'SALES_INVOICES_INVOICES',
+    'SALES_INVOICES_RETURNS',
+    'SALES_INVOICES_CREDIT_NOTES',
+    'SALES_INVOICES_DEBIT_NOTES',
+  ]);
+
+  private permissionLabelKey(module: string, action: PermissionAction): string {
+    const suffix = this.moduleScopedActionKey(module, action);
+    return suffix
+      ? `platform.auth.permissions.${module.toLowerCase()}.${suffix}`
+      : this.actionLabelKey(action);
+  }
+
+  private permissionDescriptionKey(module: string, action: PermissionAction): string {
+    const suffix = this.moduleScopedActionKey(module, action);
+    return suffix
+      ? `platform.auth.permissions.${module.toLowerCase()}.${suffix}.description`
+      : this.actionDescriptionKey(action);
+  }
+
+  private moduleScopedActionKey(module: string, action: PermissionAction): string | undefined {
+    if (!this.moduleScopedPermissionModules.has(module)) return undefined;
+    const suffixes: Partial<Record<PermissionAction, string>> = {
+      READ: 'view_list',
+      DETAILS: 'view_detail',
+      CREATE: 'create',
+      UPDATE: 'edit',
+      DELETE: 'delete',
+      REPORT_INVOICES: 'report_pdf',
+      EXPORT: 'download_pdf',
+      CONFIRM: 'confirm',
+      CANCEL: 'cancel',
+      DUPLICATE: 'duplicate',
+      INVOICE_DUPLICATE: 'duplicate',
+    };
+    return suffixes[action];
   }
 
   private actionLabelKey(action: PermissionAction): string {
@@ -199,10 +241,10 @@ export class PermissionCatalogService {
       CATALOG_CATEGORIES: 'platform.auth.catalogCategories',
       CATALOG_PRICES: 'platform.auth.catalogPrices',
       INVENTORY_WAREHOUSES: 'platform.auth.inventoryWarehouses',
-      FINANCE_INVOICES: 'platform.auth.financeInvoices',
-      FINANCE_RETURNS: 'platform.auth.financeReturns',
-      FINANCE_CREDIT_NOTES: 'platform.auth.financeCreditNotes',
-      FINANCE_DEBIT_NOTES: 'platform.auth.financeDebitNotes',
+      SALES_INVOICES_INVOICES: 'platform.auth.domains.sales_invoices_invoices',
+      SALES_INVOICES_RETURNS: 'platform.auth.domains.sales_invoices_returns',
+      SALES_INVOICES_CREDIT_NOTES: 'platform.auth.domains.sales_invoices_credit_notes',
+      SALES_INVOICES_DEBIT_NOTES: 'platform.auth.domains.sales_invoices_debit_notes',
       FINANCE_CASH_REGISTER: 'platform.auth.financeCashRegister',
       FINANCE_EXPENSES: 'platform.auth.financeExpenses',
       FINANCE_RECEIVABLES: 'platform.auth.financeReceivables',

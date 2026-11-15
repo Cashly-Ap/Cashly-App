@@ -57,8 +57,8 @@ describe('NotificationPreferencesCardComponent', () => {
   it('organizes modules under translated main groups', () => {
     modules.set([
       {
-        module: 'FINANCE_BILLING_CREDIT_NOTES',
-        labelKey: 'platform.auth.domains.finance_billing_credit_notes',
+        module: 'SALES_INVOICES_CREDIT_NOTES',
+        labelKey: 'platform.auth.domains.sales_invoices_credit_notes',
         enabled: true,
       },
       {
@@ -72,11 +72,11 @@ describe('NotificationPreferencesCardComponent', () => {
     const text = root.textContent ?? '';
 
     expect(text).toContain('Finanzas');
-    expect(text).toContain('Facturación');
+    expect(text).toContain('Ventas');
     expect(text).toContain('Notas de crédito');
     expect(text).toContain('Tesorería');
     expect(text).toContain('Caja');
-    expect(root.querySelectorAll('div.space-y-3 > h3')).toHaveLength(1);
+    expect(root.querySelectorAll('div.space-y-3 > h3')).toHaveLength(2);
   });
 
   it('disables module switches when the master switch is off', () => {
@@ -95,7 +95,7 @@ describe('NotificationPreferencesCardComponent', () => {
 
   it('filters the configuration catalog by module and submodule', () => {
     modules.set([
-      { module: 'FINANCE_BILLING_INVOICES', labelKey: 'navigation.labels.invoices', enabled: true },
+      { module: 'SALES_INVOICES_INVOICES', labelKey: 'navigation.labels.invoices', enabled: true },
       {
         module: 'FINANCE_TREASURY_CASH_REGISTER',
         labelKey: 'navigation.labels.cashRegister',
@@ -105,20 +105,20 @@ describe('NotificationPreferencesCardComponent', () => {
     ]);
     fixture.detectChanges();
 
-    component.selectedArea.set('navigation.labels.finance');
+    component.selectedArea.set('navigation.labels.sales');
     expect(component.filteredCatalog().map((area) => area.areaKey)).toEqual([
-      'navigation.labels.finance',
+      'navigation.labels.sales',
     ]);
     expect(
       component.filteredCatalog()[0].sections.flatMap((section) => section.modules),
-    ).toHaveLength(2);
+    ).toHaveLength(1);
 
-    component.selectedModule.set('navigation.labels.invoices');
+    component.selectedModule.set('platform.auth.domains.sales_invoices_invoices');
     expect(
       component.filteredCatalog()[0].sections.flatMap((section) => section.modules),
     ).toHaveLength(1);
     expect(component.filteredCatalog()[0].sections[0].modules[0].labelKey).toBe(
-      'navigation.labels.invoices',
+      'platform.auth.domains.sales_invoices_invoices',
     );
   });
 

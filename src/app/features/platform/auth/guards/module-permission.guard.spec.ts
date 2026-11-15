@@ -60,7 +60,7 @@ describe('modulePermissionGuard', () => {
     expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.INVENTORY_WAREHOUSES, 'EXECUTE');
   });
   it('rechecks ancestor modules when a child has a different owner', async () => {
-    const snapshot = route('', BusinessModule.FINANCE_INVOICES);
+    const snapshot = route('', BusinessModule.SALES_INVOICES_INVOICES);
     snapshot.pathFromRoot.push({
       data: { module: BusinessModule.INVENTORY_WAREHOUSES },
     } as ActivatedRouteSnapshot);
@@ -72,7 +72,7 @@ describe('modulePermissionGuard', () => {
     );
     const destination = await firstValueFrom(result as ReturnType<typeof of>);
     expect(TestBed.inject(Router).serializeUrl(destination)).toBe('/platform/auth/configuration');
-    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.FINANCE_INVOICES, 'READ');
+    expect(auth.hasPermission).toHaveBeenCalledWith(BusinessModule.SALES_INVOICES_INVOICES, 'READ');
   });
   it('fails closed when a guarded route has no module metadata', async () => {
     const snapshot = route('new');

@@ -15,10 +15,10 @@ const aliases = [
   ['categories', 'catalog/categories'],
   ['price-types', 'catalog/price-types'],
   ['warehouses', 'inventory/warehouses'],
-  ['invoices', 'finance/billing/invoices'],
-  ['returns', 'finance/billing/returns'],
-  ['credit-notes', 'finance/billing/credit-notes'],
-  ['debit-notes', 'finance/billing/debit-notes'],
+  ['invoices', 'sales/invoices'],
+  ['returns', 'sales/returns'],
+  ['credit-notes', 'sales/credit-notes'],
+  ['debit-notes', 'sales/debit-notes'],
   ['cash-register', 'finance/treasury/cash-register'],
   ['receivables', 'finance/treasury/receivables'],
   ['payables', 'finance/treasury/payables'],
@@ -48,6 +48,15 @@ describe('Legacy ERP route redirects', () => {
     const harness = await createHarness(canonical);
     await harness.navigateByUrl('/' + legacy, DestinationPage);
     expect(TestBed.inject(Router).url).toBe('/' + canonical);
+  });
+
+  it('redirects former finance/billing documents to their sales location', async () => {
+    const harness = await createHarness('sales/invoices');
+    await harness.navigateByUrl(
+      '/finance/billing/invoices/invoice-1/edit?status=PAID',
+      DestinationPage,
+    );
+    expect(TestBed.inject(Router).url).toBe('/sales/invoices/invoice-1/edit?status=PAID');
   });
 
   it('preserves document IDs, edit suffixes, repeated filters and fragments', async () => {

@@ -77,7 +77,7 @@ export interface CurrentAccess {
 }
 ```
 
-`BusinessModule` identifies the owner (for example `CATALOG_PRODUCTS`, `FINANCE_INVOICES`). The code is built as `<MODULE>_<ACTION>`.
+`BusinessModule` identifies the owner (for example `CATALOG_PRODUCTS`, `SALES_INVOICES_INVOICES`). The code is built as `<MODULE>_<ACTION>`.
 
 ---
 
@@ -151,28 +151,28 @@ The permission catalog comes from `GET /api/permissions/catalog`. Current grants
 
 `moduleForUrl` maps the current URL prefix to a `BusinessModule`:
 
-| URL prefix                          | Module                    |
-| ----------------------------------- | ------------------------- |
-| `/platform/users`                   | `USERS`                   |
-| `/platform/roles`                   | `ROLES`                   |
-| `/platform/departments`             | `DEPARTMENTS`             |
-| `/catalog/products`                 | `CATALOG_PRODUCTS`        |
-| `/catalog/categories`               | `CATALOG_CATEGORIES`      |
-| `/catalog/price-types`              | `CATALOG_PRICES`          |
-| `/inventory/warehouses`             | `INVENTORY_WAREHOUSES`    |
-| `/sales/quotes`                     | `SALES_QUOTES`            |
-| `/sales/orders`                     | `SALES_ORDERS`            |
-| `/partners/customers`               | `CONTACTS_CUSTOMERS`      |
-| `/partners/suppliers`               | `CONTACTS_SUPPLIERS`      |
-| `/procurement/purchases`            | `PURCHASES`               |
-| `/finance/billing/invoices`         | `FINANCE_INVOICES`        |
-| `/finance/billing/returns`          | `FINANCE_RETURNS`         |
-| `/finance/billing/credit-notes`     | `FINANCE_CREDIT_NOTES`    |
-| `/finance/billing/debit-notes`      | `FINANCE_DEBIT_NOTES`     |
-| `/finance/treasury/cash-register`   | `FINANCE_CASH_REGISTER`   |
-| `/finance/treasury/receivables`     | `FINANCE_RECEIVABLES`     |
-| `/finance/treasury/payment-methods` | `FINANCE_PAYMENT_METHODS` |
-| `/analytics/dashboard`              | `DASHBOARD`               |
+| URL prefix                          | Module                        |
+| ----------------------------------- | ----------------------------- |
+| `/platform/users`                   | `USERS`                       |
+| `/platform/roles`                   | `ROLES`                       |
+| `/platform/departments`             | `DEPARTMENTS`                 |
+| `/catalog/products`                 | `CATALOG_PRODUCTS`            |
+| `/catalog/categories`               | `CATALOG_CATEGORIES`          |
+| `/catalog/price-types`              | `CATALOG_PRICES`              |
+| `/inventory/warehouses`             | `INVENTORY_WAREHOUSES`        |
+| `/sales/quotes`                     | `SALES_QUOTES`                |
+| `/sales/orders`                     | `SALES_ORDERS`                |
+| `/partners/customers`               | `CONTACTS_CUSTOMERS`          |
+| `/partners/suppliers`               | `CONTACTS_SUPPLIERS`          |
+| `/procurement/purchases`            | `PURCHASES`                   |
+| `/sales/invoices`                   | `SALES_INVOICES_INVOICES`     |
+| `/sales/returns`                    | `SALES_INVOICES_RETURNS`      |
+| `/sales/credit-notes`               | `SALES_INVOICES_CREDIT_NOTES` |
+| `/sales/debit-notes`                | `SALES_INVOICES_DEBIT_NOTES`  |
+| `/finance/treasury/cash-register`   | `FINANCE_CASH_REGISTER`       |
+| `/finance/treasury/receivables`     | `FINANCE_RECEIVABLES`         |
+| `/finance/treasury/payment-methods` | `FINANCE_PAYMENT_METHODS`     |
+| `/analytics/dashboard`              | `DASHBOARD`                   |
 
 Customer balance URLs (`/partners/customers/:id/balance`) map to `CONTACTS_CUSTOMERS`.
 

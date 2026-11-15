@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MessageService } from 'primeng/api';
 import { of, throwError } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
-import { InvoiceDetails } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
+import { CreditNoteApiService } from '@features/sales/invoices/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/sales/invoices/debit-notes/services/api/debit-note-api.service';
+import { InvoiceDetails } from '@features/sales/invoices/invoices/models/interfaces/invoice-details.interface';
 import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog/note-form-dialog.component';
 
 describe('NoteFormDialogComponent', () => {

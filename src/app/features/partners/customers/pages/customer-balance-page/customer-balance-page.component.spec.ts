@@ -8,16 +8,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CustomerBalancePageComponent } from '@features/partners/customers/pages/customer-balance-page/customer-balance-page.component';
 import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
-import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
-import { CreditNoteApiService } from '@features/finance/billing/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/finance/billing/debit-notes/services/api/debit-note-api.service';
-import { ReturnApiService } from '@features/finance/billing/returns/services/api/return-api.service';
-import { InvoiceStatus } from '@features/finance/billing/invoices/models/enums/invoice-status.enum';
+import { CreditNoteApiService } from '@features/sales/invoices/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/sales/invoices/debit-notes/services/api/debit-note-api.service';
+import { ReturnApiService } from '@features/sales/invoices/returns/services/api/return-api.service';
+import { InvoiceStatus } from '@features/sales/invoices/invoices/models/enums/invoice-status.enum';
 import { CustomerPickerDialogComponent } from '@features/sales/orders/components/customer-picker-dialog/customer-picker-dialog.component';
 import { CustomerType } from '@features/partners/customers/models/enums/customer-type.enum';
 import { CustomerBalanceResponse } from '@features/partners/customers/models/interfaces/customer-balance.interface';
-import { PaymentType } from '@features/finance/billing/invoices/models/enums/payment-type.enum';
+import { PaymentType } from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
 
 describe('CustomerBalancePageComponent', () => {
   let fixture: ComponentFixture<CustomerBalancePageComponent>;

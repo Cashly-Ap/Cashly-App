@@ -20,8 +20,8 @@ const orders: CatalogModule = {
 const invoices: CatalogModule = {
   moduleKey: 'navigation.labels.invoices',
   permissions: [
-    { code: 'FINANCE_BILLING_INVOICES_VIEW_LIST', labelKey: 'viewList' },
-    { code: 'FINANCE_BILLING_INVOICES_CREATE', labelKey: 'create' },
+    { code: 'SALES_INVOICES_INVOICES_VIEW_LIST', labelKey: 'viewList' },
+    { code: 'SALES_INVOICES_INVOICES_CREATE', labelKey: 'create' },
   ],
 };
 
@@ -54,12 +54,12 @@ describe('permission dependencies', () => {
           'SALES_ORDERS_VIEW_LIST',
           'SALES_ORDERS_VIEW_DETAIL',
           'SALES_ORDERS_EDIT',
-          'FINANCE_BILLING_INVOICES_VIEW_LIST',
+          'SALES_INVOICES_INVOICES_VIEW_LIST',
         ],
         'SALES_ORDERS_VIEW_LIST',
         false,
       ),
-    ).toEqual(['FINANCE_BILLING_INVOICES_VIEW_LIST']);
+    ).toEqual(['SALES_INVOICES_INVOICES_VIEW_LIST']);
   });
 
   it('keeps the detail permission optional', () => {
@@ -85,13 +85,13 @@ describe('permission dependencies', () => {
     expect(
       normalizePermissionSelection(modules, [
         'SALES_ORDERS_EDIT',
-        'FINANCE_BILLING_INVOICES_CREATE',
+        'SALES_INVOICES_INVOICES_CREATE',
       ]),
     ).toEqual([
       'SALES_ORDERS_EDIT',
-      'FINANCE_BILLING_INVOICES_CREATE',
+      'SALES_INVOICES_INVOICES_CREATE',
       'SALES_ORDERS_VIEW_LIST',
-      'FINANCE_BILLING_INVOICES_VIEW_LIST',
+      'SALES_INVOICES_INVOICES_VIEW_LIST',
     ]);
   });
 
@@ -99,12 +99,12 @@ describe('permission dependencies', () => {
     const selected: AppPermission[] = [
       'SALES_ORDERS_VIEW_LIST',
       'SALES_ORDERS_EDIT',
-      'FINANCE_BILLING_INVOICES_VIEW_LIST',
+      'SALES_INVOICES_INVOICES_VIEW_LIST',
     ];
     expect(
       replaceModulePermissions(selected, orders, ['SALES_ORDERS_VIEW_LIST', 'SALES_ORDERS_CREATE']),
     ).toEqual([
-      'FINANCE_BILLING_INVOICES_VIEW_LIST',
+      'SALES_INVOICES_INVOICES_VIEW_LIST',
       'SALES_ORDERS_VIEW_LIST',
       'SALES_ORDERS_CREATE',
     ]);

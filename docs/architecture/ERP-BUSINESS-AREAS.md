@@ -1,6 +1,6 @@
 # Angular ERP business areas
 
-Current implementation mirrors backend business ownership: sales, procurement, catalog, inventory, finance/billing, finance/treasury, partners, analytics and platform. Returns is finance/billing/returns. Browser navigation now follows these areas; see [ERP area navigation](erp-area-navigation.md). HTTP API URLs and permission values are unchanged.
+Current implementation mirrors backend business ownership: sales, procurement, catalog, inventory, finance/treasury, partners, analytics and platform. Invoices, returns, credit notes and debit notes belong to sales alongside quotes and orders. Browser navigation now follows these areas; see [ERP area navigation](erp-area-navigation.md). HTTP API URLs and permission values are unchanged.
 
 Reports are implemented inside their owner's reporting capability. analytics/reporting/routing is a thin composition layer for `/analytics/reports` URLs, with redirects from legacy `/reports` URLs. Core remains technical and notifications belong to platform/notifications. Tests stay beside the source they exercise.
 

@@ -25,6 +25,26 @@ function legacyRoute(source: string, destination: string): Routes[number] {
   };
 }
 
+function legacyNestedRoute(first: string, second: string, destination: string): Routes[number] {
+  return {
+    matcher: (segments) =>
+      segments[0]?.path === first && segments[1]?.path === second ? { consumed: segments } : null,
+    redirectTo: ({ url, queryParams, fragment }) => {
+      const tree = inject(Router).createUrlTree(['/' + destination], {
+        queryParams,
+        fragment: fragment ?? undefined,
+      });
+      const segments = tree.root.children['primary'].segments;
+      const last = segments.length - 1;
+      segments[last] = new UrlSegment(segments[last].path, url[0]?.parameters ?? {});
+      segments.push(
+        ...url.slice(2).map((segment) => new UrlSegment(segment.path, segment.parameters)),
+      );
+      return tree;
+    },
+  };
+}
+
 function areaEntry(area: string): Routes[number] {
   return {
     path: '',
@@ -46,10 +66,10 @@ export const routes: Routes = [
   legacyRoute('categories', 'catalog/categories'),
   legacyRoute('price-types', 'catalog/price-types'),
   legacyRoute('warehouses', 'inventory/warehouses'),
-  legacyRoute('invoices', 'finance/billing/invoices'),
-  legacyRoute('returns', 'finance/billing/returns'),
-  legacyRoute('credit-notes', 'finance/billing/credit-notes'),
-  legacyRoute('debit-notes', 'finance/billing/debit-notes'),
+  legacyRoute('invoices', 'sales/invoices'),
+  legacyRoute('returns', 'sales/returns'),
+  legacyRoute('credit-notes', 'sales/credit-notes'),
+  legacyRoute('debit-notes', 'sales/debit-notes'),
   legacyRoute('cash-register', 'finance/treasury/cash-register'),
   legacyRoute('receivables', 'finance/treasury/receivables'),
   legacyRoute('payables', 'finance/treasury/payables'),
@@ -59,6 +79,7 @@ export const routes: Routes = [
   legacyRoute('dashboard', 'analytics/dashboard'),
   legacyRoute('users', 'platform/users'),
   legacyRoute('auth', 'platform/auth'),
+  legacyNestedRoute('finance', 'billing', 'sales'),
   {
     path: '',
     pathMatch: 'full',
@@ -213,44 +234,36 @@ export const routes: Routes = [
             loadChildren: () =>
               import('@features/sales/quotes/routing').then((m) => m.QUOTE_ROUTES),
           },
+          {
+            path: 'invoices',
+            loadChildren: () =>
+              import('@features/sales/invoices/invoices/routing').then((m) => m.INVOICE_ROUTES),
+          },
+          {
+            path: 'returns',
+            loadChildren: () =>
+              import('@features/sales/invoices/returns/routing').then((m) => m.RETURN_ROUTES),
+          },
+          {
+            path: 'credit-notes',
+            loadChildren: () =>
+              import('@features/sales/invoices/credit-notes/routing').then(
+                (m) => m.CREDIT_NOTE_ROUTES,
+              ),
+          },
+          {
+            path: 'debit-notes',
+            loadChildren: () =>
+              import('@features/sales/invoices/debit-notes/routing').then(
+                (m) => m.DEBIT_NOTE_ROUTES,
+              ),
+          },
         ],
       },
       {
         path: 'finance',
         children: [
           areaEntry('finance'),
-          {
-            path: 'billing',
-            children: [
-              areaEntry('finance/billing'),
-              {
-                path: 'invoices',
-                loadChildren: () =>
-                  import('@features/finance/billing/invoices/routing').then(
-                    (m) => m.INVOICE_ROUTES,
-                  ),
-              },
-              {
-                path: 'credit-notes',
-                loadChildren: () =>
-                  import('@features/finance/billing/credit-notes/routing').then(
-                    (m) => m.CREDIT_NOTE_ROUTES,
-                  ),
-              },
-              {
-                path: 'debit-notes',
-                loadChildren: () =>
-                  import('@features/finance/billing/debit-notes/routing').then(
-                    (m) => m.DEBIT_NOTE_ROUTES,
-                  ),
-              },
-              {
-                path: 'returns',
-                loadChildren: () =>
-                  import('@features/finance/billing/returns/routing').then((m) => m.RETURN_ROUTES),
-              },
-            ],
-          },
           {
             path: 'treasury',
             children: [

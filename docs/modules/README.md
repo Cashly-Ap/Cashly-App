@@ -6,35 +6,35 @@ This directory documents the frontend features of the Cashly application. Featur
 
 ## Module Index
 
-| Area        | Module          | Routes                                | Source                                         | Documentation                              |
-| ----------- | --------------- | ------------------------------------- | ---------------------------------------------- | ------------------------------------------ |
-| Platform    | Auth            | `/platform/auth/*`                    | `features/platform/auth`                       | [auth.md](./auth.md)                       |
-| Platform    | Authorization   | Cross-cutting (no routes)             | `features/platform/auth/authorization`         | [authorization.md](./authorization.md)     |
-| Platform    | Users           | `/platform/users/*`                   | `features/platform/auth/user`                  | [users.md](./users.md)                     |
-| Platform    | Roles           | `/platform/roles/*`                   | `features/platform/auth/role`                  | [users.md](./users.md)                     |
-| Platform    | Departments     | `/platform/departments/*`             | `features/platform/auth/department`            | [users.md](./users.md)                     |
-| Platform    | Company         | `/platform/company`                   | `features/platform/company`                    | [company.md](./company.md)                 |
-| Platform    | Notifications   | Shell (notification bell)             | `features/platform/notifications`              | [notifications.md](./notifications.md)     |
-| Analytics   | Dashboard       | `/analytics/dashboard`                | `features/analytics/dashboard`                 | [dashboard.md](./dashboard.md)             |
-| Analytics   | Reports         | Dialogs from the main menu            | `features/*/*/reporting`                       | [reports.md](./reports.md)                 |
-| Partners    | Customers       | `/partners/customers/*`               | `features/partners/customers`                  | [customers.md](./customers.md)             |
-| Partners    | Suppliers       | `/partners/suppliers/*`               | `features/partners/suppliers`                  | [suppliers.md](./suppliers.md)             |
-| Catalog     | Products        | `/catalog/products/*`                 | `features/catalog/products`                    | [products.md](./products.md)               |
-| Catalog     | Categories      | `/catalog/categories/*`               | `features/catalog/categories`                  | [categories.md](./categories.md)           |
-| Catalog     | Price Types     | `/catalog/price-types/*`              | `features/catalog/price-types`                 | [price-types.md](./price-types.md)         |
-| Inventory   | Warehouses      | `/inventory/warehouses/*`             | `features/inventory/warehouses`                | [warehouses.md](./warehouses.md)           |
-| Sales       | Quotes          | `/sales/quotes/*`                     | `features/sales/quotes`                        | [quotes.md](./quotes.md)                   |
-| Sales       | Orders          | `/sales/orders/*`                     | `features/sales/orders`                        | [orders.md](./orders.md)                   |
-| Procurement | Purchases       | `/procurement/purchases/*`            | `features/procurement/purchases`               | [purchases.md](./purchases.md)             |
-| Finance     | Invoices        | `/finance/billing/invoices/*`         | `features/finance/billing/invoices`            | [invoices.md](./invoices.md)               |
-| Finance     | Returns         | `/finance/billing/returns/*`          | `features/finance/billing/returns`             | [returns.md](./returns.md)                 |
-| Finance     | Credit Notes    | `/finance/billing/credit-notes/*`     | `features/finance/billing/credit-notes`        | [credit-notes.md](./credit-notes.md)       |
-| Finance     | Debit Notes     | `/finance/billing/debit-notes/*`      | `features/finance/billing/debit-notes`         | [debit-notes.md](./debit-notes.md)         |
-| Finance     | Cash Register   | `/finance/treasury/cash-register/*`   | `features/finance/treasury/cash-register`      | [cash-register.md](./cash-register.md)     |
-| Finance     | Receivables     | `/finance/treasury/receivables`       | `features/finance/treasury/receivables`        | [receivables.md](./receivables.md)         |
-| Finance     | Payables *(planned)* | `/finance/treasury/payables`     | `features/finance/treasury/payables`           | [payables.md](./payables.md)               |
-| Finance     | Payment Methods | `/finance/treasury/payment-methods/*` | `features/finance/treasury/payment-methods`    | [payment-methods.md](./payment-methods.md) |
-| Finance     | Payment Reports | Dialogs from the main menu            | `features/finance/treasury/payments/reporting` | [payments.md](./payments.md)               |
+| Area        | Module               | Routes                                | Source                                         | Documentation                              |
+| ----------- | -------------------- | ------------------------------------- | ---------------------------------------------- | ------------------------------------------ |
+| Platform    | Auth                 | `/platform/auth/*`                    | `features/platform/auth`                       | [auth.md](./auth.md)                       |
+| Platform    | Authorization        | Cross-cutting (no routes)             | `features/platform/auth/authorization`         | [authorization.md](./authorization.md)     |
+| Platform    | Users                | `/platform/users/*`                   | `features/platform/auth/user`                  | [users.md](./users.md)                     |
+| Platform    | Roles                | `/platform/roles/*`                   | `features/platform/auth/role`                  | [users.md](./users.md)                     |
+| Platform    | Departments          | `/platform/departments/*`             | `features/platform/auth/department`            | [users.md](./users.md)                     |
+| Platform    | Company              | `/platform/company`                   | `features/platform/company`                    | [company.md](./company.md)                 |
+| Platform    | Notifications        | Shell (notification bell)             | `features/platform/notifications`              | [notifications.md](./notifications.md)     |
+| Analytics   | Dashboard            | `/analytics/dashboard`                | `features/analytics/dashboard`                 | [dashboard.md](./dashboard.md)             |
+| Analytics   | Reports              | Dialogs from the main menu            | `features/*/*/reporting`                       | [reports.md](./reports.md)                 |
+| Partners    | Customers            | `/partners/customers/*`               | `features/partners/customers`                  | [customers.md](./customers.md)             |
+| Partners    | Suppliers            | `/partners/suppliers/*`               | `features/partners/suppliers`                  | [suppliers.md](./suppliers.md)             |
+| Catalog     | Products             | `/catalog/products/*`                 | `features/catalog/products`                    | [products.md](./products.md)               |
+| Catalog     | Categories           | `/catalog/categories/*`               | `features/catalog/categories`                  | [categories.md](./categories.md)           |
+| Catalog     | Price Types          | `/catalog/price-types/*`              | `features/catalog/price-types`                 | [price-types.md](./price-types.md)         |
+| Inventory   | Warehouses           | `/inventory/warehouses/*`             | `features/inventory/warehouses`                | [warehouses.md](./warehouses.md)           |
+| Sales       | Quotes               | `/sales/quotes/*`                     | `features/sales/quotes`                        | [quotes.md](./quotes.md)                   |
+| Sales       | Orders               | `/sales/orders/*`                     | `features/sales/orders`                        | [orders.md](./orders.md)                   |
+| Procurement | Purchases            | `/procurement/purchases/*`            | `features/procurement/purchases`               | [purchases.md](./purchases.md)             |
+| Sales       | Invoices             | `/sales/invoices/*`                   | `features/sales/invoices/invoices`             | [invoices.md](./invoices.md)               |
+| Sales       | Returns              | `/sales/returns/*`                    | `features/sales/invoices/returns`              | [returns.md](./returns.md)                 |
+| Sales       | Credit Notes         | `/sales/credit-notes/*`               | `features/sales/invoices/credit-notes`         | [credit-notes.md](./credit-notes.md)       |
+| Sales       | Debit Notes          | `/sales/debit-notes/*`                | `features/sales/invoices/debit-notes`          | [debit-notes.md](./debit-notes.md)         |
+| Finance     | Cash Register        | `/finance/treasury/cash-register/*`   | `features/finance/treasury/cash-register`      | [cash-register.md](./cash-register.md)     |
+| Finance     | Receivables          | `/finance/treasury/receivables`       | `features/finance/treasury/receivables`        | [receivables.md](./receivables.md)         |
+| Finance     | Payables _(planned)_ | `/finance/treasury/payables`          | `features/finance/treasury/payables`           | [payables.md](./payables.md)               |
+| Finance     | Payment Methods      | `/finance/treasury/payment-methods/*` | `features/finance/treasury/payment-methods`    | [payment-methods.md](./payment-methods.md) |
+| Finance     | Payment Reports      | Dialogs from the main menu            | `features/finance/treasury/payments/reporting` | [payments.md](./payments.md)               |
 
 All entries except Payables (planned) are implemented. The old `/customers`, `/products`, `/orders`, `/invoices`, `/warehouses`, `/dashboard`, and related URLs redirect to their area-prefixed equivalents through `legacyRoute` entries in `src/app/app.routes.ts`.
 
@@ -46,13 +46,12 @@ All entries except Payables (planned) are implemented. The old `/customers`, `/p
 | ------------------ | --------------------------------------------------------------------------- |
 | `analytics`        | dashboard, reporting composition                                            |
 | `catalog`          | products, categories, price-types                                           |
-| `finance/billing`  | invoices, returns, credit-notes, debit-notes                                |
 | `finance/treasury` | cash-register, payment-methods, receivables, payables (planned), reporting  |
 | `inventory`        | warehouses                                                                  |
 | `partners`         | customers, suppliers                                                        |
 | `platform`         | auth (login, user, role, department, authorization), company, notifications |
 | `procurement`      | purchases                                                                   |
-| `sales`            | quotes, orders                                                              |
+| `sales`            | quotes, orders, invoices, returns, credit-notes, debit-notes                |
 
 HTTP API URLs, permission identifiers, and lazy-loading contracts are independent of the folder layout. See [ERP business areas](../architecture/ERP-BUSINESS-AREAS.md) for the regrouping record.
 

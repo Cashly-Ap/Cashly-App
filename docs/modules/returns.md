@@ -4,13 +4,13 @@ Customer return workflow for reviewing returned items and their stock/financial 
 
 ## Routes
 
-`/finance/billing/returns`, `/finance/billing/returns/new`, `/finance/billing/returns/:id`.
+`/sales/returns`, `/sales/returns/new`, `/sales/returns/:id`.
 
-Legacy `/returns` redirects to `/finance/billing/returns`.
+Legacy `/returns` redirects to `/sales/returns`.
 
 ## Architecture
 
-Returns live in `src/app/features/finance/billing/returns/` with standalone list, form, and details pages plus dialogs, API/application services, models, and permissions.
+Returns live in `src/app/features/sales/invoices/returns/` with standalone list, form, and details pages plus dialogs, API/application services, models, and permissions.
 
 ## Rules
 

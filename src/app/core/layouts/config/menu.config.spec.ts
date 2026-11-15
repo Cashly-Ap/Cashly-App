@@ -52,13 +52,19 @@ describe('ERP navigation', () => {
     const menu = buildMenuItems(createCallbacks());
     expect(
       menu.find((item) => item.label === 'Ventas')?.children?.map((item) => item.label),
-    ).toEqual(['Presupuestos', 'Pedidos']);
+    ).toEqual(['Presupuestos', 'Pedidos', 'Facturas']);
+    const invoices = menu
+      .find((item) => item.label === 'Ventas')
+      ?.children?.find((item) => item.label === 'Facturas');
+    expect(invoices?.children?.map((item) => item.label)).toEqual(
+      expect.arrayContaining(['Notas de débito', 'Notas de crédito', 'Devoluciones']),
+    );
     expect(
       menu.find((item) => item.label === 'Inventario')?.children?.map((item) => item.label),
     ).toEqual(['Almacenes']);
     expect(
       menu.find((item) => item.label === 'Finanzas')?.children?.map((item) => item.label),
-    ).toEqual(['Facturación', 'Tesorería']);
+    ).toEqual(['Tesorería']);
     expect(depth(menu)).toBeLessThanOrEqual(4);
   });
 
@@ -127,7 +133,7 @@ describe('ERP navigation', () => {
         '/partners/customers',
         '/sales/quotes',
         '/sales/orders',
-        '/finance/billing/invoices',
+        '/sales/invoices',
         '/catalog/price-types',
         '/partners/suppliers',
         '/procurement/purchases',
@@ -141,9 +147,9 @@ describe('ERP navigation', () => {
         '/finance/treasury/expenses',
         '/finance/treasury/receivables',
         '/finance/treasury/payables',
-        '/finance/billing/credit-notes',
-        '/finance/billing/debit-notes',
-        '/finance/billing/returns',
+        '/sales/credit-notes',
+        '/sales/debit-notes',
+        '/sales/returns',
         '/finance/treasury/payment-methods',
         '/platform/users',
         '/platform/roles',

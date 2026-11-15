@@ -21,15 +21,15 @@ const DESTINATIONS: Record<string, NotificationDestination> = {
   CATEGORY: { collection: '/catalog/categories', module: BusinessModule.CATALOG_CATEGORIES },
   PRICE_TYPE: { collection: '/catalog/price-types', module: BusinessModule.CATALOG_PRICES },
   WAREHOUSE: { collection: '/inventory/warehouses', module: BusinessModule.INVENTORY_WAREHOUSES },
-  INVOICE: { collection: '/finance/billing/invoices', module: BusinessModule.FINANCE_INVOICES },
-  RETURN: { collection: '/finance/billing/returns', module: BusinessModule.FINANCE_RETURNS },
+  INVOICE: { collection: '/sales/invoices', module: BusinessModule.SALES_INVOICES_INVOICES },
+  RETURN: { collection: '/sales/returns', module: BusinessModule.SALES_INVOICES_RETURNS },
   CREDIT_NOTE: {
-    collection: '/finance/billing/credit-notes',
-    module: BusinessModule.FINANCE_CREDIT_NOTES,
+    collection: '/sales/credit-notes',
+    module: BusinessModule.SALES_INVOICES_CREDIT_NOTES,
   },
   DEBIT_NOTE: {
-    collection: '/finance/billing/debit-notes',
-    module: BusinessModule.FINANCE_DEBIT_NOTES,
+    collection: '/sales/debit-notes',
+    module: BusinessModule.SALES_INVOICES_DEBIT_NOTES,
   },
   CASH_REGISTER: {
     collection: '/finance/treasury/cash-register',

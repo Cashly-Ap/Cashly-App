@@ -71,10 +71,10 @@ describe('PermissionDirective', () => {
     fixture.detectChanges();
     const button = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
     expect(button.style.display).toBe('');
-    events.next(new NavigationEnd(1, '/finance/billing/invoices', '/finance/billing/invoices'));
+    events.next(new NavigationEnd(1, '/sales/invoices', '/sales/invoices'));
     fixture.detectChanges();
     expect(button.style.display).toBe('none');
-    grants.set([`${BusinessModule.FINANCE_INVOICES}:UPDATE`]);
+    grants.set([`${BusinessModule.SALES_INVOICES_INVOICES}:UPDATE`]);
     fixture.detectChanges();
     expect(button.style.display).toBe('');
   });

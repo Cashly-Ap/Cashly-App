@@ -54,14 +54,26 @@ const BUSINESS_MODULE_BY_CATALOG_KEY: Readonly<Record<string, string[]>> = {
   'navigation.labels.categories': ['CATALOG_CATEGORIES', 'CATEGORY'],
   'navigation.labels.priceTypes': ['CATALOG_PRICES', 'PRICE_TYPE'],
   'navigation.labels.warehouses': ['INVENTORY_WAREHOUSES', 'WAREHOUSE'],
-  'navigation.labels.invoices': ['FINANCE_BILLING_INVOICES', 'FINANCE_INVOICES', 'INVOICE'],
-  'navigation.labels.returns': ['FINANCE_BILLING_RETURNS', 'FINANCE_RETURNS', 'RETURN'],
-  'navigation.labels.creditNotes': [
+  'platform.auth.domains.sales_invoices_invoices': [
+    'SALES_INVOICES_INVOICES',
+    'FINANCE_BILLING_INVOICES',
+    'FINANCE_INVOICES',
+    'INVOICE',
+  ],
+  'platform.auth.domains.sales_invoices_returns': [
+    'SALES_INVOICES_RETURNS',
+    'FINANCE_BILLING_RETURNS',
+    'FINANCE_RETURNS',
+    'RETURN',
+  ],
+  'platform.auth.domains.sales_invoices_credit_notes': [
+    'SALES_INVOICES_CREDIT_NOTES',
     'FINANCE_BILLING_CREDIT_NOTES',
     'FINANCE_CREDIT_NOTES',
     'CREDIT_NOTE',
   ],
-  'navigation.labels.debitNotes': [
+  'platform.auth.domains.sales_invoices_debit_notes': [
+    'SALES_INVOICES_DEBIT_NOTES',
     'FINANCE_BILLING_DEBIT_NOTES',
     'FINANCE_DEBIT_NOTES',
     'DEBIT_NOTE',

@@ -11,10 +11,10 @@ import { PermissionAction } from '@features/platform/auth/authorization/models/a
 import { CATEGORY_ROUTES } from '@features/catalog/categories/routing/category.routes';
 import { PRICE_TYPE_ROUTES } from '@features/catalog/price-types/routing/price-type.routes';
 import { PRODUCT_ROUTES } from '@features/catalog/products/routing/product.routes';
-import { CREDIT_NOTE_ROUTES } from '@features/finance/billing/credit-notes/routing/credit-notes.routes';
-import { DEBIT_NOTE_ROUTES } from '@features/finance/billing/debit-notes/routing/debit-notes.routes';
-import { INVOICE_ROUTES } from '@features/finance/billing/invoices/routing/invoices.routes';
-import { RETURN_ROUTES } from '@features/finance/billing/returns/routing/returns.routes';
+import { CREDIT_NOTE_ROUTES } from '@features/sales/invoices/credit-notes/routing/credit-notes.routes';
+import { DEBIT_NOTE_ROUTES } from '@features/sales/invoices/debit-notes/routing/debit-notes.routes';
+import { INVOICE_ROUTES } from '@features/sales/invoices/invoices/routing/invoices.routes';
+import { RETURN_ROUTES } from '@features/sales/invoices/returns/routing/returns.routes';
 import { CASH_REGISTER_ROUTES } from '@features/finance/treasury/cash-register/routing/cash-register.routes';
 import { PAYMENT_METHOD_ROUTES } from '@features/finance/treasury/payment-methods/routing/payment-methods.routes';
 import { RECEIVABLES_ROUTES } from '@features/finance/treasury/receivables/routing/receivables.routes';

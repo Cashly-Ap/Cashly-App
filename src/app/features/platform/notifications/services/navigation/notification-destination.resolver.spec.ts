@@ -45,26 +45,21 @@ describe('NotificationDestinationResolver', () => {
     [
       'INVOICE',
       'invoice-1',
-      ['/finance/billing/invoices', 'invoice-1'],
-      BusinessModule.FINANCE_INVOICES,
+      ['/sales/invoices', 'invoice-1'],
+      BusinessModule.SALES_INVOICES_INVOICES,
     ],
-    [
-      'RETURN',
-      'return-1',
-      ['/finance/billing/returns', 'return-1'],
-      BusinessModule.FINANCE_RETURNS,
-    ],
+    ['RETURN', 'return-1', ['/sales/returns', 'return-1'], BusinessModule.SALES_INVOICES_RETURNS],
     [
       'CREDIT_NOTE',
       'credit-1',
-      ['/finance/billing/credit-notes', 'credit-1'],
-      BusinessModule.FINANCE_CREDIT_NOTES,
+      ['/sales/credit-notes', 'credit-1'],
+      BusinessModule.SALES_INVOICES_CREDIT_NOTES,
     ],
     [
       'DEBIT_NOTE',
       'debit-1',
-      ['/finance/billing/debit-notes', 'debit-1'],
-      BusinessModule.FINANCE_DEBIT_NOTES,
+      ['/sales/debit-notes', 'debit-1'],
+      BusinessModule.SALES_INVOICES_DEBIT_NOTES,
     ],
     [
       'CASH_REGISTER',

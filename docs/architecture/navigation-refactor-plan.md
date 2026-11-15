@@ -134,7 +134,7 @@ Migrated so far:
 - `/sales/quotes`
 - `/sales/orders`
 - `/procurement/purchases`
-- `/finance/billing/invoices`
+- `/sales/invoices`
 - `/finance/treasury/receivables`
 
 All navbar routes now have a module-owned lookup definition.

@@ -1,6 +1,6 @@
 import type { ReceivablesSearchParams } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { StatusVariant } from '@shared/models/status-variant';
-import { invoiceStatusVariant } from '@features/finance/billing/invoices/models/invoice-status.presentation';
+import { invoiceStatusVariant } from '@features/sales/invoices/invoices/models/invoice-status.presentation';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import { LanguageService } from '@core/i18n/language.service';
 import { UserPreferencesService } from '@core/preferences/user-preferences.service';
@@ -46,10 +46,10 @@ import { CustomerBalanceApiService } from '@features/partners/customers/services
 import { BalanceTransactionResponse } from '@features/partners/customers/models/interfaces/balance-transaction.interface';
 import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { MessageService } from 'primeng/api';
-import { ReturnFormDialogComponent } from '@features/finance/billing/returns/components/return-form-dialog/return-form-dialog.component';
+import { ReturnFormDialogComponent } from '@features/sales/invoices/returns/components/return-form-dialog/return-form-dialog.component';
 import { NoteFormDialogComponent } from '@shared/ui/note-form-dialog/note-form-dialog.component';
-import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
-import { InvoiceDetails } from '@features/finance/billing/invoices/models/interfaces/invoice-details.interface';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
+import { InvoiceDetails } from '@features/sales/invoices/invoices/models/interfaces/invoice-details.interface';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
 import { catchError, of } from 'rxjs';
 
@@ -259,7 +259,7 @@ export class CustomerDebtDialogComponent {
     if (this.canReturnInvoice(invoice)) {
       actions.push(
         listAction('Devolución', 'CREATE', 'undo', () => this.onViewInvoiceReturns(invoice), {
-          module: BusinessModule.FINANCE_RETURNS,
+          module: BusinessModule.SALES_INVOICES_RETURNS,
           disabled: this.loadingReturnInvoice(),
         }),
         listAction('Nota', 'CREATE', 'file-edit', () => this.onViewInvoiceNotes(invoice), {

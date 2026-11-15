@@ -19,7 +19,7 @@ Reporting is distributed across the features that own the underlying data. Each 
 | Commercial catalog PDF  | `catalog/products/reporting`               | Catálogo Comercial PDF      |
 | Stock report            | `inventory/warehouses/reporting`           | Stock                       |
 | Movements report        | `inventory/warehouses/reporting`           | Movimientos                 |
-| Invoices PDF            | `finance/billing/invoices/reporting`       | Reporte de Facturas PDF     |
+| Invoices PDF            | `sales/invoices/reporting`                 | Reporte de Facturas PDF     |
 | Cash-register reports   | `finance/treasury/cash-register/reporting` | Reportes de Caja            |
 | Accounts receivable PDF | `finance/treasury/receivables/reporting`   | Cuentas por Cobrar PDF      |
 | Payment reports         | `finance/treasury/payments/reporting`      | —                           |

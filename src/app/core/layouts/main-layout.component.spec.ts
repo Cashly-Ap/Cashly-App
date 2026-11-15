@@ -17,7 +17,7 @@ import { StockExcelApiService } from '@features/inventory/warehouses/reporting/s
 import { MovementsPdfApiService } from '@features/inventory/warehouses/reporting/services/api/movements-pdf-api.service';
 import { MovementsExcelApiService } from '@features/inventory/warehouses/reporting/services/api/movements-excel-api.service';
 import { OrderPdfApiService } from '@features/sales/orders/reporting/services/api/order-pdf-api.service';
-import { InvoicePdfApiService } from '@features/finance/billing/invoices/reporting/services/api/invoice-pdf-api.service';
+import { InvoicePdfApiService } from '@features/sales/invoices/invoices/reporting/services/api/invoice-pdf-api.service';
 import { QuotePdfApiService } from '@features/sales/quotes/reporting/services/api/quote-pdf-api.service';
 import { PurchasePdfApiService } from '@features/procurement/purchases/reporting/services/api/purchase-pdf-api.service';
 import { ReceivablesPdfApiService } from '@features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service';
@@ -267,7 +267,7 @@ describe('MainLayoutComponent', () => {
         openListAction: vi.fn(),
         openCustomerEditPicker: vi.fn(),
         openCustomerBalancePicker: vi.fn(),
-    openSupplierBalancePicker: vi.fn(),
+        openSupplierBalancePicker: vi.fn(),
         openCatalogModal: vi.fn(),
         openCommercialCatalogModal: vi.fn(),
         openStockModal: vi.fn(),
@@ -276,7 +276,7 @@ describe('MainLayoutComponent', () => {
         openInvoicesPdfModal: vi.fn(),
         openQuotesPdfModal: vi.fn(),
         openAccountsReceivablePdfModal: vi.fn(),
-    openAccountsPayablePdfModal: vi.fn(),
+        openAccountsPayablePdfModal: vi.fn(),
         openCashRegisterModal: vi.fn(),
         openPurchasesPdfModal: vi.fn(),
         openCompanyAuditHistory: vi.fn(),

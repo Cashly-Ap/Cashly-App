@@ -14,8 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InvoiceApiService } from '@features/finance/billing/invoices/services/api/invoice-api.service';
-import { InvoiceList } from '@features/finance/billing/invoices/models/interfaces/invoice-list.interface';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
+import { InvoiceList } from '@features/sales/invoices/invoices/models/interfaces/invoice-list.interface';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';

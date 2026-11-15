@@ -29,7 +29,7 @@ export const LIST_ACTION_PRESETS = {
     label: 'Convertir a factura',
     requiredAction: 'CREATE',
     icon: 'file',
-    module: BusinessModule.FINANCE_INVOICES,
+    module: BusinessModule.SALES_INVOICES_INVOICES,
   },
   duplicateInvoice: { label: 'Duplicar factura', requiredAction: 'CREATE', icon: 'copy' },
   history: {

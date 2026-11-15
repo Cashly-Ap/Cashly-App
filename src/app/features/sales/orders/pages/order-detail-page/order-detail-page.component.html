@@ -66,7 +66,7 @@
                 @if (currentOrder.status === OrderStatus.CONFIRMED) {
                   <p-button
                     [appPermission]="'CREATE'"
-                    [appPermissionModule]="'FINANCE_INVOICES'"
+                    [appPermissionModule]="'SALES_INVOICES_INVOICES'"
                     [label]="'sales.orders.convertToInvoice' | translate"
                     icon="pi pi-file"
                     [link]="true"

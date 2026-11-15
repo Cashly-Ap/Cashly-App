@@ -6,10 +6,10 @@ import { PRODUCT_LIST_NAVIGATION } from '@features/catalog/products/navigation/p
 import { CATEGORY_LIST_NAVIGATION } from '@features/catalog/categories/navigation/category.list-navigation';
 import { PRICE_TYPE_LIST_NAVIGATION } from '@features/catalog/price-types/navigation/price-type.list-navigation';
 import { WAREHOUSE_LIST_NAVIGATION } from '@features/inventory/warehouses/navigation/warehouse.list-navigation';
-import { INVOICE_LIST_NAVIGATION } from '@features/finance/billing/invoices/navigation/invoice.list-navigation';
-import { RETURN_LIST_NAVIGATION } from '@features/finance/billing/returns/navigation/return.list-navigation';
-import { CREDIT_NOTE_LIST_NAVIGATION } from '@features/finance/billing/credit-notes/navigation/credit-note.list-navigation';
-import { DEBIT_NOTE_LIST_NAVIGATION } from '@features/finance/billing/debit-notes/navigation/debit-note.list-navigation';
+import { INVOICE_LIST_NAVIGATION } from '@features/sales/invoices/invoices/navigation/invoice.list-navigation';
+import { RETURN_LIST_NAVIGATION } from '@features/sales/invoices/returns/navigation/return.list-navigation';
+import { CREDIT_NOTE_LIST_NAVIGATION } from '@features/sales/invoices/credit-notes/navigation/credit-note.list-navigation';
+import { DEBIT_NOTE_LIST_NAVIGATION } from '@features/sales/invoices/debit-notes/navigation/debit-note.list-navigation';
 import { PAYMENT_METHOD_LIST_NAVIGATION } from '@features/finance/treasury/payment-methods/navigation/payment-method.list-navigation';
 import { RECEIVABLE_LIST_NAVIGATION } from '@features/finance/treasury/receivables/navigation/receivable.list-navigation';
 import { PAYABLE_LIST_NAVIGATION } from '@features/finance/treasury/payables/navigation/payable.list-navigation';

@@ -25,7 +25,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import {
   PaymentType,
   PAYMENT_TYPE_LABELS,
-} from '@features/finance/billing/invoices/models/enums/payment-type.enum';
+} from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
 import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.service';
 import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
@@ -128,7 +128,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
     acceptLabel: 'sales.orders.convertToInvoice2',
     acceptIcon: 'pi pi-file',
     permissionAction: 'CREATE',
-    permissionModule: BusinessModule.FINANCE_INVOICES,
+    permissionModule: BusinessModule.SALES_INVOICES_INVOICES,
   }));
 
   readonly creditStatus = signal<CreditStatusResponse | null>(null);

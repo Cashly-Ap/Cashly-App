@@ -18,7 +18,7 @@ export const QUOTE_LIST_NAVIGATION: ListNavigationDefinition = {
     pdf(),
     edit(),
     listAction('Convertir a pedido', 'CREATE', 'shopping-cart', BusinessModule.SALES_ORDERS),
-    listAction('Convertir a factura', 'CREATE', 'file', BusinessModule.FINANCE_INVOICES),
+    listAction('Convertir a factura', 'CREATE', 'file', BusinessModule.SALES_INVOICES_INVOICES),
     listAction('Cancelar', 'CANCEL', 'times'),
     remove(),
     history(),

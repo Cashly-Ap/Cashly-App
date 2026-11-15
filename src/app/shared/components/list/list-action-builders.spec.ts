@@ -55,7 +55,7 @@ describe('list action builders', () => {
     });
     expect(convertToInvoiceAction(command)).toMatchObject({
       label: 'Convertir a factura',
-      module: BusinessModule.FINANCE_INVOICES,
+      module: BusinessModule.SALES_INVOICES_INVOICES,
     });
     expect(cancelAction('Cancelar presupuesto', command)).toMatchObject({
       label: 'Cancelar presupuesto',

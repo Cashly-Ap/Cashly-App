@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { chartPalette, moduleGroupFromUrl, MODULE_APPEARANCE } from '@core/preferences/module-appearance';
+import {
+  chartPalette,
+  moduleGroupFromUrl,
+  MODULE_APPEARANCE,
+} from '@core/preferences/module-appearance';
 
 describe('Module appearance', () => {
   it('keeps nested routes in their module group and ignores query strings', () => {
-    expect(moduleGroupFromUrl('/finance/billing/invoices/new?copy=1')).toBe('finance');
+    expect(moduleGroupFromUrl('/sales/invoices/new?copy=1')).toBe('sales');
     expect(moduleGroupFromUrl('/procurement/purchases/123/edit')).toBe('procurement');
     expect(moduleGroupFromUrl('/platform/auth/configuration')).toBe('platform');
     expect(moduleGroupFromUrl('/unknown')).toBe('platform');

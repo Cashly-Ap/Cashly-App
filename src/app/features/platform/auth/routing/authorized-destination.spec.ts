@@ -21,7 +21,7 @@ describe('authorizedDestination', () => {
     [BusinessModule.CATALOG_PRODUCTS, '/catalog/products'],
     [BusinessModule.INVENTORY_WAREHOUSES, '/inventory/warehouses'],
     [BusinessModule.PURCHASES, '/procurement/purchases'],
-    [BusinessModule.FINANCE_INVOICES, '/finance/billing/invoices'],
+    [BusinessModule.SALES_INVOICES_INVOICES, '/sales/invoices'],
     [BusinessModule.DASHBOARD, '/analytics/dashboard'],
   ])('selects an accessible landing page for %s', (module, destination) => {
     expect(authorizedDestination(auth([module]))).toBe(destination);
@@ -39,14 +39,14 @@ describe('authorizedDestination', () => {
   it('selects treasury rather than billing when opening the treasury root', () => {
     expect(
       authorizedDestination(
-        auth([BusinessModule.FINANCE_INVOICES, BusinessModule.FINANCE_CASH_REGISTER]),
+        auth([BusinessModule.SALES_INVOICES_INVOICES, BusinessModule.FINANCE_CASH_REGISTER]),
         'finance/treasury',
       ),
     ).toBe('/finance/treasury/cash-register');
   });
 
   it('requires the inventory permission before offering consolidated inventory reporting', () => {
-    expect(authorizedDestination(auth([BusinessModule.FINANCE_INVOICES]), 'analytics')).toBe(
+    expect(authorizedDestination(auth([BusinessModule.SALES_INVOICES_INVOICES]), 'analytics')).toBe(
       '/platform/auth/configuration',
     );
   });
@@ -54,7 +54,7 @@ describe('authorizedDestination', () => {
   it('returns to warehouses instead of the removed report page', () => {
     expect(
       authorizedDestination(
-        auth([BusinessModule.FINANCE_INVOICES, BusinessModule.INVENTORY_WAREHOUSES]),
+        auth([BusinessModule.SALES_INVOICES_INVOICES, BusinessModule.INVENTORY_WAREHOUSES]),
         'analytics',
       ),
     ).toBe('/inventory/warehouses');
