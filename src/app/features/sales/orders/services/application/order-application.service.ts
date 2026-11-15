@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
 import { Observable, tap, finalize } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   OrderApiService,
   OrderFilters,
@@ -25,15 +26,15 @@ export class OrderApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadAll(filters?: OrderFilters): Observable<OrderList[]> {
+  loadAll(filters?: OrderFilters): Observable<PagedResponse<OrderList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.orders.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.orders.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.reportError(err),
       }),

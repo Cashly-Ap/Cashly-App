@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   InvoiceApiService,
   InvoiceFilters,
@@ -20,15 +21,15 @@ export class InvoiceApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadAll(filters?: InvoiceFilters): Observable<InvoiceList[]> {
+  loadAll(filters?: InvoiceFilters): Observable<PagedResponse<InvoiceList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.invoices.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.invoices.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.error.set(err.message),
       }),

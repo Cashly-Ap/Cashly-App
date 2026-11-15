@@ -134,9 +134,6 @@ export class OrderListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly pagedOrders = computed(() =>
-    this.orders().slice(this.first(), this.first() + this.rows()),
-  );
   readonly filterStatus = signal('DRAFT');
   readonly dateFrom = signal<Date | null>(null);
   readonly dateTo = signal<Date | null>(null);
@@ -191,7 +188,7 @@ export class OrderListPageComponent implements OnInit {
       this.navigationAction.set(documentListAction(action));
       if (!action && previous) this.loadWithFilters();
     },
-    records: () => this.orders().slice(this.first(), this.first() + this.rows()),
+    records: () => this.orders(),
     loading: () => this.loading(),
     total: () => this.totalElements(),
     first: () => this.first(),
@@ -227,6 +224,7 @@ export class OrderListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
   }
 
   onSort(event: SortEvent): void {
@@ -424,6 +422,8 @@ export class OrderListPageComponent implements OnInit {
     if (dateTo) filters.dateTo = dateTo;
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();
+    filters.page = Math.floor(this.first() / this.rows());
+    filters.size = this.rows();
     this.listRequest?.unsubscribe();
     this.listRequest = this.orderService
       .loadAll(filters)

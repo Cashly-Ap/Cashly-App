@@ -5,9 +5,9 @@ import { QuoteApiService } from '@features/sales/quotes/services/api/quote-api.s
 import { QuoteStatus } from '@features/sales/quotes/models/enums/quote-status.enum';
 import { documentListAction } from '@shared/models/document-list-action';
 import {
-  arrayLookupResult,
   lookupDescription,
   lookupStatusKey,
+  pageLookupResult,
 } from '@shared/utils/navigation-lookup';
 
 const option = (label: string, value: string) => ({ label, value });
@@ -27,11 +27,13 @@ export const QUOTE_LOOKUP: LookupDefinition = {
     const action = documentListAction(query.label);
     const requestedAction = action === 'DELETE' ? 'DELETE' : undefined;
     const listAction = action === 'CANCEL' ? undefined : action;
+    const paging = { page: query.page, size: query.size };
     return api
       .getAll(
         requestedAction
-          ? { search: query.search || undefined, action: requestedAction }
+          ? { ...paging, search: query.search || undefined, action: requestedAction }
           : {
+              ...paging,
               search: query.search || undefined,
               ...(listAction
                 ? { action: listAction }
@@ -39,18 +41,12 @@ export const QUOTE_LOOKUP: LookupDefinition = {
             },
       )
       .pipe(
-        map((items) =>
-          arrayLookupResult(
-            items,
-            (item) => ({
-              id: item.id,
-              label: item.quoteNumber,
-              description: lookupDescription(item.customerName, lookupStatusKey(item.status)),
-            }),
-            query.search,
-            query.page,
-            query.size,
-          ),
+        map((response) =>
+          pageLookupResult(response, (item) => ({
+            id: item.id,
+            label: item.quoteNumber,
+            description: lookupDescription(item.customerName, lookupStatusKey(item.status)),
+          })),
         ),
       );
   },

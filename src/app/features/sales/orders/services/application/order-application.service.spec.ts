@@ -38,7 +38,20 @@ describe('OrderApplicationService', () => {
 
   beforeEach(() => {
     mockApi = {
-      getAll: vi.fn().mockReturnValue(of(mockList)),
+      getAll: vi
+        .fn()
+        .mockReturnValue(
+          of({
+            content: mockList,
+            totalElements: mockList.length,
+            totalPages: 1,
+            size: 10,
+            number: 0,
+            first: true,
+            last: true,
+            empty: false,
+          }),
+        ),
       getById: vi.fn().mockReturnValue(of(mockOrder)),
       create: vi.fn().mockReturnValue(of(mockOrder)),
       update: vi.fn().mockReturnValue(of(mockOrder)),

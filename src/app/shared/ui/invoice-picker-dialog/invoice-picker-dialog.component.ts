@@ -91,10 +91,12 @@ export class InvoicePickerDialogComponent {
         customerId: this.customerId() || undefined,
         orderBy: 'createdAt',
         orderDir: 'desc',
+        page: 0,
+        size: 100,
       })
       .subscribe({
         next: (res) => {
-          this.allInvoices.set(res);
+          this.allInvoices.set(res.content);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),

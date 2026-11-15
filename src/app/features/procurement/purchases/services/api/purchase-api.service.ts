@@ -9,6 +9,7 @@ import { PurchaseEdit } from '@features/procurement/purchases/models/interfaces/
 import { PurchaseProduct } from '@features/procurement/purchases/models/interfaces/purchase-product.interface';
 import { PurchaseWarehouse } from '@features/procurement/purchases/models/interfaces/purchase-warehouse.interface';
 import { PurchaseStatus } from '@features/procurement/purchases/models/enums/purchase-status.enum';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CancelPurchaseRequest {
   reason: string;
@@ -25,6 +26,8 @@ export interface PurchaseFilters {
   productId?: string;
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 export interface PurchaseProductFilters {
@@ -95,7 +98,7 @@ export class PurchaseApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/purchases';
 
-  getAll(filters?: PurchaseFilters): Observable<PurchaseList[]> {
+  getAll(filters?: PurchaseFilters): Observable<PagedResponse<PurchaseList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
@@ -106,9 +109,14 @@ export class PurchaseApiService {
     if (filters?.productId) params = params.set('productId', filters.productId);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
-    return this.http
-      .get<PurchaseListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toPurchaseList(r))));
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<PurchaseListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toPurchaseList(r)),
+      })),
+    );
   }
 
   private toPurchaseList(r: PurchaseListApiResponse): PurchaseList {

@@ -106,7 +106,7 @@
           } @else {
             <div class="overflow-x-auto rounded-t-2xl">
               <p-table
-                [value]="pagedPurchases()"
+                [value]="purchases()"
                 styleClass="p-datatable-striped"
                 [customSort]="true"
                 (sortFunction)="onSort($event)"
@@ -222,7 +222,7 @@
           </app-panel-card>
         } @else {
           <div class="flex flex-col gap-4">
-            @for (purchase of pagedPurchases(); track purchase.id) {
+            @for (purchase of purchases(); track purchase.id) {
               <app-panel-card padding="p-5">
                 <div class="flex justify-between items-start mb-3">
                   <div class="flex-1">

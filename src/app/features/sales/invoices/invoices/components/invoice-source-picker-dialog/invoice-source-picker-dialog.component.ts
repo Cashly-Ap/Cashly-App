@@ -105,13 +105,18 @@ export class InvoiceSourcePickerDialogComponent {
     this.details.set({});
     this.stockStatuses.set({});
     forkJoin({
-      draftOrders: this.orderApi.getAll({ customerId, status: 'DRAFT' }),
-      confirmedOrders: this.orderApi.getAll({ customerId, status: 'CONFIRMED' }),
-      draftQuotes: this.quoteApi.getAll({ customerId, status: 'DRAFT' }),
+      draftOrders: this.orderApi.getAll({ customerId, status: 'DRAFT', page: 0, size: 100 }),
+      confirmedOrders: this.orderApi.getAll({
+        customerId,
+        status: 'CONFIRMED',
+        page: 0,
+        size: 100,
+      }),
+      draftQuotes: this.quoteApi.getAll({ customerId, status: 'DRAFT', page: 0, size: 100 }),
     })
       .pipe(
         map(({ draftOrders, confirmedOrders, draftQuotes }) => [
-          ...[...draftOrders, ...confirmedOrders].map((item) => ({
+          ...[...draftOrders.content, ...confirmedOrders.content].map((item) => ({
             key: `ORDER:${item.id}`,
             type: 'ORDER' as const,
             id: item.id,
@@ -120,7 +125,7 @@ export class InvoiceSourcePickerDialogComponent {
             statusLabel: getOrderStatusLabel(item.status),
             total: item.totalAmount,
           })),
-          ...draftQuotes.map((item) => ({
+          ...draftQuotes.content.map((item) => ({
             key: `QUOTE:${item.id}`,
             type: 'QUOTE' as const,
             id: item.id,

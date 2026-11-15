@@ -29,6 +29,17 @@ describe('InvoiceApiService', () => {
     },
   ];
 
+  const paged = <T>(content: T[] = []) => ({
+    content,
+    totalElements: content.length,
+    totalPages: content.length ? 1 : 0,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: content.length === 0,
+  });
+
   const mockDetails = {
     id: 'inv-001',
     invoiceNumber: 'FAC-001',
@@ -152,20 +163,20 @@ describe('InvoiceApiService', () => {
     const request = httpMock.expectOne((req) => req.url === '/api/invoices');
     expect(request.request.params.get('action')).toBe(action);
     expect(request.request.params.get('search')).toBe('document');
-    request.flush([]);
+    request.flush(paged());
   });
 
   describe('getAll()', () => {
     it('should GET /api/invoices without filters', () => {
       service.getAll().subscribe((result) => {
-        expect(result).toHaveLength(1);
-        expect(result[0].id).toBe('inv-001');
-        expect(result[0].status).toBe(InvoiceStatus.DRAFT);
+        expect(result.content).toHaveLength(1);
+        expect(result.content[0].id).toBe('inv-001');
+        expect(result.content[0].status).toBe(InvoiceStatus.DRAFT);
       });
 
-      const req = httpMock.expectOne('/api/invoices');
+      const req = httpMock.expectOne((r) => r.url === '/api/invoices');
       expect(req.request.method).toBe('GET');
-      req.flush(mockList);
+      req.flush(paged(mockList));
     });
 
     it('should GET /api/invoices with search filter', () => {
@@ -175,7 +186,7 @@ describe('InvoiceApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.get('search')).toBe('FAC-001');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/invoices with status filters', () => {
@@ -185,7 +196,7 @@ describe('InvoiceApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.getAll('status')).toEqual(['DRAFT', 'PENDING_PAYMENT']);
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/invoices with customerId filter', () => {
@@ -195,7 +206,7 @@ describe('InvoiceApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.get('customerId')).toBe('c1');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/invoices with paymentType filter', () => {
@@ -205,7 +216,7 @@ describe('InvoiceApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.get('paymentType')).toBe('CASH');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/invoices with date filters', () => {
@@ -216,7 +227,7 @@ describe('InvoiceApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.get('fromDate')).toBe('2025-01-01');
       expect(req.request.params.get('toDate')).toBe('2025-01-31');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/invoices with sorting', () => {
@@ -227,7 +238,7 @@ describe('InvoiceApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/invoices' && r.method === 'GET');
       expect(req.request.params.get('orderBy')).toBe('createdAt');
       expect(req.request.params.get('orderDir')).toBe('desc');
-      req.flush([]);
+      req.flush(paged());
     });
   });
 
@@ -288,7 +299,7 @@ describe('InvoiceApiService', () => {
         expect(result.id).toBe('inv-001');
       });
 
-      const req = httpMock.expectOne('/api/invoices');
+      const req = httpMock.expectOne((r) => r.url === '/api/invoices');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(createData);
       req.flush(mockDetails);

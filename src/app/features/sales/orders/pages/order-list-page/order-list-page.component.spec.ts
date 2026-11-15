@@ -130,6 +130,8 @@ describe('OrderListPageComponent', () => {
         action,
         orderBy: 'createdAt',
         orderDir: 'desc',
+        page: 0,
+        size: 10,
       });
       component.onSearch('document');
       expect(mockService.loadAll).toHaveBeenLastCalledWith({
@@ -137,6 +139,8 @@ describe('OrderListPageComponent', () => {
         search: 'document',
         orderBy: 'createdAt',
         orderDir: 'desc',
+        page: 0,
+        size: 10,
       });
       queryParams.next(convertToParamMap({}));
       expect(mockService.loadAll).toHaveBeenLastCalledWith(expect.not.objectContaining({ action }));

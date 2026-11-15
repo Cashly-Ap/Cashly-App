@@ -109,7 +109,7 @@ describe('CustomerBalancePageComponent', () => {
     customerApi.getById.mockImplementation((id: string) => of({ legalName: id, alias: '' }));
     balanceApi.getBalance.mockReturnValueOnce(firstBalance).mockReturnValueOnce(secondBalance);
     balanceApi.getTransactions.mockReturnValue(of({ content: [] }));
-    invoiceApi.getAll.mockReturnValue(of([]));
+    invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [] }));
     creditNoteApi.getAll.mockReturnValue(of([]));
     debitNoteApi.getAll.mockReturnValue(of([]));
@@ -189,7 +189,7 @@ describe('CustomerBalancePageComponent', () => {
         empty: true,
       }),
     );
-    invoiceApi.getAll.mockReturnValue(of([]));
+    invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [], totalElements: 0 }));
     creditNoteApi.getAll.mockReturnValue(of([]));
     debitNoteApi.getAll.mockReturnValue(of([]));
@@ -234,27 +234,30 @@ describe('CustomerBalancePageComponent', () => {
       }),
     );
     invoiceApi.getAll.mockReturnValue(
-      of([
-        {
-          id: 'invoice-1',
-          invoiceNumber: 'INV-001',
-          customerId: 'customer-001',
-          customerName: 'Cliente con actividad',
-          status: InvoiceStatus.PARTIALLY_PAID,
-          statusLabel: 'Parcialmente Pagada',
-          paymentType: PaymentType.CREDIT,
-          subtotal: 1000,
-          total: 925,
-          paidAmount: 200,
-          creditApplied: 100,
-          debitApplied: 50,
-          lineCount: 1,
-          orderId: null,
-          orderNumber: null,
-          createdAt: '2026-08-01T09:00:00',
-          returnStatus: 'PARTIAL',
-        },
-      ]),
+      of({
+        content: [
+          {
+            id: 'invoice-1',
+            invoiceNumber: 'INV-001',
+            customerId: 'customer-001',
+            customerName: 'Cliente con actividad',
+            status: InvoiceStatus.PARTIALLY_PAID,
+            statusLabel: 'Parcialmente Pagada',
+            paymentType: PaymentType.CREDIT,
+            subtotal: 1000,
+            total: 925,
+            paidAmount: 200,
+            creditApplied: 100,
+            debitApplied: 50,
+            lineCount: 1,
+            orderId: null,
+            orderNumber: null,
+            createdAt: '2026-08-01T09:00:00',
+            returnStatus: 'PARTIAL',
+          },
+        ],
+        totalElements: 1,
+      }),
     );
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(
       of({
@@ -375,7 +378,7 @@ describe('CustomerBalancePageComponent', () => {
         empty: false,
       }),
     );
-    invoiceApi.getAll.mockReturnValue(of([]));
+    invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [], totalElements: 0 }));
     creditNoteApi.getAll.mockReturnValue(of([]));
     debitNoteApi.getAll.mockReturnValue(of([]));

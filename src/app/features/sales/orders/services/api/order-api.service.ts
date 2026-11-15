@@ -8,6 +8,7 @@ import { OrderCreate } from '@features/sales/orders/models/interfaces/order-crea
 import { OrderEdit } from '@features/sales/orders/models/interfaces/order-edit.interface';
 import { OrderProduct } from '@features/sales/orders/models/interfaces/order-product.interface';
 import { OrderStatus } from '@features/sales/orders/models/enums/order-status.enum';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ConvertToInvoiceRequest {
   paymentType: string;
@@ -46,6 +47,8 @@ export interface OrderFilters {
   categoryId?: string;
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 interface OrderListApiResponse {
@@ -112,7 +115,7 @@ export class OrderApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/orders';
 
-  getAll(filters?: OrderFilters): Observable<OrderList[]> {
+  getAll(filters?: OrderFilters): Observable<PagedResponse<OrderList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
@@ -124,9 +127,14 @@ export class OrderApiService {
     if (filters?.categoryId) params = params.set('categoryId', filters.categoryId);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
-    return this.http
-      .get<OrderListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toOrderList(r))));
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<OrderListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toOrderList(r)),
+      })),
+    );
   }
 
   private toOrderList(r: OrderListApiResponse): OrderList {

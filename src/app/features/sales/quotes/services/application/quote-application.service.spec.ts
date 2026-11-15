@@ -41,7 +41,20 @@ describe('QuoteApplicationService', () => {
 
   beforeEach(() => {
     mockApi = {
-      getAll: vi.fn().mockReturnValue(of(mockList)),
+      getAll: vi
+        .fn()
+        .mockReturnValue(
+          of({
+            content: mockList,
+            totalElements: mockList.length,
+            totalPages: 1,
+            size: 10,
+            number: 0,
+            first: true,
+            last: true,
+            empty: false,
+          }),
+        ),
       getById: vi.fn().mockReturnValue(of(mockQuote)),
       create: vi.fn().mockReturnValue(of(mockQuote)),
       update: vi.fn().mockReturnValue(of(mockQuote)),
@@ -69,7 +82,11 @@ describe('QuoteApplicationService', () => {
     };
 
     TestBed.configureTestingModule({
-      providers: [MessageService, QuoteApplicationService, { provide: QuoteApiService, useValue: mockApi }],
+      providers: [
+        MessageService,
+        QuoteApplicationService,
+        { provide: QuoteApiService, useValue: mockApi },
+      ],
     });
 
     service = TestBed.inject(QuoteApplicationService);

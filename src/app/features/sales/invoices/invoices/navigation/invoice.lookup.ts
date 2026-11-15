@@ -5,9 +5,9 @@ import { InvoiceStatus } from '@features/sales/invoices/invoices/models/enums/in
 import { PaymentType } from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
 import { documentListAction } from '@shared/models/document-list-action';
 import {
-  arrayLookupResult,
   lookupDescription,
   lookupStatusKey,
+  pageLookupResult,
   textLookupFilter,
 } from '@shared/utils/navigation-lookup';
 
@@ -55,6 +55,8 @@ export const INVOICE_LOOKUP: LookupDefinition = {
     const dueStatus = textLookupFilter(query.filters['dueStatus']);
     return api
       .getAll({
+        page: query.page,
+        size: query.size,
         search: query.search || undefined,
         action: listAction,
         ...(!listAction ? { statuses } : {}),
@@ -63,18 +65,12 @@ export const INVOICE_LOOKUP: LookupDefinition = {
         returnStatus: returnStatus ? [returnStatus] : undefined,
       })
       .pipe(
-        map((items) =>
-          arrayLookupResult(
-            items,
-            (item) => ({
-              id: item.id,
-              label: item.invoiceNumber,
-              description: lookupDescription(item.customerName, lookupStatusKey(item.status)),
-            }),
-            '',
-            query.page,
-            query.size,
-          ),
+        map((response) =>
+          pageLookupResult(response, (item) => ({
+            id: item.id,
+            label: item.invoiceNumber,
+            description: lookupDescription(item.customerName, lookupStatusKey(item.status)),
+          })),
         ),
       );
   },

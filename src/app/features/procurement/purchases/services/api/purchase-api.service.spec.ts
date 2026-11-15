@@ -26,7 +26,16 @@ describe('PurchaseApiService action eligibility', () => {
       expect(request.request.params.get('action')).toBe(action);
       expect(request.request.params.get('search')).toBe('PO');
       expect(request.request.params.has('status')).toBe(false);
-      request.flush([]);
+      request.flush({
+        content: [],
+        totalElements: 0,
+        totalPages: 0,
+        size: 10,
+        number: 0,
+        first: true,
+        last: true,
+        empty: true,
+      });
     },
   );
 
@@ -35,6 +44,15 @@ describe('PurchaseApiService action eligibility', () => {
     const request = http.expectOne((req) => req.url === '/api/purchases');
     expect(request.request.params.has('action')).toBe(false);
     expect(request.request.params.get('status')).toBe('DRAFT');
-    request.flush([]);
+    request.flush({
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      size: 10,
+      number: 0,
+      first: true,
+      last: true,
+      empty: true,
+    });
   });
 });

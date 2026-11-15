@@ -2,6 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
 import { Observable, tap, finalize, map } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   QuoteApiService,
   QuoteFilters,
@@ -26,15 +27,15 @@ export class QuoteApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadAll(filters?: QuoteFilters): Observable<QuoteList[]> {
+  loadAll(filters?: QuoteFilters): Observable<PagedResponse<QuoteList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.quotes.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.quotes.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.reportError(err),
       }),

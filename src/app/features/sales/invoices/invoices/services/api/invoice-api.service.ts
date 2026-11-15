@@ -11,6 +11,7 @@ import { InvoiceCreate } from '@features/sales/invoices/invoices/models/interfac
 import { InvoiceUpdate } from '@features/sales/invoices/invoices/models/interfaces/invoice-edit.interface';
 import { InvoiceStatus } from '@features/sales/invoices/invoices/models/enums/invoice-status.enum';
 import { PaymentType } from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface InvoiceFilters {
   action?: DocumentListAction;
@@ -24,6 +25,8 @@ export interface InvoiceFilters {
   dueStatus?: 'OVERDUE' | 'CURRENT';
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 interface InvoiceListApiResponse {
@@ -139,7 +142,7 @@ export class InvoiceApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/invoices';
 
-  getAll(filters?: InvoiceFilters): Observable<InvoiceList[]> {
+  getAll(filters?: InvoiceFilters): Observable<PagedResponse<InvoiceList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
@@ -156,9 +159,14 @@ export class InvoiceApiService {
     if (filters?.dueStatus) params = params.set('dueStatus', filters.dueStatus);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
-    return this.http
-      .get<InvoiceListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toInvoiceList(r))));
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<InvoiceListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toInvoiceList(r)),
+      })),
+    );
   }
 
   private toInvoiceList(r: InvoiceListApiResponse): InvoiceList {

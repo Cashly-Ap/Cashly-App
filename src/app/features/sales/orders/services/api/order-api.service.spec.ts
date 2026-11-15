@@ -28,6 +28,17 @@ describe('OrderApiService', () => {
     },
   ];
 
+  const paged = <T>(content: T[] = []) => ({
+    content,
+    totalElements: content.length,
+    totalPages: content.length ? 1 : 0,
+    size: 10,
+    number: 0,
+    first: true,
+    last: true,
+    empty: content.length === 0,
+  });
+
   const mockDetails = {
     id: 'ord-001',
     orderNumber: 'ORD-001',
@@ -125,20 +136,20 @@ describe('OrderApiService', () => {
     const request = httpMock.expectOne((req) => req.url === '/api/orders');
     expect(request.request.params.get('action')).toBe(action);
     expect(request.request.params.get('search')).toBe('document');
-    request.flush([]);
+    request.flush(paged());
   });
 
   describe('getAll()', () => {
     it('should GET /api/orders without filters', () => {
       service.getAll().subscribe((result) => {
-        expect(result).toHaveLength(1);
-        expect(result[0].id).toBe('ord-001');
-        expect(result[0].status).toBe(OrderStatus.DRAFT);
+        expect(result.content).toHaveLength(1);
+        expect(result.content[0].id).toBe('ord-001');
+        expect(result.content[0].status).toBe(OrderStatus.DRAFT);
       });
 
-      const req = httpMock.expectOne('/api/orders');
+      const req = httpMock.expectOne((r) => r.url === '/api/orders');
       expect(req.request.method).toBe('GET');
-      req.flush(mockList);
+      req.flush(paged(mockList));
     });
 
     it('should GET /api/orders with search filter', () => {
@@ -148,7 +159,7 @@ describe('OrderApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('search')).toBe('ORD-001');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/orders with status filter', () => {
@@ -158,7 +169,7 @@ describe('OrderApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('status')).toBe('DRAFT');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/orders with customerId filter', () => {
@@ -168,7 +179,7 @@ describe('OrderApiService', () => {
 
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('customerId')).toBe('c1');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/orders with date filters', () => {
@@ -179,7 +190,7 @@ describe('OrderApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('fromDate')).toBe('2025-01-01');
       expect(req.request.params.get('toDate')).toBe('2025-01-31');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/orders with sorting', () => {
@@ -190,7 +201,7 @@ describe('OrderApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('orderBy')).toBe('createdAt');
       expect(req.request.params.get('orderDir')).toBe('desc');
-      req.flush([]);
+      req.flush(paged());
     });
 
     it('should GET /api/orders with productId and categoryId filters', () => {
@@ -201,7 +212,7 @@ describe('OrderApiService', () => {
       const req = httpMock.expectOne((r) => r.url === '/api/orders' && r.method === 'GET');
       expect(req.request.params.get('productId')).toBe('p1');
       expect(req.request.params.get('categoryId')).toBe('cat-001');
-      req.flush([]);
+      req.flush(paged());
     });
   });
 
@@ -238,7 +249,7 @@ describe('OrderApiService', () => {
         expect(result.id).toBe('ord-001');
       });
 
-      const req = httpMock.expectOne('/api/orders');
+      const req = httpMock.expectOne((r) => r.url === '/api/orders');
       expect(req.request.method).toBe('POST');
       expect(req.request.body).toEqual(createData);
       req.flush(mockDetails);

@@ -145,9 +145,6 @@ export class InvoiceListPageComponent implements OnInit {
   readonly searchTerm = signal('');
   readonly first = signal(0);
   readonly rows = signal(10);
-  readonly pagedInvoices = computed(() =>
-    this.invoices().slice(this.first(), this.first() + this.rows()),
-  );
   readonly selectedStatus = signal('');
   readonly selectedReturnStatus = signal('');
   readonly selectedDueStatus = signal('');
@@ -236,7 +233,7 @@ export class InvoiceListPageComponent implements OnInit {
   private listRequest?: Subscription;
 
   private readonly listNavigation = connectListNavigation({
-    records: () => this.invoices().slice(this.first(), this.first() + this.rows()),
+    records: () => this.invoices(),
     loading: () => this.loading(),
     total: () => this.totalElements(),
     first: () => this.first(),
@@ -306,6 +303,7 @@ export class InvoiceListPageComponent implements OnInit {
   onPageChange(event: { first: number; rows: number }): void {
     this.first.set(event.first ?? 0);
     this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
   }
 
   onSort(event: SortEvent): void {
@@ -540,6 +538,8 @@ export class InvoiceListPageComponent implements OnInit {
     if (this.filterDateTo()) filters.dateTo = this.filterDateTo()!.toISOString().split('T')[0];
     filters.orderBy = this.orderBy();
     filters.orderDir = this.orderDir();
+    filters.page = Math.floor(this.first() / this.rows());
+    filters.size = this.rows();
     this.listRequest?.unsubscribe();
     this.listRequest = this.invoiceService
       .loadAll(filters)

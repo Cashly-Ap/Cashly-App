@@ -232,7 +232,10 @@ export class CustomerBalancePageComponent implements OnInit {
       balanceTransactions: this.balanceApi
         .getTransactions(id, 0, 1000)
         .pipe(catchError(() => of(this.emptyPage<BalanceTransactionResponse>()))),
-      invoices: this.invoiceApi.getAll({ customerId: id }).pipe(catchError(() => of([]))),
+      invoices: this.invoiceApi.getAll({ customerId: id, page: 0, size: 100 }).pipe(
+        map((response) => response.content),
+        catchError(() => of([])),
+      ),
       payments: this.receivablesApi
         .getCustomerPaymentHistory(id, { page: 0, size: 1000 })
         .pipe(catchError(() => of(this.emptyPage<PendingPayment>()))),
