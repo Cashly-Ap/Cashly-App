@@ -139,12 +139,13 @@ export class UserPreferencesService {
     this.ready.set(!userId);
     this.loading.set(false);
     this.error.set(null);
-    const initial = userId
-      ? (this.readCache(userId) ?? { ...DEFAULT_USER_PREFERENCES })
-      : this.guestDefaults();
+    const cached = userId ? this.readCache(userId) : null;
+    const fresh = !!userId && !!cached && this.cacheIsFresh(userId);
+    const initial = userId ? (cached ?? { ...DEFAULT_USER_PREFERENCES }) : this.guestDefaults();
     this.confirmed = initial;
     this.state.set(initial);
-    if (userId && this.browser) this.load();
+    this.ready.set(!userId || fresh);
+    if (userId && this.browser && !fresh) this.load();
   }
 
   private load(): void {
@@ -268,6 +269,17 @@ export class UserPreferencesService {
     if (!this.browser || !this.userId) return;
     try {
       localStorage.setItem(`cashly:preferences:v2:${this.userId}`, JSON.stringify(value));
+      localStorage.setItem(`cashly:preferences:v2:${this.userId}:at`, String(Date.now()));
     } catch {}
+  }
+
+  private cacheIsFresh(userId: string): boolean {
+    if (!this.browser) return false;
+    try {
+      const savedAt = Number(localStorage.getItem(`cashly:preferences:v2:${userId}:at`));
+      return savedAt > 0 && Date.now() - savedAt < 5 * 60 * 1000;
+    } catch {
+      return false;
+    }
   }
 }

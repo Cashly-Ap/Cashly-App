@@ -35,11 +35,15 @@ import {
 } from '@features/platform/auth/models/interfaces/auth-response.interface';
 import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
+const ACCESS_CACHE_KEY = 'cashly:access-cache';
+const ACCESS_CACHE_TTL = 5 * 60 * 1000;
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   readonly currentAccess = signal<CurrentAccess | null>(null);
   private accessInFlight$: Observable<CurrentAccess> | null = null;
+  private accessCachedAt = 0;
   private apiService = inject(AuthApiService);
 
   currentUser = signal<UserResponse | null>(null);
@@ -53,6 +57,8 @@ export class AuthService {
 
   constructor() {
     this.loadAuthFromStorage();
+    const cached = this.readAccessCache();
+    if (cached) this.currentAccess.set(cached);
   }
 
   register(request: RegisterUserRequest): Observable<UserResponse> {
@@ -232,8 +238,14 @@ export class AuthService {
           permissions: normalizePermissions(access.permissions),
         })),
         tap({
-          next: (access) => this.currentAccess.set(access),
-          error: () => this.currentAccess.set(null),
+          next: (access) => {
+            this.currentAccess.set(access);
+            this.writeAccessCache(access);
+          },
+          error: () => {
+            this.currentAccess.set(null);
+            this.clearAccessCache();
+          },
         }),
         finalize(() => (this.accessInFlight$ = null)),
         shareReplay(1),
@@ -245,6 +257,12 @@ export class AuthService {
     const expiresAt = Number(localStorage.getItem('tokenExpiresAt'));
     if (expiresAt > 0 && expiresAt <= Date.now() + 60000 && this.refreshToken()) {
       return this.refreshTokenSilently().pipe(map(() => this.currentAccess()));
+    }
+    if (!this.isAuthenticated()) return of(null);
+    const cached = this.readAccessCache();
+    if (cached) {
+      if (this.currentAccess() !== cached) this.currentAccess.set(cached);
+      return of(cached);
     }
     return this.refreshAccess();
   }
@@ -308,6 +326,7 @@ export class AuthService {
 
   setAuthState(response: AuthenticationResponse): void {
     this.currentAccess.set(null);
+    this.clearAccessCache();
     this.currentUser.set(response.entity);
     this.accessToken.set(response.accessToken);
     this.refreshToken.set(response.refreshToken);
@@ -317,6 +336,7 @@ export class AuthService {
 
   clearAuthState(): void {
     this.currentAccess.set(null);
+    this.clearAccessCache();
     this.currentUser.set(null);
     this.accessToken.set(null);
     this.refreshToken.set(null);
@@ -391,6 +411,44 @@ export class AuthService {
 
   private saveCurrentUserToStorage(user: UserResponse): void {
     localStorage.setItem('currentUser', JSON.stringify(user));
+  }
+
+  private writeAccessCache(access: CurrentAccess): void {
+    this.accessCachedAt = Date.now();
+    try {
+      localStorage.setItem(
+        ACCESS_CACHE_KEY,
+        JSON.stringify({ access, savedAt: this.accessCachedAt }),
+      );
+    } catch {}
+  }
+
+  private readAccessCache(): CurrentAccess | null {
+    const memory = this.currentAccess();
+    if (memory && this.accessCachedAt > 0 && Date.now() - this.accessCachedAt < ACCESS_CACHE_TTL) {
+      return memory;
+    }
+    try {
+      const raw = localStorage.getItem(ACCESS_CACHE_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw) as { access?: CurrentAccess; savedAt?: number };
+      if (!cached.access || typeof cached.savedAt !== 'number') return null;
+      if (Date.now() - cached.savedAt >= ACCESS_CACHE_TTL) {
+        localStorage.removeItem(ACCESS_CACHE_KEY);
+        return null;
+      }
+      this.accessCachedAt = cached.savedAt;
+      return cached.access;
+    } catch {
+      return null;
+    }
+  }
+
+  private clearAccessCache(): void {
+    this.accessCachedAt = 0;
+    try {
+      localStorage.removeItem(ACCESS_CACHE_KEY);
+    } catch {}
   }
 
   private getErrorMessage(err: unknown): string {

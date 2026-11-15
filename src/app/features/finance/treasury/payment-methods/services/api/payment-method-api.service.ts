@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DocumentListAction } from '@shared/models/document-list-action';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, throwError } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import {
   PaymentMethodList,
   PaymentMethodDetail,
@@ -45,6 +46,25 @@ interface PaymentMethodDetailApiResponse {
 export class PaymentMethodApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/payment-methods';
+  private activeOptions$: Observable<PaymentMethodList[]> | null = null;
+  private activeOptionsAt = 0;
+
+  getActiveOptions(force = false): Observable<PaymentMethodList[]> {
+    if (!force && this.activeOptions$ && Date.now() - this.activeOptionsAt < 10 * 60 * 1000) {
+      return this.activeOptions$;
+    }
+    this.activeOptionsAt = Date.now();
+    this.activeOptions$ = this.getAll({ active: true, size: 100 }).pipe(
+      map((response) => response.content),
+      catchError((error: unknown) => {
+        this.activeOptions$ = null;
+        this.activeOptionsAt = 0;
+        return throwError(() => error);
+      }),
+      shareReplay(1),
+    );
+    return this.activeOptions$;
+  }
 
   getAll(filters?: PaymentMethodFilters): Observable<PagedResponse<PaymentMethodList>> {
     let params = new HttpParams();
@@ -72,25 +92,41 @@ export class PaymentMethodApiService {
   }
 
   create(data: PaymentMethodCreate): Observable<PaymentMethodDetail> {
-    return this.http
-      .post<PaymentMethodDetailApiResponse>(this.baseUrl, data)
-      .pipe(map((r) => this.toPaymentMethodDetail(r)));
+    return this.http.post<PaymentMethodDetailApiResponse>(this.baseUrl, data).pipe(
+      map((r) => {
+        this.invalidateActiveOptions();
+        return this.toPaymentMethodDetail(r);
+      }),
+    );
   }
 
   update(id: string, data: PaymentMethodUpdate): Observable<PaymentMethodDetail> {
-    return this.http
-      .put<PaymentMethodDetailApiResponse>(`${this.baseUrl}/${id}`, data)
-      .pipe(map((r) => this.toPaymentMethodDetail(r)));
+    return this.http.put<PaymentMethodDetailApiResponse>(`${this.baseUrl}/${id}`, data).pipe(
+      map((r) => {
+        this.invalidateActiveOptions();
+        return this.toPaymentMethodDetail(r);
+      }),
+    );
   }
 
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+    return this.http
+      .delete<void>(`${this.baseUrl}/${id}`)
+      .pipe(map(() => this.invalidateActiveOptions()));
   }
 
   toggle(id: string): Observable<PaymentMethodDetail> {
-    return this.http
-      .patch<PaymentMethodDetailApiResponse>(`${this.baseUrl}/${id}/toggle`, {})
-      .pipe(map((r) => this.toPaymentMethodDetail(r)));
+    return this.http.patch<PaymentMethodDetailApiResponse>(`${this.baseUrl}/${id}/toggle`, {}).pipe(
+      map((r) => {
+        this.invalidateActiveOptions();
+        return this.toPaymentMethodDetail(r);
+      }),
+    );
+  }
+
+  private invalidateActiveOptions(): void {
+    this.activeOptions$ = null;
+    this.activeOptionsAt = 0;
   }
 
   private toPaymentMethodList(r: PaymentMethodListApiResponse): PaymentMethodList {

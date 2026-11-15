@@ -8,6 +8,7 @@ import {
 } from '@features/platform/notifications/models/notification-preferences.model';
 
 const EMPTY_PREFERENCES: NotificationPreferences = { enabled: true, modules: [] };
+const NOTIFICATION_CACHE_TTL = 5 * 60 * 1000;
 
 function validPreferences(value: unknown): value is NotificationPreferences {
   if (typeof value !== 'object' || value === null) return false;
@@ -90,10 +91,12 @@ export class NotificationPreferencesService {
     this.saving.set(false);
     this.loading.set(false);
     this.error.set(null);
-    this.ready.set(!userId);
-    this.confirmed = { ...EMPTY_PREFERENCES, modules: [] };
-    this.state.set({ ...EMPTY_PREFERENCES, modules: [] });
-    if (userId) this.load();
+    const cached = userId ? this.readCache(userId) : null;
+    const fresh = !!userId && !!cached && this.cacheIsFresh(userId);
+    this.ready.set(!userId || fresh);
+    this.confirmed = cached ?? { ...EMPTY_PREFERENCES, modules: [] };
+    this.state.set(cached ?? { ...EMPTY_PREFERENCES, modules: [] });
+    if (userId && !fresh) this.load();
   }
 
   private load(): void {
@@ -111,6 +114,7 @@ export class NotificationPreferencesService {
           }
           this.confirmed = value;
           this.state.set(value);
+          this.writeCache(value);
           this.loading.set(false);
           this.ready.set(true);
         },
@@ -158,6 +162,7 @@ export class NotificationPreferencesService {
             return;
           }
           this.confirmed = value;
+          this.writeCache(value);
           if (!this.queue.length) this.state.set(value);
           this.flush();
         },
@@ -174,6 +179,42 @@ export class NotificationPreferencesService {
     this.state.set(this.confirmed);
     this.saving.set(false);
     this.error.set('platform.notifications.preferences.saveError');
+  }
+
+  private writeCache(value: NotificationPreferences): void {
+    if (!this.userId) return;
+    try {
+      localStorage.setItem(
+        `cashly:notification-preferences:v1:${this.userId}`,
+        JSON.stringify(value),
+      );
+      localStorage.setItem(
+        `cashly:notification-preferences:v1:${this.userId}:at`,
+        String(Date.now()),
+      );
+    } catch {}
+  }
+
+  private readCache(userId: string): NotificationPreferences | null {
+    try {
+      const value: unknown = JSON.parse(
+        localStorage.getItem(`cashly:notification-preferences:v1:${userId}`) ?? 'null',
+      );
+      return validPreferences(value) ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private cacheIsFresh(userId: string): boolean {
+    try {
+      const savedAt = Number(
+        localStorage.getItem(`cashly:notification-preferences:v1:${userId}:at`),
+      );
+      return savedAt > 0 && Date.now() - savedAt < NOTIFICATION_CACHE_TTL;
+    } catch {
+      return false;
+    }
   }
 
   private toUpdate(preferences: NotificationPreferences): NotificationPreferencesUpdate {

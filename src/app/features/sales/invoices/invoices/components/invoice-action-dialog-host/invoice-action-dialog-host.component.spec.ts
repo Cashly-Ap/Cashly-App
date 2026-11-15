@@ -103,7 +103,10 @@ describe('InvoiceActionDialogHostComponent', () => {
         },
         {
           provide: PaymentMethodApiService,
-          useValue: { getAll: vi.fn(() => of({ content: [] })) },
+          useValue: {
+            getAll: vi.fn(() => of({ content: [] })),
+            getActiveOptions: vi.fn(() => of([])),
+          },
         },
       ],
     })

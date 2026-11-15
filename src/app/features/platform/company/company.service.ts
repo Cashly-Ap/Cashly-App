@@ -1,7 +1,11 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
+import { finalize, shareReplay } from 'rxjs/operators';
 import { environment } from '@env/environment';
+
+const COMPANY_CACHE_KEY = 'cashly:company-cache';
+const COMPANY_CACHE_TTL = 5 * 60 * 1000;
 export interface Company {
   id: string;
   legalName: string;
@@ -29,8 +33,25 @@ export class CompanyService {
   readonly pdfLogoUrl = signal<string | null>(null);
   private generation = 0;
   private pdfGeneration = 0;
-  load(): Observable<Company> {
-    return this.http.get<Company>(this.url).pipe(tap((company) => this.accept(company)));
+  private loadedAt = 0;
+  private inFlight$: Observable<Company> | null = null;
+  load(force = false): Observable<Company> {
+    const current = this.company();
+    if (!force && current && this.cacheIsFresh()) return of(current);
+    if (!force) {
+      const cached = this.readCache();
+      if (cached) {
+        this.accept(cached, false);
+        return of(cached);
+      }
+    }
+    if (this.inFlight$) return this.inFlight$;
+    this.inFlight$ = this.http.get<Company>(this.url).pipe(
+      tap((company) => this.accept(company)),
+      finalize(() => (this.inFlight$ = null)),
+      shareReplay(1),
+    );
+    return this.inFlight$;
   }
   update(data: Omit<Company, 'id' | 'logoPath' | 'pdfLogoPath'>): Observable<Company> {
     return this.http.put<Company>(this.url, data).pipe(tap((company) => this.accept(company)));
@@ -75,9 +96,14 @@ export class CompanyService {
   clear(): void {
     this.generation++;
     this.pdfGeneration++;
+    this.loadedAt = 0;
+    this.inFlight$ = null;
     this.clearPdfLogo();
     this.company.set(null);
     this.clearLogo();
+    try {
+      localStorage.removeItem(COMPANY_CACHE_KEY);
+    } catch {}
   }
   clearLogo(): void {
     const old = this.logoUrl();
@@ -89,6 +115,34 @@ export class CompanyService {
     if (old) URL.revokeObjectURL(old);
     this.pdfLogoUrl.set(null);
   }
+  private writeCache(company: Company): void {
+    this.loadedAt = Date.now();
+    try {
+      localStorage.setItem(COMPANY_CACHE_KEY, JSON.stringify({ company, savedAt: this.loadedAt }));
+    } catch {}
+  }
+
+  private cacheIsFresh(): boolean {
+    return this.loadedAt > 0 && Date.now() - this.loadedAt < COMPANY_CACHE_TTL;
+  }
+
+  private readCache(): Company | null {
+    try {
+      const raw = localStorage.getItem(COMPANY_CACHE_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw) as { company?: Company; savedAt?: number };
+      if (!cached.company || typeof cached.savedAt !== 'number') return null;
+      if (Date.now() - cached.savedAt >= COMPANY_CACHE_TTL) {
+        localStorage.removeItem(COMPANY_CACHE_KEY);
+        return null;
+      }
+      this.loadedAt = cached.savedAt;
+      return cached.company;
+    } catch {
+      return null;
+    }
+  }
+
   private acceptPdfLogo(company: Company): void {
     const changed = this.company()?.pdfLogoPath !== company.pdfLogoPath;
     if (!company.pdfLogoPath) {
@@ -109,10 +163,11 @@ export class CompanyService {
       },
     });
   }
-  private accept(company: Company): void {
+  private accept(company: Company, persist = true): void {
     this.acceptPdfLogo(company);
     const changed = this.company()?.logoPath !== company.logoPath;
     this.company.set(company);
+    if (persist) this.writeCache(company);
     if (!company.logoPath) {
       this.generation++;
       this.clearLogo();

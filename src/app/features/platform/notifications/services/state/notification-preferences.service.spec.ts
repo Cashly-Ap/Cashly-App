@@ -20,6 +20,7 @@ describe('NotificationPreferencesService', () => {
   let service: NotificationPreferencesService;
 
   beforeEach(() => {
+    localStorage.clear();
     user.set({ id: 'alice' });
     TestBed.configureTestingModule({
       providers: [

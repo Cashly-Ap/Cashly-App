@@ -203,11 +203,12 @@ export class CustomerDebtDialogComponent {
   protected loadingNoteInvoice = signal(false);
 
   constructor() {
-    this.loadPaymentMethods();
     effect(() => {
       const isVisible = this.visible();
       const id = this.customerId();
-      if (isVisible && id) {
+      if (!isVisible) return;
+      this.loadPaymentMethods();
+      if (id) {
         this.loadCustomerData(id);
         this.loadBalanceData(id);
       }
@@ -708,17 +709,11 @@ export class CustomerDebtDialogComponent {
 
   private loadPaymentMethods(): void {
     this.paymentMethodApi
-      .getAll({ active: true, size: 100 })
-      .pipe(
-        catchError(() =>
-          of({ content: [] } as unknown as PagedResponse<
-            import('@features/finance/treasury/payment-methods/models/interfaces').PaymentMethodList
-          >),
-        ),
-      )
-      .subscribe((response) => {
+      .getActiveOptions()
+      .pipe(catchError(() => of([])))
+      .subscribe((methods) => {
         this.paymentMethods.set(
-          response.content.map((method) => ({ label: method.name, value: method.id })),
+          methods.map((method) => ({ label: method.name, value: method.id })),
         );
       });
   }

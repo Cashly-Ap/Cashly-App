@@ -2,7 +2,17 @@ import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { Component, input, output, OnInit, inject, computed, effect, signal } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  OnInit,
+  inject,
+  computed,
+  effect,
+  signal,
+  untracked,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -19,8 +29,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { PaymentMethodApiService } from '@features/finance/treasury/payment-methods/services/api/payment-method-api.service';
-import { PaymentMethodList } from '@features/finance/treasury/payment-methods/models/interfaces/payment-method.interface';
-import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { SupplierPurchaseDebt } from '@features/finance/treasury/payables/models/interfaces/supplier-purchase-debt.interface';
 import { PayPurchaseRequest } from '@features/finance/treasury/payables/models/interfaces/payment-request.interface';
 import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
@@ -117,7 +125,9 @@ export class SupplierPaymentFormDialogComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      if (!this.visible() || !this.form) return;
+      if (!this.visible()) return;
+      untracked(() => this.loadPaymentMethods());
+      if (!this.form) return;
 
       const mode = this.mode();
       const purchase = this.purchase();
@@ -152,25 +162,14 @@ export class SupplierPaymentFormDialogComponent implements OnInit {
   ngOnInit(): void {
     this.initForm();
     this.setupAmountClamp();
+  }
+
+  private loadPaymentMethods(): void {
     this.paymentMethodApi
-      .getAll({ active: true, size: 100 })
-      .pipe(
-        catchError(() => {
-          const empty: PagedResponse<PaymentMethodList> = {
-            content: [],
-            totalElements: 0,
-            totalPages: 0,
-            size: 0,
-            number: 0,
-            first: true,
-            last: true,
-            empty: true,
-          };
-          return of(empty);
-        }),
-      )
-      .subscribe((res) => {
-        const methods = res.content.map((method) => ({ label: method.name, value: method.id }));
+      .getActiveOptions()
+      .pipe(catchError(() => of([])))
+      .subscribe((activeMethods) => {
+        const methods = activeMethods.map((method) => ({ label: method.name, value: method.id }));
         this.paymentMethods.set(methods);
         if (methods.length > 0 && !this.form.get('paymentMethodId')?.value) {
           this.form.patchValue({ paymentMethodId: methods[0].value });

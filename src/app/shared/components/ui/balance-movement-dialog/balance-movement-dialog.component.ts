@@ -79,10 +79,12 @@ export class BalanceMovementDialogComponent {
   });
 
   constructor() {
-    this.loadPaymentMethods();
     effect(() => {
       if (!this.visible()) return;
-      untracked(() => this.configureForm());
+      untracked(() => {
+        this.loadPaymentMethods();
+        this.configureForm();
+      });
     });
   }
 
@@ -133,10 +135,10 @@ export class BalanceMovementDialogComponent {
   }
 
   private loadPaymentMethods(): void {
-    this.paymentMethodApi.getAll({ active: true, size: 100 }).subscribe({
-      next: (response) => {
+    this.paymentMethodApi.getActiveOptions().subscribe({
+      next: (methods) => {
         this.paymentMethods.set(
-          (response.content ?? []).map((method) => ({ label: method.name, value: method.id })),
+          methods.map((method) => ({ label: method.name, value: method.id })),
         );
       },
       error: () => this.paymentMethods.set([]),

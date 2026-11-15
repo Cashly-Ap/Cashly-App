@@ -293,8 +293,8 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
       next: (b) => this.customerBalance.set(b.totalBalance),
       error: () => this.customerBalance.set(0),
     });
-    this.paymentMethodApi.getAll({ active: true }).subscribe({
-      next: (methods) => this.paymentMethods.set(methods.content),
+    this.paymentMethodApi.getActiveOptions().subscribe({
+      next: (methods) => this.paymentMethods.set(methods),
       error: () => this.paymentMethods.set([]),
     });
   }

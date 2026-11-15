@@ -93,6 +93,7 @@ describe('authoritative role permissions', () => {
   });
 
   it('applies revocation on the next authoritative refresh', async () => {
+    auth.accessToken.set('access-token');
     auth.currentAccess.set(access(['READ', 'UPDATE']));
     get.mockReturnValue(of(access(['READ'])));
     await firstValueFrom(auth.ensureAccess());
@@ -100,6 +101,7 @@ describe('authoritative role permissions', () => {
   });
 
   it('clears previous grants when authoritative access cannot be refreshed', async () => {
+    auth.accessToken.set('access-token');
     auth.currentAccess.set(access(['READ', 'UPDATE']));
     get.mockReturnValue(throwError(() => new Error('Access unavailable')));
     await firstValueFrom(auth.ensureAccess()).catch(() => undefined);

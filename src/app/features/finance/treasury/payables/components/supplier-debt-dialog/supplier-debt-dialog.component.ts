@@ -190,13 +190,15 @@ export class SupplierDebtDialogComponent {
   ];
 
   constructor() {
-    this.loadPaymentMethods();
     effect(() => {
       const isVisible = this.visible();
       const id = this.supplierId();
-      if (!isVisible || !id) return;
-      this.loadSupplierData(id);
-      this.loadBalanceData(id);
+      if (!isVisible) return;
+      this.loadPaymentMethods();
+      if (id) {
+        this.loadSupplierData(id);
+        this.loadBalanceData(id);
+      }
     });
   }
 
@@ -483,11 +485,11 @@ export class SupplierDebtDialogComponent {
 
   private loadPaymentMethods(): void {
     this.paymentMethodApi
-      .getAll({ active: true, size: 100 })
-      .pipe(catchError(() => of({ content: [] })))
-      .subscribe((response) => {
+      .getActiveOptions()
+      .pipe(catchError(() => of([])))
+      .subscribe((methods) => {
         this.paymentMethods.set(
-          (response.content ?? []).map((method) => ({ label: method.name, value: method.id })),
+          methods.map((method) => ({ label: method.name, value: method.id })),
         );
       });
   }

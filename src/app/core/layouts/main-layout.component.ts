@@ -146,15 +146,14 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     effect((onCleanup) => {
       const userId = this.brandingUserId();
       const canViewCompany = this.authService.hasPermissionCode(CompanyPermission.VIEW);
-      untracked(() => this.companyService.clear());
-      if (!userId || !canViewCompany) return;
+      if (!userId || !canViewCompany) {
+        untracked(() => this.companyService.clear());
+        return;
+      }
       const subscription = untracked(() =>
         this.companyService.load().subscribe({ error: () => undefined }),
       );
-      onCleanup(() => {
-        subscription.unsubscribe();
-        untracked(() => this.companyService.clear());
-      });
+      onCleanup(() => subscription.unsubscribe());
     });
   }
   primeMenuItems = computed<PrimeMenuItem[]>(() => {

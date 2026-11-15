@@ -140,7 +140,10 @@ describe('ReceivablesActionDialogHostComponent', () => {
         { provide: InvoiceApiService, useValue: { getById: vi.fn(() => of({})) } },
         {
           provide: PaymentMethodApiService,
-          useValue: { getAll: vi.fn(() => of({ content: [] })) },
+          useValue: {
+            getAll: vi.fn(() => of({ content: [] })),
+            getActiveOptions: vi.fn(() => of([])),
+          },
         },
         {
           provide: ReceivablesApiService,
