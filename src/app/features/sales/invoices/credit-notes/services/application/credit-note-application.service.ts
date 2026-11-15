@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   CreditNoteApiService,
   CreditNoteFilters,
@@ -21,15 +22,15 @@ export class CreditNoteApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadCreditNotes(filters?: CreditNoteFilters): Observable<CreditNoteList[]> {
+  loadCreditNotes(filters?: CreditNoteFilters): Observable<PagedResponse<CreditNoteList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.creditNotes.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.creditNotes.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.error.set(err.message),
       }),

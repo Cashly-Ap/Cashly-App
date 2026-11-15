@@ -23,38 +23,41 @@ export interface MenuCallbacks {
   openPurchasesPdfModal: () => void;
 }
 
-const INVOICE_CONTAINER_ROUTE = '/sales/invoices';
-const INVOICE_DOCUMENT_ROUTES = ['/sales/debit-notes', '/sales/credit-notes', '/sales/returns'];
+const INVOICE_FOLDER_ROUTES = [
+  '/sales/invoices',
+  '/sales/credit-notes',
+  '/sales/debit-notes',
+  '/sales/returns',
+];
 
 function menuRoute(item: MenuItem): string | undefined {
   return item.routerLink ?? item.children?.find((child) => child.routerLink)?.routerLink;
 }
 
-function nestInvoiceDocuments(items: MenuItem[]): MenuItem[] {
+function groupInvoiceDocuments(items: MenuItem[]): MenuItem[] {
   return items.map((item) => {
     if (item.label !== 'Ventas' || !item.children) return item;
-    const invoicesIndex = item.children.findIndex(
-      (child) => menuRoute(child) === INVOICE_CONTAINER_ROUTE,
-    );
-    if (invoicesIndex < 0) return item;
-    const invoices = item.children[invoicesIndex];
-    const documents = INVOICE_DOCUMENT_ROUTES.map((route) =>
+    const documents = INVOICE_FOLDER_ROUTES.map((route) =>
       item.children!.find((child) => menuRoute(child) === route),
     ).filter((child): child is MenuItem => child !== undefined);
-    const remaining = item.children.filter(
-      (child) => menuRoute(child) !== INVOICE_CONTAINER_ROUTE && !documents.includes(child),
+    if (!documents.length) return item;
+    const invoicesIndex = item.children.findIndex(
+      (child) => menuRoute(child) === '/sales/invoices',
     );
-    const invoiceChildren = [...(invoices.children ?? [])];
-    const trailingIndex = invoiceChildren.findIndex(
-      (child) =>
-        child.label === 'Historial' ||
-        child.label === 'Reportes' ||
-        (child.requiredAction === 'EXPORT' && !child.label.startsWith('Descargar PDF')),
-    );
-    const insertAt = trailingIndex < 0 ? invoiceChildren.length : trailingIndex;
-    invoiceChildren.splice(insertAt, 0, ...documents);
-    const nested: MenuItem = { ...invoices, children: invoiceChildren };
-    remaining.splice(Math.min(invoicesIndex, remaining.length), 0, nested);
+    const remaining = item.children.filter((child) => !documents.includes(child));
+    const folder: MenuItem = {
+      label: 'Facturas',
+      icon: 'pi pi-file',
+      allowedRoles: documents[0].allowedRoles,
+      children: documents.map((document) => ({
+        label: document.label,
+        icon: document.icon,
+        routerLink: menuRoute(document),
+        allowedRoles: document.allowedRoles,
+        requiredModule: document.requiredModule,
+      })),
+    };
+    remaining.splice(Math.min(Math.max(invoicesIndex, 0), remaining.length), 0, folder);
     return { ...item, children: remaining };
   });
 }
@@ -115,7 +118,7 @@ export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
     children: reports,
   });
 
-  return nestInvoiceDocuments(
+  return groupInvoiceDocuments(
     addListNavigationActions(
       [
         group('Ventas', 'pi pi-shopping-bag', [

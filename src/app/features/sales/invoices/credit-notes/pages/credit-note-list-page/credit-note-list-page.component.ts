@@ -1,6 +1,6 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
-import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { connectListNavigation } from '@shared/components/list/list-navigation.service';
 import {
@@ -60,7 +60,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     PanelCardComponent,
     ListFilterComponent,
     TranslatePipe,
-    LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     CommonModule,
     FormsModule,
     TableModule,
@@ -98,8 +98,8 @@ export class CreditNoteListPageComponent implements OnInit {
   searchTerm = signal('');
   first = signal(0);
   rows = signal(10);
-  dateFrom = signal<string | null>(null);
-  dateTo = signal<string | null>(null);
+  dateFrom = signal<Date | null>(null);
+  dateTo = signal<Date | null>(null);
 
   activeFilterCount = computed(() => {
     let count = 0;
@@ -132,16 +132,12 @@ export class CreditNoteListPageComponent implements OnInit {
   });
 
   private readonly listNavigation = connectListNavigation({
-    records: () => this.navigationRecords().slice(this.first(), this.first() + this.rows()),
+    records: () => this.navigationRecords(),
     loading: () => this.loading(),
-    total: () => this.navigationRecords().length,
+    total: () => this.totalElements(),
     first: () => this.first(),
     rows: () => this.rows(),
-    search: (term) => {
-      this.dateFrom.set(null);
-      this.dateTo.set(null);
-      this.onSearch(term);
-    },
+    search: (term) => this.onSearch(term),
     paginate: (event) => this.onPageChange(event),
     label: (record) => record.noteNumber,
     description: (record) => record.customerName ?? '',
@@ -155,6 +151,18 @@ export class CreditNoteListPageComponent implements OnInit {
 
   onSearch(value: string): void {
     this.searchTerm.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onDateFromChange(value: Date | null): void {
+    this.dateFrom.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onDateToChange(value: Date | null): void {
+    this.dateTo.set(value);
     this.first.set(0);
     this.loadWithFilters();
   }
@@ -200,8 +208,23 @@ export class CreditNoteListPageComponent implements OnInit {
 
   private loadWithFilters(): void {
     const filters: CreditNoteFilters = {};
-    if (this.dateFrom()) filters.dateFrom = this.dateFrom()!;
-    if (this.dateTo()) filters.dateTo = this.dateTo()!;
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    const dateFrom = this.dateParam(this.dateFrom());
+    const dateTo = this.dateParam(this.dateTo());
+    if (dateFrom) filters.dateFrom = dateFrom;
+    if (dateTo) filters.dateTo = dateTo;
+    filters.orderBy = 'createdAt';
+    filters.orderDir = 'desc';
+    filters.page = Math.floor(this.first() / this.rows());
+    filters.size = this.rows();
     this.service.loadCreditNotes(filters).subscribe();
+  }
+
+  private dateParam(value: Date | null): string | undefined {
+    if (!value) return undefined;
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }

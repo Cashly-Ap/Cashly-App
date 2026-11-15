@@ -96,7 +96,14 @@ describe('runtime language', () => {
     const received: unknown[] = [];
     messages.messageObserver.subscribe((message) => received.push(message));
     messages.add(original);
-    expect(received).toEqual([{ summary: 'Success', detail: 'Order created successfully' }]);
+    expect(received).toEqual([
+      {
+        severity: 'info',
+        life: 5000,
+        summary: 'Success',
+        detail: 'Order created successfully',
+      },
+    ]);
     expect(original.summary).toBe('Éxito');
     let accepted = false;
     confirmation.requireConfirmation$.subscribe((value) => {

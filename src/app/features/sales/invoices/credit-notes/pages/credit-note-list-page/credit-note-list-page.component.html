@@ -23,17 +23,17 @@
               <div class="flex flex-col gap-3">
                 <app-filter-field labelKey="finance.billing.creditnotes.startDate">
                   <p-datePicker
-                    [(ngModel)]="dateFrom"
+                    [ngModel]="dateFrom()"
+                    (onSelect)="onDateFromChange($event)"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                     [showIcon]="true"
                     styleClass="w-full"
-                    (onSelect)="clearFilters(); clearFilters()"
-                    (onSelect)="dateFrom() ? null : null"
                   />
                 </app-filter-field>
                 <app-filter-field labelKey="finance.billing.creditnotes.endDate">
                   <p-datePicker
-                    [(ngModel)]="dateTo"
+                    [ngModel]="dateTo()"
+                    (onSelect)="onDateToChange($event)"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                     [showIcon]="true"
                     styleClass="w-full"
@@ -124,7 +124,7 @@
                     </td>
                     <td>
                       <div class="font-medium">
-                        {{ creditNote.amount | localizedNumber: '1.2-2' }}
+                        {{ creditNote.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </div>
                     </td>
                     <td>
@@ -185,7 +185,7 @@
                       }}
                     </p>
                     <p class="text-sm font-medium mb-1">
-                      {{ creditNote.amount | localizedNumber: '1.2-2' }}
+                      {{ creditNote.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </p>
                   </div>
                 </div>

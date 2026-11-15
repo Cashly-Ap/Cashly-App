@@ -7,6 +7,7 @@ import {
   DebitNoteDetail,
   DebitNoteCreate,
 } from '@features/sales/invoices/debit-notes/models/interfaces/debit-note.interface';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface DebitNoteFilters {
   action?: DocumentListAction;
@@ -16,6 +17,8 @@ export interface DebitNoteFilters {
   dateTo?: string;
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 interface DebitNoteListApiResponse {
@@ -49,7 +52,7 @@ export class DebitNoteApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/debit-notes';
 
-  getAll(filters?: DebitNoteFilters): Observable<DebitNoteList[]> {
+  getAll(filters?: DebitNoteFilters): Observable<PagedResponse<DebitNoteList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
@@ -58,9 +61,14 @@ export class DebitNoteApiService {
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
-    return this.http
-      .get<DebitNoteListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toList(r))));
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<DebitNoteListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toList(r)),
+      })),
+    );
   }
 
   getById(id: string): Observable<DebitNoteDetail> {

@@ -23,7 +23,8 @@
               <div class="flex flex-col gap-3">
                 <app-filter-field labelKey="finance.billing.creditnotes.startDate">
                   <p-datePicker
-                    [(ngModel)]="dateFrom"
+                    [ngModel]="dateFrom()"
+                    (onSelect)="onDateFromChange($event)"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                     [showIcon]="true"
                     styleClass="w-full"
@@ -31,19 +32,13 @@
                 </app-filter-field>
                 <app-filter-field labelKey="finance.billing.creditnotes.endDate">
                   <p-datePicker
-                    [(ngModel)]="dateTo"
+                    [ngModel]="dateTo()"
+                    (onSelect)="onDateToChange($event)"
                     [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
                     [showIcon]="true"
                     styleClass="w-full"
                   />
                 </app-filter-field>
-                <p-button
-                  [label]="'finance.billing.returns.applyFilters' | translate"
-                  [text]="true"
-                  size="small"
-                  severity="contrast"
-                  (onClick)="clearFilters(); loadWithFilters()"
-                />
               </div>
             </app-list-filter>
           </div>
@@ -128,7 +123,7 @@
                     </td>
                     <td>
                       <div class="font-medium">
-                        {{ ret.totalAmount | localizedNumber: '1.2-2' }}
+                        {{ ret.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                       </div>
                     </td>
                     <td>
@@ -193,7 +188,7 @@
                       }}
                     </p>
                     <p class="text-sm font-medium mb-1">
-                      {{ ret.totalAmount | localizedNumber: '1.2-2' }}
+                      {{ ret.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                     </p>
                     <app-text-badge
                       [label]="getReturnTypeLabel(ret.returnType) | translate"

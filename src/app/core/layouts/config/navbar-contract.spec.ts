@@ -24,7 +24,6 @@ const REPORT_ACTIONS: ReadonlyArray<readonly [label: string, action: string]> = 
   ['Catálogo Comercial PDF', 'REPORT_COMMERCIAL_CATALOG'],
   ['Stock', 'REPORT_STOCK'],
   ['Movimientos', 'REPORT_MOVEMENTS'],
-  ['Reporte de Facturas PDF', 'REPORT_INVOICES'],
   ['Reportes de Caja', 'REPORT_CASH_REGISTER'],
   ['Cuentas por Cobrar PDF', 'REPORT_RECEIVABLES'],
   ['Cuentas por Pagar PDF', 'REPORT_PAYABLES'],

@@ -1,6 +1,20 @@
 import { Injectable, Provider, inject } from '@angular/core';
-import { Confirmation, ConfirmationService, MessageService, ToastMessageOptions } from 'primeng/api';
+import {
+  Confirmation,
+  ConfirmationService,
+  MessageService,
+  ToastMessageOptions,
+} from 'primeng/api';
 import { TranslationService } from '@core/i18n/translation.service';
+
+const TOAST_SEVERITY_ALIASES: Record<string, ToastMessageOptions['severity']> = {
+  success: 'success',
+  error: 'error',
+  danger: 'error',
+  warn: 'warn',
+  warning: 'warn',
+  info: 'info',
+};
 
 @Injectable()
 export class TranslatedMessageService extends MessageService {
@@ -8,6 +22,8 @@ export class TranslatedMessageService extends MessageService {
   override add(message: ToastMessageOptions): void {
     super.add({
       ...message,
+      severity: TOAST_SEVERITY_ALIASES[message.severity ?? 'info'] ?? 'info',
+      life: message.life ?? 5000,
       summary: this.translations.t(message.summary),
       detail: this.translations.t(message.detail),
     });
@@ -25,8 +41,12 @@ export class TranslatedConfirmationService extends ConfirmationService {
       ...confirmation,
       header: this.translations.t(confirmation.header),
       message: this.translations.t(confirmation.message),
-      ...(confirmation.acceptLabel ? { acceptLabel: this.translations.t(confirmation.acceptLabel) } : {}),
-      ...(confirmation.rejectLabel ? { rejectLabel: this.translations.t(confirmation.rejectLabel) } : {}),
+      ...(confirmation.acceptLabel
+        ? { acceptLabel: this.translations.t(confirmation.acceptLabel) }
+        : {}),
+      ...(confirmation.rejectLabel
+        ? { rejectLabel: this.translations.t(confirmation.rejectLabel) }
+        : {}),
     });
   }
 }

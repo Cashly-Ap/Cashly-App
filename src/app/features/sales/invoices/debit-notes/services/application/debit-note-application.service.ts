@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { Observable, tap, finalize } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import {
   DebitNoteApiService,
   DebitNoteFilters,
@@ -21,15 +22,15 @@ export class DebitNoteApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadDebitNotes(filters?: DebitNoteFilters): Observable<DebitNoteList[]> {
+  loadDebitNotes(filters?: DebitNoteFilters): Observable<PagedResponse<DebitNoteList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.debitNotes.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.debitNotes.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.error.set(err.message),
       }),

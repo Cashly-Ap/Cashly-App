@@ -7,12 +7,18 @@ import {
   CreditNoteDetail,
   CreditNoteCreate,
 } from '@features/sales/invoices/credit-notes/models/interfaces/credit-note.interface';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface CreditNoteFilters {
   action?: DocumentListAction;
+  search?: string;
   dateFrom?: string;
   dateTo?: string;
   customerId?: string;
+  orderBy?: string;
+  orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 interface CreditNoteListApiResponse {
@@ -47,15 +53,23 @@ export class CreditNoteApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/credit-notes';
 
-  getAll(filters?: CreditNoteFilters): Observable<CreditNoteList[]> {
+  getAll(filters?: CreditNoteFilters): Observable<PagedResponse<CreditNoteList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
+    if (filters?.search) params = params.set('search', filters.search);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
-    return this.http
-      .get<CreditNoteListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toCreditNoteList(r))));
+    if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
+    if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<CreditNoteListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toCreditNoteList(r)),
+      })),
+    );
   }
 
   getById(id: string): Observable<CreditNoteDetail> {

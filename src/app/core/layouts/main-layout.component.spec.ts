@@ -241,7 +241,6 @@ describe('MainLayoutComponent', () => {
             'Stock',
             'Movimientos',
             'Reporte de Pedidos PDF',
-            'Reporte de Facturas PDF',
             'Reporte de Presupuestos PDF',
             'Reporte de Compras PDF',
             'Cuentas por Cobrar PDF',
@@ -250,7 +249,7 @@ describe('MainLayoutComponent', () => {
           !!item.command &&
           !item.routerLink,
       );
-      expect(reports).toHaveLength(10);
+      expect(reports).toHaveLength(9);
       for (const report of reports) {
         reportActionsMock.open.mockClear();
         report.command?.({});

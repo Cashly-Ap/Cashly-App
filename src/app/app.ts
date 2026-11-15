@@ -12,7 +12,13 @@ import { NotificationPreferencesService } from '@features/platform/notifications
   selector: 'app-root',
   imports: [RouterOutlet, ToastModule, PdfViewerDialogComponent],
   template: `
-    <p-toast position="top-right"></p-toast>
+    <p-toast
+      position="top-right"
+      [life]="5000"
+      [baseZIndex]="10000"
+      [preventOpenDuplicates]="true"
+      styleClass="cashly-toast"
+    ></p-toast>
     <router-outlet></router-outlet>
     <app-pdf-viewer-dialog />
   `,

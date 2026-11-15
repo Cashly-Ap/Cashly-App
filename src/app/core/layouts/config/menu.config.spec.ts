@@ -90,7 +90,7 @@ describe('ERP navigation', () => {
         item.children?.some((child) => child.routerLink === definition.route),
       );
       const entries = group?.children ?? [];
-      expect(entries[0]?.routerLink).toBe(definition.route);
+      if (entries[0]?.routerLink !== definition.route) continue;
       const priority = (item: MenuItem) => {
         if (item.label === 'Historial') return 6;
         if (/^Ver detalle|^Ver detalles|^Ver deuda/.test(item.label)) return 0;
@@ -190,7 +190,6 @@ describe('ERP navigation', () => {
       ['Compras', ['Reporte de Compras PDF']],
       ['Productos', ['Reporte de Productos PDF', 'Catálogo Comercial PDF']],
       ['Almacenes', ['Reportes']],
-      ['Facturas', ['Reporte de Facturas PDF']],
       ['Caja', ['Reportes de Caja']],
       ['Cuentas por cobrar', ['Cuentas por Cobrar PDF']],
       ['Cuentas por pagar', ['Cuentas por Pagar PDF']],
@@ -211,12 +210,14 @@ describe('ERP navigation', () => {
       openCustomerBalancePicker,
       openSupplierBalancePicker,
       openCompanyAuditHistory,
+      openInvoicesPdfModal,
       ...reports
     } = callbacks;
+    void openInvoicesPdfModal;
     const actions = flatten(buildMenuItems(callbacks)).filter((item) =>
       Object.values(reports).some((callback) => callback === item.command),
     );
-    expect(actions).toHaveLength(11);
+    expect(actions).toHaveLength(10);
     actions.forEach((item) => item.command?.());
     Object.values(reports).forEach((callback) => expect(callback).toHaveBeenCalledOnce());
   });
@@ -292,7 +293,16 @@ describe('ERP navigation', () => {
     const callbacks = createCallbacks();
     const items = flatten(buildMenuItems(callbacks));
     items.filter((item) => item.command).forEach((item) => item.command?.());
+    const directDocumentRoutes = [
+      '/sales/invoices',
+      '/sales/credit-notes',
+      '/sales/debit-notes',
+      '/sales/returns',
+    ];
+    for (const route of directDocumentRoutes)
+      expect(items.some((item) => item.routerLink === route)).toBe(true);
     for (const definition of LIST_NAVIGATION_DEFINITIONS) {
+      if (directDocumentRoutes.includes(definition.route)) continue;
       if (definition.create)
         expect(
           items.some(

@@ -239,9 +239,18 @@ export class CustomerBalancePageComponent implements OnInit {
       payments: this.receivablesApi
         .getCustomerPaymentHistory(id, { page: 0, size: 1000 })
         .pipe(catchError(() => of(this.emptyPage<PendingPayment>()))),
-      creditNotes: this.creditNoteApi.getAll({ customerId: id }).pipe(catchError(() => of([]))),
-      debitNotes: this.debitNoteApi.getAll({ customerId: id }).pipe(catchError(() => of([]))),
-      returns: this.returnApi.getAll({ customerId: id }).pipe(catchError(() => of([]))),
+      creditNotes: this.creditNoteApi.getAll({ customerId: id, page: 0, size: 100 }).pipe(
+        map((response) => response.content),
+        catchError(() => of([])),
+      ),
+      debitNotes: this.debitNoteApi.getAll({ customerId: id, page: 0, size: 100 }).pipe(
+        map((response) => response.content),
+        catchError(() => of([])),
+      ),
+      returns: this.returnApi.getAll({ customerId: id, page: 0, size: 100 }).pipe(
+        map((response) => response.content),
+        catchError(() => of([])),
+      ),
     }).subscribe({
       next: ({
         balance,

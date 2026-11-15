@@ -2,7 +2,7 @@ import { map } from 'rxjs';
 import { LookupDefinition } from '@core/layouts/models/lookup-definition.model';
 import { ReturnApiService } from '@features/sales/invoices/returns/services/api/return-api.service';
 import { documentListAction } from '@shared/models/document-list-action';
-import { arrayLookupResult, lookupDescription } from '@shared/utils/navigation-lookup';
+import { lookupDescription, pageLookupResult } from '@shared/utils/navigation-lookup';
 
 export const RETURN_LOOKUP: LookupDefinition = {
   route: '/sales/returns',
@@ -13,20 +13,16 @@ export const RETURN_LOOKUP: LookupDefinition = {
       .getAll({
         search: query.search || undefined,
         action: action === 'DELETE' ? 'DELETE' : undefined,
+        page: query.page,
+        size: query.size,
       })
       .pipe(
-        map((items) =>
-          arrayLookupResult(
-            items,
-            (item) => ({
-              id: item.id,
-              label: item.returnNumber,
-              description: lookupDescription(item.customerName, item.invoiceNumber),
-            }),
-            query.search,
-            query.page,
-            query.size,
-          ),
+        map((response) =>
+          pageLookupResult(response, (item) => ({
+            id: item.id,
+            label: item.returnNumber,
+            description: lookupDescription(item.customerName, item.invoiceNumber),
+          })),
         ),
       );
   },

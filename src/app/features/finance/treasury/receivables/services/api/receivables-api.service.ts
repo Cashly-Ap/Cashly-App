@@ -114,10 +114,11 @@ export class ReceivablesApiService {
 
   listPendingPayments(action?: 'APPROVE' | 'REJECT'): Observable<PendingPayment[]> {
     return forkJoin({
-      payments: this.http.get<PendingPayment[]>(
-        `${this.paymentsBaseUrl}?status=PENDING`,
-        action ? { params: { action } } : {},
-      ),
+      payments: this.http
+        .get<PagedResponse<PendingPayment>>(`${this.paymentsBaseUrl}?status=PENDING`, {
+          ...(action ? { params: { action } } : {}),
+        })
+        .pipe(map((response) => response.content)),
       details: this.getPaymentHistory({ page: 0, size: 100 }).pipe(
         map((response) => response.content ?? []),
         catchError(() => of([])),

@@ -10,6 +10,7 @@ import {
   ReturnDetail,
   ReturnCreate,
 } from '@features/sales/invoices/returns/models/interfaces/return.interface';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 import { CustomerApiService } from '@features/partners/customers/services/api/customer-api.service';
 import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
 
@@ -25,15 +26,15 @@ export class ReturnApplicationService {
   readonly error = signal<string | null>(null);
   readonly totalElements = signal(0);
 
-  loadReturns(filters?: ReturnFilters): Observable<ReturnList[]> {
+  loadReturns(filters?: ReturnFilters): Observable<PagedResponse<ReturnList>> {
     this.loading.set(true);
     this.error.set(null);
 
     return this.api.getAll(filters).pipe(
       tap({
-        next: (items) => {
-          this.returns.set(items);
-          this.totalElements.set(items.length);
+        next: (response) => {
+          this.returns.set(response.content);
+          this.totalElements.set(response.totalElements);
         },
         error: (err: Error) => this.error.set(err.message),
       }),

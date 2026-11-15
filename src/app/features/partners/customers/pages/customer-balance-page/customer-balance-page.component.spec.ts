@@ -111,9 +111,9 @@ describe('CustomerBalancePageComponent', () => {
     balanceApi.getTransactions.mockReturnValue(of({ content: [] }));
     invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [] }));
-    creditNoteApi.getAll.mockReturnValue(of([]));
-    debitNoteApi.getAll.mockReturnValue(of([]));
-    returnApi.getAll.mockReturnValue(of([]));
+    creditNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    debitNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    returnApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     fixture.detectChanges();
     const component = fixture.componentInstance;
     component.filterNumber.set('previous-filter');
@@ -191,9 +191,9 @@ describe('CustomerBalancePageComponent', () => {
     );
     invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [], totalElements: 0 }));
-    creditNoteApi.getAll.mockReturnValue(of([]));
-    debitNoteApi.getAll.mockReturnValue(of([]));
-    returnApi.getAll.mockReturnValue(of([]));
+    creditNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    debitNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    returnApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
 
     fixture.detectChanges();
 
@@ -281,46 +281,55 @@ describe('CustomerBalancePageComponent', () => {
       }),
     );
     creditNoteApi.getAll.mockReturnValue(
-      of([
-        {
-          id: 'credit-1',
-          noteNumber: 'CN-001',
-          customerName: 'Cliente con actividad',
-          invoiceNumber: 'INV-001',
-          amount: 100,
-          reason: 'Ajuste',
-          createdByName: 'Admin',
-          createdAt: '2026-08-03T09:00:00',
-        },
-      ]),
+      of({
+        content: [
+          {
+            id: 'credit-1',
+            noteNumber: 'CN-001',
+            customerName: 'Cliente con actividad',
+            invoiceNumber: 'INV-001',
+            amount: 100,
+            reason: 'Ajuste',
+            createdByName: 'Admin',
+            createdAt: '2026-08-03T09:00:00',
+          },
+        ],
+        totalElements: 1,
+      }),
     );
     debitNoteApi.getAll.mockReturnValue(
-      of([
-        {
-          id: 'debit-1',
-          noteNumber: 'DN-001',
-          customerId: 'customer-001',
-          customerName: 'Cliente con actividad',
-          invoiceNumber: 'INV-001',
-          amount: 50,
-          createdAt: '2026-08-04T09:00:00',
-        },
-      ]),
+      of({
+        content: [
+          {
+            id: 'debit-1',
+            noteNumber: 'DN-001',
+            customerId: 'customer-001',
+            customerName: 'Cliente con actividad',
+            invoiceNumber: 'INV-001',
+            amount: 50,
+            createdAt: '2026-08-04T09:00:00',
+          },
+        ],
+        totalElements: 1,
+      }),
     );
     returnApi.getAll.mockReturnValue(
-      of([
-        {
-          id: 'return-1',
-          returnNumber: 'DEV-001',
-          customerName: 'Cliente con actividad',
-          invoiceNumber: 'INV-001',
-          returnType: 'MANUAL',
-          totalAmount: 25,
-          reason: 'Devolución',
-          createdByName: 'Admin',
-          createdAt: '2026-08-05T09:00:00',
-        },
-      ]),
+      of({
+        content: [
+          {
+            id: 'return-1',
+            returnNumber: 'DEV-001',
+            customerName: 'Cliente con actividad',
+            invoiceNumber: 'INV-001',
+            returnType: 'MANUAL',
+            totalAmount: 25,
+            reason: 'Devolución',
+            createdByName: 'Admin',
+            createdAt: '2026-08-05T09:00:00',
+          },
+        ],
+        totalElements: 1,
+      }),
     );
 
     fixture.detectChanges();
@@ -380,9 +389,9 @@ describe('CustomerBalancePageComponent', () => {
     );
     invoiceApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
     receivablesApi.getCustomerPaymentHistory.mockReturnValue(of({ content: [], totalElements: 0 }));
-    creditNoteApi.getAll.mockReturnValue(of([]));
-    debitNoteApi.getAll.mockReturnValue(of([]));
-    returnApi.getAll.mockReturnValue(of([]));
+    creditNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    debitNoteApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
+    returnApi.getAll.mockReturnValue(of({ content: [], totalElements: 0 }));
 
     fixture.detectChanges();
 

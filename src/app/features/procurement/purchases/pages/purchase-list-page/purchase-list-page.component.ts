@@ -2,7 +2,7 @@ import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { StatusVariant } from '@shared/models/status-variant';
 import { purchaseStatusVariant } from '@features/procurement/purchases/models/purchase-status.presentation';
 import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
-import { LocalizedDatePipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -84,7 +84,7 @@ import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.co
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedDatePipe,
-    LocalizedNumberPipe,
+    LocalizedCurrencyPipe,
     CommonModule,
     FormsModule,
     DatePickerModule,

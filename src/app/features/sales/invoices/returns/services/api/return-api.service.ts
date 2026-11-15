@@ -7,16 +7,20 @@ import {
   ReturnDetail,
   ReturnCreate,
 } from '@features/sales/invoices/returns/models/interfaces/return.interface';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
 
 export interface ReturnFilters {
   action?: DocumentListAction;
   search?: string;
   customerId?: string;
+  invoiceId?: string;
   dateFrom?: string;
   dateTo?: string;
   returnType?: string;
   orderBy?: string;
   orderDir?: 'asc' | 'desc';
+  page?: number;
+  size?: number;
 }
 
 interface AllocationApiResponse {
@@ -74,19 +78,25 @@ export class ReturnApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/returns';
 
-  getAll(filters?: ReturnFilters): Observable<ReturnList[]> {
+  getAll(filters?: ReturnFilters): Observable<PagedResponse<ReturnList>> {
     let params = new HttpParams();
     if (filters?.action) params = params.set('action', filters.action);
     if (filters?.search) params = params.set('search', filters.search);
     if (filters?.customerId) params = params.set('customerId', filters.customerId);
+    if (filters?.invoiceId) params = params.set('invoiceId', filters.invoiceId);
     if (filters?.dateFrom) params = params.set('dateFrom', filters.dateFrom);
     if (filters?.dateTo) params = params.set('dateTo', filters.dateTo);
     if (filters?.returnType) params = params.set('returnType', filters.returnType);
     if (filters?.orderBy) params = params.set('orderBy', filters.orderBy);
     if (filters?.orderDir) params = params.set('orderDir', filters.orderDir);
-    return this.http
-      .get<ReturnListApiResponse[]>(this.baseUrl, { params })
-      .pipe(map((items) => items.map((r) => this.toList(r))));
+    params = params.set('page', String(filters?.page ?? 0));
+    params = params.set('size', String(filters?.size ?? 10));
+    return this.http.get<PagedResponse<ReturnListApiResponse>>(this.baseUrl, { params }).pipe(
+      map((response) => ({
+        ...response,
+        content: response.content.map((r) => this.toList(r)),
+      })),
+    );
   }
 
   getById(id: string): Observable<ReturnDetail> {

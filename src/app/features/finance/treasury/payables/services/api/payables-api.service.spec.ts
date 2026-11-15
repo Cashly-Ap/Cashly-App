@@ -105,7 +105,16 @@ describe('Payables action queries', () => {
     service.listPendingPayments().subscribe();
     const request = http.expectOne((item) => item.url.endsWith('/supplier-payments'));
     expect(request.request.params.get('status')).toBe('PENDING');
-    request.flush([]);
+    request.flush({
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      size: 10,
+      number: 0,
+      first: true,
+      last: true,
+      empty: true,
+    });
     const details = http.expectOne((item) => item.url.endsWith('/payables/payments/history'));
     details.flush({ content: [] });
   });
