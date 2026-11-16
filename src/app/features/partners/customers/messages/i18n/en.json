@@ -1,0 +1,10 @@
+{
+  "partners.customers.messages.couldNotCreateTheCustomerPleaseTryAgain": "Could not create the customer. Please try again.",
+  "partners.customers.messages.couldNotUpdateTheCustomerPleaseTryAgain": "Could not update the customer. Please try again.",
+  "partners.customers.messages.couldNotLoadTheCustomerItMayNotExist": "Could not load the customer. It may not exist.",
+  "partners.customers.messages.couldNotDeleteTheCustomerPleaseTryAgain": "Could not delete the customer. Please try again.",
+  "partners.customers.messages.customerCreatedSuccessfully": "Customer created successfully",
+  "partners.customers.messages.customerUpdatedSuccessfully": "Customer updated successfully",
+  "partners.customers.messages.customerDeletedSuccessfully": "Customer deleted successfully",
+  "partners.customers.messages.messages.theCustomerDataIsInvalidCheckTheInformation": "The customer data is invalid. Check the information."
+}

@@ -1,0 +1,780 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="customer()?.customerName || ('finance.treasury.receivables.debtDetails' | translate)"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '1200px' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="onVisibleChange($event)"
+  styleClass="receivables-dialog"
+>
+  @if (!initialLoadComplete()) {
+    <div class="flex justify-center items-center py-16">
+      <div class="text-center">
+        <i class="pi pi-spin pi-spinner text-4xl text-surface-900 dark:text-surface-100 mb-4"></i>
+        <p class="text-surface-600 dark:text-surface-400">
+          {{ 'finance.treasury.receivables.loadingInformation' | translate }}
+        </p>
+      </div>
+    </div>
+  } @else if (customer()) {
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <app-panel-card padding="p-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg"
+          >
+            <i class="pi pi-user text-surface-0 dark:text-surface-900 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+            {{ 'finance.treasury.receivables.customerInformation' | translate }}
+          </h3>
+        </div>
+        <div class="space-y-3">
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'shared.fields.legalName' | translate
+            }}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ customer()!.customerName }}
+            </span>
+          </div>
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.customerTaxId' | translate
+            }}</span>
+            <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{ customer()!.customerRif }}
+            </span>
+          </div>
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.phone' | translate
+            }}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{
+                customer()!.customerPhone ||
+                  ('finance.treasury.receivables.notSpecified' | translate)
+              }}
+            </span>
+          </div>
+          <div class="flex min-h-12 items-center justify-between py-2">
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.email' | translate
+            }}</span>
+            <span class="text-sm font-medium text-surface-900 dark:text-surface-0">
+              {{
+                customer()!.customerEmail ||
+                  ('finance.treasury.receivables.notSpecified' | translate)
+              }}
+            </span>
+          </div>
+        </div>
+      </app-panel-card>
+
+      <app-panel-card padding="p-5">
+        <div class="flex items-center gap-3 mb-4">
+          <div
+            class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-lg"
+          >
+            <i class="pi pi-dollar text-surface-0 dark:text-surface-900 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+            {{ 'finance.treasury.receivables.debtSummary' | translate }}
+          </h3>
+        </div>
+        <div class="space-y-3">
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.totalDebt' | translate
+            }}</span>
+            <span class="font-mono text-lg font-bold" [class]="amountColor('danger')">
+              {{ customer()!.totalDebt | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.creditLimit' | translate
+            }}</span>
+            <span class="font-mono text-base font-semibold text-surface-900 dark:text-surface-0">
+              {{ customer()!.creditLimit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+          <div
+            class="flex min-h-12 items-center justify-between py-2 border-b border-surface-200 dark:border-surface-700"
+          >
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.billing.invoices.creditBalance' | translate
+            }}</span>
+            <span class="font-mono text-base font-bold" [class]="amountColor('info')">
+              {{ customer()!.customerBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+          <div class="flex min-h-12 items-center justify-between py-2">
+            <span class="text-sm text-surface-500 dark:text-surface-400">{{
+              'finance.treasury.receivables.availableCredit' | translate
+            }}</span>
+            <span
+              class="font-mono text-base font-bold"
+              [class]="amountColor(customer()!.availableCredit > 0 ? 'success' : 'danger')"
+            >
+              {{ customer()!.availableCredit | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </div>
+        </div>
+      </app-panel-card>
+    </div>
+
+    <app-panel-card padding="p-5" extraClass="mb-6">
+      <div class="flex flex-col gap-4 mb-4">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+          <div class="flex items-center gap-3">
+            <div
+              class="flex items-center justify-center w-10 h-10 bg-surface-100 dark:bg-surface-700 rounded-lg"
+            >
+              <i class="pi pi-file text-surface-700 dark:text-surface-300 text-lg"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+              {{ 'finance.billing.invoices.invoices' | translate }}
+            </h3>
+          </div>
+          <div class="flex gap-2 w-full sm:w-auto">
+            <p-button
+              [appPermissionModule]="'FINANCE_RECEIVABLES'"
+              [appPermission]="'EXECUTE'"
+              [label]="'finance.treasury.receivables.payAll2' | translate"
+              icon="pi pi-check-circle"
+              severity="contrast"
+              [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
+              (onClick)="onPayAll()"
+              styleClass="flex-1 sm:flex-none font-medium"
+            />
+            <p-button
+              [label]="'finance.treasury.receivables.partialPayment2' | translate"
+              icon="pi pi-percentage"
+              severity="contrast"
+              [disabled]="customer()!.totalDebt === 0 || allInvoicesFullyBlocked()"
+              (onClick)="onPayPartial()"
+              styleClass="flex-1 sm:flex-none font-medium"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-medium text-surface-700 dark:text-surface-300">
+              {{ 'finance.treasury.receivables.filterByStatus' | translate }}
+            </span>
+            <span
+              class="text-xs text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-700 px-2 py-1 rounded-full"
+            >
+              {{ invoices().length }} {{ 'shared.invoice2' | translate
+              }}{{ invoices().length !== 1 ? ('finance.treasury.receivables.s' | translate) : '' }}
+            </span>
+          </div>
+          <div class="flex flex-col gap-1 w-full sm:max-w-xs">
+            <label for="status-filter" class="text-xs font-medium text-surface-500">{{
+              'finance.billing.invoices.status' | translate
+            }}</label>
+            <p-select
+              inputId="status-filter"
+              [options]="statusFilterOptions | translateOptions"
+              [ngModel]="selectedStatusFilter()"
+              (onChange)="onStatusFilterChange($event.value)"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+              appendTo="body"
+              styleClass="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="hidden md:block overflow-hidden rounded-lg border border-surface-200 dark:border-surface-700 relative"
+      >
+        <p-table
+          [value]="invoices()"
+          styleClass="p-datatable-striped"
+          [loading]="loadingInvoices()"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                <div class="font-semibold">
+                  {{ 'shared.invoice' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'analytics.dashboard.dueDate' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.billing.invoices.status' | translate }}
+                </div>
+              </th>
+              <th class="text-right">
+                <div class="font-semibold">
+                  {{ 'shared.total' | translate }}
+                </div>
+              </th>
+              <th class="text-right">
+                <div class="font-semibold">
+                  {{ 'finance.treasury.receivables.paid2' | translate }}
+                </div>
+              </th>
+              <th class="text-right">
+                <div class="font-semibold">
+                  {{ 'finance.treasury.receivables.balance' | translate }}
+                </div>
+              </th>
+              <th class="text-center">
+                <div class="font-semibold">
+                  {{ 'shared.actions' | translate }}
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-invoice>
+            <tr
+              class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
+            >
+              <td>
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
+                  {{ invoice.invoiceNumber }}
+                </span>
+              </td>
+              <td>
+                <span class="text-sm text-surface-600 dark:text-surface-400">
+                  {{ invoice.invoiceDate | localizedDate: 'dd/MM/yyyy' }}
+                </span>
+              </td>
+              <td>
+                @if (isOverdue(invoice)) {
+                  <app-text-badge
+                    [label]="'finance.treasury.receivables.overdue' | translate"
+                    variant="danger"
+                    [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                  />
+                } @else {
+                  <span class="text-sm text-surface-600 dark:text-surface-400">
+                    {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                  </span>
+                }
+              </td>
+              <td>
+                <app-text-badge
+                  [label]="getStatusLabel(invoice.status) | translate"
+                  [variant]="getStatusVariant(invoice.status)"
+                />
+              </td>
+              <td class="text-right">
+                <span class="font-mono text-sm text-surface-900 dark:text-surface-0">
+                  {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+              <td class="text-right">
+                <span class="font-mono text-sm" [class]="amountColor('success')">
+                  {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+              <td class="text-right">
+                <span class="font-mono text-sm font-bold" [class]="amountColor('danger')">
+                  {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <app-list-action-buttons
+                  [actions]="invoiceActions(invoice)"
+                  [ariaLabel]="'finance.treasury.receivables.openInvoiceActions' | translate"
+                />
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8" class="py-12">
+                <div class="flex flex-col items-center gap-3">
+                  <div
+                    class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
+                  >
+                    <i
+                      class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"
+                    ></i>
+                  </div>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    {{ 'finance.treasury.receivables.noInvoices' | translate }}
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div
+        class="hidden md:flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
+      >
+        <app-paginator
+          [first]="invoiceFirst()"
+          [rows]="invoiceRows()"
+          [totalRecords]="invoiceTotalRecords()"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="
+            'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+          "
+          (pageChange)="onInvoicePageChange($event)"
+          styleClass="text-sm"
+          [dropdownAppendTo]="'body'"
+        />
+      </div>
+      <div
+        class="md:hidden flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
+      >
+        <app-paginator
+          [first]="invoiceFirst()"
+          [rows]="invoiceRows()"
+          [totalRecords]="invoiceTotalRecords()"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [showPageLinks]="false"
+          [showFirstLastIcon]="false"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.firstLastOfTotalrecords' | translate
+          "
+          (pageChange)="onInvoicePageChange($event)"
+          styleClass="text-xs"
+          [dropdownAppendTo]="'body'"
+        />
+      </div>
+
+      <div class="md:hidden space-y-3">
+        @if (loadingInvoices()) {
+          <div class="flex justify-center items-center py-12">
+            <div class="text-center">
+              <i
+                class="pi pi-spin pi-spinner text-3xl text-surface-900 dark:text-surface-100 mb-3"
+              ></i>
+              <p class="text-surface-600 dark:text-surface-400 text-sm">
+                {{ 'finance.billing.invoices.loadingInvoices' | translate }}
+              </p>
+            </div>
+          </div>
+        } @else if (invoices().length === 0) {
+          <div class="flex flex-col items-center gap-3 py-12">
+            <div
+              class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
+            >
+              <i class="pi pi-check-circle text-3xl text-surface-900 dark:text-surface-100"></i>
+            </div>
+            <p class="text-surface-600 dark:text-surface-400">
+              {{ 'finance.treasury.receivables.noInvoicesWithAnOutstandingBalance' | translate }}
+            </p>
+          </div>
+        } @else {
+          @for (invoice of invoices(); track invoice.invoiceId) {
+            <div
+              class="bg-surface-50 dark:bg-surface-900/50 rounded-lg p-4 border border-surface-200 dark:border-surface-700"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-mono text-sm font-semibold text-surface-900 dark:text-surface-0">
+                  {{ invoice.invoiceNumber }}
+                </span>
+                <app-text-badge
+                  [label]="getStatusLabel(invoice.status) | translate"
+                  [variant]="getStatusVariant(invoice.status)"
+                />
+              </div>
+              <div class="space-y-2 mb-3">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.billing.invoices.date' | translate
+                  }}</span>
+                  <span class="text-surface-900 dark:text-surface-0">
+                    {{ invoice.invoiceDate | localizedDate: 'dd/MM/yyyy' }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'analytics.dashboard.dueDate' | translate
+                  }}</span>
+                  @if (isOverdue(invoice)) {
+                    <app-text-badge
+                      [label]="'finance.treasury.receivables.overdue' | translate"
+                      variant="danger"
+                      [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                    />
+                  } @else {
+                    <span class="text-surface-900 dark:text-surface-0">
+                      {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                    </span>
+                  }
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'shared.total' | translate
+                  }}</span>
+                  <span class="font-mono text-surface-900 dark:text-surface-0">
+                    {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.paid2' | translate
+                  }}</span>
+                  <span class="font-mono" [class]="amountColor('success')">
+                    {{ invoice.totalPaid | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.balance' | translate
+                  }}</span>
+                  <span class="font-mono font-bold" [class]="amountColor('danger')">
+                    {{ invoice.balance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                  </span>
+                </div>
+              </div>
+              <app-list-action-buttons
+                [actions]="invoiceActions(invoice)"
+                [ariaLabel]="'finance.treasury.receivables.openInvoiceActions' | translate"
+              />
+            </div>
+          }
+        }
+      </div>
+    </app-panel-card>
+
+    <app-panel-card padding="p-5">
+      <div class="flex flex-col gap-4 mb-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="flex items-center justify-center w-10 h-10 bg-surface-100 dark:bg-surface-700 rounded-lg"
+            >
+              <i class="pi pi-history text-surface-700 dark:text-surface-300 text-lg"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0">
+                {{ 'finance.treasury.receivables.balanceMovements' | translate }}
+              </h3>
+              <p class="text-xs text-surface-500 dark:text-surface-400">
+                {{ 'finance.treasury.receivables.currentCustomerBalance' | translate }}:
+                <strong class="text-surface-900 dark:text-surface-0">{{
+                  balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                }}</strong>
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <p-button
+              [appPermissionModule]="'FINANCE_RECEIVABLES'"
+              [appPermission]="'CREATE'"
+              [label]="'finance.treasury.receivables.refund' | translate"
+              icon="pi pi-undo"
+              severity="contrast"
+              [disabled]="balance() <= 0"
+              (onClick)="onCreateRefund()"
+              styleClass="w-full sm:w-auto font-medium"
+            />
+            <p-button
+              [appPermissionModule]="'FINANCE_RECEIVABLES'"
+              [appPermission]="'CREATE'"
+              [label]="'finance.treasury.receivables.recordAdvance2' | translate"
+              icon="pi pi-plus-circle"
+              severity="contrast"
+              (onClick)="onCreateAdvance()"
+              styleClass="w-full sm:w-auto font-medium"
+            />
+          </div>
+        </div>
+        <div class="flex flex-col gap-1 w-full sm:max-w-xs">
+          <label for="balance-filter" class="text-xs font-medium text-surface-500">{{
+            'finance.treasury.receivables.movementType' | translate
+          }}</label>
+          <p-select
+            inputId="balance-filter"
+            [options]="balanceFilterOptions | translateOptions"
+            [ngModel]="selectedBalanceFilter()"
+            (onChange)="onBalanceFilterChange($event.value)"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+            appendTo="body"
+            styleClass="w-full"
+          />
+        </div>
+      </div>
+
+      <div
+        class="hidden md:block overflow-hidden rounded-lg border border-surface-200 dark:border-surface-700"
+      >
+        <p-table
+          [value]="transactions()"
+          styleClass="p-datatable-striped"
+          [loading]="loadingTransactions()"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'shared.type' | translate }}
+                </div>
+              </th>
+              <th class="text-right">
+                <div class="font-semibold">
+                  {{ 'shared.amount' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'analytics.dashboard.number' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.treasury.receivables.reference' | translate }}
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-tx>
+            <tr
+              class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
+            >
+              <td>
+                <span class="text-sm text-surface-600 dark:text-surface-400">
+                  {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                </span>
+              </td>
+              <td>
+                <app-text-badge
+                  [label]="getBalanceTypeLabel(tx.type) | translate"
+                  [variant]="getBalanceTypeVariant(tx.type)"
+                />
+              </td>
+              <td class="text-right">
+                <span
+                  class="font-mono text-sm font-bold"
+                  [class]="
+                    amountColor(
+                      isPositive(tx.type) ? 'success' : isNegative(tx.type) ? 'danger' : 'info'
+                    )
+                  "
+                >
+                  {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+              <td>
+                <span class="text-sm font-mono text-surface-700 dark:text-surface-300">
+                  {{ tx.number || '-' }}
+                </span>
+              </td>
+              <td>
+                <span class="text-sm font-mono text-surface-500 dark:text-surface-400">
+                  {{ tx.referenceNumber || '-' }}
+                </span>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="5" class="py-12">
+                <div class="flex flex-col items-center gap-3">
+                  <div
+                    class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
+                  >
+                    <i class="pi pi-inbox text-3xl text-surface-400"></i>
+                  </div>
+                  <p class="text-surface-600 dark:text-surface-400">
+                    {{ 'finance.treasury.receivables.noMovements' | translate }}
+                  </p>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="md:hidden space-y-3">
+        @if (loadingTransactions()) {
+          <div class="flex justify-center items-center py-12">
+            <div class="text-center">
+              <i
+                class="pi pi-spin pi-spinner text-3xl text-surface-900 dark:text-surface-100 mb-3"
+              ></i>
+              <p class="text-surface-600 dark:text-surface-400 text-sm">
+                {{ 'finance.treasury.receivables.loadingMovements' | translate }}
+              </p>
+            </div>
+          </div>
+        } @else if (transactions().length === 0) {
+          <div class="flex flex-col items-center gap-3 py-12">
+            <div
+              class="w-16 h-16 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center"
+            >
+              <i class="pi pi-inbox text-3xl text-surface-400"></i>
+            </div>
+            <p class="text-surface-600 dark:text-surface-400">
+              {{ 'finance.treasury.receivables.noMovements' | translate }}
+            </p>
+          </div>
+        } @else {
+          @for (tx of transactions(); track tx.id) {
+            <div
+              class="bg-surface-50 dark:bg-surface-900/50 rounded-lg p-4 border border-surface-200 dark:border-surface-700"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <app-text-badge
+                  [label]="getBalanceTypeLabel(tx.type) | translate"
+                  [variant]="getBalanceTypeVariant(tx.type)"
+                />
+                <span
+                  class="font-mono text-base font-bold"
+                  [class]="
+                    amountColor(
+                      isPositive(tx.type) ? 'success' : isNegative(tx.type) ? 'danger' : 'info'
+                    )
+                  "
+                >
+                  {{ tx.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.billing.invoices.date' | translate
+                  }}</span>
+                  <span class="text-surface-900 dark:text-surface-0">
+                    {{ tx.createdAt | localizedDate: 'dd/MM/yyyy HH:mm' }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'analytics.dashboard.number' | translate
+                  }}</span>
+                  <span class="font-mono text-surface-900 dark:text-surface-0">
+                    {{ tx.number || '-' }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span class="text-surface-500 dark:text-surface-400">{{
+                    'finance.treasury.receivables.reference' | translate
+                  }}</span>
+                  <span class="font-mono text-surface-900 dark:text-surface-0">
+                    {{ tx.referenceNumber || '-' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <div
+        class="hidden md:flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
+      >
+        <app-paginator
+          [first]="balanceFirst()"
+          [rows]="balanceRows()"
+          [totalRecords]="balanceTotalRecords()"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.showingFirstToLastOfTotalrecordsMovements' | translate
+          "
+          (pageChange)="onBalancePageChange($event)"
+          styleClass="text-sm"
+          [dropdownAppendTo]="'body'"
+        />
+      </div>
+      <div
+        class="md:hidden flex justify-center py-3 border-t border-surface-200 dark:border-surface-700"
+      >
+        <app-paginator
+          [first]="balanceFirst()"
+          [rows]="balanceRows()"
+          [totalRecords]="balanceTotalRecords()"
+          [rowsPerPageOptions]="[5, 10, 25]"
+          [showPageLinks]="false"
+          [showFirstLastIcon]="false"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="
+            'finance.treasury.receivables.firstLastOfTotalrecords' | translate
+          "
+          (pageChange)="onBalancePageChange($event)"
+          styleClass="text-xs"
+          [dropdownAppendTo]="'body'"
+        />
+      </div>
+    </app-panel-card>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end">
+      <p-button
+        severity="secondary"
+        [label]="'shared.close' | translate"
+        icon="pi pi-times"
+        (onClick)="onClose()"
+        styleClass="font-medium"
+      />
+    </div>
+  </ng-template>
+</p-dialog>
+
+<app-balance-movement-dialog
+  [visible]="showRefundDialog()"
+  titleKey="finance.treasury.receivables.refundMoney"
+  balanceLabelKey="finance.treasury.receivables.currentCustomerBalance"
+  amountLabelKey="finance.treasury.receivables.amountToRefund"
+  submitLabelKey="finance.treasury.receivables.refund2"
+  submitIcon="pi pi-undo"
+  notesPlaceholderKey="finance.treasury.receivables.refundReasonOptional"
+  permissionModule="FINANCE_RECEIVABLES"
+  [balance]="balance()"
+  [maxAmount]="balance()"
+  [loading]="creatingRefund()"
+  (visibleChange)="onRefundVisibleChange($event)"
+  (submitted)="onRefundSubmitted($event)"
+/>
+
+<app-balance-movement-dialog
+  [visible]="showAdvanceDialog()"
+  titleKey="finance.treasury.receivables.recordAdvance3"
+  balanceLabelKey="finance.treasury.receivables.currentCustomerBalance"
+  amountLabelKey="finance.treasury.receivables.advanceAmount"
+  submitLabelKey="finance.treasury.receivables.recordAdvance3"
+  submitIcon="pi pi-plus-circle"
+  notesPlaceholderKey="finance.treasury.receivables.advanceReasonOptional"
+  permissionModule="FINANCE_RECEIVABLES"
+  [balance]="balance()"
+  [maxAmount]="null"
+  [loading]="creatingAdvance()"
+  (visibleChange)="onAdvanceVisibleChange($event)"
+  (submitted)="onAdvanceSubmitted($event)"
+/>

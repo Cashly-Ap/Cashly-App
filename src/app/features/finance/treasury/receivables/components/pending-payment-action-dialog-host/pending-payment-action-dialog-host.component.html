@@ -1,0 +1,12 @@
+<app-pending-payment-approve-dialog
+  [visible]="approveVisible()"
+  [payment]="selectedPayment()"
+  (completed)="onApproved()"
+  (visibleChange)="onApproveVisibleChange($event)"
+/>
+<app-pending-payment-reject-dialog
+  [visible]="rejectVisible()"
+  [payment]="selectedPayment()"
+  (completed)="onRejected()"
+  (visibleChange)="onRejectVisibleChange($event)"
+/>

@@ -1,0 +1,5 @@
+@if (dialogs.request(); as request) {
+  <ng-container
+    *ngComponentOutlet="request.component; inputs: inputs(request.recordId)"
+  ></ng-container>
+}

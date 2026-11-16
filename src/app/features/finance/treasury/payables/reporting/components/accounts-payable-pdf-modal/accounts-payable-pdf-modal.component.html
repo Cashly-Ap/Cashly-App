@@ -1,0 +1,50 @@
+<app-report-pdf-modal
+  titleKey="finance.treasury.payables.accountsPayablePdf"
+  width="450px"
+  [visible]="visible()"
+  (visibleChange)="onHide()"
+  (show)="loadSuppliers()"
+>
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-2">
+      <label for="supplier" class="text-sm font-medium">{{ 'shared.supplier' | translate }}</label>
+      <p-select
+        id="supplier"
+        [options]="supplierOptions() | translateOptions: true"
+        [(ngModel)]="supplierId"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'finance.treasury.payables.allSuppliers' | translate"
+        [filter]="true"
+        [filterPlaceholder]="'partners.suppliers.searchByNameAliasOrTaxId' | translate"
+        styleClass="w-full"
+        appendTo="body"
+      />
+    </div>
+
+    <div class="flex items-center gap-2">
+      <p-checkbox
+        id="overdueOnly"
+        [(ngModel)]="overdueOnly"
+        [binary]="true"
+        inputId="overdueOnly"
+      />
+      <label for="overdueOnly" class="cursor-pointer text-sm font-medium">
+        {{ 'finance.treasury.payables.overdueOnly' | translate }}
+      </label>
+    </div>
+  </div>
+
+  <ng-container reportFooter>
+    <div class="flex justify-end gap-2">
+      <app-cancel-button icon="" (cancelled)="onHide()" />
+      <p-button
+        [appPermissionModule]="'FINANCE_PAYABLES'"
+        [appPermission]="'EXPORT'"
+        [label]="'finance.billing.invoices.generatePdf' | translate"
+        icon="pi pi-file-pdf"
+        (onClick)="generatePdf()"
+      />
+    </div>
+  </ng-container>
+</app-report-pdf-modal>

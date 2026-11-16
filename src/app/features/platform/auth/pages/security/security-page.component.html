@@ -1,0 +1,243 @@
+<section class="mx-auto flex max-w-[1800px] flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+  <app-page-header
+    [title]="'platform.auth.security' | translate"
+    [subtitle]="'platform.auth.protectYourAccountWithTwoStepVerification' | translate"
+  />
+  <app-panel-card>
+    <app-details-card-header
+      [title]="'platform.auth.emailVerification' | translate"
+      [subtitle]="'platform.auth.emailVerification.subtitle' | translate"
+    />
+    <div class="flex flex-col gap-5 p-4 sm:p-6">
+      @if (profile(); as current) {
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="text-sm font-medium text-surface-500">{{
+            'platform.auth.email' | translate
+          }}</span>
+          <span class="text-sm font-semibold">{{ current.email }}</span>
+          <app-status-badge
+            [active]="current.emailVerified"
+            [activeLabel]="'auth.profile.verified'"
+            [inactiveLabel]="'auth.profile.pending.verification'"
+          />
+        </div>
+        @if (!current.emailVerified) {
+          <p class="max-w-xl text-sm text-surface-500">
+            {{ 'platform.auth.emailNotVerifiedHelp' | translate }}
+          </p>
+          <p-button
+            [label]="'platform.auth.resendVerification' | translate"
+            [ariaLabel]="'platform.auth.resendVerification' | translate"
+            icon="pi pi-envelope"
+            [outlined]="true"
+            [loading]="verificationBusy()"
+            (onClick)="resendVerification()"
+          />
+        }
+        @if (verificationNotice()) {
+          <p class="text-sm" role="status">{{ verificationNotice() | translate }}</p>
+        }
+      } @else {
+        <p class="text-sm text-surface-500">{{ 'platform.auth.loadingEmail' | translate }}</p>
+      }
+    </div>
+  </app-panel-card>
+  @if (recoveryCodes().length) {
+    <app-panel-card>
+      <app-details-card-header
+        [title]="'platform.auth.mfaEnabledSaveYourRecoveryCodes' | translate"
+      />
+      <div class="flex flex-col gap-5 p-4 sm:p-6">
+        <p>
+          {{
+            'platform.auth.theseCodesAreOnlyShownOnceStoreThemSecurelyEachCodeAllowsOneSignInIfYouLoseYourAuthenticator'
+              | translate
+          }}
+        </p>
+        <ul class="grid max-w-2xl grid-cols-1 gap-3 font-mono text-sm sm:grid-cols-2">
+          @for (code of recoveryCodes(); track code) {
+            <li
+              class="rounded-xl border border-surface-200 bg-surface-50 px-4 py-3 dark:border-surface-700 dark:bg-surface-800"
+            >
+              {{ code }}
+            </li>
+          }
+        </ul>
+        <div class="flex flex-wrap gap-3">
+          <p-button
+            [label]="
+              copied()
+                ? ('platform.auth.copied' | translate)
+                : ('platform.auth.copyCodes' | translate)
+            "
+            (onClick)="copyCodes()"
+            [outlined]="true"
+          />
+          <p-button
+            [label]="'platform.auth.downloadCodes' | translate"
+            [ariaLabel]="'platform.auth.downloadCodes' | translate"
+            icon="pi pi-download"
+            (onClick)="downloadCodes()"
+            [outlined]="true"
+          />
+        </div>
+        <p class="text-sm text-surface-500">
+          {{ 'platform.auth.forSecurityYouMustSignInAgainUsingMfa' | translate }}
+        </p>
+        <p-button [label]="'platform.auth.iHaveSavedThemSignIn' | translate" (onClick)="finish()" />
+      </div>
+    </app-panel-card>
+  } @else if (status(); as state) {
+    <app-panel-card>
+      <app-details-card-header
+        [title]="'platform.auth.authenticatorApp' | translate"
+        [subtitle]="
+          'platform.auth.compatibleWithMicrosoftAuthenticatorGoogleAuthenticatorAndOtherTotpApps'
+            | translate
+        "
+      />
+      <div class="flex flex-col gap-5 p-4 sm:p-6">
+        <p class="font-medium">
+          {{ 'platform.auth.status' | translate }}
+          {{
+            state.enabled
+              ? ('platform.auth.enabled' | translate)
+              : ('platform.auth.disabled' | translate)
+          }}
+        </p>
+        @if (state.enabled) {
+          <p class="text-sm text-surface-500">
+            {{ 'platform.auth.availableRecoveryCodes' | translate }}
+            {{ state.recoveryCodesRemaining }}
+          </p>
+          <form
+            [formGroup]="disableForm"
+            (ngSubmit)="disable()"
+            class="flex max-w-xl flex-col gap-4"
+          >
+            <h3 class="font-semibold">
+              {{ 'platform.auth.disableTwoStepVerification' | translate }}
+            </h3>
+            <label for="disable-password" class="text-sm font-medium">{{
+              'platform.auth.currentPassword' | translate
+            }}</label>
+            <input
+              pInputText
+              id="disable-password"
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <label for="disable-code" class="text-sm font-medium">{{
+              'platform.auth.authenticatorCodeOrRecoveryCode' | translate
+            }}</label>
+            <input
+              pInputText
+              id="disable-code"
+              formControlName="code"
+              autocomplete="one-time-code"
+              maxlength="64"
+            />
+            <p class="text-sm text-surface-500">
+              {{ 'platform.auth.afterDisablingItYouMustSignInAgain' | translate }}
+            </p>
+            <p-button
+              type="submit"
+              [label]="'platform.auth.disableMfa' | translate"
+              [ariaLabel]="'platform.auth.disableMfa' | translate"
+              severity="danger"
+              icon="pi pi-shield"
+              [loading]="busy()"
+              [disabled]="disableForm.invalid"
+            />
+          </form>
+        } @else if (setup(); as enrollment) {
+          <p>
+            {{
+              'platform.auth.scanThisQrCodeInYourAuthenticatorToAddAnAccountSetupExpiresIn10Minutes'
+                | translate
+            }}
+          </p>
+          @if (qrCode()) {
+            <img
+              [src]="qrCode()"
+              alt="QR para configurar el autenticador de Cashly"
+              width="240"
+              height="240"
+            />
+          }
+          <p class="text-sm">
+            {{
+              'platform.auth.ifYouCannotScanItEnterThisKeyManuallyAsATimeBasedAccount' | translate
+            }}
+          </p>
+          <p
+            class="max-w-xl break-all rounded-xl border border-surface-200 bg-surface-50 p-4 font-mono text-sm text-surface-900 dark:border-surface-700 dark:bg-surface-800 dark:text-surface-0"
+          >
+            {{ enrollment.secret }}
+          </p>
+          <form [formGroup]="codeForm" (ngSubmit)="enable()" class="flex max-w-xl flex-col gap-4">
+            <label for="enable-code" class="text-sm font-medium">{{
+              'platform.auth.sixDigitCode' | translate
+            }}</label>
+            <input
+              pInputText
+              id="enable-code"
+              formControlName="code"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              maxlength="6"
+            />
+            <p-button
+              type="submit"
+              [label]="'platform.auth.confirmAndEnableMfa' | translate"
+              [loading]="busy()"
+              [disabled]="codeForm.invalid"
+            />
+            <p-button
+              [label]="'platform.auth.cancelSetup' | translate"
+              [outlined]="true"
+              (onClick)="cancelSetup()"
+              [disabled]="busy()"
+            />
+          </form>
+        } @else {
+          <form
+            [formGroup]="passwordForm"
+            (ngSubmit)="startSetup()"
+            class="flex max-w-xl flex-col gap-4"
+          >
+            <label for="setup-password" class="text-sm font-medium">{{
+              'platform.auth.confirmYourCurrentPassword' | translate
+            }}</label>
+            <input
+              pInputText
+              id="setup-password"
+              type="password"
+              formControlName="password"
+              autocomplete="current-password"
+            />
+            <p-button
+              type="submit"
+              [label]="'platform.auth.setUpAuthenticator' | translate"
+              [ariaLabel]="'platform.auth.setUpAuthenticator' | translate"
+              icon="pi pi-shield"
+              [loading]="busy()"
+              [disabled]="passwordForm.invalid"
+            />
+          </form>
+        }
+      </div>
+    </app-panel-card>
+  } @else {
+    <app-panel-card padding="p-4 sm:p-6" extraClass="flex flex-col items-start gap-4">
+      <p>{{ 'platform.auth.loadingSecurity' | translate }}</p>
+      <p-button
+        [label]="'inventory.warehouses.retry' | translate"
+        icon="pi pi-refresh"
+        [outlined]="true"
+        (onClick)="loadStatus()"
+      />
+    </app-panel-card>
+  }
+</section>

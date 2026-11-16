@@ -1,28 +1,44 @@
+import {
+  currentAccessFixture,
+  referenceOptions,
+  departmentReferenceOptions,
+} from './access.fixture';
 import { expect, test, type Page, type Route } from '@playwright/test';
 
 const appRoutes = [
-  { path: '/dashboard' },
-  { path: '/users' },
-  { path: '/suppliers' },
-  { path: '/purchases' },
-  { path: '/categories' },
-  { path: '/price-types' },
-  { path: '/products' },
-  { path: '/warehouses' },
-  { path: '/orders' },
-  { path: '/quotes' },
-  { path: '/invoices' },
-  { path: '/reports/inventory' },
-  { path: '/payment-methods' },
-  { path: '/credit-notes' },
-  { path: '/debit-notes' },
-  { path: '/returns' },
-  { path: '/cash-register' },
-  { path: '/cash-register/history' },
-  { path: '/receivables' },
+  { path: '/analytics/dashboard' },
+  { path: '/platform/users' },
+  { path: '/platform/roles' },
+  { path: '/platform/departments' },
+  { path: '/partners/suppliers' },
+  { path: '/procurement/purchases' },
+  { path: '/catalog/categories' },
+  { path: '/catalog/price-types' },
+  { path: '/catalog/products' },
+  { path: '/inventory/warehouses' },
+  { path: '/sales/orders' },
+  { path: '/sales/quotes' },
+  { path: '/sales/invoices' },
+  { path: '/analytics/reports/inventory' },
+  { path: '/finance/treasury/payment-methods' },
+  { path: '/sales/credit-notes' },
+  { path: '/sales/debit-notes' },
+  { path: '/sales/returns' },
+  { path: '/finance/treasury/cash-register' },
+  { path: '/finance/treasury/cash-register/history' },
+  { path: '/finance/treasury/receivables' },
 ] as const;
 
-const pageResponse = { content: [], totalElements: 0, totalPages: 0, size: 10, number: 0, first: true, last: true, empty: true };
+const pageResponse = {
+  content: [],
+  totalElements: 0,
+  totalPages: 0,
+  size: 10,
+  number: 0,
+  first: true,
+  last: true,
+  empty: true,
+};
 
 async function authenticate(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -37,16 +53,6 @@ async function authenticate(page: Page): Promise<void> {
         type: 'SUPER_ADMIN',
         role: 'SUPER_ADMIN',
         active: true,
-        modulePermissions: [
-          'USERS',
-          'INVENTORY',
-          'SALES',
-          'FINANCES',
-          'PURCHASES',
-          'CUSTOMER_PORTAL',
-          'DOCUMENT_ADMIN',
-          'DASHBOARD',
-        ],
       }),
     );
   });
@@ -54,14 +60,39 @@ async function authenticate(page: Page): Promise<void> {
 
 async function fulfillApi(route: Route): Promise<void> {
   const path = new URL(route.request().url()).pathname;
-
+  if (path.endsWith('/auth/access')) {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(currentAccessFixture()),
+    });
+    return;
+  }
+  if (/\/(roles|departments)(\/options)?$/.test(path)) {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        path.endsWith('/options')
+          ? path.includes('/departments')
+            ? departmentReferenceOptions
+            : referenceOptions
+          : [],
+      ),
+    });
+    return;
+  }
   if (path.endsWith('/notifications/unread-count')) {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '0' });
     return;
   }
 
   if (path.includes('/reports/') || path.endsWith('/pdf') || path.endsWith('/excel')) {
-    await route.fulfill({ status: 200, contentType: 'application/octet-stream', body: 'e2e-report' });
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/octet-stream',
+      body: 'e2e-report',
+    });
     return;
   }
 
@@ -93,7 +124,11 @@ async function fulfillApi(route: Route): Promise<void> {
     return;
   }
 
-  await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(pageResponse) });
+  await route.fulfill({
+    status: 200,
+    contentType: 'application/json',
+    body: JSON.stringify(pageResponse),
+  });
 }
 
 for (const moduleRoute of appRoutes) {

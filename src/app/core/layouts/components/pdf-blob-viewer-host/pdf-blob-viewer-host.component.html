@@ -1,0 +1,7 @@
+<app-pdf-viewer-modal
+  [visible]="viewer.visible()"
+  [pdfUrl]="viewer.url()"
+  [title]="viewer.title()"
+  [loading]="viewer.loading()"
+  (visibleChange)="$event === false && viewer.close()"
+/>

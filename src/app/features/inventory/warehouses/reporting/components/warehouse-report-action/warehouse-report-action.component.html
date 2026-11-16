@@ -1,0 +1,15 @@
+@if (reportKey() === 'movements') {
+  <app-movements-pdf-modal
+    [visible]="true"
+    (visibleChange)="close()"
+    (onGeneratePdf)="movementsPdf($event)"
+    (onGenerateExcel)="movementsExcel($event)"
+  />
+} @else {
+  <app-stock-pdf-modal
+    [visible]="true"
+    (visibleChange)="close()"
+    (onGeneratePdf)="stockPdf($event)"
+    (onGenerateExcel)="stockExcel($event)"
+  />
+}

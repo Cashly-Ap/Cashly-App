@@ -1,3 +1,4 @@
+import { currentAccessFixture } from './access.fixture';
 import { expect, test } from '@playwright/test';
 
 const customers = [
@@ -9,7 +10,6 @@ const customers = [
     rif: 'J-12345678-9',
     type: 'BUSINESS',
     active: true,
-    portalAccess: true,
     deletable: true,
   },
   {
@@ -20,7 +20,6 @@ const customers = [
     rif: 'J-98765432-1',
     type: 'BUSINESS',
     active: true,
-    portalAccess: false,
     deletable: false,
   },
 ];
@@ -37,6 +36,13 @@ const pageResponse = (content: typeof customers) => ({
 });
 
 async function authenticate(page: import('@playwright/test').Page): Promise<void> {
+  await page.route('**/api/auth/access', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(currentAccessFixture()),
+    }),
+  );
   await page.addInitScript(() => {
     localStorage.setItem('accessToken', 'e2e-access-token');
     localStorage.setItem('refreshToken', 'e2e-refresh-token');
@@ -49,7 +55,6 @@ async function authenticate(page: import('@playwright/test').Page): Promise<void
         type: 'SUPER_ADMIN',
         role: 'SUPER_ADMIN',
         active: true,
-        modulePermissions: ['SALES', 'FINANCES', 'INVENTORY', 'PURCHASES', 'DASHBOARD'],
       }),
     );
   });
@@ -59,7 +64,11 @@ test.describe('Customers module', () => {
   test.beforeEach(async ({ page }) => {
     await authenticate(page);
     await page.route('**/api/notifications/unread-count', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(0) });
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(0),
+      });
     });
     await page.route('**/api/customers*', async (route) => {
       const url = new URL(route.request().url());
@@ -77,14 +86,13 @@ test.describe('Customers module', () => {
   });
 
   test('loads the customer list and displays customer status', async ({ page }) => {
-    await page.goto('/customers');
+    await page.goto('/partners/customers');
 
     await expect(page).toHaveTitle('Clientes');
     await expect(page.getByRole('heading', { name: 'Clientes' })).toBeVisible();
     await expect(page.getByText('Inversiones Global S.A.').first()).toBeVisible();
     await expect(page.getByText('Servicios del Centro C.A.').first()).toBeVisible();
     await expect(page.getByText('Activo').first()).toBeVisible();
-    await expect(page.getByText('Sin acceso').first()).toBeVisible();
   });
 
   test('filters customers by legal name and sends the search query', async ({ page }) => {
@@ -93,7 +101,9 @@ test.describe('Customers module', () => {
       requestUrl = route.request().url();
       const url = new URL(requestUrl);
       const search = (url.searchParams.get('search') ?? '').toLowerCase();
-      const content = customers.filter((customer) => customer.legalName.toLowerCase().includes(search));
+      const content = customers.filter((customer) =>
+        customer.legalName.toLowerCase().includes(search),
+      );
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -101,19 +111,21 @@ test.describe('Customers module', () => {
       });
     });
 
-    await page.goto('/customers');
+    await page.goto('/partners/customers');
     const search = page.locator('input[placeholder="Buscar por nombre, alias o RIF..."]').first();
     await search.fill('Global');
     await search.press('Enter');
 
     await expect(page.getByText('Inversiones Global S.A.').first()).toBeVisible();
     await expect(page.getByText('Servicios del Centro C.A.')).toHaveCount(0);
-    await expect.poll(() => new URL(requestUrl || 'http://localhost').searchParams.get('search')).toBe(
-      'Global',
-    );
+    await expect
+      .poll(() => new URL(requestUrl || 'http://localhost').searchParams.get('search'))
+      .toBe('Global');
   });
 
-  test('navigates to the new customer form and keeps submit disabled until required data exists', async ({ page }) => {
+  test('navigates to the new customer form and keeps submit disabled until required data exists', async ({
+    page,
+  }) => {
     await page.route('**/api/warehouses*', async (route) => {
       await route.fulfill({
         status: 200,
@@ -138,10 +150,10 @@ test.describe('Customers module', () => {
       });
     });
 
-    await page.goto('/customers');
+    await page.goto('/partners/customers');
     await page.getByRole('button', { name: 'Nuevo Cliente' }).click();
 
-    await expect(page).toHaveURL(/\/customers\/new$/);
+    await expect(page).toHaveURL(/\/partners\/customers\/new$/);
     await expect(page.getByText('Nuevo Cliente')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Crear Cliente' })).toBeDisabled();
   });

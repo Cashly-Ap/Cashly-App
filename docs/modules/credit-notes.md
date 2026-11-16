@@ -4,11 +4,11 @@ CRUD-style pages for creating, reviewing, and removing customer credit notes.
 
 ## Routes
 
-`/credit-notes`, `/credit-notes/new`, `/credit-notes/:id`.
+`/sales/credit-notes`, `/sales/credit-notes/new`, `/sales/credit-notes/:id`.
 
 ## Architecture
 
-The feature separates API services, application services, mappers, models, and standalone list/detail/form pages. API calls target `/api/credit-notes`.
+The feature lives in `src/app/features/sales/invoices/credit-notes/` and separates API services, application services, mappers, models, and standalone list/detail/form pages. API calls target `/api/credit-notes`.
 
 ## Rules
 

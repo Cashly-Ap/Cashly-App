@@ -1,3 +1,7 @@
+import { inject as i18nInject } from '@angular/core';
+import { LanguageService as I18nLanguageService } from '@core/i18n/language.service';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,17 +18,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { MessageService } from 'primeng/api';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { CreditNoteApiService } from '@features/credit-notes/services/api/credit-note-api.service';
-import { DebitNoteApiService } from '@features/debit-notes/services/api/debit-note-api.service';
-import { InvoiceDetails } from '@features/invoices/models/interfaces';
+import { CreditNoteApiService } from '@features/sales/invoices/credit-notes/services/api/credit-note-api.service';
+import { DebitNoteApiService } from '@features/sales/invoices/debit-notes/services/api/debit-note-api.service';
+import { InvoiceDetails } from '@features/sales/invoices/invoices/models/interfaces/invoice-details.interface';
 
 type NoteType = 'CREDIT' | 'DEBIT';
 
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
 @Component({
   selector: 'app-note-form-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    SubmitButtonComponent,
+    CancelButtonComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
     FormsModule,
     ButtonModule,
     TextareaModule,
@@ -35,6 +45,7 @@ type NoteType = 'CREDIT' | 'DEBIT';
   templateUrl: './note-form-dialog.component.html',
 })
 export class NoteFormDialogComponent {
+  readonly i18nLanguage = i18nInject(I18nLanguageService);
   private readonly creditNoteApi = inject(CreditNoteApiService);
   private readonly debitNoteApi = inject(DebitNoteApiService);
   private readonly messageService = inject(MessageService);
@@ -95,25 +106,31 @@ export class NoteFormDialogComponent {
         ? this.creditNoteApi.create(request)
         : this.debitNoteApi.create(request);
 
+    const isCredit = this.noteType() === 'CREDIT';
+
     creation$.subscribe({
       next: () => {
         this.isSubmitting.set(false);
-        const noteLabel = this.noteType() === 'CREDIT' ? 'crédito' : 'débito';
         this.messageService.add({
           severity: 'success',
-          summary: 'Nota registrada',
-          detail: `Nota de ${noteLabel} creada exitosamente`,
+          summary: 'shared.notes.noteRegistered',
+          detail: isCredit
+            ? 'shared.notes.creditNoteCreatedSuccessfully'
+            : 'shared.notes.debitNoteCreatedSuccessfully',
           life: 4000,
         });
         this.confirmed.emit();
       },
       error: (error: { error?: { message?: string } }) => {
         this.isSubmitting.set(false);
-        const noteLabel = this.noteType() === 'CREDIT' ? 'crédito' : 'débito';
         this.messageService.add({
           severity: 'error',
-          summary: 'No se pudo registrar la nota',
-          detail: error.error?.message || `Error al crear la nota de ${noteLabel}`,
+          summary: 'shared.notes.unableToRegisterTheNote',
+          detail:
+            error.error?.message ||
+            (isCredit
+              ? 'shared.notes.unableToCreateTheCreditNote'
+              : 'shared.notes.unableToCreateTheDebitNote'),
           life: 6000,
         });
       },

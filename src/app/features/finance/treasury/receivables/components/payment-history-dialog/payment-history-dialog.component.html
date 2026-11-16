@@ -1,0 +1,219 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '900px' }"
+  [dismissableMask]="true"
+  appendTo="body"
+  (visibleChange)="onVisibleChange($event)"
+  styleClass="rounded-2xl"
+>
+  <div class="px-2">
+    <div class="flex items-center gap-3 mb-6">
+      <div
+        class="flex items-center justify-center w-12 h-12 bg-surface-900 dark:bg-surface-100 rounded-xl"
+      >
+        <i class="pi pi-history text-surface-0 dark:text-surface-900 text-xl"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-surface-900 dark:text-surface-0">
+          {{ 'finance.treasury.receivables.paymentHistory' | translate }}
+        </h2>
+        <p class="text-sm text-surface-500">
+          {{
+            (invoiceId()
+              ? 'finance.treasury.receivables.invoicePaymentRecords'
+              : 'finance.treasury.receivables.customerPaymentRecords'
+            ) | translate
+          }}
+        </p>
+      </div>
+    </div>
+
+    @if (loading()) {
+      <div class="flex flex-col items-center justify-center py-16">
+        <i class="pi pi-spin pi-spinner text-4xl text-surface-400 mb-4"></i>
+        <p class="text-surface-500 font-medium">
+          {{ 'finance.treasury.cashregister.loadingHistory' | translate }}
+        </p>
+      </div>
+    } @else if (payments().length === 0) {
+      <div class="flex flex-col items-center justify-center py-16">
+        <div
+          class="w-20 h-20 bg-surface-100 dark:bg-surface-700 rounded-full flex items-center justify-center mb-4"
+        >
+          <i class="pi pi-history text-3xl text-surface-400"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-surface-900 dark:text-surface-0 mb-1">
+          {{ 'finance.treasury.receivables.noPaymentsRegistered' | translate }}
+        </h3>
+        <p class="text-sm text-surface-500">
+          {{
+            (invoiceId()
+              ? 'finance.treasury.receivables.noPaymentsRegisteredForThisInvoice'
+              : 'finance.treasury.receivables.thisCustomerHasNoPaymentRecordsYet'
+            ) | translate
+          }}
+        </p>
+      </div>
+    } @else {
+      <div
+        class="bg-surface-50 dark:bg-surface-900 rounded-xl border border-surface-200 dark:border-surface-700 p-4 mb-4"
+      >
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div class="text-center">
+            <p class="text-2xl font-bold text-surface-900 dark:text-surface-0">
+              {{ payments().length }}
+            </p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.totalPayments' | translate }}
+            </p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold" [class]="amountColor('success')">
+              {{ totalAmount() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.billing.returns.totalAmount' | translate }}
+            </p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold" [class]="amountColor('success')">
+              {{ approvedCount() }}
+            </p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.approved' | translate }}
+            </p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold" [class]="amountColor('danger')">{{ rejectedCount() }}</p>
+            <p class="text-xs text-surface-500 mt-1">
+              {{ 'finance.treasury.receivables.rejected' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="hidden sm:block overflow-hidden rounded-xl border border-surface-200 dark:border-surface-700"
+      >
+        <p-table
+          [value]="payments()"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          styleClass="p-datatable-striped"
+          [tableStyle]="{ 'min-width': '40rem' }"
+          sortField="createdAt"
+          [sortOrder]="-1"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="w-auto">
+                <div class="font-semibold">
+                  {{ 'finance.treasury.receivables.paymentNo' | translate }}
+                </div>
+              </th>
+              <th class="text-right">
+                <div class="font-semibold">
+                  {{ 'shared.amount' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.treasury.receivables.method' | translate }}
+                </div>
+              </th>
+              <th>
+                <div class="font-semibold">
+                  {{ 'finance.billing.invoices.date' | translate }}
+                </div>
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-payment>
+            <tr
+              class="transition-all duration-200 hover:bg-surface-50 dark:hover:bg-surface-700/30"
+            >
+              <td>
+                <span class="font-mono text-sm font-medium text-surface-900 dark:text-surface-0">{{
+                  payment.paymentNumber
+                }}</span>
+              </td>
+              <td class="text-right">
+                <span class="font-mono font-semibold" [class]="amountColor('success')">
+                  {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                </span>
+              </td>
+              <td>
+                <span class="text-sm text-surface-600 dark:text-surface-400">{{
+                  payment.source === 'CUSTOMER_BALANCE'
+                    ? ('finance.billing.invoices.creditBalance' | translate)
+                    : payment.paymentMethodName
+                }}</span>
+              </td>
+              <td>
+                <span class="text-sm text-surface-600 dark:text-surface-400">{{
+                  payment.paymentDate | localizedDate: 'dd/MM/yyyy'
+                }}</span>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <div class="sm:hidden space-y-3">
+        @for (payment of payments(); track payment.id) {
+          <app-panel-card padding="p-5">
+            <div class="flex items-start justify-between mb-3">
+              <div>
+                <span class="font-mono font-semibold text-surface-900 dark:text-surface-0">{{
+                  payment.paymentNumber
+                }}</span>
+                <p class="text-xs text-surface-500 mt-0.5">
+                  {{ payment.paymentDate | localizedDate: 'dd/MM/yyyy' }}
+                </p>
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-between py-2 border-t border-surface-200 dark:border-surface-700"
+            >
+              <span class="text-sm text-surface-500">{{ 'shared.amount' | translate }}</span>
+              <span class="font-mono font-bold" [class]="amountColor('success')">
+                {{ payment.amount | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <span class="text-sm text-surface-500">{{
+                'finance.treasury.receivables.method' | translate
+              }}</span>
+              <span class="text-sm text-surface-600 dark:text-surface-400">{{
+                payment.source === 'CUSTOMER_BALANCE'
+                  ? ('finance.billing.invoices.creditBalance' | translate)
+                  : payment.paymentMethodName
+              }}</span>
+            </div>
+          </app-panel-card>
+        }
+        <app-paginator
+          [first]="0"
+          [rows]="10"
+          [totalRecords]="payments().length"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          styleClass="text-sm"
+        />
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end">
+      <p-button
+        severity="secondary"
+        [label]="'shared.close' | translate"
+        icon="pi pi-times"
+        (onClick)="onClose()"
+        styleClass="font-medium"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

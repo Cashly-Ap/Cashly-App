@@ -1,0 +1,50 @@
+import { Routes } from '@angular/router';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
+export const ORDER_ROUTES: Routes = [
+  {
+    path: '',
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.SALES_ORDERS },
+    canActivateChild: [modulePermissionGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/sales/orders/pages/order-list-page/order-list-page.component').then(
+            (m) => m.OrderListPageComponent,
+          ),
+        title: 'Pedidos',
+      },
+      {
+        path: 'new',
+        data: { requiredPermissions: ['SALES_ORDERS:CREATE'] },
+        loadComponent: () =>
+          import('@features/sales/orders/pages/order-form-page/order-form-page.component').then(
+            (m) => m.OrderFormPageComponent,
+          ),
+        title: 'Nuevo Pedido',
+      },
+      {
+        path: ':id',
+        data: { requiredPermissions: ['SALES_ORDERS:READ'] },
+        loadComponent: () =>
+          import('@features/sales/orders/pages/order-detail-page/order-detail-page.component').then(
+            (m) => m.OrderDetailPageComponent,
+          ),
+        title: 'Detalle del Pedido',
+      },
+      {
+        path: ':id/edit',
+        data: { requiredPermissions: ['SALES_ORDERS:UPDATE'] },
+        loadComponent: () =>
+          import('@features/sales/orders/pages/order-form-page/order-form-page.component').then(
+            (m) => m.OrderFormPageComponent,
+          ),
+        title: 'Editar Pedido',
+      },
+    ],
+  },
+];

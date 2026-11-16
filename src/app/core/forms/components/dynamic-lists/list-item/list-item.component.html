@@ -9,7 +9,7 @@
     <input
       pInputText
       [formControl]="control()"
-      [placeholder]="placeholder()"
+      [placeholder]="placeholder() | translate"
       [type]="inputType()"
       class="flex-1 min-w-0"
       [ngClass]="{ 'ng-invalid ng-dirty': control().invalid && control().touched }"

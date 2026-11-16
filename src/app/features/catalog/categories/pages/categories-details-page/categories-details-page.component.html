@@ -1,0 +1,84 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (category(); as currentCategory) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'catalog.categories.categoryDetails' | translate"
+          [subtitle]="'catalog.categories.completeCategoryInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header [title]="currentCategory.name">
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CATEGORY"
+                [auditEntityId]="currentCategory.id"
+                [auditLabel]="currentCategory.name"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'finance.billing.invoices.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentCategory.name"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.products' | translate"
+                [value]="currentCategory.productCount.toString()"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+                ><app-status-badge
+                  [active]="currentCategory.active"
+                  activeLabel="Activa"
+                  inactiveLabel="Inactiva"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'catalog.categories.created' | translate"
+                [value]="(currentCategory.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'catalog.categories.updated' | translate"
+                [value]="(currentCategory.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                class="col-span-full"
+                [label]="'finance.treasury.paymentmethods.description' | translate"
+                [value]="currentCategory.description || '—'"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>

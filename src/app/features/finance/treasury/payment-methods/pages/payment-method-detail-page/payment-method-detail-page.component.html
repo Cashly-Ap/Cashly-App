@@ -1,0 +1,100 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (paymentMethod(); as pm) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'finance.treasury.paymentmethods.paymentMethodDetails2' | translate"
+          [subtitle]="
+            'finance.treasury.paymentmethods.completePaymentMethodInformation' | translate
+          "
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="pm.name"
+            [subtitle]="('finance.treasury.paymentmethods.codePrefix' | translate) + pm.code"
+          >
+            <div actions class="flex gap-3 flex-wrap">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="PAYMENT_METHOD"
+                [auditEntityId]="pm.id"
+                [auditLabel]="pm.name"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'finance.billing.invoices.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.code' | translate"
+                [value]="pm.code"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="pm.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
+                <app-status-badge
+                  [active]="pm.isActive"
+                  activeLabel="Activo"
+                  inactiveLabel="Inactivo"
+                />
+              </app-details-info-field>
+              @if (pm.description) {
+                <app-details-info-field
+                  [label]="'finance.treasury.paymentmethods.description' | translate"
+                  [value]="pm.description"
+                />
+              } @else {
+                <app-details-info-field
+                  [label]="'finance.treasury.paymentmethods.description' | translate"
+                  value="—"
+                />
+              }
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(pm.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(pm.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+<p-confirmDialog styleClass="max-w-md" />

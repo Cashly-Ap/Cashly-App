@@ -1,0 +1,252 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="platform.auth.user.users"
+      subtitle="platform.auth.user.manageSystemUsers"
+    />
+
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              [placeholder]="'platform.auth.user.searchUsers' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              @if (canFilterRoles()) {
+                <app-filter-field labelKey="platform.auth.user.role">
+                  <p-select
+                    [options]="roleOptions() | translateOptions: true"
+                    [ngModel]="filterRole()"
+                    (onChange)="onRoleFilterChange($event.value)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [placeholder]="'platform.auth.user.allRoles' | translate"
+                    styleClass="w-full"
+                  />
+                </app-filter-field>
+              }
+              <app-filter-field labelKey="finance.billing.invoices.status">
+                <p-select
+                  [options]="activeOptions | translateOptions"
+                  [ngModel]="filterActive()"
+                  (onChange)="onActiveFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <app-submit-button
+            labelKey="platform.auth.user.newUser"
+            shortcut="new"
+            (action)="onCreate()"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
+    @if (showInitialLoading()) {
+      <app-panel-card class="mt-4">
+        <app-loading-spinner [message]="'platform.auth.user.loadingUsers' | translate" />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card class="mt-4">
+        <app-empty-state
+          icon="pi-users"
+          [title]="'platform.auth.user.noUsersRegistered' | translate"
+          [message]="'platform.auth.user.startManagingUsersByAddingTheFirstOne' | translate"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'platform.auth.user.noUsersMatchYourSearchTryDifferentTermsOrCreateANewUser'
+                  | translate
+              "
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                #dt
+                [value]="users()"
+                [globalFilterFields]="['userName', 'email', 'roleName']"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+                styleClass="p-datatable-striped"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="userName" class="w-auto">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.paymentmethods.name' | translate }}
+                        <p-sortIcon field="userName" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="email" class="w-auto hidden lg:table-cell">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'platform.auth.user.email' | translate }}
+                        <p-sortIcon field="email" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="roleName" class="w-32">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'platform.auth.user.role' | translate }}
+                        <p-sortIcon field="roleName" />
+                      </div>
+                    </th>
+                    <th class="w-24">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-40">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-user>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <div class="font-medium">
+                        <span class="inline-flex items-center gap-3"
+                          ><app-user-avatar
+                            [userId]="user.id"
+                            [photoPath]="user.photoPath"
+                            [name]="user.userName"
+                          />{{ user.userName }}</span
+                        >
+                      </div>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm">
+                        {{ user.email }}
+                      </div>
+                    </td>
+                    <td>
+                      <app-text-badge [label]="user.roleName || user.roleId" variant="label" />
+                    </td>
+                    <td>
+                      <app-status-badge [active]="user.active" />
+                    </td>
+                    <td>
+                      <div class="flex justify-center">
+                        <app-list-action-buttons
+                          [actions]="actionsFor(user)"
+                          [ariaLabel]="'platform.auth.user.openUserActions' | translate"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'platform.auth.showingFirstToLastOfTotalrecordsUsers' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'platform.auth.user.noUsersMatchYourSearchTryDifferentTermsOrCreateANewUser'
+                  | translate
+              "
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (user of users(); track user.id) {
+              <app-panel-card padding="p-5">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                      <span class="inline-flex items-center gap-3"
+                        ><app-user-avatar
+                          [userId]="user.id"
+                          [photoPath]="user.photoPath"
+                          [name]="user.userName"
+                        />{{ user.userName }}</span
+                      >
+                    </h3>
+                    <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
+                      {{ user.email }}
+                    </p>
+                    <div class="flex gap-2 mt-2">
+                      <app-text-badge [label]="user.roleName || user.roleId" variant="label" />
+                      <app-status-badge [active]="user.active" />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(user)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="px-4 py-3 mt-2">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'platform.auth.showingFirstToLastOfTotalrecordsUsers' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

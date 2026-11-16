@@ -4,7 +4,7 @@ Maintains the methods selectable by payment and cash-register workflows.
 
 ## Routes
 
-`/payment-methods`, `/payment-methods/new`, `/payment-methods/:id`, and `/payment-methods/:id/edit`.
+`/finance/treasury/payment-methods`, `/finance/treasury/payment-methods/new`, `/finance/treasury/payment-methods/:id`, and `/finance/treasury/payment-methods/:id/edit`.
 
 ## API
 

@@ -1,0 +1,137 @@
+<app-form-container>
+  <app-form-header
+    [title]="'platform.company.editCompany' | translate"
+    [subtitle]="'platform.company.yourCompanyTaxDetailsContactInformationAndIdentity' | translate"
+  >
+    @if (service.company(); as company) {
+      <app-audit-trail-action
+        entityType="COMPANY"
+        [entityId]="company.id"
+        [label]="company.tradeName || company.legalName"
+      />
+    }
+  </app-form-header>
+  @if (loading()) {
+    <app-panel-card
+      ><div class="p-6" role="status">
+        {{ 'platform.company.loadingCompany' | translate }}
+      </div></app-panel-card
+    >
+  } @else if (error()) {
+    <app-panel-card
+      ><div class="p-6 flex flex-col gap-4 items-start" role="alert">
+        <p>{{ 'platform.company.weCouldNotLoadTheCompany' | translate }}</p>
+        <p-button
+          [label]="'inventory.warehouses.retry' | translate"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          (onClick)="load()"
+        /></div
+    ></app-panel-card>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="save()">
+      <app-panel-card>
+        <p-tabs value="general"
+          ><p-tablist
+            ><p-tab value="general"
+              ><i class="pi pi-building mr-2"></i
+              >{{ 'platform.company.company' | translate }}</p-tab
+            ><p-tab value="address"
+              ><i class="pi pi-map-marker mr-2"></i
+              >{{ 'platform.company.registeredBusinessAddress' | translate }}</p-tab
+            ></p-tablist
+          >
+          <p-tabpanels
+            ><p-tabpanel value="general"
+              ><app-tab-content [columns]="2">
+                <app-file-input
+                  class="md:col-span-full"
+                  [label]="'platform.company.logo' | translate"
+                  [control]="photo"
+                  accept="image/png,image/jpeg"
+                  [optimizeImage]="true"
+                  [helpText]="
+                    'platform.company.pngOrJpgTheImageIsOptimizedAutomaticallyBeforeSaving'
+                      | translate
+                  "
+                  (optimizingChange)="logoOptimizing.set($event)"
+                  [previewUrl]="removeLogo() ? null : service.logoUrl()"
+                  (fileSelected)="removeLogo.set(false)"
+                  (deleteExistingPhoto)="removeLogo.set(true)"
+                />
+                <app-file-input
+                  class="md:col-span-full"
+                  [label]="'platform.company.pdfDocumentLogo' | translate"
+                  [control]="pdfPhoto"
+                  (optimizingChange)="pdfLogoOptimizing.set($event)"
+                  accept="image/png,image/jpeg"
+                  [optimizeImage]="true"
+                  [helpText]="
+                    'platform.company.forInvoicesQuotesOrdersAndAllPdfsPngOrJpgImagesAreOptimizedAutomaticallyEmptyMarginsAreCroppedAndProportionsArePreservedIfNoDocumentLogoIsSetTheCompanyLogoIsUsedIfNeitherExistsALogoPlaceholderIsDisplayed'
+                      | translate
+                  "
+                  [previewUrl]="removePdfLogo() ? null : service.pdfLogoUrl()"
+                  (fileSelected)="removePdfLogo.set(false)"
+                  (deleteExistingPhoto)="removePdfLogo.set(true)"
+                />
+                <div class="md:col-span-full flex flex-col sm:flex-row sm:items-center gap-3">
+                  <p-button
+                    [label]="'platform.company.pdfPreview' | translate"
+                    [ariaLabel]="'platform.company.pdfPreview' | translate"
+                    icon="pi pi-file-pdf"
+                    [outlined]="true"
+                    [loading]="previewLoading()"
+                    [disabled]="
+                      saving() || previewLoading() || logoOptimizing() || pdfLogoOptimizing()
+                    "
+                    (onClick)="previewPdf()"
+                  />
+                  <p class="text-sm text-surface-500">
+                    {{ 'platform.company.checkTheLogoInASampleDocumentBeforeSaving' | translate }}
+                  </p>
+                </div>
+                @for (field of fields; track field.key) {
+                  <app-text-input
+                    [label]="field.label | translate"
+                    [control]="control(field.key)"
+                    [errorMessage]="
+                      'platform.company.checkTheFormatAndLengthOfThisField' | translate
+                    "
+                  />
+                }</app-tab-content></p-tabpanel
+            ><p-tabpanel value="address"
+              ><app-tab-content [columns]="2">
+                @for (field of addressFields; track field.key) {
+                  @if (field.key === 'country') {
+                    <app-country-input [control]="control(field.key)" />
+                  } @else {
+                    <app-text-input
+                      [label]="field.label | translate"
+                      [control]="control(field.key)"
+                      [errorMessage]="
+                        'users.profile.the.text.exceeds.the.maximum.length' | translate
+                      "
+                    />
+                  }
+                }</app-tab-content></p-tabpanel
+          ></p-tabpanels>
+        </p-tabs>
+        <app-form-actions
+          [submitLabel]="'platform.company.saveCompany' | translate"
+          [cancelLabel]="'shared.cancel' | translate"
+          [loading]="saving()"
+          [disabled]="form.invalid || saving() || logoOptimizing() || pdfLogoOptimizing()"
+          (cancel)="cancel()"
+        />
+      </app-panel-card>
+    </form>
+  }
+</app-form-container>
+
+<app-pdf-viewer-modal
+  [visible]="previewVisible()"
+  [loading]="previewLoading()"
+  [pdfUrl]="previewUrl()"
+  [title]="'platform.company.pdfLogoPreview' | translate"
+  (visibleChange)="closePreview()"
+/>

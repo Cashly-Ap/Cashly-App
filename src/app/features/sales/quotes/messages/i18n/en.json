@@ -1,0 +1,13 @@
+{
+  "sales.quotes.messages.unableToCreateTheQuotePleaseTryAgain": "Unable to create the quote. Please try again.",
+  "sales.quotes.messages.unableToUpdateTheQuotePleaseTryAgain": "Unable to update the quote. Please try again.",
+  "sales.quotes.messages.unableToDeleteTheQuotePleaseTryAgain": "Unable to delete the quote. Please try again.",
+  "sales.quotes.messages.quoteCreatedSuccessfully": "Quote created successfully",
+  "sales.quotes.messages.quoteUpdatedSuccessfully": "Quote updated successfully",
+  "sales.quotes.messages.quoteDeletedSuccessfully": "Quote deleted successfully",
+  "sales.quotes.messages.unableToLoadTheQuoteItMayNotExist": "Unable to load the quote. It may not exist.",
+  "sales.quotes.messages.unableToConvertTheQuoteToAnOrderPleaseTryAgain": "Unable to convert the quote to an order. Please try again.",
+  "sales.quotes.messages.quoteConvertedToAnOrderSuccessfully": "Quote converted to an order successfully",
+  "sales.quotes.messages.unableToConvertTheQuoteToAnInvoicePleaseTryAgain": "Unable to convert the quote to an invoice. Please try again.",
+  "sales.quotes.messages.quoteConvertedToAnInvoiceSuccessfully": "Quote converted to an invoice successfully"
+}

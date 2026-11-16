@@ -1,0 +1,8 @@
+{
+  "core.pdfviewer.fullScreen": "Pantalla completa",
+  "core.pdfviewer.fullScreen2": "Pantalla Completa",
+  "core.pdfviewer.pdfViewer": "Visor de PDF",
+  "core.pdfviewer.loadingDocument": "Cargando documento...",
+  "core.pdfviewer.messages.thePdfDocumentWasNotFound": "El documento PDF no fue encontrado",
+  "core.pdfviewer.messages.couldNotLoadThePdfDocumentPleaseTryAgain": "Error al cargar el documento PDF. Por favor, intente nuevamente."
+}

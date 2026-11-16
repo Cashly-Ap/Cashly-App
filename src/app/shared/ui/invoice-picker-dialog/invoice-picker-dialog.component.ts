@@ -1,3 +1,5 @@
+import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,24 +10,38 @@ import {
   computed,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CurrencyPipe } from '@angular/common';
+
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { InvoiceApiService } from '@features/invoices/services/api/invoice-api.service';
-import { InvoiceList } from '@features/invoices/models/interfaces';
-import { SearchFieldComponent } from '@shared/components/ui';
+import { InvoiceApiService } from '@features/sales/invoices/invoices/services/api/invoice-api.service';
+import { InvoiceList } from '@features/sales/invoices/invoices/models/interfaces/invoice-list.interface';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+
+import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cancel-button.component';
+import { TableCardComponent } from '@shared/components/ui/table-card/table-card.component';
+import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialog-header.component';
+import { TableRowSkeletonComponent } from '@shared/components/ui/skeletons/table-row-skeleton.component';
+import { CardSkeletonComponent } from '@shared/components/ui/skeletons/card-skeleton.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
 
 @Component({
   selector: 'app-invoice-picker-dialog',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataTableComponent,
+    TableRowSkeletonComponent,
+    CardSkeletonComponent,
+    DialogHeaderComponent,
+    TableCardComponent,
+    CancelButtonComponent,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
     DialogModule,
     ButtonModule,
     FormsModule,
     InputTextModule,
-    CurrencyPipe,
     SearchFieldComponent,
   ],
   templateUrl: './invoice-picker-dialog.component.html',
@@ -75,10 +91,12 @@ export class InvoicePickerDialogComponent {
         customerId: this.customerId() || undefined,
         orderBy: 'createdAt',
         orderDir: 'desc',
+        page: 0,
+        size: 100,
       })
       .subscribe({
         next: (res) => {
-          this.allInvoices.set(res);
+          this.allInvoices.set(res.content);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),

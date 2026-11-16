@@ -1,0 +1,239 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.paymentmethods.paymentMethods"
+      subtitle="finance.treasury.paymentmethods.manageAvailablePaymentMethods"
+    />
+
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[280px]"
+              [value]="searchTerm()"
+              [placeholder]="'shared.searchPaymentMethods' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <app-filter-field labelKey="finance.billing.invoices.status">
+                <p-select
+                  [options]="activeFilterOptions | translateOptions"
+                  [ngModel]="filterActive()"
+                  (onChange)="onActiveFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <app-submit-button
+            labelKey="finance.treasury.paymentmethods.newPaymentMethod"
+            shortcut="new"
+            (action)="onCreate()"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
+    @if (showInitialLoading()) {
+      <app-panel-card class="mt-4">
+        <app-loading-spinner
+          [message]="'finance.treasury.paymentmethods.loadingPaymentMethods' | translate"
+        />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card class="mt-4">
+        <app-empty-state
+          icon="pi-credit-card"
+          [title]="'finance.treasury.paymentmethods.noPaymentMethodsRegistered' | translate"
+          [message]="
+            'finance.treasury.paymentmethods.startOrganizingPaymentsByCreatingTheFirstPaymentMethod'
+              | translate
+          "
+          [buttonLabel]="'finance.treasury.paymentmethods.createFirstPaymentMethod' | translate"
+          (buttonClick)="onCreate()"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'finance.treasury.paymentmethods.noPaymentMethodsMatchYourSearch' | translate
+              "
+              [buttonLabel]="'finance.treasury.paymentmethods.createNewPaymentMethod' | translate"
+              (buttonClick)="onCreate()"
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="paymentMethods()"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+                styleClass="p-datatable-striped"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="code" class="w-24">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.paymentmethods.code' | translate }}
+                        <p-sortIcon field="code" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="name" class="w-auto">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.paymentmethods.name' | translate }}
+                        <p-sortIcon field="name" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="description" class="w-auto hidden lg:table-cell">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.paymentmethods.description' | translate }}
+                        <p-sortIcon field="description" />
+                      </div>
+                    </th>
+                    <th class="w-24">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-36">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-paymentMethod>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <div class="font-mono text-sm">{{ paymentMethod.code }}</div>
+                    </td>
+                    <td>
+                      <div class="font-medium">{{ paymentMethod.name }}</div>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm text-surface-500">
+                        {{ paymentMethod.description || '—' }}
+                      </div>
+                    </td>
+                    <td>
+                      <app-status-badge
+                        [active]="paymentMethod.isActive"
+                        activeLabel="Activo"
+                        inactiveLabel="Inactivo"
+                      />
+                    </td>
+                    <td>
+                      <app-list-action-buttons [actions]="actionsFor(paymentMethod)" />
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'finance.treasury.paymentmethods.paymentMethodsPage' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'finance.treasury.paymentmethods.noPaymentMethodsMatchYourSearch' | translate
+              "
+              [buttonLabel]="'finance.treasury.paymentmethods.createNewPaymentMethod' | translate"
+              (buttonClick)="onCreate()"
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (paymentMethod of paymentMethods(); track paymentMethod.id) {
+              <app-panel-card padding="p-5">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                      {{ paymentMethod.name }}
+                    </h3>
+                    <p class="text-xs font-mono text-surface-500 dark:text-surface-400 mb-2">
+                      {{ paymentMethod.code }}
+                    </p>
+                    @if (paymentMethod.description) {
+                      <p class="text-sm text-surface-500 dark:text-surface-400 mb-2">
+                        {{ paymentMethod.description }}
+                      </p>
+                    }
+                    <div class="flex gap-2 mt-1">
+                      <app-status-badge
+                        [active]="paymentMethod.isActive"
+                        activeLabel="Activo"
+                        inactiveLabel="Inactivo"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(paymentMethod)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="px-4 py-3 mt-2">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'finance.treasury.paymentmethods.paymentMethodsPage' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

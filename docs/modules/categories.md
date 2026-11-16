@@ -11,55 +11,15 @@ The Categories module manages product categories for the invoicing system. Categ
 ## Module Structure
 
 ```
-src/app/features/categories/
-├── messages/
-│   ├── success-messages.ts
-│   ├── error-messages.ts
-│   └── index.ts
-├── models/
-│   ├── interfaces/
-│   │   ├── category-list.interface.ts
-│   │   ├── category-details.interface.ts
-│   │   ├── category-create.interface.ts
-│   │   ├── category-edit.interface.ts
-│   │   ├── category-form-data.interface.ts
-│   │   └── index.ts
-│   └── index.ts
-├── pages/
-│   ├── categories-list-page/
-│   │   ├── categories-list-page.component.ts
-│   │   ├── categories-list-page.component.html
-│   │   └── categories-list-page.component.spec.ts
-│   ├── categories-form-page/
-│   │   ├── categories-form-page.component.ts
-│   │   ├── categories-form-page.component.html
-│   │   ├── categories-form-page.component.spec.ts
-│   │   └── categories-form-page.config.ts
-│   ├── categories-details-page/
-│   │   ├── categories-details-page.component.ts
-│   │   ├── categories-details-page.component.html
-│   │   └── categories-details-page.component.spec.ts
-│   └── index.ts
-├── services/
-│   ├── api/
-│   │   ├── category-api.service.ts
-│   │   ├── category-api.service.spec.ts
-│   │   ├── category.service.ts
-│   │   ├── category.service.spec.ts
-│   │   └── index.ts
-│   ├── mappers/
-│   │   ├── category.mapper.ts
-│   │   ├── category.mapper.spec.ts
-│   │   └── index.ts
-│   └── index.ts
-├── validators/
-│   ├── category.validators.ts
-│   ├── category.validators.spec.ts
-│   └── index.ts
-├── router/
-│   ├── category.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/catalog/categories/
+├── actions/                        # Row and toolbar actions
+├── i18n/                           # Translations
+├── models/                         # Interfaces
+├── navigation/                     # Menu and navigation contributions
+├── pages/                          # List, form, and details pages
+├── permissions/                    # Permission constants
+├── routing/                        # Lazy-loaded routes
+└── services/                       # API and application services
 ```
 
 ---
@@ -79,7 +39,7 @@ src/app/features/categories/
 
 ### List Page
 
-**Route**: `/categories`
+**Route**: `/catalog/categories`
 
 **Component**: `CategoriesListPageComponent`
 
@@ -96,7 +56,7 @@ src/app/features/categories/
 
 ### Form Page
 
-**Route**: `/categories/new` (Create) | `/categories/:id/edit` (Edit)
+**Route**: `/catalog/categories/new` (Create) | `/catalog/categories/:id/edit` (Edit)
 
 **Component**: `CategoriesFormPageComponent`
 
@@ -111,7 +71,7 @@ src/app/features/categories/
 
 ### Details Page
 
-**Route**: `/categories/:id`
+**Route**: `/catalog/categories/:id`
 
 **Component**: `CategoriesDetailsPageComponent`
 
@@ -608,43 +568,51 @@ export class CategoryMapper {
 ## Routes Configuration
 
 ```typescript
-// router/category.routes.ts
 import { Routes } from '@angular/router';
-import { pendingChangesGuard } from '@core/pending-tabs';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export const CATEGORY_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('../pages/categories-list-page/categories-list-page.component').then(
-        (m) => m.CategoriesListPageComponent,
-      ),
-    title: 'Categorías',
-  },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('../pages/categories-form-page/categories-form-page.component').then(
-        (m) => m.CategoriesFormPageComponent,
-      ),
-    title: 'Nueva Categoría',
-  },
-  {
-    path: ':id',
-    loadComponent: () =>
-      import('../pages/categories-details-page/categories-details-page.component').then(
-        (m) => m.CategoriesDetailsPageComponent,
-      ),
-    title: 'Detalles de la Categoría',
-  },
-  {
-    path: ':id/edit',
-    loadComponent: () =>
-      import('../pages/categories-form-page/categories-form-page.component').then(
-        (m) => m.CategoriesFormPageComponent,
-      ),
-    title: 'Editar Categoría',
-    canDeactivate: [pendingChangesGuard],
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.CATALOG_CATEGORIES },
+    canActivateChild: [modulePermissionGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            '@features/catalog/categories/pages/categories-list-page/categories-list-page.component'
+          ).then((m) => m.CategoriesListPageComponent),
+        title: 'Categorías',
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import(
+            '@features/catalog/categories/pages/categories-form-page/categories-form-page.component'
+          ).then((m) => m.CategoriesFormPageComponent),
+        title: 'Nueva Categoría',
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import(
+            '@features/catalog/categories/pages/categories-details-page/categories-details-page.component'
+          ).then((m) => m.CategoriesDetailsPageComponent),
+        title: 'Detalles de Categoría',
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () =>
+          import(
+            '@features/catalog/categories/pages/categories-form-page/categories-form-page.component'
+          ).then((m) => m.CategoriesFormPageComponent),
+        title: 'Editar Categoría',
+      },
+    ],
   },
 ];
 ```
@@ -731,6 +699,6 @@ export const CATEGORY_ERROR_MESSAGES = {
 
 ---
 
-**Last Updated**: 2025-12-19
+**Last Updated**: 2026-11-03
 
-**Module Status**: [ ] Planned | [x] In Development | [ ] Implemented
+**Module Status**: [ ] Planned | [ ] In Development | [x] Implemented

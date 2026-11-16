@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
@@ -7,7 +8,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-list-item',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule],
+  imports: [TranslatePipe, CommonModule, ReactiveFormsModule, InputTextModule, ButtonModule],
   templateUrl: './list-item.component.html',
 })
 export class ListItemComponent {

@@ -1,0 +1,217 @@
+<main class="cashly-login grid min-h-screen bg-surface-50 lg:grid-cols-2">
+  <section
+    class="login-artwork relative hidden overflow-hidden bg-surface-950 p-12 text-surface-50 lg:flex lg:flex-col lg:justify-between"
+    aria-labelledby="login-artwork-title"
+  >
+    <div
+      class="relative z-10 flex items-center justify-between border-b border-surface-700 pb-5 text-xs uppercase tracking-[0.2em]"
+    >
+      <span>{{ 'platform.auth.cashlyWorkspace' | translate }}</span>
+      <span>{{ 'platform.auth.text01Connect' | translate }}</span>
+    </div>
+
+    <div
+      class="pointer-events-none absolute inset-0 flex items-center justify-center"
+      aria-hidden="true"
+    >
+      <div class="relative flex size-[32rem] items-center justify-center">
+        <span
+          class="login-orbit absolute size-full rounded-full border-2 border-dotted border-surface-600"
+        ></span>
+        <span
+          class="login-orbit absolute size-[26rem] rounded-full border-2 border-dotted border-surface-600"
+        ></span>
+        <span
+          class="login-orbit absolute size-[20rem] rounded-full border-2 border-dotted border-surface-500"
+        ></span>
+        <span
+          class="login-orbit absolute size-[14rem] rounded-full border-2 border-dotted border-surface-500"
+        ></span>
+        <span
+          class="login-orbit absolute size-32 rounded-full border-2 border-dotted border-surface-400"
+        ></span>
+        <span class="login-core size-5 rounded-full bg-surface-50"></span>
+      </div>
+    </div>
+
+    <div class="login-artwork-copy relative z-10 mt-96 max-w-lg">
+      <p class="mb-4 text-xs uppercase tracking-[0.2em] text-surface-400">
+        {{ 'platform.auth.yourBusinessInOnePlace' | translate }}
+      </p>
+      <h2
+        id="login-artwork-title"
+        class="text-5xl font-semibold leading-[1.05] tracking-tight xl:text-6xl"
+      >
+        {{ 'platform.auth.everythingConnected' | translate }}<br />{{
+          'platform.auth.everythingUnderControl' | translate
+        }}
+      </h2>
+    </div>
+
+    <div
+      class="relative z-10 mt-12 flex items-center justify-between border-t border-surface-700 pt-5 text-xs uppercase tracking-[0.15em] text-surface-400"
+    >
+      <span>{{ 'platform.auth.businessManagementSystem' | translate }}</span>
+      <span aria-hidden="true">{{ 'platform.auth.c' | translate }}</span>
+    </div>
+  </section>
+
+  <section
+    class="login-panel flex min-h-screen flex-col px-6 py-8 text-surface-900 dark:text-surface-50 sm:px-12 lg:px-16 xl:px-24"
+    aria-labelledby="login-title"
+  >
+    <div
+      class="login-enter flex items-center justify-between border-b border-surface-300 pb-6 dark:border-surface-700"
+    >
+      @if (logoSrc()) {
+        <img
+          [ngSrc]="logoSrc()"
+          alt="Logo Cashly"
+          width="180"
+          height="48"
+          priority
+          class="h-9 w-auto object-contain"
+        />
+      } @else {
+        <span class="text-3xl font-bold">{{ 'platform.auth.cashly' | translate }}</span>
+      }
+      <span class="text-xs uppercase tracking-[0.15em] text-surface-500">{{
+        'platform.auth.text02SignIn' | translate
+      }}</span>
+    </div>
+
+    <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center py-14">
+      <p class="login-enter login-delay-1 mb-5 text-xs uppercase tracking-[0.2em] text-surface-500">
+        {{ 'platform.auth.yourWorkspace' | translate }}
+      </p>
+      <h1
+        id="login-title"
+        class="login-enter login-delay-1 mb-4 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl"
+      >
+        {{ 'platform.auth.welcomeBack' | translate }}
+      </h1>
+      <p class="login-enter login-delay-2 mb-10 text-sm leading-relaxed text-surface-500">
+        {{ 'platform.auth.enterYourCredentialsToSignIn' | translate }}
+      </p>
+
+      @if (challengeToken()) {
+        <form
+          [formGroup]="codeForm"
+          (ngSubmit)="verifyMfa()"
+          class="login-enter login-delay-1 flex flex-col gap-5"
+        >
+          <h2 class="text-xl font-semibold">
+            {{ 'platform.auth.twoStepVerification' | translate }}
+          </h2>
+          <p class="text-sm text-surface-500">
+            {{
+              'platform.auth.enterYourMicrosoftAuthenticatorOrGoogleAuthenticatorCodeYouCanAlsoUseARecoveryCodeOnceIfYouJustEnabledMfaWaitForTheNextCode'
+                | translate
+            }}
+          </p>
+          <label for="mfa-code" class="text-xs font-semibold uppercase tracking-[0.12em]">{{
+            'platform.auth.verificationOrRecoveryCode' | translate
+          }}</label>
+          <input
+            pInputText
+            id="mfa-code"
+            formControlName="code"
+            autocomplete="one-time-code"
+            maxlength="64"
+          />
+          <p-button
+            class="login-submit"
+            type="submit"
+            [label]="'platform.auth.verifyAndSignIn' | translate"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            styleClass="w-full"
+            [loading]="authService.loading()"
+            [disabled]="codeForm.invalid"
+          />
+          <button
+            type="button"
+            (click)="restartLogin()"
+            class="text-sm font-medium text-surface-500 underline underline-offset-4 transition-colors hover:text-surface-900 dark:hover:text-surface-0"
+          >
+            {{ 'platform.auth.backToSignIn' | translate }}
+          </button>
+        </form>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-7">
+          <div class="login-field login-enter login-delay-3 flex flex-col gap-3">
+            <label for="email" class="text-xs font-semibold uppercase tracking-[0.12em]">{{
+              'finance.treasury.receivables.email' | translate
+            }}</label>
+            <input
+              pInputText
+              type="email"
+              id="email"
+              formControlName="email"
+              [placeholder]="'platform.auth.youEmailCom' | translate"
+              autocomplete="username"
+              class="w-full"
+              [attr.aria-invalid]="form.controls.email.invalid && form.controls.email.touched"
+              [attr.aria-describedby]="
+                form.controls.email.invalid && form.controls.email.touched ? 'email-error' : null
+              "
+              [ngClass]="{
+                'ng-invalid ng-dirty': form.controls.email.invalid && form.controls.email.touched,
+              }"
+            />
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <small
+                id="email-error"
+                class="login-feedback text-red-600 dark:text-red-400"
+                aria-live="polite"
+                >{{ getEmailError() | translate }}</small
+              >
+            }
+          </div>
+
+          <div class="login-field login-enter login-delay-4 flex flex-col gap-3">
+            <label for="password" class="text-xs font-semibold uppercase tracking-[0.12em]">{{
+              'platform.auth.password' | translate
+            }}</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              [toggleMask]="true"
+              [feedback]="false"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            />
+            @if (form.controls.password.invalid && form.controls.password.touched) {
+              <small class="login-feedback text-red-600 dark:text-red-400" aria-live="polite">{{
+                'platform.auth.passwordIsRequired' | translate
+              }}</small>
+            }
+          </div>
+
+          <div class="login-enter login-delay-5 pt-2">
+            <p-button
+              class="login-submit"
+              type="submit"
+              [label]="'platform.auth.signIn' | translate"
+              icon="pi pi-arrow-right"
+              iconPos="right"
+              [loading]="authService.loading()"
+              [disabled]="form.invalid"
+              styleClass="w-full"
+              size="large"
+            />
+          </div>
+        </form>
+      }
+    </div>
+
+    <div
+      class="login-enter login-delay-2 flex items-center justify-between gap-4 border-t border-surface-300 pt-5 text-xs text-surface-500 dark:border-surface-700"
+    >
+      <span>{{ 'platform.auth.businessManagementSystem' | translate }}</span>
+      <span class="uppercase tracking-[0.12em]">{{ 'platform.auth.cashly' | translate }}</span>
+    </div>
+  </section>
+</main>

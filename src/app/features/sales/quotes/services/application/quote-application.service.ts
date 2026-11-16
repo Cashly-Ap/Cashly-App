@@ -1,0 +1,208 @@
+import { Injectable, inject, signal } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { TranslationService } from '@core/i18n/translation.service';
+import { Observable, tap, finalize, map } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+import {
+  QuoteApiService,
+  QuoteFilters,
+  ConvertToInvoiceRequest,
+} from '@features/sales/quotes/services/api/quote-api.service';
+import { QuoteMapper } from '@features/sales/quotes/services/mappers/quote.mapper';
+import { QuoteList } from '@features/sales/quotes/models/interfaces/quote-list.interface';
+import { QuoteDetails } from '@features/sales/quotes/models/interfaces/quote-details.interface';
+import { QuoteCreate } from '@features/sales/quotes/models/interfaces/quote-create.interface';
+import { QuoteEdit } from '@features/sales/quotes/models/interfaces/quote-edit.interface';
+import { QuoteStatus } from '@features/sales/quotes/models/enums/quote-status.enum';
+
+@Injectable({ providedIn: 'root' })
+export class QuoteApplicationService {
+  private readonly messages = inject(MessageService);
+  private readonly translations = inject(TranslationService);
+  private readonly api = inject(QuoteApiService);
+
+  readonly quotes = signal<QuoteList[]>([]);
+  readonly currentQuote = signal<QuoteDetails | null>(null);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly totalElements = signal(0);
+
+  loadAll(filters?: QuoteFilters): Observable<PagedResponse<QuoteList>> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.getAll(filters).pipe(
+      tap({
+        next: (response) => {
+          this.quotes.set(response.content);
+          this.totalElements.set(response.totalElements);
+        },
+        error: (err: Error) => this.reportError(err),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  loadById(id: string): Observable<QuoteDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.getById(id).pipe(
+      tap({
+        next: (quote) => this.currentQuote.set(quote),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  create(data: QuoteCreate): Observable<QuoteDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.create(data).pipe(
+      tap({
+        next: (quote) => {
+          const listItem = QuoteMapper.toList(quote);
+          this.quotes.update((current) => [listItem, ...current]);
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  update(id: string, data: QuoteEdit): Observable<QuoteDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.update(id, data).pipe(
+      tap({
+        next: (quote) => {
+          const listItem = QuoteMapper.toList(quote);
+          this.quotes.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.set(quote);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  delete(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.delete(id).pipe(
+      tap({
+        next: () => this.quotes.update((current) => current.filter((o) => o.id !== id)),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  cancel(id: string, reason: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.cancel(id, { reason }).pipe(
+      tap({
+        next: () => {
+          this.quotes.update((current) =>
+            current.map((quote) =>
+              quote.id === id ? { ...quote, status: QuoteStatus.CANCELLED } : quote,
+            ),
+          );
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.update((quote) =>
+              quote ? { ...quote, status: QuoteStatus.CANCELLED } : quote,
+            );
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  convertToOrder(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.convertToOrder(id).pipe(
+      map(() => undefined),
+      tap({
+        next: () => {
+          this.quotes.update((current) => current.filter((o) => o.id !== id));
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.set(null);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.convertToInvoice(id, request).pipe(
+      map(() => undefined),
+      tap({
+        next: () => {
+          this.quotes.update((current) => current.filter((o) => o.id !== id));
+          if (this.currentQuote()?.id === id) {
+            this.currentQuote.set(null);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  getProductsForQuote(filters: {
+    customerId: string;
+    search?: string;
+    categoryId?: string;
+    composite?: boolean;
+    page?: number;
+    size?: number;
+  }) {
+    return this.api.getProductsForQuote(filters);
+  }
+
+  getWarehousesForQuote(customerId: string) {
+    return this.api.getWarehousesForQuote(customerId);
+  }
+
+  private reportError(error: unknown): void {
+    const message = this.errorMessage(error);
+    this.error.set(message);
+    this.messages.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+      life: 5000,
+    });
+  }
+
+  private errorMessage(error: unknown): string {
+    if (typeof error === 'object' && error !== null) {
+      const response = error as { error?: unknown; message?: unknown };
+      if (typeof response.error === 'object' && response.error !== null) {
+        const detail = (response.error as { message?: unknown }).message;
+        if (typeof detail === 'string' && detail.trim()) return detail;
+      }
+      if (typeof response.message === 'string' && response.message.trim()) {
+        return response.message;
+      }
+    }
+    return this.translations.t('shared.requestFailed');
+  }
+}

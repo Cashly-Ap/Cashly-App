@@ -1,0 +1,286 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (purchase(); as currentPurchase) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'procurement.purchases.purchaseDetails2' | translate"
+          [subtitle]="'procurement.purchases.completePurchaseInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="
+              ('procurement.purchases.purchase3' | translate) + currentPurchase.purchaseNumber
+            "
+            [subtitle]="currentPurchase.supplierName"
+          >
+            <div actions class="flex gap-3 flex-wrap">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="PURCHASE"
+                [auditEntityId]="currentPurchase.id"
+                [auditLabel]="currentPurchase.purchaseNumber"
+                [auditSubtitle]="currentPurchase.supplierName"
+              >
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentPurchase.status === PurchaseStatus.DRAFT) {
+                  <p-button
+                    [appPermission]="'UPDATE'"
+                    [label]="'finance.billing.invoices.edit' | translate"
+                    icon="pi pi-pencil"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CONFIRM'"
+                    [label]="'procurement.purchases.confirmPurchase2' | translate"
+                    icon="pi pi-check"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConfirm()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (
+                  currentPurchase.status === PurchaseStatus.DRAFT ||
+                  currentPurchase.status === PurchaseStatus.CONFIRMED
+                ) {
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [appRequiredPermissions]="['INVENTORY_WAREHOUSES:RECORD_EXIT']"
+                    [label]="'procurement.purchases.cancelPurchase2' | translate"
+                    icon="pi pi-ban"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelPurchase()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (currentPurchase.status === PurchaseStatus.DRAFT) {
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'procurement.purchases.purchaseNumber' | translate"
+                [value]="'#' + currentPurchase.purchaseNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
+                <app-text-badge
+                  [label]="getStatusLabel(currentPurchase.status) | translate"
+                  [variant]="getStatusVariant(currentPurchase.status)"
+                />
+              </app-details-info-field>
+              <app-details-info-field
+                [label]="'procurement.purchases.supplier2' | translate"
+                [value]="currentPurchase.supplierName"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="currentPurchase.supplierRif"
+              />
+              @if (currentPurchase.paymentType) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.paymentType' | translate"
+                  type="badge"
+                >
+                  <app-text-badge
+                    [label]="
+                      (currentPurchase.paymentType === 'CASH'
+                        ? 'finance.treasury.payables.cash'
+                        : 'finance.treasury.payables.credit'
+                      ) | translate
+                    "
+                    [variant]="currentPurchase.paymentType === 'CASH' ? 'success' : 'info'"
+                  />
+                </app-details-info-field>
+              }
+              @if (currentPurchase.issueDate) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.issueDate' | translate"
+                  [value]="(currentPurchase.issueDate | localizedDate: 'dd/MM/yyyy') || ''"
+                />
+              }
+              @if (currentPurchase.dueDate) {
+                <app-details-info-field
+                  [label]="'procurement.purchases.dueDate' | translate"
+                  [value]="(currentPurchase.dueDate | localizedDate: 'dd/MM/yyyy') || ''"
+                />
+              }
+              <app-details-info-field
+                [label]="'shared.total' | translate"
+                [value]="(currentPurchase.subtotal | localizedNumber: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.totalPaid' | translate"
+                [value]="(currentPurchase.totalPaid ?? 0 | localizedNumber: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.payables.balance' | translate"
+                [value]="(currentPurchase.balance ?? 0 | localizedNumber: '1.2-2') || ''"
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentPurchase.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(currentPurchase.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+
+        @if (currentPurchase.notes) {
+          <app-panel-card
+            [title]="'finance.billing.invoices.notes' | translate"
+            icon="pi-align-left"
+          >
+            <p class="text-sm whitespace-pre-wrap">{{ currentPurchase.notes }}</p>
+          </app-panel-card>
+        }
+
+        <app-panel-card [title]="'procurement.purchases.purchaseLines' | translate" icon="pi-list">
+          @if (currentPurchase.lines && currentPurchase.lines.length > 0) {
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (line of currentPurchase.lines; track line.id) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
+                >
+                  <div class="flex flex-col gap-1">
+                    <span class="font-medium text-sm">{{ line.productName }}</span>
+                    <app-code-badge [label]="line.productCode" />
+                  </div>
+                  <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.quantity' | translate
+                      }}</span>
+                      <span class="font-mono">{{ line.quantity | localizedNumber: '1.0-3' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'procurement.purchases.unitCost' | translate
+                      }}</span>
+                      <span class="font-mono">{{ line.unitCost | localizedNumber: '1.2-2' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.subtotal' | translate
+                      }}</span>
+                      <span class="font-mono font-semibold">{{
+                        line.subtotal | localizedNumber: '1.2-2'
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+              <div
+                class="flex justify-between text-sm font-semibold pt-2 border-t border-surface-200 dark:border-surface-700"
+              >
+                <span>{{ 'finance.billing.returns.total' | translate }}</span>
+                <span class="font-mono text-lg">{{
+                  currentPurchase.subtotal | localizedNumber: '1.2-2'
+                }}</span>
+              </div>
+            </div>
+            <div class="hidden md:block overflow-x-auto">
+              <p-table
+                [value]="currentPurchase.lines"
+                styleClass="p-datatable-sm cashly-detail-lines"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="text-right">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                    <th class="text-right">{{ 'procurement.purchases.unitCost' | translate }}</th>
+                    <th class="text-right">{{ 'finance.billing.returns.subtotal' | translate }}</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-line>
+                  <tr>
+                    <td>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium">{{ line.productName }}</span>
+                        <app-code-badge [label]="line.productCode" />
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{ line.quantity | localizedNumber: '1.0-3' }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{ line.unitCost | localizedNumber: '1.2-2' }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold">{{
+                        line.subtotal | localizedNumber: '1.2-2'
+                      }}</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="3" class="text-right font-semibold">
+                      {{ 'finance.billing.returns.total' | translate }}
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-bold text-lg">
+                        {{ currentPurchase.subtotal | localizedNumber: '1.2-2' }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          } @else {
+            <app-empty-state
+              icon="pi-inbox"
+              [message]="'procurement.purchases.thisPurchaseHasNoLines' | translate"
+            />
+          }
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+
+<app-confirm-purchase-dialog
+  [visible]="confirmDialogVisible()"
+  [purchaseId]="purchase()?.id ?? null"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>

@@ -1,3 +1,17 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { NavigationLookupService } from '@core/layouts/services/navigation-lookup.service';
+import { ListNavigationPickerComponent } from '@shared/components/list/list-navigation-picker/list-navigation-picker.component';
+import { ShortcutHelpComponent } from '@core/shortcuts/shortcut-help.component';
+import { ModuleNavigatorComponent } from '@core/shortcuts/module-navigator.component';
+import { KeyboardShortcutService } from '@core/shortcuts/keyboard-shortcut.service';
+import { DestroyRef } from '@angular/core';
+import { ModuleGroup, moduleGroupFromUrl } from '@core/preferences/module-appearance';
+import { effect, untracked } from '@angular/core';
+import { CompanyService } from '@features/platform/company/company.service';
+import { CompanyPermission } from '@features/platform/company/permissions';
+import { UserAvatarComponent } from '@shared/components/ui/user-avatar/user-avatar.component';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 import {
   Component,
   computed,
@@ -12,9 +26,7 @@ import {
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Router, RouterOutlet, NavigationStart } from '@angular/router';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ButtonModule } from 'primeng/button';
-import { ToastModule } from 'primeng/toast';
 import { MenuItem as PrimeMenuItem } from 'primeng/api';
 import { MenubarModule } from 'primeng/menubar';
 import { Ripple } from 'primeng/ripple';
@@ -22,98 +34,79 @@ import { AvatarModule } from 'primeng/avatar';
 import { Popover } from 'primeng/popover';
 import { DrawerModule, Drawer } from 'primeng/drawer';
 import { PanelMenuModule } from 'primeng/panelmenu';
-import { finalize } from 'rxjs';
 import { MenuItem } from '@core/layouts/models';
 import { buildMenuItems } from '@core/layouts/config';
-import { AuthService } from '@features/auth/services';
-import { UserType } from '@features/auth/models';
-import { ThemeToggleComponent } from '@core/theme/components';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { ReportActionService } from '@shared/services/report-action.service';
+import { CustomerPickerActionService } from '@features/sales/orders/services/customer-picker-action.service';
+import { SupplierPickerActionService } from '@features/procurement/purchases/services/supplier-picker-action.service';
+import { ReportActionHostComponent } from '@core/layouts/components/report-action-host/report-action-host.component';
+import { PdfBlobViewerHostComponent } from '@core/layouts/components/pdf-blob-viewer-host/pdf-blob-viewer-host.component';
+import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
-import { NotificationBellComponent } from '@core/notifications/components/notification-bell/notification-bell.component';
-import { CatalogPdfModalComponent } from '@features/reports/inventory/components/catalog-pdf-modal';
-import { CommercialCatalogPdfModalComponent } from '@features/reports/inventory/components/commercial-catalog-pdf-modal';
-import { StockPdfModalComponent } from '@features/reports/inventory/components/stock-pdf-modal';
-import { MovementsPdfModalComponent } from '@features/reports/inventory/components/movements-pdf-modal';
-import { PdfViewerModalComponent } from '@features/reports/inventory/components/pdf-viewer-modal';
-import { CatalogPdfApiService } from '@features/reports/inventory/services/api/catalog-pdf-api.service';
-import { CommercialCatalogPdfApiService } from '@features/reports/inventory/services/api/commercial-catalog-pdf-api.service';
-import { StockPdfApiService } from '@features/reports/inventory/services/api/stock-pdf-api.service';
-import { StockExcelApiService } from '@features/reports/inventory/services/api/stock-excel-api.service';
-import { MovementsPdfApiService } from '@features/reports/inventory/services/api/movements-pdf-api.service';
-import { MovementsExcelApiService } from '@features/reports/inventory/services/api/movements-excel-api.service';
-import {
-  CatalogPdfFilters,
-  CommercialCatalogPdfFilters,
-  StockPdfFilters,
-  MovementsPdfFilters,
-} from '@features/reports/inventory/models/interfaces';
-import { OrderPdfModalComponent } from '@features/reports/orders/components/order-pdf-modal/order-pdf-modal.component';
-import {
-  OrderPdfApiService,
-  OrdersPdfFilters,
-} from '@features/reports/orders/services/api/order-pdf-api.service';
-import { InvoicePdfModalComponent } from '@features/reports/invoices/components/invoice-pdf-modal/invoice-pdf-modal.component';
-import {
-  InvoicePdfApiService,
-  InvoicesPdfFilters,
-} from '@features/reports/invoices/services/api/invoice-pdf-api.service';
-import { QuotePdfModalComponent } from '@features/reports/quotes/components/quote-pdf-modal/quote-pdf-modal.component';
-import {
-  QuotePdfApiService,
-  QuotesPdfFilters,
-} from '@features/reports/quotes/services/api/quote-pdf-api.service';
-import { PurchasePdfModalComponent } from '@features/reports/purchases/components/purchase-pdf-modal/purchase-pdf-modal.component';
-import {
-  PurchasePdfApiService,
-  PurchasesPdfFilters,
-} from '@features/reports/purchases/services/api/purchase-pdf-api.service';
-import { CashRegisterReportModalComponent } from '@features/reports/finance/components/cash-register-report-modal/cash-register-report-modal.component';
-import { AccountsReceivablePdfModalComponent } from '@features/reports/finance/components/accounts-receivable-pdf-modal/accounts-receivable-pdf-modal.component';
-import {
-  CashRegisterReportFilters,
-  AccountsReceivableFilters,
-} from '@features/reports/finance/models/interfaces';
-import { FinancePdfApiService } from '@features/reports/finance/services/api/finance-pdf-api.service';
-import { CashRegisterApiService } from '@features/cash-register/services/api/cash-register-api.service';
+import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
+import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 import { fromEvent, Subscription, filter } from 'rxjs';
-import { FileDownloadHelper } from '@shared/utils/file-download.helper';
+import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
+import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialog-host/global-dialog-host.component';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-dialog.component';
+import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
+import { AuditTrailDialogHostComponent } from '@core/layouts/components/audit-trail-dialog-host/audit-trail-dialog-host.component';
+import { AuditTrailDialogService } from '@shared/services/audit-trail-dialog.service';
 export type ContentMaxWidth =
-  'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl' | '5xl' | '6xl' | '7xl' | 'full' | 'none';
+  | 'sm'
+  | 'md'
+  | 'lg'
+  | 'xl'
+  | '2xl'
+  | '4xl'
+  | '5xl'
+  | '6xl'
+  | '7xl'
+  | 'full'
+  | 'none';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    TranslatePipe,
+    ListNavigationPickerComponent,
+    ShortcutHelpComponent,
     CommonModule,
+    ModuleNavigatorComponent,
+    UserAvatarComponent,
     NgOptimizedImage,
     ButtonModule,
-    ToastModule,
     MenubarModule,
     Ripple,
     AvatarModule,
     RouterOutlet,
-    ThemeToggleComponent,
     Popover,
     PendingTabsDropdownComponent,
     NotificationBellComponent,
     DrawerModule,
     PanelMenuModule,
-    CatalogPdfModalComponent,
-    CommercialCatalogPdfModalComponent,
-    StockPdfModalComponent,
-    MovementsPdfModalComponent,
-    PdfViewerModalComponent,
-    OrderPdfModalComponent,
-    InvoicePdfModalComponent,
-    QuotePdfModalComponent,
-    PurchasePdfModalComponent,
-    CashRegisterReportModalComponent,
-    AccountsReceivablePdfModalComponent,
+    ActionDialogHostComponent,
+    GlobalDialogHostComponent,
+    ReportActionHostComponent,
+    PdfBlobViewerHostComponent,
+    ConfirmDialogModule,
+    DeleteDialogComponent,
+    CancelDialogComponent,
+    AuditTrailDialogHostComponent,
   ],
   templateUrl: './main-layout.component.html',
 })
 export class MainLayoutComponent implements OnInit, OnDestroy {
+  private readonly translations = inject(TranslationService);
+  @ViewChild(ModuleNavigatorComponent) moduleNavigator?: ModuleNavigatorComponent;
+  readonly navigationMenuItems = computed(() =>
+    this.buildMenuItems((this.currentUser()?.role || this.currentUser()?.type) as UserType),
+  );
+  private readonly keyboardShortcuts = inject(KeyboardShortcutService);
   @ViewChild('userMenu') userMenu!: Popover;
   @ViewChild('mobileDrawer') mobileDrawer!: Drawer;
 
@@ -121,56 +114,60 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   isMobile = signal(false);
 
   private authService = inject(AuthService);
+  readonly notificationPreferences = inject(NotificationPreferencesService);
   private router = inject(Router);
-  private sanitizer = inject(DomSanitizer);
-  private catalogPdfApi = inject(CatalogPdfApiService);
-  private commercialCatalogPdfApi = inject(CommercialCatalogPdfApiService);
-  private stockPdfApi = inject(StockPdfApiService);
-  private stockExcelApi = inject(StockExcelApiService);
-  private movementsPdfApi = inject(MovementsPdfApiService);
-  private movementsExcelApi = inject(MovementsExcelApiService);
-  private orderPdfApi = inject(OrderPdfApiService);
-  private invoicePdfApi = inject(InvoicePdfApiService);
-  private quotePdfApi = inject(QuotePdfApiService);
-  private purchasePdfApi = inject(PurchasePdfApiService);
-  private financePdfApi = inject(FinancePdfApiService);
-  private cashRegisterApi = inject(CashRegisterApiService);
+  private readonly navigationLookup = inject(NavigationLookupService);
+  private readonly reportActions = inject(ReportActionService);
+  private readonly customerPicker = inject(CustomerPickerActionService);
+  private readonly supplierPicker = inject(SupplierPickerActionService);
+  private readonly auditTrailDialog = inject(AuditTrailDialogService);
+  readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
   private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
-  private currentObjectUrl: string | null = null;
 
   maxWidth = input<ContentMaxWidth>('7xl');
 
   currentUser = this.authService.currentUser;
 
   logoSrc = '/cashly-logo.svg';
-
-  readonly activeModal = signal<
-    | 'catalog'
-    | 'commercialCatalog'
-    | 'stock'
-    | 'movements'
-    | 'orders'
-    | 'invoices'
-    | 'quotes'
-    | 'purchases'
-    | 'accountsReceivable'
-    | 'cashRegister'
-    | null
-  >(null);
-  readonly pdfViewerVisible = signal(false);
-  readonly pdfUrl = signal<SafeResourceUrl | null>(null);
-  readonly pdfTitle = signal('');
-  readonly loadingPdf = signal(false);
-
+  readonly companyService = inject(CompanyService);
+  readonly companyName = computed(
+    () =>
+      this.companyService.company()?.tradeName ||
+      this.companyService.company()?.legalName ||
+      'Cashly',
+  );
+  private readonly brandingUserId = computed(() => this.currentUser()?.id);
+  constructor() {
+    const unregisterNavigation = this.keyboardShortcuts.registerNavigation(() =>
+      this.moduleNavigator?.open(),
+    );
+    inject(DestroyRef).onDestroy(unregisterNavigation);
+    effect((onCleanup) => {
+      const userId = this.brandingUserId();
+      const canViewCompany = this.authService.hasPermissionCode(CompanyPermission.VIEW);
+      if (!userId || !canViewCompany) {
+        untracked(() => this.companyService.clear());
+        return;
+      }
+      const subscription = untracked(() =>
+        this.companyService.load().subscribe({ error: () => undefined }),
+      );
+      onCleanup(() => subscription.unsubscribe());
+    });
+  }
   primeMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertMenuItem(item));
+    return this.buildMenuItems(userType).map((item) =>
+      this.convertMenuItem(item, this.menuGroup(item)),
+    );
   });
 
   mobileMenuItems = computed<PrimeMenuItem[]>(() => {
     const userType = this.authService.currentUser()?.type as UserType;
-    return this.buildMenuItems(userType).map((item) => this.convertToMobileMenuItem(item));
+    return this.buildMenuItems(userType).map((item) =>
+      this.convertToMobileMenuItem(item, this.menuGroup(item)),
+    );
   });
 
   maxWidthClass = computed(() => {
@@ -187,6 +184,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.authService.isAuthenticated())
+      this.authService.ensureAccess().subscribe({ error: () => undefined });
     this.checkScreenSize();
     this.scrollSubscription = fromEvent(window, 'scroll').subscribe(() => {
       if (this.userMenu?.overlayVisible) {
@@ -196,7 +195,8 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
 
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationStart))
-      .subscribe(() => {
+      .subscribe((event) => {
+        this.activeModule.set(moduleGroupFromUrl((event as NavigationStart).url));
         this.closeMobileMenu();
       });
   }
@@ -204,23 +204,37 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.scrollSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
-    this.revokeCurrentUrl();
   }
 
   private buildMenuItems(userType: UserType): MenuItem[] {
     const user = this.authService.currentUser();
     const role = (user?.role || user?.type) as UserType;
     const callbacks = {
-      openCatalogModal: () => this.activeModal.set('catalog'),
-      openCommercialCatalogModal: () => this.activeModal.set('commercialCatalog'),
-      openStockModal: () => this.activeModal.set('stock'),
-      openMovementsModal: () => this.activeModal.set('movements'),
-      openOrdersPdfModal: () => this.activeModal.set('orders'),
-      openInvoicesPdfModal: () => this.activeModal.set('invoices'),
-      openQuotesPdfModal: () => this.activeModal.set('quotes'),
-      openPurchasesPdfModal: () => this.activeModal.set('purchases'),
-      openAccountsReceivablePdfModal: () => this.activeModal.set('accountsReceivable'),
-      openCashRegisterModal: () => this.activeModal.set('cashRegister'),
+      openListAction: (route: string, action: string, queryParams?: Record<string, string>) => {
+        this.navigationLookup.open(route, action, queryParams);
+      },
+      openCompanyAuditHistory: () => {
+        const company = this.companyService.company();
+        this.auditTrailDialog.open({
+          entityType: 'COMPANY',
+          ...(company?.id ? { entityId: company.id } : {}),
+          label: this.companyName(),
+        });
+      },
+      openCustomerEditPicker: () => this.customerPicker.open('edit'),
+      openCustomerBalancePicker: () => this.customerPicker.open('balance'),
+      openSupplierBalancePicker: () => this.supplierPicker.open('balance'),
+      openCatalogModal: () => this.reportActions.open('catalog'),
+      openCommercialCatalogModal: () => this.reportActions.open('commercialCatalog'),
+      openStockModal: () => this.reportActions.open('stock'),
+      openMovementsModal: () => this.reportActions.open('movements'),
+      openOrdersPdfModal: () => this.reportActions.open('orders'),
+      openInvoicesPdfModal: () => this.reportActions.open('invoices'),
+      openQuotesPdfModal: () => this.reportActions.open('quotes'),
+      openPurchasesPdfModal: () => this.reportActions.open('purchases'),
+      openAccountsReceivablePdfModal: () => this.reportActions.open('accountsReceivable'),
+      openAccountsPayablePdfModal: () => this.reportActions.open('accountsPayable'),
+      openCashRegisterModal: () => this.reportActions.open('cashRegister'),
     };
     return this.filterMenuByRole(buildMenuItems(callbacks), role);
   }
@@ -228,8 +242,22 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private filterMenuByRole(items: MenuItem[], userType: UserType): MenuItem[] {
     return items
       .filter((item) => {
-        if (item.allowedRoles && !item.allowedRoles.includes(userType)) return false;
-        if (item.requiredModule && !this.authService.hasModulePermission(item.requiredModule))
+        if (item.requiredPermission && !this.authService.hasPermissionCode(item.requiredPermission))
+          return false;
+        if (
+          item.requiredModule &&
+          !this.authService.hasPermission(item.requiredModule, item.requiredAction ?? 'READ')
+        )
+          return false;
+        if (
+          (item.requiredPermissions ?? []).some((grant) => {
+            const [module, action] = grant.split(':');
+            return !this.authService.hasPermission(
+              module as BusinessModule,
+              action as import('@features/platform/auth/authorization/models/access.model').PermissionAction,
+            );
+          })
+        )
           return false;
         return true;
       })
@@ -241,12 +269,25 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
           };
         }
         return item;
-      });
+      })
+      .filter(
+        (item) => !item.children || item.children.length > 0 || !!item.routerLink || !!item.command,
+      );
   }
 
-  private convertMenuItem(item: MenuItem): PrimeMenuItem {
+  private menuGroup(item: MenuItem): ModuleGroup {
+    if (item.routerLink) return moduleGroupFromUrl(item.routerLink);
+    const descendant = item.children?.find((child) => child.routerLink || child.children?.length);
+    return descendant ? this.menuGroup(descendant) : 'platform';
+  }
+
+  private convertMenuItem(
+    item: MenuItem,
+    group: ModuleGroup = this.menuGroup(item),
+  ): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
-      label: item.label,
+      styleClass: `cashly-module-${group}`,
+      label: this.translations.t(item.label),
       icon: item.icon,
       routerLink: item.routerLink,
       visible: item.visible ?? true,
@@ -256,228 +297,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     };
 
     if (item.children) {
-      primeItem.items = item.children.map((child) => this.convertMenuItem(child));
+      primeItem.items = item.children.map((child) => this.convertMenuItem(child, group));
     }
 
     return primeItem;
-  }
-
-  onCatalogPdf(filters: CatalogPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Productos');
-    this.pdfViewerVisible.set(true);
-    this.catalogPdfApi
-      .downloadPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onCommercialCatalogPdf(filters: CommercialCatalogPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Catálogo Comercial');
-    this.pdfViewerVisible.set(true);
-    this.commercialCatalogPdfApi
-      .downloadPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onStockPdf(filters: StockPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Stock de Almacenes');
-    this.pdfViewerVisible.set(true);
-    this.stockPdfApi
-      .getPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onMovementsPdf(filters: MovementsPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Historial de Movimientos');
-    this.pdfViewerVisible.set(true);
-    this.movementsPdfApi
-      .getPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onStockExcel(filters: StockPdfFilters): void {
-    this.activeModal.set(null);
-    this.stockExcelApi.getExcel(filters).subscribe({
-      next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, 'stock-almacenes.xlsx');
-      },
-    });
-  }
-
-  onMovementsExcel(filters: MovementsPdfFilters): void {
-    this.activeModal.set(null);
-    this.movementsExcelApi.getExcel(filters).subscribe({
-      next: (blob) => {
-        FileDownloadHelper.downloadFromBlob(blob, 'historial-movimientos.xlsx');
-      },
-    });
-  }
-
-  onOrdersPdf(filters: OrdersPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Pedidos');
-    this.pdfViewerVisible.set(true);
-    this.orderPdfApi
-      .downloadOrdersReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onInvoicesPdf(filters: InvoicesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Facturas');
-    this.pdfViewerVisible.set(true);
-    this.invoicePdfApi
-      .downloadInvoicesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onQuotesPdf(filters: QuotesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Presupuestos');
-    this.pdfViewerVisible.set(true);
-    this.quotePdfApi
-      .downloadQuotesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onPurchasesPdf(filters: PurchasesPdfFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Reporte de Compras');
-    this.pdfViewerVisible.set(true);
-    this.purchasePdfApi
-      .downloadPurchasesReportPdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onAccountsReceivablePdf(filters: AccountsReceivableFilters): void {
-    this.activeModal.set(null);
-    this.loadingPdf.set(true);
-    this.pdfTitle.set('Cuentas por Cobrar');
-    this.pdfViewerVisible.set(true);
-    this.financePdfApi
-      .getAccountsReceivablePdf(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  onCashRegisterReport(filters: CashRegisterReportFilters): void {
-    this.activeModal.set(null);
-    const baseName = `caja-${filters.dateFrom}-${filters.dateTo}-${filters.type.toLowerCase()}`;
-    if (filters.format === 'PDF') {
-      this.loadingPdf.set(true);
-      this.pdfTitle.set('Reporte de Caja');
-      this.pdfViewerVisible.set(true);
-    }
-    this.cashRegisterApi
-      .exportReport(filters)
-      .pipe(finalize(() => this.loadingPdf.set(false)))
-      .subscribe({
-        next: (blob) => {
-          if (filters.format === 'EXCEL') {
-            FileDownloadHelper.downloadFromBlob(blob, `${baseName}.xlsx`);
-            return;
-          }
-          this.revokeCurrentUrl();
-          const url = URL.createObjectURL(blob);
-          this.currentObjectUrl = url;
-          this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(url));
-        },
-      });
-  }
-
-  closePdfViewer(): void {
-    this.pdfViewerVisible.set(false);
-    this.revokeCurrentUrl();
-    this.pdfUrl.set(null);
-  }
-
-  private revokeCurrentUrl(): void {
-    if (this.currentObjectUrl) {
-      URL.revokeObjectURL(this.currentObjectUrl);
-      this.currentObjectUrl = null;
-    }
   }
 
   toggleUserMenu(event: Event): void {
@@ -487,17 +310,28 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   goToDashboard(): void {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/analytics/dashboard']);
+  }
+
+  goToSecurity(): void {
+    this.userMenu?.hide();
+    this.router.navigate(['/platform/auth/security']);
+  }
+
+  goToPreferences(): void {
+    this.userMenu?.hide();
+    this.closeMobileMenu();
+    void this.router.navigate(['/platform/auth/preferences']);
   }
 
   goToConfiguration(): void {
-    this.router.navigate(['/auth/configuration']);
+    this.router.navigate(['/platform/auth/configuration']);
     this.userMenu?.hide();
   }
 
   logout(): void {
     this.authService.clearAuthState();
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/platform/auth/login']);
     this.userMenu?.hide();
   }
 
@@ -516,9 +350,13 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     this.isMobile.set(window.innerWidth < 1024);
   }
 
-  private convertToMobileMenuItem(item: MenuItem): PrimeMenuItem {
+  private convertToMobileMenuItem(
+    item: MenuItem,
+    group: ModuleGroup = this.menuGroup(item),
+  ): PrimeMenuItem {
     const primeItem: PrimeMenuItem = {
-      label: item.label,
+      styleClass: `cashly-module-${group}`,
+      label: this.translations.t(item.label),
       icon: item.icon,
       visible: item.visible ?? true,
       badge: item.badge,
@@ -546,7 +384,7 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     }
 
     if (item.children) {
-      primeItem.items = item.children.map((child) => this.convertToMobileMenuItem(child));
+      primeItem.items = item.children.map((child) => this.convertToMobileMenuItem(child, group));
     }
 
     return primeItem;

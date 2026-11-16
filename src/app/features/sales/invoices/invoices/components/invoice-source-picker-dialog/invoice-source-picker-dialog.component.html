@@ -1,0 +1,146 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '48rem', maxHeight: '90vh' }"
+  (onShow)="onShow()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex flex-col gap-1">
+      <span class="font-semibold">{{
+        'finance.billing.invoices.loadOrdersAndQuotes' | translate
+      }}</span>
+      <span class="text-xs text-surface-500">{{
+        'finance.billing.invoices.onlyDraftOrConfirmedDocumentsAreShown' | translate
+      }}</span>
+    </div>
+  </ng-template>
+
+  @if (loading()) {
+    <div class="py-12 text-center text-surface-500">
+      <i class="pi pi-spin pi-spinner text-2xl"></i>
+      <p class="mt-2">{{ 'finance.billing.invoices.loadingDocuments' | translate }}</p>
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="py-12 text-center text-surface-500">
+      {{ 'finance.billing.invoices.noOrdersOrQuotesAreAvailableForThisCustomer' | translate }}
+    </div>
+  } @else {
+    <div class="flex flex-col gap-2 max-h-[55vh] overflow-y-auto">
+      @for (row of rows(); track row.key) {
+        <div
+          role="button"
+          tabindex="0"
+          class="w-full flex flex-wrap items-center gap-3 p-3 rounded-lg border text-left transition-colors"
+          [class.border-primary]="isSelected(row) && !isLoaded(row)"
+          [class]="isSelected(row) && !isLoaded(row) ? 'bg-primary/5' : ''"
+          [class.border-surface-200]="!isSelected(row) || isLoaded(row)"
+          [class.dark:border-surface-700]="!isSelected(row) || isLoaded(row)"
+          [class.border-red-300]="isBlocked(row) && !isLoaded(row)"
+          [class.dark:border-red-700]="isBlocked(row) && !isLoaded(row)"
+          [class.opacity-60]="isBlocked(row)"
+          [class.cursor-not-allowed]="isBlocked(row)"
+          (click)="toggle(row)"
+          (keydown.enter)="toggle(row)"
+        >
+          <i
+            [class]="
+              isLoaded(row)
+                ? 'pi pi-check-circle text-green-600'
+                : isStockAvailable(row) && isSelected(row)
+                  ? 'pi pi-check-circle text-primary'
+                  : isStockAvailable(row)
+                    ? 'pi pi-circle text-surface-400'
+                    : 'pi pi-ban text-red-500'
+            "
+          ></i>
+          <span class="flex-1 min-w-0">
+            <span class="block font-medium"
+              >{{
+                row.type === 'ORDER'
+                  ? ('finance.billing.invoices.order' | translate)
+                  : ('finance.billing.invoices.quote' | translate)
+              }}
+              #{{ row.number }}</span
+            >
+            <span class="text-xs text-surface-500"
+              >{{ row.statusLabel | translate }} · {{ stockStatusLabel(row) | translate }}</span
+            >
+          </span>
+          <span class="font-mono text-sm">{{
+            row.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+          }}</span>
+          <button
+            type="button"
+            class="shrink-0 inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs text-surface-600 dark:text-surface-300 border border-surface-200 dark:border-surface-700 hover:border-primary hover:text-primary"
+            (click)="togglePreview(row); $event.stopPropagation()"
+          >
+            <i [class]="isExpanded(row) ? 'pi pi-chevron-up' : 'pi pi-eye'"></i>
+            {{
+              isExpanded(row)
+                ? ('finance.billing.invoices.hide' | translate)
+                : ('finance.billing.invoices.viewContent' | translate)
+            }}
+          </button>
+          @if (isExpanded(row)) {
+            <div
+              class="basis-full mt-2 pt-3 border-t border-surface-200 dark:border-surface-700"
+              (click)="$event.stopPropagation()"
+            >
+              @if (previews()[row.key]; as lines) {
+                <div class="flex flex-col gap-1.5">
+                  @for (line of lines; track $index) {
+                    <div class="flex items-center justify-between gap-3 text-xs">
+                      <span class="min-w-0 truncate"
+                        >{{ line.productName }}
+                        <span class="text-surface-400">({{ line.productCode }})</span></span
+                      >
+                      <span class="shrink-0"
+                        >{{ line.quantity }} ×
+                        {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }} =
+                        {{ line.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
+                      >
+                    </div>
+                    <div
+                      class="pl-2 text-[11px]"
+                      [class.text-red-600]="line.available < line.required"
+                      [class.text-green-700]="line.available >= line.required"
+                    >
+                      {{ 'finance.billing.returns.stock' | translate }}: {{ line.available }} /
+                      {{ line.required }}
+                      @if (line.warehouses.length > 0) {
+                        <span> · {{ formatWarehouseStock(line) }}</span>
+                      } @else {
+                        <span>
+                          {{
+                            'finance.billing.invoices.noWarehouseStockRegistered' | translate
+                          }}</span
+                        >
+                      }
+                    </div>
+                  }
+                </div>
+              } @else {
+                <span class="text-xs text-surface-500">{{
+                  'finance.billing.invoices.loadingContent' | translate
+                }}</span>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <app-cancel-button icon="" (cancelled)="cancel()" />
+      <p-button
+        [label]="'finance.billing.invoices.loadSelected' | translate"
+        icon="pi pi-download"
+        [disabled]="selectedKeys().length === 0 || loading()"
+        (onClick)="confirm()"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

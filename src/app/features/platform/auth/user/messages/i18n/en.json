@@ -1,0 +1,9 @@
+{
+  "platform.auth.user.messages.couldNotCreateTheUserPleaseTryAgain": "Could not create the user. Please try again.",
+  "platform.auth.user.messages.couldNotUpdateTheUserPleaseTryAgain": "Could not update the user. Please try again.",
+  "platform.auth.user.messages.couldNotLoadTheUserItMayNotExist": "Could not load the user. It may not exist.",
+  "platform.auth.user.messages.couldNotDeleteTheUserPleaseTryAgain": "Could not delete the user. Please try again.",
+  "platform.auth.user.messages.userCreatedSuccessfully": "User created successfully",
+  "platform.auth.user.messages.userUpdatedSuccessfully": "User updated successfully",
+  "platform.auth.user.messages.userDeletedSuccessfully": "User deleted successfully"
+}

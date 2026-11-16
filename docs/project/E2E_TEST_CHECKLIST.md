@@ -64,7 +64,7 @@ This checklist turns [E2E_TEST_PROPOSAL.md](E2E_TEST_PROPOSAL.md) into implement
 - [ ] List, picker, filters, sorting, pagination, details, and balance.
 - [ ] Create/edit legal and natural customers.
 - [ ] Contacts, phones, addresses, billing address, RIF, and credit validation.
-- [ ] Portal access/password and warehouse access management.
+- [ ] Customer warehouse access management.
 - [ ] Advance, refund, balance transactions, and invalid amount cases.
 - [ ] Duplicate RIF/email, referenced delete, and unauthorized access.
 
@@ -86,7 +86,7 @@ This checklist turns [E2E_TEST_PROPOSAL.md](E2E_TEST_PROPOSAL.md) into implement
 - [ ] Create/edit simple product with SKU, barcode, unit, category, and prices.
 - [ ] Create/edit composite product and composition quantities.
 - [ ] Duplicate SKU/barcode, invalid price/quantity, circular composition, and referenced delete.
-- [ ] Verify product visibility and price in quote, order, invoice, and portal catalog.
+- [ ] Verify product visibility and price in quote, order, and invoice.
 
 ### Warehouses
 
@@ -166,7 +166,6 @@ This checklist turns [E2E_TEST_PROPOSAL.md](E2E_TEST_PROPOSAL.md) into implement
 ## Phase 5 — Cross-module workflows
 
 - [ ] Catalog → quote → order → invoice → partial payment → final payment.
-- [ ] Portal payment proof → back-office pending payment → approve/reject → summary refresh.
 - [ ] Supplier purchase → reception → stock movement/report.
 - [ ] Delivered invoice → return → stock reintegration → credit note.
 - [ ] Cash opening → payment/movement → reconciliation → close/report.

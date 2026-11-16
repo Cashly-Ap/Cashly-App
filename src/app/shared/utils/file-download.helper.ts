@@ -22,7 +22,7 @@ export class FileDownloadHelper {
       const actualFilename = filename || this.extractFilenameFromUrl(imageUrl);
       this.downloadFromBlob(blob, actualFilename);
     } catch (error) {
-      console.error('Error al descargar la imagen:', error);
+      console.error('Error downloading the image:', error);
       this.downloadFromUrl(imageUrl, filename);
     }
   }

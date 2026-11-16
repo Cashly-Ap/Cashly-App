@@ -1,0 +1,11 @@
+<app-document-confirmation-dialog
+  [visible]="visible()"
+  [model]="confirmationModel()"
+  [loading]="loading()"
+  [error]="error()"
+  [submitting]="submitting()"
+  [canAccept]="canConfirm()"
+  (accepted)="onConfirm()"
+  (cancelled)="cancelled.emit()"
+>
+</app-document-confirmation-dialog>

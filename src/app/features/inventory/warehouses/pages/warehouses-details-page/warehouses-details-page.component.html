@@ -1,0 +1,138 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (warehouse(); as currentWarehouse) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'inventory.warehouses.warehouseDetails2' | translate"
+          [subtitle]="'inventory.warehouses.generalWarehouseInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="currentWarehouse.name"
+            [subtitle]="currentWarehouse.state + ' · ' + currentWarehouse.municipality"
+          >
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="WAREHOUSE"
+                [auditEntityId]="currentWarehouse.id"
+                [auditLabel]="currentWarehouse.name"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'finance.billing.invoices.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentWarehouse.deletable) {
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                <p-button
+                  [appPermission]="'EXECUTE'"
+                  [label]="'inventory.warehouses.recordEntry' | translate"
+                  icon="pi pi-arrow-circle-down"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onRegisterEntry()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'EXECUTE'"
+                  [label]="'inventory.warehouses.recordExit' | translate"
+                  icon="pi pi-arrow-circle-up"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onRegisterExit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [label]="'inventory.warehouses.viewStock' | translate"
+                  icon="pi pi-box"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onViewStock()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [label]="'inventory.warehouses.movementHistory' | translate"
+                  icon="pi pi-history"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onViewMovements()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentWarehouse.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                [value]="currentWarehouse.state"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.municipality' | translate"
+                [value]="currentWarehouse.municipality"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.address' | translate"
+                [value]="currentWarehouse.address || '—'"
+              />
+              <app-details-info-field
+                [label]="'inventory.warehouses.status' | translate"
+                type="badge"
+              >
+                <app-status-badge [active]="currentWarehouse.active" />
+              </app-details-info-field>
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentWarehouse.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(currentWarehouse.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              @if (currentWarehouse.description) {
+                <app-details-info-field
+                  class="col-span-full"
+                  [label]="'finance.treasury.paymentmethods.description' | translate"
+                  [value]="currentWarehouse.description"
+                />
+              }
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+
+<p-confirmDialog styleClass="max-w-md" />
+
+<app-warehouse-stock-operation-dialog
+  [warehouseId]="warehouse()?.id ?? null"
+  [warehouseName]="warehouse()?.name ?? ''"
+  [operation]="selectedOperation()"
+  [visible]="operationDialogVisible()"
+  (visibleChange)="operationDialogVisible.set($event)"
+/>

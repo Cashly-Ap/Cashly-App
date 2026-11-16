@@ -1,0 +1,278 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="partners.suppliers.suppliers"
+      subtitle="partners.suppliers.manageSystemSuppliers"
+    />
+
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              [placeholder]="'partners.suppliers.searchByNameAliasOrTaxId' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <app-filter-field labelKey="partners.suppliers.supplierType">
+                <p-select
+                  [options]="supplierTypeOptions | translateOptions"
+                  [ngModel]="filterType()"
+                  (onChange)="onTypeFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allTypes' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.status">
+                <p-select
+                  [options]="activeOptions | translateOptions"
+                  [ngModel]="filterActive()"
+                  (onChange)="onActiveFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="partners.suppliers.venezuelanState">
+                <p-select
+                  [options]="stateOptions"
+                  [ngModel]="filterState()"
+                  (onChange)="onStateFilterChange($event.value)"
+                  [placeholder]="'finance.billing.invoices.allStatuses' | translate"
+                  styleClass="w-full"
+                  [filter]="true"
+                  [filterPlaceholder]="'partners.suppliers.labels.searchStates' | translate"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="inventory.warehouses.municipality">
+                <p-select
+                  [options]="municipalityOptions()"
+                  [ngModel]="filterMunicipality()"
+                  (onChange)="onMunicipalityFilterChange($event.value)"
+                  [placeholder]="'partners.suppliers.allMunicipalities' | translate"
+                  styleClass="w-full"
+                  [filter]="true"
+                  [filterPlaceholder]="'partners.suppliers.labels.searchMunicipalities' | translate"
+                  [disabled]="!filterState()"
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <app-submit-button
+            labelKey="partners.suppliers.newSupplier"
+            shortcut="new"
+            (action)="onCreate()"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
+    <div class="h-4"></div>
+
+    @if (showInitialLoading()) {
+      <app-panel-card>
+        <app-loading-spinner [message]="'partners.suppliers.loadingSuppliers' | translate" />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card>
+        <app-empty-state
+          icon="pi-truck"
+          [title]="'partners.suppliers.noSuppliersRegistered' | translate"
+          [message]="'partners.suppliers.startManagingSuppliersByAddingTheFirstOne' | translate"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'partners.suppliers.noSuppliersMatchYourSearchTryOtherTermsOrCreateANewSupplier'
+                  | translate
+              "
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="suppliers()"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+                styleClass="p-datatable-striped"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="code" class="w-20">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'finance.treasury.paymentmethods.code' | translate }}
+                        <p-sortIcon field="code" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="legalName" class="w-auto">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'partners.suppliers.legalName' | translate }}
+                        <p-sortIcon field="legalName" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="alias" class="w-auto hidden lg:table-cell">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'partners.suppliers.alias' | translate }}
+                        <p-sortIcon field="alias" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="rif" class="w-auto hidden lg:table-cell">
+                      <div class="flex items-center gap-2 font-semibold">
+                        RIF
+                        <p-sortIcon field="rif" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="type" class="w-32">
+                      <div class="flex items-center gap-2 font-semibold">
+                        {{ 'shared.type' | translate }}
+                        <p-sortIcon field="type" />
+                      </div>
+                    </th>
+                    <th class="w-24">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-40">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-supplier>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <span class="text-sm font-mono text-surface-500">#{{ supplier.code }}</span>
+                    </td>
+                    <td>
+                      <div class="font-medium">{{ supplier.legalName }}</div>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm text-surface-600 dark:text-surface-400">
+                        {{ supplier.alias }}
+                      </div>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm font-mono">{{ supplier.rif }}</div>
+                    </td>
+                    <td>
+                      <app-text-badge [label]="getTypeLabel(supplier.type)" variant="label" />
+                    </td>
+                    <td>
+                      <app-status-badge [active]="supplier.active" />
+                    </td>
+                    <td>
+                      <app-list-action-buttons [actions]="actionsFor(supplier)" />
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'partners.suppliers.labels.showingFirstToLastOfTotalrecordsSuppliers' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'partners.suppliers.noSuppliersMatchYourSearchTryOtherTermsOrCreateANewSupplier'
+                  | translate
+              "
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (supplier of suppliers(); track supplier.id) {
+              <app-panel-card padding="p-5">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-xs font-mono text-surface-400">#{{ supplier.code }}</span>
+                    </div>
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                      {{ supplier.legalName }}
+                    </h3>
+                    @if (supplier.alias) {
+                      <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
+                        {{ supplier.alias }}
+                      </p>
+                    }
+                    <p class="text-sm font-mono text-surface-500 mb-2">{{ supplier.rif }}</p>
+                    <div class="flex flex-wrap gap-2">
+                      <app-text-badge [label]="getTypeLabel(supplier.type)" variant="label" />
+                      <app-status-badge [active]="supplier.active" />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(supplier)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="px-4 py-3 mt-2">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'partners.suppliers.labels.showingFirstToLastOfTotalrecordsSuppliers' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

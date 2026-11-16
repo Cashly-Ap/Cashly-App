@@ -1,0 +1,417 @@
+@switch (view()) {
+  @case ('list') {
+    <div class="min-h-screen">
+      <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <app-page-header
+          [hero]="true"
+          kicker="finance.billing.creditnotes.cashlyManagement"
+          title="platform.auth.role.roles"
+          subtitle="platform.auth.role.manageSystemRoles"
+        />
+        <app-list-container>
+          <div class="px-4 sm:px-6 py-4">
+            <div
+              class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+            >
+              <div class="flex gap-2 items-center w-full sm:w-auto">
+                <app-search-field
+                  class="flex-1 sm:flex-none sm:min-w-[300px]"
+                  [value]="search()"
+                  [placeholder]="'platform.auth.department.searchByNameOrDescription' | translate"
+                  (search)="onSearch($event)"
+                />
+                <app-list-filter [activeCount]="filterActive() ? 1 : 0" (cleared)="onFilter('')">
+                  <div class="flex flex-col gap-1">
+                    <label class="text-xs font-medium text-surface-500">{{
+                      'finance.billing.invoices.status' | translate
+                    }}</label
+                    ><p-select
+                      [options]="activeOptions | translateOptions"
+                      [ngModel]="filterActive()"
+                      (onChange)="onFilter($event.value)"
+                      optionLabel="label"
+                      optionValue="value"
+                      [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+                      styleClass="w-full"
+                    />
+                  </div>
+                </app-list-filter>
+              </div>
+              <app-submit-button
+                labelKey="platform.auth.role.newRole"
+                shortcut="new"
+                (action)="onCreate()"
+              />
+            </div>
+          </div>
+        </app-list-container>
+        <div class="h-4"></div>
+        @if (loading()) {
+          <app-panel-card
+            ><app-loading-spinner [message]="'platform.auth.role.loadingRoles' | translate"
+          /></app-panel-card>
+        } @else if (items().length === 0) {
+          <app-panel-card
+            ><app-empty-state
+              icon="pi-shield"
+              [title]="'platform.auth.role.noRolesRegistered' | translate"
+              [message]="'platform.auth.role.startManagingRolesByAddingTheFirstOne' | translate"
+          /></app-panel-card>
+        } @else {
+          <app-list-container class="mt-4 hidden md:block">
+            <div class="relative">
+              @if (filteredItems().length === 0) {
+                <app-empty-state
+                  icon="pi-search"
+                  [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+                  [message]="
+                    'platform.auth.role.noRolesMatchYourSearchTryDifferentTermsOrCreateANewRole'
+                      | translate
+                  "
+                />
+              } @else {
+                <div class="overflow-x-auto rounded-t-2xl">
+                  <p-table
+                    [value]="pageItems()"
+                    [customSort]="true"
+                    (sortFunction)="onSort($event)"
+                    styleClass="p-datatable-striped"
+                  >
+                    <ng-template pTemplate="header"
+                      ><tr>
+                        <th pSortableColumn="name" class="w-auto">
+                          <div class="flex items-center gap-2 font-semibold">
+                            {{ 'finance.treasury.paymentmethods.name' | translate }}
+                            <p-sortIcon field="name" />
+                          </div>
+                        </th>
+                        <th pSortableColumn="description" class="w-auto hidden lg:table-cell">
+                          <div class="flex items-center gap-2 font-semibold">
+                            {{ 'finance.treasury.paymentmethods.description' | translate }}
+                            <p-sortIcon field="description" />
+                          </div>
+                        </th>
+                        <th class="w-24">
+                          <div class="font-semibold">
+                            {{ 'finance.billing.invoices.status' | translate }}
+                          </div>
+                        </th>
+                        <th class="w-20">
+                          <div class="font-semibold text-center">
+                            {{ 'shared.actions' | translate }}
+                          </div>
+                        </th>
+                      </tr></ng-template
+                    >
+                    <ng-template pTemplate="body" let-item
+                      ><tr class="transition-colors duration-150">
+                        <td>
+                          <div class="font-medium">{{ item.name }}</div>
+                        </td>
+                        <td class="hidden lg:table-cell">
+                          <div class="text-sm text-surface-600 dark:text-surface-400">
+                            {{ item.description || '—' }}
+                          </div>
+                        </td>
+                        <td><app-status-badge [active]="item.active" /></td>
+                        <td>
+                          <div class="flex justify-center">
+                            <app-list-action-buttons
+                              [actions]="actionsFor(item)"
+                              [ariaLabel]="'platform.auth.role.openRoleActions' | translate"
+                            />
+                          </div>
+                        </td></tr
+                    ></ng-template>
+                  </p-table>
+                </div>
+                <div class="px-4 sm:px-6 py-3">
+                  <app-paginator
+                    [first]="first()"
+                    [rows]="rows()"
+                    [totalRecords]="filteredItems().length"
+                    [rowsPerPageOptions]="[10, 25, 50, 100]"
+                    [showCurrentPageReport]="true"
+                    [currentPageReportTemplate]="
+                      'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate
+                    "
+                    (pageChange)="onPageChange($event)"
+                  />
+                </div>
+              }
+            </div>
+          </app-list-container>
+          <div class="md:hidden mt-6 relative">
+            @if (filteredItems().length === 0) {
+              <app-panel-card
+                ><app-empty-state
+                  icon="pi-search"
+                  [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+                  [message]="
+                    'platform.auth.role.noRolesMatchYourSearchTryDifferentTermsOrCreateANewRole'
+                      | translate
+                  "
+              /></app-panel-card>
+            } @else {
+              <div class="flex flex-col gap-4">
+                @for (item of pageItems(); track item.id) {
+                  <app-panel-card padding="p-5">
+                    <div class="flex justify-between items-start mb-3">
+                      <div class="flex-1">
+                        <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                          {{ item.name }}
+                        </h3>
+                        @if (item.description) {
+                          <p class="text-sm text-surface-600 dark:text-surface-400 mb-1">
+                            {{ item.description }}
+                          </p>
+                        }
+                        <div class="flex flex-wrap gap-2">
+                          <app-status-badge [active]="item.active" />
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                    >
+                      <app-list-action-buttons
+                        [actions]="actionsFor(item)"
+                        [ariaLabel]="'platform.auth.role.openRoleActions' | translate"
+                      />
+                    </div>
+                  </app-panel-card>
+                }
+              </div>
+              <div class="px-4 py-3 mt-2">
+                <app-paginator
+                  [first]="first()"
+                  [rows]="rows()"
+                  [totalRecords]="filteredItems().length"
+                  [rowsPerPageOptions]="[10, 25, 50, 100]"
+                  [showCurrentPageReport]="true"
+                  [currentPageReportTemplate]="
+                    'platform.auth.showingFirstToLastOfTotalrecordsRoles' | translate
+                  "
+                  (pageChange)="onPageChange($event)"
+                />
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+  @case ('detail') {
+    <div class="min-h-screen">
+      <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        @if (loading()) {
+          <app-loading-spinner />
+        }
+        @if (editing(); as value) {
+          <div class="flex flex-col gap-6">
+            <app-page-header
+              [title]="'platform.auth.role.roleDetails' | translate"
+              [subtitle]="'platform.auth.role.completeRoleInformation' | translate"
+            />
+            <app-panel-card>
+              <app-details-card-header
+                [title]="value.name || ''"
+                [subtitle]="value.description || ''"
+              >
+                <div actions class="flex gap-3">
+                  <app-back-button
+                    labelKey="finance.billing.creditnotes.back"
+                    styleClass="w-full sm:w-auto"
+                    (back)="onBack()"
+                  />
+                  <app-detail-actions-menu
+                    #actionsMenu
+                    auditEntityType="ROLE"
+                    [auditEntityId]="value.id"
+                    [auditLabel]="value.name"
+                  >
+                    @if (!isSystemAdministrator(value)) {
+                      <p-button
+                        [appPermission]="'UPDATE'"
+                        [label]="'finance.billing.invoices.edit' | translate"
+                        icon="pi pi-pencil"
+                        [link]="true"
+                        (onClick)="actionsMenu.hide(); onEdit({ id: value.id! })"
+                        styleClass="w-full justify-start text-left text-sm"
+                      />
+                      <p-button
+                        [appPermission]="'DELETE'"
+                        [label]="'finance.billing.creditnotes.delete' | translate"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [link]="true"
+                        (onClick)="actionsMenu.hide(); remove(value)"
+                        styleClass="w-full justify-start text-left text-sm"
+                      />
+                    }
+                  </app-detail-actions-menu>
+                </div>
+              </app-details-card-header>
+              <div class="p-4 sm:p-6">
+                <app-details-info-grid [columns]="2" [fillLastRow]="true">
+                  <app-details-info-field
+                    [label]="'finance.treasury.paymentmethods.name' | translate"
+                    [value]="value.name || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'finance.billing.invoices.status' | translate"
+                    type="badge"
+                    ><app-status-badge [active]="!!value.active"
+                  /></app-details-info-field>
+                </app-details-info-grid>
+                @if (value.description) {
+                  <div class="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+                    <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1">
+                      {{ 'finance.treasury.paymentmethods.description' | translate }}
+                    </p>
+                    <p class="text-sm text-surface-600 dark:text-surface-400 whitespace-pre-wrap">
+                      {{ value.description }}
+                    </p>
+                  </div>
+                }
+              </div>
+            </app-panel-card>
+            <app-panel-card>
+              <app-details-card-header [title]="'platform.auth.role.permissions' | translate" />
+              <div class="p-4 sm:p-6">
+                <app-details-info-grid [columns]="2" [fillLastRow]="true">
+                  @for (group of grantedGroups(); track group.moduleKey) {
+                    <app-details-info-field [label]="group.moduleKey | translate" type="badge">
+                      <div class="flex flex-wrap gap-2">
+                        @for (permission of group.permissions; track permission.code) {
+                          <span
+                            class="text-xs rounded-lg px-2 py-1 bg-surface-100 dark:bg-surface-800 text-surface-700 dark:text-surface-300"
+                            >{{ permission.labelKey | translate }}</span
+                          >
+                        }
+                      </div>
+                    </app-details-info-field>
+                  } @empty {
+                    <p class="text-sm text-surface-400">
+                      {{ 'platform.auth.role.noAccess' | translate }}
+                    </p>
+                  }
+                </app-details-info-grid>
+              </div>
+            </app-panel-card>
+          </div>
+        }
+      </div>
+    </div>
+  }
+  @case ('form') {
+    <app-form-container>
+      <app-form-header
+        [title]="
+          editing()?.id
+            ? ('platform.auth.role.editRole' | translate)
+            : ('platform.auth.role.newRole' | translate)
+        "
+        [subtitle]="'platform.auth.role.completeTheRoleInformation' | translate"
+      />
+      @if (loading()) {
+        <app-loading-spinner />
+      } @else if (editing(); as value) {
+        <form [formGroup]="form" (ngSubmit)="submit()">
+          <app-panel-card>
+            <p-tabs value="general">
+              <p-tablist>
+                <p-tab value="general"
+                  ><i class="pi pi-info-circle mr-2"></i
+                  >{{ 'partners.suppliers.general' | translate }}</p-tab
+                >
+                <p-tab value="permissions"
+                  ><i class="pi pi-shield mr-2"></i
+                  >{{ 'platform.auth.role.permissions' | translate }}</p-tab
+                >
+              </p-tablist>
+              <p-tabpanels>
+                <p-tabpanel value="general">
+                  <app-tab-content [columns]="1">
+                    <app-text-input
+                      [control]="control('name')"
+                      [label]="'finance.treasury.paymentmethods.name' | translate"
+                      [placeholder]="'platform.auth.role.roleName' | translate"
+                      [errorMessage]="
+                        'users.profile.first.name.is.required.maximum.100.characters' | translate
+                      "
+                    />
+                    @if (value.id) {
+                      <div
+                        class="flex items-center justify-between p-4 rounded-lg border border-surface-200 dark:border-surface-800 bg-surface-50 dark:bg-surface-900"
+                      >
+                        <div>
+                          <p class="font-medium text-surface-800 dark:text-surface-200">
+                            {{ 'platform.auth.role.activeRole' | translate }}
+                          </p>
+                          <p class="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
+                            {{
+                              'platform.auth.role.indicatesWhetherTheRoleIsActiveInTheSystem'
+                                | translate
+                            }}
+                          </p>
+                        </div>
+                        <p-toggleswitch formControlName="active" />
+                      </div>
+                    }
+                    <div
+                      class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600"
+                    >
+                      <label
+                        for="role-description"
+                        class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+                        >{{ 'finance.treasury.paymentmethods.description' | translate }}</label
+                      >
+                      <textarea
+                        pTextarea
+                        id="role-description"
+                        formControlName="description"
+                        rows="4"
+                        [placeholder]="'platform.auth.role.roleDescription' | translate"
+                        class="w-full resize-none"
+                      ></textarea>
+                      @if (form.controls.description.invalid && form.controls.description.touched) {
+                        <small class="text-red-500 text-xs">{{
+                          'platform.auth.department.descriptionCannotExceed500Characters'
+                            | translate
+                        }}</small>
+                      }
+                    </div>
+                  </app-tab-content>
+                </p-tabpanel>
+                <p-tabpanel value="permissions">
+                  <app-permission-editor
+                    [permissions]="value.permissions || []"
+                    [protected]="isSystemAdministrator(value)"
+                    [disabled]="
+                      busy() ||
+                      (value.id
+                        ? !authorization.can(module, 'UPDATE')
+                        : !authorization.can(module, 'CREATE'))
+                    "
+                    (permissionsChange)="updatePermissions($event)"
+                  />
+                </p-tabpanel>
+              </p-tabpanels>
+            </p-tabs>
+            <app-form-actions
+              [submitLabel]="
+                (value.id ? 'platform.auth.role.saveRole' : 'platform.auth.role.createRole')
+                  | translate
+              "
+              [cancelLabel]="'shared.cancel' | translate"
+              [loading]="busy()"
+              [disabled]="form.invalid"
+              (cancel)="onBack()"
+            />
+          </app-panel-card>
+        </form>
+      }
+    </app-form-container>
+  }
+}

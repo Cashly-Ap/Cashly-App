@@ -1,0 +1,240 @@
+import { StatusSeverity } from '@shared/models/status-variant';
+import { cashRegisterStatusSeverity } from '@features/finance/treasury/cash-register/models/cash-register-status.presentation';
+import { LanguageService } from '@core/i18n/language.service';
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
+
+import { ListContainerComponent } from '@shared/components/list/list-container/list-container.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { DatePickerModule } from 'primeng/datepicker';
+import { PaginatorModule } from 'primeng/paginator';
+import { Popover, PopoverModule } from 'primeng/popover';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { TooltipModule } from 'primeng/tooltip';
+import { CashRegisterApplicationService } from '@features/finance/treasury/cash-register/services/application/cash-register-application.service';
+import { CashRegisterResponse } from '@features/finance/treasury/cash-register/models/interfaces/closure.interface';
+import { getCashMovementTypeLabel } from '@features/finance/treasury/cash-register/models/enums/cash-movement-type.enum';
+import { CashRegisterMovementsDialogComponent } from '@features/finance/treasury/cash-register/components/cash-register-movements-dialog/cash-register-movements-dialog.component';
+
+import { ListFilterComponent } from '@shared/components/list/list-filter/list-filter.component';
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+@Component({
+  selector: 'app-cash-register-history-page',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    PaginatorComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    TextBadgeComponent,
+    BackButtonComponent,
+    PanelCardComponent,
+    ListFilterComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    ListContainerComponent,
+    LoadingSpinnerComponent,
+    EmptyStateComponent,
+    TableModule,
+    ButtonModule,
+    DatePickerModule,
+    PaginatorModule,
+    PopoverModule,
+    IconFieldModule,
+    InputIconModule,
+    TooltipModule,
+    CashRegisterMovementsDialogComponent,
+  ],
+  templateUrl: './cash-register-history-page.component.html',
+})
+export class CashRegisterHistoryPageComponent implements OnInit {
+  readonly locale = inject(LanguageService).locale;
+
+  private readonly navigationHistory = inject(NavigationHistoryService);
+  private readonly service = inject(CashRegisterApplicationService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly history = this.service.history;
+  readonly loading = this.service.loading;
+  readonly totalElements = this.service.totalElements;
+
+  readonly first = signal(0);
+  readonly rows = signal(10);
+  readonly filterDateFrom = signal<Date | null>(null);
+  readonly filterDateTo = signal<Date | null>(null);
+  readonly orderBy = signal('openedAt');
+  readonly orderDir = signal<'asc' | 'desc'>('desc');
+  readonly selectedRegister = signal<CashRegisterResponse | null>(null);
+  readonly movementsRegister = signal<CashRegisterResponse | null>(null);
+  readonly movementsDialogVisible = signal(false);
+  readonly movementsLoading = signal(false);
+
+  readonly activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterDateFrom()) count++;
+    if (this.filterDateTo()) count++;
+    return count;
+  });
+
+  readonly showInitialLoading = computed(
+    () => this.loading() && (this.history()?.length ?? 0) === 0,
+  );
+
+  readonly isEmptyDatabase = computed(
+    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() === 0,
+  );
+
+  readonly hasFilteredResults = computed(
+    () => !this.loading() && this.totalElements() === 0 && this.activeFilterCount() > 0,
+  );
+
+  ngOnInit(): void {
+    this.loadHistory();
+  }
+
+  onDateFromChange(value: Date | null): void {
+    this.filterDateFrom.set(value);
+    this.first.set(0);
+    this.loadHistory();
+  }
+
+  onDateToChange(value: Date | null): void {
+    this.filterDateTo.set(value);
+    this.first.set(0);
+    this.loadHistory();
+  }
+
+  onPageChange(event: { first: number; rows: number }): void {
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? 10);
+    this.loadHistory();
+  }
+
+  onSort(field: string): void {
+    if (this.orderBy() === field) {
+      this.orderDir.update((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      this.orderBy.set(field);
+      this.orderDir.set('desc');
+    }
+    this.first.set(0);
+    this.loadHistory();
+  }
+
+  getSortIcon(field: string): string {
+    if (this.orderBy() !== field) return 'pi pi-sort-alt';
+    return this.orderDir() === 'asc' ? 'pi pi-sort-up' : 'pi pi-sort-down';
+  }
+
+  clearFilters(): void {
+    this.filterDateFrom.set(null);
+    this.filterDateTo.set(null);
+    this.first.set(0);
+    this.loadHistory();
+  }
+
+  openRowActions(event: Event, register: CashRegisterResponse, popover: Popover): void {
+    this.selectedRegister.set(register);
+    popover.toggle(event);
+  }
+
+  onViewMovements(): void {
+    const register = this.selectedRegister();
+    if (!register) return;
+
+    this.movementsRegister.set(register);
+    this.movementsDialogVisible.set(true);
+    this.movementsLoading.set(true);
+
+    this.service
+      .getSessionById(register.id)
+      .pipe(
+        finalize(() => this.movementsLoading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (session) => {
+          if (session) this.movementsRegister.set(session);
+        },
+      });
+  }
+
+  onViewDetail(): void {
+    const register = this.selectedRegister();
+    if (!register) return;
+    this.router.navigate(['/finance/treasury/cash-register'], {
+      queryParams: { session: register.id },
+    });
+  }
+
+  onBack(): void {
+    this.navigationHistory.back(['/finance/treasury/cash-register']);
+  }
+
+  getStatusLabel(status: string): string {
+    switch (status) {
+      case 'OPEN':
+        return 'finance.treasury.cashregister.statusOpen';
+      case 'CLOSED':
+        return 'finance.treasury.cashregister.statusClosed';
+      default:
+        return status;
+    }
+  }
+
+  getStatusSeverity(status: string): StatusSeverity {
+    return cashRegisterStatusSeverity(status);
+  }
+
+  getMovementTypeLabel(type: string): string {
+    return getCashMovementTypeLabel(type);
+  }
+
+  get currentPage(): number {
+    return this.first() / this.rows();
+  }
+
+  private loadHistory(): void {
+    const sort = `${this.orderBy()},${this.orderDir()}`;
+    const dateFrom = this.filterDateFrom()
+      ? this.filterDateFrom()!.toISOString().split('T')[0]
+      : undefined;
+    const dateTo = this.filterDateTo()
+      ? this.filterDateTo()!.toISOString().split('T')[0]
+      : undefined;
+
+    this.service
+      .loadHistory(this.currentPage, this.rows(), dateFrom, dateTo, sort, 'SIMPLE')
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe();
+  }
+}

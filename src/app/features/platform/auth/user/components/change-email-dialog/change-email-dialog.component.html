@@ -1,0 +1,42 @@
+<p-dialog
+  [header]="'platform.auth.user.changeEmailAddress' | translate"
+  [visible]="visible()"
+  (visibleChange)="visibleChange.emit($event)"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  styleClass="w-full max-w-md"
+>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-3 pt-2">
+    <app-text-input
+      [label]="'platform.auth.user.currentEmailAddress' | translate"
+      [placeholder]="'platform.auth.userExampleComLabel' | translate"
+      [control]="currentEmailControl"
+      [errorMessage]="currentEmailError()"
+    />
+    <app-text-input
+      [label]="'platform.auth.user.newEmailAddress' | translate"
+      [placeholder]="'platform.auth.userExampleComLabel' | translate"
+      [control]="emailControl"
+      [errorMessage]="emailError()"
+    />
+    <app-text-input
+      [label]="'platform.auth.user.confirmEmailAddress' | translate"
+      [placeholder]="'platform.auth.userExampleComLabel' | translate"
+      [control]="confirmEmailControl"
+      [errorMessage]="confirmEmailError()"
+    />
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <app-cancel-button icon="" [disabled]="loading()" (cancelled)="onCancel()" />
+      <app-submit-button
+        labelKey="finance.billing.creditnotes.save"
+        (action)="onSubmit()"
+        [loading]="loading()"
+        [disabled]="form.invalid"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

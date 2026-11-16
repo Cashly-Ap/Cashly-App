@@ -1,7 +1,15 @@
+import { addListNavigationActions } from '@core/layouts/config/list-navigation.config';
 import { MenuItem } from '@core/layouts/models';
-import { BusinessModule } from '@features/users/models/enums';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { CompanyPermission } from '@features/platform/company/permissions';
+import { AuditPermission } from '@features/platform/audit/permissions';
 
 export interface MenuCallbacks {
+  openListAction: (route: string, action: string, queryParams?: Record<string, string>) => void;
+  openCompanyAuditHistory: () => void;
+  openCustomerEditPicker: () => void;
+  openCustomerBalancePicker: () => void;
+  openSupplierBalancePicker: () => void;
   openCatalogModal: () => void;
   openCommercialCatalogModal: () => void;
   openStockModal: () => void;
@@ -10,304 +18,346 @@ export interface MenuCallbacks {
   openInvoicesPdfModal: () => void;
   openQuotesPdfModal: () => void;
   openAccountsReceivablePdfModal: () => void;
+  openAccountsPayablePdfModal: () => void;
   openCashRegisterModal: () => void;
   openPurchasesPdfModal: () => void;
 }
 
+const INVOICE_FOLDER_ROUTES = [
+  '/sales/invoices',
+  '/sales/credit-notes',
+  '/sales/debit-notes',
+  '/sales/returns',
+];
+
+function menuRoute(item: MenuItem): string | undefined {
+  return item.routerLink ?? item.children?.find((child) => child.routerLink)?.routerLink;
+}
+
+function groupInvoiceDocuments(items: MenuItem[]): MenuItem[] {
+  return items.map((item) => {
+    if (item.label !== 'Ventas' || !item.children) return item;
+    const documents = INVOICE_FOLDER_ROUTES.map((route) =>
+      item.children!.find((child) => menuRoute(child) === route),
+    ).filter((child): child is MenuItem => child !== undefined);
+    if (!documents.length) return item;
+    const invoicesIndex = item.children.findIndex(
+      (child) => menuRoute(child) === '/sales/invoices',
+    );
+    const remaining = item.children.filter((child) => !documents.includes(child));
+    const folder: MenuItem = {
+      label: 'Facturas',
+      icon: 'pi pi-file',
+      allowedRoles: documents[0].allowedRoles,
+      children: documents.map((document) => ({
+        label: document.label,
+        icon: document.icon,
+        routerLink: menuRoute(document),
+        allowedRoles: document.allowedRoles,
+        requiredModule: document.requiredModule,
+      })),
+    };
+    remaining.splice(Math.min(Math.max(invoicesIndex, 0), remaining.length), 0, folder);
+    return { ...item, children: remaining };
+  });
+}
+
 export function buildMenuItems(callbacks: MenuCallbacks): MenuItem[] {
-  return [
-    {
-      label: 'Dashboard',
-      icon: 'pi pi-chart-line',
-      routerLink: '/dashboard',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.DASHBOARD,
-    },
-    {
-      label: 'Gestión de Usuarios',
-      icon: 'pi pi-users',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      children: [
+  const businessRoles: NonNullable<MenuItem['allowedRoles']> = ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'];
+  const page = (
+    label: string,
+    icon: string,
+    routerLink: string,
+    requiredModule: BusinessModule,
+  ): MenuItem => ({
+    label,
+    icon,
+    routerLink,
+    allowedRoles: businessRoles,
+    requiredModule,
+  });
+  const group = (label: string, icon: string, children: MenuItem[]): MenuItem => ({
+    label,
+    icon,
+    children,
+    allowedRoles: businessRoles,
+  });
+  const report = (
+    label: string,
+    icon: string,
+    command: () => void,
+    requiredModule: BusinessModule,
+  ): MenuItem => ({
+    label,
+    icon,
+    command,
+    requiredAction:
+      (
         {
-          label: 'Clientes',
-          icon: 'pi pi-id-card',
-          routerLink: '/customers',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Usuarios',
-          icon: 'pi pi-user',
-          routerLink: '/users',
-          allowedRoles: ['SUPER_ADMIN'],
-          requiredModule: BusinessModule.USERS,
-        },
+          'Reporte de Presupuestos PDF': 'REPORT_QUOTES',
+          'Reporte de Pedidos PDF': 'REPORT_ORDERS',
+          'Reporte de Compras PDF': 'REPORT_PURCHASES',
+          'Reporte de Productos PDF': 'REPORT_PRODUCTS',
+          'Catálogo Comercial PDF': 'REPORT_COMMERCIAL_CATALOG',
+          Stock: 'REPORT_STOCK',
+          Movimientos: 'REPORT_MOVEMENTS',
+          'Reporte de Facturas PDF': 'REPORT_INVOICES',
+          'Reportes de Caja': 'REPORT_CASH_REGISTER',
+          'Cuentas por Cobrar PDF': 'REPORT_RECEIVABLES',
+          'Cuentas por Pagar PDF': 'REPORT_PAYABLES',
+        } as Record<
+          string,
+          import('@features/platform/auth/authorization/models/access.model').PermissionAction
+        >
+      )[label] ?? 'EXPORT',
+    requiredModule,
+    allowedRoles: businessRoles,
+  });
+  const withReports = (item: MenuItem, ...reports: MenuItem[]): MenuItem => ({
+    ...item,
+    children: reports,
+  });
+
+  return groupInvoiceDocuments(
+    addListNavigationActions(
+      [
+        group('Ventas', 'pi pi-shopping-bag', [
+          withReports(
+            page('Presupuestos', 'pi pi-file-edit', '/sales/quotes', BusinessModule.SALES_QUOTES),
+            report(
+              'Reporte de Presupuestos PDF',
+              'pi pi-file-pdf',
+              callbacks.openQuotesPdfModal,
+              BusinessModule.SALES_QUOTES,
+            ),
+          ),
+          withReports(
+            page('Pedidos', 'pi pi-shopping-cart', '/sales/orders', BusinessModule.SALES_ORDERS),
+            report(
+              'Reporte de Pedidos PDF',
+              'pi pi-file-pdf',
+              callbacks.openOrdersPdfModal,
+              BusinessModule.SALES_ORDERS,
+            ),
+          ),
+          withReports(
+            page(
+              'Facturas',
+              'pi pi-file',
+              '/sales/invoices',
+              BusinessModule.SALES_INVOICES_INVOICES,
+            ),
+            report(
+              'Reporte de Facturas PDF',
+              'pi pi-file-pdf',
+              callbacks.openInvoicesPdfModal,
+              BusinessModule.SALES_INVOICES_INVOICES,
+            ),
+          ),
+          page(
+            'Notas de débito',
+            'pi pi-minus-circle',
+            '/sales/debit-notes',
+            BusinessModule.SALES_INVOICES_DEBIT_NOTES,
+          ),
+          page(
+            'Notas de crédito',
+            'pi pi-file-plus',
+            '/sales/credit-notes',
+            BusinessModule.SALES_INVOICES_CREDIT_NOTES,
+          ),
+          page(
+            'Devoluciones',
+            'pi pi-undo',
+            '/sales/returns',
+            BusinessModule.SALES_INVOICES_RETURNS,
+          ),
+        ]),
+        group('Compras', 'pi pi-shopping-cart', [
+          withReports(
+            page(
+              'Compras',
+              'pi pi-shopping-cart',
+              '/procurement/purchases',
+              BusinessModule.PURCHASES,
+            ),
+            report(
+              'Reporte de Compras PDF',
+              'pi pi-file-pdf',
+              callbacks.openPurchasesPdfModal,
+              BusinessModule.PURCHASES,
+            ),
+          ),
+        ]),
+        group('Catálogo', 'pi pi-list', [
+          withReports(
+            page('Productos', 'pi pi-box', '/catalog/products', BusinessModule.CATALOG_PRODUCTS),
+            report(
+              'Reporte de Productos PDF',
+              'pi pi-table',
+              callbacks.openCatalogModal,
+              BusinessModule.CATALOG_PRODUCTS,
+            ),
+            report(
+              'Catálogo Comercial PDF',
+              'pi pi-book',
+              callbacks.openCommercialCatalogModal,
+              BusinessModule.CATALOG_PRODUCTS,
+            ),
+          ),
+          page(
+            'Categorías',
+            'pi pi-tags',
+            '/catalog/categories',
+            BusinessModule.CATALOG_CATEGORIES,
+          ),
+          page(
+            'Tipos de precios',
+            'pi pi-tag',
+            '/catalog/price-types',
+            BusinessModule.CATALOG_PRICES,
+          ),
+        ]),
+        group('Inventario', 'pi pi-database', [
+          withReports(
+            page(
+              'Almacenes',
+              'pi pi-warehouse',
+              '/inventory/warehouses',
+              BusinessModule.INVENTORY_WAREHOUSES,
+            ),
+            group('Reportes', 'pi pi-chart-bar', [
+              report(
+                'Stock',
+                'pi pi-chart-bar',
+                callbacks.openStockModal,
+                BusinessModule.INVENTORY_WAREHOUSES,
+              ),
+              report(
+                'Movimientos',
+                'pi pi-arrow-right-arrow-left',
+                callbacks.openMovementsModal,
+                BusinessModule.INVENTORY_WAREHOUSES,
+              ),
+            ]),
+          ),
+        ]),
+        group('Finanzas', 'pi pi-dollar', [
+          group('Tesorería', 'pi pi-wallet', [
+            withReports(
+              page(
+                'Caja',
+                'pi pi-calculator',
+                '/finance/treasury/cash-register',
+                BusinessModule.FINANCE_CASH_REGISTER,
+              ),
+              page(
+                'Historial de caja',
+                'pi pi-history',
+                '/finance/treasury/cash-register/history',
+                BusinessModule.FINANCE_CASH_REGISTER,
+              ),
+              report(
+                'Reportes de Caja',
+                'pi pi-chart-bar',
+                callbacks.openCashRegisterModal,
+                BusinessModule.FINANCE_CASH_REGISTER,
+              ),
+            ),
+            withReports(
+              page(
+                'Cuentas por cobrar',
+                'pi pi-money-bill',
+                '/finance/treasury/receivables',
+                BusinessModule.FINANCE_RECEIVABLES,
+              ),
+              report(
+                'Cuentas por Cobrar PDF',
+                'pi pi-file-pdf',
+                callbacks.openAccountsReceivablePdfModal,
+                BusinessModule.FINANCE_RECEIVABLES,
+              ),
+            ),
+            withReports(
+              page(
+                'Cuentas por pagar',
+                'pi pi-wallet',
+                '/finance/treasury/payables',
+                BusinessModule.FINANCE_PAYABLES,
+              ),
+              report(
+                'Cuentas por Pagar PDF',
+                'pi pi-file-pdf',
+                callbacks.openAccountsPayablePdfModal,
+                BusinessModule.FINANCE_PAYABLES,
+              ),
+            ),
+            page(
+              'Gastos',
+              'pi pi-receipt',
+              '/finance/treasury/expenses',
+              BusinessModule.FINANCE_EXPENSES,
+            ),
+            page(
+              'Métodos de pago',
+              'pi pi-credit-card',
+              '/finance/treasury/payment-methods',
+              BusinessModule.FINANCE_PAYMENT_METHODS,
+            ),
+          ]),
+        ]),
+        group('Contactos', 'pi pi-users', [
+          page(
+            'Clientes',
+            'pi pi-id-card',
+            '/partners/customers',
+            BusinessModule.CONTACTS_CUSTOMERS,
+          ),
+          page(
+            'Proveedores',
+            'pi pi-truck',
+            '/partners/suppliers',
+            BusinessModule.CONTACTS_SUPPLIERS,
+          ),
+        ]),
+        group('Análisis', 'pi pi-chart-line', [
+          page('Dashboard', 'pi pi-chart-line', '/analytics/dashboard', BusinessModule.DASHBOARD),
+        ]),
+        group('Plataforma', 'pi pi-cog', [
+          page('Usuarios', 'pi pi-user', '/platform/users', BusinessModule.USERS),
+          page('Roles', 'pi pi-shield', '/platform/roles', BusinessModule.ROLES),
+          page(
+            'Departamentos',
+            'pi pi-sitemap',
+            '/platform/departments',
+            BusinessModule.DEPARTMENTS,
+          ),
+          group('Compañía', 'pi pi-building', [
+            {
+              label: 'Ver compañía',
+              icon: 'pi pi-eye',
+              routerLink: '/platform/company',
+              allowedRoles: businessRoles,
+              requiredPermission: CompanyPermission.VIEW,
+            },
+            {
+              label: 'Editar compañía',
+              icon: 'pi pi-pencil',
+              routerLink: '/platform/company/edit',
+              allowedRoles: businessRoles,
+              requiredPermission: CompanyPermission.EDIT,
+            },
+            {
+              label: 'Historial',
+              icon: 'pi pi-history',
+              command: callbacks.openCompanyAuditHistory,
+              allowedRoles: businessRoles,
+              requiredPermission: AuditPermission.VIEW_LIST,
+            },
+          ]),
+        ]),
       ],
-    },
-    {
-      label: 'Gestión Comercial',
-      icon: 'pi pi-briefcase',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.SALES,
-      children: [
-        {
-          label: 'Presupuestos',
-          icon: 'pi pi-file-edit',
-          routerLink: '/quotes',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Pedidos',
-          icon: 'pi pi-shopping-cart',
-          routerLink: '/orders',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Facturas',
-          icon: 'pi pi-file',
-          routerLink: '/invoices',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-      ],
-    },
-    {
-      label: 'Inventario',
-      icon: 'pi pi-box',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.INVENTORY,
-      children: [
-        {
-          label: 'Tipos de Precios',
-          icon: 'pi pi-tag',
-          routerLink: '/price-types',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Categorías',
-          icon: 'pi pi-tags',
-          routerLink: '/categories',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Almacenes',
-          icon: 'pi pi-database',
-          routerLink: '/warehouses',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Productos',
-          icon: 'pi pi-box',
-          routerLink: '/products',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-      ],
-    },
-    {
-      label: 'Compras',
-      icon: 'pi pi-shopping-cart',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.PURCHASES,
-      children: [
-        {
-          label: 'Proveedores',
-          icon: 'pi pi-truck',
-          routerLink: '/suppliers',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Compras',
-          icon: 'pi pi-shopping-cart',
-          routerLink: '/purchases',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-      ],
-    },
-    {
-      label: 'Finanzas',
-      icon: 'pi pi-dollar',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.FINANCE,
-      children: [
-        {
-          label: 'Caja',
-          icon: 'pi pi-calculator',
-          routerLink: '/cash-register',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Cuentas por Cobrar',
-          icon: 'pi pi-money-bill',
-          routerLink: '/receivables',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Métodos de Pago',
-          icon: 'pi pi-credit-card',
-          routerLink: '/payment-methods',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Notas de Crédito',
-          icon: 'pi pi-file-plus',
-          routerLink: '/credit-notes',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Notas de Débito',
-          icon: 'pi pi-minus-circle',
-          routerLink: '/debit-notes',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-        {
-          label: 'Devoluciones',
-          icon: 'pi pi-undo',
-          routerLink: '/returns',
-          allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-        },
-      ],
-    },
-    {
-      label: 'Reportes',
-      icon: 'pi pi-chart-bar',
-      allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-      requiredModule: BusinessModule.DOCUMENT_ADMIN,
-      children: [
-        {
-          label: 'Gestión Comercial',
-          icon: 'pi pi-briefcase',
-          requiredModule: BusinessModule.SALES,
-          children: [
-            {
-              label: 'Presupuestos',
-              icon: 'pi pi-file-edit',
-              children: [
-                {
-                  label: 'Reporte de Presupuestos PDF',
-                  icon: 'pi pi-file-pdf',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openQuotesPdfModal(),
-                },
-              ],
-            },
-            {
-              label: 'Pedidos',
-              icon: 'pi pi-shopping-cart',
-              children: [
-                {
-                  label: 'Reporte de Pedidos PDF',
-                  icon: 'pi pi-file-pdf',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openOrdersPdfModal(),
-                },
-              ],
-            },
-            {
-              label: 'Facturas',
-              icon: 'pi pi-file',
-              children: [
-                {
-                  label: 'Reporte de Facturas PDF',
-                  icon: 'pi pi-file-pdf',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openInvoicesPdfModal(),
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Inventario',
-          icon: 'pi pi-box',
-          requiredModule: BusinessModule.INVENTORY,
-          children: [
-            {
-              label: 'Almacenes',
-              icon: 'pi pi-database',
-              children: [
-                {
-                  label: 'Stock PDF',
-                  icon: 'pi pi-warehouse',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openStockModal(),
-                },
-                {
-                  label: 'Movimientos PDF',
-                  icon: 'pi pi-arrow-right-arrow-left',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openMovementsModal(),
-                },
-              ],
-            },
-            {
-              label: 'Productos',
-              icon: 'pi pi-box',
-              children: [
-                {
-                  label: 'Reporte de Productos PDF',
-                  icon: 'pi pi-table',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openCatalogModal(),
-                },
-                {
-                  label: 'Catálogo Comercial PDF',
-                  icon: 'pi pi-book',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openCommercialCatalogModal(),
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Compras',
-          icon: 'pi pi-shopping-cart',
-          requiredModule: BusinessModule.PURCHASES,
-          children: [
-            {
-              label: 'Compras',
-              icon: 'pi pi-shopping-cart',
-              children: [
-                {
-                  label: 'Reporte de Compras PDF',
-                  icon: 'pi pi-file-pdf',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openPurchasesPdfModal(),
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Finanzas',
-          icon: 'pi pi-dollar',
-          requiredModule: BusinessModule.FINANCE,
-          children: [
-            {
-              label: 'Cajas',
-              icon: 'pi pi-calculator',
-              children: [
-                {
-                  label: 'Reportes de Caja',
-                  icon: 'pi pi-chart-bar',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openCashRegisterModal(),
-                },
-              ],
-            },
-            {
-              label: 'Cuentas por Cobrar',
-              icon: 'pi pi-money-bill',
-              children: [
-                {
-                  label: 'Cuentas por Cobrar PDF',
-                  icon: 'pi pi-file-pdf',
-                  allowedRoles: ['SUPER_ADMIN', 'ADMIN', 'OPERATOR'],
-                  command: () => callbacks.openAccountsReceivablePdfModal(),
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ];
+      callbacks,
+    ),
+  );
 }

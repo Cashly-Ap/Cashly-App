@@ -1,0 +1,125 @@
+<app-report-pdf-modal
+  titleKey="finance.billing.invoices.invoiceReportPdf"
+  width="500px"
+  [visible]="visible()"
+  (visibleChange)="onHide()"
+  (show)="loadFilters()"
+>
+  @if (loading()) {
+    <div class="flex justify-center py-10">
+      <p-progressSpinner strokeWidth="4" styleClass="w-10 h-10" />
+    </div>
+  } @else {
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="mode" class="text-sm font-medium">{{
+          'finance.billing.invoices.reportMode' | translate
+        }}</label>
+        <p-select
+          id="mode"
+          [options]="modeOptions | translateOptions"
+          [(ngModel)]="mode"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="dateFrom" class="text-sm font-medium">{{
+            'finance.billing.invoices.from' | translate
+          }}</label>
+          <p-datepicker
+            id="dateFrom"
+            [(ngModel)]="dateFrom"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.billing.invoices.startDate' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="dateTo" class="text-sm font-medium">{{
+            'finance.billing.invoices.to' | translate
+          }}</label>
+          <p-datepicker
+            id="dateTo"
+            [(ngModel)]="dateTo"
+            [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+            [placeholder]="'finance.billing.invoices.endDate' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="status" class="text-sm font-medium">{{
+          'finance.billing.invoices.invoiceStatus' | translate
+        }}</label>
+        <p-select
+          id="status"
+          [options]="statusOptions | translateOptions"
+          [(ngModel)]="status"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.billing.invoices.allStatuses' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="product" class="text-sm font-medium">{{
+          'finance.billing.returns.product' | translate
+        }}</label>
+        <p-select
+          id="product"
+          [options]="productOptions() | translateOptions: true"
+          [(ngModel)]="productId"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.billing.invoices.allProducts' | translate"
+          [filter]="true"
+          [filterPlaceholder]="'finance.billing.invoices.searchProducts' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="category" class="text-sm font-medium">{{
+          'finance.billing.invoices.category' | translate
+        }}</label>
+        <p-select
+          id="category"
+          [options]="categoryOptions() | translateOptions: true"
+          [(ngModel)]="categoryId"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.billing.invoices.allCategories' | translate"
+          [filter]="true"
+          [filterPlaceholder]="'finance.billing.invoices.searchCategories' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+    </div>
+  }
+
+  <ng-container reportFooter>
+    <div class="flex justify-end gap-2">
+      <app-cancel-button icon="" (cancelled)="onHide()" />
+      <p-button
+        [appPermissionModule]="'SALES_INVOICES_INVOICES'"
+        [appPermission]="'EXPORT'"
+        [label]="'finance.billing.invoices.generatePdf' | translate"
+        icon="pi pi-file-pdf"
+        (onClick)="generatePdf()"
+      />
+    </div>
+  </ng-container>
+</app-report-pdf-modal>

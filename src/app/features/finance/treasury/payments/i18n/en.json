@@ -1,0 +1,7 @@
+{
+  "finance.treasury.payments.download": "Download",
+  "finance.treasury.payments.paymentIdWasNotFound": "Payment ID was not found",
+  "finance.treasury.payments.couldNotGenerateThePaymentPdf": "Could not generate the payment PDF",
+  "finance.treasury.payments.paymentReceiptPdf": "Payment receipt - PDF",
+  "finance.treasury.payments.clickGeneratePdfToPreviewTheReceipt": "Click \"Generate PDF\" to preview the receipt"
+}

@@ -1,0 +1,318 @@
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { connectListNavigation } from '@shared/components/list/list-navigation.service';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { TableModule } from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { CardModule } from 'primeng/card';
+import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorModule } from 'primeng/paginator';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PopoverModule } from 'primeng/popover';
+import { SelectModule } from 'primeng/select';
+import { FormsModule } from '@angular/forms';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
+
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { EmptyStateComponent } from '@shared/components/ui/empty-state/empty-state.component';
+import {
+  ListFilterComponent,
+  ListAction,
+  ListActionButtonsComponent,
+  ListContainerComponent,
+  viewAction,
+  editAction,
+  deleteAction,
+  auditHistoryAction,
+  listAction,
+} from '@shared/components/list';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
+import { SupplierApplicationService } from '@features/partners/suppliers/services/application/supplier-application.service';
+import { SupplierFilters } from '@features/partners/suppliers/services/api/supplier-api.service';
+import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
+import {
+  getSupplierTypeLabel,
+  SUPPLIER_TYPES,
+} from '@features/partners/suppliers/models/enums/supplier-type.enum';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import {
+  VENEZUELA_STATE_NAMES,
+  getMunicipalitiesForState,
+} from '@features/partners/customers/data/venezuela-geo.data';
+
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { SubmitButtonComponent } from '@shared/components/ui/submit-button/submit-button.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { FilterFieldComponent } from '@shared/components/ui/filter-field/filter-field.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
+@Component({
+  selector: 'app-suppliers-list-page',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    PaginatorComponent,
+    FilterFieldComponent,
+    PageHeaderComponent,
+    SubmitButtonComponent,
+    PanelCardComponent,
+    ListFilterComponent,
+    TranslateOptionsPipe,
+    TranslatePipe,
+    CommonModule,
+    FormsModule,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
+    CardModule,
+    TooltipModule,
+    PaginatorModule,
+    IconFieldModule,
+    InputIconModule,
+    ConfirmDialogModule,
+    PopoverModule,
+    SelectModule,
+    LoadingSpinnerComponent,
+    EmptyStateComponent,
+    SearchFieldComponent,
+    ListContainerComponent,
+    ListActionButtonsComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
+  ],
+  templateUrl: './suppliers-list-page.component.html',
+  providers: [provideTranslatedConfirmation()],
+})
+export class SuppliersListPageComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly deletion = inject(DeleteDialogService);
+  private service = inject(SupplierApplicationService);
+  private router = inject(Router);
+  private confirmationService = inject(ConfirmationService);
+  private messageService = inject(MessageService);
+
+  suppliers = this.service.suppliers;
+  loading = this.service.loading;
+  totalElements = this.service.totalElements;
+
+  searchTerm = signal('');
+  first = signal(0);
+  rows = signal(10);
+  orderBy = signal('legalName');
+  orderDir = signal<'asc' | 'desc'>('asc');
+
+  filterType = signal<string>('');
+  filterActive = signal<string>('true');
+  filterState = signal<string>('');
+  filterMunicipality = signal<string>('');
+
+  activeFilterCount = computed(() => {
+    let count = 0;
+    if (this.filterType()) count++;
+    if (this.filterActive() !== 'true') count++;
+    if (this.filterState()) count++;
+    if (this.filterMunicipality()) count++;
+    return count;
+  });
+
+  municipalityOptions = computed(() => {
+    return this.filterState() ? getMunicipalitiesForState(this.filterState()) : [];
+  });
+
+  supplierTypeOptions = [
+    { label: 'Todos los tipos', value: '' },
+    ...SUPPLIER_TYPES.map((t) => ({ label: t.label, value: t.value })),
+  ];
+
+  activeOptions = [
+    { label: 'Activos', value: 'true' },
+    { label: 'Inactivos', value: 'false' },
+  ];
+
+  stateOptions = VENEZUELA_STATE_NAMES;
+
+  showInitialLoading = computed(() => this.loading() && (this.suppliers()?.length ?? 0) === 0);
+  isEmptyDatabase = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      this.activeFilterCount() === 0 &&
+      !this.searchTerm(),
+  );
+  hasFilteredResults = computed(
+    () =>
+      !this.loading() &&
+      this.totalElements() === 0 &&
+      (this.activeFilterCount() > 0 || !!this.searchTerm()),
+  );
+
+  private readonly listNavigation = connectListNavigation({
+    records: () => this.suppliers(),
+    loading: () => this.loading(),
+    total: () => this.totalElements(),
+    first: () => this.first(),
+    rows: () => this.rows(),
+    search: (term) => {
+      this.filterActive.set('');
+      this.filterType.set('');
+      this.filterState.set('');
+      this.filterMunicipality.set('');
+      this.onSearch(term);
+    },
+    paginate: (event) => this.onPageChange(event),
+    label: (record) => record.legalName,
+    description: (record) => `${record.alias} · ${record.rif}`,
+    refresh: () => this.loadWithFilters(),
+    actions: (record) => this.actionsFor(record),
+  });
+
+  ngOnInit(): void {
+    this.loadWithFilters();
+  }
+
+  onSearch(value: string): void {
+    this.searchTerm.set(value);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onPageChange(event: { first: number; rows: number }): void {
+    this.first.set(event.first ?? 0);
+    this.rows.set(event.rows ?? 10);
+    this.loadWithFilters();
+  }
+
+  onSort(event: SortEvent): void {
+    const newField = event.field ?? 'legalName';
+    const newDir = event.order === 1 ? 'asc' : 'desc';
+    if (newField === this.orderBy() && newDir === this.orderDir()) return;
+    this.orderBy.set(newField);
+    this.orderDir.set(newDir);
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  applyFilters(): void {
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  onTypeFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterType()) return;
+    this.filterType.set(normalized);
+    this.applyFilters();
+  }
+
+  onActiveFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterActive()) return;
+    this.filterActive.set(normalized);
+    this.applyFilters();
+  }
+
+  onStateFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterState()) return;
+    this.filterState.set(normalized);
+    this.filterMunicipality.set('');
+    this.applyFilters();
+  }
+
+  onMunicipalityFilterChange(value: string | null): void {
+    const normalized = value ?? '';
+    if (normalized === this.filterMunicipality()) return;
+    this.filterMunicipality.set(normalized);
+    this.applyFilters();
+  }
+
+  clearFilters(): void {
+    this.filterType.set('');
+    this.filterActive.set('true');
+    this.filterState.set('');
+    this.filterMunicipality.set('');
+    this.first.set(0);
+    this.loadWithFilters();
+  }
+
+  private loadWithFilters(): void {
+    const filters: SupplierFilters = {
+      page: Math.floor(this.first() / this.rows()),
+      size: this.rows(),
+      orderBy: this.orderBy(),
+      orderDir: this.orderDir(),
+    };
+    if (this.searchTerm()) filters.search = this.searchTerm();
+    if (this.filterType()) filters.type = this.filterType();
+    if (this.filterActive()) filters.active = this.filterActive() === 'true';
+    if (this.filterState()) filters.state = this.filterState();
+    if (this.filterMunicipality()) filters.municipality = this.filterMunicipality();
+    this.service.loadAll(filters).subscribe();
+  }
+
+  onCreate(): void {
+    this.router.navigate(['/partners/suppliers', 'new']);
+  }
+
+  onView(supplier: SupplierList): void {
+    this.router.navigate(['/partners/suppliers', supplier.id]);
+  }
+
+  onEdit(supplier: SupplierList): void {
+    this.router.navigate(['/partners/suppliers', supplier.id, 'edit']);
+  }
+
+  onViewBalance(supplier: SupplierList): void {
+    if (!this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES)) return;
+    this.router.navigate(['/partners/suppliers', supplier.id, 'balance']);
+  }
+
+  actionsFor(supplier: SupplierList): ListAction[] {
+    const actions: ListAction[] = [
+      viewAction(() => this.onView(supplier)),
+      editAction(() => this.onEdit(supplier)),
+    ];
+    if (this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES)) {
+      actions.push(
+        listAction('Ver saldo', 'READ', 'wallet', () => this.onViewBalance(supplier), {
+          module: BusinessModule.FINANCE_PAYABLES,
+        }),
+      );
+    }
+    if (!supplier.hasPurchases) {
+      actions.push(deleteAction(() => this.onDelete(supplier)));
+    }
+    actions.push(
+      auditHistoryAction({
+        entityType: 'SUPPLIER',
+        entityId: supplier.id,
+        label: supplier.legalName,
+      }),
+    );
+    return actions;
+  }
+
+  onDelete(supplier: SupplierList): void {
+    this.deletion.open('suppliers', supplier.id, supplier.legalName, () => this.loadWithFilters());
+  }
+
+  getTypeLabel(type: string): string {
+    return getSupplierTypeLabel(type as Parameters<typeof getSupplierTypeLabel>[0]);
+  }
+}

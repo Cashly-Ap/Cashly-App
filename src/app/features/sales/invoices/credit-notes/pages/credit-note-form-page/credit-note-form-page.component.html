@@ -1,0 +1,180 @@
+<app-form-container>
+  <app-form-header
+    [title]="'finance.billing.creditnotes.newCreditNote' | translate"
+    [subtitle]="'finance.billing.creditnotes.completeTheCreditNoteInformation' | translate"
+  />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-panel-card>
+      <div class="p-4 md:p-6">
+        <h3
+          class="mb-4 flex items-center gap-2 text-base font-medium text-surface-800 dark:text-surface-200"
+        >
+          <i class="pi pi-info-circle text-surface-500"></i>
+          {{ 'finance.billing.creditnotes.creditNoteInformation' | translate }}
+        </h3>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300">
+              {{ 'shared.customer' | translate }} <span class="text-red-500">*</span>
+            </label>
+            @if (selectedCustomerLabel(); as customer) {
+              <div
+                class="flex items-center justify-between gap-3 rounded-lg border border-surface-200 bg-white px-3 py-2.5 dark:border-surface-700 dark:bg-surface-800"
+              >
+                <div class="flex min-w-0 flex-col">
+                  <span class="truncate text-sm font-medium text-surface-900 dark:text-surface-0">{{
+                    customer.alias
+                  }}</span>
+                  @if (customer.legalName) {
+                    <span class="truncate text-xs text-surface-500 dark:text-surface-400">{{
+                      customer.legalName
+                    }}</span>
+                  }
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 underline transition-colors hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-0"
+                  (click)="openPicker()"
+                >
+                  {{ 'finance.billing.creditnotes.change' | translate }}
+                </button>
+              </div>
+            } @else {
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchAndSelectACustomer"
+                (open)="openPicker()"
+              />
+            }
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'finance.billing.creditnotes.aCustomerIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300">
+              {{ 'finance.billing.creditnotes.associatedInvoice' | translate }}
+              <span class="text-red-500">*</span>
+            </label>
+            @if (selectedInvoiceLabel(); as invoice) {
+              <div
+                class="flex items-center justify-between gap-3 rounded-lg border border-surface-200 bg-white px-3 py-2.5 dark:border-surface-700 dark:bg-surface-800"
+              >
+                <div class="flex min-w-0 flex-col">
+                  <span class="truncate text-sm font-medium text-surface-900 dark:text-surface-0"
+                    >{{ 'finance.billing.creditnotes.invoice' | translate
+                    }}{{ invoice.invoiceNumber }}</span
+                  >
+                  <span class="truncate text-xs text-surface-500 dark:text-surface-400">{{
+                    invoice.customerName
+                  }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 underline transition-colors hover:text-surface-900 dark:text-surface-400 dark:hover:text-surface-0"
+                  (click)="showInvoicePicker.set(true)"
+                >
+                  {{ 'finance.billing.creditnotes.change' | translate }}
+                </button>
+              </div>
+            } @else {
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchInvoiceByNumberCustomerOrDate"
+                (open)="showInvoicePicker.set(true)"
+              />
+            }
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'finance.billing.creditnotes.invoiceIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+              >{{ 'shared.amount' | translate }} <span class="text-red-500">*</span></label
+            >
+            <p-inputNumber
+              [locale]="locale()"
+              formControlName="amount"
+              mode="decimal"
+              [minFractionDigits]="2"
+              [maxFractionDigits]="2"
+              [min]="0.01"
+              fluid
+            />
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{
+                    'finance.billing.creditnotes.amountIsRequiredAndMustBeGreaterThan0' | translate
+                  }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 rounded-xl border border-surface-200 bg-surface-50 p-4 hover:border-surface-300 dark:border-surface-700 dark:bg-surface-900 dark:hover:border-surface-600 md:col-span-2 lg:col-span-3"
+          >
+            <label class="mb-2 block text-sm font-semibold text-surface-700 dark:text-surface-300"
+              >{{ 'shared.reason' | translate }} <span class="text-red-500">*</span></label
+            >
+            <textarea
+              pTextarea
+              formControlName="reason"
+              rows="3"
+              class="w-full"
+              [placeholder]="'finance.billing.creditnotes.reasonForTheCreditNote' | translate"
+            ></textarea>
+            <div class="mt-1.5 min-h-5">
+              @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                <small class="flex items-center gap-1 text-xs text-red-500">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'shared.aReasonIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-form-actions
+        [submitLabel]="'finance.billing.creditnotes.createCreditNoteAction' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
+        [loading]="loading()"
+        [disabled]="loading()"
+        [tooltipMessage]="submitTooltip()"
+        (cancel)="onCancel()"
+      />
+    </app-panel-card>
+  </form>
+</app-form-container>
+
+<app-customer-picker-dialog
+  [visible]="pickerVisible()"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onPickerCancelled()"
+/>
+
+<app-invoice-picker-dialog
+  [visible]="showInvoicePicker()"
+  [customerId]="form.get('customerId')?.value || ''"
+  (invoiceSelected)="onInvoiceSelected($event)"
+  (cancelled)="onInvoiceCancelled()"
+/>

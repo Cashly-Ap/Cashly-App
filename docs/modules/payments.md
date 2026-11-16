@@ -1,15 +1,41 @@
-# Payments
+# Payments (reporting)
 
-Payment administration and payment detail views for finance users.
+## Overview
 
-## Routes
+The `finance/treasury/payments` feature only implements payment reporting. Payment registration and approval live in [receivables.md](./receivables.md); payment methods live in [payment-methods.md](./payment-methods.md).
 
-`/payments`, `/payments/new`, `/payments/:id`, and `/payments/:id/edit`.
+**Module Type**: `Read-only` (reporting only)
+
+---
+
+## Module Structure
+
+```
+src/app/features/finance/treasury/payments/
+├── i18n/                     # Translations
+└── reporting/
+    ├── models/               # Payment report filter interfaces
+    └── services/api/         # PaymentPdfApiService
+```
+
+---
 
 ## API
 
-The feature uses `/api/payments` for list, detail, create, update, and delete operations. Receivables owns the approval-specific workflow.
+`PaymentPdfApiService` calls the payment report endpoints and returns PDF content. Receivables owns the approval-specific workflow and its own PDF service.
+
+---
 
 ## Rules
 
-Payment amounts and references are validated in the form; invoice/customer balance, allocation, and approval state are enforced by the API.
+- There are no list, form, or detail routes for payments.
+- Report actions are permission-checked by the owning finance module.
+- Receipt and approval state remain owned by the API.
+
+---
+
+## Related Documentation
+
+- [Receivables](./receivables.md)
+- [Payment Methods](./payment-methods.md)
+- [Reporting](./reports.md)

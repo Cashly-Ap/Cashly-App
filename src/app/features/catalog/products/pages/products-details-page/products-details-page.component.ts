@@ -1,0 +1,155 @@
+import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { AuthorizationService } from '@features/platform/auth/authorization/services/authorization.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
+import {
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+  ChangeDetectionStrategy,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { forkJoin, of, catchError } from 'rxjs';
+import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
+import { ProductPhotoService } from '@features/catalog/products/services/api/product-photo.service';
+import { ProductDetails } from '@features/catalog/products/models/interfaces/product-details.interface';
+import { ProductStockByWarehouse } from '@features/catalog/products/models/interfaces/product-stock-by-warehouse.interface';
+
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+
+@Component({
+  selector: 'app-products-details-page',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    DataTableComponent,
+    BackButtonComponent,
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    PermissionDirective,
+    CommonModule,
+    ButtonModule,
+    DetailActionsMenuComponent,
+    DetailsCardHeaderComponent,
+    DetailsInfoFieldComponent,
+    DetailsInfoGridComponent,
+    LoadingSpinnerComponent,
+    PageHeaderComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
+  ],
+  templateUrl: './products-details-page.component.html',
+})
+export class ProductsDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
+  private readonly authorization = inject(AuthorizationService);
+  readonly canViewStock = computed(() =>
+    this.authorization.can(BusinessModule.INVENTORY_WAREHOUSES, 'READ'),
+  );
+  private service = inject(ProductApplicationService);
+  private photoService = inject(ProductPhotoService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
+
+  product = signal<ProductDetails | null>(null);
+  stockByWarehouse = signal<ProductStockByWarehouse[]>([]);
+  totalStock = computed(() => this.stockByWarehouse().reduce((sum, s) => sum + s.quantity, 0));
+  loading = signal(false);
+  photoUrl = this.photoService.photoUrl;
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) this.loadProduct(id);
+  }
+
+  private loadProduct(id: string): void {
+    this.loading.set(true);
+    forkJoin({
+      product: this.service.loadById(id),
+      stock: this.canViewStock()
+        ? this.service.getStock(id).pipe(catchError(() => of([])))
+        : of([]),
+    }).subscribe({
+      next: ({ product, stock }) => {
+        this.product.set(product);
+        this.stockByWarehouse.set(stock);
+        this.photoService.loadPhoto(product.photo);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el producto.',
+          life: 5000,
+        });
+        this.router.navigate(['/catalog/products']);
+      },
+    });
+  }
+
+  onEdit(): void {
+    const id = this.product()?.id;
+    if (id) this.router.navigate(['/catalog/products', id, 'edit']);
+  }
+
+  onToggleActive(): void {
+    const p = this.product();
+    if (!p) return;
+    this.service.toggleActive(p.id, !p.active).subscribe({
+      next: (updated) => {
+        this.product.set(updated);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: `Producto ${updated.active ? 'activado' : 'desactivado'} exitosamente`,
+          life: 3000,
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cambiar el estado.',
+          life: 5000,
+        });
+      },
+    });
+  }
+
+  onDelete(): void {
+    const item = this.product();
+    if (!item) return;
+    this.deletion.open('products', item.id, item.name, () =>
+      this.router.navigate(['/catalog/products']),
+    );
+  }
+
+  onBack(): void {
+    this.navigationHistory.back(['/catalog/products']);
+  }
+}

@@ -1,0 +1,180 @@
+import { Injectable, inject, signal } from '@angular/core';
+import { MessageService } from 'primeng/api';
+import { TranslationService } from '@core/i18n/translation.service';
+import { Observable, tap, finalize } from 'rxjs';
+import { PagedResponse } from '@shared/models/interfaces/paged-response.interface';
+import {
+  OrderApiService,
+  OrderFilters,
+  ConvertToInvoiceRequest,
+} from '@features/sales/orders/services/api/order-api.service';
+import { OrderMapper } from '@features/sales/orders/services/mappers/order.mapper';
+import { OrderList } from '@features/sales/orders/models/interfaces/order-list.interface';
+import { OrderDetails } from '@features/sales/orders/models/interfaces/order-details.interface';
+import { OrderCreate } from '@features/sales/orders/models/interfaces/order-create.interface';
+import { OrderEdit } from '@features/sales/orders/models/interfaces/order-edit.interface';
+
+@Injectable({ providedIn: 'root' })
+export class OrderApplicationService {
+  private readonly messages = inject(MessageService);
+  private readonly translations = inject(TranslationService);
+  private readonly api = inject(OrderApiService);
+
+  readonly orders = signal<OrderList[]>([]);
+  readonly currentOrder = signal<OrderDetails | null>(null);
+  readonly loading = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly totalElements = signal(0);
+
+  loadAll(filters?: OrderFilters): Observable<PagedResponse<OrderList>> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.getAll(filters).pipe(
+      tap({
+        next: (response) => {
+          this.orders.set(response.content);
+          this.totalElements.set(response.totalElements);
+        },
+        error: (err: Error) => this.reportError(err),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  loadById(id: string): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.getById(id).pipe(
+      tap({
+        next: (order) => this.currentOrder.set(order),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  create(data: OrderCreate): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.create(data).pipe(
+      tap({
+        next: (order) => {
+          const listItem = OrderMapper.toList(order);
+          this.orders.update((current) => [listItem, ...current]);
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  update(id: string, data: OrderEdit): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.update(id, data).pipe(
+      tap({
+        next: (order) => {
+          const listItem = OrderMapper.toList(order);
+          this.orders.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentOrder()?.id === id) {
+            this.currentOrder.set(order);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  delete(id: string): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.delete(id).pipe(
+      tap({
+        next: () => this.orders.update((current) => current.filter((o) => o.id !== id)),
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  confirm(id: string): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.confirm(id).pipe(
+      tap({
+        next: (order) => {
+          const listItem = OrderMapper.toList(order);
+          this.orders.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentOrder()?.id === id) {
+            this.currentOrder.set(order);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  convertToInvoice(id: string, request: ConvertToInvoiceRequest): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.convertToInvoice(id, request).pipe(
+      tap({
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  cancel(id: string, reason: string): Observable<OrderDetails> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.api.cancel(id, reason).pipe(
+      tap({
+        next: (order) => {
+          const listItem = OrderMapper.toList(order);
+          this.orders.update((current) => current.map((o) => (o.id === id ? listItem : o)));
+          if (this.currentOrder()?.id === id) {
+            this.currentOrder.set(order);
+          }
+        },
+        error: (err: Error) => this.error.set(err.message),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  private reportError(error: unknown): void {
+    const message = this.errorMessage(error);
+    this.error.set(message);
+    this.messages.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: message,
+      life: 5000,
+    });
+  }
+
+  private errorMessage(error: unknown): string {
+    if (typeof error === 'object' && error !== null) {
+      const response = error as { error?: unknown; message?: unknown };
+      if (typeof response.error === 'object' && response.error !== null) {
+        const detail = (response.error as { message?: unknown }).message;
+        if (typeof detail === 'string' && detail.trim()) return detail;
+      }
+      if (typeof response.message === 'string' && response.message.trim()) {
+        return response.message;
+      }
+    }
+    return this.translations.t('shared.requestFailed');
+  }
+}

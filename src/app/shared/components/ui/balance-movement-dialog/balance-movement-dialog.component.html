@@ -1,0 +1,110 @@
+<p-dialog
+  [visible]="visible()"
+  [header]="titleKey() | translate"
+  [modal]="true"
+  [style]="{ width: '90vw', maxWidth: '550px' }"
+  [dismissableMask]="false"
+  [closable]="!loading()"
+  [closeOnEscape]="!loading()"
+  appendTo="body"
+  (visibleChange)="onVisibleChange($event)"
+>
+  <form [formGroup]="form">
+    <div class="space-y-5">
+      <div
+        class="rounded-lg border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900/50"
+      >
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-medium text-surface-600 dark:text-surface-400">{{
+            balanceLabelKey() | translate
+          }}</span>
+          <span class="font-mono text-lg font-bold text-surface-900 dark:text-surface-0">
+            {{ balance() | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          {{ amountLabelKey() | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-inputNumber
+          formControlName="amount"
+          mode="currency"
+          currency="USD"
+          [locale]="locale()"
+          [min]="0.01"
+          [max]="maxAmount() ?? undefined"
+          [maxFractionDigits]="2"
+          fluid
+          [class.ng-invalid]="form.get('amount')?.invalid && form.get('amount')?.touched"
+        />
+        @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+          <small class="mt-1 block text-xs text-red-500">
+            @if (form.get('amount')?.errors?.['required']) {
+              {{ 'finance.treasury.payables.amountRequired' | translate }}
+            }
+            @if (form.get('amount')?.errors?.['min']) {
+              {{ 'finance.treasury.payables.amountMustBePositive' | translate }}
+            }
+            @if (form.get('amount')?.errors?.['max']) {
+              {{ 'finance.treasury.payables.amountExceedsBalance' | translate }}
+            }
+          </small>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          {{ 'finance.treasury.payables.paymentMethod' | translate }}
+          <span class="text-red-500">*</span>
+        </label>
+        <p-select
+          formControlName="paymentMethodId"
+          [options]="paymentMethods()"
+          optionLabel="label"
+          optionValue="value"
+          [placeholder]="'finance.treasury.payables.selectMethod' | translate"
+          appendTo="body"
+          fluid
+        />
+      </div>
+
+      <div class="space-y-2">
+        <label class="block text-sm font-semibold text-surface-900 dark:text-surface-0">
+          {{ 'finance.billing.invoices.notes' | translate }}
+        </label>
+        <textarea
+          pTextarea
+          formControlName="notes"
+          rows="2"
+          class="w-full"
+          [placeholder]="notesPlaceholderKey() | translate"
+        ></textarea>
+      </div>
+    </div>
+  </form>
+
+  <ng-template pTemplate="footer">
+    <div class="flex flex-col justify-end gap-2 sm:flex-row">
+      <app-cancel-button
+        [outlined]="false"
+        [disabled]="loading()"
+        styleClass="font-medium w-full sm:w-auto"
+        (cancelled)="cancel()"
+      />
+      <p-button
+        [appPermissionModule]="permissionModule()"
+        [appPermission]="'EXECUTE'"
+        severity="contrast"
+        [label]="submitLabelKey() | translate"
+        [icon]="submitIcon()"
+        (onClick)="submit()"
+        [disabled]="form.invalid || loading()"
+        [loading]="loading()"
+        styleClass="font-medium w-full sm:w-auto"
+      />
+    </div>
+  </ng-template>
+</p-dialog>

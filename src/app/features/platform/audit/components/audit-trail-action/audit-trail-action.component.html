@@ -1,0 +1,11 @@
+@if (visible()) {
+  <p-button
+    [label]="'audit.action.open' | translate"
+    icon="pi pi-history"
+    [link]="true"
+    severity="secondary"
+    [ariaLabel]="'audit.action.openFor' | translate: { label: label() }"
+    (onClick)="open()"
+    styleClass="w-full justify-start text-left text-sm"
+  />
+}

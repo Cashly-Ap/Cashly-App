@@ -1,0 +1,259 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (customer(); as currentCustomer) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'partners.customers.customerDetails' | translate"
+          [subtitle]="'partners.customers.completeCustomerInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="currentCustomer.legalName"
+            [subtitle]="currentCustomer.alias"
+          >
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CUSTOMER"
+                [auditEntityId]="currentCustomer.id"
+                [auditLabel]="currentCustomer.legalName"
+                [auditSubtitle]="currentCustomer.alias"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'finance.billing.invoices.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (showBalance()) {
+                  <p-button
+                    [label]="'partners.customers.viewBalance' | translate"
+                    icon="pi pi-wallet"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onViewBalance()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.code' | translate"
+                [value]="'#' + currentCustomer.code"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.legalName' | translate"
+                [value]="currentCustomer.legalName"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.alias' | translate"
+                [value]="currentCustomer.alias"
+              />
+              <app-details-info-field
+                [label]="'partners.customers.labels.taxId' | translate"
+                [value]="currentCustomer.rif"
+              />
+              <app-details-info-field [label]="'shared.type' | translate" type="badge"
+                ><app-text-badge [label]="getTypeLabel(currentCustomer.type)" variant="label"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+                ><app-status-badge [active]="currentCustomer.active"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'partners.customers.creditDays' | translate"
+                [value]="currentCustomer.creditDays + ' días'"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.creditLimit' | translate"
+                [value]="(currentCustomer.creditLimit | localizedNumber: '1.2-2') ?? ''"
+              />
+              <app-details-info-field
+                [label]="'partners.customers.priceList' | translate"
+                [value]="priceTypeName() ?? 'Sin asignar'"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.registrationDate' | translate"
+                [value]="(currentCustomer.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+            @if (currentCustomer.notes) {
+              <div class="mt-4 pt-4 border-t border-surface-200 dark:border-surface-700">
+                <p class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-1">
+                  {{ 'finance.billing.invoices.notes' | translate }}
+                </p>
+                <p class="text-sm text-surface-600 dark:text-surface-400 whitespace-pre-wrap">
+                  {{ currentCustomer.notes }}
+                </p>
+              </div>
+            }
+          </div>
+        </app-panel-card>
+
+        <app-panel-card>
+          <app-details-card-header [title]="'partners.suppliers.contact' | translate" />
+          <div class="p-4 sm:p-6 flex flex-col gap-6">
+            <!-- Emails -->
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-envelope text-surface-400"></i>
+                {{ 'partners.suppliers.emailAddresses' | translate }}
+              </h3>
+              @if (currentCustomer.emails.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
+                  {{ 'partners.suppliers.noEmailAddressesRegistered' | translate }}
+                </p>
+              }
+              @for (email of currentCustomer.emails; track email.id) {
+                <div
+                  class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+                >
+                  <i class="pi pi-envelope text-surface-400 text-sm"></i>
+                  <span class="text-sm">{{ email.email }}</span>
+                </div>
+              }
+            </section>
+
+            <hr class="border-surface-200 dark:border-surface-700" />
+
+            <!-- Phones -->
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-phone text-surface-400"></i>
+                {{ 'partners.suppliers.phoneNumbers' | translate }}
+              </h3>
+              @if (currentCustomer.phones.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
+                  {{ 'partners.suppliers.noPhoneNumbersRegistered' | translate }}
+                </p>
+              }
+              @for (phone of currentCustomer.phones; track phone.id) {
+                <div
+                  class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+                >
+                  <i class="pi pi-phone text-surface-400 text-sm"></i>
+                  <span class="text-sm">{{ phone.phone }}</span>
+                </div>
+              }
+            </section>
+
+            <hr class="border-surface-200 dark:border-surface-700" />
+
+            <!-- Addresses -->
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-map-marker text-surface-400"></i>
+                {{ 'partners.suppliers.addresses' | translate }}
+              </h3>
+              @if (currentCustomer.addresses.length === 0) {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
+                  {{ 'partners.suppliers.noAddressesRegistered' | translate }}
+                </p>
+              }
+              @for (address of currentCustomer.addresses; track address.id) {
+                <div
+                  class="p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+                >
+                  <div class="flex items-start gap-2">
+                    <i class="pi pi-map-marker text-surface-400 text-sm mt-0.5"></i>
+                    <div class="flex-1">
+                      <p class="text-sm">{{ address.address }}</p>
+                      @if (address.state || address.municipality || address.postalCode) {
+                        <p class="text-xs text-surface-500 mt-1">
+                          {{
+                            getAddressLocation(
+                              address.state,
+                              address.municipality,
+                              address.postalCode
+                            )
+                          }}
+                        </p>
+                      }
+                      <div class="flex gap-2 mt-1">
+                        @if (address.billing) {
+                          <span
+                            class="px-2 py-0.5 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300"
+                            >{{ 'finance.treasury.cashregister.billing' | translate }}</span
+                          >
+                        }
+                        <span
+                          class="px-2 py-0.5 text-xs font-semibold rounded"
+                          [ngClass]="{
+                            'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300':
+                              address.active,
+                            'bg-gray-100 dark:bg-gray-800 text-gray-500': !address.active,
+                          }"
+                        >
+                          {{
+                            address.active
+                              ? ('partners.suppliers.active' | translate)
+                              : ('partners.suppliers.inactive' | translate)
+                          }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              }
+            </section>
+          </div>
+        </app-panel-card>
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="'partners.customers.accessibleWarehouses' | translate"
+          />
+          <div class="p-4 sm:p-6">
+            @if (warehouseAccessLoading()) {
+              <app-loading-spinner />
+            } @else if (warehouseAccess().length === 0) {
+              <p class="text-sm text-surface-400 dark:text-surface-500 py-4 text-center">
+                {{ 'partners.customers.noWarehousesAssigned' | translate }}
+              </p>
+            } @else {
+              <div class="flex flex-col gap-3">
+                @for (wa of warehouseAccess(); track wa.warehouseId) {
+                  <div
+                    class="flex items-center p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+                  >
+                    <i class="pi pi-warehouse text-surface-400 text-sm mr-3"></i>
+                    <p class="text-sm font-medium">{{ wa.warehouseName }}</p>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>

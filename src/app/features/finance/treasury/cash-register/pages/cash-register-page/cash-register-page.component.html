@@ -1,0 +1,341 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.treasury.cashregister.cashRegister"
+      subtitle="finance.treasury.cashregister.manageEachSessionMoneyInMoneyOutAndExpectedBalance"
+    />
+
+    @if (showInitialLoading()) {
+      <app-panel-card>
+        <app-loading-spinner
+          [message]="'finance.treasury.cashregister.loadingCashRegister' | translate"
+        />
+      </app-panel-card>
+    } @else if (showEmptyState()) {
+      <app-panel-card>
+        <div class="flex flex-col items-center px-6 py-12 text-center">
+          <div
+            class="flex h-14 w-14 items-center justify-center rounded-2xl bg-surface-100 dark:bg-surface-800"
+          >
+            <i class="pi pi-lock text-2xl text-surface-600 dark:text-surface-300"></i>
+          </div>
+          <h2 class="mt-5 text-2xl font-semibold">
+            {{ 'finance.treasury.cashregister.cashRegisterClosed' | translate }}
+          </h2>
+          <p class="mt-2 max-w-lg text-surface-500 dark:text-surface-400">
+            {{
+              'finance.treasury.cashregister.openASessionToEnablePaymentsAdvancesRefundsMoneyInAndMoneyOut'
+                | translate
+            }}
+          </p>
+          <div class="mt-7 flex w-full max-w-lg flex-col gap-3 sm:flex-row">
+            <p-button
+              [appPermission]="'EXECUTE'"
+              [label]="'finance.treasury.cashregister.openCashRegister' | translate"
+              icon="pi pi-lock-open"
+              severity="contrast"
+              styleClass="w-full h-full"
+              class="flex-1"
+              (onClick)="onOpenDialogOpen()"
+            />
+            <p-button
+              [label]="'finance.treasury.cashregister.cashRegisterHistory2' | translate"
+              icon="pi pi-history"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full h-full whitespace-nowrap"
+              class="flex-[1.4]"
+              (onClick)="onViewHistory()"
+            />
+            <p-button
+              [label]="'finance.treasury.cashregister.viewRegisters' | translate"
+              icon="pi pi-box"
+              severity="secondary"
+              [outlined]="true"
+              styleClass="w-full h-full whitespace-nowrap"
+              class="flex-1"
+              (onClick)="onOpenSessionPicker()"
+            />
+          </div>
+        </div>
+      </app-panel-card>
+    } @else if (closure(); as c) {
+      <app-list-container>
+        <div class="px-4 sm:px-6 py-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+              <app-text-badge
+                [label]="getStatusLabel(c.status) | translate"
+                [severity]="getStatusSeverity(c.status)"
+              />
+              <div>
+                <h1 class="text-xl font-bold text-surface-900 dark:text-surface-0 m-0">
+                  {{ 'finance.treasury.cashregister.cashRegister' | translate }}
+                </h1>
+                <p class="text-sm text-surface-500 dark:text-surface-400 m-0 mt-1">
+                  {{ 'finance.billing.invoices.from' | translate }}
+                  {{ c.openedAt | localizedDate: 'dd/MM/yyyy HH:mm' }} &middot; {{ c.openedByName }}
+                </p>
+              </div>
+            </div>
+            <div class="w-full sm:w-auto sm:self-start">
+              <p-button
+                [label]="'shared.actions' | translate"
+                icon="pi pi-ellipsis-v"
+                severity="contrast"
+                styleClass="w-full sm:w-auto"
+                (click)="actionsPopover.toggle($event)"
+              />
+              <p-popover #actionsPopover>
+                <div class="flex min-w-48 flex-col gap-1 p-1">
+                  <p-button
+                    [label]="'finance.treasury.cashregister.viewRegisters' | translate"
+                    icon="pi pi-box"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (click)="actionsPopover.hide(); onOpenSessionPicker()"
+                  />
+                  <p-button
+                    [label]="'finance.treasury.cashregister.viewHistory' | translate"
+                    icon="pi pi-history"
+                    [link]="true"
+                    styleClass="w-full justify-start text-left text-sm"
+                    (click)="actionsPopover.hide(); onViewHistory()"
+                  />
+                  @if (isOpen()) {
+                    <div class="my-1 border-t border-surface-200 dark:border-surface-700"></div>
+                    <p-button
+                      [appPermission]="'EXECUTE'"
+                      [label]="'finance.treasury.cashregister.closeCashRegister' | translate"
+                      icon="pi pi-lock"
+                      [link]="true"
+                      severity="danger"
+                      styleClass="w-full justify-start text-left text-sm"
+                      [disabled]="!canClose() || loading()"
+                      (click)="actionsPopover.hide(); onOpenCloseDialog()"
+                    />
+                  }
+                </div>
+              </p-popover>
+            </div>
+          </div>
+        </div>
+      </app-list-container>
+
+      <div class="mt-6">
+        <h2
+          class="mb-3 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400"
+        >
+          {{ 'finance.treasury.cashregister.sessionSummary' | translate }}
+        </h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.openingBalance"
+            icon="pi pi-wallet"
+            module="finance"
+          >
+            {{ c.openingBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.billing"
+            icon="pi pi-receipt"
+            module="finance"
+          >
+            {{ c.totalInvoiced | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.moneyIn"
+            icon="pi pi-arrow-down-left"
+            module="finance"
+          >
+            <span class="text-green-600 dark:text-green-400">
+              {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.moneyOut"
+            icon="pi pi-arrow-up-right"
+            module="finance"
+          >
+            <span class="text-red-600 dark:text-red-400">
+              {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+          <app-metric-card
+            labelKey="finance.treasury.cashregister.expectedBalance"
+            icon="pi pi-chart-line"
+            module="finance"
+          >
+            <span
+              [class]="
+                c.expectedBalance >= 0
+                  ? 'text-green-600 dark:text-green-400'
+                  : 'text-red-600 dark:text-red-400'
+              "
+            >
+              {{ c.expectedBalance | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+            </span>
+          </app-metric-card>
+        </div>
+      </div>
+
+      <div class="mt-8">
+        <h2
+          class="mb-3 text-sm font-semibold uppercase tracking-wide text-surface-500 dark:text-surface-400"
+        >
+          {{ 'finance.treasury.cashregister.sessionAnalytics' | translate }}
+        </h2>
+
+        <div class="mt-4">
+          <section class="dashboard-widget">
+            <div class="mb-5 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.cashFlow' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.cashFlowSubtitle' | translate }}
+                </p>
+              </div>
+              <span
+                class="rounded-full bg-surface-100 px-3 py-1 text-xs font-medium text-surface-600 dark:bg-surface-800 dark:text-surface-300"
+              >
+                {{ c.totalIncome - c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                {{ 'finance.treasury.cashregister.netFlow' | translate }}
+              </span>
+            </div>
+            <div style="height: 280px">
+              <canvas
+                baseChart
+                [type]="barChartType"
+                [data]="flowChartData()"
+                [options]="flowChartOptions()"
+              ></canvas>
+            </div>
+          </section>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <section class="dashboard-widget">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.incomeByType' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.incomeByTypeSubtitle' | translate }}
+                </p>
+              </div>
+              <span class="text-sm font-semibold text-green-600 dark:text-green-400">
+                {{ c.totalIncome | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            @if (hasIncomeMovements()) {
+              <div style="height: 260px">
+                <canvas
+                  baseChart
+                  [type]="doughnutChartType"
+                  [data]="incomeByTypeChartData()"
+                  [options]="doughnutChartOptions()"
+                ></canvas>
+              </div>
+            } @else {
+              <div
+                class="dashboard-empty flex h-[260px] flex-col items-center justify-center px-4 text-center"
+              >
+                <i class="pi pi-arrow-down-left text-2xl text-surface-400"></i>
+                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.noIncomeMovements' | translate }}
+                </p>
+              </div>
+            }
+          </section>
+
+          <section class="dashboard-widget">
+            <div class="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.expenseByPaymentMethod' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.expenseByPaymentMethodSubtitle' | translate }}
+                </p>
+              </div>
+              <span class="text-sm font-semibold text-red-600 dark:text-red-400">
+                {{ c.totalExpense | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+              </span>
+            </div>
+            @if (hasExpenseMovements()) {
+              <div style="height: 260px">
+                <canvas
+                  baseChart
+                  [type]="doughnutChartType"
+                  [data]="expenseByTypeChartData()"
+                  [options]="doughnutChartOptions()"
+                ></canvas>
+              </div>
+            } @else {
+              <div
+                class="dashboard-empty flex h-[260px] flex-col items-center justify-center px-4 text-center"
+              >
+                <i class="pi pi-arrow-up-right text-2xl text-surface-400"></i>
+                <p class="mt-3 text-sm text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.noExpenseMovements' | translate }}
+                </p>
+              </div>
+            }
+          </section>
+
+          @if (hasNonCashMovements()) {
+            <section class="dashboard-widget">
+              <div class="mb-4">
+                <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+                  {{ 'finance.treasury.cashregister.nonCashMovements' | translate }}
+                </h3>
+                <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+                  {{ 'finance.treasury.cashregister.nonCashMovementsSubtitle' | translate }}
+                </p>
+              </div>
+              <div style="height: 260px">
+                <canvas
+                  baseChart
+                  [type]="doughnutChartType"
+                  [data]="nonCashChartData()"
+                  [options]="doughnutChartOptions()"
+                ></canvas>
+              </div>
+            </section>
+          }
+        </div>
+
+        <section class="dashboard-widget mt-4">
+          <div class="mb-5">
+            <h3 class="text-base font-semibold text-surface-900 dark:text-surface-100">
+              {{ 'finance.treasury.cashregister.balanceEvolution' | translate }}
+            </h3>
+            <p class="mt-1 text-xs text-surface-500 dark:text-surface-400">
+              {{ 'finance.treasury.cashregister.balanceEvolutionSubtitle' | translate }}
+            </p>
+          </div>
+          <div style="height: 260px">
+            <canvas
+              baseChart
+              [type]="lineChartType"
+              [data]="balanceTimelineChartData()"
+              [options]="balanceTimelineChartOptions()"
+            ></canvas>
+          </div>
+        </section>
+      </div>
+    }
+  </div>
+</div>
+
+<app-cash-register-open-dialog [(visible)]="openDialogVisible" />
+<app-cash-register-close-dialog [(visible)]="closeDialogVisible" />
+<app-cash-register-session-picker-dialog
+  [(visible)]="sessionPickerVisible"
+  (selected)="onSelectSession($event)"
+/>

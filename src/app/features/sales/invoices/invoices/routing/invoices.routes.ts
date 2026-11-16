@@ -1,0 +1,50 @@
+import { Routes } from '@angular/router';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
+export const INVOICE_ROUTES: Routes = [
+  {
+    path: '',
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.SALES_INVOICES_INVOICES },
+    canActivateChild: [modulePermissionGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            '@features/sales/invoices/invoices/pages/invoice-list-page/invoice-list-page.component'
+          ).then((m) => m.InvoiceListPageComponent),
+        title: 'Facturas',
+      },
+      {
+        path: 'new',
+        data: { requiredPermissions: ['SALES_INVOICES_INVOICES:CREATE'] },
+        loadComponent: () =>
+          import(
+            '@features/sales/invoices/invoices/pages/invoice-form-page/invoice-form-page.component'
+          ).then((m) => m.InvoiceFormPageComponent),
+        title: 'Nueva Factura',
+      },
+      {
+        path: ':id/edit',
+        data: { requiredPermissions: ['SALES_INVOICES_INVOICES:UPDATE'] },
+        loadComponent: () =>
+          import(
+            '@features/sales/invoices/invoices/pages/invoice-form-page/invoice-form-page.component'
+          ).then((m) => m.InvoiceFormPageComponent),
+        title: 'Editar Factura',
+      },
+      {
+        path: ':id',
+        data: { requiredPermissions: ['SALES_INVOICES_INVOICES:READ'] },
+        loadComponent: () =>
+          import(
+            '@features/sales/invoices/invoices/pages/invoice-detail-page/invoice-detail-page.component'
+          ).then((m) => m.InvoiceDetailPageComponent),
+        title: 'Detalle de Factura',
+      },
+    ],
+  },
+];

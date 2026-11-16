@@ -1,0 +1,25 @@
+{
+  "splits": [
+    {
+      "before": "src/app/features/reports/finance/services/api/finance-pdf-api.service.ts",
+      "after": [
+        "src/app/features/finance/treasury/payments/reporting/services/api/payment-pdf-api.service.ts",
+        "src/app/features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service.ts"
+      ],
+      "testBefore": "src/app/features/reports/finance/services/api/finance-pdf-api.service.spec.ts",
+      "testsAfter": [
+        "src/app/features/finance/treasury/payments/reporting/services/api/payment-pdf-api.service.spec.ts",
+        "src/app/features/finance/treasury/receivables/reporting/services/api/receivables-pdf-api.service.spec.ts"
+      ],
+      "preservedTests": 16
+    },
+    {
+      "before": "src/app/features/reports/finance/models/interfaces/index.ts",
+      "after": [
+        "src/app/features/finance/treasury/payments/reporting/models/interfaces/index.ts",
+        "src/app/features/finance/treasury/receivables/reporting/models/interfaces/index.ts",
+        "src/app/features/finance/treasury/cash-register/reporting/models/interfaces/index.ts"
+      ]
+    }
+  ]
+}

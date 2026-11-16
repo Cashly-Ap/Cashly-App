@@ -1,0 +1,13 @@
+@if (reportKey() === 'commercialCatalog') {
+  <app-commercial-catalog-pdf-modal
+    [visible]="true"
+    (visibleChange)="close()"
+    (onGeneratePdf)="commercial($event)"
+  />
+} @else {
+  <app-catalog-pdf-modal
+    [visible]="true"
+    (visibleChange)="close()"
+    (onGeneratePdf)="catalog($event)"
+  />
+}

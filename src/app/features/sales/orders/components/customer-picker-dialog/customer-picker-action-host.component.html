@@ -1,0 +1,13 @@
+@if (actions.action(); as action) {
+  <app-customer-picker-dialog
+    [requireConfirmation]="true"
+    [visible]="true"
+    [description]="
+      action === 'edit'
+        ? 'Busque y seleccione el cliente que desea editar'
+        : 'Busque y seleccione el cliente para consultar su saldo'
+    "
+    (customerSelected)="select($event)"
+    (cancelled)="close()"
+  />
+}

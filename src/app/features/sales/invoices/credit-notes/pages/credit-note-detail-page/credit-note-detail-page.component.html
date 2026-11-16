@@ -1,0 +1,103 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (creditNote(); as cn) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'finance.billing.creditnotes.creditNoteDetails2' | translate"
+          [subtitle]="'finance.billing.creditnotes.completeCreditNoteInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="cn.noteNumber"
+            [subtitle]="
+              ('finance.billing.invoices.amountPrefix' | translate) +
+              (cn.amount | localizedNumber: '1.2-2')
+            "
+          >
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="CREDIT_NOTE"
+                [auditEntityId]="cn.id"
+                [auditLabel]="cn.noteNumber"
+              >
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'analytics.dashboard.number' | translate"
+                [value]="cn.noteNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.customer' | translate"
+                [value]="cn.customerName || '—'"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="cn.customerRif || '—'"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.invoice' | translate"
+                [value]="cn.invoiceNumber || '—'"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.amount' | translate"
+                [value]="(cn.amount | localizedNumber: '1.2-2') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="cn.createdByName"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(cn.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(cn.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+
+        @if (cn.reason) {
+          <app-panel-card>
+            <app-details-card-header [title]="'shared.reason' | translate" />
+            <div class="p-4 sm:p-6">
+              <p
+                class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap leading-relaxed"
+              >
+                {{ cn.reason }}
+              </p>
+            </div>
+          </app-panel-card>
+        }
+      </div>
+    }
+  </div>
+</div>
+<p-confirmDialog styleClass="max-w-md" />

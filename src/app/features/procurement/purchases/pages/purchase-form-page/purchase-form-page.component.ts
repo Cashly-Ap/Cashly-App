@@ -1,0 +1,453 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { DatePickerModule } from 'primeng/datepicker';
+import { SelectModule } from 'primeng/select';
+import { MessageService } from 'primeng/api';
+import { FormContainerComponent } from '@core/forms/components/cards/form-container/form-container.component';
+import { FormHeaderComponent } from '@core/forms/components/headers/form-header/form-header.component';
+
+import { FormActionsComponent } from '@core/forms/components/headers/form-actions/form-actions.component';
+import { PendingTabsService } from '@core/pending-tabs';
+import { PENDING_TABS_CONFIG } from '@core/pending-tabs/constants';
+import { PurchaseApplicationService } from '@features/procurement/purchases/services/application/purchase-application.service';
+import { PurchaseItemsTableComponent } from '@features/procurement/purchases/components/purchase-items-table/purchase-items-table.component';
+import { SingleWarehouseResolverService } from '@features/inventory/warehouses/services/application/single-warehouse-resolver.service';
+import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
+import {
+  PurchaseFormData,
+  PurchaseLineFormData,
+} from '@features/procurement/purchases/models/interfaces/purchase-form-data.interface';
+import { SupplierList } from '@features/partners/suppliers/models/interfaces/supplier-list.interface';
+import { PayablesApiService } from '@features/finance/treasury/payables/services/api/payables-api.service';
+import { SupplierDebtSummary } from '@features/finance/treasury/payables/models/interfaces/supplier-debt-summary.interface';
+import { SupplierPickerDialogComponent } from '@features/procurement/purchases/components/supplier-picker-dialog/supplier-picker-dialog.component';
+import { PURCHASE_SUCCESS_MESSAGES } from '@features/procurement/purchases/messages/success-messages';
+
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/picker-trigger.component';
+@Component({
+  selector: 'app-purchase-form-page',
+  standalone: true,
+  imports: [
+    PickerTriggerComponent,
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedCurrencyPipe,
+    LocalizedDatePipe,
+    TranslateOptionsPipe,
+    ReactiveFormsModule,
+    ButtonModule,
+    InputTextModule,
+    TextareaModule,
+    DatePickerModule,
+    SelectModule,
+    FormContainerComponent,
+    FormHeaderComponent,
+    FormActionsComponent,
+    PurchaseItemsTableComponent,
+    SupplierPickerDialogComponent,
+  ],
+  templateUrl: './purchase-form-page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PurchaseFormPageComponent implements OnInit, OnDestroy {
+  private readonly translations = inject(TranslationService);
+  private readonly navigationHistory = inject(NavigationHistoryService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly purchaseService = inject(PurchaseApplicationService);
+  private readonly singleWarehouseResolver = inject(SingleWarehouseResolverService);
+  private readonly messageService = inject(MessageService);
+  private readonly pendingTabsService = inject(PendingTabsService);
+  private readonly payablesApi = inject(PayablesApiService);
+
+  private autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+  private isSubmitted = false;
+  private tabId = '';
+
+  readonly isEditMode = signal<boolean>(false);
+  readonly purchaseId = signal<string | null>(null);
+  readonly purchaseNumber = signal<string | null>(null);
+  readonly isSubmitting = signal<boolean>(false);
+  readonly selectedSupplier = signal<SupplierList | null>(null);
+  readonly selectedSupplierLabel = signal<{ name: string; rif: string } | null>(null);
+  readonly pickerVisible = signal<boolean>(false);
+
+  readonly selectedSupplierId = computed(() => this.selectedSupplier()?.id ?? null);
+  readonly singleWarehouse = signal<SingleWarehouseContext | null>(null);
+  readonly paymentType = signal<'CASH' | 'CREDIT'>('CASH');
+  readonly supplierCredit = signal<SupplierDebtSummary | null>(null);
+
+  readonly paymentTypes = [
+    { label: 'procurement.purchases.cash', value: 'CASH' },
+    { label: 'procurement.purchases.credit', value: 'CREDIT' },
+  ];
+
+  readonly submitTooltip = signal('');
+
+  private readonly FIELD_LABELS: Record<string, string> = {
+    supplierId: 'shared.fields.supplier',
+  };
+
+  readonly items = signal<PurchaseLineFormData[]>([]);
+
+  readonly total = computed(() =>
+    this.items().reduce((sum, i) => sum + i.quantity * i.unitCost, 0),
+  );
+
+  readonly form = this.fb.group({
+    supplierId: ['', [Validators.required]],
+    paymentType: [{ value: 'CASH', disabled: true }, [Validators.required]],
+    issueDate: [new Date()],
+    dueDate: [new Date()],
+    notes: [''],
+  });
+
+  readonly supplierHasCredit = computed(() => {
+    const credit = this.supplierCredit();
+    if (credit) return (credit.creditDays ?? 0) > 0;
+    return (this.selectedSupplier()?.creditDays ?? 0) > 0;
+  });
+
+  readonly creditWarning = computed(() => {
+    if (this.paymentType() !== 'CREDIT') return null;
+    const credit = this.supplierCredit();
+    const total = this.total();
+    if (!credit || total <= 0) return null;
+    if (total <= credit.availableCredit) return null;
+    const deficit = total - credit.availableCredit;
+    return {
+      creditLimit: credit.creditLimit,
+      availableCredit: credit.availableCredit,
+      totalDebt: credit.totalDebt,
+      deficit,
+    };
+  });
+
+  ngOnInit(): void {
+    this.form.statusChanges.subscribe(() => this.updateSubmitTooltip());
+    this.updateSubmitTooltip();
+    this.resolveSingleWarehouse();
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode.set(true);
+      this.purchaseId.set(id);
+      this.tabId = `purchases-edit-${id}`;
+      this.loadPurchase(id);
+    } else {
+      const queryTabId = this.route.snapshot.queryParamMap.get('tabId');
+      this.tabId = queryTabId || `purchases-create-${Date.now()}`;
+      this.restoreFromPendingTab();
+    }
+    this.form.controls.notes.valueChanges.subscribe(() => this.scheduleAutoSave());
+    this.form.controls.paymentType.valueChanges.subscribe((value) => {
+      this.paymentType.set(value === 'CASH' ? 'CASH' : 'CREDIT');
+      this.recalculateDueDate();
+    });
+    this.form.controls.issueDate.valueChanges.subscribe(() => this.recalculateDueDate());
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    if (this.form.dirty && !this.isSubmitted) {
+      this.savePendingTab();
+    }
+  }
+
+  private scheduleAutoSave(): void {
+    if (this.isSubmitted) return;
+    if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+    this.autoSaveTimer = setTimeout(() => this.savePendingTab(), PENDING_TABS_CONFIG.DEBOUNCE_TIME);
+  }
+
+  private resolveSingleWarehouse(): void {
+    this.singleWarehouseResolver.resolveForCompany().subscribe({
+      next: (warehouse) => this.singleWarehouse.set(warehouse),
+      error: () => this.singleWarehouse.set(null),
+    });
+  }
+
+  private savePendingTab(): void {
+    const label = this.selectedSupplierLabel();
+    const formData: PurchaseFormData = {
+      supplierId: this.form.value.supplierId ?? '',
+      supplierName: label?.name ?? '',
+      supplierRif: label?.rif ?? '',
+      notes: this.form.value.notes ?? '',
+      items: this.items(),
+    };
+    const title = this.purchaseNumber()
+      ? `Editar Compra ${this.purchaseNumber()}`
+      : this.isEditMode()
+        ? 'Editar Compra'
+        : 'Nueva Compra';
+    const route = this.isEditMode()
+      ? `/procurement/purchases/${this.purchaseId()}/edit`
+      : `/procurement/purchases/new?tabId=${this.tabId}`;
+
+    this.pendingTabsService.save(
+      this.tabId,
+      title,
+      route,
+      formData,
+      this.isEditMode() ? 'edit' : 'create',
+      'purchases',
+    );
+  }
+
+  private restoreFromPendingTab(): void {
+    const tab = this.pendingTabsService.get<PurchaseFormData>(this.tabId);
+    if (!tab) return;
+    this.form.patchValue({ supplierId: tab.formData.supplierId, notes: tab.formData.notes });
+    this.items.set(tab.formData.items);
+    this.updateSubmitTooltip();
+    if (tab.formData.supplierId) {
+      this.selectedSupplier.set({ id: tab.formData.supplierId } as SupplierList);
+      this.selectedSupplierLabel.set({
+        name: tab.formData.supplierName,
+        rif: tab.formData.supplierRif,
+      });
+    }
+  }
+
+  private markAsSubmitted(): void {
+    this.isSubmitted = true;
+    this.pendingTabsService.remove(this.tabId);
+  }
+
+  private updateSubmitTooltip(): void {
+    const invalid = Object.entries(this.FIELD_LABELS)
+      .filter(([key]) => this.form.get(key)?.invalid)
+      .map(([, label]) => label);
+    if (this.items().length === 0) invalid.push('shared.fields.product');
+    this.submitTooltip.set(requiredFieldsMessage(this.translations, invalid));
+  }
+
+  private loadPurchase(id: string): void {
+    this.purchaseService.loadById(id).subscribe({
+      next: (purchase) => {
+        this.purchaseNumber.set(purchase.purchaseNumber ?? null);
+        this.form.patchValue({ notes: purchase.notes ?? '' });
+        this.selectedSupplierLabel.set({
+          name: purchase.supplierName,
+          rif: purchase.supplierRif,
+        });
+        this.form.patchValue({ supplierId: purchase.supplierId });
+        this.form.controls.paymentType.disable();
+        this.form.controls.issueDate.disable();
+        this.form.controls.dueDate.disable();
+        this.loadSupplierCredit(purchase.supplierId);
+        this.selectedSupplier.set({ id: purchase.supplierId } as SupplierList);
+        this.items.set(
+          purchase.lines.map((line) => {
+            return {
+              productId: line.productId,
+              productCode: line.productCode,
+              productName: line.productName,
+              quantity: line.quantity,
+              unitCost: line.unitCost,
+              stock: (line.stockItems ?? []).map((s) => ({
+                warehouseId: s.warehouseId,
+                warehouseName: s.warehouseName,
+                warehouseCode: s.warehouseCode,
+                quantity: s.quantity,
+                reserved: s.reserved,
+                available: s.available,
+              })),
+              warehouseAllocations: line.allocations.map((a) => ({
+                warehouseId: a.warehouseId,
+                warehouseCode: a.warehouseCode ?? '',
+                warehouseName: a.warehouseName,
+                available: 0,
+                allocated: a.allocatedQuantity,
+              })),
+            };
+          }),
+        );
+      },
+    });
+  }
+
+  openPicker(): void {
+    this.pickerVisible.set(true);
+  }
+
+  onSupplierSelected(supplier: SupplierList): void {
+    this.selectedSupplier.set(supplier);
+    this.selectedSupplierLabel.set({ name: supplier.alias, rif: supplier.legalName });
+    this.form.patchValue({ supplierId: supplier.id });
+    this.loadSupplierCredit(supplier.id);
+    this.syncPaymentTypeAvailability();
+    this.recalculateDueDate();
+    this.pickerVisible.set(false);
+    this.scheduleAutoSave();
+  }
+
+  onPickerCancelled(): void {
+    this.pickerVisible.set(false);
+  }
+
+  onItemsChange(updated: PurchaseLineFormData[]): void {
+    this.items.set(updated);
+    this.updateSubmitTooltip();
+    this.scheduleAutoSave();
+  }
+
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    if (this.items().length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Debes agregar al menos un producto a la compra.',
+        life: 4000,
+      });
+      return;
+    }
+
+    this.isSubmitting.set(true);
+
+    const formValue = this.form.getRawValue();
+
+    if (this.isEditMode() && this.purchaseId()) {
+      this.purchaseService
+        .update(this.purchaseId()!, {
+          notes: formValue.notes ?? null,
+          lines: this.items().map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            unitCost: i.unitCost,
+            warehouseAllocations: i.warehouseAllocations
+              .filter((a) => a.allocated > 0)
+              .map((a) => ({
+                warehouseId: a.warehouseId,
+                quantity: a.allocated,
+              })),
+          })),
+        })
+        .subscribe({
+          next: (purchase) => {
+            this.isSubmitting.set(false);
+            this.markAsSubmitted();
+            this.messageService.add(PURCHASE_SUCCESS_MESSAGES.updated);
+            this.router.navigate(['/procurement/purchases', purchase.id]);
+          },
+          error: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al actualizar la compra. Por favor, intente nuevamente.',
+              life: 5000,
+            });
+          },
+        });
+    } else {
+      this.purchaseService
+        .create({
+          supplierId: formValue.supplierId ?? '',
+          notes: formValue.notes ?? null,
+          lines: this.items().map((i) => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            unitCost: i.unitCost,
+            warehouseAllocations: i.warehouseAllocations
+              .filter((a) => a.allocated > 0)
+              .map((a) => ({
+                warehouseId: a.warehouseId,
+                quantity: a.allocated,
+              })),
+          })),
+        })
+        .subscribe({
+          next: (purchase) => {
+            this.isSubmitting.set(false);
+            this.markAsSubmitted();
+            this.messageService.add(PURCHASE_SUCCESS_MESSAGES.created);
+            this.router.navigate(['/procurement/purchases', purchase.id]);
+          },
+          error: () => {
+            this.isSubmitting.set(false);
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Error al crear la compra. Por favor, intente nuevamente.',
+              life: 5000,
+            });
+          },
+        });
+    }
+  }
+
+  cancel(): void {
+    this.navigationHistory.back(['/procurement/purchases']);
+  }
+
+  private loadSupplierCredit(supplierId: string): void {
+    this.payablesApi.getSupplierDebt(supplierId).subscribe({
+      next: (credit) => {
+        this.supplierCredit.set(credit);
+        this.syncPaymentTypeAvailability();
+        this.recalculateDueDate();
+      },
+      error: () => this.supplierCredit.set(null),
+    });
+  }
+
+  private recalculateDueDate(): void {
+    if (this.paymentType() !== 'CREDIT') return;
+    const creditDays = this.supplierCredit()?.creditDays ?? 0;
+    const issueDate = this.form.controls.issueDate.value;
+    if (!issueDate) return;
+    const due = new Date(issueDate);
+    due.setDate(due.getDate() + creditDays);
+    this.form.controls.dueDate.setValue(due, { emitEvent: false });
+  }
+
+  private formatDate(value: Date | null | undefined): string | undefined {
+    if (!value) return undefined;
+    const year = value.getFullYear();
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  private syncPaymentTypeAvailability(): void {
+    const control = this.form.controls.paymentType;
+    if (!this.supplierHasCredit()) {
+      control.setValue('CASH', { emitEvent: false });
+      control.disable({ emitEvent: false });
+      this.paymentType.set('CASH');
+      return;
+    }
+    const wasDisabled = control.disabled;
+    control.enable({ emitEvent: false });
+    if (wasDisabled) {
+      control.setValue('CREDIT', { emitEvent: false });
+      this.paymentType.set('CREDIT');
+    }
+  }
+}

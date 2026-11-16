@@ -47,8 +47,8 @@ describe('TextBadgeComponent', () => {
     fixture.detectChanges();
 
     const span = fixture.nativeElement.querySelector('span');
-    expect(span.className).toContain('bg-surface-200');
-    expect(span.className).toContain('text-surface-600');
+    expect(span.className).toContain('bg-surface-300');
+    expect(span.className).toContain('text-surface-700');
   });
 
   it('should apply info variant classes', () => {
@@ -89,6 +89,36 @@ describe('TextBadgeComponent', () => {
     const span = fixture.nativeElement.querySelector('span');
     expect(span.className).toContain('bg-red-100');
     expect(span.className).toContain('text-red-700');
+  });
+
+  it('should map the success severity to the success variant', () => {
+    fixture.componentRef.setInput('label', 'Test');
+    fixture.componentRef.setInput('severity', 'success');
+    fixture.detectChanges();
+
+    const span = fixture.nativeElement.querySelector('span');
+    expect(span.className).toContain('bg-green-100');
+    expect(span.className).toContain('text-green-700');
+  });
+
+  it('should map the warn severity to the warning variant', () => {
+    fixture.componentRef.setInput('label', 'Test');
+    fixture.componentRef.setInput('severity', 'warn');
+    fixture.detectChanges();
+
+    const span = fixture.nativeElement.querySelector('span');
+    expect(span.className).toContain('bg-yellow-100');
+    expect(span.className).toContain('text-yellow-700');
+  });
+
+  it('should map the contrast severity to the default variant', () => {
+    fixture.componentRef.setInput('label', 'Test');
+    fixture.componentRef.setInput('severity', 'contrast');
+    fixture.detectChanges();
+
+    const span = fixture.nativeElement.querySelector('span');
+    expect(span.className).toContain('bg-surface-900');
+    expect(span.className).toContain('text-surface-0');
   });
 
   it('should have base styling classes', () => {

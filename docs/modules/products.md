@@ -11,68 +11,17 @@ The Products module manages the product catalog for the invoicing system. It han
 ## Module Structure
 
 ```
-src/app/features/products/
-├── components/
-│   ├── product-general-section/
-│   │   ├── product-general-section.component.ts
-│   │   ├── product-general-section.component.html
-│   │   └── product-general-section.component.spec.ts
-│   ├── product-composition-section/
-│   │   ├── product-composition-section.component.ts
-│   │   ├── product-composition-section.component.html
-│   │   └── product-composition-section.component.spec.ts
-│   └── index.ts
-├── models/
-│   ├── interfaces/
-│   │   ├── product-list.interface.ts
-│   │   ├── product-details.interface.ts
-│   │   ├── product-edit.interface.ts
-│   │   ├── product-create.interface.ts
-│   │   ├── product-composition.interface.ts
-│   │   ├── product-stock.interface.ts
-│   │   └── index.ts
-│   ├── enums/
-│   │   ├── product-type.enum.ts
-│   │   ├── unit-of-measure.enum.ts
-│   │   └── index.ts
-│   └── index.ts
-├── pages/
-│   ├── products-list-page/
-│   │   ├── products-list-page.component.ts
-│   │   ├── products-list-page.component.html
-│   │   └── products-list-page.component.spec.ts
-│   ├── products-form-page/
-│   │   ├── products-form-page.component.ts
-│   │   ├── products-form-page.component.html
-│   │   ├── products-form-page.component.spec.ts
-│   │   └── products-form-page.config.ts
-│   ├── products-details-page/
-│   │   ├── products-details-page.component.ts
-│   │   ├── products-details-page.component.html
-│   │   └── products-details-page.component.spec.ts
-│   └── index.ts
-├── services/
-│   ├── api/
-│   │   ├── product-api.service.ts
-│   │   ├── product-api.service.spec.ts
-│   │   └── index.ts
-│   ├── application/
-│   │   ├── product-application.service.ts
-│   │   ├── product-application.service.spec.ts
-│   │   └── index.ts
-│   ├── mappers/
-│   │   ├── product.mapper.ts
-│   │   ├── product.mapper.spec.ts
-│   │   └── index.ts
-│   └── index.ts
-├── validators/
-│   ├── product.validators.ts
-│   ├── product.validators.spec.ts
-│   └── index.ts
-├── router/
-│   ├── product.routes.ts
-│   └── index.ts
-└── index.ts
+src/app/features/catalog/products/
+├── actions/                        # Row and toolbar actions
+├── components/                     # Form sections
+├── i18n/                           # Translations
+├── models/                         # Interfaces and enums
+├── navigation/                     # Menu and navigation contributions
+├── pages/                          # List, form, and details pages
+├── permissions/                    # Permission constants
+├── reporting/                      # Product, catalog, and commercial catalog reports
+├── routing/                        # Lazy-loaded routes
+└── services/                       # API and application services
 ```
 
 ---
@@ -97,7 +46,7 @@ src/app/features/products/
 
 ### List Page
 
-**Route**: `/products`
+**Route**: `/catalog/products`
 
 **Component**: `ProductsListPageComponent`
 
@@ -115,7 +64,7 @@ src/app/features/products/
 
 ### Form Page
 
-**Route**: `/products/new` (Create) | `/products/:id/edit` (Edit)
+**Route**: `/catalog/products/new` (Create) | `/catalog/products/:id/edit` (Edit)
 
 **Component**: `ProductsFormPageComponent`
 
@@ -133,7 +82,7 @@ src/app/features/products/
 
 ### Details Page
 
-**Route**: `/products/:id`
+**Route**: `/catalog/products/:id`
 
 **Component**: `ProductsDetailsPageComponent`
 
@@ -1073,43 +1022,51 @@ export class ProductMapper {
 ## Routes Configuration
 
 ```typescript
-// router/product.routes.ts
 import { Routes } from '@angular/router';
-import { pendingChangesGuard } from '@core/pending-tabs';
+import { authGuard } from '@features/platform/auth/guards/auth.guard';
+import { modulePermissionGuard } from '@features/platform/auth/guards/module-permission.guard';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export const PRODUCT_ROUTES: Routes = [
   {
     path: '',
-    loadComponent: () =>
-      import('../pages/products-list-page/products-list-page.component').then(
-        (m) => m.ProductsListPageComponent,
-      ),
-    title: 'Productos',
-  },
-  {
-    path: 'new',
-    loadComponent: () =>
-      import('../pages/products-form-page/products-form-page.component').then(
-        (m) => m.ProductsFormPageComponent,
-      ),
-    title: 'Nuevo Producto',
-  },
-  {
-    path: ':id',
-    loadComponent: () =>
-      import('../pages/products-details-page/products-details-page.component').then(
-        (m) => m.ProductsDetailsPageComponent,
-      ),
-    title: 'Detalles del Producto',
-  },
-  {
-    path: ':id/edit',
-    loadComponent: () =>
-      import('../pages/products-form-page/products-form-page.component').then(
-        (m) => m.ProductsFormPageComponent,
-      ),
-    title: 'Editar Producto',
-    canDeactivate: [pendingChangesGuard],
+    canActivate: [authGuard, modulePermissionGuard],
+    data: { module: BusinessModule.CATALOG_PRODUCTS },
+    canActivateChild: [modulePermissionGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import(
+            '@features/catalog/products/pages/products-list-page/products-list-page.component'
+          ).then((m) => m.ProductsListPageComponent),
+        title: 'Productos',
+      },
+      {
+        path: 'new',
+        loadComponent: () =>
+          import(
+            '@features/catalog/products/pages/products-form-page/products-form-page.component'
+          ).then((m) => m.ProductsFormPageComponent),
+        title: 'Nuevo Producto',
+      },
+      {
+        path: ':id',
+        loadComponent: () =>
+          import(
+            '@features/catalog/products/pages/products-details-page/products-details-page.component'
+          ).then((m) => m.ProductsDetailsPageComponent),
+        title: 'Detalles de Producto',
+      },
+      {
+        path: ':id/edit',
+        loadComponent: () =>
+          import(
+            '@features/catalog/products/pages/products-form-page/products-form-page.component'
+          ).then((m) => m.ProductsFormPageComponent),
+        title: 'Editar Producto',
+      },
+    ],
   },
 ];
 ```
@@ -1178,6 +1135,6 @@ export const PRODUCT_ROUTES: Routes = [
 
 ---
 
-**Last Updated**: 2025-12-20
+**Last Updated**: 2026-11-03
 
-**Module Status**: [x] Planned | [ ] In Development | [ ] Implemented
+**Module Status**: [ ] Planned | [ ] In Development | [x] Implemented

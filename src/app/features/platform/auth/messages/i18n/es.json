@@ -1,0 +1,20 @@
+{
+  "platform.auth.messages.couldNotChangeThePasswordPleaseTryAgain": "Error al cambiar la contraseña. Por favor, intente nuevamente.",
+  "platform.auth.messages.couldNotChangeTheUsernamePleaseTryAgain": "Error al cambiar el nombre de usuario. Por favor, intente nuevamente.",
+  "platform.auth.messages.couldNotUpdateTheMonthlyDeductionPleaseTryAgain": "Error al actualizar el deducible mensual. Por favor, intente nuevamente.",
+  "platform.auth.messages.sessionExpired": "Sesión Expirada",
+  "platform.auth.messages.yourSessionHasExpiredPleaseSignInAgain": "Su sesión ha expirado. Por favor, inicie sesión nuevamente.",
+  "platform.auth.messages.connectionError": "Error de Conexión",
+  "platform.auth.messages.cannotConnectToTheServerPleaseTryAgainLater": "No se puede conectar con el servidor. Por favor, inténtelo más tarde.",
+  "platform.auth.messages.serverError": "Error del Servidor",
+  "platform.auth.messages.aServerErrorOccurredPleaseTryAgainLater": "Ha ocurrido un error en el servidor. Por favor, inténtelo más tarde.",
+  "platform.auth.messages.authenticationError": "Error de autenticación",
+  "platform.auth.messages.couldNotSignInCheckYourCredentials": "Error al iniciar sesión. Verifique sus credenciales.",
+  "platform.auth.messages.passwordChangedSuccessfully": "Contraseña cambiada exitosamente",
+  "platform.auth.messages.usernameUpdatedSuccessfully": "Nombre de usuario actualizado exitosamente",
+  "platform.auth.messages.monthlyLatePaymentDeductionUpdatedSuccessfully": "Deducible mensual de retraso actualizado exitosamente",
+  "platform.auth.messages.welcome": "Bienvenido",
+  "platform.auth.messages.youHaveSignedInSuccessfully": "Has iniciado sesión correctamente",
+  "platform.auth.messages.signedOut": "Sesión cerrada",
+  "platform.auth.messages.youHaveSignedOutSuccessfully": "Has cerrado sesión correctamente"
+}

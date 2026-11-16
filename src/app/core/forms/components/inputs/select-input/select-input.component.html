@@ -6,26 +6,58 @@
     @if (icon()) {
       <i class="pi {{ icon() }} mr-1.5 text-primary-500 dark:text-primary-400"></i>
     }
-    {{ label() }}
+    {{ label() | translate }}
   </label>
   <p-select
+    [ariaLabel]="label() | translate"
     [formControl]="internalControl()"
     [name]="label()"
     [options]="options()"
     [optionLabel]="optionLabel()"
     [optionValue]="optionValue()"
-    [placeholder]="placeholder()"
+    [placeholder]="placeholder() | translate"
     [filter]="filter()"
     [filterPlaceholder]="filterPlaceholder()"
     [disabled]="disabled()"
     [showClear]="showClear()"
     styleClass="w-full"
-  />
+  >
+    <ng-template #item let-option>
+      <div class="flex items-center gap-3">
+        @if (optionImage() && option?.[optionImage()]) {
+          <img
+            [src]="option[optionImage()]"
+            width="24"
+            height="18"
+            alt=""
+            aria-hidden="true"
+            class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
+          />
+        }
+        <span>{{ (option?.[optionLabel()] ?? option) | translate }}</span>
+      </div>
+    </ng-template>
+    <ng-template #selectedItem let-option>
+      <div class="flex items-center gap-3">
+        @if (optionImage() && option?.[optionImage()]) {
+          <img
+            [src]="option[optionImage()]"
+            width="24"
+            height="18"
+            alt=""
+            aria-hidden="true"
+            class="h-4.5 w-6 shrink-0 rounded-sm object-cover"
+          />
+        }
+        <span>{{ (option?.[optionLabel()] ?? option) | translate }}</span>
+      </div>
+    </ng-template>
+  </p-select>
   <div class="min-h-[20px] mt-1.5">
     @if (internalControl().invalid && internalControl().touched && errorMessage()) {
       <small class="flex items-center gap-1 text-red-500 text-xs">
         <i class="pi pi-exclamation-circle text-xs"></i>
-        {{ errorMessage() }}
+        {{ errorMessage() | translate }}
       </small>
     }
   </div>

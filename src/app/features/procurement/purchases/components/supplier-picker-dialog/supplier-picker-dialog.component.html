@@ -1,0 +1,196 @@
+<p-dialog
+  [visible]="visible()"
+  [modal]="true"
+  [closable]="false"
+  [style]="{ width: '42rem', maxHeight: '90vh' }"
+  [breakpoints]="{ '960px': '95vw' }"
+  (onShow)="onDialogShow()"
+>
+  <ng-template pTemplate="header">
+    <app-dialog-header
+      icon="pi pi-truck"
+      title="procurement.purchases.selectSupplier"
+      subtitle="procurement.purchases.findAndSelectTheSupplierForThePurchase"
+    />
+  </ng-template>
+
+  <div class="flex flex-col gap-4 pt-1">
+    <div class="flex items-center gap-2">
+      <app-list-filter
+        [activeCount]="activeFilterCount()"
+        variant="compact"
+        (cleared)="clearFilters()"
+      >
+        <app-search-field
+          [value]="search()"
+          [placeholder]="'procurement.purchases.searchSuppliers' | translate"
+          (search)="onSearchChange($event)"
+        />
+
+        <div class="flex flex-col gap-1.5">
+          <span
+            class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+            >{{ 'shared.type' | translate }}</span
+          >
+          <p-select
+            [options]="supplierTypes | translateOptions"
+            [ngModel]="filterType()"
+            (ngModelChange)="selectType($event)"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'finance.treasury.paymentmethods.all' | translate"
+            [showClear]="true"
+            styleClass="w-full"
+          />
+        </div>
+      </app-list-filter>
+      <span class="text-xs text-surface-500 dark:text-surface-400 whitespace-nowrap">
+        {{ totalElements() }}
+        {{
+          totalElements() === 1
+            ? ('procurement.purchases.supplier3' | translate)
+            : ('procurement.purchases.suppliers' | translate)
+        }}
+      </span>
+    </div>
+
+    <app-table-card extraClass="hidden sm:block">
+      <app-data-table>
+        <thead>
+          <tr
+            class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700"
+          >
+            <th
+              class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-20"
+            >
+              {{ 'finance.treasury.paymentmethods.code' | translate }}
+            </th>
+            <th
+              class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
+            >
+              {{ 'partners.suppliers.legalName' | translate }}
+            </th>
+            <th
+              class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-36"
+            >
+              {{ 'finance.treasury.receivables.customerTaxId' | translate }}
+            </th>
+            <th
+              class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-28"
+            >
+              {{ 'shared.type' | translate }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading()) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <tr app-table-row-skeleton [columns]="4"></tr>
+            }
+          } @else if (suppliers().length === 0) {
+            <tr>
+              <td
+                colspan="4"
+                class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
+              >
+                <i class="pi pi-search text-2xl block mb-2"></i>
+                {{ 'procurement.purchases.noSuppliersFound' | translate }}
+              </td>
+            </tr>
+          } @else {
+            @for (supplier of suppliers(); track supplier.id) {
+              <tr
+                class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-800 cursor-pointer transition-colors"
+                (click)="onSelect(supplier)"
+              >
+                <td class="px-4 py-3 font-mono text-xs text-surface-500 dark:text-surface-400">
+                  #{{ supplier.code }}
+                </td>
+                <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
+                  {{ supplier.legalName }}
+                </td>
+                <td class="px-4 py-3 font-mono text-xs text-surface-500 dark:text-surface-400">
+                  {{ supplier.rif }}
+                </td>
+                <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
+                  {{ getSupplierTypeLabel(supplier.type) | translate }}
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </app-data-table>
+    </app-table-card>
+
+    <div class="flex flex-col gap-2 sm:hidden">
+      @if (loading()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <app-card-skeleton />
+        }
+      } @else if (suppliers().length === 0) {
+        <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+          <i class="pi pi-search text-2xl block mb-2"></i>
+          {{ 'procurement.purchases.noSuppliersFound' | translate }}
+        </div>
+      } @else {
+        @for (supplier of suppliers(); track supplier.id) {
+          <div
+            class="bg-surface-0 dark:bg-surface-800 rounded-xl p-4 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 cursor-pointer transition-colors"
+            (click)="onSelect(supplier)"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <p class="font-bold text-base text-surface-900 dark:text-surface-0 leading-tight">
+                {{ supplier.legalName }}
+              </p>
+              <span class="text-xs font-mono text-surface-400 dark:text-surface-500 shrink-0"
+                >#{{ supplier.code }}</span
+              >
+            </div>
+            <div
+              class="border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 flex items-center justify-between"
+            >
+              <span class="font-mono text-xs text-surface-500 dark:text-surface-400">{{
+                supplier.rif
+              }}</span>
+              <span class="text-xs text-surface-600 dark:text-surface-300">{{
+                getSupplierTypeLabel(supplier.type) | translate
+              }}</span>
+            </div>
+          </div>
+        }
+      }
+    </div>
+
+    @if (totalPages() > 1) {
+      <div class="flex items-center justify-between">
+        <span class="text-xs text-surface-500 dark:text-surface-400">{{
+          pageLabel() | translate
+        }}</span>
+        <div class="flex gap-1">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === 0"
+            (click)="onPagePrev()"
+          >
+            <i class="pi pi-chevron-left text-xs"></i>
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            [disabled]="currentPage() === totalPages() - 1"
+            (click)="onPageNext()"
+          >
+            <i class="pi pi-chevron-right text-xs"></i>
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end pt-1">
+      <app-cancel-button (cancelled)="onCancel()" />
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,10 +1,8 @@
-<div class="min-h-screen bg-surface-50 dark:bg-surface-900">
-  <p-toast position="top-right"></p-toast>
-
+<div class="cashly-shell min-h-screen bg-surface-50 dark:bg-surface-950">
   <div
-    class="fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-900 border-b border-surface-200 dark:border-surface-700 shadow-md"
+    class="cashly-topbar fixed top-0 left-0 right-0 z-50 bg-surface-0 dark:bg-surface-950 border-b border-surface-200 dark:border-surface-800"
   >
-    <div class="flex items-center justify-between px-4 h-16">
+    <div class="flex items-center justify-between gap-3 px-4 sm:px-6 h-20">
       <div class="xl:hidden">
         <p-button
           icon="pi pi-bars"
@@ -12,42 +10,66 @@
           [rounded]="true"
           severity="secondary"
           (onClick)="toggleMobileMenu()"
-          ariaLabel="Menú"
+          [ariaLabel]="'navigation.menu' | translate"
         />
       </div>
 
-      <div class="hidden xl:flex flex-1 min-w-0 px-2 2xl:px-4">
+      <button
+        type="button"
+        class="cashly-brand flex items-center gap-3 shrink-0 mr-auto xl:mr-2 cursor-pointer border-0 bg-transparent p-0 text-inherit rounded focus-visible:outline-2 focus-visible:outline-offset-4"
+        [attr.aria-label]="companyName() + ' — ' + ('navigation.labels.goToDashboard' | translate)"
+        (click)="goToDashboard()"
+      >
+        @if (companyService.logoUrl(); as logo) {
+          <img
+            [src]="logo"
+            width="120"
+            height="32"
+            class="h-8 w-auto max-w-28 object-contain"
+            [alt]="companyName()"
+            (error)="companyService.clearLogo()"
+          />
+        } @else {
+          <img ngSrc="/cashly-icon.svg" width="32" height="32" alt="" />
+        }
+        <span class="xl:hidden 2xl:inline text-lg font-bold tracking-tight max-w-40 truncate">{{
+          companyName()
+        }}</span>
+      </button>
+
+      <div class="hidden xl:flex flex-1 min-w-0">
         <p-menubar
           [model]="primeMenuItems()"
           styleClass="border-0 bg-transparent main-menubar"
         ></p-menubar>
       </div>
 
-      <div class="flex items-center gap-1 xl:gap-2 2xl:gap-4">
-        <app-notification-bell />
+      <div class="cashly-toolbar-actions flex items-center gap-1 sm:gap-2 shrink-0">
+        @if (notificationPreferences.bellVisible()) {
+          <app-notification-bell />
+        }
         <app-pending-tabs-dropdown />
 
         <button
           #userButton
           (click)="toggleUserMenu($event)"
-          class="hidden xl:flex items-center gap-2 p-2 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
+          [attr.aria-label]="'navigation.openUserMenu' | translate"
+          class="hidden sm:flex items-center gap-2 p-2 rounded-full hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent"
         >
-          <p-avatar
-            [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
-            shape="circle"
+          <app-user-avatar
+            [photoPath]="currentUser()?.photoPath"
+            [name]="currentUser()?.userName || 'Usuario'"
             size="normal"
           />
-          <span class="hidden 2xl:inline font-bold text-surface-900 dark:text-surface-100">
-            {{ currentUser()?.userName || 'Usuario' }}
+          <span
+            class="hidden min-[1800px]:inline font-medium text-surface-900 dark:text-surface-100 max-w-32 truncate"
+          >
+            {{ currentUser()?.userName || ('auth.profile.user' | translate) }}
           </span>
           <i
-            class="hidden! 2xl:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-sm"
+            class="hidden! min-[1800px]:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-xs"
           ></i>
         </button>
-
-        <div class="hidden xl:block">
-          <app-theme-toggle></app-theme-toggle>
-        </div>
       </div>
     </div>
   </div>
@@ -59,19 +81,28 @@
     [modal]="true"
     [showCloseIcon]="false"
     position="left"
-    styleClass="w-80"
+    styleClass="cashly-navigation-drawer w-80"
   >
     <ng-template pTemplate="header">
       <div class="flex items-center justify-between w-full">
         <div class="flex items-center gap-3">
-          <img
-            [ngSrc]="logoSrc"
-            alt="Logo Cashly"
-            width="120"
-            height="32"
-            style="width: auto"
-            class="h-8 object-contain"
-          />
+          @if (companyService.logoUrl(); as logo) {
+            <img
+              [src]="logo"
+              [alt]="companyName()"
+              class="h-8 max-w-48 object-contain"
+              (error)="companyService.clearLogo()"
+            />
+            <span class="font-bold truncate">{{ companyName() }}</span>
+          } @else {
+            <img
+              [ngSrc]="logoSrc"
+              [alt]="'core.layouts.labels.cashlyLogo' | translate"
+              width="120"
+              height="32"
+              class="h-8 w-auto object-contain"
+            />
+          }
         </div>
         <p-button
           icon="pi pi-times"
@@ -79,7 +110,7 @@
           [rounded]="true"
           severity="secondary"
           (onClick)="closeMobileMenu()"
-          ariaLabel="Cerrar menú"
+          [ariaLabel]="'navigation.closeMenu' | translate"
         />
       </div>
     </ng-template>
@@ -88,14 +119,14 @@
       <div class="flex flex-col h-full">
         <div class="p-4 border-b border-surface-200 dark:border-surface-700">
           <div class="flex items-center gap-3">
-            <p-avatar
-              [label]="currentUser()?.userName?.charAt(0)?.toUpperCase() || 'U'"
-              shape="circle"
+            <app-user-avatar
+              [photoPath]="currentUser()?.photoPath"
+              [name]="currentUser()?.userName || 'Usuario'"
               size="large"
             />
             <div>
               <p class="font-bold text-surface-900 dark:text-surface-100">
-                {{ currentUser()?.userName || 'Usuario' }}
+                {{ currentUser()?.userName || ('auth.profile.user' | translate) }}
               </p>
               <p class="text-sm text-surface-500 dark:text-surface-400">
                 {{ currentUser()?.email || '' }}
@@ -112,20 +143,29 @@
         </div>
 
         <div class="border-t border-surface-200 dark:border-surface-700 p-4 space-y-1">
-          <div class="flex items-center justify-between p-3 rounded-lg">
-            <div class="flex items-center gap-3">
-              <i class="pi pi-palette text-surface-600 dark:text-surface-400"></i>
-              <span class="font-medium text-surface-700 dark:text-surface-200">Modo Oscuro</span>
-            </div>
-            <app-theme-toggle></app-theme-toggle>
-          </div>
           <button
             (click)="goToConfiguration(); closeMobileMenu()"
             pRipple
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
           >
-            <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
-            <span class="font-medium">Configuración</span>
+            <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
+            <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
+          </button>
+          <button
+            (click)="goToPreferences()"
+            pRipple
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+          >
+            <i class="pi pi-cog" aria-hidden="true"></i
+            ><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
+          </button>
+          <button
+            (click)="goToSecurity(); closeMobileMenu()"
+            pRipple
+            class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+          >
+            <i class="pi pi-shield"></i
+            ><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
           </button>
           <button
             (click)="logout()"
@@ -133,7 +173,7 @@
             class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
           >
             <i class="pi pi-sign-out"></i>
-            <span class="font-medium">Cerrar Sesión</span>
+            <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
           </button>
         </div>
       </div>
@@ -147,8 +187,24 @@
         pRipple
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
       >
-        <i class="pi pi-cog text-surface-600 dark:text-surface-400"></i>
-        <span class="font-medium">Configuración</span>
+        <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
+        <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
+      </button>
+      <button
+        (click)="goToPreferences()"
+        pRipple
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+      >
+        <i class="pi pi-cog" aria-hidden="true"></i
+        ><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
+      </button>
+      <button
+        (click)="goToSecurity()"
+        pRipple
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+      >
+        <i class="pi pi-shield"></i
+        ><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
       </button>
       <button
         (click)="logout()"
@@ -156,86 +212,28 @@
         class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
       >
         <i class="pi pi-sign-out"></i>
-        <span class="font-medium">Cerrar Sesión</span>
+        <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
       </button>
     </div>
   </p-popover>
 
-  @defer (when activeModal() !== null || pdfViewerVisible()) {
-    <app-catalog-pdf-modal
-      [visible]="activeModal() === 'catalog'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onCatalogPdf($event)"
-    />
-
-    <app-commercial-catalog-pdf-modal
-      [visible]="activeModal() === 'commercialCatalog'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onCommercialCatalogPdf($event)"
-    />
-
-    <app-stock-pdf-modal
-      [visible]="activeModal() === 'stock'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onStockPdf($event)"
-      (onGenerateExcel)="onStockExcel($event)"
-    />
-
-    <app-movements-pdf-modal
-      [visible]="activeModal() === 'movements'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onMovementsPdf($event)"
-      (onGenerateExcel)="onMovementsExcel($event)"
-    />
-
-    <app-order-pdf-modal
-      [visible]="activeModal() === 'orders'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onOrdersPdf($event)"
-    />
-
-    <app-invoice-pdf-modal
-      [visible]="activeModal() === 'invoices'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onInvoicesPdf($event)"
-    />
-
-    <app-quote-pdf-modal
-      [visible]="activeModal() === 'quotes'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onQuotesPdf($event)"
-    />
-
-    <app-purchase-pdf-modal
-      [visible]="activeModal() === 'purchases'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onPurchasesPdf($event)"
-    />
-
-    <app-accounts-receivable-pdf-modal
-      [visible]="activeModal() === 'accountsReceivable'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGeneratePdf)="onAccountsReceivablePdf($event)"
-    />
-
-    <app-cash-register-report-modal
-      [visible]="activeModal() === 'cashRegister'"
-      (visibleChange)="$event === false && activeModal.set(null)"
-      (onGenerateReport)="onCashRegisterReport($event)"
-    />
-
-    <app-pdf-viewer-modal
-      [visible]="pdfViewerVisible()"
-      [pdfUrl]="pdfUrl()"
-      [title]="pdfTitle()"
-      [loading]="loadingPdf()"
-      (visibleChange)="$event === false && closePdfViewer()"
-    />
-  }
+  <app-report-action-host />
+  <app-pdf-blob-viewer-host />
 
   <main
-    class="pt-16 min-h-screen bg-gradient-to-br from-app-bg-primary via-app-bg-primary-via to-app-bg-primary-to"
+    [attr.data-module]="activeModule()"
+    class="cashly-workspace pt-20 min-h-screen bg-app-bg-primary"
   >
+    <app-shortcut-help class="block max-w-[1800px] mx-auto px-4 sm:px-6" />
     <router-outlet />
   </main>
 </div>
+
+<app-module-navigator [items]="navigationMenuItems()" />
+
+<app-list-navigation-picker />
+<app-action-dialog-host />
+<app-global-dialog-host />
+<app-delete-dialog />
+<app-cancel-dialog />
+<app-audit-trail-dialog-host />

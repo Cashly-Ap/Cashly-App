@@ -1,0 +1,26 @@
+<app-supplier-debt-dialog
+  [visible]="debtVisible()"
+  [supplierId]="supplierId()"
+  (close)="onCloseDebt()"
+  (payPurchase)="onPayPurchase($event)"
+  (payAll)="onPayAll()"
+  (payPartial)="onPayPartial()"
+  (viewPurchasePaymentHistory)="onViewPaymentHistory($event)"
+/>
+
+<app-supplier-payment-form-dialog
+  [visible]="paymentFormVisible()"
+  [mode]="paymentFormMode()"
+  [purchase]="paymentPurchase()"
+  [supplierName]="paymentSupplierName()"
+  [totalDebt]="paymentTotalDebt()"
+  (close)="onClosePaymentForm()"
+  (submit)="onSubmitPayment($event)"
+/>
+
+<app-payment-history-dialog
+  [visible]="paymentHistoryVisible()"
+  [supplierId]="paymentHistorySupplierId()"
+  [purchaseId]="paymentHistoryPurchaseId()"
+  (close)="onClosePaymentHistory()"
+/>

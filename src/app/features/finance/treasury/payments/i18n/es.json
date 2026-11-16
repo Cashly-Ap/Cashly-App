@@ -1,0 +1,7 @@
+{
+  "finance.treasury.payments.download": "Descargar",
+  "finance.treasury.payments.paymentIdWasNotFound": "No se encontró el ID del pago",
+  "finance.treasury.payments.couldNotGenerateThePaymentPdf": "Error al generar el PDF del pago",
+  "finance.treasury.payments.paymentReceiptPdf": "Comprobante de Pago - PDF",
+  "finance.treasury.payments.clickGeneratePdfToPreviewTheReceipt": "Haga clic en \"Generar PDF\" para previsualizar el comprobante"
+}

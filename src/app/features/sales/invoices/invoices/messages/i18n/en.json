@@ -1,0 +1,10 @@
+{
+  "finance.billing.invoices.messages.couldNotCreateTheInvoicePleaseTryAgain": "Could not create the invoice. Please try again.",
+  "finance.billing.invoices.messages.couldNotLoadTheInvoiceItMayNotExist": "Could not load the invoice. It may not exist.",
+  "finance.billing.invoices.messages.couldNotCancelTheInvoicePleaseTryAgain": "Could not cancel the invoice. Please try again.",
+  "finance.billing.invoices.messages.couldNotDuplicateTheInvoicePleaseTryAgain": "Could not duplicate the invoice. Please try again.",
+  "finance.billing.invoices.messages.invoiceCreatedSuccessfully": "Invoice created successfully",
+  "finance.billing.invoices.messages.invoiceUpdatedSuccessfully": "Invoice updated successfully",
+  "finance.billing.invoices.messages.invoiceCanceledSuccessfully": "Invoice canceled successfully",
+  "finance.billing.invoices.messages.invoiceDuplicatedSuccessfully": "Invoice duplicated successfully"
+}

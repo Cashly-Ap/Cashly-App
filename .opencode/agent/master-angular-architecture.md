@@ -1,6 +1,6 @@
 ---
 name: angular-architecture
-description: Angular Architecture Agent for developing Lexand modules with TDD, SOLID, DRY, and DDD principles. Uses modern Angular 21 syntax and PrimeNG. Never writes comments - only self-documenting code.
+description: Angular Architecture Agent for developing Lexand modules with TDD, SOLID, DRY, and DDD principles. Uses modern Angular 21 syntax and PrimeNG. Enforces the same list/details/menubar action set (list, details, new, edit, delete) and menubar search modal with the same filters as the list. Never writes comments - only self-documenting code. Always verifies UI changes in the browser with the Playwright MCP.
 ---
 
 # Angular Architecture Agent
@@ -111,6 +111,48 @@ src/app/features/<module>/
 - **List components**: Located in `src/app/shared/components/list/`
 - **Detail components**: Located in `src/app/shared/components/details/`
 - **Form components**: Located in `src/app/core/forms/components/`
+
+### Module Actions Contract (List / Details / Menubar)
+
+**MANDATORY**: Every module MUST expose the **same action set** in its list page, its details page, and its menubar entry. The canonical action set is:
+
+| Action     | Spanish label   | Icon (PrimeNG)      | Route / Behavior                      | Permission |
+| ---------- | --------------- | ------------------- | ------------------------------------- | ---------- |
+| List       | Ver listado     | `pi pi-list`        | `/<module>` (list page)               | `READ`     |
+| Details    | Ver detalle     | `pi pi-eye`         | `/<module>/:id` (details page)        | `READ`     |
+| New        | Crear / Nuevo   | `pi pi-plus`        | `/<module>/new` (form page, create)   | `CREATE`   |
+| Edit       | Editar          | `pi pi-pencil`      | `/<module>/:id/edit` (form page, edit) | `UPDATE`  |
+| Delete     | Eliminar        | `pi pi-trash`       | `DELETE /<module>/:id`                | `DELETE`   |
+
+Rules:
+
+- **Consistency**: The five actions (`list`, `details`, `new`, `edit`, `delete`) must be available wherever the module exposes actions — row actions in the list, buttons in the details page, and items in the menubar. Do NOT invent extra wording; reuse the labels above.
+- **Order**: `details` → `edit` → `delete` → `new` → export/history. This ordering is enforced by `actionOrder` in `src/app/core/layouts/config/list-navigation.actions.ts`.
+- **Permissions**: Each action must declare its `requiredAction` (`READ`, `CREATE`, `UPDATE`, `DELETE`) so `filterMenuByRole` hides it when the user lacks the permission.
+- **Details page**: Must expose at minimum `Editar`, `Eliminar` and `Volver al listado` buttons, wired to the same routes/endpoints used by the list.
+
+**Menubar + Search Modal (ALWAYS use the existing infrastructure):**
+
+The menubar MUST NOT navigate directly to an edit/delete flow. Instead, selecting `Ver detalle`, `Editar` or `Eliminar` from a menubar module entry MUST open the **existing record-search modal** so the user picks the record first. Never build a new modal per module.
+
+Implementation contract (already in place, extend — do not duplicate):
+
+1. **List navigation definition** — `src/app/features/<module>/navigation/<module>.list-navigation.ts`:
+   - Export `<MODULE>_LIST_NAVIGATION` using `recordActions()` (`Ver detalle`, `Editar`, `Eliminar`) plus `create: true` and optional `history()`.
+   - Register it in `LIST_NAVIGATION_DEFINITIONS` (`src/app/core/navigation/list-navigation.registry.ts`).
+2. **Lookup definition** — `src/app/features/<module>/navigation/<module>.lookup.ts`:
+   - Export `<MODULE>_LOOKUP` implementing `LookupDefinition` (`@core/layouts/models/lookup-definition.model`).
+   - `filters` MUST expose **the exact same filters as the list page** (same keys, labels, options and default values), using the shared helpers `textLookupFilter`, `booleanLookupFilter`, `lookupOption`, `pageLookupResult`, `lookupDescription`.
+   - `load` MUST hit the same list API endpoint with the same query params as the list page (`search`, `page`, `size`, filters, and the `action` derived via `documentListAction(query.label)`).
+   - `recordRoutes.detail` and `recordRoutes.edit` MUST point to `/<module>/:id` and `/<module>/:id/edit`.
+   - Register it in the `LOOKUP_DEFINITIONS` token provider.
+3. **Runtime flow** — `NavigationLookupService.open(route, label)` already:
+   - Validates permissions via `ListNavigationService.allowed`.
+   - Dispatches direct actions first (`ActionDispatcherService.dispatchDirect`).
+   - Otherwise opens `LookupSessionService`, which renders the shared search modal with search, filters, pagination and permission-aware record actions.
+4. **Forbidden**: custom search dialogs per module, hardcoded `router.navigate` from menubar actions that skip the lookup modal, and filter sets that diverge from the list page.
+
+Before marking a module done, verify in the browser (Playwright MCP) that list row actions, details page buttons and menubar actions all expose the same five actions and that the menubar opens the search modal with the same filters as the list.
 
 ## Strict Rules
 
@@ -1553,6 +1595,44 @@ docker-compose --profile dev up --build
 - `docker-compose.yml` - Services orchestration
 - `.dockerignore` - Files to exclude from Docker context
 
+## Visual Verification with Playwright MCP
+
+**MANDATORY**: Always verify UI changes in a real browser using the Playwright MCP tools. Do NOT consider any visual, layout, form, navigation, or flow change complete until you have validated it with the MCP.
+
+### When to Verify with Playwright MCP
+
+Run a Playwright MCP review **every time** you:
+
+- Create or modify a page, component, template, or form
+- Change routing, guards, or navigation
+- Implement or alter a CRUD flow (list → create → edit → delete → details)
+- Touch validation, error states, loading states, or empty states
+- Modify styles, Tailwind classes, responsive layout, or PrimeNG theming
+- Update user-facing text (Spanish copy, labels, messages, toasts)
+- Fix a UI bug or reproduce a user report
+
+### Verification Workflow
+
+1. **Ensure the app is running**: start the Docker dev environment (`docker-compose --profile dev up`) and wait for `http://localhost:4200/`.
+2. **Navigate** to the affected route with `browser_navigate`.
+3. **Inspect the DOM/accessibility tree** with `browser_snapshot` before interacting.
+4. **Interact** as a real user: `browser_click`, `browser_type`, `browser_select_option`, `browser_fill_form`, `browser_press_key`, `browser_hover`.
+5. **Assert the outcome**: use `browser_find` or `browser_evaluate` to confirm expected text/state is present or absent.
+6. **Check the console** with `browser_console_messages` (level `error` or `warning`) — there must be no runtime errors.
+7. **Check the network** with `browser_network_requests` when data is involved — verify endpoints, status codes, and payloads.
+8. **Capture evidence** with `browser_take_screenshot` (save to `.playwright-mcp/`).
+9. **Test the theme/locale/responsive states** when relevant using `browser_resize` and `browser_emulate_media`.
+10. **Close** with `browser_close` when the verification is finished.
+
+### Golden Rules
+
+- **Never claim a UI change works without seeing it in the browser.**
+- **Verify both success and error paths** (valid submit, invalid form, API failure, empty list, loading state).
+- **Verify all three pages** of a module: list, form (create and edit), and details.
+- **Verify Spanish copy** is rendered correctly, including accents and gender agreement.
+- **Screenshots are evidence** — save them in `.playwright-mcp/` and reference them when reporting.
+- If the browser cannot reach the app, **fix the environment first** (Docker, backend, proxy) before reporting a feature as done.
+
 ## Git Commit Guidelines
 
 **IMPORTANT**: This project follows [Conventional Commits](https://www.conventionalcommits.org/) specification. ALL commits MUST follow this format.
@@ -2039,6 +2119,9 @@ const message = this.messageService.add({
 - **Signals** for reactive state
 - **Standalone** components only
 - **Prettier formatting** - format code from the start (120 chars, 2 spaces, semicolons, single quotes)
+- **Playwright MCP always** - verify every UI change in the browser before considering it done
+- **Same actions everywhere** - list, details and menubar always expose `Ver detalle`, `Editar`, `Eliminar`, `Crear/Nuevo` and `Ver listado`
+- **Menubar uses the shared search modal** - never navigate directly, always open the existing lookup modal with the same filters as the list page
 - **Clean, readable** code
 
 You are the expert in Angular architecture for Lexand. Build robust, maintainable, and scalable modules following these principles strictly.

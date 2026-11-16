@@ -1,0 +1,387 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="finance.billing.invoices.invoices"
+      subtitle="finance.billing.invoices.manageCustomerInvoices"
+    />
+
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              [placeholder]="'shared.searchByNumberOrCustomer' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <app-filter-field labelKey="finance.billing.invoices.status">
+                <p-select
+                  [options]="statusOptions | translateOptions"
+                  [ngModel]="selectedStatus()"
+                  (onChange)="onStatusFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.activeInvoices' | translate"
+                  fluid
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.paymentType">
+                <p-select
+                  [options]="paymentTypeOptions | translateOptions"
+                  [ngModel]="filterPaymentType()"
+                  (onChange)="onPaymentTypeFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allTypes' | translate"
+                  fluid
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="analytics.dashboard.dueDate">
+                <p-select
+                  [options]="dueStatusOptions | translateOptions"
+                  [ngModel]="selectedDueStatus()"
+                  (onChange)="onDueStatusFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.allDates' | translate"
+                  fluid
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.startDate2">
+                <p-datepicker
+                  [ngModel]="filterDateFrom()"
+                  (onSelect)="onDateFromChange($event)"
+                  [showIcon]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'finance.billing.invoices.from' | translate"
+                  fluid
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.endDate2">
+                <p-datepicker
+                  [ngModel]="filterDateTo()"
+                  (onSelect)="onDateToChange($event)"
+                  [showIcon]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'finance.billing.invoices.to' | translate"
+                  fluid
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="finance.billing.invoices.return">
+                <p-select
+                  [options]="returnStatusOptions | translateOptions"
+                  [ngModel]="selectedReturnStatus()"
+                  (onChange)="onReturnStatusFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'finance.billing.invoices.all' | translate"
+                  fluid
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <app-submit-button
+            labelKey="finance.billing.invoices.newInvoice"
+            shortcut="new"
+            (action)="onCreate()"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
+    <div class="h-4"></div>
+
+    @if (showInitialLoading()) {
+      <app-panel-card>
+        <app-loading-spinner [message]="'finance.billing.invoices.loadingInvoices' | translate" />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card>
+        <app-empty-state
+          icon="pi-file"
+          [title]="'finance.billing.invoices.noInvoicesRegistered' | translate"
+          [message]="'finance.billing.invoices.createYourFirstInvoiceToGetStarted' | translate"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.invoices.noInvoicesMatchYourSearch' | translate"
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="invoices()"
+                styleClass="p-datatable-striped"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="invoiceNumber" class="w-32">
+                      <div class="font-semibold">
+                        {{ 'analytics.dashboard.number' | translate }}
+                        <p-sortIcon field="invoiceNumber" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="customerName" class="w-auto">
+                      <div class="font-semibold">
+                        {{ 'shared.customer' | translate }} <p-sortIcon field="customerName" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="paymentType" class="w-28">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.paymentType' | translate }}
+                        <p-sortIcon field="paymentType" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="status" class="w-28">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                        <p-sortIcon field="status" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="total" class="w-32 text-right">
+                      <div class="font-semibold">
+                        {{ 'shared.total' | translate }} <p-sortIcon field="total" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="createdAt" class="w-32">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.date' | translate }}
+                        <p-sortIcon field="createdAt" />
+                      </div>
+                    </th>
+                    <th class="w-32">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.due2' | translate }}
+                      </div>
+                    </th>
+                    <th class="w-28">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-invoice>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <span class="text-sm font-mono text-surface-500"
+                        >#{{ invoice.invoiceNumber }}</span
+                      >
+                    </td>
+                    <td>
+                      <div class="font-medium">{{ invoice.customerName }}</div>
+                      @if (invoice.orderNumber) {
+                        <div class="text-xs text-surface-400">
+                          {{ 'finance.billing.invoices.order2' | translate
+                          }}{{ invoice.orderNumber }}
+                        </div>
+                      }
+                    </td>
+                    <td>
+                      <app-text-badge
+                        [label]="getPaymentTypeLabel(invoice.paymentType) | translate"
+                        variant="label"
+                      />
+                    </td>
+                    <td>
+                      <div class="flex gap-2 flex-wrap">
+                        <app-text-badge
+                          [label]="invoice.statusLabel | translate"
+                          [variant]="getStatusVariant(invoice.status)"
+                        />
+                        @if (invoice.returnStatus === 'PARTIAL') {
+                          <app-text-badge
+                            [label]="'finance.billing.invoices.partiallyReturned' | translate"
+                            variant="warning"
+                          />
+                        }
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="text-sm font-medium">{{
+                        invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </td>
+                    <td>
+                      <span class="text-sm text-surface-500">
+                        {{ invoice.issueDate || invoice.createdAt | localizedDate: 'dd/MM/yyyy' }}
+                      </span>
+                    </td>
+                    <td>
+                      @if (invoice.overdue) {
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.overdue' | translate"
+                          variant="danger"
+                          [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                        />
+                      } @else {
+                        <div class="text-sm text-surface-500">
+                          {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                        </div>
+                      }
+                    </td>
+                    <td>
+                      <app-list-action-buttons [actions]="actionsFor(invoice)" />
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="'finance.billing.invoices.noInvoicesMatchYourSearch' | translate"
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (invoice of invoices(); track invoice.id) {
+              <app-panel-card padding="p-5">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-xs font-mono text-surface-400"
+                        >#{{ invoice.invoiceNumber }}</span
+                      >
+                    </div>
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                      {{ invoice.customerName }}
+                    </h3>
+                    <p class="text-sm font-medium mb-1">
+                      {{ 'finance.billing.returns.total' | translate }}
+                      {{ invoice.total | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                    </p>
+                    <p class="text-sm text-surface-500 mb-2">
+                      {{ 'finance.billing.invoices.outstanding2' | translate }}
+                      {{ pendingAmount(invoice) | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                    </p>
+                    <div class="flex flex-nowrap gap-2">
+                      <app-text-badge
+                        [label]="getPaymentTypeLabel(invoice.paymentType) | translate"
+                        variant="label"
+                      />
+                      <app-text-badge
+                        [label]="getStatusLabel(invoice.status) | translate"
+                        [variant]="getStatusVariant(invoice.status)"
+                      />
+                      @if (invoice.returnStatus === 'PARTIAL') {
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.partiallyReturned' | translate"
+                          variant="warning"
+                        />
+                      }
+                    </div>
+                    <div class="flex items-center gap-2 mt-2 text-xs">
+                      <span class="text-surface-400">
+                        {{ 'finance.billing.invoices.due2' | translate }}
+                      </span>
+                      @if (invoice.overdue) {
+                        <app-text-badge
+                          [label]="'finance.billing.invoices.overdue' | translate"
+                          variant="danger"
+                          [tooltip]="invoice.dueDate | localizedDate: 'dd/MM/yyyy'"
+                        />
+                      } @else {
+                        <span class="text-surface-600 dark:text-surface-300">
+                          {{ invoice.dueDate | localizedDate: 'dd/MM/yyyy' }}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                  <div class="text-xs text-surface-400 ml-2">
+                    {{ invoice.createdAt | localizedDate: 'dd/MM/yyyy' }}
+                  </div>
+                </div>
+                <div
+                  class="flex justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(invoice)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="px-4 py-3 mt-2">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'finance.billing.invoices.showingFirstToLastOfTotalrecordsInvoices' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+<app-cancel-invoice-dialog
+  [visible]="cancelDialogVisible()"
+  [invoice]="invoiceToCancel()"
+  (confirmed)="onCancelDialogConfirmed($event)"
+  (cancelled)="onCancelDialogDismissed()"
+/>
+<app-duplicate-invoice-dialog
+  [visible]="duplicateDialogVisible()"
+  [invoiceId]="invoiceToDuplicate()?.id ?? null"
+  (confirmed)="onDuplicateDialogConfirmed($event)"
+  (cancelled)="onDuplicateDialogDismissed()"
+/>
+
+<app-confirm-invoice-dialog
+  [visible]="confirmDialogVisible()"
+  [invoice]="invoiceToConfirm()"
+  [submitting]="isConfirming()"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>

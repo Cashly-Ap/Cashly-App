@@ -1,0 +1,219 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (user(); as currentUser) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'users.profile.user.details' | translate"
+          [subtitle]="'users.profile.complete.user.information' | translate"
+        />
+        <app-panel-card>
+          <app-details-card-header [title]="currentUser.userName" [subtitle]="currentUser.email">
+            <app-user-avatar
+              avatar
+              [userId]="currentUser.id"
+              [photoPath]="currentUser.photoPath"
+              [name]="currentUser.userName"
+              size="large"
+            />
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="users.profile.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="USER"
+                [auditEntityId]="currentUser.id"
+                [auditLabel]="currentUser.userName"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'users.profile.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'users.profile.change.password' | translate"
+                  icon="pi pi-lock"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); showChangePasswordDialog.set(true)"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'users.profile.change.email' | translate"
+                  icon="pi pi-envelope"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); showChangeEmailDialog.set(true)"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid [columns]="2" [fillLastRow]="true">
+              <app-details-info-field
+                [label]="'users.profile.first.name' | translate"
+                [value]="currentUser.firstName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.last.name' | translate"
+                [value]="currentUser.lastName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.user' | translate"
+                [value]="currentUser.userName"
+              />
+              <app-details-info-field
+                [label]="'users.profile.language' | translate"
+                [value]="currentUser.language === 'en' ? 'English' : 'Español'"
+              />
+              <app-details-info-field [label]="'users.profile.status' | translate" type="badge"
+                ><app-status-badge [active]="currentUser.active"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'users.profile.verified.email' | translate"
+                [value]="
+                  currentUser.emailVerified
+                    ? ('auth.profile.verified' | translate)
+                    : 'No verificado'
+                "
+              />
+              <app-details-info-field
+                [label]="'users.profile.created.on' | translate"
+                [value]="(currentUser.createdAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'users.profile.last.updated' | translate"
+                [value]="(currentUser.updatedAt | date: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+        <app-panel-card>
+          <app-details-card-header [title]="'users.profile.contact' | translate" />
+          <div class="p-4 sm:p-6 flex flex-col gap-6">
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-envelope text-surface-400"></i
+                >{{ 'users.profile.email.alternate' | translate }}
+              </h3>
+              <div
+                class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+              >
+                <i class="pi pi-envelope text-surface-400 text-sm"></i
+                ><span class="text-sm">{{ currentUser.email }}</span>
+              </div>
+            </section>
+            <hr class="border-surface-200 dark:border-surface-700" />
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-phone text-surface-400"></i>{{ 'users.profile.phone' | translate }}
+              </h3>
+              @if (currentUser.phone) {
+                <div
+                  class="flex items-center gap-2 p-3 bg-surface-50 dark:bg-surface-900 rounded-lg border border-surface-200 dark:border-surface-700"
+                >
+                  <i class="pi pi-phone text-surface-400 text-sm"></i
+                  ><span class="text-sm">{{ currentUser.phone }}</span>
+                </div>
+              } @else {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
+                  {{ 'users.profile.no.phone.registered' | translate }}
+                </p>
+              }
+            </section>
+            <hr class="border-surface-200 dark:border-surface-700" />
+            <section>
+              <h3
+                class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3 flex items-center gap-2"
+              >
+                <i class="pi pi-map-marker text-surface-400"></i
+                >{{ 'users.profile.address' | translate }}
+              </h3>
+              @if (currentUser.address; as address) {
+                <app-details-info-grid [columns]="2" [fillLastRow]="true">
+                  <app-details-info-field
+                    [label]="'users.profile.address' | translate"
+                    [value]="address.street || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.city' | translate"
+                    [value]="address.city || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.region' | translate"
+                    [value]="address.region || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.country' | translate"
+                    [value]="address.country || '—'"
+                  />
+                  <app-details-info-field
+                    [label]="'users.profile.postal.code' | translate"
+                    [value]="address.postalCode || '—'"
+                  />
+                </app-details-info-grid>
+              } @else {
+                <p class="text-sm text-surface-400 dark:text-surface-500 py-2">
+                  {{ 'users.profile.no.address.registered' | translate }}
+                </p>
+              }
+            </section>
+          </div>
+        </app-panel-card>
+        <app-panel-card>
+          <app-details-card-header [title]="'users.profile.access' | translate" />
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid [columns]="2" [fillLastRow]="true">
+              <app-details-info-field [label]="'users.profile.role' | translate" type="badge"
+                ><app-text-badge
+                  [label]="currentUser.roleName || currentUser.roleId"
+                  variant="label"
+              /></app-details-info-field>
+              <app-details-info-field
+                [label]="'users.profile.department' | translate"
+                [value]="currentUser.departmentName || currentUser.departmentId"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+
+@if (user(); as currentUser) {
+  <app-change-password-dialog
+    [userId]="currentUser.id"
+    [visible]="showChangePasswordDialog()"
+    (visibleChange)="showChangePasswordDialog.set($event)"
+  />
+  <app-change-email-dialog
+    [userId]="currentUser.id"
+    [currentEmail]="currentUser.email"
+    [visible]="showChangeEmailDialog()"
+    (visibleChange)="showChangeEmailDialog.set($event)"
+    (changed)="onEmailChanged($event)"
+  />
+}

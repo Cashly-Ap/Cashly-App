@@ -1,0 +1,272 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (order(); as currentOrder) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'sales.orders.orderDetails2' | translate"
+          [subtitle]="'sales.orders.completeOrderInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="('finance.billing.invoices.order2' | translate) + currentOrder.orderNumber"
+            [subtitle]="currentOrder.customerAlias"
+          >
+            <div actions class="flex gap-3 flex-wrap">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="ORDER"
+                [auditEntityId]="currentOrder.id"
+                [auditLabel]="currentOrder.orderNumber"
+                [auditSubtitle]="currentOrder.customerAlias"
+              >
+                <p-button
+                  [appPermission]="'EXPORT'"
+                  [label]="'navigation.labels.downloadPdf' | translate"
+                  icon="pi pi-file-pdf"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDownloadPdf()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                @if (currentOrder.status === OrderStatus.DRAFT) {
+                  <p-button
+                    [appPermission]="'UPDATE'"
+                    [label]="'finance.billing.invoices.edit' | translate"
+                    icon="pi pi-pencil"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onEdit()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CONFIRM'"
+                    [label]="'sales.orders.confirmOrder' | translate"
+                    icon="pi pi-check"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConfirm()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'DELETE'"
+                    [label]="'finance.billing.creditnotes.delete' | translate"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onDelete()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+                @if (currentOrder.status === OrderStatus.CONFIRMED) {
+                  <p-button
+                    [appPermission]="'CREATE'"
+                    [appPermissionModule]="'SALES_INVOICES_INVOICES'"
+                    [label]="'sales.orders.convertToInvoice' | translate"
+                    icon="pi pi-file"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onConvertToInvoice()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                  <p-button
+                    [appPermission]="'CANCEL'"
+                    [label]="'sales.orders.cancelOrder' | translate"
+                    icon="pi pi-times"
+                    severity="danger"
+                    [link]="true"
+                    (onClick)="actionsMenu.hide(); onCancelOrder()"
+                    styleClass="w-full justify-start text-left text-sm"
+                  />
+                }
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'sales.orders.orderNumber' | translate"
+                [value]="'#' + currentOrder.orderNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
+                <app-text-badge
+                  [label]="getStatusLabel(currentOrder.status) | translate"
+                  [variant]="getStatusVariant(currentOrder.status)"
+                />
+              </app-details-info-field>
+              <app-details-info-field
+                [label]="'shared.customer' | translate"
+                [value]="currentOrder.customerAlias"
+              />
+              <app-details-info-field
+                [label]="'partners.suppliers.legalName' | translate"
+                [value]="currentOrder.customerLegalName"
+              />
+              <app-details-info-field
+                [label]="'shared.total' | translate"
+                [value]="
+                  (currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2') || ''
+                "
+                type="currency"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(currentOrder.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(currentOrder.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+
+        @if (currentOrder.notes) {
+          <app-panel-card
+            [title]="'finance.billing.invoices.notes' | translate"
+            icon="pi-align-left"
+          >
+            <p class="text-sm whitespace-pre-wrap">{{ currentOrder.notes }}</p>
+          </app-panel-card>
+        }
+
+        <app-panel-card [title]="'sales.orders.orderItems' | translate" icon="pi-list">
+          @if (currentOrder.items && currentOrder.items.length > 0) {
+            <div class="flex flex-col gap-3 md:hidden">
+              @for (item of currentOrder.items; track item.id) {
+                <div
+                  class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
+                >
+                  <div class="flex flex-col gap-1">
+                    <span class="font-medium text-sm">{{ item.productName }}</span>
+                    <app-code-badge [label]="item.productCode" />
+                  </div>
+                  <div class="grid grid-cols-3 gap-x-3 gap-y-2 text-sm">
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.quantity' | translate
+                      }}</span>
+                      <span class="font-mono">{{ item.quantity | localizedNumber: '1.0-3' }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.unitPrice' | translate
+                      }}</span>
+                      <span class="font-mono">{{
+                        item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </div>
+                    <div class="flex flex-col gap-0.5">
+                      <span class="text-xs text-surface-400">{{
+                        'finance.billing.returns.subtotal' | translate
+                      }}</span>
+                      <span class="font-mono font-semibold">{{
+                        item.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
+              <div
+                class="flex justify-between text-sm font-semibold pt-2 border-t border-surface-200 dark:border-surface-700"
+              >
+                <span>{{ 'finance.billing.returns.total' | translate }}</span>
+                <span class="font-mono text-lg">{{
+                  currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                }}</span>
+              </div>
+            </div>
+            <div class="hidden md:block overflow-x-auto">
+              <p-table [value]="currentOrder.items" styleClass="p-datatable-sm cashly-detail-lines">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="text-right">{{ 'finance.billing.returns.quantity' | translate }}</th>
+                    <th class="text-right">
+                      {{ 'finance.billing.returns.unitPrice' | translate }}
+                    </th>
+                    <th class="text-right">{{ 'finance.billing.returns.subtotal' | translate }}</th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-item>
+                  <tr>
+                    <td>
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium">{{ item.productName }}</span>
+                        <app-code-badge [label]="item.productCode" />
+                      </div>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{ item.quantity | localizedNumber: '1.0-3' }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono">{{
+                        item.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-semibold">{{
+                        item.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </td>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                  <tr>
+                    <td colspan="3" class="text-right font-semibold">
+                      {{ 'finance.billing.returns.total' | translate }}
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono font-bold text-lg">
+                        {{
+                          currentOrder.totalAmount | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                        }}
+                      </span>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+          } @else {
+            <app-empty-state
+              icon="pi-inbox"
+              [message]="'sales.orders.thisOrderHasNoItems' | translate"
+            />
+          }
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>
+
+<app-confirm-order-dialog
+  [visible]="confirmDialogVisible()"
+  [orderId]="order()?.id ?? null"
+  (confirmed)="onConfirmDialogConfirmed($event)"
+  (cancelled)="onConfirmDialogDismissed()"
+/>
+<app-cancel-order-dialog
+  [visible]="cancelDialogVisible()"
+  [order]="orderForDialog()"
+  (confirmed)="onCancelDialogConfirmed($event)"
+  (cancelled)="onCancelDialogDismissed()"
+/>
+<app-convert-order-to-invoice-dialog
+  [visible]="invoiceDialogVisible()"
+  [orderId]="order()?.id ?? null"
+  [orderNumber]="order()?.orderNumber ?? ''"
+  [customerName]="order()?.customerAlias ?? ''"
+  [totalAmount]="order()?.totalAmount ?? 0"
+  [customerId]="order()?.customerId ?? ''"
+  (confirmed)="onInvoiceDialogConfirmed($event)"
+  (cancelled)="onInvoiceDialogDismissed()"
+/>

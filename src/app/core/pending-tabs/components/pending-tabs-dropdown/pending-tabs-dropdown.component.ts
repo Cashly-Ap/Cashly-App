@@ -1,4 +1,7 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, ViewChild, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { moduleForUrl } from '@features/platform/auth/authorization/models/permission-context';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -12,7 +15,7 @@ import { fromEvent, interval, Subscription } from 'rxjs';
 @Component({
   selector: 'app-pending-tabs-dropdown',
   standalone: true,
-  imports: [CommonModule, ButtonModule, Popover, TooltipModule],
+  imports: [TranslatePipe, CommonModule, ButtonModule, Popover, TooltipModule],
   templateUrl: './pending-tabs-dropdown.component.html',
 })
 export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
@@ -20,12 +23,18 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
 
   private pendingTabsService = inject(PendingTabsService);
   private router = inject(Router);
+  private auth = inject(AuthService);
   private subscriptions = new Subscription();
 
   private now = signal(Date.now());
 
-  tabs = this.pendingTabsService.allTabs;
-  pendingTabsCount = this.pendingTabsService.tabCount;
+  tabs = computed(() => this.pendingTabsService.allTabs().filter((tab) => this.canOpenTab(tab)));
+  pendingTabsCount = computed(() => this.tabs().length);
+
+  private canOpenTab(tab: PendingTab): boolean {
+    const module = moduleForUrl(tab.route);
+    return !!module && this.auth.hasPermission(module, tab.type === 'create' ? 'CREATE' : 'UPDATE');
+  }
 
   tabsWithTime = computed(() =>
     this.tabs().map((tab) => ({
@@ -72,11 +81,12 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
   }
 
   goToTab(tab: PendingTab): void {
+    if (!this.canOpenTab(tab)) return;
     const currentUrl = this.router.url.split('?')[0];
 
     if (currentUrl === tab.route.split('?')[0]) {
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigateByUrl(tab.route);
+        if (this.canOpenTab(tab)) this.router.navigateByUrl(tab.route);
       });
     } else {
       this.router.navigateByUrl(tab.route);
@@ -95,7 +105,7 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
   }
 
   getTypeLabel(type: 'create' | 'edit'): string {
-    return type === 'create' ? 'Crear' : 'Editar';
+    return type === 'create' ? 'core.pendingtabs.create' : 'core.pendingtabs.edit';
   }
 
   getTypeClass(type: 'create' | 'edit'): string {

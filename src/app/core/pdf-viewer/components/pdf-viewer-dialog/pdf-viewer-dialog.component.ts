@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, inject, signal, HostListener, OnInit, OnDestroy } from '@angular/core';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
@@ -8,7 +9,7 @@ import { PdfViewerService } from '@core/pdf-viewer/services';
 @Component({
   selector: 'app-pdf-viewer-dialog',
   standalone: true,
-  imports: [DialogModule, ButtonModule, ProgressSpinnerModule, TooltipModule],
+  imports: [TranslatePipe, DialogModule, ButtonModule, ProgressSpinnerModule, TooltipModule],
   templateUrl: './pdf-viewer-dialog.component.html',
 })
 export class PdfViewerDialogComponent implements OnInit, OnDestroy {
@@ -52,13 +53,8 @@ export class PdfViewerDialogComponent implements OnInit, OnDestroy {
     this.pdfService.openFullscreen();
   }
 
-  onOpenInBrowser(): void {
-    this.pdfService.openFullscreen();
-    this.onClose();
-  }
-
   getDialogStyle(): Record<string, string> {
-    if (this.isMobile()) {
+    if (this.isMobile() || this.pdfService.fullscreen()) {
       return {
         width: '100vw',
         height: '100vh',
@@ -82,7 +78,7 @@ export class PdfViewerDialogComponent implements OnInit, OnDestroy {
   }
 
   getContentStyle(): Record<string, string> {
-    if (this.isMobile()) {
+    if (this.isMobile() || this.pdfService.fullscreen()) {
       return {
         height: 'calc(100vh - 60px)',
         padding: '0',

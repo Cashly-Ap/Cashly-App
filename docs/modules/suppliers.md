@@ -4,7 +4,7 @@ Supplier CRUD and selection support for purchasing.
 
 ## Routes
 
-`/suppliers`, `/suppliers/new`, `/suppliers/:id`, and `/suppliers/:id/edit`.
+`/partners/suppliers`, `/partners/suppliers/new`, `/partners/suppliers/:id`, and `/partners/suppliers/:id/edit`.
 
 ## API
 

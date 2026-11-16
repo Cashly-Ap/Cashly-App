@@ -1,0 +1,18 @@
+import { FormBuilder, Validators } from '@angular/forms';
+import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
+const fb = new FormBuilder();
+export function createUserNameForm() {
+  const name = [Validators.required, Validators.pattern(/\S/), Validators.maxLength(100)];
+  return fb.group({
+    language: ['es', [Validators.required, Validators.pattern(/^(es|en)$/)]],
+    firstName: ['', name],
+    lastName: ['', name],
+    userName: ['', [...name, Validators.minLength(3)]],
+    phone: ['', UserValidators.phoneNumber()],
+    street: ['', Validators.maxLength(200)],
+    city: ['', Validators.maxLength(100)],
+    region: ['', Validators.maxLength(100)],
+    country: ['', Validators.maxLength(100)],
+    postalCode: ['', Validators.maxLength(20)],
+  });
+}

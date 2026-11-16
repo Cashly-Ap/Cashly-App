@@ -4,8 +4,14 @@ Customer return workflow for reviewing returned items and their stock/financial 
 
 ## Routes
 
-The feature is reached from customer/invoice workflows and uses its standalone return forms and dialogs rather than a top-level CRUD route.
+`/sales/returns`, `/sales/returns/new`, `/sales/returns/:id`.
+
+Legacy `/returns` redirects to `/sales/returns`.
+
+## Architecture
+
+Returns live in `src/app/features/sales/invoices/returns/` with standalone list, form, and details pages plus dialogs, API/application services, models, and permissions.
 
 ## Rules
 
-The UI validates required source document and quantities; the API enforces eligible quantities and applies stock changes atomically.
+The UI validates the source document and returned quantities; the API enforces eligible quantities and applies stock changes atomically. Returns update the source invoice's `returnedQuantity`, `returnedTotal`, and `returnStatus`.

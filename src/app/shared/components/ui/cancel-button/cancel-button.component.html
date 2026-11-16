@@ -1,0 +1,12 @@
+<p-button
+  appShortcut="cancel"
+  [label]="label() || (labelKey() | translate)"
+  [icon]="icon()"
+  [text]="text()"
+  [outlined]="outlined()"
+  [severity]="severity()"
+  [disabled]="disabled()"
+  [loading]="loading()"
+  [styleClass]="styleClass()"
+  (onClick)="cancelled.emit()"
+/>

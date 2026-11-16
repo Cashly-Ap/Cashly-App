@@ -1,13 +1,13 @@
 # Test Plan — Customers (Clientes)
 
-> Customer management module — CRUD, balance operations, warehouse access, and portal management.
+> Customer management module — CRUD, balance operations, and warehouse access.
 > Version: 1.0 | Priority: CRITICAL
 
 ---
 
 ## Module Overview
 
-The Customers module handles: listing/searching customers, creating, editing, viewing details, deleting customers, managing portal access/password, warehouse access, customer balance (advances, refunds, transactions), and credit status.
+The Customers module handles: listing/searching customers, creating, editing, viewing details, deleting customers, warehouse access, customer balance (advances, refunds, transactions), and credit status.
 
 **Module Type**: CRUD with specialized sub-modules (Balance, Credit, Warehouse Access)
 
@@ -40,7 +40,6 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 | POST   | `/api/customers`                                                      | SALES         | OPERATOR |
 | PUT    | `/api/customers/:id`                                                  | SALES         | OPERATOR |
 | DELETE | `/api/customers/:id`                                                  | SALES         | ADMIN    |
-| PUT    | `/api/customers/:id/portal-password`                                  | SALES         | ADMIN    |
 | GET    | `/api/customers/:id/balance`                                          | FINANCES      | OPERATOR |
 | GET    | `/api/customers/:id/balance/transactions?page=&size=`                 | FINANCES      | OPERATOR |
 | POST   | `/api/customers/:id/balance/advance`                                  | FINANCES      | OPERATOR |
@@ -331,30 +330,6 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 
 ---
 
-### CUSTOMER-022 — Change portal password as SUPER_ADMIN
-
-- **Severity**: HIGH
-- **URL**: `http://localhost:4200/customers/{id}`
-- **Prerequisites**: Authenticated as SUPER_ADMIN (`gabriel@gmail.com`), a customer with portalAccess=true
-- **Given** I am on a customer's details page
-- **When** I click the portal password change option and enter a valid new password
-- **Then** the API call `PUT /api/customers/{id}/portal-password` should return 204
-- **And** I should see a success message
-
----
-
-### CUSTOMER-023 — Portal password validation (weak password)
-
-- **Severity**: MEDIUM
-- **URL**: `http://localhost:4200/customers/{id}`
-- **Prerequisites**: Authenticated as SUPER_ADMIN (`gabriel@gmail.com`)
-- **Given** I am changing a customer's portal password
-- **When** I enter a password with less than 8 characters
-- **Then** I should see a validation error
-- **And** the submit button should be disabled
-
----
-
 ### CUSTOMER-024 — Customer not found (404)
 
 - **Severity**: MEDIUM
@@ -541,31 +516,6 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 
 ---
 
-### CUSTOMER-039 — Permission enforcement: OPERATOR block on portal password
-
-- **Severity**: HIGH
-- **URL**: `/api/customers/{id}/portal-password`
-- **Prerequisites**: Authenticated as OPERATOR (`operator@cashly.com`)
-- **Given** I am authenticated as OPERATOR
-- **When** I call `PUT /api/customers/{id}/portal-password`
-- **Then** the API should return 403 (Forbidden)
-- **Note**: Portal password change requires ADMIN role
-
----
-
-### CUSTOMER-040 — Create customer with portal access enabled
-
-- **Severity**: MEDIUM
-- **URL**: `http://localhost:4200/customers/new`
-- **Prerequisites**: Authenticated as SUPER_ADMIN (`gabriel@gmail.com`)
-- **Given** I am on the create customer page
-- **When** I check "Portal Access" option in the Portal tab
-- **And** I fill all other required fields and submit
-- **Then** the customer should be created with portalAccess=true
-- **And** viewing the details should show Portal Access as enabled
-
----
-
 ### CUSTOMER-041 — Customer details shows warehouse access section
 
 - **Severity**: MEDIUM
@@ -633,15 +583,14 @@ The Customers module handles: listing/searching customers, creating, editing, vi
 | Type filter            | CUSTOMER-005                                                                       | MEDIUM   |
 | Active filter          | CUSTOMER-006                                                                       | MEDIUM   |
 | Search                 | CUSTOMER-007                                                                       | HIGH     |
-| Create customer        | CUSTOMER-008, CUSTOMER-032, CUSTOMER-033, CUSTOMER-040                             | CRITICAL |
+| Create customer        | CUSTOMER-008, CUSTOMER-032, CUSTOMER-033                                           | CRITICAL |
 | Create validation      | CUSTOMER-009, CUSTOMER-011, CUSTOMER-012, CUSTOMER-034, CUSTOMER-035, CUSTOMER-036 | HIGH     |
 | Duplicate RIF          | CUSTOMER-010                                                                       | HIGH     |
 | View details           | CUSTOMER-013                                                                       | HIGH     |
 | Edit customer          | CUSTOMER-014, CUSTOMER-015                                                         | HIGH     |
 | Delete customer        | CUSTOMER-016, CUSTOMER-017                                                         | CRITICAL |
 | Route protection       | CUSTOMER-018, CUSTOMER-019                                                         | CRITICAL |
-| Permission enforcement | CUSTOMER-020, CUSTOMER-021, CUSTOMER-039, CUSTOMER-044                             | CRITICAL |
-| Portal password        | CUSTOMER-022, CUSTOMER-023                                                         | HIGH     |
+| Permission enforcement | CUSTOMER-020, CUSTOMER-021, CUSTOMER-044                                           | CRITICAL |
 | 404 handling           | CUSTOMER-024, CUSTOMER-043                                                         | MEDIUM   |
 | Customer balance       | CUSTOMER-025, CUSTOMER-026, CUSTOMER-027, CUSTOMER-045                             | HIGH     |
 | Balance validation     | CUSTOMER-028, CUSTOMER-029                                                         | MEDIUM   |

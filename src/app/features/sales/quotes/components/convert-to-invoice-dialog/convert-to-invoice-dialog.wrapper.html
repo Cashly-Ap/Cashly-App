@@ -1,0 +1,6 @@
+<app-convert-to-invoice-dialog
+  [visible]="true"
+  [quoteId]="recordId()"
+  (confirmed)="convert($event)"
+  (cancelled)="close()"
+/>

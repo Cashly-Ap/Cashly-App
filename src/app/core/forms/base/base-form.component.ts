@@ -1,3 +1,5 @@
+import { TranslationService } from '@core/i18n/translation.service';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { Directive, OnInit, OnDestroy, inject, signal, computed, DestroyRef } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ValidatorFn } from '@angular/forms';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
@@ -24,9 +26,11 @@ export interface FormConfig<TArrayField extends string = string> {
 
 @Directive()
 export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
+  private readonly formTranslations = inject(TranslationService);
   protected fb = inject(FormBuilder);
   protected route = inject(ActivatedRoute);
   protected router = inject(Router);
+  protected navigationHistory = inject(NavigationHistoryService);
   protected pendingTabsService = inject(PendingTabsService);
   protected destroyRef = inject(DestroyRef);
 
@@ -40,20 +44,20 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
 
   title = computed(() =>
     this.mode() === FormMode.CREATE
-      ? `Nuevo ${this.getConfig().entityDisplayName}`
-      : `Editar ${this.getConfig().entityDisplayName}`,
+      ? this.formTranslations.t('core.forms.newEntity', { entity: this.formTranslations.t(this.getConfig().entityDisplayName) })
+      : this.formTranslations.t('core.forms.editEntity', { entity: this.formTranslations.t(this.getConfig().entityDisplayName) }),
   );
 
   subtitle = computed(() =>
     this.mode() === FormMode.CREATE
-      ? `Complete la información ${this.getConfig().entityArticle} ${this.getConfig().entityDisplayName.toLowerCase()}`
-      : `Actualice la información ${this.getConfig().entityArticle} ${this.getConfig().entityDisplayName.toLowerCase()}`,
+      ? this.formTranslations.t('core.forms.createEntityInformation', { article: this.getConfig().entityArticle, entity: this.formTranslations.t(this.getConfig().entityDisplayName.toLowerCase()) })
+      : this.formTranslations.t('core.forms.updateEntityInformation', { article: this.getConfig().entityArticle, entity: this.formTranslations.t(this.getConfig().entityDisplayName.toLowerCase()) }),
   );
 
   submitLabel = computed(() =>
     this.mode() === FormMode.CREATE
-      ? `Crear ${this.getConfig().entityDisplayName}`
-      : `Actualizar ${this.getConfig().entityDisplayName}`,
+      ? this.formTranslations.t('core.forms.createEntity', { entity: this.formTranslations.t(this.getConfig().entityDisplayName) })
+      : this.formTranslations.t('core.forms.updateEntity', { entity: this.formTranslations.t(this.getConfig().entityDisplayName) }),
   );
 
   abstract getConfig(): FormConfig;
@@ -151,9 +155,10 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
 
   protected getPendingTabTitle(_formData: T): string {
     const config = this.getConfig();
+    const entity = this.formTranslations.t(config.entityDisplayName);
     return this.isCreateMode()
-      ? `Nuevo ${config.entityDisplayName}`
-      : `Editar ${config.entityDisplayName}`;
+      ? this.formTranslations.t('core.forms.newEntity', { entity })
+      : this.formTranslations.t('core.forms.editEntity', { entity });
   }
 
   private getPendingTabRoute(): string {
@@ -182,7 +187,7 @@ export abstract class BaseFormComponent<T> implements OnInit, OnDestroy {
   }
 
   onCancel(): void {
-    this.router.navigate([this.getConfig().routeBase]);
+    this.navigationHistory.back([this.getConfig().routeBase]);
   }
 
   isEditMode(): boolean {

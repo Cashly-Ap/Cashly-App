@@ -1,0 +1,267 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-6">
+    <app-page-header
+      [title]="'auth.profile.my.profile' | translate"
+      [subtitle]="
+        'auth.profile.your.personal.information.organization.and.system.access' | translate
+      "
+    />
+    @if (loading()) {
+      <app-panel-card padding="p-8" extraClass="animate-pulse">
+        {{ 'auth.profile.loading.your.profile' | translate }}
+      </app-panel-card>
+    } @else if (error()) {
+      <app-panel-card>
+        <div class="p-6 flex flex-col items-start gap-4" role="alert">
+          <p>{{ 'auth.profile.we.could.not.load.your.profile.please.try.again' | translate }}</p>
+          <p-button
+            [label]="'auth.profile.retry' | translate"
+            icon="pi pi-refresh"
+            [outlined]="true"
+            (onClick)="loadProfile()"
+          />
+        </div>
+      </app-panel-card>
+    } @else if (profile(); as user) {
+      <app-panel-card>
+        <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+          <app-user-avatar [photoPath]="user.photoPath" [name]="fullName()" size="xlarge" />
+          <div class="min-w-0 flex-1">
+            <h2
+              class="text-2xl font-semibold tracking-tight break-words text-surface-900 dark:text-surface-0"
+            >
+              {{ fullName() }}
+            </h2>
+            <p class="text-sm text-surface-500 break-all mt-1">
+              {{ user.userName }} · {{ user.email }}
+            </p>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <app-status-badge [active]="user.active" />
+              @if (!accessLoading() && !accessError() && access()?.systemAdministrator) {
+                <app-text-badge
+                  [label]="'auth.profile.system.administrator' | translate"
+                  variant="label"
+                />
+              } @else {
+                <app-text-badge [label]="display(user.roleName)" variant="label" />
+              }
+            </div>
+          </div>
+          <p-button
+            [label]="'auth.profile.edit.profile' | translate"
+            icon="pi pi-user-edit"
+            [outlined]="true"
+            (onClick)="onEditName()"
+          />
+        </div>
+      </app-panel-card>
+
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'auth.profile.personal.and.contact.information' | translate"
+          [subtitle]="'auth.profile.details.associated.with.your.account' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'auth.profile.first.name' | translate"
+              [value]="display(user.firstName)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.last.name' | translate"
+              [value]="display(user.lastName)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.username' | translate"
+              [value]="display(user.userName)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.email' | translate"
+              [value]="display(user.email)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.phone' | translate"
+              [value]="display(user.phone)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.language' | translate"
+              [value]="user.language === 'en' ? 'English' : 'Español'"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'auth.profile.address' | translate"
+          [subtitle]="'auth.profile.registered.address' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'auth.profile.street.and.number' | translate"
+              [value]="display(user.address?.street)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.city' | translate"
+              [value]="display(user.address?.city)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.province.or.region' | translate"
+              [value]="display(user.address?.region)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.postal.code' | translate"
+              [value]="display(user.address?.postalCode)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.country' | translate"
+              [value]="display(user.address?.country)"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'auth.profile.organization' | translate"
+          [subtitle]="'auth.profile.your.assigned.role.and.department' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'auth.profile.role' | translate"
+              [value]="user.roleName || ('auth.profile.unassigned' | translate)"
+            />
+            <app-details-info-field
+              [label]="'auth.profile.department' | translate"
+              [value]="user.departmentName || ('auth.profile.unassigned' | translate)"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'auth.profile.security.and.account' | translate"
+          [subtitle]="'auth.profile.your.account.status.and.history' | translate"
+        >
+          <div actions>
+            <p-button
+              [label]="'auth.profile.change.password' | translate"
+              icon="pi pi-key"
+              [outlined]="true"
+              (onClick)="onChangePassword()"
+            />
+          </div>
+        </app-details-card-header>
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field [label]="'auth.profile.account.status' | translate" type="badge"
+              ><app-status-badge [active]="user.active"
+            /></app-details-info-field>
+            <app-details-info-field [label]="'auth.profile.email' | translate" type="badge"
+              ><app-status-badge
+                [active]="user.emailVerified"
+                [activeLabel]="'auth.profile.verified' | translate"
+                [inactiveLabel]="'auth.profile.pending.verification' | translate"
+            /></app-details-info-field>
+            <app-details-info-field
+              [label]="'auth.profile.registration.date' | translate"
+              [value]="
+                (user.createdAt | date: 'dd/MM/yyyy HH:mm') ||
+                ('auth.profile.not.provided' | translate)
+              "
+            />
+            <app-details-info-field
+              [label]="'auth.profile.last.updated' | translate"
+              [value]="
+                (user.updatedAt | date: 'dd/MM/yyyy HH:mm') ||
+                ('auth.profile.not.provided' | translate)
+              "
+            />
+          </app-details-info-grid>
+          @if (!user.emailVerified) {
+            <div class="mt-5 flex flex-col items-start gap-3">
+              <p class="text-sm text-surface-500">
+                {{ 'platform.auth.emailNotVerifiedHelp' | translate }}
+              </p>
+              <p-button
+                [label]="'platform.auth.resendVerification' | translate"
+                [ariaLabel]="'platform.auth.resendVerification' | translate"
+                icon="pi pi-envelope"
+                [outlined]="true"
+                [loading]="resendingVerification()"
+                (onClick)="resendEmailVerification()"
+              />
+              @if (verificationNotice()) {
+                <p class="text-sm" role="status">{{ verificationNotice() | translate }}</p>
+              }
+            </div>
+          }
+        </div>
+      </app-panel-card>
+
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'auth.profile.my.permissions' | translate"
+          [subtitle]="
+            'auth.profile.modules.and.actions.you.can.use.your.administrator.manages.this.access'
+              | translate
+          "
+        />
+        <div class="p-4 sm:p-6">
+          @if (accessLoading()) {
+            <p role="status" class="text-sm text-surface-500">
+              {{ 'auth.profile.loading.your.permissions' | translate }}
+            </p>
+          } @else if (accessError()) {
+            <div class="flex flex-col sm:flex-row gap-4 sm:items-center" role="alert">
+              <p class="text-sm">
+                {{ 'auth.profile.we.could.not.load.your.permissions' | translate }}
+              </p>
+              <p-button
+                [label]="'auth.profile.retry.permissions' | translate"
+                icon="pi pi-refresh"
+                [outlined]="true"
+                (onClick)="loadAccess()"
+              />
+            </div>
+          } @else {
+            @if (access()?.systemAdministrator) {
+              <p class="mb-5 text-sm text-surface-600 dark:text-surface-300">
+                {{
+                  'auth.profile.your.account.is.a.system.administrator.the.following.modules.show.your.current.effective.access'
+                    | translate
+                }}
+              </p>
+            }
+            <app-details-info-grid [columns]="2" [fillLastRow]="true">
+              @for (module of modules(); track module.id) {
+                <div
+                  class="rounded-2xl border border-surface-200 dark:border-surface-800 p-4 flex flex-col gap-3"
+                >
+                  <h3 class="font-semibold text-sm text-surface-900 dark:text-surface-0">
+                    {{ module.label | translate }}
+                  </h3>
+                  <div class="flex flex-wrap gap-2">
+                    @for (action of module.actions; track action) {
+                      <app-text-badge [label]="action | translate" variant="label" />
+                    }
+                  </div>
+                </div>
+              } @empty {
+                <p class="text-sm text-surface-500">
+                  {{
+                    'auth.profile.you.have.no.assigned.module.access.contact.your.administrator.if.you.need.access'
+                      | translate
+                  }}
+                </p>
+              }
+            </app-details-info-grid>
+          }
+        </div>
+      </app-panel-card>
+    }
+  </div>
+</div>

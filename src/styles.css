@@ -262,3 +262,663 @@ body:not(.p-overflow-hidden) .p-drawer-mask {
   width: 1.25rem !important;
   height: 1.25rem !important;
 }
+
+:root {
+  --cashly-canvas: #f5f5f3;
+  --cashly-panel: #ffffff;
+  --cashly-ink: #171715;
+  --cashly-muted: #64645e;
+  --cashly-line: #deded9;
+  --cashly-dot: #c5c5bf;
+  --table-header-bg: var(--cashly-panel);
+  --table-header-color: #171715;
+  --table-header-hover-bg: #f0f0ed;
+  --table-header-hover-color: #171715;
+  --table-row-bg: #ffffff;
+  --table-row-color: #252522;
+  --table-row-striped-bg: #fafaf9;
+  --table-row-hover-bg: #f0f0ed;
+  --table-row-hover-color: #171715;
+  --table-border: #deded9;
+  --app-bg-primary: var(--cashly-canvas);
+  --app-bg-primary-via: var(--cashly-canvas);
+  --app-bg-primary-to: var(--cashly-canvas);
+}
+
+.my-app-dark {
+  --cashly-canvas: #0b0b0a;
+  --cashly-panel: #171715;
+  --cashly-ink: #f5f5f3;
+  --cashly-muted: #a5a59d;
+  --cashly-line: #393935;
+  --cashly-dot: #54544e;
+  --table-header-bg: var(--cashly-panel);
+  --table-header-color: #f5f5f3;
+  --table-header-hover-bg: #252522;
+  --table-header-hover-color: #f5f5f3;
+  --table-row-bg: #0b0b0a;
+  --table-row-color: #e8e8e4;
+  --table-row-striped-bg: #0f0f0e;
+  --table-row-hover-bg: #1a1a18;
+  --table-row-hover-color: #ffffff;
+  --table-border: #262624;
+  --app-bg-primary: var(--cashly-canvas);
+  --app-bg-primary-via: var(--cashly-canvas);
+  --app-bg-primary-to: var(--cashly-canvas);
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--cashly-canvas);
+  color: var(--cashly-ink);
+}
+
+.cashly-panel,
+app-loading-spinner > div {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 28px;
+  max-width: 100%;
+  @apply shadow-xl;
+  backdrop-filter: none;
+}
+
+.cashly-form-container {
+  background: var(--cashly-canvas);
+}
+.cashly-page-header {
+  text-align: left;
+  padding: 0.5rem 0;
+}
+.cashly-page-header h1 {
+  letter-spacing: -0.045em;
+}
+.cashly-page-icon {
+  background: var(--p-surface-900);
+  color: var(--p-surface-0);
+}
+.my-app-dark .cashly-page-icon {
+  background: var(--p-surface-0);
+  color: var(--p-surface-900);
+}
+.cashly-informative .cashly-page-icon {
+  background: var(--cashly-accent);
+  color: #fff;
+}
+.my-app-dark.cashly-informative .cashly-page-icon {
+  color: var(--p-surface-950);
+}
+.cashly-page-header:has(> h1:first-child)::before,
+.dashboard-kicker {
+  display: block;
+  color: var(--cashly-muted);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cashly-page-header:has(> h1:first-child)::before {
+  content: 'Cashly / Gestión';
+  margin-bottom: 0.75rem;
+}
+.flex.flex-col.gap-6 > app-page-header > .cashly-page-header {
+  margin-bottom: 0.5rem;
+}
+.cashly-topbar {
+  box-shadow: none;
+  background: var(--cashly-panel);
+}
+.cashly-brand {
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+.cashly-workspace {
+  background: var(--cashly-canvas);
+}
+.main-menubar.p-menubar {
+  --p-menubar-base-item-border-radius: 999px;
+}
+.main-menubar .p-menubar-item-link {
+  font-size: 0.8125rem;
+}
+.main-menubar .p-menubar-submenu {
+  border-radius: 20px;
+  padding: 0.5rem;
+}
+.p-datatable {
+  --p-datatable-header-cell-background: var(--cashly-canvas);
+}
+.p-datatable-thead > tr > th {
+  font-size: 0.75rem;
+  letter-spacing: 0.035em;
+}
+.p-datatable-tbody > tr > td {
+  border-color: var(--cashly-line);
+}
+.p-datatable.cashly-detail-lines {
+  --p-datatable-row-background: var(--cashly-panel);
+  --p-datatable-row-striped-background: var(--cashly-panel);
+  --p-datatable-body-cell-border-color: var(--cashly-line);
+}
+.my-app-dark .p-datatable.cashly-detail-lines {
+  --p-datatable-row-background: var(--cashly-panel);
+  --p-datatable-row-striped-background: var(--cashly-panel);
+}
+
+:root:not(.my-app-dark) .p-datatable {
+  --p-datatable-header-cell-background: var(--table-header-bg);
+  --p-datatable-header-cell-color: var(--table-header-color);
+  --p-datatable-header-cell-hover-background: var(--table-header-hover-bg);
+  --p-datatable-header-cell-hover-color: var(--table-header-hover-color);
+  --p-datatable-row-background: var(--table-row-bg);
+  --p-datatable-row-color: var(--table-row-color);
+  --p-datatable-row-striped-background: var(--table-row-striped-bg);
+  --p-datatable-row-hover-background: var(--table-row-hover-bg);
+  --p-datatable-row-hover-color: var(--table-row-hover-color);
+  --p-datatable-body-cell-border-color: var(--table-border);
+}
+
+.my-app-dark .p-datatable {
+  --p-datatable-header-cell-background: var(--table-header-bg);
+  --p-datatable-header-cell-color: var(--table-header-color);
+  --p-datatable-header-cell-hover-background: var(--table-header-hover-bg);
+  --p-datatable-header-cell-hover-color: var(--table-header-hover-color);
+  --p-datatable-row-background: var(--table-row-bg);
+  --p-datatable-row-color: var(--table-row-color);
+  --p-datatable-row-striped-background: var(--table-row-striped-bg);
+  --p-datatable-row-hover-background: var(--table-row-hover-bg);
+  --p-datatable-row-hover-color: var(--table-row-hover-color);
+  --p-datatable-body-cell-border-color: var(--table-border);
+}
+
+.cashly-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.cashly-data-table thead tr {
+  background: var(--table-header-bg) !important;
+}
+
+.cashly-data-table thead th {
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  color: var(--table-header-color) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.cashly-data-table tbody tr {
+  background: var(--table-row-bg) !important;
+}
+
+.cashly-data-table tbody tr:nth-child(even) {
+  background: var(--table-row-striped-bg) !important;
+}
+
+.cashly-data-table tbody tr:hover {
+  background: var(--table-row-hover-bg) !important;
+  color: var(--table-row-hover-color);
+}
+
+.cashly-data-table tbody td {
+  padding: 0.75rem 1rem !important;
+  background: transparent !important;
+  border-top: 1px solid var(--table-border);
+}
+
+.cashly-data-table tbody td[colspan] {
+  padding: 2.5rem 1rem !important;
+  border-top: none;
+}
+
+:root:not(.my-app-dark) .p-datatable-thead > tr > th {
+  border-bottom: 1px solid #c5c5bf;
+}
+
+:root:not(.my-app-dark) .p-datatable-tbody > tr:not(.p-datatable-row-selected):hover {
+  background: #f0f0ed;
+  color: #171715;
+}
+
+.p-paginator {
+  padding: 1rem;
+}
+.p-dialog {
+  @apply shadow-xl;
+}
+.p-dialog-header {
+  border-bottom: 1px solid var(--cashly-line);
+}
+.p-dialog-content {
+  padding-top: 1.5rem;
+}
+.p-tabs {
+  --p-tabs-tablist-background: transparent;
+}
+.p-tablist {
+  border-bottom: 1px solid var(--cashly-line);
+}
+.p-tab {
+  letter-spacing: 0.02em;
+}
+.p-inputtext:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--cashly-ink);
+  outline-offset: 3px;
+}
+
+.dashboard-widget {
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 28px;
+  @apply shadow-xl;
+  padding: 1.5rem;
+}
+.dashboard-metric {
+  min-height: 170px;
+}
+.dashboard-metric-primary {
+  background: var(--cashly-ink);
+  color: var(--cashly-panel);
+}
+.dashboard-metric-label {
+  color: var(--cashly-ink);
+}
+.dashboard-metric-value {
+  color: var(--cashly-ink);
+}
+.dashboard-metric-value[data-tone='positive'] {
+  color: #15803d;
+}
+.dashboard-metric-value[data-tone='negative'] {
+  color: #b91c1c;
+}
+.dashboard-metric-primary .dashboard-metric-label {
+  color: var(--cashly-panel);
+}
+.dashboard-metric-primary .dashboard-metric-value {
+  color: var(--cashly-panel);
+}
+.dashboard-metric-primary .dashboard-metric-value[data-tone='positive'] {
+  color: #4ade80;
+}
+.dashboard-metric-primary .dashboard-metric-value[data-tone='negative'] {
+  color: #f87171;
+}
+.dashboard-empty {
+  border: 1px dashed var(--cashly-line);
+  border-radius: 18px;
+}
+
+.cashly-login {
+  background: var(--cashly-canvas);
+  color: var(--cashly-ink);
+}
+.login-panel {
+  @apply shadow-xl;
+  background: var(--cashly-panel);
+  border: 1px solid var(--cashly-line);
+  border-radius: 32px;
+}
+.login-artwork {
+  background: #171715;
+  color: #f5f5f3;
+}
+
+@media (max-width: 767px) {
+  .cashly-panel {
+    border-radius: 20px;
+  }
+  .dashboard-widget {
+    border-radius: 22px;
+    padding: 1.25rem;
+  }
+  .cashly-page-header h1 {
+    font-size: 2rem;
+  }
+  .p-dialog {
+    max-width: calc(100vw - 1.5rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+.dashboard-metric-primary .dashboard-metric-icon {
+  background: #ffffff20;
+  color: inherit;
+}
+.dashboard-metric-primary .dashboard-metric-icon i {
+  color: inherit;
+}
+.dashboard-activity-label {
+  background: var(--p-surface-200);
+  color: var(--cashly-ink);
+  border: 1px solid var(--cashly-line);
+}
+.my-app-dark .dashboard-activity-label {
+  background: var(--p-surface-800);
+  color: var(--p-surface-200);
+}
+.cashly-login .login-panel {
+  border-radius: 0;
+  border: 0;
+}
+.my-app-dark .cashly-login .text-surface-500 {
+  color: var(--cashly-muted);
+}
+.cashly-workspace .shadow-sm,
+.cashly-workspace .shadow-md,
+.cashly-workspace .shadow-lg,
+.cashly-workspace .shadow-xl,
+.cashly-workspace .shadow-2xl,
+.cashly-workspace .shadow-xxxl {
+  @apply shadow-xl;
+}
+
+.p-card,
+.p-panel,
+.p-popover,
+.p-drawer,
+.p-select-overlay,
+.p-multiselect-overlay,
+.p-datepicker-panel,
+.p-menu-overlay,
+.main-menubar .p-menubar-submenu {
+  @apply shadow-xl;
+}
+
+.my-app-dark img[src$='cashly-logo.svg'],
+.my-app-dark img[src$='cashly-icon.svg'] {
+  filter: invert(1);
+}
+
+.cashly-informative :is([data-module='sales'], .cashly-module-sales) {
+  --cashly-accent: #1d4ed8;
+}
+.my-app-dark.cashly-informative :is([data-module='sales'], .cashly-module-sales) {
+  --cashly-accent: #93c5fd;
+}
+.cashly-informative :is([data-module='procurement'], .cashly-module-procurement) {
+  --cashly-accent: #7e22ce;
+}
+.my-app-dark.cashly-informative :is([data-module='procurement'], .cashly-module-procurement) {
+  --cashly-accent: #d8b4fe;
+}
+.cashly-informative :is([data-module='catalog'], .cashly-module-catalog) {
+  --cashly-accent: #0f766e;
+}
+.my-app-dark.cashly-informative :is([data-module='catalog'], .cashly-module-catalog) {
+  --cashly-accent: #5eead4;
+}
+.cashly-informative :is([data-module='inventory'], .cashly-module-inventory) {
+  --cashly-accent: #a16207;
+}
+.my-app-dark.cashly-informative :is([data-module='inventory'], .cashly-module-inventory) {
+  --cashly-accent: #fcd34d;
+}
+.cashly-informative :is([data-module='finance'], .cashly-module-finance) {
+  --cashly-accent: #15803d;
+}
+.my-app-dark.cashly-informative :is([data-module='finance'], .cashly-module-finance) {
+  --cashly-accent: #86efac;
+}
+.cashly-informative :is([data-module='partners'], .cashly-module-partners) {
+  --cashly-accent: #be185d;
+}
+.my-app-dark.cashly-informative :is([data-module='partners'], .cashly-module-partners) {
+  --cashly-accent: #f9a8d4;
+}
+.cashly-informative :is([data-module='analytics'], .cashly-module-analytics) {
+  --cashly-accent: #4338ca;
+}
+.my-app-dark.cashly-informative :is([data-module='analytics'], .cashly-module-analytics) {
+  --cashly-accent: #a5b4fc;
+}
+.cashly-informative :is([data-module='platform'], .cashly-module-platform) {
+  --cashly-accent: #475569;
+}
+.my-app-dark.cashly-informative :is([data-module='platform'], .cashly-module-platform) {
+  --cashly-accent: #cbd5e1;
+}
+
+.cashly-informative .cashly-workspace {
+  --cashly-accent-soft: color-mix(in srgb, var(--cashly-accent) 8%, var(--cashly-panel));
+  --cashly-accent-line: color-mix(in srgb, var(--cashly-accent) 32%, var(--cashly-line));
+}
+.cashly-informative .cashly-page-header h1 {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-page-header::before {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-workspace .cashly-panel {
+  border-color: var(--cashly-accent-line);
+}
+.cashly-informative .cashly-workspace :is(app-details-card-header > div, app-form-header > div) {
+  background: var(--cashly-accent-soft);
+}
+.cashly-informative .cashly-workspace .p-datatable {
+  --p-datatable-header-cell-background: var(--cashly-accent-soft);
+  --p-datatable-header-cell-color: var(--cashly-accent);
+  --p-datatable-header-cell-hover-background: color-mix(
+    in srgb,
+    var(--cashly-accent) 14%,
+    var(--cashly-panel)
+  );
+  --p-datatable-header-cell-hover-color: var(--cashly-accent);
+}
+.cashly-informative
+  :is(
+    .main-menubar .p-menubar-item,
+    .mobile-panel-menu .p-panelmenu-panel,
+    .mobile-panel-menu .p-menuitem
+  )
+  > :is(.p-menubar-item-content, .p-panelmenu-header, .p-menuitem-content)
+  :is(.p-menubar-item-icon, .p-panelmenu-header-icon, .p-menuitem-icon) {
+  color: var(--cashly-accent);
+}
+.cashly-informative .cashly-module-sales,
+.cashly-informative .cashly-module-procurement,
+.cashly-informative .cashly-module-catalog,
+.cashly-informative .cashly-module-inventory,
+.cashly-informative .cashly-module-finance,
+.cashly-informative .cashly-module-partners,
+.cashly-informative .cashly-module-analytics,
+.cashly-informative .cashly-module-platform {
+  --p-menubar-item-icon-color: var(--cashly-accent);
+  --p-panelmenu-item-icon-color: var(--cashly-accent);
+  --p-panelmenu-panel-icon-color: var(--cashly-accent);
+}
+.cashly-informative .dashboard-widget {
+  border-color: color-mix(in srgb, var(--cashly-accent) 32%, var(--cashly-line));
+}
+.cashly-informative .dashboard-metric {
+  background: color-mix(in srgb, var(--cashly-accent) 8%, var(--cashly-panel));
+  color: var(--cashly-ink);
+}
+.cashly-informative .dashboard-metric-primary :is(p, span) {
+  color: var(--cashly-ink);
+}
+.cashly-informative .dashboard-metric-icon {
+  background: color-mix(in srgb, var(--cashly-accent) 14%, var(--cashly-panel));
+}
+.cashly-informative .dashboard-metric-icon i,
+.cashly-informative .dashboard-widget h3 {
+  color: var(--cashly-accent);
+}
+.cashly-informative .dashboard-activity-label {
+  background: color-mix(in srgb, var(--cashly-accent) 10%, var(--cashly-panel));
+  border-color: color-mix(in srgb, var(--cashly-accent) 28%, var(--cashly-line));
+  color: var(--cashly-accent);
+}
+
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel
+  :is(app-details-card-header, app-form-header):first-child,
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel
+  :is(app-details-card-header, app-form-header):first-child
+  > div {
+  border-start-start-radius: inherit;
+  border-start-end-radius: inherit;
+}
+
+.cashly-informative
+  .cashly-workspace
+  .cashly-panel:has(:is(app-details-card-header, app-form-header)) {
+  overflow: hidden;
+}
+
+app-user-avatar .p-avatar img {
+  object-fit: cover;
+  object-position: center;
+}
+
+@keyframes cashly-login-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cashly-login-feedback {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.cashly-login .login-enter {
+  animation: cashly-login-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: var(--login-enter-delay, 0ms);
+}
+.cashly-login .login-delay-1 {
+  --login-enter-delay: 40ms;
+}
+.cashly-login .login-delay-2 {
+  --login-enter-delay: 80ms;
+}
+.cashly-login .login-delay-3 {
+  --login-enter-delay: 120ms;
+}
+.cashly-login .login-delay-4 {
+  --login-enter-delay: 160ms;
+}
+.cashly-login .login-delay-5 {
+  --login-enter-delay: 200ms;
+}
+.cashly-login .login-feedback {
+  animation: cashly-login-feedback 160ms ease-out;
+}
+.cashly-login .login-field {
+  transition: transform 180ms ease-out;
+}
+.cashly-login .login-field:focus-within {
+  transform: translateY(-1px);
+}
+.cashly-login .login-submit button,
+.cashly-login .login-submit .p-button-icon {
+  transition: transform 160ms ease-out;
+}
+.cashly-login .login-submit button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.cashly-login .login-submit button:not(:disabled):hover .p-button-icon {
+  transform: translateX(3px);
+}
+.cashly-login .login-submit button:not(:disabled):active {
+  transform: translateY(0) scale(0.99);
+}
+
+@keyframes cashly-login-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes cashly-login-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+@keyframes cashly-login-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cashly-login .login-orbit {
+    animation: cashly-login-orbit 90s linear infinite;
+  }
+  .cashly-login .login-orbit:nth-child(2) {
+    animation-duration: 75s;
+    animation-direction: reverse;
+  }
+  .cashly-login .login-orbit:nth-child(3) {
+    animation-duration: 60s;
+  }
+  .cashly-login .login-orbit:nth-child(4) {
+    animation-duration: 45s;
+    animation-direction: reverse;
+  }
+  .cashly-login .login-orbit:nth-child(5) {
+    animation-duration: 30s;
+  }
+  .cashly-login .login-core {
+    animation: cashly-login-pulse 5s ease-in-out infinite;
+  }
+  .cashly-login .login-artwork-copy {
+    animation: cashly-login-float 8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cashly-login .login-enter,
+  .cashly-login .login-feedback,
+  .cashly-login .login-orbit,
+  .cashly-login .login-core,
+  .cashly-login .login-artwork-copy {
+    animation: none !important;
+  }
+  .cashly-login .login-field,
+  .cashly-login .login-submit button,
+  .cashly-login .login-submit .p-button-icon {
+    transition: none !important;
+    transform: none !important;
+  }
+}

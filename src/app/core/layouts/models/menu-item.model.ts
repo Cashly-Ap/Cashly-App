@@ -1,5 +1,5 @@
-import { UserType } from '@features/auth/models';
-import { BusinessModule } from '@features/users/models/enums';
+import { UserType } from '@features/platform/auth/models/interfaces/user.interface';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
 
 export interface MenuItem {
   label: string;
@@ -13,5 +13,8 @@ export interface MenuItem {
   command?: () => void;
   isMegaMenu?: boolean;
   allowedRoles?: UserType[];
+  requiredAction?: import('@features/platform/auth/authorization/models/access.model').PermissionAction;
   requiredModule?: BusinessModule;
+  requiredPermission?: import('@features/platform/auth/permissions/app-permission').AppPermission;
+  requiredPermissions?: string[];
 }

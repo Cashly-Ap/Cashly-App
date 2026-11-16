@@ -1,10 +1,11 @@
+import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { Component, input, output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-list-section',
   standalone: true,
-  imports: [ButtonModule],
+  imports: [TranslatePipe, ButtonModule],
   templateUrl: './list-section.component.html',
 })
 export class ListSectionComponent {

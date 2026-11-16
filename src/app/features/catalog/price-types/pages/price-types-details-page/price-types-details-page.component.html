@@ -1,0 +1,69 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (priceType(); as currentPriceType) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'catalog.pricetypes.priceTypeDetails' | translate"
+          [subtitle]="'catalog.pricetypes.priceTypeInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header [title]="currentPriceType.name">
+            <div actions class="flex gap-3">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="PRICE_TYPE"
+                [auditEntityId]="currentPriceType.id"
+                [auditLabel]="currentPriceType.name"
+              >
+                <p-button
+                  [appPermission]="'UPDATE'"
+                  [label]="'finance.billing.invoices.edit' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onEdit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'finance.treasury.paymentmethods.name' | translate"
+                [value]="currentPriceType.name"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.invoices.status' | translate"
+                type="badge"
+              >
+                <app-status-badge
+                  [active]="currentPriceType.active"
+                  activeLabel="Activo"
+                  inactiveLabel="Inactivo"
+                />
+              </app-details-info-field>
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,21 @@
+@if (invoice(); as inv) {
+  <app-confirm-invoice-dialog
+    [visible]="confirmVisible()"
+    [invoice]="inv"
+    [submitting]="submitting()"
+    (confirmed)="onConfirm($event)"
+    (cancelled)="onClose()"
+  />
+  <app-cancel-invoice-dialog
+    [visible]="cancelVisible()"
+    [invoice]="inv"
+    (confirmed)="onCancelConfirm($event)"
+    (cancelled)="onClose()"
+  />
+}
+<app-duplicate-invoice-dialog
+  [visible]="duplicateVisible()"
+  [invoiceId]="duplicateInvoiceId()"
+  (confirmed)="onDuplicateConfirm($event)"
+  (cancelled)="onClose()"
+/>

@@ -1,0 +1,141 @@
+import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
+import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
+import { DeleteDialogService } from '@shared/services/delete-dialog.service';
+import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { DetailActionsMenuComponent } from '@shared/components/details/detail-actions-menu/detail-actions-menu.component';
+
+import { DetailsCardHeaderComponent } from '@shared/components/details/details-card-header/details-card-header.component';
+import { DetailsInfoFieldComponent } from '@shared/components/details/details-info-field/details-info-field.component';
+import { DetailsInfoGridComponent } from '@shared/components/details/details-info-grid/details-info-grid.component';
+import { LoadingSpinnerComponent } from '@shared/components/ui/loading-spinner/loading-spinner.component';
+import { PageHeaderComponent } from '@shared/components/ui/page-header/page-header.component';
+import { StatusBadgeComponent } from '@shared/components/ui/status-badge/status-badge.component';
+import { TextBadgeComponent } from '@shared/components/ui/text-badge/text-badge.component';
+import { MessageService } from 'primeng/api';
+import { SupplierApplicationService } from '@features/partners/suppliers/services/application/supplier-application.service';
+import { SupplierDetails } from '@features/partners/suppliers/models/interfaces/supplier-details.interface';
+import { getSupplierTypeLabel } from '@features/partners/suppliers/models/enums/supplier-type.enum';
+import { PayablesApiService } from '@features/finance/treasury/payables/services/api/payables-api.service';
+import { SupplierDebtSummary } from '@features/finance/treasury/payables/models/interfaces/supplier-debt-summary.interface';
+import { AuthService } from '@features/platform/auth/services/application/auth-application.service';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
+import { PanelCardComponent } from '@shared/components/ui/panel-card/panel-card.component';
+import { BackButtonComponent } from '@shared/components/ui/back-button/back-button.component';
+@Component({
+  selector: 'app-suppliers-details-page',
+  standalone: true,
+  imports: [
+    BackButtonComponent,
+    PanelCardComponent,
+    TranslatePipe,
+    LocalizedDatePipe,
+    LocalizedCurrencyPipe,
+    PermissionDirective,
+    CommonModule,
+    ButtonModule,
+    DetailActionsMenuComponent,
+    DetailsCardHeaderComponent,
+    DetailsInfoFieldComponent,
+    DetailsInfoGridComponent,
+    LoadingSpinnerComponent,
+    PageHeaderComponent,
+    StatusBadgeComponent,
+    TextBadgeComponent,
+  ],
+  templateUrl: './suppliers-details-page.component.html',
+})
+export class SuppliersDetailsPageComponent implements OnInit {
+  private readonly navigationHistory = inject(NavigationHistoryService);
+  private service = inject(SupplierApplicationService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private messageService = inject(MessageService);
+  private readonly deletion = inject(DeleteDialogService);
+  private readonly authService = inject(AuthService);
+  private readonly payablesApi = inject(PayablesApiService);
+
+  supplier = signal<SupplierDetails | null>(null);
+  readonly credit = signal<SupplierDebtSummary | null>(null);
+  readonly paymentTypeLabel = computed(() =>
+    (this.supplier()?.creditDays ?? 0) > 0
+      ? 'finance.treasury.payables.credit'
+      : 'finance.treasury.payables.cash',
+  );
+  readonly showBalance = computed(() =>
+    this.authService.hasModulePermission(BusinessModule.FINANCE_PAYABLES),
+  );
+  loading = signal(false);
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.loadSupplier(id);
+    }
+  }
+
+  private loadSupplier(id: string): void {
+    this.loading.set(true);
+    this.service.loadById(id).subscribe({
+      next: (supplier) => {
+        this.supplier.set(supplier);
+        this.loading.set(false);
+        this.payablesApi.getSupplierDebt(id).subscribe({
+          next: (credit) => this.credit.set(credit),
+          error: () => this.credit.set(null),
+        });
+      },
+      error: () => {
+        this.loading.set(false);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Error al cargar el proveedor. Es posible que no exista.',
+          life: 5000,
+        });
+        this.router.navigate(['/partners/suppliers']);
+      },
+    });
+  }
+
+  onEdit(): void {
+    const id = this.supplier()?.id;
+    if (id) {
+      this.router.navigate(['/partners/suppliers', id, 'edit']);
+    }
+  }
+
+  onDelete(): void {
+    const item = this.supplier();
+    if (!item) return;
+    this.deletion.open('suppliers', item.id, item.legalName, () =>
+      this.router.navigate(['/partners/suppliers']),
+    );
+  }
+
+  onViewBalance(): void {
+    const id = this.supplier()?.id;
+    if (id) this.router.navigate(['/partners/suppliers', id, 'balance']);
+  }
+
+  onBack(): void {
+    this.navigationHistory.back(['/partners/suppliers']);
+  }
+
+  getTypeLabel(type: string): string {
+    return getSupplierTypeLabel(type as Parameters<typeof getSupplierTypeLabel>[0]);
+  }
+
+  getAddressLocation(
+    state: string | undefined,
+    municipality: string | undefined,
+    postalCode: string | undefined,
+  ): string {
+    return [state, municipality, postalCode].filter((v): v is string => !!v).join(' · ');
+  }
+}

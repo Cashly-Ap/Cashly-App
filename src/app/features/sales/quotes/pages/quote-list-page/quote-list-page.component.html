@@ -1,0 +1,283 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <app-page-header
+      [hero]="true"
+      kicker="finance.billing.creditnotes.cashlyManagement"
+      title="sales.quotes.quotes"
+      subtitle="sales.quotes.manageCustomerQuotes"
+    />
+
+    <app-list-container>
+      <div class="px-4 sm:px-6 py-4">
+        <div
+          class="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between"
+        >
+          <div class="flex gap-2 items-center w-full sm:w-auto">
+            <app-search-field
+              class="flex-1 sm:flex-none sm:min-w-[300px]"
+              [value]="searchTerm()"
+              [placeholder]="'shared.searchByNumberOrCustomer' | translate"
+              (search)="onSearch($event)"
+            />
+            <app-list-filter [activeCount]="activeFilterCount()" (cleared)="clearFilters()">
+              <app-filter-field labelKey="finance.billing.invoices.status">
+                <p-select
+                  [options]="statusOptions | translateOptions"
+                  [ngModel]="filterStatus()"
+                  (onChange)="onStatusFilterChange($event.value)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [placeholder]="'procurement.purchases.selectStatus' | translate"
+                  styleClass="w-full"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="shared.dateFrom">
+                <p-datepicker
+                  [ngModel]="dateFrom()"
+                  (ngModelChange)="onDateFromChange($event)"
+                  [showIcon]="true"
+                  [showClear]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'shared.dateFrom' | translate"
+                  appendTo="body"
+                  styleClass="w-full"
+                  [fluid]="true"
+                />
+              </app-filter-field>
+              <app-filter-field labelKey="shared.dateTo">
+                <p-datepicker
+                  [ngModel]="dateTo()"
+                  (ngModelChange)="onDateToChange($event)"
+                  [showIcon]="true"
+                  [showClear]="true"
+                  [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+                  [placeholder]="'shared.dateTo' | translate"
+                  appendTo="body"
+                  styleClass="w-full"
+                  [fluid]="true"
+                />
+              </app-filter-field>
+            </app-list-filter>
+          </div>
+          <app-submit-button
+            labelKey="sales.quotes.newQuote"
+            shortcut="new"
+            (action)="onCreate()"
+          />
+        </div>
+      </div>
+    </app-list-container>
+
+    <div class="h-4"></div>
+
+    @if (showInitialLoading()) {
+      <app-panel-card>
+        <app-loading-spinner [message]="'sales.quotes.loadingQuotes' | translate" />
+      </app-panel-card>
+    } @else if (isEmptyDatabase()) {
+      <app-panel-card>
+        <app-empty-state
+          icon="pi-file-edit"
+          [title]="'sales.quotes.noQuotesRecorded' | translate"
+          [message]="'sales.quotes.startManagingQuotesByCreatingYourFirstOne' | translate"
+        />
+      </app-panel-card>
+    } @else {
+      <app-list-container class="mt-4 hidden md:block">
+        <div class="relative">
+          @if (loading()) {
+            <div
+              class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl"
+            >
+              <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+            </div>
+          }
+          @if (hasFilteredResults()) {
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'sales.quotes.noQuotesMatchYourSearchTryOtherTermsOrCreateANewQuote' | translate
+              "
+            />
+          } @else {
+            <div class="overflow-x-auto rounded-t-2xl">
+              <p-table
+                [value]="quotes()"
+                styleClass="p-datatable-striped"
+                [customSort]="true"
+                (sortFunction)="onSort($event)"
+              >
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th pSortableColumn="quoteNumber" class="w-28">
+                      <div class="font-semibold">
+                        {{ 'analytics.dashboard.number' | translate }}
+                        <p-sortIcon field="quoteNumber" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="customerName" class="w-auto">
+                      <div class="font-semibold">
+                        {{ 'shared.customer' | translate }} <p-sortIcon field="customerName" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="status" class="w-32">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.status' | translate }}
+                        <p-sortIcon field="status" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="subtotal" class="w-32 text-right">
+                      <div class="font-semibold">
+                        {{ 'shared.total' | translate }} <p-sortIcon field="subtotal" />
+                      </div>
+                    </th>
+                    <th pSortableColumn="createdAt" class="w-32 hidden lg:table-cell">
+                      <div class="font-semibold">
+                        {{ 'finance.billing.invoices.date' | translate }}
+                        <p-sortIcon field="createdAt" />
+                      </div>
+                    </th>
+                    <th class="w-28">
+                      <div class="font-semibold text-center">
+                        {{ 'shared.actions' | translate }}
+                      </div>
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-quote>
+                  <tr class="transition-colors duration-150">
+                    <td>
+                      <span class="text-sm font-mono text-surface-500"
+                        >#{{ quote.quoteNumber }}</span
+                      >
+                    </td>
+                    <td>
+                      <div class="font-medium">{{ quote.customerName }}</div>
+                    </td>
+                    <td>
+                      <app-text-badge
+                        [label]="getStatusLabel(quote.status) | translate"
+                        [variant]="getStatusVariant(quote.status)"
+                      />
+                    </td>
+                    <td class="text-right">
+                      <span class="text-sm font-medium">{{
+                        quote.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2'
+                      }}</span>
+                    </td>
+                    <td class="hidden lg:table-cell">
+                      <div class="text-sm text-surface-500">
+                        {{ quote.createdAt | localizedDate: 'dd/MM/yyyy' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex justify-center">
+                        <app-list-action-buttons [actions]="actionsFor(quote)" />
+                      </div>
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="px-4 sm:px-6 py-3">
+              <app-paginator
+                [first]="first()"
+                [rows]="rows()"
+                [totalRecords]="totalElements()"
+                [rowsPerPageOptions]="[10, 25, 50, 100]"
+                [showCurrentPageReport]="true"
+                [currentPageReportTemplate]="
+                  'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate
+                "
+                (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+              />
+            </div>
+          }
+        </div>
+      </app-list-container>
+
+      <div class="md:hidden mt-6 relative">
+        @if (loading()) {
+          <div
+            class="absolute inset-0 bg-surface-0/70 dark:bg-surface-800/70 z-10 flex items-center justify-center rounded-2xl min-h-[200px]"
+          >
+            <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>
+          </div>
+        }
+        @if (hasFilteredResults()) {
+          <app-panel-card>
+            <app-empty-state
+              icon="pi-search"
+              [title]="'finance.billing.creditnotes.noResultsFound' | translate"
+              [message]="
+                'sales.quotes.noQuotesMatchYourSearchTryOtherTermsOrCreateANewQuote' | translate
+              "
+            />
+          </app-panel-card>
+        } @else {
+          <div class="flex flex-col gap-4">
+            @for (quote of quotes(); track quote.id) {
+              <app-panel-card padding="p-5">
+                <div class="flex justify-between items-start mb-3">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class="text-xs font-mono text-surface-400"
+                        >#{{ quote.quoteNumber }}</span
+                      >
+                    </div>
+                    <h3 class="font-bold text-base text-surface-900 dark:text-surface-0 mb-1">
+                      {{ quote.customerName }}
+                    </h3>
+                    <p class="text-sm font-medium mb-2">
+                      {{ quote.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
+                    </p>
+                    <div class="flex flex-wrap gap-2 items-center">
+                      <app-text-badge
+                        [label]="getStatusLabel(quote.status) | translate"
+                        [variant]="getStatusVariant(quote.status)"
+                      />
+                    </div>
+                  </div>
+                  <div class="text-xs text-surface-400 ml-2">
+                    {{ quote.createdAt | localizedDate: 'dd/MM/yyyy' }}
+                  </div>
+                </div>
+                <div
+                  class="flex gap-1 justify-end pt-3 border-t border-surface-200 dark:border-surface-700"
+                >
+                  <app-list-action-buttons [actions]="actionsFor(quote)" />
+                </div>
+              </app-panel-card>
+            }
+          </div>
+          <div class="px-4 py-3 mt-2">
+            <app-paginator
+              [first]="first()"
+              [rows]="rows()"
+              [totalRecords]="totalElements()"
+              [rowsPerPageOptions]="[10, 25, 50, 100]"
+              [showCurrentPageReport]="true"
+              [currentPageReportTemplate]="
+                'sales.quotes.showingFirstToLastOfTotalrecordsQuotes' | translate
+              "
+              (pageChange)="onPageChange({ first: $event.first ?? 0, rows: $event.rows ?? 10 })"
+            />
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+<app-convert-to-order-dialog
+  [visible]="orderDialogVisible()"
+  [quoteId]="quoteToConvertToOrder()?.id ?? null"
+  (confirmed)="onOrderDialogConfirmed()"
+  (cancelled)="onOrderDialogDismissed()"
+/>
+<app-convert-to-invoice-dialog
+  [visible]="invoiceDialogVisible()"
+  [quoteId]="quoteToConvertToInvoice()?.id ?? null"
+  (confirmed)="onInvoiceDialogConfirmed($event)"
+  (cancelled)="onInvoiceDialogDismissed()"
+/>

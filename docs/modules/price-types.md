@@ -4,7 +4,7 @@ CRUD pages for price categories assigned to product prices.
 
 ## Routes
 
-`/price-types`, `/price-types/new`, `/price-types/:id`, and `/price-types/:id/edit`.
+`/catalog/price-types`, `/catalog/price-types/new`, `/catalog/price-types/:id`, and `/catalog/price-types/:id/edit`.
 
 ## API
 

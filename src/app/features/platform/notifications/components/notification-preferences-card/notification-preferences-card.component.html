@@ -1,0 +1,165 @@
+<ng-template #content>
+  <div class="p-4 sm:p-6 space-y-5">
+    @if (preferences.loading()) {
+      <p role="status" class="text-sm text-surface-500 dark:text-surface-400">
+        {{ 'platform.notifications.preferences.loading' | translate }}
+      </p>
+    }
+    @if (preferences.error(); as error) {
+      <div
+        role="alert"
+        data-testid="notification-preferences-error"
+        class="flex flex-col items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+      >
+        <span>{{ error | translate }}</span>
+        <p-button
+          [label]="'platform.notifications.preferences.retry' | translate"
+          icon="pi pi-refresh"
+          [outlined]="true"
+          size="small"
+          (onClick)="preferences.retry()"
+        />
+      </div>
+    }
+    @if (preferences.ready()) {
+      <div
+        class="flex flex-col gap-4 border-b border-surface-200 pb-4 dark:border-surface-700 sm:flex-row sm:items-center sm:justify-between"
+      >
+        <div class="hidden items-end gap-3 lg:flex">
+          @for (field of filterFields(); track field.key) {
+            <div class="flex flex-col gap-1">
+              <label class="text-xs font-medium text-surface-500 dark:text-surface-400">
+                {{ field.labelKey | translate }}
+              </label>
+              <div class="grid">
+                <span
+                  aria-hidden="true"
+                  class="invisible col-start-1 row-start-1 whitespace-nowrap py-2 pr-[62px] pl-3 text-base"
+                >
+                  {{ widestLabel(field) }}
+                </span>
+                <p-select
+                  class="col-start-1 row-start-1 w-full"
+                  [options]="selectOptions(field) | translateOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  [ngModel]="field.value"
+                  [ariaLabel]="field.labelKey | translate"
+                  styleClass="w-full"
+                  (onChange)="onFilterChange({ key: field.key, value: $event.value })"
+                />
+              </div>
+            </div>
+          }
+          @if (activeFilterCount() > 0) {
+            <p-button
+              [label]="'platform.notifications.filters.clear' | translate"
+              [text]="true"
+              size="small"
+              severity="secondary"
+              (onClick)="clearFilters()"
+            />
+          }
+        </div>
+        <div class="lg:hidden">
+          <app-list-filter
+            [fields]="filterFields()"
+            [activeCount]="activeFilterCount()"
+            [variant]="'compact'"
+            [shortcut]="null"
+            [titleKey]="'platform.notifications.filters.title'"
+            [tooltipKey]="'platform.notifications.filters.title'"
+            [clearLabelKey]="'platform.notifications.filters.clear'"
+            [testId]="'notification-preferences-filter'"
+            (filterChange)="onFilterChange($event)"
+            (cleared)="clearFilters()"
+          />
+        </div>
+        <label class="flex cursor-pointer items-start gap-3">
+          <input
+            type="checkbox"
+            role="switch"
+            data-testid="notification-preferences-master"
+            [checked]="preferences.enabled()"
+            [disabled]="preferences.saving()"
+            (change)="preferences.setEnabled(!preferences.enabled())"
+            class="mt-1 h-4 w-4 accent-black dark:accent-white"
+          />
+          <span>
+            <span class="block font-semibold">
+              {{ 'platform.notifications.preferences.master' | translate }}
+            </span>
+            <span class="mt-1 block text-sm text-surface-500 dark:text-surface-400">
+              {{ 'platform.notifications.preferences.masterDescription' | translate }}
+            </span>
+          </span>
+        </label>
+      </div>
+      @if (preferences.modules().length === 0) {
+        <p
+          data-testid="notification-preferences-empty"
+          class="rounded-2xl border border-dashed border-surface-300 p-4 text-sm text-surface-500 dark:border-surface-700 dark:text-surface-400"
+        >
+          {{ 'platform.notifications.preferences.empty' | translate }}
+        </p>
+      } @else {
+        <div class="flex flex-col gap-4">
+          <h2 class="text-base font-semibold">
+            {{ 'platform.notifications.preferences.modules' | translate }}
+          </h2>
+          @for (area of filteredCatalog(); track area.areaKey) {
+            <div class="space-y-3">
+              <h3 class="text-sm font-semibold text-surface-700 dark:text-surface-200">
+                {{ area.areaKey | translate }}
+              </h3>
+              @for (section of area.sections; track section.sectionKey) {
+                @if (section.sectionKey) {
+                  <h4 class="text-xs font-semibold text-surface-500 dark:text-surface-400">
+                    {{ section.sectionKey | translate }}
+                  </h4>
+                }
+                @for (module of section.modules; track module.module) {
+                  <section
+                    class="rounded-xl border border-surface-200 bg-surface-50 p-4 dark:border-surface-700 dark:bg-surface-900 sm:p-5"
+                  >
+                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                      <h3 class="font-semibold text-sm">{{ module.labelKey | translate }}</h3>
+                      <input
+                        type="checkbox"
+                        role="switch"
+                        [attr.data-testid]="'notification-preferences-module-' + module.module"
+                        [checked]="module.enabled"
+                        [disabled]="!preferences.enabled() || preferences.saving()"
+                        (change)="preferences.setModuleEnabled(module.module, !module.enabled)"
+                        class="h-4 w-4 accent-black dark:accent-white"
+                      />
+                    </div>
+                  </section>
+                }
+              }
+            </div>
+          }
+          @if (filteredCatalog().length === 0) {
+            <p
+              class="rounded-xl border border-dashed border-surface-300 p-4 text-sm text-surface-500 dark:border-surface-700"
+            >
+              {{ 'platform.notifications.preferences.noFilteredModules' | translate }}
+            </p>
+          }
+        </div>
+      }
+    }
+  </div>
+</ng-template>
+
+@if (embedded()) {
+  <ng-container [ngTemplateOutlet]="content" />
+} @else {
+  <app-panel-card>
+    <app-details-card-header
+      [title]="'platform.notifications.preferences.title' | translate"
+      [subtitle]="'platform.notifications.preferences.subtitle' | translate"
+    />
+    <ng-container [ngTemplateOutlet]="content" />
+  </app-panel-card>
+}

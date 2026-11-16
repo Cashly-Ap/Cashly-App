@@ -1,0 +1,138 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex flex-col gap-6">
+    <app-page-header
+      [title]="'platform.company.companyDetails' | translate"
+      [subtitle]="'platform.company.yourCompanyIdentityTaxDetailsAndContactInformation' | translate"
+    />
+    @if (loading()) {
+      <app-panel-card
+        ><div class="p-6" role="status">
+          {{ 'platform.company.loadingCompany' | translate }}
+        </div></app-panel-card
+      >
+    } @else if (error()) {
+      <app-panel-card>
+        <div class="p-6 flex flex-col items-start gap-4" role="alert">
+          <p>{{ 'platform.company.weCouldNotLoadTheCompany' | translate }}</p>
+          <p-button
+            [label]="'inventory.warehouses.retry' | translate"
+            icon="pi pi-refresh"
+            [outlined]="true"
+            (onClick)="load()"
+          />
+        </div>
+      </app-panel-card>
+    } @else if (company(); as company) {
+      <app-panel-card>
+        <div class="p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-5">
+          <img
+            [src]="service.logoUrl() || '/cashly-icon.svg'"
+            alt="Logotipo de la empresa"
+            class="w-20 h-20 object-contain rounded-2xl shrink-0"
+          />
+          <div class="min-w-0 flex-1">
+            <h2
+              class="text-2xl font-semibold tracking-tight break-words text-surface-900 dark:text-surface-0"
+            >
+              {{ company.tradeName || company.legalName }}
+            </h2>
+            <p class="text-sm text-surface-500 break-words mt-1">{{ company.legalName }}</p>
+          </div>
+          <div actions class="flex gap-3">
+            <app-detail-actions-menu
+              #actionsMenu
+              auditEntityType="COMPANY"
+              [auditEntityId]="company.id"
+              [auditLabel]="company.tradeName || company.legalName"
+            >
+              @if (canEdit()) {
+                <p-button
+                  [label]="'platform.company.editCompany' | translate"
+                  [ariaLabel]="'platform.company.editCompany' | translate"
+                  icon="pi pi-pencil"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); edit()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              }
+            </app-detail-actions-menu>
+          </div>
+        </div>
+      </app-panel-card>
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'platform.company.taxInformation' | translate"
+          [subtitle]="'platform.company.companyIdentification' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'platform.company.legalName' | translate"
+              [value]="display(company.legalName)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.tradeName' | translate"
+              [value]="display(company.tradeName)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.taxIdNifCif' | translate"
+              [value]="display(company.taxId)"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'platform.company.registeredBusinessAddress' | translate"
+          [subtitle]="'platform.company.companyRegisteredAddress' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'platform.company.streetAndNumber' | translate"
+              [value]="display(company.address?.street)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.city' | translate"
+              [value]="display(company.address?.city)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.provinceOrRegion' | translate"
+              [value]="display(company.address?.region)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.postalCode' | translate"
+              [value]="display(company.address?.postalCode)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.country' | translate"
+              [value]="display(company.address?.country)"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+      <app-panel-card>
+        <app-details-card-header
+          [title]="'partners.suppliers.contact' | translate"
+          [subtitle]="'platform.company.companyContactChannels' | translate"
+        />
+        <div class="p-4 sm:p-6">
+          <app-details-info-grid [columns]="2" [fillLastRow]="true">
+            <app-details-info-field
+              [label]="'platform.company.email' | translate"
+              [value]="display(company.email)"
+            />
+            <app-details-info-field
+              [label]="'finance.treasury.receivables.phone' | translate"
+              [value]="display(company.phone)"
+            />
+            <app-details-info-field
+              [label]="'platform.company.website' | translate"
+              [value]="display(company.website)"
+            />
+          </app-details-info-grid>
+        </div>
+      </app-panel-card>
+    }
+  </div>
+</div>

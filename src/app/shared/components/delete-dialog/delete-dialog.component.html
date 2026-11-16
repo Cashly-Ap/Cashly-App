@@ -1,0 +1,29 @@
+<p-dialog
+  [visible]="deletion.request() !== null"
+  [modal]="true"
+  [closable]="!deletion.loading()"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="'common.delete.title' | translate"
+  (onHide)="deletion.close()"
+>
+  @if (deletion.request(); as request) {
+    <p class="m-0">
+      {{ 'common.delete.message' | translate: { label: request.label } }}
+    </p>
+    <div class="mt-6 flex justify-end gap-2">
+      <p-button
+        [label]="'common.delete.cancel' | translate"
+        severity="secondary"
+        [disabled]="deletion.loading()"
+        (onClick)="deletion.close()"
+      />
+      <p-button
+        [label]="'common.delete.confirm' | translate"
+        severity="danger"
+        [loading]="deletion.loading()"
+        (onClick)="deletion.confirm()"
+      />
+    </div>
+  }
+</p-dialog>

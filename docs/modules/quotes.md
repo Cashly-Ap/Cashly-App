@@ -4,7 +4,7 @@ Sales quote workflow with product lines, warehouse allocation, and conversion.
 
 ## Routes
 
-`/quotes`, `/quotes/new`, `/quotes/:id`, and `/quotes/:id/edit`.
+`/sales/quotes`, `/sales/quotes/new`, `/sales/quotes/:id`, and `/sales/quotes/:id/edit`.
 
 ## Rules
 

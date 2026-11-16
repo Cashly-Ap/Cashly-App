@@ -1,0 +1,247 @@
+<div class="min-h-screen">
+  <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    @if (loading()) {
+      <app-loading-spinner />
+    }
+    @if (returnDetail(); as ret) {
+      <div class="flex flex-col gap-6">
+        <app-page-header
+          [title]="'finance.billing.returns.returnDetails2' | translate"
+          [subtitle]="'finance.billing.returns.completeReturnInformation' | translate"
+        />
+
+        <app-panel-card>
+          <app-details-card-header
+            [title]="ret.returnNumber"
+            [subtitle]="
+              ('finance.billing.invoices.amountPrefix' | translate) +
+              (ret.totalAmount | localizedNumber: '1.2-2')
+            "
+          >
+            <div actions class="flex gap-3 flex-wrap">
+              <app-back-button
+                labelKey="finance.billing.creditnotes.back"
+                styleClass="w-full sm:w-auto"
+                (back)="onBack()"
+              />
+              <app-detail-actions-menu
+                #actionsMenu
+                auditEntityType="RETURN"
+                [auditEntityId]="ret.id"
+                [auditLabel]="ret.returnNumber"
+              >
+                <p-button
+                  [appPermission]="'DELETE'"
+                  [label]="'finance.billing.creditnotes.delete' | translate"
+                  icon="pi pi-trash"
+                  severity="danger"
+                  [link]="true"
+                  (onClick)="actionsMenu.hide(); onDelete()"
+                  styleClass="w-full justify-start text-left text-sm"
+                />
+              </app-detail-actions-menu>
+            </div>
+          </app-details-card-header>
+
+          <div class="p-4 sm:p-6">
+            <app-details-info-grid>
+              <app-details-info-field
+                [label]="'analytics.dashboard.number' | translate"
+                [value]="ret.returnNumber"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.customer' | translate"
+                [value]="ret.customerName || '—'"
+              />
+              <app-details-info-field
+                [label]="'finance.treasury.receivables.customerTaxId' | translate"
+                [value]="ret.customerRif || '—'"
+                type="code"
+              />
+              <app-details-info-field
+                [label]="'shared.invoice' | translate"
+                [value]="ret.invoiceNumber || '—'"
+                type="code"
+              />
+              <app-details-info-field [label]="'shared.type' | translate" type="badge">
+                <app-text-badge
+                  [label]="getReturnTypeLabel(ret.returnType) | translate"
+                  variant="label"
+                />
+              </app-details-info-field>
+              <app-details-info-field
+                [label]="'finance.billing.returns.totalAmount' | translate"
+                [value]="(ret.totalAmount | localizedNumber: '1.2-2') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdBy' | translate"
+                [value]="ret.createdByName"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.createdOn' | translate"
+                [value]="(ret.createdAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+              <app-details-info-field
+                [label]="'finance.billing.creditnotes.lastUpdated' | translate"
+                [value]="(ret.updatedAt | localizedDate: 'dd/MM/yyyy HH:mm') || ''"
+              />
+            </app-details-info-grid>
+          </div>
+        </app-panel-card>
+
+        @if (ret.reason) {
+          <app-panel-card>
+            <app-details-card-header
+              [title]="'finance.billing.returns.reasonForReturn' | translate"
+              [subtitle]="'finance.billing.returns.reasonRecordedForThisReturn' | translate"
+            />
+            <div class="p-4 sm:p-6">
+              <div
+                class="rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+              >
+                <p class="text-sm text-surface-700 dark:text-surface-300 whitespace-pre-wrap">
+                  {{ ret.reason }}
+                </p>
+              </div>
+            </div>
+          </app-panel-card>
+        }
+
+        @if (ret.lines && ret.lines.length > 0) {
+          <app-panel-card>
+            <app-details-card-header
+              [title]="'finance.billing.returns.returnLines' | translate"
+              [subtitle]="
+                ret.lines.length + ('finance.billing.invoices.lineCountSuffix' | translate)
+              "
+            />
+            <div class="p-4 sm:p-6">
+              <div class="flex flex-col gap-3 md:hidden">
+                @for (line of ret.lines; track $index; let i = $index) {
+                  <div
+                    class="border border-surface-200 dark:border-surface-700 rounded-xl p-3 flex flex-col gap-3"
+                  >
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="flex flex-col gap-1">
+                        <span class="font-medium text-sm">{{ line.productName || '—' }}</span>
+                        <span
+                          class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
+                        >
+                          {{ line.productCode || '—' }}
+                        </span>
+                      </div>
+                      <span class="text-xs text-surface-400 shrink-0">#{{ i + 1 }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                      <div class="flex flex-col gap-0.5">
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.quantity' | translate
+                        }}</span>
+                        <span class="font-mono">{{ line.quantity }}</span>
+                      </div>
+                      <div class="flex flex-col gap-0.5">
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.unitPrice' | translate
+                        }}</span>
+                        <span class="font-mono">{{
+                          line.unitPrice | localizedNumber: '1.2-2'
+                        }}</span>
+                      </div>
+                      <div class="flex flex-col gap-0.5">
+                        <span class="text-xs text-surface-400">{{
+                          'finance.billing.returns.subtotal' | translate
+                        }}</span>
+                        <span class="font-mono font-semibold">
+                          {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
+                        </span>
+                      </div>
+                    </div>
+                    @if (line.allocations && line.allocations.length > 0) {
+                      <div
+                        class="flex flex-col gap-1 pl-3 border-l-2 border-surface-200 dark:border-surface-700"
+                      >
+                        <span class="text-xs font-medium text-surface-500 dark:text-surface-400">{{
+                          'finance.billing.returns.warehouseAllocations' | translate
+                        }}</span>
+                        @for (alloc of line.allocations; track alloc.warehouseId) {
+                          <span class="text-xs text-surface-600 dark:text-surface-400">
+                            {{ alloc.warehouseName || alloc.warehouseId }}: {{ alloc.allocated }}
+                          </span>
+                        }
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="hidden md:block overflow-x-auto">
+                <p-table [value]="ret.lines" styleClass="p-datatable-sm cashly-detail-lines">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th class="w-12">#</th>
+                      <th>{{ 'finance.billing.returns.product' | translate }}</th>
+                      <th class="w-28 text-right">
+                        {{ 'finance.billing.returns.quantity' | translate }}
+                      </th>
+                      <th class="w-36 text-right">
+                        {{ 'finance.billing.returns.unitPrice' | translate }}
+                      </th>
+                      <th class="w-36 text-right">
+                        {{ 'finance.billing.returns.subtotal' | translate }}
+                      </th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-line let-index="rowIndex">
+                    <tr>
+                      <td class="text-surface-400 text-sm">{{ index + 1 }}</td>
+                      <td>
+                        <div class="flex flex-col gap-1">
+                          <span class="font-medium text-sm">{{ line.productName || '—' }}</span>
+                          <span
+                            class="font-mono text-xs bg-surface-100 dark:bg-surface-700 text-surface-500 dark:text-surface-400 px-2 py-0.5 rounded w-fit"
+                          >
+                            {{ line.productCode || '—' }}
+                          </span>
+                        </div>
+                      </td>
+                      <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                      <td class="text-right font-mono text-sm">
+                        {{ line.unitPrice | localizedNumber: '1.2-2' }}
+                      </td>
+                      <td class="text-right font-mono font-semibold text-sm">
+                        {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
+                      </td>
+                    </tr>
+                    @if (line.allocations && line.allocations.length > 0) {
+                      <tr>
+                        <td colspan="5" class="pb-2 pt-0">
+                          <div
+                            class="flex flex-col gap-1 pl-4 border-l-2 border-surface-200 dark:border-surface-700 ml-2"
+                          >
+                            <span
+                              class="text-xs font-medium text-surface-500 dark:text-surface-400"
+                              >{{
+                                'finance.billing.returns.warehouseAllocations' | translate
+                              }}</span
+                            >
+                            @for (alloc of line.allocations; track alloc.warehouseId) {
+                              <span class="text-xs text-surface-600 dark:text-surface-400">
+                                {{ alloc.warehouseName || alloc.warehouseId }}:
+                                {{ alloc.allocated }}
+                              </span>
+                            }
+                          </div>
+                        </td>
+                      </tr>
+                    }
+                  </ng-template>
+                </p-table>
+              </div>
+            </div>
+          </app-panel-card>
+        }
+      </div>
+    }
+  </div>
+</div>
+<p-confirmDialog styleClass="max-w-md" />

@@ -1,0 +1,210 @@
+@if (navigation.session(); as session) {
+  <p-dialog
+    [visible]="true"
+    [modal]="true"
+    [closable]="false"
+    [style]="{ width: '42rem', maxHeight: '90vh' }"
+    [breakpoints]="{ '960px': '95vw' }"
+    (onShow)="onDialogShow()"
+  >
+    <ng-template pTemplate="header">
+      <app-dialog-header
+        icon="pi pi-search"
+        title="shared.selectRecord"
+        [subtitle]="
+          (session.title | translate) + ' ' + ('shared.searchForAndSelectARecord' | translate)
+        "
+      />
+    </ng-template>
+
+    <div class="flex flex-col gap-4 pt-1">
+      <div class="flex items-center gap-2">
+        <app-search-field
+          class="hidden min-w-0 flex-1 sm:block"
+          [value]="search()"
+          [placeholder]="'shared.searchRecords' | translate"
+          (search)="onSearch($event)"
+        />
+        <app-list-filter [activeCount]="0" variant="compact">
+          <app-search-field
+            class="block sm:hidden"
+            [value]="search()"
+            [placeholder]="'shared.searchRecords' | translate"
+            (search)="onSearch($event)"
+          />
+          @for (filter of session.filters?.() ?? []; track filter.label) {
+            <div class="flex flex-col gap-1.5">
+              <span
+                class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
+                >{{ filter.label | translate }}</span
+              >
+              <p-select
+                [options]="filter.options | translateOptions"
+                [ngModel]="filter.value"
+                optionLabel="label"
+                optionValue="value"
+                [ariaLabel]="filter.label | translate"
+                styleClass="w-full"
+                (onChange)="changeFilter(filter.change, $event.value)"
+              />
+            </div>
+          }
+        </app-list-filter>
+      </div>
+
+      <app-table-card extraClass="hidden sm:block">
+        <app-data-table>
+          <thead>
+            <tr
+              class="bg-surface-50 dark:bg-surface-800 border-b border-surface-200 dark:border-surface-700"
+            >
+              <th class="w-10 px-3 py-2.5" aria-hidden="true"></th>
+              <th
+                class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
+              >
+                {{ 'shared.record' | translate }}
+              </th>
+              <th
+                class="px-4 py-2.5 text-left text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide"
+              >
+                {{ 'shared.information' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (session.loading()) {
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+                <tr app-table-row-skeleton [columns]="3"></tr>
+              }
+            } @else {
+              @for (record of session.records(); track $index) {
+                <tr
+                  class="border-b border-surface-100 dark:border-surface-800 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+                  [class.cursor-pointer]="navigation.available(record)"
+                  [class.border-primary]="isSelected(record)"
+                  [attr.aria-selected]="isSelected(record)"
+                  [class.opacity-50]="!navigation.available(record)"
+                  [attr.aria-disabled]="!navigation.available(record)"
+                  (click)="selectRecord(record)"
+                >
+                  <td class="px-3 py-3 w-10 text-center">
+                    @if (isSelected(record)) {
+                      <i
+                        class="pi pi-check-circle text-primary text-lg"
+                        [attr.aria-label]="'shared.selected' | translate"
+                      ></i>
+                    }
+                  </td>
+                  <td class="px-4 py-3 font-medium text-surface-900 dark:text-surface-0">
+                    <button
+                      type="button"
+                      class="text-left"
+                      [disabled]="!navigation.available(record)"
+                      (click)="$event.stopPropagation(); selectRecord(record)"
+                    >
+                      {{ record.label }}
+                    </button>
+                  </td>
+                  <td class="px-4 py-3 text-xs text-surface-600 dark:text-surface-300">
+                    {{ displayDescription(record.description) }}
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td
+                    colspan="3"
+                    class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
+                  >
+                    <i class="pi pi-search text-2xl block mb-2"></i>
+                    {{ 'shared.noRecordsFound' | translate }}
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </app-data-table>
+      </app-table-card>
+
+      <div class="flex flex-col gap-2 sm:hidden" [attr.aria-busy]="session.loading()">
+        @if (session.loading()) {
+          @for (i of [1, 2, 3, 4]; track i) {
+            <app-card-skeleton />
+          }
+        } @else {
+          @for (record of session.records(); track $index) {
+            <button
+              type="button"
+              class="w-full text-left bg-surface-0 dark:bg-surface-800 rounded-xl p-4 border border-surface-200 dark:border-surface-700 hover:border-surface-400 dark:hover:border-surface-500 cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+              [disabled]="!navigation.available(record)"
+              [class.border-primary]="isSelected(record)"
+              [attr.aria-pressed]="isSelected(record)"
+              (click)="selectRecord(record)"
+            >
+              <span
+                class="block font-bold text-base text-surface-900 dark:text-surface-0 leading-tight"
+                >{{ record.label }}</span
+              >
+              @if (isSelected(record)) {
+                <span class="flex items-center gap-1.5 mt-2 text-xs font-semibold text-primary">
+                  <i class="pi pi-check-circle"></i>
+                  {{ 'shared.selected' | translate }}
+                </span>
+              }
+              <span
+                class="block border-t border-surface-100 dark:border-surface-700 mt-3 pt-3 font-mono text-xs text-surface-500 dark:text-surface-400"
+                >{{ displayDescription(record.description) }}</span
+              >
+            </button>
+          } @empty {
+            <div class="py-10 text-center text-sm text-surface-400 dark:text-surface-500">
+              <i class="pi pi-search text-2xl block mb-2"></i>
+              {{ 'shared.noRecordsFound' | translate }}
+            </div>
+          }
+        }
+      </div>
+
+      @if (totalPages() > 1) {
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-surface-500 dark:text-surface-400"
+            >{{ 'shared.page' | translate }} {{ currentPage() + 1 }}
+            {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
+          >
+          <div class="flex gap-1">
+            <button
+              type="button"
+              [attr.aria-label]="'shared.previousPage' | translate"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              [disabled]="session.loading() || currentPage() === 0"
+              (click)="changePage(-1)"
+            >
+              <i class="pi pi-chevron-left text-xs"></i>
+            </button>
+            <button
+              type="button"
+              [attr.aria-label]="'shared.nextPage' | translate"
+              class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              [disabled]="session.loading() || currentPage() >= totalPages() - 1"
+              (click)="changePage(1)"
+            >
+              <i class="pi pi-chevron-right text-xs"></i>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <ng-template pTemplate="footer">
+      <div class="flex justify-between items-center gap-4 pt-1">
+        <app-cancel-button (cancelled)="navigation.dismiss()" />
+        <p-button
+          [label]="'shared.accept' | translate"
+          icon="pi pi-check"
+          [disabled]="!selectedRecord() || accepting()"
+          [loading]="accepting()"
+          (onClick)="acceptSelection()"
+        />
+      </div>
+    </ng-template>
+  </p-dialog>
+}

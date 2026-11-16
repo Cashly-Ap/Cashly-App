@@ -1,0 +1,460 @@
+import { mfaErrorMessage } from '@features/platform/auth/messages/mfa-error-message';
+import { Injectable, inject, signal } from '@angular/core';
+import { Observable, of, switchMap, map } from 'rxjs';
+import { HttpClient, HttpContext } from '@angular/common/http';
+import {
+  CurrentAccess,
+  PermissionAction,
+  ACCESS_REFRESH_REQUEST,
+} from '@features/platform/auth/authorization/models/access.model';
+import { AppPermission } from '@features/platform/auth/permissions/app-permission';
+import {
+  legacyPermission,
+  normalizePermissions,
+} from '@features/platform/auth/authorization/models/legacy-permission';
+import { tap, finalize, shareReplay } from 'rxjs/operators';
+import { AuthApiService } from '@features/platform/auth/services/api/auth-api.service';
+import {
+  AUTH_HTTP_ERRORS,
+  AUTH_DEFAULT_ERROR_MESSAGE,
+} from '@features/platform/auth/messages/error-messages';
+import {
+  RegisterUserRequest,
+  LoginRequest,
+  RefreshTokenRequest,
+  LogoutRequest,
+  ChangeUsernameRequest,
+  ChangePasswordRequest,
+  ChangeCommissionDeductionRequest,
+} from '@features/platform/auth/models/interfaces/auth-request.interface';
+import { UserResponse } from '@features/platform/auth/models/interfaces/user.interface';
+import {
+  AuthenticationResponse,
+  LoginResponse,
+  requiresMfa,
+} from '@features/platform/auth/models/interfaces/auth-response.interface';
+import { BusinessModule } from '@features/platform/auth/user/models/enums/business-module.enum';
+
+const ACCESS_CACHE_KEY = 'cashly:access-cache';
+const ACCESS_CACHE_TTL = 5 * 60 * 1000;
+
+@Injectable({ providedIn: 'root' })
+export class AuthService {
+  private readonly http = inject(HttpClient);
+  readonly currentAccess = signal<CurrentAccess | null>(null);
+  private accessInFlight$: Observable<CurrentAccess> | null = null;
+  private accessCachedAt = 0;
+  private apiService = inject(AuthApiService);
+
+  currentUser = signal<UserResponse | null>(null);
+  accessToken = signal<string | null>(null);
+  refreshToken = signal<string | null>(null);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+
+  private tokenExpirationTimer: ReturnType<typeof setTimeout> | null = null;
+  private refreshInFlight$: Observable<AuthenticationResponse> | null = null;
+
+  constructor() {
+    this.loadAuthFromStorage();
+    const cached = this.readAccessCache();
+    if (cached) this.currentAccess.set(cached);
+  }
+
+  register(request: RegisterUserRequest): Observable<UserResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.apiService.register(request).pipe(
+      tap({
+        next: (apiResponse) => {
+          const current = this.currentUser();
+          const updated: UserResponse = {
+            ...(current ?? ({} as UserResponse)),
+            userName: apiResponse.userName,
+          };
+          this.currentUser.set(updated);
+          this.saveCurrentUserToStorage(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(this.getErrorMessage(err));
+          this.loading.set(false);
+        },
+      }),
+    );
+  }
+
+  login(request: LoginRequest): Observable<LoginResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+    return this.apiService.login(request).pipe(
+      switchMap((response) => {
+        if (requiresMfa(response)) {
+          this.clearAuthState();
+          return of(response);
+        }
+        this.setAuthState(response);
+        return this.refreshAccess().pipe(map(() => response));
+      }),
+      tap({ error: (err) => this.error.set(this.getErrorMessage(err)) }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  verifyMfa(challengeToken: string, code: string): Observable<AuthenticationResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+    return this.apiService.verifyMfa(challengeToken, code).pipe(
+      tap((response) => this.setAuthState(response)),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
+      tap({
+        error: (error: unknown) =>
+          this.error.set(
+            mfaErrorMessage(
+              error,
+              'Código incorrecto o verificación caducada. Inténtalo de nuevo o vuelve a iniciar sesión.',
+            ),
+          ),
+      }),
+      finalize(() => this.loading.set(false)),
+    );
+  }
+
+  changePassword(request: ChangePasswordRequest): Observable<void> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.apiService.changePassword(request).pipe(
+      tap({
+        next: () => {
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(this.getErrorMessage(err));
+          this.loading.set(false);
+        },
+      }),
+    );
+  }
+
+  syncProfileDisplay(userName: string): void {
+    const current = this.currentUser();
+    if (!current) return;
+    const updated = { ...current, userName };
+    this.currentUser.set(updated);
+    this.saveCurrentUserToStorage(updated);
+  }
+
+  syncProfilePhoto(photoPath: string | null): void {
+    const current = this.currentUser();
+    if (!current) return;
+    const updated = { ...current, photoPath };
+    this.currentUser.set(updated);
+    this.saveCurrentUserToStorage(updated);
+  }
+
+  changeUsername(request: ChangeUsernameRequest): Observable<UserResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.apiService.changeUsername(request).pipe(
+      tap({
+        next: (apiResponse) => {
+          const current = this.currentUser();
+          const updated: UserResponse = {
+            ...(current ?? ({} as UserResponse)),
+            userName: apiResponse.userName,
+          };
+          this.currentUser.set(updated);
+          this.saveCurrentUserToStorage(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(this.getErrorMessage(err));
+          this.loading.set(false);
+        },
+      }),
+    );
+  }
+
+  changeCommissionDeduction(request: ChangeCommissionDeductionRequest): Observable<UserResponse> {
+    this.loading.set(true);
+    this.error.set(null);
+
+    return this.apiService.changeCommissionDeduction(request).pipe(
+      tap({
+        next: (apiResponse) => {
+          const current = this.currentUser();
+          const updated: UserResponse = {
+            ...(current ?? ({} as UserResponse)),
+            userName: apiResponse.userName,
+          };
+          this.currentUser.set(updated);
+          this.saveCurrentUserToStorage(updated);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          this.error.set(this.getErrorMessage(err));
+          this.loading.set(false);
+        },
+      }),
+    );
+  }
+
+  isAuthenticated(): boolean {
+    return this.accessToken() !== null;
+  }
+
+  isSuperAdmin(): boolean {
+    return this.currentAccess()?.systemAdministrator === true;
+  }
+
+  hasPermission(module: BusinessModule, action: PermissionAction = 'READ'): boolean {
+    const code = legacyPermission(module, action);
+    return code ? this.hasPermissionCode(code) : false;
+  }
+
+  hasPermissionCode(code: AppPermission | string): boolean {
+    if (this.isSuperAdmin()) return true;
+    const permissions = this.currentAccess()?.permissions;
+    const codes = Array.isArray(permissions) ? permissions : normalizePermissions(permissions);
+    return codes.includes(code as AppPermission);
+  }
+
+  hasModulePermission(module: BusinessModule): boolean {
+    return this.hasPermission(module);
+  }
+
+  refreshAccess(): Observable<CurrentAccess> {
+    if (this.accessInFlight$) return this.accessInFlight$;
+    this.accessInFlight$ = this.http
+      .get<CurrentAccess>('/api/auth/access', {
+        context: new HttpContext().set(ACCESS_REFRESH_REQUEST, true),
+      })
+      .pipe(
+        map((access) => ({
+          ...access,
+          permissions: normalizePermissions(access.permissions),
+        })),
+        tap({
+          next: (access) => {
+            this.currentAccess.set(access);
+            this.writeAccessCache(access);
+          },
+          error: () => {
+            this.currentAccess.set(null);
+            this.clearAccessCache();
+          },
+        }),
+        finalize(() => (this.accessInFlight$ = null)),
+        shareReplay(1),
+      );
+    return this.accessInFlight$;
+  }
+
+  ensureAccess(): Observable<CurrentAccess | null> {
+    const expiresAt = Number(localStorage.getItem('tokenExpiresAt'));
+    if (expiresAt > 0 && expiresAt <= Date.now() + 60000 && this.refreshToken()) {
+      return this.refreshTokenSilently().pipe(map(() => this.currentAccess()));
+    }
+    if (!this.isAuthenticated()) return of(null);
+    const cached = this.readAccessCache();
+    if (cached) {
+      if (this.currentAccess() !== cached) this.currentAccess.set(cached);
+      return of(cached);
+    }
+    return this.refreshAccess();
+  }
+
+  refresh(request: RefreshTokenRequest): Observable<AuthenticationResponse> {
+    return this.apiService.refresh(request).pipe(
+      tap({
+        next: (response) => {
+          this.setAuthState(response);
+        },
+      }),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
+    );
+  }
+
+  logout(request: LogoutRequest): Observable<void> {
+    return this.apiService.logout(request).pipe(
+      tap({
+        next: () => {
+          this.clearAuthState();
+        },
+      }),
+    );
+  }
+
+  refreshTokenSilently(): Observable<AuthenticationResponse> {
+    if (this.refreshInFlight$) {
+      return this.refreshInFlight$;
+    }
+
+    const currentRefreshToken = this.refreshToken();
+    if (!currentRefreshToken) {
+      return new Observable((subscriber) => {
+        subscriber.error(new Error('No refresh token available'));
+      });
+    }
+
+    this.refreshInFlight$ = this.apiService.refresh({ refreshToken: currentRefreshToken }).pipe(
+      tap({
+        next: (response) => {
+          this.setAuthState(response);
+        },
+      }),
+      switchMap((response) => this.refreshAccess().pipe(map(() => response))),
+      finalize(() => {
+        this.refreshInFlight$ = null;
+      }),
+      shareReplay(1),
+    );
+
+    return this.refreshInFlight$;
+  }
+
+  getUserType(): string | null {
+    return this.currentUser()?.type ?? null;
+  }
+
+  getMerchantId(): string | null {
+    return null;
+  }
+
+  setAuthState(response: AuthenticationResponse): void {
+    this.currentAccess.set(null);
+    this.clearAccessCache();
+    this.currentUser.set(response.entity);
+    this.accessToken.set(response.accessToken);
+    this.refreshToken.set(response.refreshToken);
+    this.saveAuthToStorage(response);
+    this.scheduleTokenRefresh(response.expiresIn);
+  }
+
+  clearAuthState(): void {
+    this.currentAccess.set(null);
+    this.clearAccessCache();
+    this.currentUser.set(null);
+    this.accessToken.set(null);
+    this.refreshToken.set(null);
+    this.clearAuthFromStorage();
+    this.clearTokenRefreshTimer();
+  }
+
+  private scheduleTokenRefresh(expiresIn: number): void {
+    this.clearTokenRefreshTimer();
+
+    const refreshTime = expiresIn - 60000;
+
+    this.tokenExpirationTimer = setTimeout(() => {
+      const currentRefreshToken = this.refreshToken();
+      if (currentRefreshToken) {
+        this.refreshTokenSilently().subscribe({
+          error: () => {
+            this.clearAuthState();
+          },
+        });
+      }
+    }, refreshTime);
+  }
+
+  private clearTokenRefreshTimer(): void {
+    if (this.tokenExpirationTimer) {
+      clearTimeout(this.tokenExpirationTimer);
+      this.tokenExpirationTimer = null;
+    }
+  }
+
+  private saveAuthToStorage(response: AuthenticationResponse): void {
+    const expirationTime = Date.now() + response.expiresIn;
+
+    localStorage.setItem('accessToken', response.accessToken);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    localStorage.setItem('currentUser', JSON.stringify(response.entity));
+    localStorage.setItem('tokenExpiresAt', expirationTime.toString());
+  }
+
+  private loadAuthFromStorage(): void {
+    try {
+      const accessToken = localStorage.getItem('accessToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      const userStr = localStorage.getItem('currentUser');
+
+      if (accessToken && refreshToken && userStr) {
+        const user = JSON.parse(userStr);
+
+        if (!user || typeof user !== 'object') {
+          this.clearAuthFromStorage();
+          return;
+        }
+
+        this.accessToken.set(accessToken);
+        this.refreshToken.set(refreshToken);
+        this.currentUser.set(user);
+        const remaining = Number(localStorage.getItem('tokenExpiresAt')) - Date.now();
+        if (remaining > 60000) this.scheduleTokenRefresh(remaining);
+      }
+    } catch {
+      this.clearAuthFromStorage();
+    }
+  }
+
+  private clearAuthFromStorage(): void {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('tokenExpiresAt');
+  }
+
+  private saveCurrentUserToStorage(user: UserResponse): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
+
+  private writeAccessCache(access: CurrentAccess): void {
+    this.accessCachedAt = Date.now();
+    try {
+      localStorage.setItem(
+        ACCESS_CACHE_KEY,
+        JSON.stringify({ access, savedAt: this.accessCachedAt }),
+      );
+    } catch {}
+  }
+
+  private readAccessCache(): CurrentAccess | null {
+    const memory = this.currentAccess();
+    if (memory && this.accessCachedAt > 0 && Date.now() - this.accessCachedAt < ACCESS_CACHE_TTL) {
+      return memory;
+    }
+    try {
+      const raw = localStorage.getItem(ACCESS_CACHE_KEY);
+      if (!raw) return null;
+      const cached = JSON.parse(raw) as { access?: CurrentAccess; savedAt?: number };
+      if (!cached.access || typeof cached.savedAt !== 'number') return null;
+      if (Date.now() - cached.savedAt >= ACCESS_CACHE_TTL) {
+        localStorage.removeItem(ACCESS_CACHE_KEY);
+        return null;
+      }
+      this.accessCachedAt = cached.savedAt;
+      return cached.access;
+    } catch {
+      return null;
+    }
+  }
+
+  private clearAccessCache(): void {
+    this.accessCachedAt = 0;
+    try {
+      localStorage.removeItem(ACCESS_CACHE_KEY);
+    } catch {}
+  }
+
+  private getErrorMessage(err: unknown): string {
+    const httpError = err as { status?: number };
+    const status = httpError.status ?? -1;
+
+    return AUTH_HTTP_ERRORS[status] ?? AUTH_DEFAULT_ERROR_MESSAGE;
+  }
+}

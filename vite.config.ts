@@ -41,9 +41,6 @@ export default defineConfig({
       'primeng/tooltip',
     ],
   },
-  ssr: {
-    noExternal: ['chart.js', 'primeng'],
-  },
   resolve: {
     dedupe: ['@angular/core', '@angular/common', 'primeng'],
   },

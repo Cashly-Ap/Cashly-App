@@ -1,10 +1,26 @@
-<div class="mb-6 text-center">
-  <h1 class="text-3xl sm:text-4xl font-bold text-surface-900 dark:text-surface-0 mb-1">
-    {{ title() }}
-  </h1>
-  @if (subtitle()) {
-    <p class="text-surface-500 dark:text-surface-400 text-sm sm:text-base">
-      {{ subtitle() }}
+<div class="cashly-page-header relative mb-8 pr-24 text-left sm:pr-32">
+  @if (kicker()) {
+    <p
+      class="text-xs font-medium uppercase tracking-[0.16em] text-surface-500 dark:text-surface-400 mb-3"
+    >
+      {{ kicker() | translate }}
     </p>
   }
+  <h1
+    class="text-3xl sm:text-4xl font-bold tracking-tight text-surface-900 dark:text-surface-0 mb-3"
+  >
+    {{ title() | translate }}
+  </h1>
+  @if (subtitle()) {
+    <p class="text-sm sm:text-base text-surface-500 dark:text-surface-400">
+      {{ subtitle() | translate }}
+    </p>
+  }
+
+  <div class="absolute right-0 top-0 flex items-center gap-3">
+    <ng-content />
+    @if (hero()) {
+      <app-module-icon [icon]="icon()" />
+    }
+  </div>
 </div>

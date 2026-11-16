@@ -1,0 +1,262 @@
+<app-form-container>
+  <app-form-header
+    [title]="'finance.billing.returns.newReturn' | translate"
+    [subtitle]="'finance.billing.returns.completeTheReturnInformation' | translate"
+  />
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <app-panel-card>
+      <div class="p-4 md:p-6">
+        <h3
+          class="text-base font-medium mb-4 text-surface-800 dark:text-surface-200 flex items-center gap-2"
+        >
+          <i class="pi pi-info-circle text-surface-500"></i>
+          {{ 'finance.billing.returns.returnInformation' | translate }}
+        </h3>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div
+            class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              {{ 'shared.customer' | translate }} <span class="text-red-500">*</span>
+            </label>
+            @if (selectedCustomerLabel(); as customer) {
+              <div
+                class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700"
+              >
+                <div class="flex flex-col min-w-0">
+                  <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate">{{
+                    customer.alias
+                  }}</span>
+                  <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{
+                    customer.legalName
+                  }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                  (click)="openCustomerPicker()"
+                >
+                  {{ 'finance.billing.creditnotes.change' | translate }}
+                </button>
+              </div>
+            } @else {
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchAndSelectACustomer"
+                (open)="openCustomerPicker()"
+              />
+            }
+            <div class="min-h-[20px] mt-1.5">
+              @if (form.get('customerId')?.invalid && form.get('customerId')?.touched) {
+                <small class="flex items-center gap-1 text-red-500 text-xs">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'finance.billing.creditnotes.aCustomerIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              {{ 'finance.billing.creditnotes.associatedInvoice' | translate }}
+              <span class="text-red-500">*</span>
+            </label>
+            @if (selectedInvoice(); as invoice) {
+              <div
+                class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700"
+              >
+                <div class="flex flex-col min-w-0">
+                  <span class="text-sm font-medium text-surface-900 dark:text-surface-0 truncate"
+                    >{{ 'finance.billing.creditnotes.invoice' | translate
+                    }}{{ invoice.invoiceNumber }}</span
+                  >
+                  <span class="text-xs text-surface-500 dark:text-surface-400 truncate">{{
+                    invoice.customerName
+                  }}</span>
+                </div>
+                <button
+                  type="button"
+                  class="shrink-0 text-xs text-surface-500 dark:text-surface-400 hover:text-surface-900 dark:hover:text-surface-0 underline transition-colors"
+                  (click)="openInvoicePicker()"
+                >
+                  {{ 'finance.billing.creditnotes.change' | translate }}
+                </button>
+              </div>
+            } @else {
+              <app-picker-trigger
+                labelKey="finance.billing.creditnotes.searchInvoiceByNumberCustomerOrDate"
+                (open)="openInvoicePicker()"
+              />
+            }
+            <div class="min-h-[20px] mt-1.5">
+              @if (form.get('invoiceId')?.invalid && form.get('invoiceId')?.touched) {
+                <small class="flex items-center gap-1 text-red-500 text-xs">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'finance.billing.creditnotes.invoiceIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+
+          <div
+            class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              {{ 'finance.billing.returns.returnType' | translate }}
+              <span class="text-red-500">*</span>
+            </label>
+            <p-select
+              formControlName="returnType"
+              [options]="returnTypeOptions | translateOptions"
+              optionLabel="label"
+              optionValue="value"
+              [placeholder]="'finance.billing.returns.selectType' | translate"
+              styleClass="w-full"
+            />
+          </div>
+
+          @if (returnType() === ReturnType.AUTOMATIC) {
+            <div
+              class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+            >
+              <label
+                class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2"
+              >
+                {{ 'finance.billing.returns.destinationWarehouse' | translate }}
+                <span class="text-red-500">*</span>
+              </label>
+              <p-select
+                [options]="warehouseOptions() | translateOptions: true"
+                optionLabel="label"
+                optionValue="value"
+                [placeholder]="'finance.billing.returns.selectWarehouse' | translate"
+                styleClass="w-full"
+                [(ngModel)]="autoWarehouseId"
+                [ngModelOptions]="{ standalone: true }"
+                (onChange)="onAutoWarehouseSelected($event.value)"
+              />
+              <p class="text-xs text-surface-500 mt-1">
+                {{
+                  'finance.billing.returns.allLinesWillBeAllocatedToTheSelectedWarehouse'
+                    | translate
+                }}
+              </p>
+            </div>
+          }
+
+          <div
+            class="col-span-1 md:col-span-2 lg:col-span-3 rounded-xl p-4 bg-surface-50 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+          >
+            <label class="block text-sm font-semibold text-surface-700 dark:text-surface-300 mb-2">
+              {{ 'shared.reason' | translate }} <span class="text-red-500">*</span>
+            </label>
+            <textarea
+              pTextarea
+              formControlName="reason"
+              rows="3"
+              class="w-full"
+              [placeholder]="'finance.billing.returns.reasonForReturn2' | translate"
+            ></textarea>
+            <div class="min-h-[20px] mt-1.5">
+              @if (form.get('reason')?.invalid && form.get('reason')?.touched) {
+                <small class="flex items-center gap-1 text-red-500 text-xs">
+                  <i class="pi pi-exclamation-circle text-xs"></i>
+                  {{ 'shared.aReasonIsRequired' | translate }}
+                </small>
+              }
+            </div>
+          </div>
+        </div>
+
+        @if (
+          returnType() === ReturnType.AUTOMATIC && selectedInvoice() && returnLines().length > 0
+        ) {
+          <div class="mt-6">
+            <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
+              {{ 'finance.billing.returns.invoiceLines' | translate }}
+            </h4>
+            <div
+              class="overflow-x-auto rounded-lg border border-surface-200 dark:border-surface-700"
+            >
+              <p-table [value]="returnLines()" styleClass="p-datatable-striped">
+                <ng-template pTemplate="header">
+                  <tr>
+                    <th class="w-auto">{{ 'finance.billing.returns.product' | translate }}</th>
+                    <th class="w-28 text-right">
+                      {{ 'finance.billing.returns.quantity' | translate }}
+                    </th>
+                    <th class="w-28 text-right">
+                      {{ 'finance.billing.returns.unitPrice' | translate }}
+                    </th>
+                    <th class="w-28 text-right">
+                      {{ 'finance.billing.returns.subtotal' | translate }}
+                    </th>
+                  </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-line>
+                  <tr>
+                    <td class="font-medium">{{ line.productName }}</td>
+                    <td class="text-right">{{ line.quantity }}</td>
+                    <td class="text-right">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
+                    <td class="text-right font-medium">
+                      {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}
+                    </td>
+                  </tr>
+                </ng-template>
+              </p-table>
+            </div>
+            <div class="flex justify-end mt-3 px-2">
+              <span class="text-base font-semibold text-surface-800 dark:text-surface-200">
+                {{ 'finance.billing.returns.total' | translate }}
+                {{ totalAmount() | localizedNumber: '1.2-2' }}
+              </span>
+            </div>
+          </div>
+        }
+
+        @if (returnType() === ReturnType.MANUAL && selectedInvoice() && returnLines().length > 0) {
+          <div class="mt-6">
+            <h4 class="text-sm font-semibold text-surface-700 dark:text-surface-300 mb-3">
+              {{ 'finance.billing.returns.invoiceLinesSelectQuantitiesToReturn' | translate }}
+            </h4>
+            <app-return-lines-table
+              [invoiceLines]="selectedInvoice()!.lines"
+              [returnLines]="returnLines()"
+              [singleWarehouse]="singleWarehouse()"
+              (returnLinesChange)="returnLines.set($event)"
+            />
+            <div class="flex justify-end mt-3 px-2">
+              <span class="text-base font-semibold text-surface-800 dark:text-surface-200">
+                {{ 'finance.billing.returns.total' | translate }}
+                {{ totalAmount() | localizedNumber: '1.2-2' }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <app-form-actions
+        [submitLabel]="'finance.billing.returns.createReturnAction' | translate"
+        [cancelLabel]="'shared.cancel' | translate"
+        [loading]="isSubmitting()"
+        [disabled]="form.invalid || hasInvalidLines()"
+        (cancel)="cancel()"
+      />
+    </app-panel-card>
+  </form>
+</app-form-container>
+
+<app-customer-picker-dialog
+  [visible]="showCustomerPicker()"
+  (customerSelected)="onCustomerSelected($event)"
+  (cancelled)="onCustomerPickerCancelled()"
+/>
+
+<app-invoice-picker-dialog
+  [visible]="showInvoicePicker()"
+  [customerId]="selectedCustomer()?.id ?? ''"
+  (invoiceSelected)="onInvoiceSelected($event)"
+  (cancelled)="onInvoicePickerCancelled()"
+/>
