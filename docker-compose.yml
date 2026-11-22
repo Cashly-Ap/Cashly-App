@@ -15,7 +15,7 @@ services:
       - BACKEND_URL=http://cashly-api-app:8080
     profiles:
       - dev
-    restart: unless-stopped
+    restart: "no"
     networks:
       - cashly-network
     healthcheck:
@@ -38,7 +38,7 @@ services:
       - PORT=4200
     profiles:
       - prod
-    restart: unless-stopped
+    restart: "no"
 
   cashly-app-test:
     build:
