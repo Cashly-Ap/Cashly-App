@@ -503,15 +503,11 @@ describe('MainLayoutComponent', () => {
   });
 
   describe('lifecycle hooks', () => {
-    it('should subscribe to scroll events on init', () => {
-      expect(component['scrollSubscription']).toBeDefined();
-    });
-
-    it('should unsubscribe from scroll events on destroy', () => {
+    it('should unsubscribe from router events on destroy', () => {
       const unsubscribeSpy = vi.fn();
-      component['scrollSubscription'] = {
+      component['routerSubscription'] = {
         unsubscribe: unsubscribeSpy,
-      } as unknown as (typeof component)['scrollSubscription'];
+      } as unknown as (typeof component)['routerSubscription'];
 
       component.ngOnDestroy();
 
@@ -519,7 +515,7 @@ describe('MainLayoutComponent', () => {
     });
 
     it('should handle destroy when no subscription exists', () => {
-      component['scrollSubscription'] = undefined;
+      component['routerSubscription'] = undefined;
 
       expect(() => component.ngOnDestroy()).not.toThrow();
     });

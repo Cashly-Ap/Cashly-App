@@ -46,7 +46,7 @@ import { UserType } from '@features/platform/auth/models/interfaces/user.interfa
 import { PendingTabsDropdownComponent } from '@core/pending-tabs/components';
 import { NotificationBellComponent } from '@features/platform/notifications/components/notification-bell/notification-bell.component';
 import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
-import { fromEvent, Subscription, filter } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { ActionDialogHostComponent } from '@core/layouts/components/action-dialog-host/action-dialog-host.component';
 import { GlobalDialogHostComponent } from '@core/layouts/components/global-dialog-host/global-dialog-host.component';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
@@ -122,7 +122,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   private readonly supplierPicker = inject(SupplierPickerActionService);
   private readonly auditTrailDialog = inject(AuditTrailDialogService);
   readonly activeModule = signal(moduleGroupFromUrl(this.router.url));
-  private scrollSubscription?: Subscription;
   private routerSubscription?: Subscription;
 
   maxWidth = input<ContentMaxWidth>('7xl');
@@ -187,11 +186,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (this.authService.isAuthenticated())
       this.authService.ensureAccess().subscribe({ error: () => undefined });
     this.checkScreenSize();
-    this.scrollSubscription = fromEvent(window, 'scroll').subscribe(() => {
-      if (this.userMenu?.overlayVisible) {
-        this.userMenu.hide();
-      }
-    });
 
     this.routerSubscription = this.router.events
       .pipe(filter((event) => event instanceof NavigationStart))
@@ -202,7 +196,6 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.scrollSubscription?.unsubscribe();
     this.routerSubscription?.unsubscribe();
   }
 

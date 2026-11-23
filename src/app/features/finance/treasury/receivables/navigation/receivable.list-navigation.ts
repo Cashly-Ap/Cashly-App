@@ -9,12 +9,6 @@ export const RECEIVABLE_LIST_NAVIGATION: ListNavigationDefinition = {
     listAction('Pagar todo', 'PAY_ALL', 'check-circle', BusinessModule.FINANCE_RECEIVABLES),
     listAction('Pago parcial', 'PARTIAL_PAYMENT', 'percentage', BusinessModule.FINANCE_RECEIVABLES),
     listAction(
-      'Pagar directamente',
-      'PAY_DIRECT',
-      'credit-card',
-      BusinessModule.FINANCE_RECEIVABLES,
-    ),
-    listAction(
       'Pagar con validación',
       'PAY_WITH_VALIDATION',
       'shield',

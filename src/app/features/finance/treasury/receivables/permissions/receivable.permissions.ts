@@ -4,7 +4,6 @@ export enum ReceivablePermission {
   REPORT_PDF = 'FINANCE_TREASURY_RECEIVABLES_REPORT_PDF',
   PAY_ALL = 'FINANCE_TREASURY_RECEIVABLES_PAY_ALL',
   PARTIAL_PAYMENT = 'FINANCE_TREASURY_RECEIVABLES_PARTIAL_PAYMENT',
-  PAY_DIRECT = 'FINANCE_TREASURY_RECEIVABLES_PAY_DIRECT',
   PAY_WITH_VALIDATION = 'FINANCE_TREASURY_RECEIVABLES_PAY_WITH_VALIDATION',
   REFUND = 'FINANCE_TREASURY_RECEIVABLES_REFUND',
   ADVANCE = 'FINANCE_TREASURY_RECEIVABLES_ADVANCE',
@@ -34,10 +33,6 @@ export const RECEIVABLE_PERMISSIONS = [
   {
     code: ReceivablePermission.PARTIAL_PAYMENT,
     labelKey: 'finance.treasury.receivables.permissions.partialPayment',
-  },
-  {
-    code: ReceivablePermission.PAY_DIRECT,
-    labelKey: 'finance.treasury.receivables.permissions.payDirect',
   },
   {
     code: ReceivablePermission.PAY_WITH_VALIDATION,

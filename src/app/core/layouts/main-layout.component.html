@@ -70,6 +70,43 @@
             class="hidden! min-[1800px]:inline! pi pi-chevron-down text-surface-600 dark:text-surface-400 text-xs"
           ></i>
         </button>
+
+        <p-popover #userMenu appendTo="self">
+          <div class="flex flex-col gap-2 p-2 min-w-[200px]">
+            <button
+              (click)="goToConfiguration()"
+              pRipple
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
+            >
+              <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
+              <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
+            </button>
+            <button
+              (click)="goToPreferences()"
+              pRipple
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+            >
+              <i class="pi pi-cog" aria-hidden="true"></i
+              ><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
+            </button>
+            <button
+              (click)="goToSecurity()"
+              pRipple
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
+            >
+              <i class="pi pi-shield"></i
+              ><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
+            </button>
+            <button
+              (click)="logout()"
+              pRipple
+              class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
+            >
+              <i class="pi pi-sign-out"></i>
+              <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
+            </button>
+          </div>
+        </p-popover>
       </div>
     </div>
   </div>
@@ -179,43 +216,6 @@
       </div>
     </ng-template>
   </p-drawer>
-
-  <p-popover #userMenu [appendTo]="'body'">
-    <div class="flex flex-col gap-2 p-2 min-w-[200px]">
-      <button
-        (click)="goToConfiguration()"
-        pRipple
-        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-surface-700 dark:text-surface-200"
-      >
-        <i class="pi pi-user text-surface-600 dark:text-surface-400"></i>
-        <span class="font-medium">{{ 'navigation.profile' | translate }}</span>
-      </button>
-      <button
-        (click)="goToPreferences()"
-        pRipple
-        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
-      >
-        <i class="pi pi-cog" aria-hidden="true"></i
-        ><span class="font-medium">{{ 'navigation.settings' | translate }}</span>
-      </button>
-      <button
-        (click)="goToSecurity()"
-        pRipple
-        class="flex items-center gap-3 p-3 rounded-lg hover:bg-surface-100 dark:hover:bg-surface-800 text-left w-full cursor-pointer"
-      >
-        <i class="pi pi-shield"></i
-        ><span class="font-medium">{{ 'platform.auth.security' | translate }}</span>
-      </button>
-      <button
-        (click)="logout()"
-        pRipple
-        class="flex items-center gap-3 p-3 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer border-0 bg-transparent text-left w-full text-red-600 dark:text-red-400"
-      >
-        <i class="pi pi-sign-out"></i>
-        <span class="font-medium">{{ 'navigation.signOut' | translate }}</span>
-      </button>
-    </div>
-  </p-popover>
 
   <app-report-action-host />
   <app-pdf-blob-viewer-host />
