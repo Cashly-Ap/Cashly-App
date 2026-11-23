@@ -10,6 +10,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PendingTabsService } from '@core/pending-tabs/pending-tabs.service';
 import { PendingTab } from '@core/pending-tabs/models';
 import { MODULE_LABELS } from '@core/pending-tabs/constants';
+import { alignPopoverToFixedTrigger } from '@shared/utils/popover-position.helper';
 import { interval, Subscription } from 'rxjs';
 
 @Component({
@@ -70,6 +71,10 @@ export class PendingTabsDropdownComponent implements OnInit, OnDestroy {
   toggleTabsMenu(event: Event): void {
     this.now.set(Date.now());
     this.tabsMenu.toggle(event);
+  }
+
+  onMenuShow(): void {
+    alignPopoverToFixedTrigger(this.tabsMenu);
   }
 
   goToTab(tab: PendingTab): void {

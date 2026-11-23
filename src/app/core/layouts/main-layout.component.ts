@@ -54,6 +54,7 @@ import { DeleteDialogComponent } from '@shared/components/delete-dialog/delete-d
 import { CancelDialogComponent } from '@shared/components/cancel-dialog/cancel-dialog.component';
 import { AuditTrailDialogHostComponent } from '@core/layouts/components/audit-trail-dialog-host/audit-trail-dialog-host.component';
 import { AuditTrailDialogService } from '@shared/services/audit-trail-dialog.service';
+import { alignPopoverToFixedTrigger } from '@shared/utils/popover-position.helper';
 export type ContentMaxWidth =
   | 'sm'
   | 'md'
@@ -300,6 +301,10 @@ export class MainLayoutComponent implements OnInit, OnDestroy {
     if (this.userMenu) {
       this.userMenu.toggle(event);
     }
+  }
+
+  onUserMenuShow(): void {
+    alignPopoverToFixedTrigger(this.userMenu);
   }
 
   goToDashboard(): void {

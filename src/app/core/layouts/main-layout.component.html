@@ -71,7 +71,7 @@
           ></i>
         </button>
 
-        <p-popover #userMenu appendTo="self">
+        <p-popover #userMenu appendTo="self" (onShow)="onUserMenuShow()">
           <div class="flex flex-col gap-2 p-2 min-w-[200px]">
             <button
               (click)="goToConfiguration()"

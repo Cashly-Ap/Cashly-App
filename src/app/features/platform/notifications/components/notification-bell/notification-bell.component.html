@@ -15,7 +15,12 @@
   }
 </button>
 
-<p-popover #panel appendTo="self" [style]="{ width: '380px' }">
+<p-popover
+  #panel
+  appendTo="self"
+  [style]="{ width: 'min(380px, calc(100vw - 2rem))' }"
+  (onShow)="onPanelShow()"
+>
   <div class="flex flex-col">
     <div
       class="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700"

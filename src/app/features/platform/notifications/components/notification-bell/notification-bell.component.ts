@@ -21,6 +21,7 @@ import { NotificationWebSocketService } from '@features/platform/notifications/s
 import { NotificationDestinationResolver } from '@features/platform/notifications/services/navigation/notification-destination.resolver';
 import { NotificationPreferencesService } from '@features/platform/notifications/services/state/notification-preferences.service';
 import { LanguageService } from '@core/i18n/language.service';
+import { alignPopoverToFixedTrigger } from '@shared/utils/popover-position.helper';
 
 @Component({
   selector: 'app-notification-bell',
@@ -76,6 +77,10 @@ export class NotificationBellComponent implements OnDestroy {
     if (this.notifications().length === 0) {
       this.loadNotifications();
     }
+  }
+
+  onPanelShow(): void {
+    alignPopoverToFixedTrigger(this.panel);
   }
 
   loadNotifications(): void {
