@@ -106,6 +106,13 @@ export class CustomersFormPageComponent extends BaseFormComponent<CustomerFormDa
   initialWarehouseIds = signal<Set<string>>(new Set());
   selectedWarehouseId = signal<string | null>(null);
 
+  warehouseAccessChanged = computed(() => {
+    const initial = this.initialWarehouseIds();
+    const current = new Set(this.warehouseAccess().map((w) => w.warehouseId));
+    if (initial.size !== current.size) return true;
+    return [...current].some((id) => !initial.has(id));
+  });
+
   warehouseOptions = computed(() => {
     const assigned = new Set(this.warehouseAccess().map((w) => w.warehouseId));
     return this.warehouseService

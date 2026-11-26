@@ -255,7 +255,9 @@
                             <span class="text-xs text-surface-400">{{
                               'finance.billing.returns.quantity' | translate
                             }}</span>
-                            <span class="font-mono">{{ line.quantity }}</span>
+                            <span class="font-mono">{{
+                              line.quantity | localizedNumber: '1.0-3'
+                            }}</span>
                           </div>
                           <div class="flex flex-col gap-0.5">
                             <span class="text-xs text-surface-400">{{
@@ -286,7 +288,8 @@
                             >
                             @for (alloc of line.allocations; track alloc.warehouseId) {
                               <span class="text-xs text-surface-600 dark:text-surface-400">
-                                {{ alloc.warehouseName }}: {{ alloc.allocated }}
+                                {{ alloc.warehouseName }}:
+                                {{ alloc.allocated | localizedNumber: '1.0-3' }}
                               </span>
                             }
                           </div>
@@ -322,7 +325,9 @@
                               </span>
                             </div>
                           </td>
-                          <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                          <td class="text-right font-mono text-sm">
+                            {{ line.quantity | localizedNumber: '1.0-3' }}
+                          </td>
                           <td class="text-right font-mono text-sm">
                             {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}
                           </td>
@@ -344,7 +349,8 @@
                                 >
                                 @for (alloc of line.allocations; track alloc.warehouseId) {
                                   <span class="text-xs text-surface-600 dark:text-surface-400">
-                                    {{ alloc.warehouseName }}: {{ alloc.allocated }}
+                                    {{ alloc.warehouseName }}:
+                                    {{ alloc.allocated | localizedNumber: '1.0-3' }}
                                   </span>
                                 }
                               </div>
@@ -383,7 +389,7 @@
                       <span class="text-xs text-surface-400">{{
                         'finance.billing.returns.quantity' | translate
                       }}</span>
-                      <span class="font-mono">{{ line.quantity }}</span>
+                      <span class="font-mono">{{ line.quantity | localizedNumber: '1.0-3' }}</span>
                     </div>
                     <div class="flex flex-col gap-0.5">
                       <span class="text-xs text-surface-400">{{
@@ -391,7 +397,7 @@
                       }}</span>
                       @if (line.returnedQuantity > 0) {
                         <span class="font-mono text-amber-600 dark:text-amber-400">{{
-                          line.returnedQuantity
+                          line.returnedQuantity | localizedNumber: '1.0-3'
                         }}</span>
                       } @else {
                         <span class="font-mono text-surface-300 dark:text-surface-600">-</span>
@@ -486,10 +492,12 @@
                         </span>
                       </div>
                     </td>
-                    <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                    <td class="text-right font-mono text-sm">
+                      {{ line.quantity | localizedNumber: '1.0-3' }}
+                    </td>
                     <td class="text-right font-mono text-sm text-amber-600 dark:text-amber-400">
                       @if (line.returnedQuantity > 0) {
-                        {{ line.returnedQuantity }}
+                        {{ line.returnedQuantity | localizedNumber: '1.0-3' }}
                       } @else {
                         <span class="text-surface-300 dark:text-surface-600">-</span>
                       }

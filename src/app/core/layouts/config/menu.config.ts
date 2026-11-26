@@ -50,11 +50,9 @@ function groupInvoiceDocuments(items: MenuItem[]): MenuItem[] {
       icon: 'pi pi-file',
       allowedRoles: documents[0].allowedRoles,
       children: documents.map((document) => ({
+        ...document,
         label: document.label,
         icon: document.icon,
-        routerLink: menuRoute(document),
-        allowedRoles: document.allowedRoles,
-        requiredModule: document.requiredModule,
       })),
     };
     remaining.splice(Math.min(Math.max(invoicesIndex, 0), remaining.length), 0, folder);

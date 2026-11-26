@@ -1,7 +1,6 @@
 import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
-import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -66,7 +65,6 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     InputIconModule,
     ReturnLinesTableComponent,
   ],
-  providers: [provideTranslatedMessages()],
   templateUrl: './return-form-dialog.component.html',
 })
 export class ReturnFormDialogComponent implements OnInit {

@@ -1,7 +1,14 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -66,6 +73,15 @@ export class CompanyPageComponent {
   readonly removePdfLogo = signal(false);
   readonly pdfPhoto = new FormControl<File | null>(null);
   readonly photo = new FormControl<File | null>(null);
+  private readonly photoFile = toSignal(this.photo.valueChanges, {
+    initialValue: this.photo.value,
+  });
+  private readonly pdfPhotoFile = toSignal(this.pdfPhoto.valueChanges, {
+    initialValue: this.pdfPhoto.value,
+  });
+  readonly hasExternalChanges = computed(
+    () => !!this.photoFile() || !!this.pdfPhotoFile() || this.removeLogo() || this.removePdfLogo(),
+  );
   readonly fields = [
     { key: 'legalName', label: 'Razón social' },
     { key: 'tradeName', label: 'Nombre comercial' },

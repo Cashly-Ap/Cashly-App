@@ -243,6 +243,7 @@
         [cancelLabel]="'shared.cancel' | translate"
         [loading]="isSubmitting()"
         [disabled]="form.invalid || items().length === 0"
+        [hasExternalChanges]="hasExternalChanges()"
         [tooltipMessage]="submitTooltip()"
         (cancel)="cancel()"
       />

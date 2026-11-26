@@ -3,7 +3,7 @@
     [visible]="true"
     [modal]="true"
     [closable]="false"
-    [style]="{ width: '42rem', maxHeight: '90vh' }"
+    [style]="{ width: '56rem', maxHeight: '92vh' }"
     [breakpoints]="{ '960px': '95vw' }"
     (onShow)="onDialogShow()"
   >
@@ -164,34 +164,14 @@
         }
       </div>
 
-      @if (totalPages() > 1) {
-        <div class="flex items-center justify-between">
-          <span class="text-xs text-surface-500 dark:text-surface-400"
-            >{{ 'shared.page' | translate }} {{ currentPage() + 1 }}
-            {{ 'finance.billing.invoices.of' | translate }} {{ totalPages() }}</span
-          >
-          <div class="flex gap-1">
-            <button
-              type="button"
-              [attr.aria-label]="'shared.previousPage' | translate"
-              class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              [disabled]="session.loading() || currentPage() === 0"
-              (click)="changePage(-1)"
-            >
-              <i class="pi pi-chevron-left text-xs"></i>
-            </button>
-            <button
-              type="button"
-              [attr.aria-label]="'shared.nextPage' | translate"
-              class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              [disabled]="session.loading() || currentPage() >= totalPages() - 1"
-              (click)="changePage(1)"
-            >
-              <i class="pi pi-chevron-right text-xs"></i>
-            </button>
-          </div>
-        </div>
-      }
+      <app-paginator
+        [first]="session.first()"
+        [rows]="session.rows()"
+        [totalRecords]="session.total()"
+        [rowsPerPageOptions]="rowsPerPageOptions"
+        [showCurrentPageReport]="false"
+        (pageChange)="changePage($event)"
+      />
     </div>
 
     <ng-template pTemplate="footer">

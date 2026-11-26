@@ -1,10 +1,7 @@
 import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
-import {
-  provideTranslatedConfirmation,
-  provideTranslatedMessages,
-} from '@core/i18n/translated-feedback.service';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -52,7 +49,7 @@ import { DetailsInfoGridComponent } from '@shared/components/details/details-inf
     LocalizedCurrencyPipe,
   ],
   templateUrl: './expenses-details-page.component.html',
-  providers: [provideTranslatedConfirmation(), provideTranslatedMessages()],
+  providers: [provideTranslatedConfirmation()],
 })
 export class ExpensesDetailsPageComponent implements OnInit {
   protected readonly service = inject(ExpensesApplicationService);

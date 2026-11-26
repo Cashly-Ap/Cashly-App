@@ -15,8 +15,10 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { SelectModule } from 'primeng/select';
+import { PaginatorState } from 'primeng/paginator';
 import { CategoryApiService } from '@features/catalog/categories/services/api/category-api.service';
 import { CategoryList } from '@features/catalog/categories/models/interfaces/category-list.interface';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 import { SingleWarehouseContext } from '@features/inventory/warehouses/models/interfaces/single-warehouse.interface';
 import { WarehouseStockEntry } from '@shared/components/warehouse-stock-dialog/warehouse-stock-entry.interface';
 import { StockAllocationButtonComponent } from '@shared/components/stock-allocation-button/stock-allocation-button.component';
@@ -53,6 +55,7 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     CardSkeletonComponent,
     DialogHeaderComponent,
     TableCardComponent,
+    PaginatorComponent,
     SubmitButtonComponent,
     CancelButtonComponent,
     ListFilterComponent,
@@ -74,6 +77,9 @@ export class ProductPickerDialogComponent {
   readonly visible = input<boolean>(false);
   readonly mode = input<ProductPickerMode>('sale');
   readonly allowUnlimitedStock = input<boolean>(false);
+  readonly selectionMode = input<'multiple' | 'single'>('multiple');
+  readonly showWarehouseStock = input<boolean>(true);
+  readonly reloadOnOpen = input<boolean>(true);
   readonly excludedProductIds = input<Set<string>>(new Set());
   readonly singleWarehouse = input<SingleWarehouseContext | null>(null);
   readonly loadProducts = input.required<ProductPickerLoader>();
@@ -97,16 +103,23 @@ export class ProductPickerDialogComponent {
   readonly filterWithStock = signal<boolean>(true);
   readonly categories = signal<CategoryList[]>([]);
 
-  readonly pageSize = PAGE_SIZE;
+  readonly pageSize = signal(PAGE_SIZE);
+  readonly rowsPerPageOptions = [10, 25, 50];
   readonly String = String;
 
   readonly isPurchase = computed(() => this.mode() === 'purchase');
+  readonly isSingleSelection = computed(() => this.selectionMode() === 'single');
+  readonly showsWarehouseStock = computed(() => this.showWarehouseStock());
+  readonly tableColumnCount = computed(() => (this.showsWarehouseStock() ? 6 : 5));
+  readonly subtitleKeyOverride = input<string | null>(null);
 
-  readonly subtitleKey = computed(() =>
-    this.isPurchase()
+  readonly subtitleKey = computed(() => {
+    const override = this.subtitleKeyOverride();
+    if (override) return override;
+    return this.isPurchase()
       ? 'procurement.purchases.findAndSelectProductsToAddToThePurchase'
-      : 'sales.orders.findAndSelectProductsToAddToTheOrder',
-  );
+      : 'sales.orders.findAndSelectProductsToAddToTheOrder';
+  });
 
   readonly categoryOptions = computed(() => [
     { label: 'Todas las categorías', value: null },
@@ -124,11 +137,7 @@ export class ProductPickerDialogComponent {
     { label: 'Sin stock', value: false },
   ];
 
-  readonly pageLabel = computed(() => {
-    const total = this.totalPages();
-    const current = this.currentPage() + 1;
-    return total > 0 ? `Página ${current} de ${total}` : '';
-  });
+  readonly first = computed(() => this.currentPage() * this.pageSize());
 
   readonly visibleProducts = computed(() =>
     this.products().filter((product) => !this.excludedProductIds().has(product.id)),
@@ -140,7 +149,12 @@ export class ProductPickerDialogComponent {
     let count = 0;
     if (this.filterCategoryId() !== null) count++;
     if (this.filterComposite() !== null) count++;
-    if (!this.isPurchase() && !this.allowUnlimitedStock() && this.filterWithStock() !== true)
+    if (
+      this.showsWarehouseStock() &&
+      !this.isPurchase() &&
+      !this.allowUnlimitedStock() &&
+      this.filterWithStock() !== true
+    )
       count++;
     return count;
   });
@@ -149,7 +163,7 @@ export class ProductPickerDialogComponent {
 
   constructor() {
     effect(() => {
-      if (this.visible()) {
+      if (this.visible() && this.reloadOnOpen()) {
         this.initialized = false;
       }
     });
@@ -184,16 +198,15 @@ export class ProductPickerDialogComponent {
     this.load(0);
   }
 
-  onPagePrev(): void {
-    if (this.currentPage() > 0) {
-      this.load(this.currentPage() - 1);
+  onPageChange(event: PaginatorState): void {
+    const rows = event.rows ?? this.pageSize();
+    const first = event.first ?? 0;
+    if (rows !== this.pageSize()) {
+      this.pageSize.set(rows);
+      this.load(0);
+      return;
     }
-  }
-
-  onPageNext(): void {
-    if (this.currentPage() < this.totalPages() - 1) {
-      this.load(this.currentPage() + 1);
-    }
+    this.load(Math.floor(first / rows));
   }
 
   isSelected(productId: string): boolean {
@@ -201,6 +214,7 @@ export class ProductPickerDialogComponent {
   }
 
   canSelectProduct(product: ProductPickerItem): boolean {
+    if (!this.showsWarehouseStock()) return product.active;
     if (this.isPurchase()) return product.active;
     if (this.allowUnlimitedStock()) return true;
     return this.getTotalAvailable(product) > 0;
@@ -212,23 +226,28 @@ export class ProductPickerDialogComponent {
     const ids = new Set(this.selectedIds());
     const map = new Map(this.selections());
 
+    if (this.isSingleSelection()) {
+      if (ids.has(product.id)) {
+        ids.delete(product.id);
+        map.delete(product.id);
+      } else {
+        ids.clear();
+        map.clear();
+        ids.add(product.id);
+        map.set(product.id, this.buildSelection(product));
+      }
+      this.selectedIds.set(ids);
+      this.selections.set(map);
+      return;
+    }
+
     if (ids.has(product.id)) {
       this.rememberAllocations(product.id, map.get(product.id)?.allocations ?? []);
       ids.delete(product.id);
       map.delete(product.id);
     } else {
-      const allocations = this.buildAllocations(
-        product.stockItems,
-        this.rememberedAllocations(product.id),
-      );
-      const quantity = allocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
+      map.set(product.id, this.buildSelection(product));
       ids.add(product.id);
-      map.set(product.id, {
-        product,
-        quantity,
-        unitPrice: product.price,
-        allocations,
-      });
     }
 
     this.selectedIds.set(ids);
@@ -357,6 +376,23 @@ export class ProductPickerDialogComponent {
     return entries;
   }
 
+  private buildSelection(product: ProductPickerItem): ProductPickerSelection {
+    if (!this.showsWarehouseStock()) {
+      return {
+        product,
+        quantity: 1,
+        unitPrice: product.price,
+        allocations: [],
+      };
+    }
+    const allocations = this.buildAllocations(
+      product.stockItems,
+      this.rememberedAllocations(product.id),
+    );
+    const quantity = allocations.reduce((sum, allocation) => sum + allocation.allocated, 0);
+    return { product, quantity, unitPrice: product.price, allocations };
+  }
+
   private load(page: number): void {
     this.loading.set(true);
     this.loadProducts()(this.buildFilters(page)).subscribe({
@@ -379,7 +415,7 @@ export class ProductPickerDialogComponent {
       withStock:
         this.isPurchase() || this.allowUnlimitedStock() ? undefined : this.filterWithStock(),
       page,
-      size: PAGE_SIZE,
+      size: this.pageSize(),
     };
   }
 

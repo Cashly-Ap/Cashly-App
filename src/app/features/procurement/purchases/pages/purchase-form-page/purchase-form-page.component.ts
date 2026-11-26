@@ -1,5 +1,6 @@
 import { TranslationService } from '@core/i18n/translation.service';
 import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
+import { deepEqual } from '@shared/utils/value-comparison';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { LocalizedCurrencyPipe, LocalizedDatePipe } from '@core/i18n/localized-format.pipe';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
@@ -109,6 +110,12 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
   };
 
   readonly items = signal<PurchaseLineFormData[]>([]);
+  private readonly initialItemsSnapshot = signal<unknown>(null);
+
+  readonly hasExternalChanges = computed(() => {
+    const baseline = this.initialItemsSnapshot();
+    return baseline !== null && !deepEqual(this.itemsSnapshot(this.items()), baseline);
+  });
 
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitCost, 0),
@@ -257,32 +264,32 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
         this.form.controls.dueDate.disable();
         this.loadSupplierCredit(purchase.supplierId);
         this.selectedSupplier.set({ id: purchase.supplierId } as SupplierList);
-        this.items.set(
-          purchase.lines.map((line) => {
-            return {
-              productId: line.productId,
-              productCode: line.productCode,
-              productName: line.productName,
-              quantity: line.quantity,
-              unitCost: line.unitCost,
-              stock: (line.stockItems ?? []).map((s) => ({
-                warehouseId: s.warehouseId,
-                warehouseName: s.warehouseName,
-                warehouseCode: s.warehouseCode,
-                quantity: s.quantity,
-                reserved: s.reserved,
-                available: s.available,
-              })),
-              warehouseAllocations: line.allocations.map((a) => ({
-                warehouseId: a.warehouseId,
-                warehouseCode: a.warehouseCode ?? '',
-                warehouseName: a.warehouseName,
-                available: 0,
-                allocated: a.allocatedQuantity,
-              })),
-            };
-          }),
-        );
+        const loadedItems: PurchaseLineFormData[] = purchase.lines.map((line) => {
+          return {
+            productId: line.productId,
+            productCode: line.productCode,
+            productName: line.productName,
+            quantity: line.quantity,
+            unitCost: line.unitCost,
+            stock: (line.stockItems ?? []).map((s) => ({
+              warehouseId: s.warehouseId,
+              warehouseName: s.warehouseName,
+              warehouseCode: s.warehouseCode,
+              quantity: s.quantity,
+              reserved: s.reserved,
+              available: s.available,
+            })),
+            warehouseAllocations: line.allocations.map((a) => ({
+              warehouseId: a.warehouseId,
+              warehouseCode: a.warehouseCode ?? '',
+              warehouseName: a.warehouseName,
+              available: 0,
+              allocated: a.allocatedQuantity,
+            })),
+          };
+        });
+        this.items.set(loadedItems);
+        this.initialItemsSnapshot.set(this.itemsSnapshot(loadedItems));
       },
     });
   }
@@ -308,8 +315,23 @@ export class PurchaseFormPageComponent implements OnInit, OnDestroy {
 
   onItemsChange(updated: PurchaseLineFormData[]): void {
     this.items.set(updated);
+    this.form.markAsDirty();
     this.updateSubmitTooltip();
     this.scheduleAutoSave();
+  }
+
+  private itemsSnapshot(items: PurchaseLineFormData[]): unknown {
+    return items.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      unitCost: item.unitCost,
+      warehouseAllocations: item.warehouseAllocations
+        .map((allocation) => ({
+          warehouseId: allocation.warehouseId,
+          allocated: allocation.allocated,
+        }))
+        .sort((left, right) => left.warehouseId.localeCompare(right.warehouseId)),
+    }));
   }
 
   submit(): void {

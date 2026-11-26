@@ -178,7 +178,7 @@ export class ProductsFormPageComponent
   addComponent(): void {
     const group = this.fb.group({
       componentProductId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(0.01)]],
+      quantity: [1, [Validators.required, Validators.min(0.001)]],
     });
     this.componentsArray.push(group);
   }
@@ -231,7 +231,7 @@ export class ProductsFormPageComponent
         this.componentsArray.push(
           this.fb.group({
             componentProductId: [c.componentProductId, Validators.required],
-            quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
+            quantity: [c.quantity, [Validators.required, Validators.min(0.001)]],
           }),
         );
       });
@@ -274,7 +274,7 @@ export class ProductsFormPageComponent
           this.componentsArray.push(
             this.fb.group({
               componentProductId: [c.componentProductId, Validators.required],
-              quantity: [c.quantity, [Validators.required, Validators.min(0.01)]],
+              quantity: [c.quantity, [Validators.required, Validators.min(0.001)]],
             }),
           );
         });

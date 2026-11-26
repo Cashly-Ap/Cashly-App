@@ -11,6 +11,12 @@ export const INVOICE_SUCCESS_MESSAGES = {
     detail: 'Factura actualizada exitosamente',
     life: 3000,
   },
+  confirmed: {
+    severity: 'success' as const,
+    summary: 'Éxito',
+    detail: 'Factura confirmada exitosamente',
+    life: 3000,
+  },
   cancelled: {
     severity: 'success' as const,
     summary: 'Éxito',

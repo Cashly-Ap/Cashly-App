@@ -1,7 +1,7 @@
 import { reviewDocumentStock } from '@shared/utils/document-stock';
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
-import { LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import { LocalizedCurrencyPipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import {
   ChangeDetectionStrategy,
@@ -78,6 +78,7 @@ import { TableCardComponent } from '@shared/components/ui/table-card/table-card.
     TranslateOptionsPipe,
     TranslatePipe,
     LocalizedCurrencyPipe,
+    LocalizedNumberPipe,
     CommonModule,
     ButtonModule,
     SelectModule,
@@ -328,7 +329,7 @@ export class ConvertToInvoiceDialogComponent implements OnChanges {
 
       const available = stockInfo?.available ?? 0;
       const availableAfterReserve = available - wa.allocatedQuantity;
-      const wouldBeNegative = availableAfterReserve < 0;
+      const wouldBeNegative = availableAfterReserve < -0.000001;
 
       return {
         warehouseName: wa.warehouseName,

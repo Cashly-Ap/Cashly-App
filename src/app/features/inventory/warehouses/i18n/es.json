@@ -74,6 +74,7 @@
   "inventory.warehouses.products2": "productos",
   "inventory.warehouses.composite": "Compuesto",
   "inventory.warehouses.selectAProduct": "Selecciona un producto",
+  "inventory.warehouses.selectProductsForStockMovement": "Busca y selecciona los productos para el movimiento de stock",
   "inventory.warehouses.optional": "Opcional",
   "inventory.warehouses.addLine": "Agregar línea",
   "inventory.warehouses.loadingCurrentStock": "Cargando stock actual...",

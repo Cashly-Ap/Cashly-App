@@ -1,8 +1,8 @@
 import { LanguageService } from '@core/i18n/language.service';
 import { TranslationService } from '@core/i18n/translation.service';
 import { requiredFieldsMessage } from '@core/forms/utils/required-fields';
+import { deepEqual } from '@shared/utils/value-comparison';
 import { TranslateOptionsPipe } from '@core/i18n/translate-options.pipe';
-import { provideTranslatedMessages } from '@core/i18n/translated-feedback.service';
 import {
   LocalizedCurrencyPipe,
   LocalizedDatePipe,
@@ -45,6 +45,10 @@ import {
 } from '@features/sales/invoices/invoices/models/enums/payment-type.enum';
 import { InvoiceFormData } from '@features/sales/invoices/invoices/models/interfaces/invoice-form-data.interface';
 import { INVOICE_SUCCESS_MESSAGES } from '@features/sales/invoices/invoices/messages/success-messages';
+import {
+  INVOICE_ERROR_MESSAGES,
+  invoiceErrorDetail,
+} from '@features/sales/invoices/invoices/messages/error-messages';
 import { ReceivablesApiService } from '@features/finance/treasury/receivables/services/api/receivables-api.service';
 import { CreditStatusResponse } from '@features/finance/treasury/receivables/models/interfaces/credit-status.interface';
 import { CustomerBalanceApiService } from '@features/partners/customers/services/api/customer-balance-api.service';
@@ -84,7 +88,6 @@ import { PickerTriggerComponent } from '@shared/components/ui/picker-trigger/pic
     CustomerPickerDialogComponent,
     InvoiceSourcePickerDialogComponent,
   ],
-  providers: [provideTranslatedMessages()],
   templateUrl: './invoice-form-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -222,6 +225,12 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   });
 
   readonly items = signal<OrderItemFormData[]>([]);
+  private readonly initialItemsSnapshot = signal<unknown>(null);
+
+  readonly hasExternalChanges = computed(() => {
+    const baseline = this.initialItemsSnapshot();
+    return baseline !== null && !deepEqual(this.itemsSnapshot(this.items()), baseline);
+  });
 
   readonly total = computed(() =>
     this.items().reduce((sum, i) => sum + i.quantity * i.unitPrice, 0),
@@ -362,32 +371,35 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
         this.dueDate.set(invoice.dueDate ? this.fromIsoDate(invoice.dueDate) : null);
         this.loadCustomerDetails(invoice.customerId);
         this.resolveSingleWarehouse(invoice.customerId);
-        this.items.set(
-          invoice.lines.map((item) => ({
-            productId: item.productId,
-            productCode: item.productCode,
-            productName: item.productName,
-            quantity: item.quantity,
-            unitPrice: item.unitPrice,
-            stock: (item.warehouseStocks ?? []).map((s) => ({
-              warehouseId: s.warehouseId,
-              warehouseCode: s.warehouseCode,
-              warehouseName: s.warehouseName,
-              quantity: s.quantity,
-              reserved: s.reserved,
-              available: s.available,
-            })),
-            warehouseAllocations: item.warehouseAllocations.map((a) => ({
-              warehouseId: a.warehouseId,
-              warehouseCode: a.warehouseCode,
-              warehouseName: a.warehouseName,
-              available: a.available,
-              allocated: a.allocated,
-            })),
+        const loadedItems: OrderItemFormData[] = invoice.lines.map((item) => ({
+          productId: item.productId,
+          productCode: item.productCode,
+          productName: item.productName,
+          quantity: item.quantity,
+          unitPrice: item.unitPrice,
+          stock: (item.warehouseStocks ?? []).map((s) => ({
+            warehouseId: s.warehouseId,
+            warehouseCode: s.warehouseCode,
+            warehouseName: s.warehouseName,
+            quantity: s.quantity,
+            reserved: s.reserved,
+            available: s.available,
           })),
-        );
+          warehouseAllocations: item.warehouseAllocations.map((a) => ({
+            warehouseId: a.warehouseId,
+            warehouseCode: a.warehouseCode,
+            warehouseName: a.warehouseName,
+            available: a.available,
+            allocated: a.allocated,
+          })),
+        }));
+        this.items.set(loadedItems);
+        this.initialItemsSnapshot.set(this.itemsSnapshot(loadedItems));
       },
-      error: () => this.router.navigate(['/sales/invoices']),
+      error: () => {
+        this.messageService.add(INVOICE_ERROR_MESSAGES.load);
+        this.router.navigate(['/sales/invoices']);
+      },
     });
   }
 
@@ -685,13 +697,34 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
   }
   onItemsChange(updated: OrderItemFormData[]): void {
     this.items.set(updated);
+    this.form.markAsDirty();
     this.updateSubmitTooltip();
     this.scheduleAutoSave();
+  }
+
+  private itemsSnapshot(items: OrderItemFormData[]): unknown {
+    return items.map((item) => ({
+      productId: item.productId,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      warehouseAllocations: item.warehouseAllocations
+        .map((allocation) => ({
+          warehouseId: allocation.warehouseId,
+          allocated: allocation.allocated,
+        }))
+        .sort((left, right) => left.warehouseId.localeCompare(right.warehouseId)),
+    }));
   }
 
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Formulario incompleto',
+        detail: this.submitTooltip() || 'Revise los campos requeridos antes de continuar.',
+        life: 5000,
+      });
       return;
     }
     if (this.items().length === 0) {
@@ -787,13 +820,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           });
           this.router.navigate(['/sales/invoices', invoices[0].id]);
         },
-        error: () => {
+        error: (err: unknown) => {
           this.isSubmitting.set(false);
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudieron crear todas las facturas.',
-            life: 5000,
+            ...INVOICE_ERROR_MESSAGES.create,
+            detail: invoiceErrorDetail(err, INVOICE_ERROR_MESSAGES.create.detail),
           });
         },
       });
@@ -812,13 +843,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
             this.messageService.add(INVOICE_SUCCESS_MESSAGES.updated);
             this.router.navigate(['/sales/invoices', inv.id]);
           },
-          error: () => {
+          error: (err: unknown) => {
             this.isSubmitting.set(false);
             this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: 'Error al actualizar.',
-              life: 5000,
+              ...INVOICE_ERROR_MESSAGES.update,
+              detail: invoiceErrorDetail(err, INVOICE_ERROR_MESSAGES.update.detail),
             });
           },
         });
@@ -830,13 +859,11 @@ export class InvoiceFormPageComponent implements OnInit, OnDestroy {
           this.messageService.add(INVOICE_SUCCESS_MESSAGES.created);
           this.router.navigate(['/sales/invoices', inv.id]);
         },
-        error: () => {
+        error: (err: unknown) => {
           this.isSubmitting.set(false);
           this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al crear.',
-            life: 5000,
+            ...INVOICE_ERROR_MESSAGES.create,
+            detail: invoiceErrorDetail(err, INVOICE_ERROR_MESSAGES.create.detail),
           });
         },
       });

@@ -1,6 +1,8 @@
 import { LocalizedCurrencyPipe, LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
+import { LanguageService } from '@core/i18n/language.service';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { formatNumber } from '@angular/common';
 import { catchError, forkJoin, map, of, type Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -79,6 +81,7 @@ import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cance
 export class InvoiceSourcePickerDialogComponent {
   private readonly orderApi = inject(OrderApiService);
   private readonly quoteApi = inject(QuoteApiService);
+  private readonly locale = inject(LanguageService).locale;
 
   readonly visible = input(false);
   readonly customerId = input<string | null>(null);
@@ -183,7 +186,10 @@ export class InvoiceSourcePickerDialogComponent {
 
   formatWarehouseStock(line: SourceLinePreview): string {
     return line.warehouses
-      .map((warehouse) => `${warehouse.name}: ${warehouse.available}`)
+      .map(
+        (warehouse) =>
+          `${warehouse.name}: ${formatNumber(warehouse.available, this.locale(), '1.0-3')}`,
+      )
       .join(' | ');
   }
 

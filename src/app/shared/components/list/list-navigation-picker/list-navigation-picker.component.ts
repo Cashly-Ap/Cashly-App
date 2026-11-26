@@ -14,6 +14,7 @@ import { SelectModule } from 'primeng/select';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { PopoverModule } from 'primeng/popover';
+import { PaginatorState } from 'primeng/paginator';
 import { SearchFieldComponent } from '@shared/components/ui/search-field/search-field.component';
 import {
   ListNavigationService,
@@ -28,6 +29,7 @@ import { DialogHeaderComponent } from '@shared/components/ui/dialog-header/dialo
 import { TableRowSkeletonComponent } from '@shared/components/ui/skeletons/table-row-skeleton.component';
 import { CardSkeletonComponent } from '@shared/components/ui/skeletons/card-skeleton.component';
 import { DataTableComponent } from '@shared/components/ui/data-table/data-table.component';
+import { PaginatorComponent } from '@shared/components/ui/paginator/paginator.component';
 
 @Component({
   selector: 'app-list-navigation-picker',
@@ -41,6 +43,7 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     TableCardComponent,
     CancelButtonComponent,
     ListFilterComponent,
+    PaginatorComponent,
     TranslateOptionsPipe,
     TranslatePipe,
     FormsModule,
@@ -142,12 +145,13 @@ export class ListNavigationPickerComponent {
     return session ? Math.ceil(session.total() / session.rows()) : 0;
   });
 
-  changePage(direction: -1 | 1): void {
+  readonly rowsPerPageOptions = [10, 25, 50];
+
+  changePage(event: PaginatorState): void {
     const session = this.navigation.session();
-    const nextPage = this.currentPage() + direction;
-    if (!session || session.loading() || nextPage < 0 || nextPage >= this.totalPages()) return;
+    if (!session || session.loading()) return;
     this.selection.set(null);
-    session.paginate({ first: nextPage * session.rows(), rows: session.rows() });
+    session.paginate({ first: event.first ?? 0, rows: event.rows ?? session.rows() });
   }
 
   onSearch(value: string): void {

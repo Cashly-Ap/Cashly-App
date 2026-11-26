@@ -40,10 +40,16 @@
             <td class="py-2">
               <div class="font-medium">{{ line.productName }}</div>
             </td>
-            <td class="text-center py-2">{{ invoiceLines()[idx]?.quantity ?? 0 }}</td>
-            <td class="text-center py-2">{{ invoiceLines()[idx]?.returnedQuantity ?? 0 }}</td>
-            <td class="text-center py-2">{{ getMaxQuantity(idx) }}</td>
-            <td class="text-center py-2 font-semibold">{{ line.quantity || 0 }}</td>
+            <td class="text-center py-2">
+              {{ invoiceLines()[idx]?.quantity ?? 0 | localizedNumber: '1.0-3' }}
+            </td>
+            <td class="text-center py-2">
+              {{ invoiceLines()[idx]?.returnedQuantity ?? 0 | localizedNumber: '1.0-3' }}
+            </td>
+            <td class="text-center py-2">{{ getMaxQuantity(idx) | localizedNumber: '1.0-3' }}</td>
+            <td class="text-center py-2 font-semibold">
+              {{ line.quantity || 0 | localizedNumber: '1.0-3' }}
+            </td>
             <td class="text-center py-2">
               <div class="flex justify-center">
                 <app-stock-allocation-button

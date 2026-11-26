@@ -3,7 +3,7 @@
   [modal]="true"
   [closable]="false"
   appendTo="body"
-  [style]="{ width: '56rem', maxHeight: '90vh' }"
+  [style]="{ width: '60rem', maxHeight: '92vh' }"
   [breakpoints]="{ '960px': '95vw' }"
   (onShow)="onDialogShow()"
 >
@@ -79,7 +79,7 @@
             </div>
           }
 
-          @if (!isPurchase() && !allowUnlimitedStock()) {
+          @if (showsWarehouseStock() && !isPurchase() && !allowUnlimitedStock()) {
             <div class="flex flex-col gap-1.5">
               <span
                 class="text-xs font-medium text-surface-500 dark:text-surface-400 uppercase tracking-wide"
@@ -135,22 +135,24 @@
             >
               {{ 'procurement.purchases.price' | translate }}
             </th>
-            <th
-              class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-44"
-            >
-              {{ 'finance.billing.returns.stock' | translate }}
-            </th>
+            @if (showsWarehouseStock()) {
+              <th
+                class="px-4 py-2.5 text-right text-xs font-semibold text-surface-600 dark:text-surface-300 uppercase tracking-wide w-44"
+              >
+                {{ 'finance.billing.returns.stock' | translate }}
+              </th>
+            }
           </tr>
         </thead>
         <tbody>
           @if (loading()) {
             @for (i of [1, 2, 3, 4, 5]; track i) {
-              <tr app-table-row-skeleton [columns]="6"></tr>
+              <tr app-table-row-skeleton [columns]="tableColumnCount()"></tr>
             }
           } @else if (visibleProducts().length === 0) {
             <tr>
               <td
-                colspan="6"
+                [attr.colspan]="tableColumnCount()"
                 class="px-4 py-10 text-center text-sm text-surface-400 dark:text-surface-500"
               >
                 <i class="pi pi-search text-2xl block mb-2"></i>
@@ -203,46 +205,48 @@
                     {{ product.price | localizedNumber: '1.2-2' }}$
                   </span>
                 </td>
-                <td class="px-4 py-3">
-                  <div class="flex flex-col items-end gap-1.5">
-                    @if (isSelected(product.id)) {
-                      <span class="text-xs text-surface-500 dark:text-surface-400">
-                        {{ 'shared.selected' | translate }}
-                        <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                          getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
-                        }}</strong>
-                      </span>
-                    } @else {
-                      <span class="text-xs text-surface-500 dark:text-surface-400">
-                        @if (isPurchase()) {
-                          {{ 'procurement.purchases.stock' | translate }}
+                @if (showsWarehouseStock()) {
+                  <td class="px-4 py-3">
+                    <div class="flex flex-col items-end gap-1.5">
+                      @if (isSelected(product.id)) {
+                        <span class="text-xs text-surface-500 dark:text-surface-400">
+                          {{ 'shared.selected' | translate }}
                           <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                            product.totalStock | localizedNumber: '1.0-3'
+                            getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
                           }}</strong>
-                        } @else {
-                          {{ 'sales.orders.availablePrefix' | translate }}
-                          <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                            getTotalAvailable(product) | localizedNumber: '1.0-3'
-                          }}</strong>
-                        }
-                      </span>
-                    }
-                    <app-stock-allocation-button
-                      [buildEntries]="stockEntriesFor(product)"
-                      [productLabel]="productLabelFor(product)"
-                      [showStockDetails]="!isPurchase()"
-                      [unlimited]="isPurchase() || allowUnlimitedStock()"
-                      [singleWarehouse]="singleWarehouse()"
-                      [emptyMessageKey]="
-                        isPurchase()
-                          ? 'procurement.purchases.selectTheQuantityPerWarehouse'
-                          : 'sales.orders.noStockAllocatedInWarehouses'
-                      "
-                      (click)="$event.stopPropagation()"
-                      (saved)="onStockSaved(product, $event)"
-                    />
-                  </div>
-                </td>
+                        </span>
+                      } @else {
+                        <span class="text-xs text-surface-500 dark:text-surface-400">
+                          @if (isPurchase()) {
+                            {{ 'procurement.purchases.stock' | translate }}
+                            <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                              product.totalStock | localizedNumber: '1.0-3'
+                            }}</strong>
+                          } @else {
+                            {{ 'sales.orders.availablePrefix' | translate }}
+                            <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                              getTotalAvailable(product) | localizedNumber: '1.0-3'
+                            }}</strong>
+                          }
+                        </span>
+                      }
+                      <app-stock-allocation-button
+                        [buildEntries]="stockEntriesFor(product)"
+                        [productLabel]="productLabelFor(product)"
+                        [showStockDetails]="!isPurchase()"
+                        [unlimited]="isPurchase() || allowUnlimitedStock()"
+                        [singleWarehouse]="singleWarehouse()"
+                        [emptyMessageKey]="
+                          isPurchase()
+                            ? 'procurement.purchases.selectTheQuantityPerWarehouse'
+                            : 'sales.orders.noStockAllocatedInWarehouses'
+                        "
+                        (click)="$event.stopPropagation()"
+                        (saved)="onStockSaved(product, $event)"
+                      />
+                    </div>
+                  </td>
+                }
               </tr>
             }
           }
@@ -309,42 +313,44 @@
               </span>
               <div class="flex justify-end">
                 <div class="flex flex-col items-end gap-1.5">
-                  @if (isSelected(product.id)) {
-                    <span class="text-xs text-surface-500 dark:text-surface-400">
-                      {{ 'shared.selected' | translate }}
-                      <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                        getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
-                      }}</strong>
-                    </span>
-                  } @else {
-                    <span class="text-xs text-surface-500 dark:text-surface-400">
-                      @if (isPurchase()) {
-                        {{ 'procurement.purchases.stock' | translate }}
+                  @if (showsWarehouseStock()) {
+                    @if (isSelected(product.id)) {
+                      <span class="text-xs text-surface-500 dark:text-surface-400">
+                        {{ 'shared.selected' | translate }}
                         <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                          product.totalStock | localizedNumber: '1.0-3'
+                          getAllocationQuantity(product.id) | localizedNumber: '1.0-3'
                         }}</strong>
-                      } @else {
-                        {{ 'sales.orders.availablePrefix' | translate }}
-                        <strong class="font-mono text-surface-700 dark:text-surface-300">{{
-                          getTotalAvailable(product) | localizedNumber: '1.0-3'
-                        }}</strong>
-                      }
-                    </span>
+                      </span>
+                    } @else {
+                      <span class="text-xs text-surface-500 dark:text-surface-400">
+                        @if (isPurchase()) {
+                          {{ 'procurement.purchases.stock' | translate }}
+                          <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                            product.totalStock | localizedNumber: '1.0-3'
+                          }}</strong>
+                        } @else {
+                          {{ 'sales.orders.availablePrefix' | translate }}
+                          <strong class="font-mono text-surface-700 dark:text-surface-300">{{
+                            getTotalAvailable(product) | localizedNumber: '1.0-3'
+                          }}</strong>
+                        }
+                      </span>
+                    }
+                    <app-stock-allocation-button
+                      [buildEntries]="stockEntriesFor(product)"
+                      [productLabel]="productLabelFor(product)"
+                      [showStockDetails]="!isPurchase()"
+                      [unlimited]="isPurchase() || allowUnlimitedStock()"
+                      [singleWarehouse]="singleWarehouse()"
+                      [emptyMessageKey]="
+                        isPurchase()
+                          ? 'procurement.purchases.selectTheQuantityPerWarehouse'
+                          : 'sales.orders.noStockAllocatedInWarehouses'
+                      "
+                      (click)="$event.stopPropagation()"
+                      (saved)="onStockSaved(product, $event)"
+                    />
                   }
-                  <app-stock-allocation-button
-                    [buildEntries]="stockEntriesFor(product)"
-                    [productLabel]="productLabelFor(product)"
-                    [showStockDetails]="!isPurchase()"
-                    [unlimited]="isPurchase() || allowUnlimitedStock()"
-                    [singleWarehouse]="singleWarehouse()"
-                    [emptyMessageKey]="
-                      isPurchase()
-                        ? 'procurement.purchases.selectTheQuantityPerWarehouse'
-                        : 'sales.orders.noStockAllocatedInWarehouses'
-                    "
-                    (click)="$event.stopPropagation()"
-                    (saved)="onStockSaved(product, $event)"
-                  />
                 </div>
               </div>
             </div>
@@ -353,31 +359,14 @@
       }
     </div>
 
-    @if (totalPages() > 1) {
-      <div class="flex items-center justify-between">
-        <span class="text-xs text-surface-500 dark:text-surface-400">{{
-          pageLabel() | translate
-        }}</span>
-        <div class="flex gap-1">
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            [disabled]="currentPage() === 0"
-            (click)="onPagePrev()"
-          >
-            <i class="pi pi-chevron-left text-xs"></i>
-          </button>
-          <button
-            type="button"
-            class="inline-flex items-center justify-center w-8 h-8 rounded-lg border border-surface-200 dark:border-surface-700 text-surface-600 dark:text-surface-300 hover:bg-surface-100 dark:hover:bg-surface-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            [disabled]="currentPage() === totalPages() - 1"
-            (click)="onPageNext()"
-          >
-            <i class="pi pi-chevron-right text-xs"></i>
-          </button>
-        </div>
-      </div>
-    }
+    <app-paginator
+      [first]="first()"
+      [rows]="pageSize()"
+      [totalRecords]="totalElements()"
+      [rowsPerPageOptions]="rowsPerPageOptions"
+      [showCurrentPageReport]="false"
+      (pageChange)="onPageChange($event)"
+    />
   </div>
 
   <ng-template pTemplate="footer">

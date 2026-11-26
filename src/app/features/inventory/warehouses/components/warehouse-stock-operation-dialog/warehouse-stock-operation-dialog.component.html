@@ -8,6 +8,20 @@
   [draggable]="false"
 >
   <div class="mb-3 text-sm text-surface-500">{{ warehouseName() }}</div>
+  @if (visible()) {
+    <app-product-picker-dialog
+      mode="purchase"
+      [visible]="pickerVisible()"
+      [showWarehouseStock]="false"
+      [allowUnlimitedStock]="true"
+      [loadProducts]="loadPickerProducts"
+      [excludedProductIds]="excludedProductIds()"
+      [reloadOnOpen]="false"
+      [subtitleKeyOverride]="'inventory.warehouses.selectProductsForStockMovement'"
+      (productsSelected)="onProductsPicked($event)"
+      (cancelled)="pickerVisible.set(false)"
+    />
+  }
   <form [formGroup]="form" class="flex flex-col gap-4 py-2">
     @if (stockLoading()) {
       <div class="flex items-center gap-2 text-sm text-surface-500">
@@ -42,18 +56,24 @@
                 >{{ 'finance.billing.returns.product' | translate }}
                 <span class="text-red-500">*</span></label
               >
-              <p-select
-                formControlName="productId"
-                [options]="productOptions() | translateOptions: true"
-                optionLabel="label"
-                optionValue="value"
-                [placeholder]="'inventory.warehouses.selectAProduct' | translate"
-                [filter]="true"
-                [filterPlaceholder]="'inventory.warehouses.labels.searchProducts' | translate"
-                appendTo="body"
-                styleClass="w-full"
-                (onChange)="onProductSelected($event.value)"
-              />
+              <button
+                type="button"
+                class="flex w-full items-center justify-between gap-3 rounded-lg border border-surface-300 bg-white px-3 py-2 text-left transition-colors hover:border-surface-400 dark:border-surface-600 dark:bg-surface-900 dark:hover:border-surface-500"
+                (click)="openProductPicker(index)"
+              >
+                <span
+                  class="min-w-0 truncate text-sm"
+                  [class.text-surface-400]="!line.get('productId')?.value"
+                  [class.text-surface-900]="line.get('productId')?.value"
+                  [class.dark:text-surface-0]="line.get('productId')?.value"
+                >
+                  {{
+                    productLabel(line.get('productId')?.value) ||
+                      ('inventory.warehouses.selectAProduct' | translate)
+                  }}
+                </span>
+                <i class="pi pi-search shrink-0 text-xs text-surface-400"></i>
+              </button>
               @if (line.get('productId')?.invalid && line.get('productId')?.touched) {
                 <small class="text-xs text-red-500">{{
                   'inventory.warehouses.aProductIsRequired' | translate
@@ -78,6 +98,7 @@
                       <li>
                         <span class="font-semibold text-red-600 dark:text-red-400">{{
                           component.quantity * (line.get('quantity')?.value ?? 0)
+                            | localizedNumber: '1.0-3'
                         }}</span>
                         × {{ component.componentProductName }}
                       </li>
@@ -93,9 +114,10 @@
               >
               <p-inputnumber
                 formControlName="quantity"
-                [min]="0.01"
+                [locale]="locale()"
+                [min]="0.001"
                 [minFractionDigits]="0"
-                [maxFractionDigits]="2"
+                [maxFractionDigits]="3"
                 fluid
               />
               @if (line.get('quantity')?.invalid && line.get('quantity')?.touched) {
@@ -127,8 +149,11 @@
               }}</label>
               @if (line.get('productId')?.value; as productId) {
                 <span class="font-mono text-sm font-semibold">
-                  {{ currentStock(productId) }} →
-                  {{ resultingStock(productId, line.get('quantity')?.value) }}
+                  {{ currentStock(productId) | localizedNumber: '1.0-3' }} →
+                  {{
+                    resultingStock(productId, line.get('quantity')?.value)
+                      | localizedNumber: '1.0-3'
+                  }}
                 </span>
               } @else {
                 <span class="text-sm text-surface-400">—</span>

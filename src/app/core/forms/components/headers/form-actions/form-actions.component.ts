@@ -50,12 +50,15 @@ export class FormActionsComponent implements AfterViewInit {
   cancelLabel = input<string>('Cancelar');
   loading = input<boolean>(false);
   disabled = input<boolean>(false);
+  hasExternalChanges = input<boolean>(false);
   tooltipMessage = input<string>('');
 
   readonly isEditRoute = computed(() =>
     this.currentUrl().split('?')[0].split('#')[0].endsWith('/edit'),
   );
-  readonly noChanges = computed(() => this.isEditRoute() && !this.hasChanges());
+  readonly noChanges = computed(
+    () => this.isEditRoute() && !this.hasChanges() && !this.hasExternalChanges(),
+  );
   readonly submitDisabled = computed(() => this.disabled() || this.noChanges());
   readonly resolvedTooltip = computed(() => {
     if (!this.submitDisabled()) return '';

@@ -59,6 +59,21 @@ describe('ERP navigation', () => {
     expect(invoices?.children?.map((item) => item.label)).toEqual(
       expect.arrayContaining(['Notas de débito', 'Notas de crédito', 'Devoluciones']),
     );
+    const invoiceEntry = invoices?.children?.find((item) => item.label === 'Facturas');
+    expect(invoiceEntry?.children?.map((item) => item.label)).toEqual(
+      expect.arrayContaining([
+        'Ver detalle de factura',
+        'Editar factura',
+        'Eliminar factura',
+        'Crear factura',
+        'Reporte de Facturas PDF',
+        'Descargar PDF de factura',
+        'Confirmar factura',
+        'Cancelar factura',
+        'Duplicar factura',
+        'Historial',
+      ]),
+    );
     expect(
       menu.find((item) => item.label === 'Inventario')?.children?.map((item) => item.label),
     ).toEqual(['Almacenes']);
@@ -245,6 +260,7 @@ describe('ERP navigation', () => {
     ]) {
       expect(items.some((item) => item.label === label)).toBe(true);
     }
+    expect(items.some((item) => item.label === 'Pagar directamente')).toBe(false);
   });
 
   it('keeps exactly one internal delete action for every deletable list definition', () => {

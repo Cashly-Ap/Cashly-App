@@ -166,6 +166,7 @@
         cancelLabel="Cancelar"
         [loading]="loading() || savingPhoto()"
         [disabled]="form.invalid"
+        [hasExternalChanges]="hasExternalChanges()"
         (cancel)="onCancel()"
       >
         @if (isEditMode() && canManageCredentials() && entityId()) {

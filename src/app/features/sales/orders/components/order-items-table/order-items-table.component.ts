@@ -238,7 +238,7 @@ export class OrderItemsTableComponent {
   isItemOverAllocated(item: OrderItemFormData): boolean {
     if (this.context() === 'quote') return false;
     const totalAvailable = this.getItemTotalAvailable(item);
-    return item.quantity * this.stockMultiplier() > totalAvailable;
+    return item.quantity * this.stockMultiplier() - totalAvailable > 0.000001;
   }
 
   getItemRequiredStock(item: OrderItemFormData): number {

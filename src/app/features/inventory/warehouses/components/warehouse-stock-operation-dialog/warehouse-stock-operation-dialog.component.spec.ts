@@ -7,7 +7,10 @@ import { of } from 'rxjs';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { WarehouseStockOperationDialogComponent } from '@features/inventory/warehouses/components/warehouse-stock-operation-dialog/warehouse-stock-operation-dialog.component';
 import { ProductApplicationService } from '@features/catalog/products/services/application/product-application.service';
+import { ProductApiService } from '@features/catalog/products/services/api/product-api.service';
 import { WarehouseApplicationService } from '@features/inventory/warehouses/services/application/warehouse-application.service';
+import { StockOverviewApiService } from '@features/inventory/warehouses/services/api/stock-overview-api.service';
+import { ProductPickerSelection } from '@shared/components/product-picker-dialog/product-picker.models';
 
 describe('WarehouseStockOperationDialogComponent', () => {
   let fixture: ComponentFixture<WarehouseStockOperationDialogComponent>;
@@ -44,6 +47,20 @@ describe('WarehouseStockOperationDialogComponent', () => {
       }),
     ),
   };
+  const productApi = {
+    getAll: vi
+      .fn()
+      .mockReturnValue(of({ content: [], totalElements: 0, totalPages: 0, number: 0 })),
+  };
+  const stockOverviewApi = {
+    getOverview: vi.fn().mockReturnValue(
+      of({
+        groupBy: 'NONE',
+        stock: { content: [], totalElements: 0, totalPages: 0, number: 0 },
+        groups: null,
+      }),
+    ),
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -53,6 +70,8 @@ describe('WarehouseStockOperationDialogComponent', () => {
         { provide: AuthorizationService, useValue: { can: () => true } },
         { provide: WarehouseApplicationService, useValue: warehouseService },
         { provide: ProductApplicationService, useValue: productService },
+        { provide: ProductApiService, useValue: productApi },
+        { provide: StockOverviewApiService, useValue: stockOverviewApi },
         MessageService,
       ],
     });
@@ -106,5 +125,42 @@ describe('WarehouseStockOperationDialogComponent', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Producto compuesto');
     expect(fixture.nativeElement.textContent).toContain('6 × Motor');
+  });
+
+  it('adds several selected products to separate lines', () => {
+    const selections = ['p1', 'p2'].map(
+      (id) =>
+        ({
+          product: {
+            id,
+            code: id,
+            name: id,
+            categoryName: '',
+            active: true,
+            price: 10,
+            totalStock: 20,
+            stockItems: [],
+          },
+          quantity: 1,
+          unitPrice: 10,
+          allocations: [],
+        }) as ProductPickerSelection,
+    );
+
+    component.onProductsPicked(selections);
+
+    expect(component.lines.length).toBe(2);
+    expect(component.lines.at(0).get('productId')?.value).toBe('p1');
+    expect(component.lines.at(1).get('productId')?.value).toBe('p2');
+  });
+
+  it('excludes products already used by other lines', () => {
+    component.lines.at(0).patchValue({ productId: 'p1' });
+    component.addLine().patchValue({ productId: 'p2' });
+
+    component.openProductPicker(1);
+
+    expect(component.excludedProductIds().has('p1')).toBe(true);
+    expect(component.excludedProductIds().has('p2')).toBe(false);
   });
 });

@@ -1,4 +1,5 @@
 import { TranslatePipe } from '@core/i18n/translate.pipe';
+import { LocalizedNumberPipe } from '@core/i18n/localized-format.pipe';
 import { PermissionDirective } from '@features/platform/auth/authorization/directives/permission.directive';
 import {
   ChangeDetectionStrategy,
@@ -52,6 +53,7 @@ import { CancelButtonComponent } from '@shared/components/ui/cancel-button/cance
   imports: [
     CancelButtonComponent,
     TranslatePipe,
+    LocalizedNumberPipe,
     PermissionDirective,
     CommonModule,
     DialogModule,
@@ -134,7 +136,7 @@ export class DuplicateInvoiceDialogComponent implements OnChanges {
       const inflatedAvailable = stockInfo?.available ?? 0;
       const realAvailable = inflatedAvailable - wa.allocated;
       const availableAfterReserve = realAvailable - wa.allocated;
-      const wouldBeNegative = availableAfterReserve < 0;
+      const wouldBeNegative = availableAfterReserve < -0.000001;
 
       return {
         warehouseName: wa.warehouseName,

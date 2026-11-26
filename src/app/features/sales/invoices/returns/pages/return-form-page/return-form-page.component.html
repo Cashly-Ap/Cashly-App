@@ -198,7 +198,7 @@
                 <ng-template pTemplate="body" let-line>
                   <tr>
                     <td class="font-medium">{{ line.productName }}</td>
-                    <td class="text-right">{{ line.quantity }}</td>
+                    <td class="text-right">{{ line.quantity | localizedNumber: '1.0-3' }}</td>
                     <td class="text-right">{{ line.unitPrice | localizedNumber: '1.2-2' }}</td>
                     <td class="text-right font-medium">
                       {{ line.quantity * line.unitPrice | localizedNumber: '1.2-2' }}

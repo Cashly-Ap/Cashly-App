@@ -63,6 +63,7 @@ const page: ProductPickerPage = {
     [mode]="mode"
     [allowUnlimitedStock]="allowUnlimitedStock"
     [excludedProductIds]="excludedProductIds"
+    [reloadOnOpen]="reloadOnOpen"
     [singleWarehouse]="singleWarehouse"
     [loadProducts]="loader"
     (productsSelected)="onSelected($event)"
@@ -75,6 +76,7 @@ class HostComponent {
   mode: ProductPickerMode = 'sale';
   allowUnlimitedStock = false;
   excludedProductIds: Set<string> = new Set();
+  reloadOnOpen = true;
   singleWarehouse: SingleWarehouseContext | null = null;
   loader: ProductPickerLoader = () => of(page);
   onSelected = vi.fn();
@@ -120,7 +122,7 @@ describe('ProductPickerDialogComponent', () => {
     dialog.onDialogShow();
 
     expect(loader).toHaveBeenCalledWith(
-      expect.objectContaining({ page: 0, size: dialog.pageSize }),
+      expect.objectContaining({ page: 0, size: dialog.pageSize() }),
     );
     expect(dialog.products()).toEqual([product, inactiveProduct]);
     expect(dialog.totalElements()).toBe(2);
@@ -133,6 +135,23 @@ describe('ProductPickerDialogComponent', () => {
     dialog.onDialogShow();
 
     expect(dialog.visibleProducts().map((item) => item.id)).toEqual(['p2']);
+  });
+
+  it('should reuse the loaded products when reloadOnOpen is false', () => {
+    fixture.destroy();
+    fixture = TestBed.createComponent(HostComponent);
+    host = fixture.componentInstance;
+    host.loader = loader;
+    host.reloadOnOpen = false;
+    fixture.detectChanges();
+    dialog = fixture.debugElement.children[0].componentInstance;
+
+    dialog.onDialogShow();
+    expect(loader).toHaveBeenCalledTimes(1);
+
+    dialog.onDialogShow();
+
+    expect(loader).toHaveBeenCalledTimes(1);
   });
 
   it('should pre-allocate available stock for sales', () => {
@@ -407,10 +426,10 @@ describe('ProductPickerDialogComponent', () => {
     fixture.detectChanges();
 
     dialog.onDialogShow();
-    dialog.onPageNext();
+    dialog.onPageChange({ first: 10, rows: 10 });
     expect(pagedLoader).toHaveBeenLastCalledWith(expect.objectContaining({ page: 1 }));
 
-    dialog.onPagePrev();
+    dialog.onPageChange({ first: 0, rows: 10 });
     expect(pagedLoader).toHaveBeenLastCalledWith(expect.objectContaining({ page: 0 }));
   });
 

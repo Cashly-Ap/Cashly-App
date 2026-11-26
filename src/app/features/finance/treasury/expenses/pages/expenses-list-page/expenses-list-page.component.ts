@@ -23,10 +23,7 @@ import { SelectModule } from 'primeng/select';
 import { SortEvent } from 'primeng/api';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import {
-  provideTranslatedConfirmation,
-  provideTranslatedMessages,
-} from '@core/i18n/translated-feedback.service';
+import { provideTranslatedConfirmation } from '@core/i18n/translated-feedback.service';
 import { ExpensesApplicationService } from '@features/finance/treasury/expenses/services/application/expenses-application.service';
 import { ExpensePermission } from '@features/finance/treasury/expenses/permissions';
 import {
@@ -82,7 +79,7 @@ import { ExpenseCancelDialogComponent } from '@features/finance/treasury/expense
     ConfirmDialogModule,
   ],
   templateUrl: './expenses-list-page.component.html',
-  providers: [provideTranslatedConfirmation(), provideTranslatedMessages()],
+  providers: [provideTranslatedConfirmation()],
 })
 export class ExpensesListPageComponent implements OnInit {
   protected readonly service = inject(ExpensesApplicationService);

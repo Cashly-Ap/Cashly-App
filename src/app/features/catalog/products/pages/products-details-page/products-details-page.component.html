@@ -78,7 +78,7 @@
               @if (canViewStock()) {
                 <app-details-info-field
                   [label]="'catalog.products.totalStock' | translate"
-                  [value]="totalStock().toString()"
+                  [value]="(totalStock() | localizedNumber: '1.0-3') || '0'"
                 />
               }
               <app-details-info-field
@@ -154,7 +154,9 @@
                     @for (comp of p.components; track comp.componentProductId) {
                       <tr class="border-b border-surface-100 dark:border-surface-800">
                         <td class="py-2">{{ comp.componentProductName }}</td>
-                        <td class="py-2 text-right font-medium">{{ comp.quantity }}</td>
+                        <td class="py-2 text-right font-medium">
+                          {{ comp.quantity | localizedNumber: '1.0-3' }}
+                        </td>
                       </tr>
                     }
                   </tbody>
@@ -187,7 +189,9 @@
                     @for (s of stockByWarehouse(); track s.warehouseId) {
                       <tr class="border-b border-surface-100 dark:border-surface-800">
                         <td class="py-2">{{ s.warehouseName }}</td>
-                        <td class="py-2 text-right font-medium">{{ s.quantity }}</td>
+                        <td class="py-2 text-right font-medium">
+                          {{ s.quantity | localizedNumber: '1.0-3' }}
+                        </td>
                         <td class="py-2 text-right text-surface-500 dark:text-surface-400">
                           {{
                             s.lastMovementAt

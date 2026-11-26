@@ -23,6 +23,12 @@ export class ReceivablesPdfApiService {
     if (filters.overdueOnly) {
       params = params.set('overdueOnly', String(filters.overdueOnly));
     }
+    if (filters.dateFrom) {
+      params = params.set('dateFrom', filters.dateFrom);
+    }
+    if (filters.dateTo) {
+      params = params.set('dateTo', filters.dateTo);
+    }
 
     return this.http.get(`${this.baseUrl}/accounts-receivable/pdf`, {
       responseType: 'blob',

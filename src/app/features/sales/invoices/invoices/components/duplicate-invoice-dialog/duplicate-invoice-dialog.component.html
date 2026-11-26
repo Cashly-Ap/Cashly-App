@@ -112,23 +112,27 @@
                     </div>
                   </td>
                   <td [attr.rowspan]="line.allocations.length" class="text-center align-top">
-                    <span class="font-mono text-sm">{{ line.quantity }}</span>
+                    <span class="font-mono text-sm">{{
+                      line.quantity | localizedNumber: '1.0-3'
+                    }}</span>
                   </td>
                 }
                 <td>
                   <span class="text-sm">{{ alloc.warehouseName }}</span>
                 </td>
                 <td class="text-center">
-                  <span class="font-mono text-sm">{{ alloc.allocated }}</span>
+                  <span class="font-mono text-sm">{{
+                    alloc.allocated | localizedNumber: '1.0-3'
+                  }}</span>
                 </td>
                 <td class="text-center">
                   <span class="font-mono text-sm">
-                    {{ alloc.realAvailable }}
+                    {{ alloc.realAvailable | localizedNumber: '1.0-3' }}
                   </span>
                 </td>
                 <td class="text-center">
                   <span class="font-mono text-sm" [class.font-bold]="alloc.wouldBeNegative">
-                    {{ alloc.availableAfterReserve }}
+                    {{ alloc.availableAfterReserve | localizedNumber: '1.0-3' }}
                   </span>
                   @if (alloc.wouldBeNegative) {
                     <i

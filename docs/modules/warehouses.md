@@ -223,7 +223,7 @@ export interface WarehouseCreate {
 ```typescript
 export interface ProductQuantity {
   productId: number; // Product ID
-  quantity: number; // Positive integer
+  quantity: number; // Positive decimal (up to 3 decimals in UI, 4 in API)
 }
 
 export interface StockEntry {
@@ -464,7 +464,7 @@ All endpoints use: `/api/warehouses`
 | `name`      | string | Yes          | 3-100 characters       | "Name must be 3-100 characters"       |
 | `location`  | string | Yes          | Max 200 characters     | "Location must be max 200 characters" |
 | `productId` | number | Yes          | Positive, exists       | "Product not found"                   |
-| `quantity`  | number | Yes          | Positive integer       | "Quantity must be positive"           |
+| `quantity`  | number | Yes          | Positive decimal (min 0.001) | "Quantity must be positive"           |
 
 ### Custom Validators
 
@@ -490,8 +490,8 @@ export class WarehouseValidators {
     return (control: AbstractControl): ValidationErrors | null => {
       if (!control.value) return null;
 
-      if (control.value <= 0 || !Number.isInteger(control.value)) {
-        return { invalidQuantity: 'Quantity must be a positive integer' };
+      if (control.value <= 0 || control.value < 0.001) {
+        return { invalidQuantity: 'Quantity must be a positive decimal (min 0.001)' };
       }
 
       return null;

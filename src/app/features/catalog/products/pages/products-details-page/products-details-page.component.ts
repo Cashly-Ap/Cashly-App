@@ -1,4 +1,8 @@
-import { LocalizedDatePipe, LocalizedCurrencyPipe } from '@core/i18n/localized-format.pipe';
+import {
+  LocalizedDatePipe,
+  LocalizedCurrencyPipe,
+  LocalizedNumberPipe,
+} from '@core/i18n/localized-format.pipe';
 import { TranslatePipe } from '@core/i18n/translate.pipe';
 import { NavigationHistoryService } from '@core/navigation/navigation-history.service';
 import { DeleteDialogService } from '@shared/services/delete-dialog.service';
@@ -47,6 +51,7 @@ import { DataTableComponent } from '@shared/components/ui/data-table/data-table.
     TranslatePipe,
     LocalizedDatePipe,
     LocalizedCurrencyPipe,
+    LocalizedNumberPipe,
     PermissionDirective,
     CommonModule,
     ButtonModule,

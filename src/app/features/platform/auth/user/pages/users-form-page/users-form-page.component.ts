@@ -8,7 +8,7 @@ import { computed } from '@angular/core';
 import { UserPhotoService } from '@features/platform/auth/services/api/user-photo.service';
 import { switchMap, of, catchError, finalize, map } from 'rxjs';
 import { DestroyRef } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TabsModule } from 'primeng/tabs';
 import { UserValidators } from '@features/platform/auth/user/validators/user.validators';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
@@ -92,8 +92,12 @@ export class UsersFormPageComponent extends BaseFormComponent<UserFormData> {
   readonly showChangeEmailDialog = signal(false);
   private readonly photoDestroy = inject(DestroyRef);
   readonly photo = new FormControl<File | null>(null);
+  private readonly photoFile = toSignal(this.photo.valueChanges, {
+    initialValue: this.photo.value,
+  });
   readonly photoUrl = signal<string | null>(null);
   readonly removePhoto = signal(false);
+  readonly hasExternalChanges = computed(() => !!this.photoFile() || this.removePhoto());
   readonly savingPhoto = signal(false);
   readonly loading = this.service.loading;
   constructor() {

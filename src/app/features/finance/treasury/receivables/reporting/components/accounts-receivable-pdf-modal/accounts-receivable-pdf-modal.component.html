@@ -1,11 +1,41 @@
 <app-report-pdf-modal
   titleKey="finance.treasury.receivables.accountsReceivablePdf"
-  width="450px"
+  width="500px"
   [visible]="visible()"
   (visibleChange)="onHide()"
   (show)="loadCustomers()"
 >
   <div class="flex flex-col gap-4">
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label for="dateFrom" class="text-sm font-medium">{{
+          'finance.billing.invoices.from' | translate
+        }}</label>
+        <p-datepicker
+          id="dateFrom"
+          [(ngModel)]="dateFrom"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+          [placeholder]="'finance.billing.invoices.startDate' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="dateTo" class="text-sm font-medium">{{
+          'finance.billing.invoices.to' | translate
+        }}</label>
+        <p-datepicker
+          id="dateTo"
+          [(ngModel)]="dateTo"
+          [dateFormat]="locale() === 'en-US' ? 'mm/dd/yy' : 'dd/mm/yy'"
+          [placeholder]="'finance.billing.invoices.endDate' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        />
+      </div>
+    </div>
+
     <div class="flex flex-col gap-2">
       <label for="customer" class="text-sm font-medium">{{ 'shared.customer' | translate }}</label>
       <p-select

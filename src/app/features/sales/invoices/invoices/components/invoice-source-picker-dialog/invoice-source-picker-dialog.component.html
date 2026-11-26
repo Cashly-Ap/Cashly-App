@@ -96,7 +96,7 @@
                         <span class="text-surface-400">({{ line.productCode }})</span></span
                       >
                       <span class="shrink-0"
-                        >{{ line.quantity }} ×
+                        >{{ line.quantity | localizedNumber: '1.0-3' }} ×
                         {{ line.unitPrice | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }} =
                         {{ line.subtotal | localizedCurrency: 'USD' : 'symbol' : '1.2-2' }}</span
                       >
@@ -106,8 +106,9 @@
                       [class.text-red-600]="line.available < line.required"
                       [class.text-green-700]="line.available >= line.required"
                     >
-                      {{ 'finance.billing.returns.stock' | translate }}: {{ line.available }} /
-                      {{ line.required }}
+                      {{ 'finance.billing.returns.stock' | translate }}:
+                      {{ line.available | localizedNumber: '1.0-3' }} /
+                      {{ line.required | localizedNumber: '1.0-3' }}
                       @if (line.warehouses.length > 0) {
                         <span> · {{ formatWarehouseStock(line) }}</span>
                       } @else {

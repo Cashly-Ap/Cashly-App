@@ -13,6 +13,12 @@ describe('INVOICE_SUCCESS_MESSAGES', () => {
     expect(INVOICE_SUCCESS_MESSAGES.updated.detail).toContain('actualizada');
   });
 
+  it('should have confirmed message', () => {
+    expect(INVOICE_SUCCESS_MESSAGES.confirmed.severity).toBe('success');
+    expect(INVOICE_SUCCESS_MESSAGES.confirmed.detail).toContain('confirmada');
+    expect(INVOICE_SUCCESS_MESSAGES.confirmed.life).toBe(3000);
+  });
+
   it('should have cancelled message', () => {
     expect(INVOICE_SUCCESS_MESSAGES.cancelled.severity).toBe('success');
     expect(INVOICE_SUCCESS_MESSAGES.cancelled.detail).toContain('cancelada');

@@ -138,7 +138,9 @@
                         <span class="text-xs text-surface-400">{{
                           'finance.billing.returns.quantity' | translate
                         }}</span>
-                        <span class="font-mono">{{ line.quantity }}</span>
+                        <span class="font-mono">{{
+                          line.quantity | localizedNumber: '1.0-3'
+                        }}</span>
                       </div>
                       <div class="flex flex-col gap-0.5">
                         <span class="text-xs text-surface-400">{{
@@ -166,7 +168,8 @@
                         }}</span>
                         @for (alloc of line.allocations; track alloc.warehouseId) {
                           <span class="text-xs text-surface-600 dark:text-surface-400">
-                            {{ alloc.warehouseName || alloc.warehouseId }}: {{ alloc.allocated }}
+                            {{ alloc.warehouseName || alloc.warehouseId }}:
+                            {{ alloc.allocated | localizedNumber: '1.0-3' }}
                           </span>
                         }
                       </div>
@@ -204,7 +207,9 @@
                           </span>
                         </div>
                       </td>
-                      <td class="text-right font-mono text-sm">{{ line.quantity }}</td>
+                      <td class="text-right font-mono text-sm">
+                        {{ line.quantity | localizedNumber: '1.0-3' }}
+                      </td>
                       <td class="text-right font-mono text-sm">
                         {{ line.unitPrice | localizedNumber: '1.2-2' }}
                       </td>
@@ -227,7 +232,7 @@
                             @for (alloc of line.allocations; track alloc.warehouseId) {
                               <span class="text-xs text-surface-600 dark:text-surface-400">
                                 {{ alloc.warehouseName || alloc.warehouseId }}:
-                                {{ alloc.allocated }}
+                                {{ alloc.allocated | localizedNumber: '1.0-3' }}
                               </span>
                             }
                           </div>
